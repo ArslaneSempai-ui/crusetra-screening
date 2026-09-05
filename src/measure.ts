@@ -79,17 +79,13 @@ export function validerPaires(jeu: JeuDePaires): PaireEtiquetee[] {
 
 /** Une cellule du relevé : le taux avec tout ce qu'il faut pour le relire. */
 export type Cellule = { succes: number; n: number; taux: number; bas: number; haut: number };
-/*
- * LES BORNES SONT ÉLARGIES POUR CONTENIR LEUR PROPRE ESTIMATION. `wilson(60, 60)` rend une
- * borne haute de 0,9999999999999999 en flottant — un intervalle qui ne contient pas son
- * taux (1) — et un lecteur qui vérifie « taux ≤ haut » aurait RAISON de refuser le relevé.
- * Mathématiquement la borne à p̂ = 1 est exactement 1 ; c'est la division qui la perd.
- * `interval.ts` appartient au squelette (et le même flottant dort dans cascade-routing) :
- * la correction locale vit ici, la correction de fond est signalée au propriétaire.
- */
+/* Les bornes viennent de `wilson` TELLES QUELLES : depuis le lot R5, il garantit lui-même
+   que l'intervalle contient son estimation, flottant compris — la borne locale qui vivait
+   ici a été retirée avec la correction de fond, pour ne pas garder deux gardes dont une
+   morte. Le témoin « chaque cellule contient son taux » tient toujours, et c'est lui qui
+   crierait si la garantie repartait. */
 const cellule = (r: Rate): Cellule =>
-  ({ succes: r.successes, n: r.n, taux: r.rate,
-     bas: Math.min(r.low, r.rate), haut: Math.max(r.high, r.rate) });
+  ({ succes: r.successes, n: r.n, taux: r.rate, bas: r.low, haut: r.high });
 
 export type TableDUnPalier = Record<string, { rappel: Cellule; fauxPositifs: Cellule }>;
 
