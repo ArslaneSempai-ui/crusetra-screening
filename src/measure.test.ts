@@ -128,8 +128,20 @@ test("le palier absent est NOMMÉ — dans le relevé et dans la page — au lie
   const md = rapportMd(m);
   assert.match(md, /Not in tonight's registry: `embed`/,
     "la page ne dit pas l'absent : un lecteur croirait la colonne complète");
-  assert.match(md, /NOT measured/,
-    "la moitié synthétique absente doit être un constat écrit, pas une section muette");
+  /* La moitié synthétique a DEUX états légitimes, et la page doit dire lequel : absente
+     (synthetic.ts pas dans l'arbre) → le constat écrit, jamais une section muette ;
+     présente → la section déclarée avec ses comptes. Écrit pour l'état absent le soir du
+     5 septembre ; l'intégration a apporté synthetic.ts et ce cas a rougi sur un état
+     désormais vrai. */
+  if ("absent" in m.synthetic) {
+    assert.match(md, /NOT measured/,
+      "la moitié synthétique absente doit être un constat écrit, pas une section muette");
+  } else {
+    assert.match(md, /## Synthetic variants \(declared\)/,
+      "la moitié synthétique mesurée doit avoir sa section, déclarée comme telle");
+    assert.match(md, new RegExp(`${m.synthetic.nMatch} match, ${m.synthetic.nDifferent} different`),
+      "la section synthétique doit porter ses comptes, pas seulement des tables");
+  }
   /* Les colonnes montrées existent toutes dans la grille : une colonne annoncée qui
      manquerait rendrait `undefined` en cellule. */
   for (const s of SEUILS_MONTRES) assert.ok(SEUILS.includes(s), `${s} montré mais hors grille`);
