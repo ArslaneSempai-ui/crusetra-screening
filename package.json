@@ -11,6 +11,7 @@
     "test": "tsc --noEmit && node src/readme.ts --check && node src/licences.ts --check && node --test src/*.test.ts src/*.test.mjs",
     "figures": "node src/readme.ts",
     "listes": "node src/listes.ts",
+    "measure": "node src/measure.ts",
     "sceller": "node src/sceller.ts",
     "verify": "node src/verifier-rapport.mjs",
     "licences": "node src/licences.ts"
