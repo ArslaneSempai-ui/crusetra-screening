@@ -144,7 +144,12 @@ export type MesurePublique = {
  * construction, puisque chaque variante ressemble à son origine.
  */
 export async function mesurerSynthetique(r: Registre, paires: readonly PaireEtiquetee[]): Promise<MesurePublique["synthetic"]> {
-  let variantes: (nom: string, graine: number, n: number) => string[];
+  /* LA COUTURE, telle qu'elle est et non telle que le contrat l'écrivait : `variantes()` rend
+     des objets { variante, nature }, pas des chaînes. Trouvé à l'intégration du 5 septembre :
+     codé contre le contrat sans synthetic.ts dans l'arbre, ce lot passait un objet pour un
+     nom et le matcher tombait sur `nom.toLowerCase is not a function`. Le type ci-dessous
+     est celui du fichier réel ; s'il bouge, c'est ici que ça casse, et bruyamment. */
+  let variantes: (nom: string, graine: number, n: number) => { variante: string; nature: string }[];
   try {
     ({ variantes } = await import("./synthetic.ts" as string) as { variantes: typeof variantes });
   } catch {
@@ -153,9 +158,9 @@ export async function mesurerSynthetique(r: Registre, paires: readonly PaireEtiq
   const noms = [...new Set(paires.filter((x) => x.verdict === "match").map((x) => x.a))];
   const synth: PaireEtiquetee[] = [];
   noms.forEach((nom, i) => {
-    for (const v of variantes(nom, i + 1, 2)) synth.push({ a: nom, b: v, verdict: "match", nature: "synthetic" });
+    for (const v of variantes(nom, i + 1, 2)) synth.push({ a: nom, b: v.variante, verdict: "match", nature: "synthetic" });
     const autre = noms[(i + 1) % noms.length]!;
-    for (const v of variantes(autre, i + 1, 1)) synth.push({ a: nom, b: v, verdict: "different", nature: "synthetic" });
+    for (const v of variantes(autre, i + 1, 1)) synth.push({ a: nom, b: v.variante, verdict: "different", nature: "synthetic" });
   });
   return {
     provenance: "synthetic",
