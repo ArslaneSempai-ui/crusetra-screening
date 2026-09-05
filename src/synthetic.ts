@@ -11,11 +11,40 @@
  * Deux exécutions à la même graine rendent les mêmes variantes ; un banc dont le témoin
  * bouge entre deux passes n'est pas reproductible.
  *
- * Les translittérations alternatives (cyrillique, arabe) ne sont PAS ici : elles viendront
- * de translitteration.ts du lot R1 quand ses exports seront dits. Ce fichier n'invente pas
- * une table en attendant — une translittération improvisée fabriquerait des variantes que
- * personne ne rencontre, et le rappel mesuré dessus serait un chiffre sur rien.
+ * LES TRANSLITTÉRATIONS, EN DEUX NATURES, ET POURQUOI DEUX. La table de R1
+ * (`matchers/translitteration.ts`) rend UNE romanisation par caractère — c'est son rôle :
+ * un pipeline déterministe pour les paliers. Donc :
+ *
+ *   « transliterated »       : la romanisation de R1 elle-même, quand le nom porte du
+ *                              cyrillique ou de l'arabe — la forme qu'un système de
+ *                              filtrage verra. La comparaison se fait à casse égale :
+ *                              une variante qui ne diffère que par la casse serait un
+ *                              faux cas, les matchers normalisent la casse de toute façon.
+ *   « alt-transliteration »  : les romanisations CONCURRENTES d'un même son, celles que
+ *                              R1 ne rend pas et que ses paliers approximatifs doivent
+ *                              rattraper — dit par R1 lui-même. La table des paires est
+ *                              ICI, versionnée, chaque paire étant une alternance
+ *                              documentée entre systèmes réels (BGN/PCGN contre
+ *                              romanisations anglaises/françaises usuelles), jamais une
+ *                              invention.
+ *
+ * Les harakat arabes : ces variantes restent au niveau latin, aucune marque combinante
+ * n'est injectée — le cas où il faudrait passer par `preparer` avant comparaison (dit par
+ * R1) ne se présente pas ici.
  */
+import { translitterer } from "./matchers/translitteration.ts";
+
+/**
+ * Les alternances de romanisation, une par variante. Chaque paire est une divergence
+ * réelle entre systèmes : х romanisé kh (BGN/PCGN) ou h (usage anglais) ; ж → zh ou j ;
+ * ц → ts ou c ; ч → ch ou tch (usage français) ; ج → j ou dj (usage français) ; ق → q ou
+ * k ; غ → gh ou g ; ‑ов final → ov ou off (usage historique : Petrov/Petroff) ; ‑ий/‑iy →
+ * y ou i (Aliyev/Aliev) ; voyelles longues anglicisées oo/u et ee/i.
+ */
+export const PAIRES_ALTERNATIVES: readonly [string, string][] = [
+  ["kh", "h"], ["zh", "j"], ["ts", "c"], ["tch", "ch"], ["dj", "j"],
+  ["q", "k"], ["gh", "g"], ["off", "ov"], ["iy", "y"], ["oo", "u"], ["ee", "i"],
+];
 
 /** Le générateur : même forme que cascade-routing (`draw`), graine explicite. */
 export function tirage(graine: number): () => number {
@@ -37,6 +66,8 @@ export const NATURES = [
   "no-diacritics",      /* les diacritiques ôtées : José → Jose */
   "doubled-letter",     /* une lettre doublée : Haddad → Hadddad */
   "undoubled-letter",   /* une double dédoublée : Haddad → Hadad */
+  "transliterated",     /* la romanisation de R1 : мухаммед → mukhammed */
+  "alt-transliteration",/* une romanisation concurrente : Mukhammed → Muhammed */
 ] as const;
 
 export type Nature = (typeof NATURES)[number];
@@ -118,6 +149,26 @@ function candidates(nom: string, nature: Nature, r: () => number): string | unde
       const i = prendre(doubles);
       if (i === undefined) return undefined;
       return nom.slice(0, i) + nom.slice(i + 1);
+    }
+    case "transliterated": {
+      /* La table de R1 est écrite en minuscules : on translittère la minuscule, et on ne
+         garde la variante que si elle diffère À CASSE ÉGALE — sinon « José » → « josé »
+         passerait pour une translittération, un faux cas que les matchers absorberaient. */
+      const bas = nom.toLowerCase();
+      const v = translitterer(bas);
+      return v === bas ? undefined : v;
+    }
+    case "alt-transliteration": {
+      const bas = nom.toLowerCase();
+      const applicables = PAIRES_ALTERNATIVES.flatMap(([de, vers]) =>
+        bas.includes(de) ? [[de, vers] as const] : []);
+      const paire = prendre(applicables);
+      if (paire === undefined) return undefined;
+      /* UNE occurrence remplacée — l'unité de déformation, comme pour les typos — et la
+         casse du point de remplacement suit celle du nom : MUKHAMMED → MUHAMMED, pas MUhAMMED. */
+      const i = bas.indexOf(paire[0]);
+      const majuscule = nom[i]! !== nom[i]!.toLowerCase();
+      return nom.slice(0, i) + (majuscule ? paire[1].toUpperCase() : paire[1]) + nom.slice(i + paire[0].length);
     }
   }
 }
