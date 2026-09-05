@@ -113,6 +113,26 @@ test("au parNom par défaut, la sélection s'étale : les familles de queue ne s
     "huit graines de suite ne retiennent que le préfixe : l'étalement ne fonctionne pas");
 });
 
+test("un nom qui porte un trait REÇOIT sa variante — les natures du trait sont garanties", () => {
+  /* L'arbitrage du Chef, épinglé tel quel : ces présences sont GARANTIES, pas probables. */
+  const garcia = variantes("José García", 20260905, 6);
+  assert.ok(garcia.some((v) => v.nature === "no-diacritics"),
+    "un nom à diacritiques doit recevoir sa variante sans diacritiques au parNom par défaut");
+  const dmitri = variantes("Дмитрий Иванов", 20260905, 6);
+  assert.ok(dmitri.some((v) => v.nature === "transliterated"),
+    "un nom cyrillique doit recevoir sa romanisation");
+  const alt = dmitri.find((v) => v.nature === "alt-transliteration");
+  assert.ok(alt, "…et une romanisation ALTERNATIVE : l'alternance se joue dans la romanisation, pas dans le cyrillique");
+  assert.match(alt!.variante, /^[a-z .'-]+$/,
+    "l'alternative d'un nom cyrillique est latine (translittérer d'abord, alterner ensuite)");
+  assert.notEqual(alt!.variante, dmitri.find((v) => v.nature === "transliterated")!.variante,
+    "l'alternative doit différer de la romanisation de la table");
+  /* Et sur plusieurs graines, la garantie tient — c'est une propriété, pas un coup de dé. */
+  for (const g of [1, 2, 3]) {
+    assert.ok(variantes("José García", g, 6).some((v) => v.nature === "no-diacritics"), `graine ${g}`);
+  }
+});
+
 test("l'insertion peut tomber en fin de nom", () => {
   /* Micro de la relecture : les positions de lettres seules interdisaient la dernière
      place. Sur « A », les positions sont maintenant 0 et 1 : sur un petit jeu de graines
