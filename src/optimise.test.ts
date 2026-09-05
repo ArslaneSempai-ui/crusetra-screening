@@ -9,7 +9,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   meilleureSousRappel, meilleureSousBudget, lireRappelMin, lireBudget, lireRelevé,
-  heuresDAnalyste, cellulesDe, type CellulePlacee,
+  heuresDAnalyste, cellulesDe, plusForteBorne, type CellulePlacee,
 } from "./optimise.ts";
 import { rate } from "./interval.ts";
 import { empreinteDuReleve } from "./empreinte.ts";
@@ -109,6 +109,18 @@ test("sous budget, un « meilleur rappel » borné à zéro existe et doit se di
   const choix = meilleureSousBudget([affame, cher], 10, 30);
   assert.equal(choix, affame, "seule la cellule affamée tient 10/mois, et son rappel est borné à zéro");
   assert.equal(choix!.rappel.low, 0);
+});
+
+test("la plus forte borne d'un relevé à six match est un nombre, jamais Infinity", () => {
+  /* La sonde du chef (5/09 au soir) : n=6 partout → `reportable` faux partout → le max sur
+     l'ensemble filtré par reportable était vide, et le message imprimait « -Infinity % ».
+     La borne se prend sur n >= MINIMUM_MATCHES, et l'ensemble vide rend null, pas un nombre. */
+  const six = cellule("exact", 1, 0.9, 10, [5, 6], [5, 100]);
+  const borne = plusForteBorne([six]);
+  assert.ok(borne !== null && Number.isFinite(borne) && borne > 0.35 && borne < 0.6,
+    `5/6 porte une borne basse réelle (reçu : ${borne})`);
+  assert.equal(plusForteBorne([cellule("exact", 1, 0.9, 10, [4, 4], [5, 100])]), null,
+    "quatre match : aucune borne, null — jamais -Infinity");
 });
 
 test("les heures d'analyste suivent les hypothèses déclarées, jamais un chiffre à part", () => {
