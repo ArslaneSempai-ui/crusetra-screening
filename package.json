@@ -9,6 +9,8 @@
   },
   "scripts": {
     "test": "tsc --noEmit && node src/readme.ts --check && node src/licences.ts --check && node --test src/*.test.ts src/*.test.mjs",
+    "measure:yours": "node src/your-alerts.ts",
+    "optimise": "node src/optimise.ts",
     "figures": "node src/readme.ts",
     "listes": "node src/listes.ts",
     "measure": "node src/measure.ts",
