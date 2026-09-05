@@ -143,25 +143,42 @@ export type MesurePublique = {
  * sont (nom, variante(nom)) ; les négatifs, (nom, variante d'un AUTRE nom) — durs par
  * construction, puisque chaque variante ressemble à son origine.
  */
-export async function mesurerSynthetique(r: Registre, paires: readonly PaireEtiquetee[]): Promise<MesurePublique["synthetic"]> {
-  /* LA COUTURE, telle qu'elle est et non telle que le contrat l'écrivait : `variantes()` rend
-     des objets { variante, nature }, pas des chaînes. Trouvé à l'intégration du 5 septembre :
-     codé contre le contrat sans synthetic.ts dans l'arbre, ce lot passait un objet pour un
-     nom et le matcher tombait sur `nom.toLowerCase is not a function`. Le type ci-dessous
-     est celui du fichier réel ; s'il bouge, c'est ici que ça casse, et bruyamment. */
-  let variantes: (nom: string, graine: number, n: number) => { variante: string; nature: string }[];
+/** La signature ANNONCÉE par le lot des listes — celle de son message de livraison, pas une
+ *  supposition. Trois propriétés à respecter, dites par lui : le jeu peut rendre MOINS que
+ *  demandé (une nature inapplicable passe son tour — on lit ce qui vient, jamais un compte
+ *  attendu) ; un nom vide jette ; la graine dérive du nom, donc retirer une entrée ne
+ *  recompose pas les autres. */
+export type ModuleSynthetique = {
+  jeuSynthetique(noms: readonly string[], graine: number, parNom?: number):
+    { nom_liste: string; variante: string; nature: string }[];
+};
+
+export async function mesurerSynthetique(
+  r: Registre, paires: readonly PaireEtiquetee[],
+  /* Le chargeur est INJECTABLE pour qu'un témoin puisse éprouver la branche « présent »
+     avec un module conforme à la signature annoncée, SANS créer src/synthetic.ts dans cet
+     arbre — ce fichier appartient au lot des listes, et un fichier posé chez lui serait un
+     conflit de fusion fabriqué. La commande réelle passe par le défaut. */
+  charger: () => Promise<ModuleSynthetique> = () => import("./synthetic.ts" as string) as Promise<ModuleSynthetique>,
+): Promise<MesurePublique["synthetic"]> {
+  let jeuSynthetique: ModuleSynthetique["jeuSynthetique"];
   try {
-    ({ variantes } = await import("./synthetic.ts" as string) as { variantes: typeof variantes });
+    ({ jeuSynthetique } = await charger());
   } catch {
     return { provenance: "synthetic", absent: "synthetic.ts is not in the tree yet: this half is NOT measured, and this line is the record of that — not a clean zero." };
   }
   const noms = [...new Set(paires.filter((x) => x.verdict === "match").map((x) => x.a))];
+  const entrees = jeuSynthetique(noms, 1);
   const synth: PaireEtiquetee[] = [];
-  noms.forEach((nom, i) => {
-    for (const v of variantes(nom, i + 1, 2)) synth.push({ a: nom, b: v.variante, verdict: "match", nature: "synthetic" });
-    const autre = noms[(i + 1) % noms.length]!;
-    for (const v of variantes(autre, i + 1, 1)) synth.push({ a: nom, b: v.variante, verdict: "different", nature: "synthetic" });
-  });
+  const indexDe = new Map(noms.map((n, i) => [n, i]));
+  for (const e of entrees) {
+    /* Positif : le nom de liste contre sa propre variante — la nature du lot voyage. */
+    synth.push({ a: e.nom_liste, b: e.variante, verdict: "match", nature: e.nature });
+    /* Négatif dur : un AUTRE nom contre la même variante — chaque variante ressemble à son
+       origine, donc le négatif est difficile par construction. */
+    const autre = noms[((indexDe.get(e.nom_liste) ?? 0) + 1) % noms.length]!;
+    synth.push({ a: autre, b: e.variante, verdict: "different", nature: e.nature });
+  }
   return {
     provenance: "synthetic",
     nMatch: synth.filter((x) => x.verdict === "match").length,
