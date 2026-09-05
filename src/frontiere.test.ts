@@ -43,7 +43,13 @@ test("le détecteur voit un site réseau planté : témoin positif", () => {
 });
 
 test("aucun module ne touche le réseau, hors le téléchargeur de listes", () => {
-  const fichiers = readdirSync(dossier).filter((n) => /\.(ts|mjs)$/.test(n) && !/\.test\.(ts|mjs)$/.test(n));
+  // RÉCURSIF : src/matchers/ (embed.ts compris) échappait à la garde quand l'énumération
+  // s'arrêtait au premier niveau (constat de Mesure sur le squelette du bleu, 7/09) ; et
+  // un témoin sur l'énumération : elle doit voir au moins un fichier imbriqué
+  const tout = readdirSync(dossier, { recursive: true }) as string[];
+  assert.ok(tout.some((n) => n.includes("/")),
+    "aucun chemin imbriqué énuméré : l'énumération n'est pas récursive, src/matchers/ échappe à la garde");
+  const fichiers = tout.filter((n) => /\.(ts|mjs)$/.test(n) && !/\.test\.(ts|mjs)$/.test(n) && !n.startsWith("fixtures/"));
   assert.ok(fichiers.length >= 6, `${fichiers.length} fichier(s) lus : la lecture a échoué.`);
   const fautifs: string[] = [];
   for (const n of fichiers) {
