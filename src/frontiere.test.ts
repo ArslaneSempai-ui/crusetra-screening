@@ -19,6 +19,10 @@ const dossier = fileURLToPath(new URL(".", import.meta.url));
 /** Les seuls fichiers autorisés à toucher le réseau, et pourquoi. */
 const AUTORISES: Record<string, string> = {
   "listes.ts": "le téléchargeur des listes publiques : la liste descend, rien ne monte",
+  "poids.ts": "le téléchargeur des poids du palier embed : quatre fichiers épinglés (octets et "
+    + "sha256), tirés par la seule commande `npm run poids -- --fetch`, jamais pendant "
+    + "l'installation ni les tests, refusés sous le drapeau hors-ligne : le poids descend, "
+    + "rien ne monte",
 };
 
 const MOTIF = /\bfetch\s*\(|from\s+"node:(?:http|https|net|dns|tls|dgram|http2)"|from\s+"undici"|require\(\s*"(?:node:)?(?:http|https|net|dns|tls)"\s*\)|new\s+WebSocket\s*\(/g;

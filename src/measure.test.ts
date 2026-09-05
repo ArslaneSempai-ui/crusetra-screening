@@ -15,7 +15,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { validerPaires, mesurerPaires, mesurePublique, rapportMd, exigerDroitDEcraser, mesurerSynthetique,
   ASSEZ_PAR_VERDICT, SEUILS_MONTRES, type JeuDePaires, type PaireEtiquetee, type ModuleSynthetique } from "./measure.ts";
-import { SEUILS, type Matcher, type PalierId, type Registre } from "./matcher.ts";
+import { SEUILS, PALIERS, type Matcher, type PalierId, type Registre } from "./matcher.ts";
 import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
 
 const CMD = realpathSync(fileURLToPath(new URL("./measure.ts", import.meta.url)));
@@ -123,11 +123,26 @@ test("deux mesures, même relevé : rien d'aléatoire n'est entré", async () =>
 
 test("le palier absent est NOMMÉ — dans le relevé et dans la page — au lieu de planter", async () => {
   const m = await mesurePublique("2026-09-05", "0000000");
-  assert.deepEqual(m.paliers.absents, ["embed"],
-    "les absents du relevé doivent être exactement ceux que le registre ne porte pas");
+  /*
+   * LES ABSENTS SE DÉRIVENT, ILS NE SE RÉCITENT PAS. La première version de ce cas écrivait
+   * ["embed"] en dur : vraie le soir du lot R4, fausse le soir du lot E — le témoin a rougi
+   * sur l'arrivée du palier, ce qui est exactement le mauvais rouge : il accusait le progrès.
+   * La règle qu'il faut tenir : absents = les paliers du CONTRAT que le registre employé ne
+   * porte pas, et chacun des deux états — nommé absent, ou colonne pleine sans mention
+   * d'absence — doit se lire dans la page.
+   */
+  assert.deepEqual(m.paliers.absents, PALIERS.filter((p) => !Object.keys(m.authored.tables).includes(p)),
+    "les absents du relevé doivent être exactement les paliers du contrat que la mesure n'a pas notés");
   const md = rapportMd(m);
-  assert.match(md, /Not in tonight's registry: `embed`/,
-    "la page ne dit pas l'absent : un lecteur croirait la colonne complète");
+  if (m.paliers.absents.length > 0) {
+    assert.match(md, new RegExp(`Not in tonight's registry: \\\`${m.paliers.absents[0]}\\\``),
+      "la page ne dit pas l'absent : un lecteur croirait la colonne complète");
+  } else {
+    assert.doesNotMatch(md, /Not in tonight's registry/,
+      "aucun palier n'est absent et la page annonce encore une absence : elle décrirait l'outil d'hier");
+    assert.equal(Object.keys(m.authored.tables).length, PALIERS.length,
+      `aucun absent : la grille doit porter les ${PALIERS.length} paliers du contrat, embed compris`);
+  }
   /* La moitié synthétique a DEUX états légitimes, et la page doit dire lequel : absente
      (synthetic.ts pas dans l'arbre) → le constat écrit, jamais une section muette ;
      présente → la section déclarée avec ses comptes. Écrit pour l'état absent le soir du

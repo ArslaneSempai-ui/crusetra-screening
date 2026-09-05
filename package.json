@@ -14,6 +14,7 @@
     "figures": "node src/readme.ts",
     "listes": "node src/listes.ts",
     "measure": "node src/measure.ts",
+    "poids": "node src/poids.ts",
     "sceller": "node src/sceller.ts",
     "verify": "node src/verifier-rapport.mjs",
     "licences": "node src/licences.ts"
