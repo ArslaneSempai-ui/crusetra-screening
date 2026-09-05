@@ -17,7 +17,9 @@ measures which extraction tier suffices per field. Same method, same seal, same 
 | Command | What it does, in the order that makes sense |
 |---|---|
 | `npm ci --ignore-scripts` | install exactly the versions the lockfile pins, and run no install script from any dependency — the only command besides `listes -- --fetch` that needs the network |
+| `npm run listes [-- --fetch]` | the three public sanctions lists — OFAC SDN, UN consolidated, EU consolidated (FSF) — downloaded into data/ with a committed manifest (source, date, sha256, entry count); without the flag it reports what is on disk and touches nothing. The list comes down, nothing goes up |
 | `npm run test` | types, the README blocks, the licence inventory, and the suite — start here; it runs with the network cut |
+| `npm run measure [-- --yes-overwrite]` | the public measure: every tier at every threshold on pairs we authored (hard negatives included) plus declared synthetic variants, sealed into `releve-public.json` and readable in `RELEVE-PUBLIC.md` — the record the catalogue requires, and it refuses to overwrite a sealed one without the flag |
 | `npm run measure:yours -- --alerts=<csv> [--screened=<csv> | --volume=N]` | your own alert history: recall and false-alert rate per matcher and threshold, with n and interval; a sealed record and a report beside your file, never a name |
 | `npm run optimise -- --from=<record> --recall=<min>` | the frontier: fewest alerts with the recall lower bound held, or `--alert-budget=<N>` for the highest bounded recall under a monthly alert budget |
 | `npm run sceller -- <record.json>` | seal a record: the fingerprint that makes a silently edited measurement fail loudly — the same fingerprint as cascade-routing |
@@ -50,7 +52,7 @@ reports are verified against the same public key, [`cle-publique.pem`](cle-publi
 with `npm run verify`.
 
 <!-- figures:tests -->
-**64 tests** across 7 files, counted from the sources rather than typed here.
+**104 tests** across 11 files, counted from the sources rather than typed here.
 <!-- /figures:tests -->
 
 ## Licence

@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "genereLe": "2026-09-05T15:27:43.631Z",
+  "listes": [
+    {
+      "source": "OFAC",
+      "titre": "OFAC Specially Designated Nationals (SDN) list",
+      "url": "https://sanctionslistservice.ofac.treas.gov/api/publicationpreview/exports/sdn.xml",
+      "format": "ofac-sdn-xml",
+      "disponible": true,
+      "telechargeLe": "2026-09-05T15:27:31.502Z",
+      "sha256": "a6fe1073e4cc3a9ea9b827f63f5ab56b80933603a8af791b21d7cacbf99da598",
+      "octets": 28978335,
+      "entrees": 19329
+    },
+    {
+      "source": "UN",
+      "titre": "UN Security Council Consolidated List",
+      "url": "https://scsanctions.un.org/resources/xml/en/consolidated.xml",
+      "format": "un-consolidated-xml",
+      "disponible": true,
+      "telechargeLe": "2026-09-05T15:27:39.647Z",
+      "sha256": "145f41246b4824b15196d6a6aa9ac2070cb86666b07f92f048a659e3e4301105",
+      "octets": 2176957,
+      "entrees": 1011
+    },
+    {
+      "source": "EU",
+      "titre": "EU consolidated financial sanctions list (FSF, XML v1.1)",
+      "url": "https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content?token=dG9rZW4tMjAxNw",
+      "format": "eu-fsf-xml-1.1",
+      "disponible": false,
+      "verifieLe": "2026-09-05T15:27:43.308Z",
+      "erreur": "HTTP 500",
+      "issue": "the programmatic download needs a personal EU Login token (token=[username]); set CASCADE_EU_TOKEN and run --fetch again. The generic public token returned this error on every file endpoint while the RSS still answered."
+    }
+  ]
+}

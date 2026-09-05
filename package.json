@@ -12,6 +12,8 @@
     "measure:yours": "node src/your-alerts.ts",
     "optimise": "node src/optimise.ts",
     "figures": "node src/readme.ts",
+    "listes": "node src/listes.ts",
+    "measure": "node src/measure.ts",
     "sceller": "node src/sceller.ts",
     "verify": "node src/verifier-rapport.mjs",
     "licences": "node src/licences.ts"
