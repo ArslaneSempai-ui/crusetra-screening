@@ -21,16 +21,30 @@ import { ASSUMPTIONS, STATUSES, UNITS, symboleDe, ligneDHypothese } from "./assu
 import { cellulesDe, meilleureSousRappel, heuresDAnalyste } from "./optimise.ts";
 import type { MesureAlertes, Cellule } from "./your-alerts.ts";
 
-/** Sous ce nombre de `match` confirmés, aucun rappel n'est cité — la phrase du contrat. */
-export const MINIMUM_MATCHES = 5;
+import { MINIMUM_MATCHES } from "./optimise.ts";
+export { MINIMUM_MATCHES };
 export const TROP_PEU_DE_MATCHES = "too few confirmed matches to bound recall";
+/** La note du contrat pour 5 ≤ n < 20 : l'intervalle est la lecture, jamais le point. */
+export const NOTE_PETIT_N = "n below 20: read the interval, not the point";
 
 /** Les seuils montrés dans le fichier lisible ; la grille entière vit dans le relevé scellé. */
 export const SEUILS_MONTRES: readonly number[] = [0.50, 0.60, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 0.99, 1.00];
 
+/**
+ * La cellule du rappel suit le CONTRAT (§4, précision du 5/09), pas le seuil général :
+ * sous cinq match, la phrase du contrat ; dès cinq, le taux AVEC son intervalle, même
+ * sous ENOUGH — l'intervalle large est ce que le lecteur doit voir, et la note
+ * `NOTE_PETIT_N` voyage sous chaque table concernée. `cellulesDeTaux` garde les taux
+ * du régime général (fausses alertes) ; celle-ci porte la règle spéciale du rappel.
+ */
 function celluleRappel(c: Cellule, matches: number): { taux: string; intervalle: string } {
   if (matches < MINIMUM_MATCHES) return { taux: `— ${TROP_PEU_DE_MATCHES}`, intervalle: `n=${matches}` };
-  return cellulesDeTaux(rate(c.rappel.successes, c.rappel.n));
+  const r = rate(c.rappel.successes, c.rappel.n);
+  if (r.reportable) return cellulesDeTaux(r);
+  return {
+    taux: `${(r.rate * 100).toFixed(1)} %`,
+    intervalle: `[${(r.low * 100).toFixed(0)}–${(r.high * 100).toFixed(0)}]`,
+  };
 }
 
 export function rendreRapport(m: MesureAlertes): string {
@@ -87,7 +101,11 @@ export function rendreRapport(m: MesureAlertes): string {
         if (m.volume) ligne.push(c.pourMille ?? "");
         return ligne;
       });
-    l.push(table(entetes, lignes), ``);
+    l.push(table(entetes, lignes));
+    if (m.source.matches >= MINIMUM_MATCHES && m.source.matches < ENOUGH) {
+      l.push(``, `*${NOTE_PETIT_N}.*`);
+    }
+    l.push(``);
   }
   if (m.absents.length) {
     l.push(`Contract matchers absent from tonight's registry, said rather than guessed: `
@@ -101,10 +119,6 @@ export function rendreRapport(m: MesureAlertes): string {
     l.push(`No recommendation: ${TROP_PEU_DE_MATCHES} (${m.source.matches} confirmed match(es) in`);
     l.push(`this file). A cell recommended on that would be a guess wearing a threshold. The`);
     l.push(`synthetic robustness in section 4 stands apart and does not substitute for it.`);
-  } else if (m.source.matches < ENOUGH) {
-    l.push(`No recommendation: ${m.source.matches} confirmed match(es) is below ${ENOUGH}, so no recall`);
-    l.push(`lower bound is tight enough to hold a floor against. The frontier above still shows`);
-    l.push(`every measured cell; export a longer window of history for a bounded recommendation.`);
   } else {
     const c = meilleureSousRappel(cellulesDe(m), ASSUMPTIONS.recallFloor);
     l.push(`The floor: ${ligneDHypothese("recallFloor")} — yours to set with \`optimise -- --recall=<min>\`.`);

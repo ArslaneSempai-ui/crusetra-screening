@@ -18,7 +18,6 @@
 import { readFileSync } from "node:fs";
 import { basename } from "node:path";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
-import { ENOUGH } from "./interval.ts";
 import { scelleIntact, empreinteDuReleve } from "./empreinte.ts";
 import { lignesEvaluation } from "./evaluation.ts";
 import { ASSUMPTIONS, UNITS, symboleDe, analystHourlyCost, ligneDHypothese } from "./assumptions.ts";
@@ -26,6 +25,15 @@ import type { MesureAlertes, Cellule } from "./your-alerts.ts";
 import type { PalierId } from "./matcher.ts";
 
 export type CellulePlacee = Cellule & { palier: PalierId; rang: number };
+
+/**
+ * Le plancher CONTRACTUEL du rappel (contrat §4, précision d'intégration du 5/09) : le
+ * rappel se cite et s'optimise dès CINQ match confirmés, à la borne basse de Wilson —
+ * l'intervalle large est précisément ce que le lecteur doit voir. Le seuil général
+ * `ENOUGH` (20) aurait privé de rappel la plupart des historiques réels, où les vraies
+ * correspondances sont rares ; sous cinq, rien ne se cite ni ne s'optimise.
+ */
+export const MINIMUM_MATCHES = 5;
 
 /** Toutes les cellules du relevé, à plat, avec leur palier. */
 export function cellulesDe(m: MesureAlertes): CellulePlacee[] {
@@ -42,7 +50,7 @@ export function cellulesDe(m: MesureAlertes): CellulePlacee[] {
  * jamais un pis-aller silencieux.
  */
 export function meilleureSousRappel(cellules: readonly CellulePlacee[], rappelMin: number): CellulePlacee | null {
-  const tenables = cellules.filter((c) => c.rappel.reportable && c.rappel.low >= rappelMin);
+  const tenables = cellules.filter((c) => c.rappel.n >= MINIMUM_MATCHES && c.rappel.low >= rappelMin);
   if (tenables.length === 0) return null;
   return [...tenables].sort((a, b) =>
     a.tirees - b.tirees || a.rang - b.rang || b.seuil - a.seuil)[0]!;
@@ -56,7 +64,7 @@ export function meilleureSousBudget(
   cellules: readonly CellulePlacee[], budgetParMois: number, joursDePeriode: number,
 ): CellulePlacee | null {
   const parMois = (c: CellulePlacee) => c.tirees * (30 / joursDePeriode);
-  const tenables = cellules.filter((c) => c.rappel.reportable && parMois(c) <= budgetParMois);
+  const tenables = cellules.filter((c) => c.rappel.n >= MINIMUM_MATCHES && parMois(c) <= budgetParMois);
   if (tenables.length === 0) return null;
   return [...tenables].sort((a, b) =>
     b.rappel.low - a.rappel.low || a.tirees - b.tirees || a.rang - b.rang)[0]!;
@@ -153,10 +161,10 @@ The record comes from: npm run measure:yours -- --alerts=<csv>
     + `${Object.keys(m.paliers).length} matcher(s) × ${new Set(cellules.map((c) => c.seuil)).size} thresholds.`);
   if (m.absents.length) console.log(`contract matcher(s) absent from that record: ${m.absents.join(", ")}`);
 
-  if (m.source.matches < ENOUGH) {
-    console.error(`\n${m.source.matches} confirmed match(es) in the record — below ${ENOUGH}, no recall bound\n`
-      + `  exists to optimise against. The frontier would rest on an interval spanning most\n`
-      + `  of the scale. Export a window with more confirmed matches and re-measure.\n`);
+  if (m.source.matches < MINIMUM_MATCHES) {
+    console.error(`\n${m.source.matches} confirmed match(es) in the record: too few confirmed matches to\n`
+      + `  bound recall (the contract cites and optimises recall from ${MINIMUM_MATCHES}). Export a window\n`
+      + `  with more confirmed matches and re-measure.\n`);
     process.exit(2);
   }
 
