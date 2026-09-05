@@ -101,11 +101,15 @@ export function lireAlertes(texte: string): { alertes: Alerte[]; avertissements:
   const col = Object.fromEntries(t.noms.map((n, i) => [n, i])) as Record<string, number>;
   const lireCellule = (l: string[], nom: string): string => (l[col[nom]!] ?? "").trim();
 
-  /* La disposition est un vocabulaire fermé : tout le reste se refuse EN NOMMANT la ligne
-     et la valeur reçue — sur la console locale seulement, jamais dans une sortie émise. */
+  /* La disposition est un vocabulaire fermé, lu SANS sensibilité à la casse : le fichier
+     NORMAL d'un moteur écrit « FALSE_POSITIVE » ou « Match », et refuser la casse refuserait
+     l'export légitime — la leçon de la clé (id, field), au même endroit du schéma. Tout ce
+     qui n'est pas l'un des deux mots APRÈS normalisation se refuse en nommant la ligne et la
+     valeur reçue — sur la console locale seulement, jamais dans une sortie émise. */
+  const lireDisposition = (l: string[]): string => lireCellule(l, "disposition").toLowerCase();
   const horsVocabulaire = t.lignes
     .map((l, i) => ({ ligne: t.numeros[i]!, valeur: lireCellule(l, "disposition") }))
-    .filter((x) => x.valeur !== "match" && x.valeur !== "false_positive");
+    .filter((x) => x.valeur.toLowerCase() !== "match" && x.valeur.toLowerCase() !== "false_positive");
   if (horsVocabulaire.length > 0) {
     const montre = horsVocabulaire.slice(0, 8)
       .map((x) => `line ${x.ligne}: "${x.valeur}"`).join("; ");
@@ -160,7 +164,7 @@ export function lireAlertes(texte: string): { alertes: Alerte[]; avertissements:
       nomFiltre: lireCellule(l, "screened_name"),
       entreeListe: lireCellule(l, "list_name"),
       source: lireCellule(l, "list_source"),
-      disposition: lireCellule(l, "disposition") as Disposition,
+      disposition: lireDisposition(l) as Disposition,
       /* Un score illisible est une absence comptée, jamais un zéro : Number("") vaut 0 et
          un 0 inventé se lirait comme un moteur qui doute. */
       ...(score !== undefined && Number.isFinite(score) ? { scoreMoteur: score } : {}),

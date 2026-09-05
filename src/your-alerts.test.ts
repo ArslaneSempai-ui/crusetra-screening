@@ -63,6 +63,24 @@ test("une disposition hors vocabulaire est refusée avec sa ligne et sa valeur",
   });
 });
 
+test("la disposition se lit sans sensibilité à la casse, et le hors-vocabulaire reste refusé", () => {
+  /* L'arbitrage du chef (457fca5) : « FALSE_POSITIVE », « False_Positive », « Match » sont
+     le fichier NORMAL d'un export de moteur — les refuser refusait le client légitime,
+     la même leçon que la clé (id, field). La normalisation n'élargit PAS le vocabulaire :
+     « pending » reste dehors, avec le même message. */
+  const lignes = [ENTETE];
+  for (let i = 0; i < 30; i++) {
+    const d = i === 0 ? "Match" : i === 1 ? "FALSE_POSITIVE" : i === 2 ? "False_Positive" : "false_positive";
+    lignes.push(`c-${i},a,b,OFAC,${d}`);
+  }
+  const { alertes } = lireAlertes(lignes.join("\n") + "\n");
+  assert.equal(alertes[0]!.disposition, "match");
+  assert.equal(alertes[1]!.disposition, "false_positive");
+  assert.equal(alertes[2]!.disposition, "false_positive");
+  assert.equal(alertes.filter((a) => a.disposition === "match").length, 1);
+  assert.throws(() => lireAlertes(ENTETE + "\n1,a,b,OFAC,Pending\n"), /line 2: "Pending"/);
+});
+
 test("un alert_id dupliqué est refusé en nommant l'id et les lignes ; un id vide aussi", () => {
   assert.throws(() => lireAlertes(ENTETE + "\n7,a,b,OFAC,match\n7,c,d,EU,false_positive\n"),
     /duplicate alert_id\(s\): "7" \(rows 2, 3\)/);
