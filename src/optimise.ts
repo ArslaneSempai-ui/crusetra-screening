@@ -32,8 +32,26 @@ export type CellulePlacee = Cellule & { palier: PalierId; rang: number };
  * l'intervalle large est précisément ce que le lecteur doit voir. Le seuil général
  * `ENOUGH` (20) aurait privé de rappel la plupart des historiques réels, où les vraies
  * correspondances sont rares ; sous cinq, rien ne se cite ni ne s'optimise.
+ *
+ * ET UN SEUL SENS PAR DRAPEAU, tranché après le « -Infinity % » du 5/09 au soir : le
+ * `reportable` posé par `rate()` garde son sens GÉNÉRAL (n >= ENOUGH — il pilote le format
+ * commun et la note « read the interval ») ; partout où c'est la CITATION ou la SÉLECTION
+ * du rappel qui se joue, c'est `rappel.n >= MINIMUM_MATCHES` qui décide, explicitement.
+ * Un filtre sur `reportable` dans un chemin du rappel est donc un défaut, pas un style.
  */
 export const MINIMUM_MATCHES = 5;
+
+/**
+ * La plus forte borne basse ATTEIGNABLE sur ce relevé, ou null quand aucune cellule ne
+ * porte assez de match pour en avoir une. Séparée pour qu'un témoin la lise sans lancer
+ * la commande : `Math.max()` sur un ensemble vide rend -Infinity, et « -Infinity % » est
+ * exactement ce qu'un message d'échec a déjà imprimé une fois.
+ */
+export function plusForteBorne(cellules: readonly CellulePlacee[]): number | null {
+  const bornees = cellules.filter((c) => c.rappel.n >= MINIMUM_MATCHES);
+  if (bornees.length === 0) return null;
+  return Math.max(...bornees.map((c) => c.rappel.low));
+}
 
 /** Toutes les cellules du relevé, à plat, avec leur palier. */
 export function cellulesDe(m: MesureAlertes): CellulePlacee[] {
@@ -172,11 +190,14 @@ The record comes from: npm run measure:yours -- --alerts=<csv>
     const min = lireRappelMin(brutRappel);
     const c = meilleureSousRappel(cellules, min);
     if (!c) {
+      const borne = plusForteBorne(cellules);
       console.error(`\nNo cell holds a recall lower bound of ${min} on this sample `
-        + `(${m.source.matches} confirmed matches).\n`
-        + `  The strongest bound available is `
-        + `${(Math.max(...cellules.filter((x) => x.rappel.reportable).map((x) => x.rappel.low)) * 100).toFixed(0)} %.\n`
-        + `  Lower the floor, or measure a window with more confirmed matches.\n`);
+        + `(${m.source.matches} confirmed matches).`);
+      console.error(borne === null
+        ? `  No cell has enough confirmed matches to bound recall at all.`
+        : `  The strongest bound available is ${(borne * 100).toFixed(0)} % — lower the floor,`
+          + ` or measure a wider window.`);
+      console.error("");
       process.exit(1);
     }
     console.log(`\nFewest alerts with the recall lower bound at or above ${min}:\n`);
