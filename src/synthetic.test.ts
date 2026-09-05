@@ -18,7 +18,13 @@ test("mêmes variantes à même graine, et chaque nature applicable est présent
   assert.deepEqual(une, deux, "deux passes à la même graine doivent rendre les MÊMES variantes");
 
   const natures = new Set(une.map((v) => v.nature));
-  for (const n of NATURES) assert.ok(natures.has(n), `nature absente sur un nom où elle s'applique : ${n}`);
+  /* Sur un nom latin sans son translittérable ni alternance de romanisation, ces deux
+     natures passent leur tour — elles ont leurs propres cas plus bas. */
+  const inapplicables: Nature[] = ["transliterated", "alt-transliteration"];
+  for (const n of NATURES.filter((x) => !inapplicables.includes(x))) {
+    assert.ok(natures.has(n), `nature absente sur un nom où elle s'applique : ${n}`);
+  }
+  for (const n of inapplicables) assert.ok(!natures.has(n), `${n} ne s'applique pas à ce nom latin`);
   for (const v of une) {
     assert.notEqual(v.variante, nom, `la variante « ${v.nature} » est égale au nom d'origine`);
     assert.ok(v.variante.length > 0, "aucune variante vide");
@@ -53,6 +59,28 @@ test("une nature inapplicable passe son tour au lieu de rendre le nom inchangé"
 
 test("un nom vide se refuse : l'appelant tient une mauvaise entrée de liste", () => {
   assert.throws(() => variantes("  ", 1, 3), /empty name has no variants/);
+});
+
+test("un nom cyrillique porte sa romanisation R1 comme variante — jamais une variante de casse seule", () => {
+  const v = variantes("Мухаммед Морозов", 20260905, NATURES.length);
+  const t = v.find((x) => x.nature === "transliterated");
+  assert.ok(t, "la nature transliterated doit s'appliquer à un nom cyrillique");
+  assert.equal(t!.variante, "mukhammed morozov", "la romanisation est celle de la table de R1, sur la minuscule");
+  /* Et sur du latin pur, « José » → « josé » ne compte PAS : une variante qui ne diffère
+     que par la casse serait un faux cas que les matchers absorbent par construction. */
+  assert.ok(!variantes("José Müller", 3, 20).some((x) => x.nature === "transliterated"));
+});
+
+test("l'alternance de romanisation remplace UNE occurrence documentée, casse suivie", () => {
+  /* « Mukhammed Morozov » : seule la paire kh↔h s'applique — l'attendu est exact. */
+  const v = variantes("Mukhammed Morozov", 20260905, NATURES.length);
+  const alt = v.find((x) => x.nature === "alt-transliteration");
+  assert.ok(alt, "kh est dans le nom : l'alternance doit s'appliquer");
+  assert.equal(alt!.variante, "Muhammed Morozov");
+  const V = variantes("MUKHAMMED", 7, 30).find((x) => x.nature === "alt-transliteration");
+  assert.equal(V?.variante, "MUHAMMED", "en capitales, le remplacement suit la casse");
+  assert.ok(!variantes("Smith", 5, 30).some((x) => x.nature === "alt-transliteration"),
+    "aucune paire applicable : la nature passe son tour");
 });
 
 test("le jeu synthétique est stable sous retrait d'une entrée, et chaque cas porte son étiquette", () => {
