@@ -46,8 +46,11 @@ test("égalités : moins d'alertes d'abord, puis le rang, puis le seuil le plus 
 
 test("aucune cellule tenable : null, jamais un pis-aller silencieux", () => {
   assert.equal(meilleureSousRappel([cellule("exact", 1, 0.9, 10, [15, 24], [5, 100])], 0.9), null);
-  /* Et un rappel non citable (n < 20) ne peut pas « tenir » une exigence, si haut soit-il. */
-  assert.equal(meilleureSousRappel([cellule("exact", 1, 0.9, 10, [6, 6], [5, 100])], 0.5), null);
+  /* Contrat §4 (5/09) : dès CINQ match, la borne basse peut tenir une exigence — 6/6 a une
+     borne basse au-dessus de 0,5, la cellule tient. Sous cinq, rien ne tient jamais. */
+  assert.notEqual(meilleureSousRappel([cellule("exact", 1, 0.9, 10, [6, 6], [5, 100])], 0.5), null);
+  assert.equal(meilleureSousRappel([cellule("exact", 1, 0.9, 10, [4, 4], [5, 100])], 0.5), null,
+    "quatre match sont sous le plancher contractuel : aucune exigence ne se tient dessus");
 });
 
 test("sous budget mensuel : la conversion vient de la période, la borne basse se maximise", () => {
