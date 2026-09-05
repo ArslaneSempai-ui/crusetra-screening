@@ -20,6 +20,8 @@ import { run, table } from "./figures.ts";
 export const COMMANDES: [string, string][] = [
   ["npm ci --ignore-scripts", "install exactly the versions the lockfile pins, and run no install script from any dependency — the only command besides `listes -- --fetch` that needs the network"],
   ["npm run test", "types, the README blocks, the licence inventory, and the suite — start here; it runs with the network cut"],
+  ["npm run measure:yours -- --alerts=<csv> [--screened=<csv> | --volume=N]", "your own alert history: recall and false-alert rate per matcher and threshold, with n and interval; a sealed record and a report beside your file, never a name"],
+  ["npm run optimise -- --from=<record> --recall=<min>", "the frontier: fewest alerts with the recall lower bound held, or `--alert-budget=<N>` for the highest bounded recall under a monthly alert budget"],
   ["npm run sceller -- <record.json>", "seal a record: the fingerprint that makes a silently edited measurement fail loudly — the same fingerprint as cascade-routing"],
   ["npm run verify -- <report>", "check that a report was issued by the holder of the suite's public key, `cle-publique.pem`, without asking us"],
   ["npm run licences", "regenerate `LICENCES.md`, the licence of every shipped package — `--check` fails the suite when the table drifts"],
