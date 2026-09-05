@@ -19,6 +19,7 @@ measures which extraction tier suffices per field. Same method, same seal, same 
 | `npm ci --ignore-scripts` | install exactly the versions the lockfile pins, and run no install script from any dependency — the only command besides `listes -- --fetch` that needs the network |
 | `npm run listes [-- --fetch]` | the three public sanctions lists — OFAC SDN, UN consolidated, EU consolidated (FSF) — downloaded into data/ with a committed manifest (source, date, sha256, entry count); without the flag it reports what is on disk and touches nothing. The list comes down, nothing goes up |
 | `npm run test` | types, the README blocks, the licence inventory, and the suite — start here; it runs with the network cut |
+| `npm run measure [-- --yes-overwrite]` | the public measure: every tier at every threshold on pairs we authored (hard negatives included) plus declared synthetic variants, sealed into `releve-public.json` and readable in `RELEVE-PUBLIC.md` — the record the catalogue requires, and it refuses to overwrite a sealed one without the flag |
 | `npm run sceller -- <record.json>` | seal a record: the fingerprint that makes a silently edited measurement fail loudly — the same fingerprint as cascade-routing |
 | `npm run verify -- <report>` | check that a report was issued by the holder of the suite's public key, `cle-publique.pem`, without asking us |
 | `npm run licences` | regenerate `LICENCES.md`, the licence of every shipped package — `--check` fails the suite when the table drifts |
@@ -49,7 +50,7 @@ reports are verified against the same public key, [`cle-publique.pem`](cle-publi
 with `npm run verify`.
 
 <!-- figures:tests -->
-**59 tests** across 7 files, counted from the sources rather than typed here.
+**68 tests** across 8 files, counted from the sources rather than typed here.
 <!-- /figures:tests -->
 
 ## Licence
