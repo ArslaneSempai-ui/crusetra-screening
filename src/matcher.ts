@@ -22,6 +22,15 @@ export interface Matcher {
   /** le coût relatif, du plus bête (1) au plus cher (7) ; sert à ordonner la frontière */
   readonly rang: number;
   score(a: string, b: string): Score;
+  /**
+   * FACULTATIF, et seul `embed` le porte : un passage dans un réseau de neurones n'est pas
+   * synchrone, donc un palier neuronal reçoit TOUS les noms d'un coup ici, calcule ses
+   * vecteurs, et `score` sert ensuite depuis ce cache : synchrone, déterministe, comme les
+   * six autres. Un consommateur appelle `await m.rechauffer?.(noms)` avant de noter ; les
+   * paliers de chaînes n'ont pas ce membre et rien ne change pour eux. Ajout ADDITIF à la
+   * couture, annoncé au chef dans ETAT et le message de livraison du lot E.
+   */
+  rechauffer?(noms: readonly string[]): Promise<void>;
 }
 
 /** Les paliers du contrat, dans l'ordre du coût. `human` n'est pas un matcher : c'est

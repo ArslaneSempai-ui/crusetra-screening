@@ -26,7 +26,7 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
-import { registre } from "./matchers/index.ts";
+import { registreComplet } from "./matchers/index.ts";
 import { SEUILS, PALIERS, type Registre } from "./matcher.ts";
 import { rate, type Rate } from "./interval.ts";
 import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
@@ -175,6 +175,8 @@ export async function mesurerSynthetique(
     const autre = noms[((indexDe.get(e.nom_liste) ?? 0) + 1) % noms.length]!;
     synth.push({ a: autre, b: e.variante, verdict: "different", nature: e.nature });
   }
+  const nomsSynth = [...new Set(synth.flatMap((x) => [x.a, x.b]))];
+  for (const m of r.values()) await m.rechauffer?.(nomsSynth);
   return {
     provenance: "synthetic",
     nMatch: synth.filter((x) => x.verdict === "match").length,
@@ -186,7 +188,12 @@ export async function mesurerSynthetique(
 export async function mesurePublique(date: string, commit: string): Promise<MesurePublique> {
   const jeu = JSON.parse(readFileSync(fileURLToPath(new URL("./paires-etiquetees.json", import.meta.url)), "utf8")) as JeuDePaires;
   const paires = validerPaires(jeu);
-  const r = registre();
+  /* Le registre COMPLET : embed y figure quand ses poids sont sur le disque, et il se
+     réchauffe ici, avec tous les noms d'un coup — un score neuronal ne s'improvise pas
+     dans une note synchrone. Les six paliers de chaînes n'ont pas ce membre. */
+  const r = registreComplet();
+  const nomsAuthored = [...new Set(paires.flatMap((x) => [x.a, x.b]))];
+  for (const m of r.values()) await m.rechauffer?.(nomsAuthored);
   const natures: Record<string, number> = {};
   for (const x of paires) natures[x.nature] = (natures[x.nature] ?? 0) + 1;
   return {
