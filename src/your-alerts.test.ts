@@ -13,7 +13,7 @@ import {
   lireAlertes, mesurer, executer, periodeDe, lireVolume, compterScreened,
   MINIMUM_ALERTES, type Alerte,
 } from "./your-alerts.ts";
-import { rendreRapport, TROP_PEU_DE_MATCHES } from "./rapport.ts";
+import { rendreRapport, TROP_PEU_DE_MATCHES, NOTE_PETIT_N } from "./rapport.ts";
 import { scelleIntact, empreinteDuReleve } from "./empreinte.ts";
 import type { Matcher, Registre, PalierId } from "./matcher.ts";
 
@@ -217,10 +217,17 @@ test("moins de cinq match : la phrase du contrat, aucun rappel cité, le synthé
     "aucun pourcentage de rappel intervalle compris ne doit apparaître sous cinq match");
 });
 
-test("six match : le rappel n'est pas cité non plus (n < 20), et la recommandation dit pourquoi", () => {
+test("six match : le rappel EST cité avec son intervalle, et la note du contrat suit la table", () => {
+  /* Contrat §4, précision du 5/09 : dès cinq match le rappel se cite — l'intervalle large
+     est la lecture — et la note « read the interval, not the point » voyage sous la table.
+     Le régime général (« too few to quote ») ne s'applique plus au rappel entre 5 et 19. */
   const { alertes } = lireAlertes(csvValide());
   const m = mesurer(alertes, registreFactice(["exact"]), "x.csv", "0".repeat(64), null);
   const rapport = rendreRapport(m);
-  assert.match(rapport, /too few to quote/, "6 match passent la règle des cinq mais pas celle des vingt");
-  assert.match(rapport, /No recommendation: 6 confirmed match\(es\) is below 20/);
+  assert.match(rapport, /\| 0\.85 \| 2 \| 33\.3 % \| \[10–70\]/, "2 sur 6 à 0,85 : le taux et l'intervalle sont cités");
+  assert.match(rapport, new RegExp(NOTE_PETIT_N));
+  assert.doesNotMatch(rapport, /too few to quote[^\n]*\| *$/m, "le rappel ne porte plus le refus général");
+  /* La recommandation tente le plancher : 6/6 au mieux, borne basse ~0,61 < 0,95 → l'absence
+     est nommée avec le plancher, jamais un pis-aller. */
+  assert.match(rapport, /No cell holds a recall lower bound of 0\.95/);
 });
