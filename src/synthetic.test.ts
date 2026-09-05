@@ -83,6 +83,46 @@ test("l'alternance de romanisation remplace UNE occurrence documentée, casse su
     "aucune paire applicable : la nature passe son tour");
 });
 
+test("au parNom par défaut, la sélection s'étale : les familles de queue ne sont pas mortes", () => {
+  /*
+   * LA TROUVAILLE DE LA RELECTURE CROISÉE : l'ancienne sélection prenait le PRÉFIXE des
+   * natures — sur 200 vrais noms OFAC, zéro no-diacritics, zéro translittération au
+   * parNom par défaut, pendant que la doc promettait chaque famille. Ce cas épingle les
+   * deux directions : le préfixe n'est plus systématique, et l'agrégat exerce la queue.
+   */
+  const noms = ["José GARCÍA", "Mukhammed ALIYEV", "François MÜLLER", "Khalid HADDAD",
+    "Ivan PETROV", "Nadia OKONKWO", "Piotr NOVAK", "Sofia ROSSI"];
+  const jeu = jeuSynthetique(noms, 20260905, 6);
+  const naturesDuJeu = new Set(jeu.map((c) => c.nature));
+  /* Les familles LARGEMENT applicables doivent sortir dans l'agrégat au défaut. La plus
+     rare (alt-transliteration : deux noms sur huit la portent) se teste à part, sur des
+     graines fixes — exiger la plus rare dans un petit jeu testerait ma chance, pas la
+     propriété. */
+  for (const attendue of ["no-diacritics", "doubled-letter", "undoubled-letter"] as const) {
+    assert.ok(naturesDuJeu.has(attendue),
+      `la famille « ${attendue} » n'apparaît pas dans un jeu de ${jeu.length} cas où elle s'applique — la sélection est redevenue un préfixe`);
+  }
+  const graines2 = [1, 2, 3, 4, 5, 6, 7, 8];
+  assert.ok(graines2.some((g) => variantes("Mukhammed ALIYEV", g, 6).some((v) => v.nature === "alt-transliteration")),
+    "huit graines sur un nom à deux alternances (kh, iy) et jamais d'alt-transliteration retenue");
+  /* Et sur UN nom riche, la sélection de 6 parmi 9 applicables n'est pas toujours les six
+     premières : au moins une graine d'un petit jeu fixe doit retenir une nature de queue. */
+  const PREFIXE = new Set(["substitution", "omission", "insertion", "transposition", "reversed-order", "initial"]);
+  const graines = [1, 2, 3, 4, 5, 6, 7, 8];
+  assert.ok(graines.some((g) => variantes("José Müller Haddad", g, 6).some((v) => !PREFIXE.has(v.nature))),
+    "huit graines de suite ne retiennent que le préfixe : l'étalement ne fonctionne pas");
+});
+
+test("l'insertion peut tomber en fin de nom", () => {
+  /* Micro de la relecture : les positions de lettres seules interdisaient la dernière
+     place. Sur « A », les positions sont maintenant 0 et 1 : sur un petit jeu de graines
+     fixes, une insertion doit finir APRÈS le A. */
+  const graines = Array.from({ length: 12 }, (_, i) => i + 1);
+  const enFin = graines.some((g) =>
+    variantes("A", g, 20).some((v) => v.nature === "insertion" && v.variante[0] === "A"));
+  assert.ok(enFin, "douze graines et aucune insertion après la dernière lettre : la fin du nom reste interdite");
+});
+
 test("le jeu synthétique est stable sous retrait d'une entrée, et chaque cas porte son étiquette", () => {
   const avant = jeuSynthetique(["Ivan PETROV", "ANGLO-CARIBBEAN CO."], 20260905, 4);
   const apres = jeuSynthetique(["Ivan PETROV"], 20260905, 4);
