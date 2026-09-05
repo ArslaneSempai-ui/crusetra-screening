@@ -53,6 +53,7 @@ with `npm run verify`.
 
 <!-- figures:tests -->
 **103 tests** across 11 files, counted from the sources rather than typed here.
+**104 tests** across 11 files, counted from the sources rather than typed here.
 <!-- /figures:tests -->
 
 ## Licence

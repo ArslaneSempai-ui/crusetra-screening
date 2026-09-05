@@ -100,6 +100,20 @@ test("rappel et fausses alertes se comptent sur les bonnes populations, au bon s
   assert.equal(c55.pourMille, undefined, "sans volume, la colonne n'existe pas — jamais estimée");
 });
 
+test("un score juste sous un seuil ne tire pas à ce seuil : rien n'arrondit avant la comparaison", () => {
+  /* La couture R1 garantit qu'un nom identique à lui-même rend EXACTEMENT 1 ; le pendant,
+     côté mesure, est qu'un 0,99996 ne devienne jamais 1,00 par arrondi — sinon la cellule
+     du seuil 1,00 compterait des paires que le matcher n'a pas déclarées identiques. */
+  const lignes = ["alert_id,screened_name,list_name,list_source,disposition"];
+  lignes.push("m-0,a,b|0.99996,OFAC,match");
+  for (let i = 0; i < 29; i++) lignes.push(`f-${i},c,d|0.4,EU,false_positive`);
+  const { alertes } = lireAlertes(lignes.join("\n") + "\n");
+  const m = mesurer(alertes, registreFactice(["exact"]), "x.csv", "0".repeat(64), null);
+  const c100 = m.paliers.exact!.cellules.find((c) => c.seuil === 1.00)!;
+  assert.equal(c100.tirees, 0, "0,99996 ne tire pas au seuil 1,00");
+  assert.equal(m.verdicts["m-0"]!.scores.exact, 0.99996, "et le relevé porte le score brut, rejouable");
+});
+
 test("le volume fourni rend les alertes pour mille ; les paliers du contrat absents sont dits", () => {
   const { alertes } = lireAlertes(csvValide());
   const m = mesurer(alertes, registreFactice(["exact"]), "x.csv", "0".repeat(64), { origine: "volume", n: 10_000 });

@@ -245,10 +245,13 @@ export function mesurer(
   const presents = [...registre.values()].sort((a, b) => a.rang - b.rang);
   for (const m of presents) {
     /* Le score d'une paire se calcule UNE fois, puis chaque seuil n'est qu'une comparaison :
-       51 seuils ne coûtent pas 51 mesures. Arrondi au dix-millième pour que le relevé soit
-       stable d'une machine à l'autre. */
+       51 seuils ne coûtent pas 51 mesures. Le score voyage BRUT jusqu'au relevé : un arrondi
+       avant la comparaison ferait tirer au seuil 1,00 un score de 0,99996 — et le registre
+       garantit le déterminisme, donc le flottant exact est déjà stable d'une machine à
+       l'autre. Les noms partent bruts aussi : chaque matcher normalise lui-même, et une
+       double normalisation fausserait `exact` sans un mot (couture R1, 5/09 au soir). */
     const scores = new Map<string, number>(
-      alertes.map((a) => [a.id, Math.round(m.score(a.nomFiltre, a.entreeListe) * 10_000) / 10_000]));
+      alertes.map((a) => [a.id, m.score(a.nomFiltre, a.entreeListe)]));
     for (const a of alertes) verdicts[a.id]!.scores[m.id] = scores.get(a.id)!;
 
     const cellules: Cellule[] = SEUILS.map((seuil) => {
