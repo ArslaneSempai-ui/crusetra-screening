@@ -59,9 +59,16 @@ const DOSSIER = fileURLToPath(new URL("..", import.meta.url));
 const DONNEES = join(DOSSIER, "data", "listes");
 export const MANIFESTE = join(DOSSIER, "listes-manifest.json");
 
-/* Le jeton générique historique de la Commission — celui que son RSS public annonce.
-   Un jeton personnel EU Login le remplace par CASCADE_EU_TOKEN. */
-const JETON_UE = process.env.CASCADE_EU_TOKEN ?? "dG9rZW4tMjAxNw";
+/*
+ * CE N'EST PAS UN SECRET, ET LA CONSTANTE LE DIT DANS SON NOM. « dG9rZW4tMjAxNw » est le
+ * jeton GÉNÉRIQUE que la Commission publie elle-même : son flux RSS public
+ * (https://webgate.ec.europa.eu/fsd/fsf/public/rss) l'écrit dans chaque lien de fichier.
+ * Un scanner de secrets — ou un acheteur qui lit — verra une chaîne en dur ; cette ligne
+ * existe pour qu'il lise aussi d'où elle vient. Un jeton personnel EU Login la remplace
+ * par CASCADE_EU_TOKEN.
+ */
+const JETON_UE_GENERIQUE_PUBLIC = "dG9rZW4tMjAxNw";
+const JETON_UE = process.env.CASCADE_EU_TOKEN ?? JETON_UE_GENERIQUE_PUBLIC;
 
 export const SOURCES: SourceListe[] = [
   {

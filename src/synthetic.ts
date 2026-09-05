@@ -44,6 +44,8 @@ import { translitterer } from "./matchers/translitteration.ts";
 export const PAIRES_ALTERNATIVES: readonly [string, string][] = [
   ["kh", "h"], ["zh", "j"], ["ts", "c"], ["tch", "ch"], ["dj", "j"],
   ["q", "k"], ["gh", "g"], ["off", "ov"], ["iy", "y"], ["oo", "u"], ["ee", "i"],
+  /* ‑ий romanisé ii (table de R1) contre le ‑y usuel : Dmitrii / Dmitry. */
+  ["ii", "y"],
 ];
 
 /** Le générateur : même forme que cascade-routing (`draw`), graine explicite. */
@@ -73,6 +75,12 @@ export const NATURES = [
 export type Nature = (typeof NATURES)[number];
 
 export type Variante = { variante: string; nature: Nature };
+
+/** Les natures qui ne s'appliquent que parce que le nom PORTE le trait — garanties quand
+ *  elles s'appliquent, avant que les génériques ne remplissent (arbitrage du 5 septembre). */
+export const PRIORITAIRES: readonly Nature[] = [
+  "no-diacritics", "transliterated", "alt-transliteration", "undoubled-letter",
+];
 
 /* Les positions candidates d'une nature dans un nom donné. Une nature qui ne s'applique
    pas (pas de diacritique, un seul jeton, pas de double lettre) ne rend RIEN : mieux
@@ -106,7 +114,9 @@ function candidates(nom: string, nature: Nature, r: () => number): string | unde
       return nom.slice(0, i) + nom.slice(i + 1);
     }
     case "insertion": {
-      const i = prendre(lettres);
+      /* L'insertion peut tomber APRÈS la dernière lettre — relecture croisée : les seules
+         positions de lettres interdisaient structurellement la fin du nom. */
+      const i = prendre([...lettres, nom.length]);
       if (i === undefined) return undefined;
       const c = LETTRES[Math.floor(r() * LETTRES.length)]!;
       return nom.slice(0, i) + c + nom.slice(i);
@@ -135,6 +145,10 @@ function candidates(nom: string, nature: Nature, r: () => number): string | unde
       return copie.join(" ");
     }
     case "no-diacritics": {
+      /* L'ÉTIQUETTE NE VAUT QUE POUR L'ÉCRITURE LATINE. Sur du cyrillique, ôter les marques
+         NFD transforme й en и — une AUTRE lettre, pas un diacritique perdu : la variante
+         serait réelle mais son étiquette mentirait, et la romanisation la couvre déjà. */
+      if (!/\p{Script=Latin}/u.test(nom)) return undefined;
       const nu = nom.normalize("NFD").replace(/\p{M}/gu, "").normalize("NFC");
       return nu === nom ? undefined : nu;
     }
@@ -159,14 +173,23 @@ function candidates(nom: string, nature: Nature, r: () => number): string | unde
       return v === bas ? undefined : v;
     }
     case "alt-transliteration": {
-      const bas = nom.toLowerCase();
+      /* SUR UN NOM NON LATIN, L'ALTERNANCE VIT DANS LA ROMANISATION, PAS DANS L'ORIGINAL —
+         arbitrage du Chef sur « Дмитрий Иванов » : les paires latines (kh, iy…) n'existent
+         pas dans du cyrillique. On translittère d'abord (dmitriy ivanov), on alterne ensuite
+         (dmitry ivanov) : c'est la variante qu'un système de filtrage rencontre vraiment. */
+      const basOrig = nom.toLowerCase();
+      const bas = translitterer(basOrig);
       const applicables = PAIRES_ALTERNATIVES.flatMap(([de, vers]) =>
         bas.includes(de) ? [[de, vers] as const] : []);
       const paire = prendre(applicables);
       if (paire === undefined) return undefined;
+      const i = bas.indexOf(paire[0]);
+      if (bas !== basOrig) {
+        /* Le point de départ est la romanisation (minuscule) : on alterne dedans. */
+        return bas.slice(0, i) + paire[1] + bas.slice(i + paire[0].length);
+      }
       /* UNE occurrence remplacée — l'unité de déformation, comme pour les typos — et la
          casse du point de remplacement suit celle du nom : MUKHAMMED → MUHAMMED, pas MUhAMMED. */
-      const i = bas.indexOf(paire[0]);
       const majuscule = nom[i]! !== nom[i]!.toLowerCase();
       return nom.slice(0, i) + (majuscule ? paire[1].toUpperCase() : paire[1]) + nom.slice(i + paire[0].length);
     }
@@ -176,11 +199,24 @@ function candidates(nom: string, nature: Nature, r: () => number): string | unde
 /**
  * `n` variantes d'un nom, déterministes à graine donnée, chacune étiquetée.
  *
- * Les natures tournent en cycle pour que chaque famille soit représentée avant qu'une
- * revienne ; une nature inapplicable passe son tour EN LE DISANT par son absence — le
- * compte rendu est `variantes.length`, jamais complété en silence par des doublons.
- * Aucune variante n'est vide, aucune n'est égale au nom d'origine, aucune n'apparaît
- * deux fois.
+ * ─── LA SÉLECTION S'ÉTALE SUR LES NATURES APPLICABLES, PAS SUR LE PRÉFIXE ───
+ *
+ * La première version prenait les natures dans l'ordre écrit : pour tout nom ordinaire les
+ * six premières s'appliquent toujours, donc no-diacritics, doubled/undoubled-letter,
+ * transliterated et alt-transliteration ne sortaient JAMAIS au parNom par défaut — mesuré
+ * par la relecture croisée sur 200 vrais noms OFAC : zéro des cinq familles de queue, et
+ * la doc au-dessus promettait le contraire. Cinq familles structurellement mortes au
+ * défaut, pendant qu'un rapport attribue « diacritiques ôtées, translittérations » au jeu
+ * synthétique.
+ *
+ * Désormais : un premier passage relève UNE candidate par nature APPLICABLE ; s'il y en a
+ * plus que n, les natures LIÉES AU TRAIT (`PRIORITAIRES` — elles ne s'appliquent que parce
+ * que ce nom porte diacritiques, écriture non latine, alternance ou lettre double) entrent
+ * d'office, puis un Fisher-Yates au générateur étale les génériques sur les places
+ * restantes — déterministe, ordre de sortie par nature. Les tours suivants ne servent qu'à
+ * compléter si moins de natures s'appliquent que n. Une nature inapplicable passe son tour
+ * EN LE DISANT par son absence — le compte rendu est `variantes.length`, jamais complété
+ * en silence. Aucune variante vide, égale au nom, ou en double.
  */
 export function variantes(nom: string, graine: number, n: number): Variante[] {
   if (nom.trim().length === 0) {
@@ -188,10 +224,42 @@ export function variantes(nom: string, graine: number, n: number): Variante[] {
   }
   const r = tirage(graine);
   const vues = new Set<string>([nom]);
-  const resultat: Variante[] = [];
-  /* Deux tours complets des natures suffisent largement à n raisonnable ; on borne pour
+
+  const premierPassage: Variante[] = [];
+  for (const nature of NATURES) {
+    const v = candidates(nom, nature, r);
+    if (v === undefined || v.length === 0 || vues.has(v)) continue;
+    vues.add(v);
+    premierPassage.push({ variante: v, nature });
+  }
+  /*
+   * ─── ARBITRAGE : LES NATURES LIÉES AU TRAIT DU NOM PASSENT D'ABORD ───
+   *
+   * Un nom avec diacritiques REÇOIT sa variante sans diacritiques ; un nom cyrillique SA
+   * translittération et une alternative — ce sont les natures qui ne s'appliquent que
+   * parce que CE nom porte le trait, donc les plus informatives pour lui. Les natures
+   * génériques (applicables à n'importe quel nom) remplissent le reste par tirage étalé.
+   */
+  let resultat: Variante[];
+  if (premierPassage.length > n) {
+    const prioritaires = premierPassage.filter((v) => PRIORITAIRES.includes(v.nature)).slice(0, n);
+    const restantes = premierPassage.filter((v) => !PRIORITAIRES.includes(v.nature));
+    const places = n - prioritaires.length;
+    const indices = [...restantes.keys()];
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(r() * (i + 1));
+      [indices[i], indices[j]] = [indices[j]!, indices[i]!];
+    }
+    const remplissage = indices.slice(0, places).sort((a, b) => a - b).map((i) => restantes[i]!);
+    resultat = [...prioritaires, ...remplissage]
+      .sort((a, b) => NATURES.indexOf(a.nature) - NATURES.indexOf(b.nature));
+  } else {
+    resultat = premierPassage;
+  }
+
+  /* Compléter jusqu'à n quand moins de natures s'appliquent que demandé — borné, pour
      qu'un nom à une lettre ne fasse pas tourner une boucle sans issue. */
-  for (let tour = 0; tour < 8 && resultat.length < n; tour++) {
+  for (let tour = 0; tour < 7 && resultat.length < n; tour++) {
     for (const nature of NATURES) {
       if (resultat.length >= n) break;
       const v = candidates(nom, nature, r);
