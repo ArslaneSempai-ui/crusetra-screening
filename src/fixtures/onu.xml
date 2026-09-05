@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Invented test fixture in the UN consolidated list format: every name, number and date below is made up and designates no one. It is not an excerpt of the UN list. -->
+<CONSOLIDATED_LIST xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dateGenerated="2026-09-04T23:00:03.461Z">
+  <INDIVIDUALS>
+    <INDIVIDUAL>
+      <DATAID>9900001</DATAID>
+      <LISTED_ON>2012-12-31</LISTED_ON>
+      <VERSIONNUM>1</VERSIONNUM>
+      <FIRST_NAME>TESTPERSON</FIRST_NAME>
+      <SECOND_NAME>ALPHA</SECOND_NAME>
+      <UN_LIST_TYPE>DRC</UN_LIST_TYPE>
+      <REFERENCE_NUMBER>XXi.900</REFERENCE_NUMBER>
+      <INDIVIDUAL_ALIAS>
+        <QUALITY/>
+        <ALIAS_NAME/>
+      </INDIVIDUAL_ALIAS>
+      <INDIVIDUAL_ALIAS>
+        <QUALITY>Good</QUALITY>
+        <ALIAS_NAME>ALPHA TESTPERSON</ALIAS_NAME>
+      </INDIVIDUAL_ALIAS>
+    </INDIVIDUAL>
+    <INDIVIDUAL>
+      <DATAID>9900002</DATAID>
+      <FIRST_NAME>SAMPLE</FIRST_NAME>
+      <SECOND_NAME>BRAVO</SECOND_NAME>
+      <THIRD_NAME>CHARLIE</THIRD_NAME>
+      <FOURTH_NAME>DELTA</FOURTH_NAME>
+      <UN_LIST_TYPE>Al-Qaida</UN_LIST_TYPE>
+    </INDIVIDUAL>
+  </INDIVIDUALS>
+  <ENTITIES>
+    <ENTITY>
+      <DATAID>9900003</DATAID>
+      <VERSIONNUM>1</VERSIONNUM>
+      <FIRST_NAME>EXAMPLE FICTIONAL FRONT</FIRST_NAME>
+      <UN_LIST_TYPE>DRC</UN_LIST_TYPE>
+      <ENTITY_ALIAS>
+        <QUALITY>a.k.a.</QUALITY>
+        <ALIAS_NAME>Example Fictional Front</ALIAS_NAME>
+      </ENTITY_ALIAS>
+    </ENTITY>
+  </ENTITIES>
+</CONSOLIDATED_LIST>
