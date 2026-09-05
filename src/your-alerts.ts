@@ -139,8 +139,14 @@ export function lireAlertes(texte: string): { alertes: Alerte[]; avertissements:
   });
   const doublons = [...parId.entries()].filter(([, lignes]) => lignes.length > 1);
   if (doublons.length > 0) {
+    /* Les lignes d'un MÊME id se tronquent aussi : un export où l'id est constant porte
+       toutes ses lignes sous un seul doublon, et un refus qui inonde le terminal se fait
+       ignorer — relecture croisée de Mesure, 5/09 au soir. */
+    const lignesDe = (lignes: number[]) => lignes.length <= 8
+      ? lignes.join(", ")
+      : `${lignes.slice(0, 8).join(", ")}, and ${lignes.length - 8} more`;
     const montre = doublons.slice(0, 6)
-      .map(([id, lignes]) => `"${id}" (rows ${lignes.join(", ")})`).join("; ");
+      .map(([id, lignes]) => `"${id}" (rows ${lignesDe(lignes)})`).join("; ");
     throw new Error(
       `duplicate alert_id(s): ${montre}.\n`
       + `  One row is one alert: a duplicate would count the same alert twice in a rate\n`

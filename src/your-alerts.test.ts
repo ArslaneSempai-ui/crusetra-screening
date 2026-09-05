@@ -87,6 +87,15 @@ test("un alert_id dupliqué est refusé en nommant l'id et les lignes ; un id vi
   assert.throws(() => lireAlertes(ENTETE + "\n,a,b,OFAC,match\n"), /empty alert_id: line\(s\) 2/);
 });
 
+test("un id constant sur tout l'export ne fait pas un refus de trente et une lignes", () => {
+  const lignes = [ENTETE];
+  for (let i = 0; i < 31; i++) lignes.push(`toujours-7,a,b,OFAC,match`);
+  assert.throws(() => lireAlertes(lignes.join("\n") + "\n"), (e: Error) => {
+    assert.match(e.message, /rows 2, 3, 4, 5, 6, 7, 8, 9, and 23 more/, "huit lignes montrées, le reste compté");
+    return true;
+  });
+});
+
 test("moins de trente lignes : refusé, avec le compte et la raison", () => {
   const csv = ENTETE + "\n" + Array.from({ length: 5 }, (_, i) => `${i},a,b,OFAC,match`).join("\n") + "\n";
   assert.throws(() => lireAlertes(csv), (e: Error) => {
@@ -215,6 +224,26 @@ test("moins de cinq match : la phrase du contrat, aucun rappel cité, le synthé
   assert.match(rapport, /Synthetic robustness, kept apart/);
   assert.doesNotMatch(rapport, /\d+\.\d % \[\d+–\d+\][^\n]*recall/i,
     "aucun pourcentage de rappel intervalle compris ne doit apparaître sous cinq match");
+});
+
+test("les trois zones du rappel : 4 pas cité, 6 cité avec la note, 25 cité sans elle", () => {
+  /* Le test que l'arbitrage exige, les trois régimes côte à côte sur le MÊME rendu. */
+  const rendu = (nMatch: number): string => {
+    const lignes = [ENTETE];
+    for (let i = 0; i < nMatch; i++) lignes.push(`m-${i},a,b|0.9,OFAC,match`);
+    for (let i = 0; i < 30; i++) lignes.push(`f-${i},c,d|0.4,EU,false_positive`);
+    const { alertes } = lireAlertes(lignes.join("\n") + "\n");
+    return rendreRapport(mesurer(alertes, registreFactice(["exact"]), "x.csv", "0".repeat(64), null));
+  };
+  const r4 = rendu(4);
+  assert.match(r4, new RegExp(TROP_PEU_DE_MATCHES), "4 match : la phrase du contrat");
+  assert.doesNotMatch(r4, /\d+\.\d % \| \[\d+–\d+\] \| [^|]*\| \[/, "et aucun rappel chiffré");
+  const r6 = rendu(6);
+  assert.match(r6, /100\.0 % \| \[61–100\]/, "6 match : cité avec l'intervalle");
+  assert.match(r6, new RegExp(NOTE_PETIT_N), "et la note sous la table");
+  const r25 = rendu(25);
+  assert.match(r25, /100\.0 % \| \[87–100\]/, "25 match : cité");
+  assert.doesNotMatch(r25, new RegExp(NOTE_PETIT_N), "sans la note : n est au régime général");
 });
 
 test("six match : le rappel EST cité avec son intervalle, et la note du contrat suit la table", () => {
