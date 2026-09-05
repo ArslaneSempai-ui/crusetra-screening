@@ -13,8 +13,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { validerPaires, mesurerPaires, mesurePublique, rapportMd, exigerDroitDEcraser,
-  ASSEZ_PAR_VERDICT, SEUILS_MONTRES, type JeuDePaires, type PaireEtiquetee } from "./measure.ts";
+import { validerPaires, mesurerPaires, mesurePublique, rapportMd, exigerDroitDEcraser, mesurerSynthetique,
+  ASSEZ_PAR_VERDICT, SEUILS_MONTRES, type JeuDePaires, type PaireEtiquetee, type ModuleSynthetique } from "./measure.ts";
 import { SEUILS, type Matcher, type PalierId, type Registre } from "./matcher.ts";
 import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
 
@@ -128,8 +128,20 @@ test("le palier absent est NOMMÉ — dans le relevé et dans la page — au lie
   const md = rapportMd(m);
   assert.match(md, /Not in tonight's registry: `embed`/,
     "la page ne dit pas l'absent : un lecteur croirait la colonne complète");
-  assert.match(md, /NOT measured/,
-    "la moitié synthétique absente doit être un constat écrit, pas une section muette");
+  /* La moitié synthétique a DEUX états légitimes, et la page doit dire lequel : absente
+     (synthetic.ts pas dans l'arbre) → le constat écrit, jamais une section muette ;
+     présente → la section déclarée avec ses comptes. Écrit pour l'état absent le soir du
+     5 septembre ; l'intégration a apporté synthetic.ts et ce cas a rougi sur un état
+     désormais vrai. */
+  if ("absent" in m.synthetic) {
+    assert.match(md, /NOT measured/,
+      "la moitié synthétique absente doit être un constat écrit, pas une section muette");
+  } else {
+    assert.match(md, /## Synthetic variants \(declared\)/,
+      "la moitié synthétique mesurée doit avoir sa section, déclarée comme telle");
+    assert.match(md, new RegExp(`${m.synthetic.nMatch} match, ${m.synthetic.nDifferent} different`),
+      "la section synthétique doit porter ses comptes, pas seulement des tables");
+  }
   /* Les colonnes montrées existent toutes dans la grille : une colonne annoncée qui
      manquerait rendrait `undefined` en cellule. */
   for (const s of SEUILS_MONTRES) assert.ok(SEUILS.includes(s), `${s} montré mais hors grille`);
@@ -171,4 +183,40 @@ test("la COMMANDE refuse au point d'appel : relevé publié présent, sortie 1, 
   assert.doesNotMatch(r.stderr, /at .*measure\.ts/, "une pile se lit comme un plantage, pas un refus");
   assert.equal(readFileSync(join(RACINE, "releve-public.json"), "utf8"), avant,
     "le refus a quand même écrit : le relevé publié a bougé sur une commande relancée par accident");
+});
+
+test("la couture synthétique tient la signature ANNONCÉE du lot des listes, moins-que-n compris", async () => {
+  /*
+   * Le module est FACTICE mais sa signature est celle du message de livraison de R2 — objets
+   * { nom_liste, variante, nature }, et MOINS d'entrées que demandé pour l'un des noms (une
+   * nature inapplicable passe son tour). La première version de cette couture attendait des
+   * chaînes nues : au jour de la fusion, la commande aurait PLANTÉ au lieu de composer.
+   * Ce témoin code contre le contrat annoncé pour que la fusion soit un non-événement.
+   */
+  const factice: ModuleSynthetique = {
+    jeuSynthetique: (noms) => noms.flatMap((n, i) =>
+      i === 0
+        ? [{ nom_liste: n, variante: n.toUpperCase(), nature: "transliterated" }]
+        : [{ nom_liste: n, variante: n + "x", nature: "substitution" },
+           { nom_liste: n, variante: n.split("").reverse().join(""), nature: "reversed-order" }]),
+  };
+  const paires: PaireEtiquetee[] = [
+    { a: "anna", b: "-", verdict: "match", nature: "t" },
+    { a: "boris", b: "-", verdict: "match", nature: "t" },
+    { a: "x", b: "y", verdict: "different", nature: "t" },
+  ];
+  const r: Registre = new Map<PalierId, Matcher>([["exact", {
+    id: "exact", description: "t", rang: 1, score: (a, b) => (a === b ? 1 : 0),
+  }]]);
+  const m = await mesurerSynthetique(r, paires, async () => factice);
+  assert.ok(!("absent" in m), "le module est là : la moitié doit être mesurée");
+  if ("absent" in m) return;
+  /* 3 entrées rendues (1 + 2, pas 2 + 2) → 3 positifs et 3 négatifs : on lit ce qui vient. */
+  assert.deepEqual([m.nMatch, m.nDifferent], [3, 3]);
+  /* Le négatif est bien la variante d'un AUTRE nom — dur par construction. */
+  assert.ok(Object.keys(m.tables).includes("exact"));
+
+  /* L'ABSENT reste l'absent : le chargeur qui échoue rend la phrase, pas un zéro. */
+  const absent = await mesurerSynthetique(r, paires, async () => { throw new Error("pas là"); });
+  assert.ok("absent" in absent && /NOT measured/.test(absent.absent));
 });
