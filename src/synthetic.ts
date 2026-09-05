@@ -106,7 +106,9 @@ function candidates(nom: string, nature: Nature, r: () => number): string | unde
       return nom.slice(0, i) + nom.slice(i + 1);
     }
     case "insertion": {
-      const i = prendre(lettres);
+      /* L'insertion peut tomber APRÈS la dernière lettre — relecture croisée : les seules
+         positions de lettres interdisaient structurellement la fin du nom. */
+      const i = prendre([...lettres, nom.length]);
       if (i === undefined) return undefined;
       const c = LETTRES[Math.floor(r() * LETTRES.length)]!;
       return nom.slice(0, i) + c + nom.slice(i);
@@ -176,11 +178,22 @@ function candidates(nom: string, nature: Nature, r: () => number): string | unde
 /**
  * `n` variantes d'un nom, déterministes à graine donnée, chacune étiquetée.
  *
- * Les natures tournent en cycle pour que chaque famille soit représentée avant qu'une
- * revienne ; une nature inapplicable passe son tour EN LE DISANT par son absence — le
- * compte rendu est `variantes.length`, jamais complété en silence par des doublons.
- * Aucune variante n'est vide, aucune n'est égale au nom d'origine, aucune n'apparaît
- * deux fois.
+ * ─── LA SÉLECTION S'ÉTALE SUR LES NATURES APPLICABLES, PAS SUR LE PRÉFIXE ───
+ *
+ * La première version prenait les natures dans l'ordre écrit : pour tout nom ordinaire les
+ * six premières s'appliquent toujours, donc no-diacritics, doubled/undoubled-letter,
+ * transliterated et alt-transliteration ne sortaient JAMAIS au parNom par défaut — mesuré
+ * par la relecture croisée sur 200 vrais noms OFAC : zéro des cinq familles de queue, et
+ * la doc au-dessus promettait le contraire. Cinq familles structurellement mortes au
+ * défaut, pendant qu'un rapport attribue « diacritiques ôtées, translittérations » au jeu
+ * synthétique.
+ *
+ * Désormais : un premier passage relève UNE candidate par nature APPLICABLE ; s'il y en a
+ * plus que n, un mélange de Fisher-Yates au générateur choisit n d'entre elles — étalé et
+ * déterministe — et l'ordre de sortie reste celui des natures. Les tours suivants ne
+ * servent qu'à compléter si moins de natures s'appliquent que n. Une nature inapplicable
+ * passe son tour EN LE DISANT par son absence — le compte rendu est `variantes.length`,
+ * jamais complété en silence. Aucune variante vide, égale au nom, ou en double.
  */
 export function variantes(nom: string, graine: number, n: number): Variante[] {
   if (nom.trim().length === 0) {
@@ -188,10 +201,29 @@ export function variantes(nom: string, graine: number, n: number): Variante[] {
   }
   const r = tirage(graine);
   const vues = new Set<string>([nom]);
-  const resultat: Variante[] = [];
-  /* Deux tours complets des natures suffisent largement à n raisonnable ; on borne pour
+
+  const premierPassage: Variante[] = [];
+  for (const nature of NATURES) {
+    const v = candidates(nom, nature, r);
+    if (v === undefined || v.length === 0 || vues.has(v)) continue;
+    vues.add(v);
+    premierPassage.push({ variante: v, nature });
+  }
+  let resultat: Variante[];
+  if (premierPassage.length > n) {
+    const indices = [...premierPassage.keys()];
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(r() * (i + 1));
+      [indices[i], indices[j]] = [indices[j]!, indices[i]!];
+    }
+    resultat = indices.slice(0, n).sort((a, b) => a - b).map((i) => premierPassage[i]!);
+  } else {
+    resultat = premierPassage;
+  }
+
+  /* Compléter jusqu'à n quand moins de natures s'appliquent que demandé — borné, pour
      qu'un nom à une lettre ne fasse pas tourner une boucle sans issue. */
-  for (let tour = 0; tour < 8 && resultat.length < n; tour++) {
+  for (let tour = 0; tour < 7 && resultat.length < n; tour++) {
     for (const nature of NATURES) {
       if (resultat.length >= n) break;
       const v = candidates(nom, nature, r);
