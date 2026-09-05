@@ -1,0 +1,56 @@
+<?xml version="1.0" standalone="yes"?>
+<sdnList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/XML">
+  <publshInformation>
+    <Publish_Date>09/04/2026</Publish_Date>
+    <Record_Count>3</Record_Count>
+  </publshInformation>
+  <sdnEntry>
+    <uid>36</uid>
+    <firstName>Ivan</firstName>
+    <lastName>PETROV</lastName>
+    <sdnType>Individual</sdnType>
+    <programList>
+      <program>UKRAINE-EO13662</program>
+      <program>RUSSIA-EO14024</program>
+    </programList>
+    <akaList>
+      <aka>
+        <uid>12</uid>
+        <type>a.k.a.</type>
+        <category>strong</category>
+        <firstName>Ivan</firstName>
+        <lastName>PETROFF</lastName>
+      </aka>
+    </akaList>
+  </sdnEntry>
+  <sdnEntry>
+    <uid>173</uid>
+    <lastName>ANGLO-CARIBBEAN CO. &amp; SONS, LTD.</lastName>
+    <sdnType>Entity</sdnType>
+    <programList>
+      <program>CUBA</program>
+    </programList>
+    <akaList>
+      <aka>
+        <uid>57</uid>
+        <type>a.k.a.</type>
+        <category>strong</category>
+        <lastName>AVIA IMPORT</lastName>
+      </aka>
+      <aka>
+        <uid>58</uid>
+        <type>f.k.a.</type>
+        <category>weak</category>
+        <lastName>ACC LTD</lastName>
+      </aka>
+    </akaList>
+  </sdnEntry>
+  <sdnEntry>
+    <uid>306</uid>
+    <lastName>MV HORIZON</lastName>
+    <sdnType>Vessel</sdnType>
+    <programList>
+      <program>SDGT</program>
+    </programList>
+  </sdnEntry>
+</sdnList>

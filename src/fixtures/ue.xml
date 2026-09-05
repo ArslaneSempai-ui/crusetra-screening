@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<export xmlns="http://eu.europa.ec/fpi/fsd/export" generationDate="2026-08-05T14:50:08">
+  <sanctionEntity designationDetails="" logicalId="13">
+    <regulation regulationType="regulation" organisationType="commission" publicationDate="2011-03-03" entryIntoForceDate="2011-03-03" numberTitle="270/2011 (OJ L58)" programme="EGY" logicalId="401"/>
+    <subjectType code="person" classificationCode="P"/>
+    <nameAlias firstName="Mohamed" middleName="" lastName="Hosni" wholeName="Mohamed Hosni Elsayed Mubarak" function="" title="" nameLanguage="EN" strong="true" regulationLanguage="en" logicalId="19"/>
+    <nameAlias firstName="" middleName="" lastName="" wholeName="Mohammed Hosny Mubarak" function="" title="" nameLanguage="" strong="false" regulationLanguage="en" logicalId="20"/>
+  </sanctionEntity>
+  <sanctionEntity designationDetails="" logicalId="742">
+    <regulation regulationType="regulation" organisationType="council" publicationDate="2014-07-31" entryIntoForceDate="2014-07-31" numberTitle="833/2014 (OJ L229)" programme="RUS" logicalId="902"/>
+    <subjectType code="enterprise" classificationCode="E"/>
+    <nameAlias firstName="" middleName="" lastName="" wholeName="JSC Concern &amp; Partners" function="" title="" nameLanguage="EN" strong="true" regulationLanguage="en" logicalId="903"/>
+  </sanctionEntity>
+</export>
