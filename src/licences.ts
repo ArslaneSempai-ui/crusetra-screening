@@ -265,7 +265,7 @@ ${indeterminees.length > 0
   : ""}
 
 ${sansFichier.length > 0
-  ? `### Declared, but shipping no licence file\n\n${sansFichier.map((p) => `\`${p.nom}@${p.version}\` (${p.declaree ?? "n/a"})`).join(" · ")}\n\nThe field says permissive, the package ships no text. This is not a legal risk: it is a missing item if a buyer asks for full attribution.`
+  ? `### Declared, but shipping no licence file\n\n${sansFichier.map((p) => `\`${p.nom}@${p.version}\` (${p.declaree ?? "n/a"})`).join(" · ")}\n\nThe field says permissive, the package ships no text. That is a missing item if a buyer asks for full attribution, not a legal risk.`
   : ""}
 
 ## This tool's own licence
