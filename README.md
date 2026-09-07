@@ -22,7 +22,7 @@ measures which extraction tier suffices per field. Same method, same seal, same 
 | `npm run test` | types, the README blocks, the licence inventory, and the suite. Start here; it runs with the network cut |
 | `npm run measure [-- --yes-overwrite]` | the public measure: every tier at every threshold on pairs we authored (hard negatives included) plus declared synthetic variants, sealed into `releve-public.json` and readable in `RELEVE-PUBLIC.md`: the record the catalogue requires, and it refuses to overwrite a sealed one without the flag |
 | `npm run measure:yours -- --alerts=<csv> [--screened=<csv> | --volume=N]` | your own alert history: recall and false-alert rate per matcher and threshold, with n and interval; a sealed record and a report beside your file, never a name |
-| `npm run optimise -- --from=<record> --recall=<min>` | the frontier: fewest alerts with the recall lower bound held, or `--alert-budget=<N>` for the highest bounded recall under a monthly alert budget |
+| `npm run optimise -- --from=<record> --recall=<min>` | the best trade-off: fewest alerts with the recall lower bound held, or `--alert-budget=<N>` for the highest bounded recall under a monthly alert budget |
 | `npm run sceller -- <record.json>` | seal a record: the fingerprint that makes a silently edited measurement fail loudly; the same fingerprint as cascade-routing |
 | `npm run verify -- <report>` | check that a report was issued by the holder of the suite's public key, `cle-publique.pem`, without asking us |
 | `npm run licences` | regenerate `LICENCES.md`, the licence of every shipped package; `--check` fails the suite when the table drifts |
@@ -36,15 +36,15 @@ Node 24 or newer, on **macOS or Linux**. Windows has not been tested and is not 
 
 Nothing, except one explicit download: `npm run listes -- --fetch` pulls the public lists
 (OFAC SDN, EU consolidated, UN). Every other command runs with the network cut:
-`CASCADE_OFFLINE=1` is honoured by the one module allowed to touch it, and a test walks the
-sources so that no second one appears (`src/frontiere.test.ts`).
+`CASCADE_OFFLINE=1` is honoured by the one module allowed to touch it, and a test reads every
+source so that no second one appears (`src/frontiere.test.ts`).
 
 ## What is measured, assumed, synthetic
 
 Every rate in a report carries its `n` and its 95 % Wilson interval. Analyst minutes per
 alert and analyst cost are **assumed** and declared. Perturbed variants of list entries are
 **synthetic**, measured apart, and never merged into a measured recall. Below five confirmed
-matches, no recall is quoted: the report says so.
+matches, no recall is quoted, and the report states why.
 
 ## Seals and signatures
 
