@@ -100,7 +100,7 @@ test("lireListe : manifeste absent, source indisponible, fichier changé — tro
   });
   /* Le fichier changé après le manifeste : filtrer contre lui certifierait n'importe quoi. */
   writeFileSync(join(racine, "data", "listes", "ofac.xml"), octets + " ");
-  assert.throws(() => lireListe("OFAC", racine), /does not match the manifest fingerprint/);
+  assert.throws(() => lireListe("OFAC", racine), /does not match the manifest content hash/);
 });
 
 test("CASCADE_OFFLINE=1 avec --fetch : refus code 2 qui nomme le drapeau ET l'issue, rien d'écrit", () => {

@@ -1,7 +1,7 @@
 /**
  * Les listes publiques : la SEULE porte réseau de cet outil, et elle ne fait que descendre.
  *
- *   npm run listes              what is on disk — date, fingerprint, counts; no network
+ *   npm run listes              what is on disk: date, content hash, counts; no network
  *   npm run listes -- --fetch   download the three public lists into data/listes/
  *
  * `frontiere.test.ts` nomme ce fichier comme l'unique autorisé à toucher le réseau, et
@@ -259,7 +259,7 @@ export function lireListe(source: EntreeListe["source"], racine: string = DOSSIE
   const brut = readFileSync(chemin);
   const sha = createHash("sha256").update(brut).digest("hex");
   if (sha !== ligne.sha256) {
-    throw new Error(`${source}: the file on disk does not match the manifest fingerprint\n`
+    throw new Error(`${source}: the file on disk does not match the manifest content hash\n`
       + `  (manifest ${ligne.sha256.slice(0, 12)}…, disk ${sha.slice(0, 12)}…).\n`
       + `  Screening against a list that is not the one recorded certifies nothing.\n`
       + `  → npm run listes -- --fetch   (downloads again and reseals the manifest)`);
@@ -360,7 +360,7 @@ async function principal(): Promise<void> {
     const chemin = join(DONNEES, `${l.source.toLowerCase()}.xml`);
     const etat = !existsSync(chemin) ? "file MISSING from data/ (not committed by design): fetch again"
       : createHash("sha256").update(readFileSync(chemin)).digest("hex") === l.sha256
-        ? "on disk, fingerprint matches" : "on disk but CHANGED since the manifest: fetch again";
+        ? "on disk, content hash matches" : "on disk but CHANGED since the manifest: fetch again";
     console.log(`  ${l.source.padEnd(5)} ${l.entrees.toLocaleString("en-GB")} entr(ies) · downloaded ${l.telechargeLe.slice(0, 10)} · ${etat}`);
   }
   console.log("");
