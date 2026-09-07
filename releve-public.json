@@ -1,7 +1,7 @@
 {
  "version": 1,
- "date": "2026-09-05",
- "commit": "e86a139",
+ "date": "2026-09-07",
+ "commit": "318916d",
  "paliers": {
   "presents": [
    "exact",
@@ -11493,5 +11493,5 @@
    }
   }
  },
- "empreinte": "74a18ebf30d05515"
+ "empreinte": "556bb39ec055a091"
 }
