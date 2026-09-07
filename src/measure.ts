@@ -71,7 +71,7 @@ export function validerPaires(jeu: JeuDePaires): PaireEtiquetee[] {
   const nDiff = paires.length - nMatch;
   if (nMatch < ASSEZ_PAR_VERDICT || nDiff < ASSEZ_PAR_VERDICT) {
     throw new Error(`${nMatch} match / ${nDiff} different pair(s): at least ${ASSEZ_PAR_VERDICT} of EACH.\n`
-      + `  Below that, a rate here bounds nothing — and the missing side is usually the hard\n`
+      + `  Below that, a rate here bounds nothing, and the missing side is usually the hard\n`
       + `  negatives, which are what the set is for.`);
   }
   return paires;
@@ -161,7 +161,7 @@ export async function mesurerSynthetique(
   try {
     ({ jeuSynthetique } = await charger());
   } catch {
-    return { provenance: "synthetic", absent: "synthetic.ts is not in the tree yet: this half is NOT measured, and this line is the record of that — not a clean zero." };
+    return { provenance: "synthetic", absent: "synthetic.ts is not in the tree yet: this half is NOT measured, and this line is the record of that, not a clean zero." };
   }
   const noms = [...new Set(paires.filter((x) => x.verdict === "match").map((x) => x.a))];
   const entrees = jeuSynthetique(noms, 1);
@@ -232,20 +232,20 @@ function tableMd(tables: Record<string, TableDUnPalier>, quoi: "rappel" | "fauxP
 
 export function rapportMd(m: MesurePublique): string {
   const l: string[] = [
-    `# Cascade Screening — the public measure`,
+    `# Cascade Screening: the public measure`,
     ``,
     `**Provenance**: pairs authored by this repository (no client data, no list data) plus`,
     `synthetic variants, measured APART and never merged. Commit \`${m.commit}\`, ${m.date}.`,
     `Sealed as \`releve-public.json\`; every rate below carries its n and its 95 % Wilson`,
-    `interval, and the FULL threshold grid (${SEUILS.length} steps) lives in the JSON — this`,
+    `interval, and the FULL threshold grid (${SEUILS.length} steps) lives in the JSON; this`,
     `page shows ${SEUILS_MONTRES.length} declared columns of it.`,
     ``,
     `Tiers measured: ${m.paliers.presents.map((p) => `\`${p}\``).join(", ")}.`
     + (m.paliers.absents.length
-      ? ` **Not in tonight's registry: ${m.paliers.absents.map((p) => `\`${p}\``).join(", ")}** — measured when it ships, absent rather than faked.`
+      ? ` **Not in tonight's registry: ${m.paliers.absents.map((p) => `\`${p}\``).join(", ")}**; measured when it ships, absent rather than faked.`
       : ""),
     ``,
-    `## Labelled pairs (authored) — ${m.authored.nMatch} match, ${m.authored.nDifferent} different`,
+    `## Labelled pairs (authored): ${m.authored.nMatch} match, ${m.authored.nDifferent} different`,
     ``,
     `The set's value is its hard negatives: siblings, partial homonyms, names one character`,
     `apart that are NOT the same person. Natures: ${Object.entries(m.authored.natures).map(([k, n]) => `${k} x${n}`).join(", ")}.`,
@@ -260,7 +260,7 @@ export function rapportMd(m: MesurePublique): string {
   if ("absent" in m.synthetic) {
     l.push(m.synthetic.absent);
   } else {
-    l.push(`${m.synthetic.nMatch} match, ${m.synthetic.nDifferent} different — generated, declared, never merged with the authored set.`,
+    l.push(`${m.synthetic.nMatch} match, ${m.synthetic.nDifferent} different: generated, declared, never merged with the authored set.`,
       ``, `### Recall`, ``, tableMd(m.synthetic.tables, "rappel"), ``,
       `### False positives`, ``, tableMd(m.synthetic.tables, "fauxPositifs"), ``);
   }
@@ -279,7 +279,7 @@ export function exigerDroitDEcraser(cheminJson: string, argv: readonly string[])
   if (!existsSync(cheminJson)) return;
   const existant = JSON.parse(readFileSync(cheminJson, "utf8")) as Record<string, unknown>;
   if (scelleIntact(existant) && !argv.includes("--yes-overwrite")) {
-    throw new Error(`releve-public.json exists, sealed and intact — it is the PUBLISHED record.\n`
+    throw new Error(`releve-public.json exists, sealed and intact: it is the PUBLISHED record.\n`
       + `  A published figure does not move because a command was re-run by accident.\n`
       + `  To remeasure and replace it, say so: npm run measure -- --yes-overwrite`);
   }
@@ -298,7 +298,7 @@ async function principal(): Promise<void> {
   console.log(`releve-public.json written and sealed (${m.empreinte}); RELEVE-PUBLIC.md alongside.`);
   console.log(`authored: ${m.authored.nMatch} match / ${m.authored.nDifferent} different. tiers: ${m.paliers.presents.join(", ")}`
     + (m.paliers.absents.length ? `. absent: ${m.paliers.absents.join(", ")}` : ""));
-  if ("absent" in m.synthetic) console.log(`synthetic: NOT measured — synthetic.ts absent.`);
+  if ("absent" in m.synthetic) console.log(`synthetic: NOT measured; synthetic.ts absent.`);
 }
 
 if (isMain(import.meta)) {

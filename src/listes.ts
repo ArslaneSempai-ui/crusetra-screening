@@ -199,7 +199,7 @@ export function analyser(format: SourceListe["format"], xml: string): EntreeList
   if (entrees.length === 0) {
     throw new Error(
       `the file does not look like ${format}: not one entry could be read from it.\n`
-      + `  Zero entries from a sanctions list is not a small list, it is the wrong format —\n`
+      + `  Zero entries from a sanctions list is not a small list, it is the wrong format:\n`
       + `  reporting an empty list here would scream "screen against nothing" downstream.`);
   }
   return entrees;
@@ -245,7 +245,7 @@ function ecrireManifeste(m: Manifeste): void {
  *  plus à son empreinte ne se filtre pas contre — il se retélécharge ou se répare. */
 export function lireListe(source: EntreeListe["source"], racine: string = DOSSIER): EntreeListe[] {
   const m = lireManifeste(racine);
-  if (!m) throw new Error(`no listes-manifest.json — run \`npm run listes -- --fetch\` first.`);
+  if (!m) throw new Error(`no listes-manifest.json: run \`npm run listes -- --fetch\` first.`);
   const ligne = m.listes.find((l) => l.source === source);
   if (!ligne) throw new Error(`the manifest does not know the source "${source}".`);
   if (!ligne.disponible) {
@@ -326,7 +326,7 @@ async function principal(): Promise<void> {
   }
 
   if (veutFetch) {
-    console.log(`\nFetching the three public lists — the list comes down, nothing goes up.\n`);
+    console.log(`\nFetching the three public lists: the list comes down, nothing goes up.\n`);
     const lignes: LigneManifeste[] = [];
     for (const s of SOURCES) {
       const l = await telecharger(s);
@@ -336,11 +336,11 @@ async function principal(): Promise<void> {
           + `${(l.octets / 1_048_576).toFixed(1)} MiB · sha256 ${l.sha256.slice(0, 12)}…`
           + (l.avertissement ? `\n        ⚠ ${l.avertissement}` : ""));
       } else {
-        console.log(`  ${s.source.padEnd(5)} UNAVAILABLE — ${l.erreur}\n        → ${l.issue}`);
+        console.log(`  ${s.source.padEnd(5)} UNAVAILABLE: ${l.erreur}\n        → ${l.issue}`);
       }
     }
     ecrireManifeste({ version: 1, genereLe: new Date().toISOString(), listes: lignes });
-    console.log(`\nManifest written to listes-manifest.json — commit it; data/ stays out of git.\n`);
+    console.log(`\nManifest written to listes-manifest.json: commit it; data/ stays out of git.\n`);
     process.exit(lignes.some((l) => l.disponible) ? 0 : 1);
   }
 
@@ -354,13 +354,13 @@ async function principal(): Promise<void> {
   console.log(`\nPublic lists on this machine (manifest of ${m.genereLe.slice(0, 10)}; no network touched):\n`);
   for (const l of m.listes) {
     if (!l.disponible) {
-      console.log(`  ${l.source.padEnd(5)} UNAVAILABLE (checked ${l.verifieLe.slice(0, 10)}) — ${l.erreur}\n        → ${l.issue}`);
+      console.log(`  ${l.source.padEnd(5)} UNAVAILABLE (checked ${l.verifieLe.slice(0, 10)}): ${l.erreur}\n        → ${l.issue}`);
       continue;
     }
     const chemin = join(DONNEES, `${l.source.toLowerCase()}.xml`);
-    const etat = !existsSync(chemin) ? "file MISSING from data/ (not committed by design) — fetch again"
+    const etat = !existsSync(chemin) ? "file MISSING from data/ (not committed by design): fetch again"
       : createHash("sha256").update(readFileSync(chemin)).digest("hex") === l.sha256
-        ? "on disk, fingerprint matches" : "on disk but CHANGED since the manifest — fetch again";
+        ? "on disk, fingerprint matches" : "on disk but CHANGED since the manifest: fetch again";
     console.log(`  ${l.source.padEnd(5)} ${l.entrees.toLocaleString("en-GB")} entr(ies) · downloaded ${l.telechargeLe.slice(0, 10)} · ${etat}`);
   }
   console.log("");

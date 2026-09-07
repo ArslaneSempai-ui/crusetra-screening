@@ -99,7 +99,7 @@ test("les couches partagées sont bien celles d'identite (dépôt exclu : recopi
     .map((x) => (x.endsWith("/") ? x : x + "/"))
     .find((x) => existsSync(x + "interval.ts"));
   if (!source) {
-    return t.skip("dépôt cloné seul — identite n'est pas là, aucune couche n'a été comparée.\n"
+    return t.skip("dépôt cloné seul : identite n'est pas là, aucune couche n'a été comparée.\n"
       + "  Pour le faire tourner ici : IDENTITE=<chemin vers identite> npm test");
   }
   const r = retards(source, racine + "src/");
