@@ -32,7 +32,7 @@ export function trigrammes(prepare: string): Map<string, number> {
 
 export const ngrams: Matcher = {
   id: "ngrams",
-  description: "cosine over character trigram counts — term frequency only, no IDF without a declared corpus",
+  description: "cosine over character trigram counts: term frequency only, no IDF without a declared corpus",
   rang: 6,
   score: (a, b) => {
     const x = preparer(a), y = preparer(b);

@@ -220,7 +220,7 @@ function candidates(nom: string, nature: Nature, r: () => number): string | unde
  */
 export function variantes(nom: string, graine: number, n: number): Variante[] {
   if (nom.trim().length === 0) {
-    throw new Error("variantes(): an empty name has no variants — the caller holds a bad list entry.");
+    throw new Error("variantes(): an empty name has no variants: the caller holds a bad list entry.");
   }
   const r = tirage(graine);
   const vues = new Set<string>([nom]);

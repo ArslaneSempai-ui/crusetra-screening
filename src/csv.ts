@@ -130,7 +130,7 @@ export function lireTable(texte: string): Table {
     throw new Error(
       `Your header names the same column twice: ${doublons.map((d) => `"${d}"`).join(", ")}.\n\n`
       + `  There is no reasonable reading of that: the columns would shift, and this tool\n`
-      + `  would measure a different thing from the one you meant — silently, and still\n`
+      + `  would measure a different thing from the one you meant, silently, and still\n`
       + `  report a rate. Rename one of them, or remove it.`);
   }
 

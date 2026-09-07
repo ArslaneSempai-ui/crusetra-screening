@@ -90,8 +90,8 @@ export function rapport(racine?: string, avecSha = false): string {
   const lignes = etats.map((f) => {
     const attendu = FICHIERS.find((x) => x.chemin === f.chemin)!;
     const detail = f.etat === "present" ? enMo(attendu.octets)
-      : f.etat === "tronque" ? `${enMo(f.octets!)} of ${enMo(attendu.octets)} — an interrupted download never heals on its own`
-      : f.etat === "altere" ? "size matches, sha256 does not — the file is not the one this repository pins"
+      : f.etat === "tronque" ? `${enMo(f.octets!)} of ${enMo(attendu.octets)}: an interrupted download never heals on its own`
+      : f.etat === "altere" ? "size matches, sha256 does not: the file is not the one this repository pins"
       : enMo(attendu.octets) + " to fetch";
     return `  ${f.chemin.padEnd(24)} ${f.etat.padEnd(8)} ${detail}`;
   });

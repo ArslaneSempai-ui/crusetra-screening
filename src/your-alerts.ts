@@ -71,7 +71,7 @@ export function lireAlertes(texte: string): { alertes: Alerte[]; avertissements:
     throw new Error(
       `Your header carries ${inconnues.length} column(s) this command does not know: `
       + `${apercu(inconnues.map((n) => `"${n}"`), MONTRES)}.\n`
-      + `  Accepted: ${[...COLONNES_REQUISES].join(", ")} — then, optionally: `
+      + `  Accepted: ${[...COLONNES_REQUISES].join(", ")}; then, optionally: `
       + `${[...COLONNES_OPTIONNELLES].join(", ")}.\n`
       + `  Left as they were, unknown columns would be read as something else or dropped in\n`
       + `  silence, and the rates would answer a different question than the one you asked.`);
@@ -95,7 +95,7 @@ export function lireAlertes(texte: string): { alertes: Alerte[]; avertissements:
     `${t.courtes.length} row(s) were shorter than the header; missing cells were read as empty: `
     + `line(s) ${t.courtes.slice(0, 8).map((e) => e.ligne).join(", ")}.`);
   if (t.demesurees.length) avertissements.push(
-    `${t.demesurees.length} cell(s) exceed a megabyte — the most likely cause is a quote closed `
+    `${t.demesurees.length} cell(s) exceed a megabyte: the most likely cause is a quote closed `
     + `far from where it opened, swallowing rows. Line(s) ${t.demesurees.slice(0, 4).map((d) => d.ligne).join(", ")}.`);
 
   const col = Object.fromEntries(t.noms.map((n, i) => [n, i])) as Record<string, number>;
@@ -116,7 +116,7 @@ export function lireAlertes(texte: string): { alertes: Alerte[]; avertissements:
     throw new Error(
       `${horsVocabulaire.length} row(s) carry a disposition outside the vocabulary: ${montre}.\n`
       + `  This tool reads exactly two: "match" (a confirmed true hit) and "false_positive"\n`
-      + `  (the analyst cleared it). Anything else — pending, escalated, a typo — has no\n`
+      + `  (the analyst cleared it). Anything else (pending, escalated, a typo) has no\n`
       + `  place in either rate, and guessing a side would move the figure you publish.\n`
       + `  Map your dispositions to these two, or drop the undecided rows.`);
   }
@@ -322,7 +322,7 @@ export function compterScreened(texte: string): number {
     throw new Error(
       `The --screened file needs one column named "screened_name" (yours: `
       + `${t.noms.map((n) => `"${n}"`).join(", ")}).\n`
-      + `  Only its ROW COUNT is used — the names themselves are never read into the record.`);
+      + `  Only its ROW COUNT is used; the names themselves are never read into the record.`);
   }
   return t.lignes.length;
 }
@@ -388,12 +388,12 @@ The CSV wants these columns, names deciding, order free:
   decided_at     optional ISO date: buys the period, and monthly figures downstream
 
 --screened=<csv> (one screened_name column) or --volume=N supplies the number of names
-screened over the period; without one of them, alerts-per-thousand is not shown — never
+screened over the period; without one of them, alerts-per-thousand is not shown, never
 estimated in silence.
 
 It writes, next to your file and nowhere else:
   <file>-measured.md     the report (five sections, no names)
-  <file>-measured.json   the sealed record — counts, rates, verdicts by alert_id; never a name
+  <file>-measured.json   the sealed record: counts, rates, verdicts by alert_id; never a name
 
 Then: npm run optimise -- --from=<file>-measured.json --recall=<min>
 Nothing about your file leaves this machine.
@@ -434,12 +434,12 @@ Nothing about your file leaves this machine.
   const { mesure, cheminMd, cheminJson, avertissements } = executer(fichier, registre, volume);
   for (const a of avertissements) console.warn(`⚠ ${a}`);
 
-  console.log(`\n${mesure.source.alerts} alert(s) — ${mesure.source.matches} confirmed match(es), `
+  console.log(`\n${mesure.source.alerts} alert(s): ${mesure.source.matches} confirmed match(es), `
     + `${mesure.source.falsePositives} false positive(s); ${Object.keys(mesure.paliers).length} matcher(s), `
     + `${SEUILS.length} thresholds each.`);
   if (mesure.absents.length) {
     console.log(`  ${mesure.absents.length} contract matcher(s) not in tonight's registry: `
-      + `${mesure.absents.join(", ")} — said in the report, not guessed.`);
+      + `${mesure.absents.join(", ")}; said in the report, not guessed.`);
   }
   console.log(`  ${cheminMd}`);
   console.log(`  ${cheminJson}`);
