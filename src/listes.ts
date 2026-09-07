@@ -199,7 +199,7 @@ export function analyser(format: SourceListe["format"], xml: string): EntreeList
   if (entrees.length === 0) {
     throw new Error(
       `the file does not look like ${format}: not one entry could be read from it.\n`
-      + `  Zero entries from a sanctions list is not a small list, it is the wrong format:\n`
+      + `  Zero entries from a sanctions list is a sign of the wrong format, not a short one:\n`
       + `  reporting an empty list here would scream "screen against nothing" downstream.`);
   }
   return entrees;
@@ -326,7 +326,7 @@ async function principal(): Promise<void> {
   }
 
   if (veutFetch) {
-    console.log(`\nFetching the three public lists: the list comes down, nothing goes up.\n`);
+    console.log(`\nFetching the three public lists: they download to your machine, and nothing of yours is sent.\n`);
     const lignes: LigneManifeste[] = [];
     for (const s of SOURCES) {
       const l = await telecharger(s);

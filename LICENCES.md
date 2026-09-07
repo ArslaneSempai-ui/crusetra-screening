@@ -39,7 +39,7 @@ The LGPL permits use inside a proprietary product as long as the user can replac
 
 `@img/sharp-libvips@1.2.4` (LGPL-3.0-or-later) · `guid-typescript@1.0.9` (ISC) · `onnxruntime-common@1.24.3` (MIT) · `onnxruntime-common@1.24.0-dev.20251116-b39e144322` (MIT) · `onnxruntime-node@1.24.3` (MIT) · `onnxruntime-web@1.26.0-dev.20260416-b7804b056c` (MIT)
 
-The field says permissive, the package ships no text. This is not a legal risk: it is a missing item if a buyer asks for full attribution.
+The field says permissive, the package ships no text. That is a missing item if a buyer asks for full attribution, not a legal risk.
 
 ## This tool's own licence
 
