@@ -1,14 +1,14 @@
-# Cascade Screening — the public measure
+# Cascade Screening: the public measure
 
 **Provenance**: pairs authored by this repository (no client data, no list data) plus
-synthetic variants, measured APART and never merged. Commit `e86a139`, 2026-09-05.
+synthetic variants, measured APART and never merged. Commit `318916d`, 2026-09-07.
 Sealed as `releve-public.json`; every rate below carries its n and its 95 % Wilson
-interval, and the FULL threshold grid (51 steps) lives in the JSON — this
+interval, and the FULL threshold grid (51 steps) lives in the JSON; this
 page shows 8 declared columns of it.
 
 Tiers measured: `exact`, `tokens`, `jaro-winkler`, `damerau`, `phonetic`, `ngrams`, `embed`.
 
-## Labelled pairs (authored) — 60 match, 60 different
+## Labelled pairs (authored): 60 match, 60 different
 
 The set's value is its hard negatives: siblings, partial homonyms, names one character
 apart that are NOT the same person. Natures: transliteration x12, token-order x8, initials x8, typo x10, diacritics x6, particle x8, phonetic-spelling x8, sibling x15, same-given-name x15, near-string x15, unrelated x15.
@@ -39,7 +39,7 @@ apart that are NOT the same person. Natures: transliteration x12, token-order x8
 
 ## Synthetic variants (declared)
 
-360 match, 360 different — generated, declared, never merged with the authored set.
+360 match, 360 different: generated, declared, never merged with the authored set.
 
 ### Recall
 
