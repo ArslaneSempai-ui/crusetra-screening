@@ -1,6 +1,10 @@
-/* AJOUTÉ tel quel dans les quatre dépôts de la famille (cascade-screening, -monitoring,
-   -scoring, -dossier) — le fichier est le MÊME dans les quatre : le corriger dans l'un
-   impose de le recopier dans les trois autres, comme la couche qu'il garde. */
+/* PARTAGÉ DANS LA FAMILLE CASCADE — source : cascade
+   Les dépôts de la famille (cascade, -screening, -monitoring, -scoring, -dossier) en portent
+   une copie identique AU BYTE. Corrigez-le dans la source, puis recopiez : la famille est
+   EXCLUE de la diffusion d'identite (depots.json), aucune diffusion ne viendra le faire à
+   votre place. `couche-famille.test.ts` compare les octets, nomme la direction du retard, et
+   refuse aussi un fichier identique dans deux dépôts qui ne porte PAS cet en-tête — c'est
+   ainsi qu'une copie neuve se déclare au lieu de dériver en silence. */
 /*
  * LE GARDIEN DE LA COUCHE IDENTITE, pour un dépôt EXCLU de la diffusion.
  *
@@ -25,9 +29,11 @@
  * Le détecteur porte son témoin, joué sur des dossiers fabriqués : s'il ne voyait plus une
  * copie divergente dans les deux directions, son zéro ne prouverait rien.
  *
- * NOTE de périmètre : la couche de FAMILLE (empreinte.ts, sceller.ts, verifier-rapport.mjs,
- * partagés entre les cinq dépôts cascade sans passer par identite) n'est pas gardée ici —
- * elle n'a pas de source déclarée unique ; c'est un territoire à part, dit au chef le 12/09.
+ * NOTE de périmètre, refermée le 13/09 : la couche de FAMILLE — les fichiers partagés entre
+ * les cinq dépôts cascade SANS passer par identite — n'était pas gardée ici, faute de source
+ * déclarée. Elle en a une depuis : chaque fichier porte « PARTAGÉ DANS LA FAMILLE CASCADE —
+ * source : <dépôt> », et `couche-famille.test.ts` la tient. Ce fichier-ci ne regarde que la
+ * couche venue d'identite ; les deux périmètres sont disjoints et chacun le dit.
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -38,22 +44,52 @@ import { tmpdir } from "node:os";
 
 const racine = fileURLToPath(new URL("..", import.meta.url));
 
-/** Un fichier de code, jamais un test : la couche, pas les harnais. */
-const codePartage = (nom: string) =>
-  /\.(ts|mjs|js|css)$/.test(nom) && !/\.test\.(ts|mjs)$/.test(nom) && !nom.endsWith(".d.ts");
+/** Un fichier de code — harnais et déclarations compris : `registre.test.ts`, `capturer.test.mjs`
+ *  et `graphes.d.ts` viennent d'identite comme les autres, et une divergence y ferait le même
+ *  mal. La première version les écartait, et écartait donc six des seize fichiers gardés. */
+const codePartage = (nom: string) => /\.(ts|mjs|js|css)$/.test(nom);
 
-/** Les retards entre une source (racine d'identite) et une copie (src/ d'ici), avec leur
- *  cause lue sur les dates : la SOURCE plus récente a avancé ; la COPIE plus récente a
- *  dérivé localement. */
+/** L'en-tête qu'identite pose sur la première ligne de tout ce qu'elle diffuse. */
+const MARQUE_IDENTITE = /PARTAGÉ — la source de ce fichier est ~\/Documents\/identite/;
+/** L'en-tête se cherche dans la TÊTE du fichier, jamais dans son corps.
+ *  Les deux gardiens de couche CITENT le motif dans leur propre code : cherché partout, il
+ *  se trouvait lui-même, et chacun se déclarait membre de la couche de l'autre. Un gardien
+ *  qui se prend pour ce qu'il garde rend un rouge faux ou un vert vide, selon le sens. */
+const tete = (texte: string) => texte.split("\n", 12).join("\n");
+
+
+/** Les retards entre la source (racine d'identite) et les copies (src/ d'ici).
+ *
+ *  L'APPARTENANCE SE LIT DANS LE FICHIER, PAS DANS SON NOM. La première version comparait
+ *  tout fichier de même nom, et elle a rougi sur `clone-neuf.mjs` : identite en a un, cascade
+ *  en a un autre, et identite le DIT elle-même sur sa première ligne (« cascade porte sa
+ *  PROPRE copie ; celle-ci ne voyage pas »). Un gardien qui accuse une exception déclarée
+ *  apprend à son lecteur à le contourner. Une copie est donc gardée si elle porte l'en-tête —
+ *  ou si elle est identique à la source sans le porter, car alors l'en-tête s'est perdu et
+ *  c'est exactement ce qu'il faut voir.
+ */
 export function retards(sourceDir: string, copieDir: string): { compares: number; fautes: string[] } {
   let compares = 0;
   const fautes: string[] = [];
   for (const nom of readdirSync(copieDir).filter(codePartage)) {
-    const la = join(sourceDir, nom);
-    if (!existsSync(la)) continue;
     const ici = join(copieDir, nom);
+    if (!statSync(ici).isFile()) continue;
+    const texte = readFileSync(ici, "utf8");
+    const declare = MARQUE_IDENTITE.test(tete(texte));
+    const la = join(sourceDir, nom);
+    if (!existsSync(la)) {
+      if (declare) fautes.push(`${nom} (l'en-tête déclare identite, mais identite ne porte pas `
+        + "ce fichier : la source a été renommée ou retirée sans que la copie le sache)");
+      continue;
+    }
+    const source = readFileSync(la, "utf8");
+    if (!declare && texte !== source) continue;   /* un fichier PROPRE à ce dépôt, de même nom */
     compares++;
-    if (readFileSync(ici, "utf8") === readFileSync(la, "utf8")) continue;
+    if (texte === source) {
+      if (!declare) fautes.push(`${nom} (identique à identite mais SANS son en-tête : la copie `
+        + "est sortie de la garde en silence ; remettez la première ligne)");
+      continue;
+    }
     const cause = statSync(la).mtimeMs > statSync(ici).mtimeMs
       ? "source en avance : recopier À LA MAIN depuis identite — ce dépôt est EXCLU de la "
         + "diffusion (depots.json), elle ne viendra pas le faire"
@@ -64,28 +100,54 @@ export function retards(sourceDir: string, copieDir: string): { compares: number
   return { compares, fautes };
 }
 
-test("le détecteur voit une copie divergente, dans les deux directions : témoin", () => {
+test("le détecteur voit une copie divergente, et sait ce qui ne lui appartient pas : témoin", () => {
   const d = mkdtempSync(join(tmpdir(), "couche-temoin-"));
+  const enTete = "/* PARTAGÉ — la source de ce fichier est ~/Documents/identite */\n";
   try {
     const source = join(d, "source"), copie = join(d, "copie");
     for (const dir of [source, copie]) {
       mkdirSync(dir);
-      writeFileSync(join(dir, "interval.ts"), "export const wilson = 1;\n");
+      writeFileSync(join(dir, "interval.ts"), enTete + "export const wilson = 1;\n");
     }
     assert.deepEqual(retards(source, copie).fautes, [], "identiques : aucun retard attendu");
     assert.equal(retards(source, copie).compares, 1, "le témoin doit avoir comparé");
 
-    writeFileSync(join(source, "interval.ts"), "export const wilson = 2;\n");
+    writeFileSync(join(source, "interval.ts"), enTete + "export const wilson = 2;\n");
     utimesSync(join(copie, "interval.ts"), new Date(0), new Date(0));
     const avance = retards(source, copie).fautes;
     assert.equal(avance.length, 1);
     assert.match(avance[0]!, /source en avance/, "la source plus récente doit se nommer");
 
-    writeFileSync(join(copie, "interval.ts"), "export const wilson = 3;\n");
+    writeFileSync(join(copie, "interval.ts"), enTete + "export const wilson = 3;\n");
     utimesSync(join(source, "interval.ts"), new Date(0), new Date(0));
     const derive = retards(source, copie).fautes;
     assert.equal(derive.length, 1);
     assert.match(derive[0]!, /dérive locale/, "la copie plus récente doit se nommer");
+
+    /* LE CAS QUI A FAIT ROUGIR À TORT, joué ici pour qu'il ne revienne pas : un fichier de
+       même nom, propre au dépôt, qu'identite déclare elle-même ne pas diffuser. */
+    writeFileSync(join(source, "clone-neuf.mjs"), enTete + "// la sonde locale d'identite\n");
+    writeFileSync(join(copie, "clone-neuf.mjs"), "#!/usr/bin/env node\n// la version du dépôt\n");
+    assert.deepEqual(retards(source, copie).fautes.filter((f) => f.startsWith("clone-neuf")), [],
+      "un fichier propre au dépôt, sans en-tête et différent, n'appartient pas à la couche");
+
+    /* Mais une copie identique QUI A PERDU son en-tête est sortie de la garde en silence. */
+    writeFileSync(join(copie, "clone-neuf.mjs"), enTete + "// la sonde locale d'identite\n");
+    writeFileSync(join(copie, "clone-neuf.mjs"), "// la sonde locale d'identite\n");
+    writeFileSync(join(source, "clone-neuf.mjs"), "// la sonde locale d'identite\n");
+    writeFileSync(join(source, "clone-neuf.mjs"), enTete + "// la sonde locale d'identite\n");
+    writeFileSync(join(copie, "clone-neuf.mjs"), enTete + "// la sonde locale d'identite\n");
+    writeFileSync(join(copie, "perdu.ts"), "export const x = 1;\n");
+    writeFileSync(join(source, "perdu.ts"), "export const x = 1;\n");
+    const perdu = retards(source, copie).fautes.filter((f) => f.startsWith("perdu"));
+    assert.equal(perdu.length, 1, "identique à identite sans en-tête : la garde doit le dire");
+    assert.match(perdu[0]!, /SANS son en-tête/);
+
+    /* Et une copie qui se réclame d'identite alors que la source a disparu. */
+    writeFileSync(join(copie, "orphelin.ts"), enTete + "export const y = 1;\n");
+    const orphelin = retards(source, copie).fautes.filter((f) => f.startsWith("orphelin"));
+    assert.equal(orphelin.length, 1);
+    assert.match(orphelin[0]!, /identite ne porte pas ce fichier/);
   } finally {
     rmSync(d, { recursive: true, force: true });
   }
