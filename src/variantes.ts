@@ -131,6 +131,10 @@ const ANNOTATIONS: readonly RegExp[] = [
   /\s*\(\s*publ\.?\s*\)/giu,
   /\s+2\/\s*\S.*$/u,
   /[\s,]+(?:asap|thx|thanks|tks|pls|please|svp|merci)\s*[.!]?\s*$/iu,
+  /* la demande d'un clavardage derrière le nom : « pls confirm order », « please check asap », « kindly advise » (jeu 13,
+     tour 9 : « sanghvi diamnd exp mumbai pls confirm order » à 0,562, trois mots rares sans répondant). Le mot de politesse
+     est exigé devant le verbe : « Order » ou « Check » seuls peuvent être des mots du nom */
+  /[\s,]+(?:pls|plz|please|kindly|svp)\s+(?:confirm|check|advise|verify|screen|revert|approve|proceed|look|help|send|share)\b.*$/iu,
   /* les résidus des champs d'un connaissement : « NOTIFY PARTY », « SAME AS CONSIGNEE ABOVE »,
      « ATTN MR LI » ; un numéro de coque ; « VOYAGE 9 » ; « ROOM 302 », « UNIT 4B », « BLDG 2 » */
   /\s+(?:notify(?:\s+party)?\s*)?(?:same\s+as\s+(?:consignee|shipper|notify|above|applicant)(?:\s+above)?)\s*$/iu,
@@ -435,6 +439,8 @@ export function lecturesDe(brut: string): LectureDe[] {
     poser({ texte: v.texte, lecture: "mandarin", ancien, mention, registre, partie });
     if (/[\u4e00-\u9fff]/u.test(v.texte) && !estJaponais(v.texte)) {
       poser({ texte: v.texte, lecture: "cantonais", ancien, mention, registre, partie });
+      /* et la troisième, en hokkien de Singapour et de Malaisie (« 金福隆33 » : Kim Hock Leong 33, jeu 13) */
+      poser({ texte: v.texte, lecture: "hokkien", ancien, mention, registre, partie });
       for (const s of substitutions(v.texte)) poser({ ...s, ancien, mention, registre, partie });
     }
   }
@@ -481,26 +487,37 @@ function substitutions(v: string): { texte: string; lecture: Lecture }[] {
   for (const suite of suites) {
     /* les mots du commerce des caractères (海产, 有限公司) ne se substituent à rien : seuls les
        jetons qui gardent leurs caractères (`natifs`) sont le nom propre */
-    const rm = romaniser(suite, "mandarin"), rc = romaniser(suite, "cantonais");
+    const rm = romaniser(suite, "mandarin"), rc = romaniser(suite, "cantonais"), rh = romaniser(suite, "hokkien");
     const propresM = rm.texte.trim().split(/ +/).filter((j) => rm.natifs.has(j));
     const propresC = rc.texte.trim().split(/ +/).filter((j) => rc.natifs.has(j));
-    if (propresM.length === 0 || propresC.length === 0) continue;
+    const propresH = rh.texte.trim().split(/ +/).filter((j) => rh.natifs.has(j));
+    if (propresM.length === 0 || propresC.length === 0 || propresH.length === 0) continue;
     const mandarin = propresM.join("");
-    /* la lecture mandarine, soudée, retrouvée dans une suite de mots latins (« Yongcheng », « Zhang Xing ») */
+    /* la lecture mandarine, soudée, retrouvée dans une suite de mots latins (« Yongcheng », « Zhang Xing ») : les deux
+       lectures syllabiques se substituent (« Cheung Hing », et « Teo Heng » en hokkien, jeu 13) */
     for (let i = 0; i < cles.length; i++) {
       let colle = "";
       for (let k = i; k < cles.length && colle.length < mandarin.length; k++) {
         colle += cles[k]!;
-        if (colle === mandarin) { sorties.push({ texte: remplacer(i, k, propresC), lecture: "cantonais" }); break; }
+        if (colle === mandarin) {
+          sorties.push({ texte: remplacer(i, k, propresC), lecture: "cantonais" });
+          sorties.push({ texte: remplacer(i, k, propresH), lecture: "hokkien" });
+          break;
+        }
       }
     }
-    /* la lecture cantonaise, syllabe par syllabe, retrouvée au pli près (« Wing Fung », « Man Lee ») */
-    for (let i = 0; i + propresC.length <= cles.length; i++) {
-      if (propresC.every((s, t) => cles[i + t] !== "" && pliCantonais(cles[i + t]!) === pliCantonais(s))) {
-        sorties.push({ texte: remplacer(i, i + propresC.length - 1, [mandarin]), lecture: "mandarin" });
-        sorties.push({ texte: latin, lecture: "cantonais" });
+    /* une lecture syllabique, cantonaise ou hokkien, retrouvée au pli près (« Wing Fung », « Man Lee » ; « Eng Hong ») :
+       les deux autres lectures se substituent, et le nom latin tel quel est une lecture de ce dialecte */
+    const syllabique = (propres: readonly string[], lecture: Lecture, autres: readonly (readonly [readonly string[], Lecture])[]) => {
+      for (let i = 0; i + propres.length <= cles.length; i++) {
+        if (propres.every((s, t) => cles[i + t] !== "" && pliCantonais(cles[i + t]!) === pliCantonais(s))) {
+          for (const [par, l] of autres) sorties.push({ texte: remplacer(i, i + propres.length - 1, par), lecture: l });
+          sorties.push({ texte: latin, lecture });
+        }
       }
-    }
+    };
+    syllabique(propresC, "cantonais", [[[mandarin], "mandarin"], [propresH, "hokkien"]]);
+    syllabique(propresH, "hokkien", [[[mandarin], "mandarin"], [propresC, "cantonais"]]);
   }
   return sorties;
 }

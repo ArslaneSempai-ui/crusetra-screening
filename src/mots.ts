@@ -261,6 +261,9 @@ export function squelette(mot: string): string {
     .replace(/our$/, "or").replace(/re$/, "er").replace(/ogue$/, "og").replace(/que$/, "k")
     /* les digrammes d'abord : chacun rend UNE consonne, avant que les lettres simples bougent */
     .replace(/^hs/, "x")
+    /* χρ en tête s'écrit chr (Chrysafi, Christos) ou hr (Hrisafi, Hristos) : aucun mot anglais ne commence par hr
+       (jeu 13 : « EVDOKIA CHRYSAFI » face à « EVDOKIA HRISAFI », 0,563, ch et h deux classes) */
+    .replace(/^chr/, "hr")
     /* l'orthographe indonésienne d'avant 1972 : « Tjahaja Soerya Kentjana » est « Cahaya Surya Kencana » (jeu 9) ;
        tj est c, dj est j (oe est déjà u par la classe des voyelles) */
     .replace(/dj/g, "j").replace(/tj/g, "c")
@@ -294,6 +297,20 @@ export function squelette(mot: string): string {
  */
 export function squeletteLongue(mot: string): string {
   return squelette(mot.replace(/ee/g, "i"));
+}
+
+/**
+ * Le squelette d'un mot sous la MARQUE ARABE : les voyelles longues repliées (`squeletteLongue`), et o et u fondus, parce
+ * qu'aucune lettre arabe ne les distingue (la ḍamma s'écrit o ou u, و s'écrit u, ou, oo ou o : « Noor », « Nour », « Nur » ;
+ * « Kohsar », « Koohsar » ; « Khuzama », « Khozama »), quand a et i sont deux lettres (Hamad et Hamid) et restent à la
+ * variation d'une voyelle. Deux squelettes égaux ici valent un squelette égal (0,95), pas cette variation (0,85) : jeu 13,
+ * 28/09, « Nour El Khuzama » face à « Noor Al Khozama » à 0,717 et « Sepid Kohsar » face à « Sefid Koohsar » à 0,659, deux
+ * mots au crédit de romanisation, quand deux mots à 0,85 ne font pas un nom fort (voir `apport`). `persan` : p et f
+ * fondus aussi, le پ persan que l'arabe écrit ف (« Sepid », « Sefid » ; « Pars », « Fars »), AVANT que le squelette ne fonde
+ * b et p, pour que Bahr reste distinct de Fahr.
+ */
+export function squeletteArabe(mot: string, persan = true): string {
+  return squeletteLongue(persan ? mot.replace(/ph/g, "f").replace(/p/g, "f") : mot).replace(/o/g, "u");
 }
 
 /** Les orthographes britanniques que les règles générales ne ramènent pas à l'américaine. */
@@ -396,6 +413,15 @@ export function pliJaponais(m: string): string {
     .replace(/m(?=[bmp])/g, "n")
     .replace(/o(?:h(?![aeiou])|o|u)/g, "o").replace(/uu/g, "u").replace(/(.)\1+/g, "$1");
 }
+/** Le grec sous ses romanisations, ELOT 743 (celle de `grec`, preparation.ts) et l'usage anglais des armateurs : χ écrit
+ *  ch, kh ou h ; υ écrit y, i ou u ; η, ι, υ, ει, οι toutes i ; αι e ; ου u ; φ ph ou f ; θ th ; β v ou b ; l'esprit rude que
+ *  l'anglais écrit h en tête et que le grec n'écrit plus (Hellas, Ellas ; Hermes, Ermis) ; les doubles. Au crédit (0,85), sous
+ *  la marque grecque ou hébraïque seulement (jeu 13 : « Ελλάς Ναυτικά Λιπαντικά Α.Ε. » lu ellas face à « Hellas Marine
+ *  Lubricants SA », 0,111). */
+export function pliGrec(m: string): string {
+  return m.replace(/^h(?=[aeiouy])/, "").replace(/ch|kh/g, "h").replace(/ph/g, "f").replace(/th/g, "t").replace(/ou/g, "u")
+    .replace(/ei|oi|y/g, "i").replace(/ai/g, "e").replace(/[vw]/g, "b").replace(/(.)\1+/g, "$1");
+}
 /** Le hindi (व : v, w, b), l'hébreu (ב : b, v), l'espagnol et le portugais (b, v) : une seule lettre au
  *  niveau du crédit (0,85), pas du squelette : Fabre et Favre restent sous le niveau fort. */
 export function pliIndien(m: string): string {
@@ -430,11 +456,13 @@ export function pliVoyellesCoreennes(m: string): string {
  *  Singapour et de Malaisie : les paires d'aspiration (g, k ; b, p ; d, t), s et sh, ch, ts, z et c, j et
  *  y ; les voyelles que ces graphies écrivent librement (aa, a ; oe, eu, eo, ue, oo, u ; ei, ee, ay, i ;
  *  ung, ong ; eng, ing : la Seng Heng Bank de Macao est 誠興, sing hing) ; un h final après voyelle
- *  (Wah, Poh). Une seule clé, comparée sous la marque `cantonais` seulement. */
+ *  (Wah, Poh). Et les flottements du hokkien écrit à Singapour et en Malaisie (tour 9 : la troisième lecture,
+ *  hokkien.ts) : ck et k (Hock, Hok ; Teck, Tek), eo et io (Leong, Liong ; Keong, Kiong), oa et ua (Hoat, Huat),
+ *  qu et kw (Quek, Kwek). Une seule clé, comparée sous la marque `cantonais` seulement. */
 export function pliCantonais(m: string): string {
-  return m.replace(/^ts/, "ch").replace(/^[zc](?!h)/, "ch").replace(/^sh/, "s").replace(/^j/, "y").replace(/^gw/, "kw")
-    .replace(/^g/, "k").replace(/^b/, "p").replace(/^d/, "t")
-    .replace(/aa/g, "a").replace(/oe|eo|eu|ue|oo/g, "u").replace(/(?<=[a-z])yu/g, "u").replace(/ei|ee|ay/g, "i")
+  return m.replace(/^ts/, "ch").replace(/^[zc](?!h)/, "ch").replace(/^sh/, "s").replace(/^j/, "y").replace(/^gw/, "kw").replace(/^qu/, "kw")
+    .replace(/^g/, "k").replace(/^b/, "p").replace(/^d/, "t").replace(/ck/g, "k")
+    .replace(/aa/g, "a").replace(/oe|eo|eu|ue|oo|io/g, "u").replace(/oa/g, "ua").replace(/(?<=[a-z])yu/g, "u").replace(/ei|ee|ay/g, "i")
     .replace(/ung/g, "ong").replace(/eng/g, "ing").replace(/(?<=[aeiou])h$/, "").replace(/(.)\1+/g, "$1");
 }
 
@@ -517,10 +545,51 @@ export function pliSlave(m: string): string {
     .replace(/ch/g, "c").replace(/ts/g, "c").replace(/kh/g, "h").replace(/x/g, "ks").replace(/w/g, "v")
     .replace(/[yj]o/g, "e").replace(/[yj]/g, "i").replace(/ie/g, "e").replace(/(.)\1+/g, "$1");
 }
+/**
+ * LA ROMANISATION ALLEMANDE du cyrillique (Duden : ж et ш sch, ч tsch, х ch, ц z, в w, й j ; з s en tête et entre voyelles,
+ * с ss entre voyelles et s ailleurs), celle des registres d'Europe centrale et des documents suisses et autrichiens (jeu 13,
+ * 28/09 : « Chimtechnika » face à « Khimtekhnika » à 0,450, « PrAT Werbodolskyj Kabelnyj Sawod » face à « PrAT Verbodolskyi
+ * Kabelnyi Zavod » à 0,593). Le pli standard lit déjà sch, tsch, w et j ; il lit ch comme ч et s comme с. Les CLÉS d'un mot
+ * sont sa clé standard et ses lectures sous le système allemand ramenées au pli : ch lu х, z lu ц, le s entre voyelles lu з,
+ * le ss lu с, sch lu ш ou ж (Puschkin, Breschnew : deux clés) ; et, le s initial étant з ou с (Sawod, Завод ; Sokolow,
+ * Соколов), les deux lectures quand le mot commence par s et une voyelle et montre le système ailleurs. Un mot sans lettre
+ * propre au système n'a que sa clé standard. Deux mots sont la même suite cyrillique (`memeSuiteCyrillique`) quand la clé
+ * standard de l'un est parmi les clés de l'autre.
+ */
+export function clesSlaves(m: string): readonly string[] {
+  const standard = pliSlave(m);
+  const lu = m.replace(/tsch/g, "\u0001").replace(/sch/g, "\u0002").replace(/(?<=[aeiouy])s(?=[aeiouy])/g, "\u0003").replace(/ss/g, "s")
+    .replace(/ch/g, "kh").replace(/z/g, "ts").replace(/\u0001/g, "ch").replace(/\u0003/g, "z");
+  /* sch est ш ou ж (Puschkin, Breschnew, Saporoschje) : les deux lectures ; et le s initial lu з aussi, seulement quand le mot
+     montre le système allemand ailleurs (w, sch, tsch, ss, j devant voyelle : « Sawod », « Sokolow ») : sans cette trace,
+     « Sever » n'est pas « Zever » (mesuré à 0,930 sans la réserve, 28/09) */
+  const lectures = [lu.replace(/\u0002/g, "sh"), lu.replace(/\u0002/g, "zh")];
+  if (/^s[aeiouy]/.test(lu) && /w|sch|ss|j[aeiou]/.test(m)) for (const l of [...lectures]) lectures.push("z" + l.slice(1));
+  return [...new Set([standard, ...lectures.map(pliSlave)])];
+}
+export function memeSuiteCyrillique(x: string, y: string): boolean {
+  const px = pliSlave(x), py = pliSlave(y);
+  return px === py || clesSlaves(x).includes(py) || clesSlaves(y).includes(px);
+}
 /** Ce que vaut la même suite de lettres cyrilliques sous deux romanisations (`pliSlave`) : un squelette égal (0,95),
  *  comme les kana. À 0,85, deux mots au crédit ne font pas un nom fort (« Kubanskaya Zhatva », « Kubanskaja Žatva » :
  *  0,800). */
 export const CREDIT_CYRILLIQUE = 0.95;
+/** LE THAÏ en romanisation générale royale (RTGS) et dans les graphies d'usage, que l'état civil et les registres écrivent chacun à
+ *  leur manière : l'aspiration marquée ou non (ph, p ; th, t ; kh, k : « Phrachan », « Prajan » ; « Charoenphol », « Charoenpol »),
+ *  จ écrit ch ou j, ว écrit w ou v (« Wichai », « Vichai »), เ-อ écrit oe ou er (« Ngoen », « Ngern »), อือ ue ou eu, แ ae ou a, le r
+ *  muet qui allonge la voyelle devant une consonne ou en finale (« Porn », « Phon » ; « Charn », « Chan »), le l final prononcé n
+ *  (« Phol », « Phon »), les longues doublées (ee, oo, aa) ou non, le w final écrit o (« Kaew », « Kaeo »), ay écrit ai. Une seule
+ *  clé, comparée sous la marque `thai` seulement, et elle vaut un squelette égal (CREDIT_THAI) : les mêmes lettres thaïes sous
+ *  deux systèmes, comme les kana et le cyrillique (jeu 13, 28/09 : « Phrachan Ngoen » face à « Prajan Ngern » à 0,203 ; à 0,85,
+ *  deux mots au crédit ne font pas un nom fort). */
+export function pliThai(m: string): string {
+  return m.replace(/ph/g, "p").replace(/th/g, "t").replace(/kh/g, "k").replace(/ch/g, "j").replace(/v/g, "w")
+    .replace(/oe/g, "e").replace(/er/g, "e").replace(/ue|eu/g, "u").replace(/ae/g, "a")
+    .replace(/r(?=[^aeiou]|$)/g, "").replace(/l$/, "n").replace(/ee/g, "i").replace(/oo/g, "u").replace(/aa/g, "a")
+    .replace(/(?<=[aeiou])w$/, "o").replace(/ay$/, "ai").replace(/(.)\1+/g, "$1");
+}
+export const CREDIT_THAI = 0.95;
 /** LES QUEUES DES COMPOSÉS SLAVES : -stroy (строй, la construction), -prom (l'industrie), -snab (l'approvisionnement),
  *  -sbyt (la vente), -mash (les machines), -energo, -montazh, -remont, -servis, -torg, -trans, -eksport, -invest.
  *  Sous la marque slave, un mot qui n'est l'autre qu'augmenté de l'une d'elles est une AUTRE raison sociale

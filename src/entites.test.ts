@@ -433,8 +433,9 @@ test("les écritures natives : hangul, sinogrammes, arabe et persan, hébreu, ve
   assert.ok(score("雾山精密机械股份有限公司", "Wushan Precision Machinery Co., Ltd.") >= 0.81);
   assert.ok(score("新海贸易有限公司", "鑫海贸易有限公司") < 0.81, "homophones : xinhai tous deux, deux sociétés");
   assert.ok(score("沧澜远洋航运有限公司", "沧澜国际物流有限公司") < 0.81, "une société sœur");
-  /* le japonais reste tel quel : un kanji a plusieurs lectures, et 霜月 n'est pas Shuangyue */
-  assert.equal(preparerEntite("株式会社霜月水産"), "株式会社霜月水産");
+  /* le japonais se lit par la table des kanji qui nomment une société (tour 9, src/kanji.ts) : 霜月 est Shimotsuki, jamais
+     Shuangyue, et 水産 se traduit des deux côtés ; un kanji hors table reste en place */
+  assert.equal(preparerEntite("株式会社霜月水産"), "shimotsuki fisheries");
   assert.ok(score("光星産業株式会社", "幸生産業株式会社") < 0.81);
   /* les abjads : consonnes contre consonnes, l'article séparé, la forme et le commerce traduits */
   assert.equal(preparerEntite("MT بحر الذهب"), "bhr al dhhb");

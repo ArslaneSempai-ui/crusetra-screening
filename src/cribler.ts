@@ -35,13 +35,13 @@ import { commitCourant } from "./your-alerts.ts";
 import type { Cellule } from "./measure.ts";
 import {
   frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD, sembleCoupe,
-  compose, membres, gerondif,
+  compose, membres, gerondif, PARTICULES,
   variationVocalique, voyelleEpenthetique, squeletteLongue, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
   CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pliJaponais, pliCoreen, CREDIT_KANA, pluriel, CHEMIN_VERDICT, RAPPEL_MIN,
-  pliSlave, CREDIT_CYRILLIQUE,
+  pliSlave, CREDIT_CYRILLIQUE, pliGrec, squeletteArabe, ARTICLES_ARABES, clesSlaves, pliThai, CREDIT_THAI,
   BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare, type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme, pliEnye,
 } from "./entites.ts";
-import { cleAbjad, cleAbjadSansTa, type Abjad } from "./ecritures.ts";
+import { cleAbjad, cleAbjadSansTa, cleAbjadVLuF, type Abjad } from "./ecritures.ts";
 import { distanceOsa } from "./matchers/damerau.ts";
 
 /** Au plus autant de candidats montrés par nom ; le compte des autres est donné. */
@@ -166,14 +166,23 @@ type NomIndexe = { brut: string; nom: NomPrepare; entree: EntreeListe; alias?: s
 
 /** Un mot du vocabulaire des listes : sa forme, ses clés, et les chaînes qui le portent. */
 type MotIndexe = { mot: string; sq: string; repli: string; abregeVu: boolean; noms: number[];
+  /** une chaîne listée porte ce mot comme un SIGLE écrit (« C&F », « T/C » : voir `sigleDe`) */
+  sigleVu: boolean;
   /** les abjads (a : arabe, h : hébreu, t : thaï) dans l'écriture desquels une chaîne listée porte ce mot */
   abjadVu: string;
   /** une chaîne listée lue en cantonais porte ce mot */
   cantonaisVu: boolean;
   /** une chaîne listée marquée japonaise, coréenne, porte ce mot (voir `pliJaponais`, `pliCoreen`) */
   japonaisVu: boolean; coreenVu: boolean;
+  /** une chaîne listée marquée grecque ou hébraïque porte ce mot (voir `pliGrec`) */
+  grecVu: boolean;
   /** une chaîne listée marquée slave porte ce mot (voir `pliSlave`) */
-  slaveVu: boolean };
+  slaveVu: boolean;
+  /** une chaîne listée porte ce mot juste après un article ou une filiation arabe (« Al Ameen ») : le dictionnaire anglais
+   *  ne le tient plus pour un mot anglais (voir `anglais` dans scorePrepares et ARTICLES_ARABES) */
+  apresArticleVu: boolean;
+  /** une chaîne listée marquée thaïe porte ce mot (voir `pliThai`) */
+  thaiVu: boolean };
 
 /**
  * L'INDEX, ET POURQUOI IL NE PERD RIEN.
@@ -225,6 +234,9 @@ export class Index {
   /** les quatre dernières lettres de chaque mot : c'est là qu'un mot cherche les composés qui FINISSENT par lui
    *  (« rohr » retrouve « stahlrohr » ; voir `compose`), l'initiale n'étant pas la sienne */
   private readonly parFinale = new Map<string, MotIndexe[]>();
+  /** les initiales de deux à quatre mots consécutifs d'une chaîne listée (« cf » pour « clearing forwarding ») : c'est là
+   *  qu'un sigle écrit de la requête cherche la locution en toutes lettres (voir `sigleDe`) */
+  private readonly parInitialesSuite = new Map<string, number[]>();
   /** le même pli, pour les seuls mots que des chaînes lues en cantonais portent : c'est là qu'un
    *  nom latin cherche les leurs (voir `cantonais` dans scorePrepares) */
   private readonly parPliCantonaisNatif = new Map<string, MotIndexe[]>();
@@ -236,11 +248,22 @@ export class Index {
   private readonly parPliJaponaisNatif = new Map<string, MotIndexe[]>();
   private readonly parPliCoreen = new Map<string, MotIndexe[]>();
   private readonly parPliCoreenNatif = new Map<string, MotIndexe[]>();
+  /** le pli des romanisations du grec (`pliGrec`, CREDIT_ROMANISATION), dans les deux sens de la marque, comme le coréen */
+  private readonly parPliGrec = new Map<string, MotIndexe[]>();
+  private readonly parPliGrecNatif = new Map<string, MotIndexe[]>();
   /** le pli des romanisations du cyrillique (`pliSlave`, CREDIT_CYRILLIQUE), dans les deux sens de la marque comme le
    *  japonais ; et le même pli par initiale et longueur, pour la voyelle d'appui de la forme anglaise (« Aleksandr »,
    *  « Alexander » : une lettre d'écart sur la clé, que le squelette ne rapproche pas, x et ks) */
   private readonly parPliSlave = new Map<string, MotIndexe[]>();
   private readonly parPliSlaveNatif = new Map<string, MotIndexe[]>();
+  /** les clés ALLEMANDES des mots listés qui en ont (voir `clesSlaves`), hors leur clé standard : c'est là que la clé standard d'un
+   *  mot demandé cherche « Sawod » ou « Chimtechnika » ; dans l'autre sens, les clés allemandes du mot demandé se cherchent sous
+   *  la clé standard des mots listés */
+  /** le pli du thaï (`pliThai`, CREDIT_THAI), dans les deux sens de la marque comme le japonais */
+  private readonly parPliThai = new Map<string, MotIndexe[]>();
+  private readonly parPliThaiNatif = new Map<string, MotIndexe[]>();
+  private readonly parPliSlaveAllemand = new Map<string, MotIndexe[]>();
+  private readonly parPliSlaveAllemandNatif = new Map<string, MotIndexe[]>();
   private readonly parPliSlaveInitialeLongueur = new Map<string, MotIndexe[]>();
   /** les chaînes qui portent un bigramme, par bigramme ET longueur de bloc (« an20 ») : la
    *  borne de longueur du bloc se lit dans la clé, sans parcourir les autres longueurs */
@@ -294,14 +317,17 @@ export class Index {
         nom.mots.forEach((mot, i) => {
           let m = this.vocabulaire.get(mot);
           if (!m) {
-            m = { mot, sq: nom.squelettes[i]!, repli: nom.replis[i]!, abregeVu: nom.abreges[i]!, noms: [k], abjadVu: "", cantonaisVu: false,
-              japonaisVu: false, coreenVu: false, slaveVu: false };
+            m = { mot, sq: nom.squelettes[i]!, repli: nom.replis[i]!, abregeVu: nom.abreges[i]!, sigleVu: nom.sigles[i]!, noms: [k], abjadVu: "", cantonaisVu: false, grecVu: false,
+              japonaisVu: false, coreenVu: false, slaveVu: false, apresArticleVu: false, thaiVu: false };
             const ps = pliSlave(mot);
             ranger(this.parPliSlave, ps, m);
+            for (const k of clesSlaves(mot)) if (k !== ps) ranger(this.parPliSlaveAllemand, k, m);
             ranger(this.parPliSlaveInitialeLongueur, (ps[0] ?? "") + ps.length, m);
             ranger(this.parPliCantonais, pliCantonais(mot), m);
             ranger(this.parPliJaponais, pliJaponais(mot), m);
             ranger(this.parPliCoreen, pliCoreen(mot), m);
+            ranger(this.parPliGrec, pliGrec(mot), m);
+            ranger(this.parPliThai, pliThai(mot), m);
             this.vocabulaire.set(mot, m);
             ranger(this.parInitialeLongueur, mot[0]! + mot.length, m);
             ranger(this.parSqInitialeLongueur, (m.sq[0] ?? "") + m.sq.length, m);
@@ -311,6 +337,9 @@ export class Index {
             ranger(this.parSq, m.sq, m);
             /* la voyelle longue écrite ee (« naseem ») : rangé aussi sous son squelette lu i (voir squeletteLongue) */
             if (mot.includes("ee")) ranger(this.parSq, squeletteLongue(mot), m);
+            /* et sous son squelette arabe (o et u fondus, p lu f : voir squeletteArabe), quand il diffère */
+            const sa = squeletteArabe(mot);
+            if (sa !== m.sq) ranger(this.parSq, sa, m);
             ranger(this.parRepli, m.repli, m);
             if (porteUnJalon(mot)) ranger(this.parLongueurPerdu, String(mot.length), m);
             for (const mode of ["arabe", "hebreu", "thai"] as const) {
@@ -320,10 +349,15 @@ export class Index {
             /* la ta marbuta : un mot en « -at » se range aussi sous sa clé sans ce t (voir cleAbjadSansTa) */
             const sansTa = cleAbjadSansTa(mot);
             if (sansTa !== undefined && sansTa.length >= 3) ranger(this.parCleAbjad, `a|${sansTa}`, m);
+            /* et le v lu ف : un mot en « v » se range aussi sous sa clé où v est f (voir cleAbjadVLuF) */
+            const vLuF = cleAbjadVLuF(mot);
+            if (vLuF !== undefined && vLuF.length >= 3) ranger(this.parCleAbjad, `a|${vLuF}`, m);
           } else {
             if (m.noms[m.noms.length - 1] !== k) m.noms.push(k);
             if (nom.abreges[i]) m.abregeVu = true;
+            if (nom.sigles[i]) m.sigleVu = true;
           }
+          if (i > 0 && ARTICLES_ARABES.has(nom.mots[i - 1]!)) m.apresArticleVu = true;
           const mode = nom.marques.abjad;
           if (mode !== "" && !m.abjadVu.includes(mode[0]!)) {
             m.abjadVu += mode[0];
@@ -331,12 +365,29 @@ export class Index {
             if (c.length >= 3) ranger(this.parCleAbjadNatif, `${mode[0]}|${c}`, m);
             const sansTa = mode === "arabe" ? cleAbjadSansTa(mot) : undefined;
             if (sansTa !== undefined && sansTa.length >= 3) ranger(this.parCleAbjadNatif, `a|${sansTa}`, m);
+            const vLuF = mode === "arabe" ? cleAbjadVLuF(mot) : undefined;
+            if (vLuF !== undefined && vLuF.length >= 3) ranger(this.parCleAbjadNatif, `a|${vLuF}`, m);
           }
           if (nom.marques.cantonais && !m.cantonaisVu) { m.cantonaisVu = true; ranger(this.parPliCantonaisNatif, pliCantonais(mot), m); }
           if (nom.marques.japonais && !m.japonaisVu) { m.japonaisVu = true; ranger(this.parPliJaponaisNatif, pliJaponais(mot), m); }
           if (nom.marques.coreen && !m.coreenVu) { m.coreenVu = true; ranger(this.parPliCoreenNatif, pliCoreen(mot), m); }
-          if (nom.marques.slave && !m.slaveVu) { m.slaveVu = true; ranger(this.parPliSlaveNatif, pliSlave(mot), m); }
+          if (nom.marques.hebreuOuGrec && !m.grecVu) { m.grecVu = true; ranger(this.parPliGrecNatif, pliGrec(mot), m); }
+          if (nom.marques.thai && !m.thaiVu) { m.thaiVu = true; ranger(this.parPliThaiNatif, pliThai(mot), m); }
+          if (nom.marques.slave && !m.slaveVu) {
+            m.slaveVu = true;
+            const ps = pliSlave(mot);
+            ranger(this.parPliSlaveNatif, ps, m);
+            for (const k of clesSlaves(mot)) if (k !== ps) ranger(this.parPliSlaveAllemandNatif, k, m);
+          }
         });
+        /* les initiales de deux à quatre mots consécutifs, pour le sigle écrit d'une requête (mêmes conditions que `sigleDe`) */
+        for (let L = 2; L <= 4; L++) for (let i = 0; i + L <= nom.mots.length; i++) {
+          const suite = nom.mots.slice(i, i + L);
+          if (suite.some((w) => w.length < 3 || PARTICULES.has(w))) continue;
+          const cle = suite.map((w) => w[0]).join("");
+          const l = this.parInitialesSuite.get(cle);
+          if (l) { if (l[l.length - 1] !== k) l.push(k); } else this.parInitialesSuite.set(cle, [k]);
+        }
         for (const [table, longueurs, bloc] of [[this.bigrammes, this.parLongueurBloc, nom.bloc],
           [this.bigrammesSq, this.parLongueurBlocSq, nom.blocSq]] as const) {
           const l = longueurs.get(bloc.length);
@@ -370,8 +421,10 @@ export class Index {
 
   /** Les chaînes listées dont un mot est assez proche de `mot` (mêmes règles que le score). */
   private nomsParMot(mot: string, sq: string, repli: string, dernier: boolean, coupe: boolean, abreviation: boolean, abjad: Abjad, cantonais: boolean,
-    japonais: boolean, coreen: boolean, slave: boolean): number[] {
-    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}|${abjad}|${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${slave ? 1 : 0}`;
+    japonais: boolean, coreen: boolean, slave: boolean, grec: boolean, apresArticle: boolean, thai: boolean): number[] {
+    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}|${abjad}|${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${slave ? 1 : 0}${grec ? 1 : 0}${apresArticle ? 1 : 0}${thai ? 1 : 0}`;
+    /* deux mots du dictionnaire ne sont deux mots anglais que hors de l'article arabe, d'un côté comme de l'autre (voir ARTICLES_ARABES) */
+    const anglais = (autre: MotIndexe) => tousDeuxAnglais(mot, autre.mot) && !apresArticle && !autre.apresArticleVu;
     const deja = this.cacheMots.get(cle);
     if (deja) return deja;
     const t = simMinimale(this.seuil);
@@ -403,6 +456,8 @@ export class Index {
     /* et le mot demandé qui écrit ee cherche sous son squelette lu i, où les mots listés en ee sont
        aussi rangés : les deux sens de squeletteLongue */
     if (t <= 0.95 && mot.includes("ee")) for (const m of this.parSq.get(squeletteLongue(mot)) ?? []) retenus.add(m);
+    /* et sous son squelette arabe (voir squeletteArabe), où les mots listés dont il diffère sont aussi rangés */
+    if (t <= 0.95) for (const m of this.parSq.get(squeletteArabe(mot)) ?? []) retenus.add(m);
     /* les mêmes consonnes (CREDIT_ABJAD) : un nom écrit dans un abjad face à tous les mots, un nom
        latin face aux mots que des chaînes écrites dans un abjad portent */
     if (t <= CREDIT_ABJAD) {
@@ -414,19 +469,30 @@ export class Index {
            ce t, et les mots listés en « -at » sont rangés sous la leur */
         const sansTa = mode === "arabe" ? cleAbjadSansTa(mot) : undefined;
         if (sansTa !== undefined && sansTa.length >= 3) for (const m of table.get(`a|${sansTa}`) ?? []) retenus.add(m);
+        /* le v lu ف, dans les deux sens aussi */
+        const vLuF = mode === "arabe" ? cleAbjadVLuF(mot) : undefined;
+        if (vLuF !== undefined && vLuF.length >= 3) for (const m of table.get(`a|${vLuF}`) ?? []) retenus.add(m);
       }
     }
     /* les mêmes kana (CREDIT_KANA) : un nom marqué japonais face à tous les mots, un nom sans marque face aux mots
        que des chaînes marquées portent */
     if (t <= CREDIT_KANA) for (const m of (japonais ? this.parPliJaponais : this.parPliJaponaisNatif).get(pliJaponais(mot)) ?? []) retenus.add(m);
+    /* les mêmes lettres thaïes (CREDIT_THAI), dans les deux sens de la marque */
+    if (t <= CREDIT_THAI) for (const m of (thai ? this.parPliThai : this.parPliThaiNatif).get(pliThai(mot)) ?? []) retenus.add(m);
     /* la même suite cyrillique (CREDIT_CYRILLIQUE), dans les deux sens de la marque ; et, au crédit d'une romanisation, la
        voyelle d'appui sur la clé du pli (« aleksandr », « aleksander ») : la marque se vérifie au score */
     const ps = pliSlave(mot);
-    if (t <= CREDIT_CYRILLIQUE) for (const m of (slave ? this.parPliSlave : this.parPliSlaveNatif).get(ps) ?? []) retenus.add(m);
+    if (t <= CREDIT_CYRILLIQUE) {
+      const [table, allemande] = slave ? [this.parPliSlave, this.parPliSlaveAllemand] : [this.parPliSlaveNatif, this.parPliSlaveAllemandNatif];
+      for (const m of table.get(ps) ?? []) retenus.add(m);
+      /* la romanisation allemande, dans les deux sens (voir `clesSlaves` et `memeSuiteCyrillique`) */
+      for (const m of allemande.get(ps) ?? []) retenus.add(m);
+      for (const k of clesSlaves(mot)) if (k !== ps) for (const m of table.get(k) ?? []) retenus.add(m);
+    }
     if (t <= 0.9) {
       for (const L of [ps.length - 1, ps.length + 1]) {
         for (const m of this.parPliSlaveInitialeLongueur.get((ps[0] ?? "") + L) ?? []) {
-          if ((slave || m.slaveVu) && voyelleEpenthetique(ps, pliSlave(m.mot)) && !tousDeuxAnglais(mot, m.mot)) retenus.add(m);
+          if ((slave || m.slaveVu) && voyelleEpenthetique(ps, pliSlave(m.mot)) && !anglais(m)) retenus.add(m);
         }
       }
     }
@@ -434,6 +500,8 @@ export class Index {
       for (const m of this.parRepli.get(repli) ?? []) retenus.add(m);
       /* le pli coréen (CREDIT_ROMANISATION), dans les deux sens de la marque, comme le cantonais */
       for (const m of (coreen ? this.parPliCoreen : this.parPliCoreenNatif).get(pliCoreen(mot)) ?? []) retenus.add(m);
+      /* le pli grec (CREDIT_ROMANISATION), dans les deux sens de la marque grecque ou hébraïque */
+      for (const m of (grec ? this.parPliGrec : this.parPliGrecNatif).get(pliGrec(mot)) ?? []) retenus.add(m);
       /* le pli cantonais (CREDIT_ROMANISATION) : un nom lu en cantonais face à tous les mots, un nom
          latin face aux mots que des chaînes lues en cantonais portent */
       for (const m of (cantonais ? this.parPliCantonais : this.parPliCantonaisNatif).get(pliCantonais(mot)) ?? []) retenus.add(m);
@@ -452,7 +520,7 @@ export class Index {
           || (coupe && dernier && autre.startsWith(mot))) retenus.add(m);
       }
       for (const m of this.parSqInitialeLongueur.get((sq[0] ?? "") + sq.length) ?? []) {
-        if (variationVocalique(sq, m.sq) && !tousDeuxAnglais(mot, m.mot)) retenus.add(m);
+        if (variationVocalique(sq, m.sq) && !anglais(m)) retenus.add(m);
       }
       /* la ñ écrite ny (CREDIT_ROMANISATION sous la marque hispanique, qui se vérifie au score) : les mots listés en ny
          sous leur pli, et, pour un mot demandé en ny, le mot listé en n par égalité (voir `pliEnye`) */
@@ -475,7 +543,7 @@ export class Index {
          même initiale */
       for (const L of [sq.length - 1, sq.length + 1]) {
         for (const m of this.parSqInitialeLongueur.get((sq[0] ?? "") + L) ?? []) {
-          if (voyelleEpenthetique(sq, m.sq) && !tousDeuxAnglais(mot, m.mot)) retenus.add(m);
+          if (voyelleEpenthetique(sq, m.sq) && !anglais(m)) retenus.add(m);
         }
       }
       /* la faute d'un clavardage (mêmes règles que le score) : même initiale, une lettre près, un seul
@@ -530,13 +598,23 @@ export class Index {
     const coupe = estCoupe(brut);
     q.mots.forEach((m, i) => {
       for (const k of this.nomsParMot(m, q.squelettes[i]!, q.replis[i]!, i === q.mots.length - 1, coupe, q.abreges[i]!, q.marques.abjad, q.marques.cantonais,
-        q.marques.japonais, q.marques.coreen, q.marques.slave)) retenus.add(k);
+        q.marques.japonais, q.marques.coreen, q.marques.slave, q.marques.hebreuOuGrec, i > 0 && ARTICLES_ARABES.has(q.mots[i - 1]!), q.marques.thai)) retenus.add(k);
       /* une civilité que la requête soude au mot suivant (« sripelangi »), ou qu'elle écrit à part
          quand une chaîne listée la soude : mêmes règles que le score, qui vérifie que l'autre côté
          l'a écrite ; ici on retient large */
       for (const c of CIVILITES) if (m.startsWith(c) && m.length >= c.length + 4) for (const k of this.vocabulaire.get(m.slice(c.length))?.noms ?? []) retenus.add(k);
       for (const c of q.civilites) for (const k of this.vocabulaire.get(c + m)?.noms ?? []) retenus.add(k);
     });
+    /* le sigle d'une locution (voir `sigleDe`) : un sigle écrit de la requête cherche les chaînes dont des mots consécutifs
+       portent ses initiales ; les initiales de mots consécutifs de la requête cherchent les sigles écrits des listes. La
+       condition d'absence de l'autre côté se vérifie au score ; ici on retient large */
+    q.mots.forEach((m, i) => { if (q.sigles[i] && m.length >= 2 && m.length <= 4) for (const k of this.parInitialesSuite.get(m) ?? []) retenus.add(k); });
+    for (let L = 2; L <= 4; L++) for (let i = 0; i + L <= q.mots.length; i++) {
+      const suite = q.mots.slice(i, i + L);
+      if (suite.some((w) => w.length < 3 || PARTICULES.has(w))) continue;
+      const s = this.vocabulaire.get(suite.map((w) => w[0]).join(""));
+      if (s?.sigleVu) for (const k of s.noms) retenus.add(k);
+    }
     /* le bloc, sur le bloc brut puis sur celui des squelettes. Pour chaque longueur de bloc
        listé dans la bande, le lemme dit combien de bigrammes doivent être partagés ; par le
        principe des tiroirs, une chaîne qui en partage autant porte au moins un des
@@ -629,7 +707,7 @@ export function cribler(c: Contrepartie, index: Index, seuils: { fort: number; p
     let s = 0;
     /* un ancien nom des deux côtés, deux succursales : le possible au plus (voir `plafondDesLectures`) */
     for (const l of lectures) {
-      const plafond = plafondDesLectures(l.lecture, { texte: n.brut, lecture: n.nom.marques.cantonais ? "cantonais" : "mandarin", ancien: n.ancien, mention: n.mention, registre: n.registre, partie: n.partie });
+      const plafond = plafondDesLectures(l.lecture, { texte: n.brut, lecture: n.nom.marques.lecture, ancien: n.ancien, mention: n.mention, registre: n.registre, partie: n.partie });
       s = Math.max(s, Math.min(plafond, scoreBrut(index.f, l.brut, l.nom, n.brut, n.nom, options)));
     }
     if (s < seuils.possible) continue;

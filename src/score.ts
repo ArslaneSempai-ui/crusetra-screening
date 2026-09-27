@@ -13,6 +13,7 @@ import { distanceOsa } from "./matchers/damerau.ts";
 import { preparer } from "./matchers/preparer.ts";
 import { translitterer } from "./matchers/translitteration.ts";
 import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, type Lecture } from "./ecritures.ts";
+import { cleAbjadVLuF } from "./ecritures.ts";
 import type { Marques } from "./preparation.ts";
 import type { Frequences } from "./mots.ts";
 import { analyserEntite } from "./preparation.ts";
@@ -40,13 +41,15 @@ import { voyelleSautee } from "./mots.ts";
 import { voyelleEpenthetique } from "./mots.ts";
 import { pliJaponais } from "./mots.ts";
 import { pliCoreen } from "./mots.ts";
+import { pliGrec } from "./mots.ts";
 import { pliIndien } from "./mots.ts";
 import { pliTamoul } from "./mots.ts";
 import { CREDIT_ROMANISATION } from "./mots.ts";
 import { CREDIT_KANA } from "./mots.ts";
 import { suffixeEtablissement } from "./mots.ts";
-import { pliSlave } from "./mots.ts";
+import { pliSlave, memeSuiteCyrillique } from "./mots.ts";
 import { CREDIT_CYRILLIQUE } from "./mots.ts";
+import { pliThai, CREDIT_THAI } from "./mots.ts";
 import { queueDeComposeSlave } from "./mots.ts";
 import { QUEUES_SLAVES } from "./mots.ts";
 import { radicalSlave } from "./mots.ts";
@@ -54,6 +57,7 @@ import { pliVoyellesCoreennes } from "./mots.ts";
 import { CREDIT_APPUI } from "./mots.ts";
 import { CREDIT_ABJAD } from "./mots.ts";
 import { squeletteLongue } from "./mots.ts";
+import { squeletteArabe } from "./mots.ts";
 import { estSyllabeIsolee } from "./mots.ts";
 import { PAYS_MOTS } from "./variantes.ts";
 import { REGIONS } from "./preparation.ts";
@@ -68,6 +72,9 @@ export type NomPrepare = {
   squelettes: readonly string[]; replis: readonly string[];
   /** les mots que leur auteur a abrégés d'un point (« Petrochem. ») */
   abreges: readonly boolean[];
+  /** les sigles écrits comme tels, lettres séparées d'un point, d'une barre ou d'une esperluette (« C&F », « T/C »,
+   *  « C.I. ») : les initiales d'une locution que l'autre nom écrit en toutes lettres (voir `sigleDe`) */
+  sigles: readonly boolean[];
   /** les mots écrits entre parenthèses (« (Shanghai) ») */
   parentheses: readonly boolean[];
   /** les mots que les tables ont traduits (« Comercial » devenu « commercial ») : des mots du métier, jamais
@@ -90,18 +97,18 @@ export type NomPrepare = {
 };
 
 const SANS_MARQUES: Marques = { pays: [], familles: [], designations: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
-  coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, tamoul: false, prive: false, majuscules: false, chat: false, abjad: "", cantonais: false,
-  priveInconnu: false, natifs: new Map(), filiation: "", succursale: "", typeNavire: "", slave: false };
+  coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, tamoul: false, thai: false, prive: false, majuscules: false, chat: false, abjad: "", cantonais: false,
+  lecture: "mandarin", priveInconnu: false, natifs: new Map(), filiation: "", succursale: "", typeNavire: "", slave: false };
 
 export function preparerNom(f: Frequences, nom: string, lecture: Lecture = "mandarin"): NomPrepare {
   const a = analyserEntite(nom, lecture);
-  const { texte: _t, abreges, parentheses, civilites, traduits, sources, ...marques } = a;
-  return depuisJetons(f, jetons(preparer(a.texte)), marques, abreges, parentheses, civilites, traduits, sources);
+  const { texte: _t, abreges, parentheses, civilites, traduits, sources, sigles, ...marques } = a;
+  return depuisJetons(f, jetons(preparer(a.texte)), marques, abreges, parentheses, civilites, traduits, sources, sigles);
 }
 
 export function depuisJetons(f: Frequences, J: readonly string[], marques: Marques = SANS_MARQUES,
   abreges: ReadonlySet<string> = new Set(), parentheses: ReadonlySet<string> = new Set(), civilites: ReadonlySet<string> = new Set(),
-  traduits: ReadonlySet<string> = new Set(), sources: ReadonlyMap<string, string> = new Map()): NomPrepare {
+  traduits: ReadonlySet<string> = new Set(), sources: ReadonlyMap<string, string> = new Map(), sigles: ReadonlySet<string> = new Set()): NomPrepare {
   /* Un chiffre romain n'est un NUMÉRO qu'en fin de nom (« Karina II », « Star I ») : au milieu,
      « I » est un mot (« Shun I Fa », le « yi » chinois en Wade-Giles, mesuré le 27/09 : la
      règle des numéros le lisait « 1 » et rendait 0 face à « Shun Yi Fa No. 232 »). */
@@ -113,6 +120,7 @@ export function depuisJetons(f: Frequences, J: readonly string[], marques: Marqu
     squelettes: mots.map(squelette),
     replis: mots.map((m) => voyelles(squelette(m))),
     abreges: mots.map((m) => abreges.has(m)),
+    sigles: mots.map((m) => sigles.has(m)),
     parentheses: mots.map((m) => parentheses.has(m)),
     traduits: mots.map((m) => traduits.has(m)),
     sources: mots.map((m) => sources.get(m) ?? ""),
@@ -303,6 +311,29 @@ export function tronque(dernier: string, long: string): boolean {
 }
 
 /**
+ * LE SIGLE D'UNE LOCUTION : « C&F » pour Clearing and Forwarding, « T/C » pour Time Charter, « C.I. » pour Comercializadora
+ * Internacional (jeux 5 et 10, tour 9 : 0,496, 0,584 et 0,574, le sigle mot rare sans répondant et ses mots orphelins de
+ * l'autre côté). Un sigle écrit comme tel (`sigles` : des lettres séparées d'un point, d'une barre ou d'une esperluette),
+ * de deux à quatre lettres, dont les lettres sont les INITIALES d'autant de mots consécutifs de l'autre nom, tous de
+ * trois lettres au moins, ni particules ni écrits de ce côté-ci : il vaut ces mots au crédit d'une abréviation (0,9), et
+ * chacun d'eux le vaut (voir `scorePrepares`). Le sigle sans ponctuation (« CF ») n'ouvre rien : « JP », « AK », « GS »
+ * sont aussi des initiales de personnes. Rend l'indice du premier mot couvert dans `mots`, ou -1.
+ */
+export function sigleDe(sigle: string, mots: readonly string[], absents: readonly string[]): number {
+  const L = sigle.length;
+  if (L < 2 || L > 4 || mots.length < L) return -1;
+  for (let j = 0; j + L <= mots.length; j++) {
+    let ok = true;
+    for (let k = 0; k < L && ok; k++) {
+      const w = mots[j + k]!;
+      ok = w.length >= 3 && w[0] === sigle[k] && !PARTICULES.has(w) && !absents.includes(w);
+    }
+    if (ok) return j;
+  }
+  return -1;
+}
+
+/**
  * Ce qu'un mot apporte au score : sa similarité, TRANCHÉE. Un mot à moitié ressemblant
  * (« north » et « south », 0,6) n'est pas à moitié le même mot : il est un autre mot. Sous
  * 0,5 un mot n'apporte rien ; au-dessus, l'écart à 1 compte double.
@@ -388,6 +419,8 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   const hebreuOuGrec = A.marques.hebreuOuGrec || B.marques.hebreuOuGrec, indien = A.marques.indien || B.marques.indien;
   const hispanique = A.marques.hispanique || B.marques.hispanique;
   const tamoul = A.marques.tamoul || B.marques.tamoul;
+  /* un nom thaï d'un côté : la RTGS et la graphie d'usage d'un même mot sont un mot (`pliThai`, CREDIT_THAI) */
+  const thai = A.marques.thai || B.marques.thai;
   /* en pinyin, l'initiale est un phonème : Jin n'est pas Yin, Chang n'est pas Shang ; seules les
      paires d'aspiration du Wade-Giles se confondent (k, g ; t, d ; p, b ; ts, z, c ; ch, zh, j, q ; hs, x) */
   const chinois = A.marques.chinois || B.marques.chinois;
@@ -420,8 +453,18 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   /* un côté écrit dans un abjad (arabe et persan, hébreu) n'a pas de voyelles : ses mots se
      comparent aux consonnes du côté latin (`cleAbjad`), et l'égalité vaut un squelette égal */
   const abjad = A.marques.abjad || B.marques.abjad;
+  /* LE STYLE D'UN NOM QUI TRONQUE (« Tema Consol & Log Ltd », « West Coast Chart & Brok Ltd », jeu 10, tour 9 : 0,531 et 0,612) :
+     un connaissement qui abrège un mot par son début en abrège d'autres, et « Consol », « Chart » y sont Consolidators et
+     Chartering bien que le dictionnaire les connaisse. Le signal, par côté : un mot absent de l'autre nom qui COMMENCE un mot
+     de l'autre nom au crédit d'une troncature déjà admise (le dernier mot coupé, `tronque` ; l'abréviation d'usage, quatre
+     lettres qu'aucun dictionnaire ne connaît : « Brok »). Sous ce signal, la réserve du dictionnaire tombe pour les autres
+     mots de ce côté (voir l'abréviation d'usage plus bas) ; sans lui, « Sun » n'abrège toujours pas « Sunshine » */
+  const styleTronque = (X: NomPrepare, Y: NomPrepare) => X.mots.some((x, i) => !Y.mots.includes(x)
+    && Y.mots.some((y) => (i === X.mots.length - 1 && tronque(x, y)) || (x.length >= 4 && y.length >= x.length + 3 && y.startsWith(x) && !lemme(x))));
+  const tronqueur: readonly [boolean, boolean] = [styleTronque(A, B), styleTronque(B, A)];
   const memo = options.memo;
   const cote = (X: NomPrepare, Y: NomPrepare, cote: 0 | 1) => {
+    const styleX = tronqueur[cote], styleY = tronqueur[1 - cote]!;
     let s = 0;
     const descripteurX = descripteur(X);
     for (let i = 0; i < X.mots.length; i++) {
@@ -434,35 +477,46 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
         const nx = X.marques.natifs.get(x) ?? "", ny = Y.marques.natifs.get(y) ?? "";
         /* la clé porte tout ce qui décide : les deux mots, leurs marques d'abréviation, et
            leur position de dernier mot (la troncature ne vaut que pour lui) */
-        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}${navire ? 1 : 0}${sansForme ? 1 : 0}${germanique ? 1 : 0}${slave ? 1 : 0}${abjad}${nx}${ny}${nordique ? 1 : 0}` : "";
+        /* le mot qui suit l'article ou la filiation arabe (« Al Ameen », « Bin Salem ») est un mot arabe, quoi qu'en dise le
+           dictionnaire anglais, qui tient « amin » et « ameen » pour deux mots (jeu 13, 28/09 : « Al Ameen Shipping » face à
+           « Al-Amin Shipping » à 0,648, la voyelle longue refusée à deux « mots anglais ») ; ailleurs, deux mots du dictionnaire
+           restent deux mots (Green, Grin) */
+        const arabeX = arabe && i > 0 && ARTICLES_ARABES.has(X.mots[i - 1]!), arabeY = arabe && j > 0 && ARTICLES_ARABES.has(Y.mots[j - 1]!);
+        const anglais = tousDeuxAnglais(x, y) && !arabeX && !arabeY;
+        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${arabeX ? 1 : 0}${arabeY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${thai ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}${navire ? 1 : 0}${sansForme ? 1 : 0}${germanique ? 1 : 0}${slave ? 1 : 0}${abjad}${nx}${ny}${nordique ? 1 : 0}${styleX ? 1 : 0}${styleY ? 1 : 0}` : "";
         /* le cache code l'équivalence de romanisation en ajoutant 2 à la valeur (elle est dans [0, 1]) */
         const enCache = memo?.get(cle);
         let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
         let equivalent = enCache !== undefined && enCache >= 2;
         if (v === undefined) {
           v = simMot(x, y, X.squelettes[i]!, Y.squelettes[j]!, voyellesLibres, !navire);
-          const pliC = cantonais && x !== y && !tousDeuxAnglais(x, y) && pliCantonais(x) === pliCantonais(y);
+          const pliC = cantonais && x !== y && !anglais && pliCantonais(x) === pliCantonais(y);
           /* la même suite de kana sous deux romanisations (`pliJaponais`) : lue AVANT la règle chinoise des
              initiales, parce que « Co., Ltd. » marque aussi le nom chinois, et que h et f (« Huzimoto »,
              « Fujimoto »), t et c (« Tyūō », « Chūō ») ne sont pas deux syllabes chinoises mais un seul kana */
-          const pliJ = japonais && x !== y && !tousDeuxAnglais(x, y) && pliJaponais(x) === pliJaponais(y);
+          const pliJ = japonais && x !== y && !anglais && pliJaponais(x) === pliJaponais(y);
           /* la même suite cyrillique sous deux romanisations (`pliSlave` : « Zhatva », « Žatva » ; « Yeyskiy », « Eiskii » ;
              « Mykolaivskyi », « Nikolaevskiy ») ; et la voyelle d'appui que la forme anglaise d'un prénom russe écrit dans
              son groupe final (« Aleksandr », « Alexander » ; « Dnepr », « Dnieper »), au crédit d'une romanisation */
-          const pliS = slave && x !== y && !tousDeuxAnglais(x, y) && pliSlave(x) === pliSlave(y);
-          const appuiSlave = slave && !pliS && x !== y && !tousDeuxAnglais(x, y) && voyelleEpenthetique(pliSlave(x), pliSlave(y));
-          const autreSyllabe = chinois && x !== y && !pliC && !pliJ && !pliS && !initialesChinoisesCompatibles(x, y);
+          const pliS = slave && x !== y && !anglais && memeSuiteCyrillique(x, y);
+          const appuiSlave = slave && !pliS && x !== y && !anglais && voyelleEpenthetique(pliSlave(x), pliSlave(y));
+          /* les mêmes lettres thaïes sous la RTGS et la graphie d'usage (`pliThai` : « Phrachan », « Prajan » ; « Ngoen », « Ngern ») ; lue
+             avant la règle chinoise des initiales, parce que « Co., Ltd. » marque aussi le nom chinois */
+          const pliT = thai && x !== y && !anglais && pliThai(x) === pliThai(y);
+          const autreSyllabe = chinois && x !== y && !pliC && !pliJ && !pliS && !pliT && !initialesChinoisesCompatibles(x, y);
           if (autreSyllabe) v = Math.min(v, 0.5);
           /* une équivalence de romanisation, dans le contexte de la langue : elle vaut au moins
              CREDIT_ROMANISATION, et elle lève l'ambiguïté du mot court (voir plus bas) */
-          equivalent = !autreSyllabe && x !== y && !tousDeuxAnglais(x, y) && (pliC
+          equivalent = !autreSyllabe && x !== y && !anglais && (pliC
             || (romanisation && (X.replis[i] === Y.replis[j] || variationVocalique(X.squelettes[i]!, Y.squelettes[j]!)
               || voyelleSautee(X.squelettes[i]!, Y.squelettes[j]!)))
             || (arabe && voyelleEpenthetique(X.squelettes[i]!, Y.squelettes[j]!))
             /* et « oe » y était « u » (« Soerya », « Surya ») : o et u ne font qu'une classe sous cette marque */
             || (indonesien && X.squelettes[i]!.replace(/o/g, "u") === Y.squelettes[j]!.replace(/o/g, "u"))
-            || pliJ || pliS || appuiSlave
+            || pliJ || pliS || appuiSlave || pliT
             || (coreen && pliCoreen(x) === pliCoreen(y))
+            /* le grec sous deux romanisations (« Hellas », « Ellas » ; « Chrysafi », « Hrisafi »), sous la marque grecque ou hébraïque */
+            || (hebreuOuGrec && pliGrec(x) === pliGrec(y))
             /* v, w, b : hindi, hébreu, espagnol, portugais ; sous leur contexte, au crédit et non au
                squelette, pour que Fabre reste distinct de Favre */
             || ((indien || hispanique) && pliIndien(x) === pliIndien(y))
@@ -476,6 +530,8 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           if (pliJ) v = Math.max(v, CREDIT_KANA);
           /* et la même suite cyrillique aussi (voir CREDIT_CYRILLIQUE) */
           if (pliS) v = Math.max(v, CREDIT_CYRILLIQUE);
+          /* et les mêmes lettres thaïes aussi (voir CREDIT_THAI) */
+          if (pliT) v = Math.max(v, CREDIT_THAI);
           /* L'ADJECTIF SLAVE DE LIEU : « Kubanskaya » et « Kurganskaya » se ressemblent à 0,82 par leur suffixe commun ;
              ce sont leurs radicaux qui nomment, Kuban et Kurgan, deux lieux à deux lettres près (voir `radicalSlave`).
              Sous la marque, deux mots au même suffixe et de radicaux différents valent leurs radicaux seuls ; sauf quand
@@ -489,28 +545,33 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           }
           /* les voyelles du coréen sous deux systèmes (« Cheonghae », « Chunghae » ; « Hanseong », « Hansung ») : le crédit
              de la voyelle d'appui (voir `pliVoyellesCoreennes`) ; l'index les retrouve par `pliCoreen`, que ce pli implique */
-          if (coreen && x !== y && !tousDeuxAnglais(x, y) && pliVoyellesCoreennes(x) === pliVoyellesCoreennes(y)) { equivalent = true; v = Math.max(v, CREDIT_APPUI); }
+          if (coreen && x !== y && !anglais && pliVoyellesCoreennes(x) === pliVoyellesCoreennes(y)) { equivalent = true; v = Math.max(v, CREDIT_APPUI); }
           /* la voyelle d'appui (« Bahr », « Bahar ») ne change pas le mot arabe, quand une voyelle
              substituée peut en faire un autre : son crédit est au-dessus (CREDIT_APPUI) */
-          if (arabe && x !== y && !tousDeuxAnglais(x, y) && voyelleEpenthetique(X.squelettes[i]!, Y.squelettes[j]!)) v = Math.max(v, CREDIT_APPUI);
+          if (arabe && x !== y && !anglais && voyelleEpenthetique(X.squelettes[i]!, Y.squelettes[j]!)) v = Math.max(v, CREDIT_APPUI);
           /* les mêmes consonnes qu'un mot venu d'un abjad : ce côté n'a jamais eu de voyelles à
              comparer, c'est l'égalité de squelette de son écriture (« بحر » bhr et « Bahr »,
              « הנגב » hngb et « HaNegev »). Mesuré le 27/09 sur les paires des jeux 6 et 8 : au
              crédit de 0,85, « بحر الذهب » restait à 0,744, « سپیددشت » à 0,787 et « שחר הגליל » à
              0,700, sous le possible, chaque mot du nom propre n'apportant que 0,7 */
-          if (abjad !== "" && x !== y && !tousDeuxAnglais(x, y)) {
+          if (abjad !== "" && x !== y && !anglais) {
             const kx = cleAbjad(x, abjad), ky = cleAbjad(y, abjad);
             /* et la ta marbuta (ة), « -at » en annexion d'un côté, « -a » de l'autre (« Zahrat », « zahra ») */
+            /* et le v d'un mot anglais que l'arabe écrit ف (« Silver », « سيلفر » silfr : voir `cleAbjadVLuF`) */
             const memes = (kx.length >= 3 && kx === ky) || (abjad === "arabe"
-              && ((ky.length >= 3 && cleAbjadSansTa(x) === ky) || (kx.length >= 3 && cleAbjadSansTa(y) === kx)));
+              && ((ky.length >= 3 && cleAbjadSansTa(x) === ky) || (kx.length >= 3 && cleAbjadSansTa(y) === kx)
+                || (ky.length >= 3 && cleAbjadVLuF(x) === ky) || (kx.length >= 3 && cleAbjadVLuF(y) === kx)));
             if (memes) { equivalent = true; v = Math.max(v, CREDIT_ABJAD); }
           }
           /* la voyelle longue ī écrite ee ou i : le même mot au squelette près (« Naseem », « Nasim » ;
              « Waleed », « Walid »), sous les marques arabe et indienne, et il vaut un squelette égal
              (0,95), pas une variation (jeu 9, 27/09 : « Naseem Al Bahar » et « Nasim Al Bahr », deux mots
              au crédit de 0,85, restaient à 0,715) */
-          if (v < 0.95 && (arabe || indien) && x !== y && !tousDeuxAnglais(x, y) && (x.includes("ee") || y.includes("ee"))
+          if (v < 0.95 && (arabe || indien) && x !== y && !anglais && (x.includes("ee") || y.includes("ee"))
             && squeletteLongue(x) === squeletteLongue(y)) { equivalent = true; v = 0.95; }
+          /* et sous la marque arabe, o et u sont une lettre, le پ persan un ف (voir `squeletteArabe`) : « Nour », « Noor » ; « Kohsar »,
+             « Koohsar » ; « Sepid », « Sefid » ; un squelette égal (0,95), pas la variation d'une voyelle (jeu 13, 28/09) */
+          if (v < 0.95 && arabe && x !== y && !anglais && squeletteArabe(x) === squeletteArabe(y)) { equivalent = true; v = 0.95; }
           /* sous la marque japonaise, le mot augmenté d'un suffixe d'établissement (« Tekkō », « Tekkōsho ») est une autre
              raison sociale : ni abréviation sans point, ni mot coupé, ni mot abrégé (voir `suffixeEtablissement`) */
           /* et sous la marque slave, le mot augmenté d'une queue de composé (« Elevator », « Elevatorstroy » ; « Agro »,
@@ -541,15 +602,27 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
              où une syllabe qui en commence une autre est un autre mot (Hua, Huaxin) */
           /* et sous la marque nordique, seulement si ce qui suit est un générique du commerce : « Spannmåls » commence
              « Spannmålsexport », « Brøndby » ne commence pas « Brøndbyvester », c'est un autre lieu (voir `queueGenerique`) */
+          /* et sous le style d'un nom qui tronque (voir `styleTronque`), un mot que le dictionnaire connaît aussi : « Chart » pour
+             Chartering, « Consol » pour Consolidators, à côté de « Brok » et de « Log » */
           if (v < CREDIT_ROMANISATION && !chinois && !coreen && !japonais && !navire && !autreNom
-            && ((x.length >= 4 && y.length >= x.length + 3 && y.startsWith(x) && !lemme(x) && (!nordique || queueGenerique(y, x)))
-              || (y.length >= 4 && x.length >= y.length + 3 && x.startsWith(y) && !lemme(y) && (!nordique || queueGenerique(x, y))))) v = CREDIT_ROMANISATION;
+            && ((x.length >= 4 && y.length >= x.length + 3 && y.startsWith(x) && (!lemme(x) || styleX) && (!nordique || queueGenerique(y, x)))
+              || (y.length >= 4 && x.length >= y.length + 3 && x.startsWith(y) && (!lemme(y) || styleY) && (!nordique || queueGenerique(x, y))))) v = CREDIT_ROMANISATION;
           /* LES COMPOSÉS allemands et néerlandais : le nom déterminé ferme le mot (« Stahlrohr » est un Rohr,
              « Textilmaschinen » des machines textiles, « Metaalhandel » le commerce du métal), et le nom d'usage
              garde l'un des deux membres (« Rheinstahl Rohr », « Hoffmann Textil », « De Groot Machines », jeu 10).
              Sous la marque, un mot qui commence ou finit par un mot de l'autre nom vaut le crédit d'une
              romanisation, dans les deux sens (voir `compose`) */
           if (v < CREDIT_ROMANISATION && germanique && (compose(x, y) || compose(y, x))) v = CREDIT_ROMANISATION;
+          /* LE MOT DE TROIS LETTRES D'UN CLAVARDAGE : « exp » pour Exports, « imp », « gen », « eng », tapés au pouce et pas en
+             dernier mot (là, `tronque` les lit déjà). Sous la marque chat, trois lettres qu'aucun dictionnaire ne connaît, qui ne
+             font pas une syllabe chinoise (« xin » n'est pas Xinhai) et qui commencent un mot ANGLAIS de l'autre nom d'au moins six
+             lettres : le crédit d'une abréviation d'usage (jeu 13, tour 9 : « sanghvi diamnd exp mumbai » à 0,562 face à
+             « Sanghvi Diamond Exports, Mumbai », « exp » et « exports » orphelins de part et d'autre). Un mot du dictionnaire
+             seulement : on abrège un mot de la langue, pas un patronyme (« Eze » n'est pas « Ezenwa » tapé court : jeu 13,
+             deux destinataires différents montés à 0,800 quand la règle valait pour tout mot) */
+          if (v < CREDIT_ROMANISATION && chat && !chinois && !coreen && !japonais && !navire && !autreNom
+            && ((x.length === 3 && y.length >= 6 && y.startsWith(x) && !DICTIONNAIRE.has(x) && !estSyllabeIsolee(x) && !PARTICULES.has(x) && lemme(y) !== undefined)
+              || (y.length === 3 && x.length >= 6 && x.startsWith(y) && !DICTIONNAIRE.has(y) && !estSyllabeIsolee(y) && !PARTICULES.has(y) && lemme(x) !== undefined))) v = CREDIT_ROMANISATION;
           /* LA FAUTE D'UN CLAVARDAGE : sous la marque chat, un mot que le dictionnaire connaît face à un
              mot qu'il ne connaît pas, à UNE lettre près hors l'initiale (substituée, tombée, doublée,
              inversée), est la faute d'un pouce ou le correcteur d'un téléphone qui a fait un mot anglais
@@ -602,6 +675,20 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
         if (m < 1) for (const c of X.civilites) {
           const k = Y.mots.indexOf(c + x);
           if (k >= 0) { m = 1; meilleurY = k; equivalentM = false; break; }
+        }
+      }
+      /* LE SIGLE D'UNE LOCUTION (voir `sigleDe`) : le sigle est de ce côté, et ses lettres sont les initiales de mots
+         consécutifs de l'autre nom (« C&F » face à « Clearing and Forwarding ») ; ou de l'autre, et ce mot est l'un de
+         ceux qu'il abrège. Hors du cache des mots, dont la clé ne porte pas les voisins */
+      if (m < 0.9) {
+        if (X.sigles[i]) {
+          const j0 = sigleDe(X.mots[i]!, Y.mots, X.mots);
+          if (j0 >= 0) { m = 0.9; meilleurY = j0; equivalentM = false; }
+        }
+        if (m < 0.9) for (let j = 0; j < Y.mots.length; j++) {
+          if (!Y.sigles[j]) continue;
+          const i0 = sigleDe(Y.mots[j]!, X.mots, Y.mots);
+          if (i0 >= 0 && i >= i0 && i < i0 + Y.mots[j]!.length) { m = 0.9; meilleurY = j; equivalentM = false; break; }
         }
       }
       if (m < 0.8) { orphelins[cote] = true; orphelinsMots[cote].push(X.mots[i]!); }
@@ -694,7 +781,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
      s'écrivent en syllabes), le bloc garde son droit : « Kuang Yu » est « Guangyu », « Soon Heng » est « Shun Hing »,
      « Tek Leong » est « Delong » (treize vrais noms perdus quand la règle valait partout, mesuré le 27/09 sur les jeux 3, 5,
      7 et 9). Ailleurs, les lettres sont des lettres */
-  const syllabes = voyellesLibres || cantonais || japonais || tamoul || indonesien || A.marques.natifs.size > 0 || B.marques.natifs.size > 0
+  const syllabes = voyellesLibres || cantonais || japonais || tamoul || thai || indonesien || A.marques.natifs.size > 0 || B.marques.natifs.size > 0
     || A.marques.pays.includes("SG") || B.marques.pays.includes("SG");
   const oA = orphelinsMots[0].join(""), oB = orphelinsMots[1].join("");
   const memesLettres = syllabes || oA === "" || oB === ""
@@ -730,6 +817,10 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
 }
 
 export const FACTEUR_CONTENANCE = 0.8;
+/** L'article et la filiation arabes : le mot qui les suit est un mot arabe, quoi qu'en dise le dictionnaire anglais, qui connaît
+ *  « amin » et « ameen » comme deux mots (voir `anglais` dans scorePrepares, et `apresArticleVu` dans l'index). */
+export const ARTICLES_ARABES: ReadonlySet<string> = new Set(["al", "el", "ul", "bin", "bint", "ibn", "abu", "abou", "abd", "abdul", "abdel",
+  "abdal", "umm", "dar", "bayt", "beit", "bani"]);
 /** Un mot est RARE quand son poids atteint cette part du poids d'un mot inconnu des listes :
  *  « Shipping » (439 entrées sur 33 393) l'est tout juste, « Trading » (826) ne l'est pas. */
 export const SEUIL_RARE = 0.45;
@@ -931,7 +1022,7 @@ export function scoreBrut(f: Frequences, a: string, A: NomPrepare, b: string, B:
      formes, elles, se lisent sur le texte coupé, tel que le champ le montre : « FOSHAN JINYUAN CERAMIC SA »
      est « … Sanitary Ware Co., Ltd. » coupé à 25, et son « SA » n'est pas une forme en conflit avec Ltd */
   const coupeDe = (brut: string, entier: NomPrepare, L: number): NomPrepare => {
-    const c = preparerNom(f, brut.slice(0, L), entier.marques.cantonais ? "cantonais" : "mandarin");
+    const c = preparerNom(f, brut.slice(0, L), entier.marques.lecture);
     return { ...c, marques: { ...c.marques, succursale: entier.marques.succursale } };
   };
   if (sembleCoupe(ta, tb)) s = Math.max(s, scorePrepares(A, coupeDe(tb, B, ta.length), options));

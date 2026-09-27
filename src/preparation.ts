@@ -13,10 +13,14 @@ import { distanceOsa } from "./matchers/damerau.ts";
 import { preparer } from "./matchers/preparer.ts";
 import { translitterer } from "./matchers/translitteration.ts";
 import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, type Lecture } from "./ecritures.ts";
+import { DEVANAGARI } from "./devanagari.ts";
+import { wadeGiles } from "./wadegiles.ts";
 /* une déclaration de fonction : elle traverse le cycle mots.ts → preparation.ts, et n'est appelée qu'à la première demande */
 import { pliJaponais } from "./mots.ts";
-import { pliSlave } from "./mots.ts";
+import { pliSlave, clesSlaves } from "./mots.ts";
 import { traductionNordique, estFinnois, GENITIFS_FINNOIS } from "./nordique.ts";
+import { GRAPHIES_INDIENNES } from "./indien.ts";
+import { estVietnamien, LOCUTIONS_VIETNAMIENNES } from "./vietnamien.ts";
 import { lemme } from "./mots.ts";
 import { porteUnJalon } from "./score.ts";
 import { lettrePerdue } from "./score.ts";
@@ -149,6 +153,11 @@ const LOCUTIONS: readonly [string, string][] = [
   [" ind e com ", " industria comercio "], [" ind com ", " industria comercio "],
   [" imp exp ", " import export "], [" imp and exp ", " import export "],
   [" import and export ", " import export "],
+  /* le générique français de l'armement, « Compagnie Maritime X », que le nom anglais écrit « X Shipping Company » (jeu 7 :
+     « Compagnie Maritime Beaurivage » à 0,585 face à « Beaurivage Shipping Company »). Le mot « compagnie » reste, pour
+     que la forme se lise ; « maritime » SEUL ne se traduit pas : en anglais, « X Maritime » et « X Shipping » sont deux
+     sociétés d'un même groupe (voir TRADUCTIONS) */
+  [" compagnie maritime ", " compagnie shipping "], [" cie maritime ", " cie shipping "],
   [" torgovy dom ", " trading house "], [" torgovyi dom ", " trading house "], [" torgovyy dom ", " trading house "],
   /* malais, indonésien, vietnamien, arabe romanisé (jeu 9) */
   [" dis ticaret ", " trading "], [" dis tic ", " trading "], [" sanayi ve ticaret ", " industry trading "],
@@ -215,12 +224,22 @@ const TRADUCTIONS_ARABES: ReadonlyMap<string, string> = new Map(Object.entries({
   /* la holding (القابضة), les services (الخدمات), le riz (الأرز) : les mots que le nom anglais traduit
      (« Sharikat Rawasi Al Najd Al Qabidha » est « Rawasi Al Najd Holding Company », jeu 9) */
   qabidha: "holding", qabida: "holding", qabidah: "holding", khadamat: "services", khidmat: "services", aruz: "rice",
+  /* la porte (بوابة), que le nom anglais traduit (jeu 13 : « Mu'assasat Bawabat Najd lil-Muqawalat » est « Najd Gate Contracting Est. ») */
+  bawabat: "gate", bawaba: "gate", bawabah: "gate", bawwabat: "gate", bawwaba: "gate",
 }));
 /** Les graphies d'une romanisation persane ou arabe que la table ne liste pas une à une : gh pour
- *  g (« Bazarghani »), une voyelle longue doublée (« Tejaarat », « Bazaargani »). Le repli ne touche
- *  que la CLÉ cherchée, parmi les mots persans et arabes : un nom propre reste tel quel. */
+ *  g (« Bazarghani »), une voyelle longue doublée (« Tejaarat », « Bazaargani »), la voyelle brève écrite e ou i, o ou u
+ *  (« Tejaria », « Tijariya » ; « Tolid », « Tulid »), le y de la nisba écrit ou non (« Tijariya », « Tijaria »). Le repli
+ *  ne touche que la CLÉ cherchée, parmi les mots persans et arabes pliés de même (`traductionsArabesPliees`) : un nom
+ *  propre reste tel quel (jeu 13, 28/09 : « Altejaria » face à « Al Tijariya », un côté traduit et l'autre non). */
 function pliGenerique(j: string): string {
-  return j.replace(/gh/g, "g").replace(/aa/g, "a").replace(/ee/g, "i").replace(/oo/g, "u");
+  return j.replace(/gh/g, "g").replace(/aa/g, "a").replace(/ee/g, "i").replace(/oo/g, "u").replace(/e/g, "i").replace(/o/g, "u").replace(/y/g, "i")
+    .replace(/(.)\1+/g, "$1");
+}
+let TRADUCTIONS_ARABES_PLIEES: ReadonlyMap<string, string> | undefined;
+function traductionsArabesPliees(): ReadonlyMap<string, string> {
+  if (!TRADUCTIONS_ARABES_PLIEES) TRADUCTIONS_ARABES_PLIEES = new Map([...TRADUCTIONS_ARABES].map(([k, v]) => [pliGenerique(k), v]));
+  return TRADUCTIONS_ARABES_PLIEES;
 }
 /** Les mots de métier des raisons sociales japonaises, romanisés, et le lemme anglais que le nom traduit écrit : un
  *  seul par mot (jeu 11, 28/09). Leurs autres graphies ne se listent pas une à une : le pli des deux romanisations et
@@ -251,11 +270,11 @@ function traduction(j: string, japonais = false, slave = false): string | undefi
      services), les deux raisons sociales d'une société finlandaise (voir nordique.ts) */
   const n = traductionNordique(j);
   if (n !== undefined) return n;
-  const p = pliGenerique(j);
-  const a = p === j ? undefined : TRADUCTIONS_ARABES.get(p);
+  const a = traductionsArabesPliees().get(pliGenerique(j));
   if (a !== undefined) return a;
   /* et sous la marque slave, les mots du commerce et les grades sous le pli des romanisations du cyrillique */
-  if (slave) { const s = traductionsSlavesPliees().get(pliSlave(j)); if (s !== undefined) return s; }
+  /* sous chacune de ses clés, l'allemande comprise (« Sawod » est zavod, plant : voir `clesSlaves`) */
+  if (slave) for (const k of clesSlaves(j)) { const s = TRADUCTIONS.get(k) ?? traductionsSlavesPliees().get(k); if (s !== undefined) return s; }
   if (!japonais) return undefined;
   return traductionsJaponaisesPliees().get(pliJaponais(j));
 }
@@ -325,6 +344,8 @@ export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   handlowe: "trading", przemysl: "industry", przemyslowe: "industrial", budowlane: "construction", transportowe: "transport",
   spedycja: "forwarding", logistyka: "logistics", zegluga: "shipping", stavebni: "construction", obchodni: "trading",
   /* grec translittéré (« Ναυτιλιακή Εταιρεία » est « Shipping Company ») */ naftiliaki: "shipping", naftiki: "shipping",
+  /* et les génériques de la mer que le nom anglais TRADUIT (jeu 13 : « Ελλάς Ναυτικά Λιπαντικά » est « Hellas Marine Lubricants ») */
+  naftika: "marine", naftiko: "marine", naftikos: "marine", lipantika: "lubricants",
   etaireia: "", etairia: "", emporiki: "trading", viomichaniki: "industrial", viomichania: "industry", techniki: "technical",
   kataskevastiki: "construction", metaforiki: "transport", touristiki: "tourism",
   /* turc (jeu 12 : « Gemicilik » est « Shipping », « Çelik Ticaret » est « Steel Trading ») ; « un » (farine) n'y est pas,
@@ -762,7 +783,10 @@ const PREFIXES_NAVIRE = new Set(["mv", "mt", "ms", "my", "sy", "ss", "mts", "fv"
      type écrit en toutes lettres devant le nom (« Barcaza Manglar 3 », « Remolcador Titán del Canal », « Lancha »,
      « Pesquero », « Buque », « Navio », « Motonave ») ; B/M, N/M et R/M, écrits avec leur barre, sont rendus MV et TUG
      avant (voir `analyserEntite`) */
-  "mn", "motonave", "barcaza", "remolcador", "rebocador", "lancha", "pesquero", "buque", "navio", "velero", "yate"]);
+  "mn", "motonave", "barcaza", "remolcador", "rebocador", "lancha", "pesquero", "buque", "navio", "velero", "yate",
+  /* la coque en construction : « NEWBUILDING S-1187 », « N/B S1187 » rendu ici (voir `analyserEntite`) ; son numéro de
+     chantier est le numéro que la règle des numéros lit */
+  "newbuilding"]);
 /** Le TYPE que le préfixe déclare quand il en déclare un : un remorqueur et sa barge portent souvent le
  *  même nom (« Tug Heron Reef », « Barge Heron Reef 2 » ; jeu 9 : « BARGE THONG CHAROEN 9 » et « TUG THONG
  *  CHAROEN 9 » jugés deux navires, quand « TB » et « TUG » écrivent le même). MV et MT ne disent rien ici.
@@ -773,7 +797,11 @@ const TYPES_NAVIRE: ReadonlyMap<string, string> = new Map([["tug", "tug"], ["tb"
 const PHRASES_NAVIRE = [" motor vessel ", " motor tanker ", " motor ship ", " motor yacht ",
   " sailing yacht ", " steam ship ", " lpg carrier ", " lng carrier ", " lpg tanker ", " fishing vessel ",
   " bulk carrier ", " container ship ", " oil tanker ", " chemical tanker ", " hopper barge ", " tug barge ", " ro ro vessel ",
-  " ro ro ship ", " roro vessel ", " ro ro ", " general cargo ship ", " general cargo vessel ", " offshore supply vessel ", " supply vessel "];
+  " ro ro ship ", " roro vessel ", " ro ro ", " general cargo ship ", " general cargo vessel ", " offshore supply vessel ", " supply vessel ",
+  /* la coque en construction désignée par son numéro de chantier (« NEWBUILDING HULL NO. S-1187 », « Hull No. 2287 … ») : les
+     plus longues d'abord, « hull no » seul ensuite ; jamais « hull » seul, c'est aussi une ville (Hull Blyth) */
+  " newbuilding hull no ", " newbuilding hull number ", " newbuilding hull ", " new building hull no ", " new building hull ",
+  " new building ", " hull no ", " hull number "];
 /** L'article arabe assimilé : « Ash-Shuraymi », « As-Salam », « Ad-Dawha » sont « Al ». */
 const ARTICLES_ASSIMILES = new Set(["as", "ash", "ad", "adh", "ar", "at", "ath", "az", "an",
   /* à la française (Maghreb) : « Ech-Chourouk », « Er-Rahma » */ "ech", "es", "ed", "er", "et", "ez", "en"]);
@@ -978,6 +1006,10 @@ export type Marques = { pays: readonly string[]; familles: readonly string[]; na
   /** un nom écrit en tamoul : ses lettres latines viennent de `romaniser`, et le sanskrit du
    *  tamoul se replie au crédit (voir `pliTamoul`) */
   tamoul: boolean;
+  /** un nom thaï : son écriture, une province ou un port, sa forme (borisat, chamkat), un mot du commerce, ou un mot que le
+   *  dictionnaire ignore et qui écrit ph devant r ou l (« Phrachan », « Chaiyaphruek » : la RTGS seule l'écrit). Sous cette marque,
+   *  la RTGS et la graphie d'usage d'un même mot sont un mot (voir `pliThai`) */
+  thai: boolean;
   /** un nom russe, ukrainien ou d'un autre pays d'écriture cyrillique : le cyrillique lui-même, une forme de la CEI ou
    *  d'Ukraine (OOO, TOV, ZAO, PAO, AT…), un mot du commerce translittéré (zavod, torgovyy, morskoy, flot), un grade
    *  de navire (kapitan, matros), le T/H du teplokhod, ou un suffixe de nom propre (-ov, -skiy, -enko, -chuk). Sous
@@ -1007,10 +1039,13 @@ export type Marques = { pays: readonly string[]; familles: readonly string[]; na
   /** le nom est écrit dans un abjad (arabe et persan, hébreu) : ses mots n'ont pas de voyelles,
    *  et se comparent aux consonnes de l'autre côté (voir `cleAbjad`) */
   abjad: Abjad;
-  /** le nom est lu en cantonais (la seconde lecture d'un nom en sinogrammes, ou une lecture
-   *  cantonaise substituée aux mots d'un nom latin) : ses syllabes se replient sur la graphie de
-   *  Hong Kong (`pliCantonais`) */
+  /** le nom est lu en cantonais ou en hokkien (la seconde ou la troisième lecture d'un nom en sinogrammes, ou une
+   *  lecture syllabique substituée aux mots d'un nom latin) : ses syllabes se replient sur la graphie de
+   *  Hong Kong et sur celle de Singapour (`pliCantonais`) */
   cantonais: boolean;
+  /** la lecture sous laquelle le nom a été préparé (mandarin, cantonais, hokkien) : ce qu'il faut pour le relire
+   *  pareil, coupé (voir `scoreBrut`) ou depuis l'index */
+  lecture: Lecture;
   /** la forme est écrite en chinois (有限公司) : elle ne dit pas si la société est privée
    *  (Pte. Ltd., Sdn. Bhd.) ou non, et ne se met pas en conflit là-dessus */
   priveInconnu: boolean;
@@ -1031,6 +1066,17 @@ const MARQUEURS_COREENS = new Set(["tongsang", "sanop", "sanup", "muyeok", "muyo
   "mulryu", "haeun", "gaebal", "hanguk", "hankook", "hankuk", "korea", "korean", "daehan", "seoul", "busan", "pusan", "incheon", "inchon",
   "daegu", "taegu", "ulsan", "gwangju", "kwangju", "daejeon", "taejon", "gyeonggi", "kyonggi", "kyunggi", "chungcheong", "jeolla",
   "gyeongsang", "kyongsang", "kyung", "gyeong", "kyoung", "hwaseong", "hwasung", "cheonan", "chonan", "pyeongtaek", "pyongtaek"]);
+/** L'écriture thaïe, par sa propriété Unicode. */
+const THAI = /\p{Script=Thai}/u;
+/** Les mots qui marquent un nom thaï romanisé (voir `Marques.thai`) : le pays, ses provinces et ses ports (Bangkok, Samut Prakan,
+ *  Laem Chabang, Rayong, Chonburi, Map Ta Phut), la forme (borisat, chamkat, mahachon : บริษัท จำกัด มหาชน), les mots du commerce
+ *  (phanit, karnkha, utsahakam), les mots d'enseigne (Siam, Charoen, Ruam, Sahakit). Une table du monde, pas du jeu. */
+const MARQUEURS_THAIS = new Set(["thai", "thailand", "siam", "siamese", "bangkok", "krung", "krungthep", "samut", "prakan", "sakhon", "songkhram",
+  "nakhon", "pathom", "ratchasima", "sawan", "pathum", "thani", "nonthaburi", "rayong", "chonburi", "chachoengsao", "laem", "chabang",
+  "songkhla", "hatyai", "phuket", "pattaya", "ayutthaya", "chiangmai", "chiangrai", "chiang", "lampang", "khon", "kaen", "udon", "ubon",
+  "ratchathani", "saraburi", "lopburi", "kanchanaburi", "ratchaburi", "phetchaburi", "prachuap", "khiri", "chumphon", "ranong", "krabi",
+  "satun", "phatthalung", "narathiwat", "yala", "pattani", "maptaphut", "sriracha", "siracha", "borisat", "chamkat", "jamkat", "mahachon",
+  "phanit", "panich", "panit", "karnkha", "kanka", "utsahakam", "utsahakit", "charoen", "jaroen", "ruam", "sahakit", "sahakij", "sahaphat"]);
 /** L'écriture tamoule (U+0B80 à U+0BFF). */
 const TAMOUL = /[\u0b80-\u0bff]/u;
 const MARQUEURS_INDIENS = new Set(["pvt", "india", "indian", "bharat", "bharati", "hindustan", "udyog", "vyapar", "mumbai", "bombay",
@@ -1090,8 +1136,10 @@ const MARQUEURS_SLAVES = new Set(["torgovyy", "torgovyi", "torgovy", "torgovyj",
 const FORMES_SLAVES = new Set(["ooo", "oao", "zao", "pao", "ao", "too", "tov", "prat", "pat", "npp", "npo", "npk", "npf", "pkf", "fop", "chp", "flp", "spd"]);
 /** Les suffixes des noms propres slaves (Petrov, Belyaev, Tkachyov, Petrova ; Brodsky, Salskiy, Kubanskaya, Donskaja,
  *  Rostovskoye ; Shevchenko, Kovalchuk, Semenyuk ; Ivanovich, Petrović) : sur un mot d'au moins six lettres que le
- *  dictionnaire ignore (« whisky », « husky », « Geneva », « nova » sont des mots anglais). */
-const SUFFIXES_SLAVES = /(?:[oe]v|[oe]va|iov|yov|sk(?:iy|ii|ij|y|yi|yy|aya|aja|aia|a|oye|oe|oy|oi|oj)|enko|chuk|[yi]uk|[oe]v[iy]ch|vic)$/;
+ *  dictionnaire ignore (« whisky », « husky », « Geneva », « nova » sont des mots anglais). Et les queues des composés
+ *  soviétiques (Khimtekhnika, Agroprom, Uralmash, Rosneft, Elevatorstroy : voir QUEUES_SLAVES), sous leur graphie allemande
+ *  aussi (« Chimtechnika », jeu 13 : un mot seul, sans forme, que rien ne marquait). */
+const SUFFIXES_SLAVES = /(?:[oe]v|[oe]va|iov|yov|sk(?:iy|ii|ij|y|yi|yy|aya|aja|aia|a|oye|oe|oy|oi|oj)|enko|chuk|[yi]uk|[oe]v[iy]ch|vic|tekhnika|technika|khim|chim|prom|snab|sbyt|mash|energo|montazh|remont|komplekt|avto|neft|stro[yij])$/;
 function suffixeSlave(j: string): boolean {
   return j.length >= 6 && SUFFIXES_SLAVES.test(j) && lemme(j) === undefined;
 }
@@ -1107,6 +1155,11 @@ const TRADUCTIONS_SLAVES: ReadonlyMap<string, string> = new Map(Object.entries({
   morskoy: "marine", morskaya: "marine", rechnoy: "river", rechnaya: "river", richkovyi: "river", richkova: "river",
   kompaniya: "", flot: "fleet", sklad: "warehouse", stroy: "construction", torgovyy: "trading", torgovaya: "trading",
   kapitan: "captain", shkiper: "skipper", matros: "seaman", botsman: "boatswain", bosun: "boatswain",
+  /* les génériques russes que LOCUTIONS traduit déjà sous leur graphie standard : ici pour leurs clés allemandes (« Sawod »,
+     « Fabrika », « Kombinat » : voir `clesSlaves` dans `traduction`), jeu 13, 28/09 */
+  zavod: "plant", kombinat: "works", fabrika: "factory", promyshlennost: "industry", promyshlennaya: "industrial", stal: "steel",
+  neft: "oil", khimiya: "chemical", khimicheskiy: "chemical", metallurgicheskiy: "metallurgical", stroitelstvo: "construction",
+  sudokhodstvo: "shipping", gruppa: "group", torgovlya: "trade", firma: "",
 }));
 let TRADUCTIONS_SLAVES_PLIEES: ReadonlyMap<string, string> | undefined;
 function traductionsSlavesPliees(): ReadonlyMap<string, string> {
@@ -1139,6 +1192,9 @@ export function preparerEntite(nom: string, lecture: Lecture = "mandarin"): stri
  *  navire, une forme de société) et les mots que leur auteur a ABRÉGÉS d'un point. */
 const REGISTRE = /\(\s*(?:rc|reg\.?(?:\s*no\.?)?|registration\s*(?:no\.?)?|hrb|hra|kvk|cipc|cac|eori|company\s*no\.?|co\.?\s*reg\.?\s*no\.?|crn|tin|vat|nif|nit|cnpj|cuit|rfc|siret|siren|folio)\s*:?\s*([a-z0-9][a-z0-9\/\-. ]*?)(?:,\s*amtsgericht\s+[\p{L} .-]+)?\s*\)/iu;
 export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { texte: string; abreges: ReadonlySet<string>; parentheses: ReadonlySet<string>; civilites: ReadonlySet<string>; traduits: ReadonlySet<string>;
+  /** les SIGLES écrits comme tels, des lettres séparées d'un point, d'une barre ou d'une esperluette (« C&F », « T/C », « C.I. »),
+   *  soudés en un mot : les initiales d'une locution que l'autre nom écrit en toutes lettres (voir `scorePrepares`) */
+  sigles: ReadonlySet<string>;
   /** pour chaque mot traduit, le mot romanisé qu'il traduit (« trading » : « boeki ») : deux mots de métier japonais
    *  différents traduits au même mot anglais sont deux raisons sociales (voir `scorePrepares`) */
   sources: ReadonlyMap<string, string> } & Marques {
@@ -1147,10 +1203,13 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* L'apostrophe DANS un mot le soude (« O'Brien », « Ch'iao ») : en faire une frontière
      de mot fabriquerait des jetons d'une ou deux lettres qui ne désignent rien. « F.lli »
      (fratelli) et « LPG/C » (LPG carrier) ont une ponctuation qui porte le sens : lus avant. */
-  const rom = romaniser(nom, lecture);
+  /* et le Wade-Giles, que son apostrophe d'aspiration signe, se récrit en pinyin AVANT que cette apostrophe et le tiret
+     ne partent (« Chen-ch'iao » : Zhenqiao, jeu 13 ; voir wadegiles.ts) */
+  const rom = romaniser(wadeGiles(nom), lecture);
   /* le T/H ou T/KH du teplokhod devant un navire russe (voir TEPLOKHOD) : le M/V des documents russes, rendu tel quel
      avant la soudure des sigles (« T/H » y deviendrait « th », un mot ; « T/KH » deux mots), et une marque slave */
   const teplokhod = TEPLOKHOD.test(rom.texte);
+  const sigles = new Set<string>();
   let soude = plierLatin(teplokhod ? rom.texte.replace(new RegExp(TEPLOKHOD.source, "giu"), "MV") : rom.texte)
     /* un « ? » dans une forme juridique ou à sa fin (« LT? », « L?D », « Ltd? ») : la lettre perdue
        ou le point mal lu d'une forme, complétée AVANT que le « ? » final ne parte en ponctuation
@@ -1180,6 +1239,10 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
        sans barre dans les registres panaméens (« MN RÍO CHAGRES ») : il est dans PREFIXES_NAVIRE comme MV (mesuré le
        27/09 : « M/N ESTRELLA DEL CARIBE » à 0,800 face à « MV Estrella del Caribe », « mn » mot rare sans répondant) */
     .replace(/(?<![\p{L}\d])(?:B\/M|N\/M)(?![\p{L}])/giu, "MV").replace(/(?<![\p{L}\d])R\/M(?![\p{L}])/giu, "TUG")
+    /* la coque en construction, « N/B » (newbuilding) devant son numéro de chantier (« N/B S1187 » face à « NEWBUILDING HULL
+       NO. S-1187 », jeu 4 : 0,278, « nb » et « hull » mots rares sans répondant) : la barre est exigée, comme pour B/M ;
+       sans elle, « NB » en tête est une initiale */
+    .replace(/(?<![\p{L}\d])N\/B(?![\p{L}])/giu, "NEWBUILDING")
     /* l'élision française et italienne (« d'Import-Export », « l'Industrie », « Côte d'Ivoire ») : la préposition ou
        l'article tombe et le mot reste entier (jeu 10, 27/09 : « dimport » face à « import », 0,728). La minuscule d
        seulement : « D'Angelo », « D'Souza » sont des noms, soudés comme « O'Brien » */
@@ -1189,7 +1252,15 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
        « M/V », « A.K. ») : on les soude ici, sur le texte, parce qu'après la normalisation une
        espace et un point se confondent, et « Holdings I S.A. » devenait « Holdings ISA » (le
        numéro I fondu dans la forme, mesuré le 27/09 contre « Holdings III S.A. »). */
-    .replace(/(?<!\p{L})\p{L}(?:[./]\s?\p{L}(?!\p{L}))+\.?/gu, (m) => m.replace(/[./\s]/g, ""));
+    /* et par une esperluette, avec ou sans espaces (« C&F », « P & I », « L&T ») : l'esperluette seule devenait une espace,
+       et « C&F » deux lettres isolées que la forme épelée resoudait sans savoir que c'était un sigle. Le sigle soudé est
+       RETENU (`sigles`) : ce sont les initiales d'une locution que l'autre nom peut écrire en toutes lettres (« Clearing
+       and Forwarding », « Time Charter », « Comercializadora Internacional » ; jeux 5 et 10, tour 9) */
+    .replace(/(?<!\p{L})\p{L}(?:[./]\s?\p{L}(?!\p{L})|\s?&\s?\p{L}(?!\p{L}))+\.?/gu, (m) => {
+      const s = m.replace(/[./&\s]/g, "");
+      if (s.length >= 2 && s.length <= 4) sigles.add(normaliser(s));
+      return s;
+    });
   /* Un mot suivi d'un point est une ABRÉVIATION écrite comme telle (« Petrochem. », « Dist. »,
      « Capt. ») : le mot entier qu'il commence lui correspond (voir `scorePrepares`). */
   const abreges = new Set([...soude.matchAll(/(\p{L}{2,})\./gu)].map((m) => normaliser(m[1]!)));
@@ -1245,6 +1316,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     if (de.trim().split(" ").some((m) => abreges.has(m))) for (const m of vers.trim().split(" ")) abreges.add(m);
     texte = texte.split(de).join(vers);
   }
+  /* sous la marque vietnamienne (l'écriture ou la forme), les génériques qui sont aussi des mots d'ailleurs : « May » est
+     la confection, « Dệt » le tissage (voir vietnamien.ts) */
+  if (estVietnamien(nom, texte)) for (const [de, vers] of LOCUTIONS_VIETNAMIENNES) texte = texte.split(de).join(vers);
   let navire = false;
   for (const p of PHRASES_NAVIRE) {
     if (texte.startsWith(p) && texte.length > p.length) { navire = true; texte = " " + texte.slice(p.length); }
@@ -1295,6 +1369,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const traduits = new Set<string>();
   const sources = new Map<string, string>();
   const sudAfricain = separes.some((j) => j === "pty" || j === "edms" || j === "eiendoms" || j === "bpk" || j === "beperk" || j === "maatskappy");
+  /* le nom est arabe ou persan par son écriture ou l'un de ses mots (l'article, la filiation, un mot d'affaires) : lu ici pour
+     l'article collé, avant la marque `arabe` que les mêmes marqueurs posent plus bas */
+  const arabePresume = /\p{Script=Arabic}/u.test(nom) || separes.some((j) => MARQUEURS_ARABES.has(j) || MARQUEURS_PERSANS.has(j));
   const motsBruts = separes.flatMap((j, i) => {
     if (j === "i") return [j];
     if (CIVILITES.has(j)) { civilites.add(j); return []; }
@@ -1306,6 +1383,16 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     if (j === "bou" && sudAfricain) { traduits.add("building"); return ["building"]; }
     /* « San. » avec son point est « Sanayi » (jeu 13 : « Bafra Un San. A.Ş. ») ; sans point, « San » reste San Miguel */
     if (j === "san" && abreges.has(j)) { traduits.add("industry"); if (!sources.has("industry")) sources.set("industry", j); return ["industry"]; }
+    /* L'ARTICLE COLLÉ d'un nom arabe (« Aldeeb », « Altejaria », « Almarai ») : « al » et le mot, que les tables lisent ensuite
+       (jeu 13, 28/09 : « Moassasat Shehab Aldeeb Altejaria » face à « … Al Dheeb Al Tijariya » à 0,205, deux mots sans répondant).
+       Quatre lettres au moins derrière l'article, et jamais un mot que le dictionnaire, les formes ou les tables connaissent
+       (Alliance, Alpine, Alhandasiya) */
+    if (arabePresume && j.length >= 6 && j.startsWith("al") && !connu(j) && !MARQUEURS_ARABES.has(j) && !MARQUEURS_PERSANS.has(j)) {
+      const reste = j.slice(2), t = traduction(reste, japonaisPresume, slave);
+      if (t === undefined) return ["al", reste];
+      for (const m of t.split(" ")) if (m !== "") { traduits.add(m); if (!sources.has(m)) sources.set(m, reste); }
+      return ["al", ...t.split(" ").filter((m) => m !== "")];
+    }
     const a = ABREVIATIONS.get(j);
     /* une abréviation développée se traduit comme le mot entier : « Tic. » est ticaret, donc trading (jeu 13, 28/09 :
        « Tasimaciligi Tic. AS » à 0,704 face à « Ticaret A.Ş. », l'un traduit et l'autre non) */
@@ -1403,6 +1490,10 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* le génitif finnois d'un port ou d'une ville (« Porin », « Turun », « Helsingin ») ramené au nominatif, sous un nom
      finnois seulement : la forme Oy, ou un générique finnois parmi les mots (voir GENITIFS_FINNOIS) */
   if (pays.has("FI") || separes.some(estFinnois)) t = t.map((j) => GENITIFS_FINNOIS.get(j) ?? j);
+  /* le patronyme bengali sous sa forme sanskrite ou anglicisée (« Bandyopadhyay », « Banerjee »), le clan du nord dont la finale
+     hésite (« Rathore », « Rathod »), la ville et le fleuve sous leur nom d'aujourd'hui ou celui du Raj (« Kaveri », « Cauvery ») :
+     une seule graphie, sans marque, la graphie elle-même étant la trace (voir GRAPHIES_INDIENNES, jeu 13) */
+  t = t.map((j) => GRAPHIES_INDIENNES.get(j) ?? j);
   /* les marqueurs se lisent AVANT la traduction (« tongsang », « shoji » deviennent « trading ») et
      avant le retrait des civilités (« Shree ») */
   const tousLesMots = [...articles, ...mots];
@@ -1410,7 +1501,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* un nom écrit en kana ou avec une forme japonaise, en sinogrammes, en hangul, est de cette
      langue avant tout marqueur : ses jetons viennent de `romaniser` (ecritures.ts) */
   const japonais = estJaponais(nom) || tousLesMots.some((j) => MARQUEURS_JAPONAIS.has(j));
-  const chinois = pays.has("CN") || REGIONS.has(t[0] ?? "") || ecritEnSinogrammes || lecture === "cantonais"
+  const chinois = pays.has("CN") || REGIONS.has(t[0] ?? "") || ecritEnSinogrammes || lecture !== "mandarin"
     || tousLesMots.some((j) => MARQUEURS_CHINOIS.has(j));
   /* et, sous une forme d'Asie de l'Est (« Co., Ltd. », pays KR possible) et hors d'un nom japonais, un mot que le
      dictionnaire ignore et qui écrit le digramme « eo » (ㅓ en romanisation révisée : Cheonghae, Seorim, Gyeongbo) :
@@ -1424,15 +1515,18 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const prive = tousLesMots.some((j) => QUALIFICATIFS_PRIVES.has(j)) || privePhrase;
   /* un nom écrit en tamoul est indien : le crédit v, w, b vaut pour lui (வ s'écrit v ou w) */
   const tamoul = TAMOUL.test(nom);
-  const indien = tamoul || tousLesMots.some((j) => MARQUEURS_INDIENS.has(j));
+  /* et un nom écrit en devanagari (hindi, marathi, népalais) l'est aussi : ee et i, v et w s'y replient (jeu 13) */
+  const indien = tamoul || DEVANAGARI.test(nom) || tousLesMots.some((j) => MARQUEURS_INDIENS.has(j));
+  /* un nom thaï : l'écriture, un marqueur, ou le ph devant r ou l d'un mot que le dictionnaire ignore (voir `Marques.thai`) */
+  const thai = THAI.test(nom) || tousLesMots.some((j) => MARQUEURS_THAIS.has(j)) || t.some((j) => j.length >= 5 && /ph[rl]/.test(j) && lemme(j) === undefined);
   const hispanique = ["MX", "ES", "BR", "PE", "CO", "CL", "AR", "PT", "UY", "BO"].some((k) => pays.has(k)) || tousLesMots.some((j) => MARQUEURS_HISPANIQUES.has(j));
   const majuscules = !/\p{Ll}/u.test(nom) && /\p{Lu}/u.test(nom) && t.length >= 2;
   const filiation = tousLesMots.some((j) => FILIATION_M.has(j)) ? "m" : tousLesMots.some((j) => FILIATION_F.has(j)) ? "f" : "";
   const succursale = mentionDeSuccursale(soude);
   const chat = t.length >= 2 && !majuscules && (!/\p{Lu}/u.test(nom) || !/[.,()]/.test(nom));
-  return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites, traduits, sources,
+  return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites, traduits, sources, sigles,
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
-    hebreuOuGrec, indien, hispanique, tamoul, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture === "cantonais", priveInconnu,
+    hebreuOuGrec, indien, hispanique, tamoul, thai, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture !== "mandarin", lecture, priveInconnu,
     natifs: rom.natifs, filiation, succursale, typeNavire, slave };
 }
 
