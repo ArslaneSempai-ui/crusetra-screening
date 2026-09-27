@@ -82,6 +82,7 @@ const PHRASES = [
   " private joint stock ", " public joint stock ", " closed joint stock ", " open joint stock ",
   " sherkat sahami khas ", " sherkate sahami khas ", " sahami khas ", " sahami khass ", " sahami amm ",
   " public company limited ", " designated activity company ", " perseroan terbatas ",
+  " osauhing ", " aktsiaselts ", " anpartsselskab ", " sabiedriba ar ierobezotu atbildibu ", " uzdaroji akcine bendrove ",
   " usaha dagang ", " commanditaire vennootschap ", " perseroan komanditer ", " sole proprietor company ", " sole proprietorship company ",
   " joint stock company ", " limited liability company ", " limited liability partnership ",
   " private limited ", " public limited company ", " proprietary limited ",
@@ -141,6 +142,7 @@ const LOCUTIONS: readonly [string, string][] = [
   [" import and export ", " import export "],
   [" torgovy dom ", " trading house "], [" torgovyi dom ", " trading house "], [" torgovyy dom ", " trading house "],
   /* malais, indonésien, vietnamien, arabe romanisé (jeu 9) */
+  [" dis ticaret ", " trading "], [" dis tic ", " trading "], [" sanayi ve ticaret ", " industry trading "],
   [" kelapa sawit ", " palm oil "], [" minyak kelapa sawit ", " palm oil "], [" minyak sawit ", " palm oil "],
   [" isirong sawit ", " palm kernel "], [" buah sawit ", " palm fruit "],
   [" cao su ", " rubber "], [" phan phoi ", " distribution "], [" thuc pham ", " food "], [" may mac ", " garment "],
@@ -305,6 +307,12 @@ export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   /* grec translittéré (« Ναυτιλιακή Εταιρεία » est « Shipping Company ») */ naftiliaki: "shipping", naftiki: "shipping",
   etaireia: "", etairia: "", emporiki: "trading", viomichaniki: "industrial", viomichania: "industry", techniki: "technical",
   kataskevastiki: "construction", metaforiki: "transport", touristiki: "tourism",
+  /* turc (jeu 12 : « Gemicilik » est « Shipping », « Çelik Ticaret » est « Steel Trading ») ; « un » (farine) n'y est pas,
+     c'est l'article français */
+  gemicilik: "shipping", komur: "coal", celik: "steel", urunleri: "products", urun: "product", yem: "feed", hububat: "grain",
+  tahil: "grain", zahire: "grain", hurda: "scrap", depolama: "storage", gemi: "ship", kiralama: "chartering", kurtarma: "salvage",
+  liman: "port", deniz: "marine", demir: "iron", bakir: "copper", pamuk: "cotton", findik: "hazelnut", tutun: "tobacco",
+  seker: "sugar", tuz: "salt", kagit: "paper", mobilya: "furniture", boya: "paint", plastik: "plastic", ambalaj: "packaging",
   /* scandinave */ rederi: "shipping", brodre: "brothers", broder: "brothers", handelsbolag: "trading",
   /* malais et indonésien (jeu 9 : « Kilang Beras » est « Rice Mill », « Syarikat Getah » est « Rubber Company ») */
   kilang: "mill", pabrik: "mill", beras: "rice", padi: "paddy", getah: "rubber", sawit: "palm", minyak: "oil",
@@ -378,7 +386,7 @@ const FILIATION_F: ReadonlySet<string> = new Set(["bint", "binti", "ibnat"]);
 /** Les mots qui font d'un nom la succursale d'un autre : la même personne morale (« X - Penang Branch »
  *  est X), mais pas la filiale « X (Penang) Sdn. Bhd. » ; d'un seul côté, le nom tel qu'écrit se range au
  *  possible, et sa variante sans la mention rejoint X (jeu 9). */
-export const SUCCURSALES: ReadonlySet<string> = new Set(["branch", "branches", "succursale", "sucursale", "sucursal", "filiale", "filial", "filiaal",
+export const SUCCURSALES: ReadonlySet<string> = new Set(["branch", "subesi", "sube", "branches", "succursale", "sucursale", "sucursal", "filiale", "filial", "filiaal",
   "zweigniederlassung", "niederlassung", "zweigstelle", "sucursales"]);
 /** Les mots du SIÈGE, dans les langues des registres, tels qu'un document les écrit derrière une virgule ou un
  *  tiret (« , Head Office », « , Hauptsitz », « , Hoofdkantoor », « , Siège social », « , Sede central ») ; et ceux
@@ -507,6 +515,11 @@ const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   bldg: "building", mfrs: "manufacturers", pks: "palm oil mill", bnt: "bint",
   /* les affrètements (jeu 10) : « Shipmgmt » ; « Nig. » est plus haut, avec la voie formes */
   shipmgmt: "ship management",
+  /* les abréviations du registre turc (jeu 12) : « San. Tic. Ltd. Şti. », « İth. İhr. », « Nak. » ; les conjonctions
+     nordiques (« och », « og », « ja ») et la mention « (publ) » d'une société suédoise cotée */
+  tic: "ticaret", ith: "ithalat", ihr: "ihracat", nak: "nakliyat", muh: "muhendislik", turz: "turizm", teks: "tekstil",
+  /* PAS « san » (San Miguel), « ins » (Ins. Co.), « paz » (La Paz), « tas », « mad » : des mots d'ailleurs */
+  och: "", og: "", ja: "", publ: "",
   /* les prénoms et civilités malais : « Mohd » est Mohamad ; Haji, Dato', Datuk, Encik, Puan ne désignent personne */
   mohd: "mohamad", muhd: "muhammad", haji: "", hajjah: "", hj: "", hjh: "", dato: "", datuk: "", datin: "", encik: "", puan: "", tuan: "",
   /* les nombres écrits en lettres deviennent des chiffres : « Nine Willows » est « 9 Willows » */
@@ -685,6 +698,7 @@ function ocr(j: string): string {
   /* « AUT0 » (trois lettres) et « ELECTR0NIC5 » (des chiffres au milieu ET à la fin) : quand le mot
      corrigé est un mot du dictionnaire, c'est une lecture fautive, pas un numéro (jeu 10, 27/09) */
   const commeUnMot = j.replace(/0/g, "o").replace(/1/g, "i").replace(/5/g, "s").replace(/8/g, "b");
+  if (FORMES.has(commeUnMot)) return enLettres(j);   /* « ST1 » est « Şti », une forme (jeu 12) */
   if (/^\p{L}+[0158](?:\p{L}+[0158]?)*$/u.test(j) && /\p{L}{3,}/u.test(j) && lemme(commeUnMot)) return enLettres(j);
   const lettres = j.replace(/\d/g, ""), chiffres = j.replace(/\D/g, "");
   /* des chiffres EN FIN de mot sont un numéro (« No18 », « TCB1207 »), pas une lecture fautive */
@@ -812,6 +826,8 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["SG", "MY"], ["siren youxian gongsi"]);
   poser(["US", "CA", "PH"], ["inc", "incorporated", "pllc"]);
   poser(["CA"], ["ltee"]); poser(["SE"], ["aktiebolag"]); poser(["DK"], ["aktieselskab"]); poser(["NO"], ["aksjeselskap"]); poser(["FI"], ["osakeyhtio"]);
+  poser(["EE"], ["ou", "osauhing", "aktsiaselts"]); poser(["DK"], ["anpartsselskab"]); poser(["LV"], ["sia", "sabiedriba ar ierobezotu atbildibu"]);
+  poser(["LT"], ["uab", "uzdaroji akcine bendrove"]);
   poser(["UK", "IE", "NG", "LK", "ZA"], ["plc", "public limited company"]);
   poser(["PL"], ["sp zoo", "sp z oo", "spolka z ograniczona odpowiedzialnoscia", "spolka akcyjna", "spolka jawna"]);
   poser(["VN"], ["tnhh", "cong ty tnhh", "cong ty co phan"]);
@@ -846,7 +862,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["ltd", "corp"], ["bhd", "berhad", "kk", "kabushiki kaisha", "kabushikigaisha", "kabushiki gaisha", "jusikhoesa", "chusikhoesa",
     "chusik hoesa", "jusik hoesa", "gufen youxian gongsi", "oy", "ab", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio"]);
   /* et la Yūgen Kaisha (有限会社), que l'anglais rend « Co., Ltd. » ou « Y.K. » */
-  poser(["ltd", "llc"], ["ooo", "tov", "ltda", "lda", "limitada", "sociedade limitada", "eireli", "tnhh", "cong ty tnhh", "sti", "limited sirketi", "yuhanhoesa",
+  poser(["ltd", "llc"], ["ooo", "tov", "ltda", "lda", "limitada", "sociedade limitada", "eireli", "osauhing", "anpartsselskab", "sabiedriba ar ierobezotu atbildibu", "uzdaroji akcine bendrove", "ou", "sia", "uab", "aps", "tnhh", "cong ty tnhh", "sti", "limited sirketi", "yuhanhoesa",
     "yugen kaisha", "yugen gaisha", "yk", "empresa individual de responsabilidade limitada"]);
   /* le TOO kazakh (товарищество с ограниченной ответственностью) se traduit LLP, LLC ou Ltd */
   poser(["ltd", "llc", "part"], ["too", "tovarishchestvo s ogranichennoi otvetstvennostyu", "tovarishchestvo s ogranichennoy otvetstvennostyu"]);
@@ -1165,7 +1181,18 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     texte = texte.split(p).join(" ");
   }
   const civilites = new Set<string>();
-  const separes = texte.trim().split(/ +/);
+  /* LE MOT COUPÉ PAR UN SAUT DE LIGNE d'un export en capitales (« DIS TIC ARET », « KIRAL AMA », « TICAR ET », jeu 12) :
+     deux jetons voisins dont la soudure est un mot connu (une forme, un mot des tables, un mot anglais) quand l'un des
+     deux au moins ne l'est pas ; jamais dans un nom écrit en minuscules, où deux mots sont deux mots */
+  const enCapitales = !/\p{Ll}/u.test(nom) && /\p{Lu}/u.test(nom);
+  const connu = (w: string) => FORMES.has(w) || TRADUCTIONS.has(w) || ABREVIATIONS.has(w) || lemme(w) !== undefined;
+  const coupes = texte.trim().split(/ +/);
+  const separes: string[] = [];
+  for (let i = 0; i < coupes.length; i++) {
+    const a = coupes[i]!, b = coupes[i + 1];
+    if (enCapitales && b !== undefined && a.length >= 2 && b.length >= 2 && (!connu(a) || !connu(b)) && connu(a + b)) { separes.push(a + b); i++; }
+    else separes.push(a);
+  }
   /* les mots que les tables ont TRADUITS (« Comercial », « Exportação », « Handelsmaatschappij ») : des mots
      du métier par construction, qu'un nom d'usage omet sans être une autre société (voir `scorePrepares`) */
   const traduits = new Set<string>();
@@ -1212,7 +1239,11 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
        abrégée en tête, suivie d'une particule, est la forme (le français et l'italien la placent devant) */
     /* et « CV Cahaya Bintang Timur Jaya » : le CV indonésien (commanditaire vennootschap) se place en tête, comme PT */
     if (i === 0 && FORMES_FINALES.has(j) && mots.length > 1 && !(j === "est" && abreges.has(j))
-      && !(PARTICULES.has(mots[1] ?? "") && mots.length > 2) && !(j === "cv" && mots.length > 2)) return true;
+      && !(PARTICULES.has(mots[1] ?? "") && mots.length > 2) && !(j === "cv" && mots.length > 2)
+      /* « Oy Suomen Viljaterminaali Ab » (le finnois met Oy devant et Ab derrière), « AS Tallinna Laevaagentuur »
+         (l'estonien met AS devant, en capitales ; « As-Salam » garde son article, minuscule après le A) (jeu 12) */
+      && !(j === "oy" && mots.length > 2 && ["ab", "oy"].includes(mots[mots.length - 1] ?? ""))
+      && !(j === "as" && mots.length > 2 && /^\s*AS\s+\p{Lu}/u.test(nom))) return true;
     societe = true;
     for (const k of PAYS_DES_FORMES.get(j) ?? []) pays.add(k);
     for (const k of FAMILLES_DES_FORMES.get(j) ?? []) familles.add(k);

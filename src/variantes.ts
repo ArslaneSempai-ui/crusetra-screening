@@ -37,19 +37,27 @@ const ANNONCES_CAPTUREE = new RegExp(`(${ANNONCES.source})`, ANNONCES.flags);
  *  derrière une étiquette : sans lui, « Owner » ou « Agent » sont des mots du nom. Mesuré le 27/09
  *  sur le jeu 8 : quatorze vrais noms tenus à 0,80 par ces seuls résidus. */
 const PREFIXES: readonly RegExp[] = [
-  /^\s*(?:applicant|beneficiary|consignee|shipper|notify(?:\s+party)?|(?:towing|ocean|feeder|mother|export|carrying|performing|delivery)\s+vessel|vessel(?:\s*\/\s*voy(?:age)?)?|carrier|charterers?|drawee|drawer|accountee|buyer|seller|exporter|importer|charterer|owners?|issuing\s+bank|advising\s+bank|supplier|customer|payee|payer|remitter|ordering\s+customer|account\s+party|principal|agent|counterparty|debtor|creditor|insured|assured|manufacturer|producer|receiver|forwarder)\s*[:\-\u2013]\s*/iu,
+  /^\s*(?:applicant|beneficiary|consignee|shipper|notify(?:\s+party)?|(?:towing|ocean|feeder|mother|export|carrying|performing|delivery)\s+vessel|vessel(?:\s*\/\s*voy(?:age)?)?|b\/l|bill\s+of\s+lading|carrier|charterers?|drawee|drawer|accountee|buyer|seller|exporter|importer|charterer|owners?|issuing\s+bank|advising\s+bank|supplier|customer|payee|payer|remitter|ordering\s+customer|account\s+party|principal|agent|counterparty|debtor|creditor|insured|assured|manufacturer|producer|receiver|forwarder)\s*[:\-\u2013]\s*/iu,
   /^\s*(?:by\s+order\s+of|on\s+behalf\s+of|for\s+(?:the\s+)?account\s+of|to\s+the\s+order\s+of|in\s+favou?r\s+of)\s*:?\s*/iu,
   /* « SHIPPED ON BOARD MV RONG YUAN TAI 16 AT FANGCHENG » : la mention d'embarquement devant le navire */
   /^\s*(?:shipped\s+on\s+board|laden\s+on\s+board|loaded\s+on\s+board|on\s+board|per\s+(?:vessel|m\/?v|m\/?t))\s*:?\s*/iu,
   /* l'étiquette d'un champ SWIFT collée au nom : « :50:BALOGUN VENTURES », « :59A:… » (jeu 10) */
-  /^\s*:?\d{2}[a-z]?:\s*(?:\/[a-z0-9]{6,34}\s+)?/iu,
+  /^\s*:?\d{2}[a-z]?:\s*(?:\/(?:[a-z]{2,4}\s*)?[a-z0-9]{4,34}\s+)?/iu,
+  /* « REF FT2231-0915 /BNF/ », « /NAME/ », « 1/ » du champ 50F structuré (jeu 12) */
+  /^\s*ref\.?\s*[a-z0-9\-/]{4,}\s+(?:\/(?:bnf|ben|beneficiary)\/\s*)?/iu,
+  /^\s*\/name\/\s*/iu,
+  /^\s*1\/\s*/u,
+  /* une signature ou un cadre de conversation autour du nom (jeu 12) : « For and on behalf of X »,
+     « can u check X asap », « hi pls check X thx » */
+  /^\s*for\s+and\s+on\s+behalf\s+of\s+/iu,
+  /^\s*(?:hi|hello|hey|bonjour|salut)?[,\s]*(?:(?:can|could|pouvez|peux)\s+(?:u|you|tu|vous)\s+)?(?:pls|please|svp|stp)?\s*(?:check|screen|verify|look\s+at|v[eé]rifie[rz]?|regarde[rz]?)\s+/iu,
   /* les étiquettes entre barres et le détail d'un paiement (jeu 11) : « /BENEFICIARY/ », « /RFB/INV 4471 PAGO A » */
   /^\s*\/(?:beneficiary|benef|applicant|ordering\s+customer|by\s+order\s+of|acc|acct)\/\s*/iu,
   /^\s*(?:\/rfb\/|\/inv\/)?\s*(?:inv(?:oice)?\s*\d+\s*)?(?:pago\s+a|payment\s+(?:to|for)|paiement\s+[aà])\s+/iu,
   /* une citation de registre devant le nom : « Registro Público de Panamá, Tomo 1245, Folio 332, Asiento 1 — »,
      « Corporate Number 8011001077453 — » */
   /^\s*(?:registro\s+p[uú]blico\b[^—–]*|corporate\s+number\s+\d+\s*)[—–-]\s*/iu,
-  /^\s*att(?:n|ention)?\.?\s*:?\s+[^,]{1,40},\s*/iu,
+  /^\s*att(?:n|ention)?\.?\s*:?\s+[^,/]{1,40}[,/]\s*/iu,
   /^\s*(?:our|your|yr|their)?\s*ref(?:erence)?\.?\s*(?:no\.?|#)?\s*:?\s*[a-z0-9][a-z0-9\-/.]{2,}\s+/iu,
   /^\s*(?:l\/c|lc|dc|b\/l|bl|inv(?:oice)?|p\/?o|contract|order)\s*(?:no\.?|#)\s*:?\s*[a-z0-9][a-z0-9\-/.]{2,}\s+/iu,
   /^\s*(?:n\/b\s+)?hull\s*(?:no\.?\s*)?[a-z]{0,3}-?\d+\s+(?=\p{L}{3,})/iu,
@@ -111,6 +119,14 @@ const ANNOTATIONS: readonly RegExp[] = [
   /\s+voy\.?\s*\d{2,5}[a-z]?\s*$/iu,
   /\s+(?:in|en|em)\s+(?:liquidazione|liquidation|liquidación|liquidacion|liquidação|liquidacao|liquidatie|likvidation)\s*$/iu,
   /,\s*flag\s*:?\s*[\p{L} ]{2,30}\s*$/iu,
+  /* jeu 12 : « , port Rostov-on-Don », « - OWNERS ACCOUNT », « (THE SELLER) », « (publ) », les lignes 2/ et 3/ du champ 50F,
+     la politesse d'un message (« asap », « thx ») */
+  /,\s*port\s*:?\s*[\p{L} .'-]{2,30}\s*$/iu,
+  /\s*[-\u2013]\s*owners?\s+acc(?:oun)?t\s*$/iu,
+  /\s*\(\s*(?:the\s+)?(?:seller|buyer|shipper|consignee|applicant|beneficiary|carrier|charterer|owner|agent|notify\s+party|principal|supplier|customer)s?\s*\)/giu,
+  /\s*\(\s*publ\.?\s*\)/giu,
+  /\s+2\/\s*\S.*$/u,
+  /[\s,]+(?:asap|thx|thanks|tks|pls|please|svp|merci)\s*[.!]?\s*$/iu,
   /* les résidus des champs d'un connaissement : « NOTIFY PARTY », « SAME AS CONSIGNEE ABOVE »,
      « ATTN MR LI » ; un numéro de coque ; « VOYAGE 9 » ; « ROOM 302 », « UNIT 4B », « BLDG 2 » */
   /\s+(?:notify(?:\s+party)?\s*)?(?:same\s+as\s+(?:consignee|shipper|notify|above|applicant)(?:\s+above)?)\s*$/iu,
@@ -182,6 +198,9 @@ const PAVILLONS: ReadonlySet<string> = new Set(["panama", "liberia", "marshall i
 /** Les ports, villes et quartiers du commerce, comme SIGNAL d'adresse derrière une forme (« … CO. BANDAR
  *  ABBAS », « … CO LLC DEIRA ») : ils ne s'ôtent jamais d'un nom par eux-mêmes. */
 const PORTS_ET_QUARTIERS: ReadonlySet<string> = new Set(["bandar", "kota", "jebel", "deira", "bur", "ras", "jlt", "musaffah",
+  "riga", "hamina", "kotka", "helsinki", "turku", "tallinn", "klaipeda", "constanta", "poti", "batumi", "goteborg", "gothenburg", "stockholm",
+  "oslo", "copenhagen", "aarhus", "gdansk", "gdynia", "varna", "burgas", "odesa", "odessa", "mykolaiv", "kherson", "izmail", "samsun",
+  "trabzon", "novorossiysk", "rostov", "taganrog", "izmir",
   "sharjah", "ajman", "fujairah", "dubai", "abu dhabi", "jeddah", "riyadh", "dammam", "muscat", "doha", "manama", "kuwait",
   "karachi", "lahore", "mumbai", "chennai", "kolkata", "colombo", "chittagong", "jakarta", "surabaya", "medan", "dumai", "belawan",
   "klang", "penang", "johor", "kuching", "bangkok", "laem", "chabang", "haiphong", "hochiminh", "saigon", "manila", "cebu",
@@ -189,7 +208,11 @@ const PORTS_ET_QUARTIERS: ReadonlySet<string> = new Set(["bandar", "kota", "jebe
   "busan", "incheon", "tokyo", "yokohama", "kobe", "osaka", "rotterdam", "antwerp", "antwerpen", "hamburg", "bremen", "bremerhaven",
   "felixstowe", "southampton", "havre", "marseille", "genoa", "genova", "piraeus", "istanbul", "izmir", "mersin", "alexandria",
   "lagos", "apapa", "tema", "abidjan", "mombasa", "durban", "santos", "houston", "newark", "savannah", "vancouver"]);
-const FORME_EN_LIGNE = /\b(?:co\.?,?\s*ltd\.?|co(?=\.)|limited|ltd\.?|inc\.?|llc|l\.l\.c\.|corp\.?|corporation|gmbh|s\.?a\.?|b\.?v\.?|n\.?v\.?|pte\.?\s*ltd\.?|pvt\.?\s*ltd\.?|sdn\.?\s*bhd\.?|s\.?p\.?a\.?|s\.?r\.?l\.?|a\.?s\.?|plc|kk|k\.k\.|jsc|ooo|fze|fzco|est\.?)\b/giu;
+/** Les codes pays à deux lettres qu'un export colle derrière la ville. */
+const CODES_PAYS: ReadonlySet<string> = new Set(["fi", "se", "no", "dk", "ee", "lv", "lt", "pl", "de", "nl", "be", "fr", "es", "it", "pt", "ro",
+  "bg", "gr", "tr", "ua", "ru", "ge", "us", "uk", "gb", "ie", "ch", "at", "cz", "sk", "hu", "sg", "my", "id", "th", "vn", "cn", "hk", "jp", "kr",
+  "in", "pk", "ae", "sa", "qa", "eg", "ma", "ng", "gh", "ke", "za", "br", "ar", "cl", "mx", "pa", "co", "pe", "au", "nz", "ca"]);
+const FORME_EN_LIGNE = /\b(?:co\.?,?\s*ltd\.?|co(?=\.)|limited|ltd\.?|inc\.?|llc|l\.l\.c\.|corp\.?|corporation|oy|ab|aps|ou|sia|uab|ltda|lda|sarl|sas|kft|tov|pao|zao|a\.s\.|a\/s|gmbh|s\.?a\.?|b\.?v\.?|n\.?v\.?|pte\.?\s*ltd\.?|pvt\.?\s*ltd\.?|sdn\.?\s*bhd\.?|s\.?p\.?a\.?|s\.?r\.?l\.?|a\.?s\.?|plc|kk|k\.k\.|jsc|ooo|fze|fzco|est\.?)\b/giu;
 
 /** Une variante d'un nom brut, et ce qu'elle est. `ancien` : un nom que le document annonce comme un
  *  AUTRE nom du même (« ex », « f/k/a », « formerly », « a.k.a. », « t/a ») ; un ancien nom d'un seul côté
@@ -200,7 +223,19 @@ const FORME_EN_LIGNE = /\b(?:co\.?,?\s*ltd\.?|co(?=\.)|limited|ltd\.?|inc\.?|llc
  *  perdue (voir `mentionDeSuccursale`), « » sinon. */
 export type VarianteTypee = { texte: string; ancien: boolean; mention: string;
   /** les numéros de registre du nom brut (voir `numeroDeRegistre`), portés par toutes ses variantes */
-  registre: string };
+  registre: string;
+  /** la PARTIE d'un document que le nom brut porte en étiquette : « (Applicant) », « /BENEFICIARY/ », « Consignee: »,
+   *  « (THE SELLER) », « - DRAWEE ». L'applicant et le bénéficiaire d'un même crédit sont deux personnes par
+   *  construction, quels que soient les mots (jeu 12 : « Femi Alade Import Export Company Limited (Applicant) »
+   *  face à « Alade Femi Export Import Company Limited (Beneficiary) », 0,90 sans cette propriété) ; l'étiquette
+   *  est ôtée des textes, la propriété la garde, `plafondDesLectures` la lit. Une seule partie par nom brut. */
+  partie: string };
+/** La partie d'un document qu'un nom brut nomme, en minuscules, ou « » : les trois formes d'étiquette
+ *  (parenthèse, barres SWIFT, tête ou queue de ligne). Le nom NE dit rien de sa partie : rien. */
+export function partieDuDocument(brut: string): string {
+  const m = /(?:^|[\s(\/\-\u2013])(?:the\s+)?(applicant|beneficiary|seller|buyer|shipper|consignee|drawee|drawer|remitter|payee|ordering\s+customer)s?\s*(?:[:)\/\-\u2013]|$)/iu.exec(brut);
+  return m ? m[1]!.toLowerCase().replace(/\s+/g, " ") : "";
+}
 /** Les variantes d'un nom brut, textes seuls (voir `variantesTypees`). */
 export function variantes(brut: string): string[] {
   return variantesTypees(brut).map((v) => v.texte);
@@ -214,7 +249,8 @@ export function variantesTypees(brut: string): VarianteTypee[] {
   /* une adresse collée à la forme sans espace, champ 59 : « Company Limited45 Marina Road » (jeu 10) */
   brut = brut.replace(/\b(limited|ltd|plc|inc|llc|corp|gmbh|bv|nv|sa|sarl|lda|ltda|pty|bhd)\.?(?=\d)/giu, "$1 ");
   const registre = numeroDeRegistre(brut);
-  const poser = (texte: string, ancien: boolean, mention: string) => { if (!vues.has(texte)) vues.set(texte, { texte, ancien, mention, registre }); };
+  const partie = partieDuDocument(brut);
+  const poser = (texte: string, ancien: boolean, mention: string) => { if (!vues.has(texte)) vues.set(texte, { texte, ancien, mention, registre, partie }); };
   poser(brut.trim(), false, "");
   /* le registre écrit la personne nom d'abord : « Okeke, Chidi Building Materials » (jeu 10) */
   const inverse = /^([\p{Lu}][\p{L}'-]+),\s+([\p{Lu}][\p{L}'-]+)\s+(\p{L}.*)$/u.exec(brut.trim());
@@ -276,6 +312,12 @@ export function variantesTypees(brut: string): VarianteTypee[] {
     do { avant = p; for (const r of ANNOTATIONS) p = p.replace(r, "").replace(/\s{2,}/g, " ").trim(); } while (p !== avant);
     /* « MV RONG YUAN TAI 16 AT FANGCHENG » : derrière un navire préfixé, « at » et un lieu sont le port d'embarquement */
     p = p.replace(/^((?:m\/?v|m\/?t|ms|fv|f\/v|tb|bg|km|tug|barge)\.?\s+.{3,60}?)\s+at\s+[\p{L} .'-]{2,30}$/iu, "$1");
+    /* l'adresse d'un export en fin de ligne (jeu 12) : une ville connue et un code pays (« GOTEBORG SE »), un code postal
+       (« RIGA LV-1045 », « 49400 HAMINA FI »), une ville derrière une barre (« / Constanta Port Gate 7 ») */
+    p = p.replace(/\s+([\p{L}-]{3,})\s+([a-z]{2})\s*$/iu, (m, ville: string, code: string) =>
+      (PORTS_ET_QUARTIERS.has(normaliser(ville)) && CODES_PAYS.has(code.toLowerCase()) ? "" : m));
+    p = p.replace(/\s+[a-z]{2}-\d{4,5}\b.*$/iu, "").replace(/\s+\d{4,5}\s+[\p{L}-]{3,}\s+[a-z]{2}\s*$/iu, "");
+    p = p.replace(/\s+\/\s*([\p{L}-]{3,})\b.*$/u, (m, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? "" : m));
     /* une adresse derrière la forme juridique : « … FZE, Jebel Ali Free Zone, Dubai »,
        « … B.V., ROTTERDAM » ; ou, derrière un nom de navire, son port d'immatriculation en un
        ou deux mots : « SIROCCO MARINER, MONROVIA » ; ou une adresse reconnaissable à ses mots
@@ -349,16 +391,16 @@ export function variantesTypees(brut: string): VarianteTypee[] {
  *  cantonais (voir ecritures.ts) ; un nom latin n'a qu'une lecture, sauf celles que lui donnent
  *  les sinogrammes qu'il porte (`substitutions`). C'est ici que l'index et le score prennent
  *  leurs lectures : tout ce qui s'ajoute ici est vu des deux. */
-export type LectureDe = { texte: string; lecture: Lecture; ancien: boolean; mention: string; registre: string };
+export type LectureDe = { texte: string; lecture: Lecture; ancien: boolean; mention: string; registre: string; partie: string };
 export function lecturesDe(brut: string): LectureDe[] {
   const vues = new Map<string, LectureDe>();
   const poser = (l: LectureDe) => { const k = `${l.lecture}|${l.texte}`; if (!vues.has(k)) vues.set(k, l); };
   for (const v of variantesTypees(brut)) {
-    const { ancien, mention, registre } = v;
-    poser({ texte: v.texte, lecture: "mandarin", ancien, mention, registre });
+    const { ancien, mention, registre, partie } = v;
+    poser({ texte: v.texte, lecture: "mandarin", ancien, mention, registre, partie });
     if (/[\u4e00-\u9fff]/u.test(v.texte) && !estJaponais(v.texte)) {
-      poser({ texte: v.texte, lecture: "cantonais", ancien, mention, registre });
-      for (const s of substitutions(v.texte)) poser({ ...s, ancien, mention, registre });
+      poser({ texte: v.texte, lecture: "cantonais", ancien, mention, registre, partie });
+      for (const s of substitutions(v.texte)) poser({ ...s, ancien, mention, registre, partie });
     }
   }
   return [...vues.values()];
@@ -374,6 +416,8 @@ export function plafondDesLectures(a: LectureDe, b: LectureDe): number {
   /* deux numéros de registre différents : deux dépôts du même nom (« (RC 884213) », « (RC 918532) »), ou la
      succursale allemande et son siège, chacun à son Amtsgericht ; un numéro d'un seul côté ne dit rien */
   if (a.registre !== "" && b.registre !== "" && a.registre !== b.registre) return FACTEUR_CONTENANCE;
+  /* deux parties d'un même document (l'applicant et le bénéficiaire d'un crédit) : deux personnes par construction */
+  if (a.partie !== "" && b.partie !== "" && a.partie !== b.partie) return FACTEUR_CONTENANCE;
   return 1;
 }
 

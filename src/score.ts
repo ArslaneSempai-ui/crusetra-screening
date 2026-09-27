@@ -25,7 +25,7 @@ import { regionDeRegistre } from "./preparation.ts";
 import { POINTS_CARDINAUX } from "./preparation.ts";
 import { formePlurielle } from "./mots.ts";
 import { DICTIONNAIRE } from "./mots.ts";
-import { pluriel } from "./mots.ts";
+import { pluriel, plurielTurc } from "./mots.ts";
 import { gerondif } from "./mots.ts";
 import { motsDistincts } from "./mots.ts";
 import { motsHispaniquesDistincts } from "./mots.ts";
@@ -147,6 +147,9 @@ export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesL
     const court = a.length < b.length ? a : b;
     if (DICTIONNAIRE.has(court)) return pluriels && (pluriel(a, b) || pluriel(b, a)) ? 0.95 : 0.5;
   }
+  /* le pluriel turc d'un nom de navire est une autre coque, comme le pluriel anglais : « M/V Sari Kaya » n'est pas
+     « Sari Kayalar » (jeu 12, 0,899 par le dernier mot lu comme coupé) ; hors navire, la distance en décide */
+  if (!pluriels && (plurielTurc(a, b) || plurielTurc(b, a))) return 0.5;
   if (gerondif(a, b) || gerondif(b, a)) return 0.95;
   if (abrege(a, b) || abrege(b, a)) return 0.9;
   if (motsDistincts(a, b, voyellesLibres) || composesDistincts(a, b, voyellesLibres) || motsHispaniquesDistincts(a, b)) return 0.5;
@@ -446,8 +449,8 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           const etablissement = japonais && (suffixeEtablissement(x, y) || suffixeEtablissement(y, x));
           /* dans un export tout en majuscules, un mot court qu'aucun dictionnaire ne connaît et
              qui commence un mot long de l'autre nom est une abréviation sans point (« HVY IND ») */
-          if (v < 0.9 && !etablissement && ((X.marques.majuscules && x.length >= 2 && x.length <= 9 && y.length >= x.length + 3 && y.length >= 6 && y.startsWith(x) && !lemme(x))
-            || (Y.marques.majuscules && y.length >= 2 && y.length <= 9 && x.length >= y.length + 3 && x.length >= 6 && x.startsWith(y) && !lemme(y)))) v = 0.9;
+          if (v < 0.9 && !etablissement && ((X.marques.majuscules && x.length >= 2 && x.length <= 9 && y.length >= x.length + 3 && y.length >= 6 && y.startsWith(x) && !lemme(x) && !(navire && plurielTurc(y, x)))
+            || (Y.marques.majuscules && y.length >= 2 && y.length <= 9 && x.length >= y.length + 3 && x.length >= 6 && x.startsWith(y) && !lemme(y) && !(navire && plurielTurc(x, y))))) v = 0.9;
           /* un mot abrégé d'un point correspond au mot entier qu'il commence, ou dont il garde
              les lettres dans l'ordre depuis l'initiale (« Petrochem. », « Dist. », « Capt. ») ;
              dans les DEUX sens, sinon le côté entier ne rendait qu'un demi-crédit */
@@ -488,8 +491,8 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
             && DICTIONNAIRE.has(x.length < y.length ? x : y)) v = 0.9;
           if (v < 0.9 && !etablissement && X.abreges[i] && x.length < y.length && (y.startsWith(x) || abrege(x, y))) v = 0.9;
           if (v < 0.9 && !etablissement && Y.abreges[j] && y.length < x.length && (x.startsWith(y) || abrege(y, x))) v = 0.9;
-          if (v < 0.9 && !etablissement && dernierX && tronque(x, y)) v = 0.9;
-          if (v < 0.9 && !etablissement && dernierY && tronque(y, x)) v = 0.9;
+          if (v < 0.9 && !etablissement && dernierX && tronque(x, y) && !(navire && plurielTurc(y, x))) v = 0.9;
+          if (v < 0.9 && !etablissement && dernierY && tronque(y, x) && !(navire && plurielTurc(x, y))) v = 0.9;
           /* deux lectures de sinogrammes différents sont des homophones (« 新海 », « 鑫海 » : xinhai
              tous deux), et un homophone est un autre mot */
           if (nx !== "" && ny !== "" && nx !== ny) v = Math.min(v, 0.5);

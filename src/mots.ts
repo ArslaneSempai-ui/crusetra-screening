@@ -109,6 +109,12 @@ export function pluriel(long: string, court: string): boolean {
 export function formePlurielle(long: string, court: string): boolean {
   return long !== court && (long === court + "s" || long === court + "es" || (court.endsWith("y") && long === court.slice(0, -1) + "ies"));
 }
+/** La FORME d'un pluriel turc : -lar, -ler (« Kaya », « Kayalar » ; « Deniz », « Denizler »), sur un radical de trois
+ *  lettres au moins. Les points des voyelles (ı, ö, ü) tombent à la normalisation, l'harmonie vocalique ne se vérifie
+ *  donc pas : les deux suffixes valent pour tout radical. Lu seulement dans un nom de navire (voir `simMot`). */
+export function plurielTurc(long: string, court: string): boolean {
+  return court.length >= 3 && long !== court && (long === court + "lar" || long === court + "ler");
+}
 /** Le GÉRONDIF ANGLAIS d'un mot du dictionnaire est le même mot du métier : « Trading » et « Trade », « Shipping »
  *  et « Ship », « Farming » et « Farm » (jeu 10, 27/09 : « Handel en Vervoer » traduit « trading transport » face à
  *  « Trade and Transport » restait à 0,403). Les deux mots au dictionnaire, jamais un nom propre ; -ing seul,
