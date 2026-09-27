@@ -1,0 +1,2407 @@
+{
+ "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+ "provenance": "authored on 2026-09-27 by a separate agent (a Houston brokerage brief, another model) that never saw the matcher nor any other pair set, as blind test set #5 (sha256 d90aba45…); every name invented; no client data, no list data. It judged method v7 once (entites.ts 9f8722eb…, cribler.ts f23ecac0…): strong 0.81 found 164/200 [76-87 %] with 6/200 [1-6 %] false alerts; possible 0.80 found 183/200 [87-95 %] with 40/200 [15-26 %]. Its misses were then studied, and from that moment it is a TRAINING set: its rates are not quoted as held-out.",
+ "avertissement": "Authored pairs measure the method on the kinds of variation they name. They are not a sample of any client's counterparties.",
+ "paires": [
+  {
+   "a": "Brazoria Valve & Fitting Co., Inc.",
+   "b": "BRAZORIA VALVE AND FITTING CO INC",
+   "verdict": "match",
+   "nature": "case-and-punctuation"
+  },
+  {
+   "a": "Talquín Polímeros, S.A. de C.V.",
+   "b": "Talquin Polimeros SA de CV",
+   "verdict": "match",
+   "nature": "diacritics-stripped"
+  },
+  {
+   "a": "Ensambles Moctavio, S. de R.L. de C.V.",
+   "b": "ENSAMBLES MOCTAVIO S DE RL DE CV",
+   "verdict": "match",
+   "nature": "case-and-punctuation"
+  },
+  {
+   "a": "Grupo Terravel, S.A.P.I. de C.V.",
+   "b": "Grupo Terravel, Sociedad Anónima Promotora de Inversión de Capital Variable",
+   "verdict": "match",
+   "nature": "legal-form-spelled-out"
+  },
+  {
+   "a": "Lafourche Marine Towing, L.L.C.",
+   "b": "Lafourche Marine Towing",
+   "verdict": "match",
+   "nature": "legal-form-dropped"
+  },
+  {
+   "a": "Kestrel Bend Oilfield Services, Ltd.",
+   "b": "Kestrel Bend Oilfield Svcs Ltd",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Calcasieu Pipe Supply Corporation",
+   "b": "Calcasieu Pipe Supply Corp.",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Wendrell Compression Systems, Inc.",
+   "b": "Wendrel Compression Systems Inc",
+   "verdict": "match",
+   "nature": "keyboard-typo"
+  },
+  {
+   "a": "Harbinson Drilling Tools LP",
+   "b": "HARBINS0N DRILLING TOOLS LP",
+   "verdict": "match",
+   "nature": "ocr-typo"
+  },
+  {
+   "a": "Petroquímica Ribeirão Alto S.A.",
+   "b": "PETROQUIMICA RIBEIRAO ALTO SA",
+   "verdict": "match",
+   "nature": "diacritics-stripped"
+  },
+  {
+   "a": "Distribuidora Quelmar Andina S.A.S.",
+   "b": "Quelmar Andina Distribuidora SAS",
+   "verdict": "match",
+   "nature": "word-order"
+  },
+  {
+   "a": "Norquill Fabrication Ltd.",
+   "b": "Norquill Fabrication Limited",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Équipements Brassard-Lemay Inc.",
+   "b": "Brassard-Lemay Equipment Inc.",
+   "verdict": "match",
+   "nature": "name-translated"
+  },
+  {
+   "a": "Sabine Crest Chemicals, LLC",
+   "b": "SABINE CREST CHEM LLC",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Compañía Exportadora de Tubería Galvanizada del Norte, S.A. de C.V.",
+   "b": "CIA EXPORTADORA DE TUBERIA GALVANIZ",
+   "verdict": "match",
+   "nature": "wire-truncation"
+  },
+  {
+   "a": "M/T Bayou Cordelaine",
+   "b": "BAYOU CORDELAINE",
+   "verdict": "match",
+   "nature": "vessel-prefix-dropped"
+  },
+  {
+   "a": "Tug Miss Delphine Arceneaux",
+   "b": "MISS DELPHINE ARCENE",
+   "verdict": "match",
+   "nature": "ais-truncation"
+  },
+  {
+   "a": "Barge TCX 4417",
+   "b": "TCX-4417",
+   "verdict": "match",
+   "nature": "vessel-prefix-dropped"
+  },
+  {
+   "a": "HALVERSTONE SPIRIT V.214W (Marshall Islands flag)",
+   "b": "Halverstone Spirit",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "M/T Ondara Leigh (ex-Pelican Morrow)",
+   "b": "ONDARA LEIGH",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "Rancho Vercel Importadora S.A. de C.V. c/o Aduanas Pedraza, Nuevo Laredo",
+   "b": "Rancho Vercel Importadora SA de CV",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "Tidewell Process Equipment Inc, 12250 Brevard Ln, Pasadena TX 77506",
+   "b": "Tidewell Process Equipment, Inc.",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "Rivermont Barge Fleeting LLC, Debtor-in-Possession",
+   "b": "Rivermont Barge Fleeting LLC",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "PROVEEDORA INDUSTRIAL CUAXOMA, S.A. DE C.V.",
+   "b": "Proveedora Industrial Cuaxoma",
+   "verdict": "match",
+   "nature": "legal-form-dropped"
+  },
+  {
+   "a": "TRANSPORTES OLVERA HERMANOS, S.A. DE C.V. (a.k.a. TOH LOGISTICA)",
+   "b": "Transportes Olvera Hermanos SA de CV",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "Gulfbright Energy Services Inc",
+   "b": "Gulf Bright Energy Services, Inc.",
+   "verdict": "match",
+   "nature": "glued-or-split"
+  },
+  {
+   "a": "Metalúrgica Riobranca Ltda.",
+   "b": "METALURGICA RIO BRANCA LTDA",
+   "verdict": "match",
+   "nature": "glued-or-split"
+  },
+  {
+   "a": "Colindres Tank Lining Co.",
+   "b": "Colindres Tank Linlng Co.",
+   "verdict": "match",
+   "nature": "ocr-typo"
+  },
+  {
+   "a": "Carnowell Flange Works",
+   "b": "Camowell Flange Works",
+   "verdict": "match",
+   "nature": "ocr-typo"
+  },
+  {
+   "a": "Marcantel Steel Erectors, Inc.",
+   "b": "Marcnatel Steel Erectors Inc",
+   "verdict": "match",
+   "nature": "keyboard-typo"
+  },
+  {
+   "a": "Comercializadora de Equipos Petroleros Tezcal, S.A. de C.V.",
+   "b": "Comer. de Equipos Petroleros Tezcal SA de CV",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Industrias Metálicas Zacoalco, S.A. de C.V.",
+   "b": "IMZ Industrias Metalicas Zacoalco SA de CV",
+   "verdict": "match",
+   "nature": "acronym-added"
+  },
+  {
+   "a": "Companhia Brasileira de Válvulas Itaperuna",
+   "b": "Cia. Bras. de Valvulas Itaperuna",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Suministros Técnicos Yarumal S.A.S.",
+   "b": "Sumin. Tecnicos Yarumal S.A.S.",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Ardmoore Pressure Controls Corporation",
+   "b": "ARDMOORE PRESSURE CONTROLS CORP",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Polímeros del Golfo Vancel, S.A. de C.V.",
+   "b": "Vancel Polímeros del Golfo SA de CV",
+   "verdict": "match",
+   "nature": "word-order"
+  },
+  {
+   "a": "Vireo Crossing Logistics LLC d/b/a Vireo Freight",
+   "b": "Vireo Freight",
+   "verdict": "match",
+   "nature": "trading-name"
+  },
+  {
+   "a": "Guidry & Thibodeaux Marine Services",
+   "b": "GUIDRY AND THIBODEAUX MARINE SVCS",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Estaleiro Naval Guaraciaba Ltda.",
+   "b": "Estaleiro Naval Guaraciaba",
+   "verdict": "match",
+   "nature": "legal-form-dropped"
+  },
+  {
+   "a": "Tintas Industriais Caxambu Ltda.",
+   "b": "Tintas Industriais Caxambu Limitada",
+   "verdict": "match",
+   "nature": "legal-form-spelled-out"
+  },
+  {
+   "a": "Dunmore Heat Exchangers, Inc. (Beaumont, TX)",
+   "b": "DUNMORE HEAT EXCHANGERS INC",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "SABLE RIVERINE VOY 0931",
+   "b": "Sable Riverine",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "M/V Cypremort Lady",
+   "b": "MV CYPREMORT LADY",
+   "verdict": "match",
+   "nature": "case-and-punctuation"
+  },
+  {
+   "a": "Maquiladora Fronteriza Alcántara, S. de R.L. de C.V.",
+   "b": "Maquiladora Fronteriza Alcantara S de RL",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Tuberías y Conexiones Cajicá S.A.",
+   "b": "Tuberias y Conexiones Cajica Sociedad Anonima",
+   "verdict": "match",
+   "nature": "legal-form-spelled-out"
+  },
+  {
+   "a": "Pemberly Drilling Fluids LLC",
+   "b": "Pemberly Drillign Fluids LLC",
+   "verdict": "match",
+   "nature": "keyboard-typo"
+  },
+  {
+   "a": "Quenneville Chemical Blending LLC",
+   "b": "Quennevi11e Chemical Blending LLC",
+   "verdict": "match",
+   "nature": "ocr-typo"
+  },
+  {
+   "a": "Southmere Offshore Rentals LLC",
+   "b": "SOUTH MERE OFFSHORE RENTALS",
+   "verdict": "match",
+   "nature": "glued-or-split"
+  },
+  {
+   "a": "Ramsdell Instrument Controls Inc.",
+   "b": "Ramsdell Instr. Controls Inc.",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Les Aciers Beaudrault Inc.",
+   "b": "Aciers Beaudrault Inc",
+   "verdict": "match",
+   "nature": "article-dropped"
+  },
+  {
+   "a": "Lomax Pipe & Tube Houston LLC",
+   "b": "Lomax Pipe & Tube Odessa LLC",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Terravel Polímeros, S.A. de C.V.",
+   "b": "Terravel Logística, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Grupo Ixtaval, S.A.B. de C.V.",
+   "b": "Ixtaval Aceros, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Harrowgate Energy Partners LP",
+   "b": "Harrowgate Energy Partners II LP",
+   "verdict": "different",
+   "nature": "numbered-spv"
+  },
+  {
+   "a": "M/T MAURELLE ASTER",
+   "b": "Maurelle Shipping Inc.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "MISS JOLENE BOUDREAUX",
+   "b": "MISS KAYLA BOUDREAUX",
+   "verdict": "different",
+   "nature": "sister-ship"
+  },
+  {
+   "a": "TCX 4417",
+   "b": "TCX 4471",
+   "verdict": "different",
+   "nature": "numbered-series"
+  },
+  {
+   "a": "CAPT. ELROY HEBERT",
+   "b": "CAPT. ELROY HEBERT II",
+   "verdict": "different",
+   "nature": "numbered-series"
+  },
+  {
+   "a": "Delacroix Industrial Supply LLC",
+   "b": "Southern Industrial Supply LLC",
+   "verdict": "different",
+   "nature": "generic-words-only"
+  },
+  {
+   "a": "Petroquímica Ribeirão Alto S.A.",
+   "b": "Petroquímica Ribeirão Preto S.A.",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "Arcadio Tank Barges LLC",
+   "b": "Arcadio Floral Design LLC",
+   "verdict": "different",
+   "nature": "same-word-unrelated-business"
+  },
+  {
+   "a": "Norquill Fabrication Ltd.",
+   "b": "Norquill Fabrication, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Transportes Ramiro Olvera",
+   "b": "Transportes Jacinto Olvera",
+   "verdict": "different",
+   "nature": "family-name-different-people"
+  },
+  {
+   "a": "Kestrel Bend Oilfield Services (Canada) Ltd.",
+   "b": "Kestrel Bend Oilfield Services Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Wendrell Compression Systems Mexico, S. de R.L. de C.V.",
+   "b": "Wendrell Compression Systems, Inc.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Bellcastle Midstream Holdings, LLC",
+   "b": "Bellcastle Midstream Operating, LLC",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Barcaza Lease Trust 2019-A",
+   "b": "Barcaza Lease Trust 2019-B",
+   "verdict": "different",
+   "nature": "numbered-spv"
+  },
+  {
+   "a": "M/V Tarrow Belle",
+   "b": "Tarrow Belle Marine Management LLC",
+   "verdict": "different",
+   "nature": "vessel-vs-manager"
+  },
+  {
+   "a": "M/T CALLISTA VORNE",
+   "b": "Vorne Chartering B.V.",
+   "verdict": "different",
+   "nature": "vessel-vs-charterer"
+  },
+  {
+   "a": "LAFITTE PROVIDER",
+   "b": "LAFITTE PROTECTOR",
+   "verdict": "different",
+   "nature": "sister-ship"
+  },
+  {
+   "a": "BRAYLAND TIDE 7",
+   "b": "BRAYLAND TIDE 17",
+   "verdict": "different",
+   "nature": "numbered-series"
+  },
+  {
+   "a": "Gulf Lining Specialists Inc.",
+   "b": "Gulf Mining Specialists Inc.",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "Aceros Tlalquila, S.A. de C.V.",
+   "b": "Aceros Tlalquila del Norte, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Tintas Industriais Caxambu Ltda.",
+   "b": "Tintas Automotivas Caxambu Ltda.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Inversiones Quelmar S.A.S.",
+   "b": "Distribuidora Quelmar Andina S.A.S.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "First Sabine Barge Leasing LLC",
+   "b": "Second Sabine Barge Leasing LLC",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Ardmoore Pressure Controls Corporation",
+   "b": "Ardmoore Pressure Controls (USA) Corporation",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Allied Valve Solutions Inc.",
+   "b": "United Valve Solutions Inc.",
+   "verdict": "different",
+   "nature": "generic-words-only"
+  },
+  {
+   "a": "Cypress Hollow Mooring LLC",
+   "b": "Cyprus Hollow Mooring LLC",
+   "verdict": "different",
+   "nature": "homophone"
+  },
+  {
+   "a": "Talquín Polímeros, S.A. de C.V.",
+   "b": "Talquín Polímeros Ltda.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Clovis Boudreaux Welding LLC",
+   "b": "Aldric Boudreaux Welding LLC",
+   "verdict": "different",
+   "nature": "family-name-different-people"
+  },
+  {
+   "a": "TUG MISS DELPHINE ARCENEAUX",
+   "b": "Arceneaux Towing & Fleeting LLC",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "KORVALIS SPIRIT",
+   "b": "KORVALIS SPRITE",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "Harbinson Drilling Tools LP",
+   "b": "Harbinson Drilling Tools Rentals LP",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Ensambles Moctavio Juárez, S. de R.L. de C.V.",
+   "b": "Ensambles Moctavio Reynosa, S. de R.L. de C.V.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Guaraciaba Participações S.A.",
+   "b": "Estaleiro Naval Guaraciaba Ltda.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Pemberly Drilling Fluids LLC",
+   "b": "Pemberly Bridal Boutique LLC",
+   "verdict": "different",
+   "nature": "same-word-unrelated-business"
+  },
+  {
+   "a": "Marcantel Steel Erectors, Inc.",
+   "b": "Marcantonio Steel Erectors, Inc.",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "LADY ODILE",
+   "b": "LADY ODETTE",
+   "verdict": "different",
+   "nature": "sister-ship"
+  },
+  {
+   "a": "HALVERSTONE SPIRIT",
+   "b": "Halverstone Tankers Ltd.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "RMX 2208",
+   "b": "RMX 2280",
+   "verdict": "different",
+   "nature": "numbered-series"
+  },
+  {
+   "a": "Channel Crossing Holdco 3 LLC",
+   "b": "Channel Crossing Holdco 4 LLC",
+   "verdict": "different",
+   "nature": "numbered-spv"
+  },
+  {
+   "a": "American Industrial Pipe Co.",
+   "b": "American Industrial Pump Co.",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "Kinnaird Wellhead Products Ltd.",
+   "b": "Kinnaird Wellhead Products Pty Ltd",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Agencia Aduanal Rubén Pedraza",
+   "b": "Agencia Aduanal Octavio Pedraza",
+   "verdict": "different",
+   "nature": "family-name-different-people"
+  },
+  {
+   "a": "Banco Mercantil Tamazula, S.A.",
+   "b": "Casa de Bolsa Tamazula, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Brake Line Hydraulics LLC",
+   "b": "Break Line Hydraulics LLC",
+   "verdict": "different",
+   "nature": "homophone"
+  },
+  {
+   "a": "Norquill Fabrication Ltd.",
+   "b": "Norquill Holdings Inc.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Southmere Offshore Rentals LLC",
+   "b": "Southmere Offshore Catering LLC",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Colindres Tank Lining Co.",
+   "b": "Colindres Tank Lining de México, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Ningbo Zhuolan Fastener Co., Ltd.",
+   "b": "NINGBO ZHUOLAN FASTENER CO LTD",
+   "verdict": "match",
+   "nature": "case-and-punctuation"
+  },
+  {
+   "a": "Dongguan Heyuetai Plastic Products Co., Ltd.",
+   "b": "Dongguan Heyuetai Plastic Products Company Limited",
+   "verdict": "match",
+   "nature": "legal-form-spelled-out"
+  },
+  {
+   "a": "Zhejiang Lanpeng Pump Industry Co., Ltd.",
+   "b": "Lanpeng Pump Industry Co., Ltd.",
+   "verdict": "match",
+   "nature": "place-prefix-dropped"
+  },
+  {
+   "a": "Foshan Shunde Yimeikang Electrical Appliance Youxian Gongsi",
+   "b": "Foshan Shunde Yimeikang Electrical Appliance Co., Ltd.",
+   "verdict": "match",
+   "nature": "legal-form-translated"
+  },
+  {
+   "a": "Xiamen Jinhaiyue Import and Export Co., Ltd.",
+   "b": "Xiamen Jinhaiyue Imp. & Exp. Co., Ltd.",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Kuo Feng Tai Machinery Co., Ltd.",
+   "b": "Guo Feng Tai Machinery Co., Ltd.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Hsieh Li Metal Works Co., Ltd.",
+   "b": "HSIEHLI METAL WORKS CO LTD",
+   "verdict": "match",
+   "nature": "glued-or-split"
+  },
+  {
+   "a": "Công ty TNHH Dệt May Phước Lâm",
+   "b": "Phuoc Lam Textile Garment Co., Ltd.",
+   "verdict": "match",
+   "nature": "name-translated"
+  },
+  {
+   "a": "Công ty Cổ phần Thủy sản Bến Hạ",
+   "b": "CONG TY CO PHAN THUY SAN BEN HA",
+   "verdict": "match",
+   "nature": "diacritics-stripped"
+  },
+  {
+   "a": "Tân Khải Plastics Joint Stock Company",
+   "b": "Tan Khai Plastics JSC",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Suwannaphet Frozen Foods Public Company Limited",
+   "b": "Suwannaphet Frozen Foods PCL",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Kittiwat Charoenphol Industry Co., Ltd.",
+   "b": "Kittiwat Charoenpol Industry Co., Ltd.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "PT Sinar Kaloka Abadi",
+   "b": "Sinar Kaloka Abadi, PT",
+   "verdict": "match",
+   "nature": "legal-form-moved"
+  },
+  {
+   "a": "PT Lembayung Kertas Nusantara Tbk",
+   "b": "PT. LEMBAYUNG KERTAS NUSANTARA TBK.",
+   "verdict": "match",
+   "nature": "case-and-punctuation"
+  },
+  {
+   "a": "PT Wiratama Baja Perkasa",
+   "b": "Wiratama Baja Perkasa",
+   "verdict": "match",
+   "nature": "legal-form-dropped"
+  },
+  {
+   "a": "Kyungsan Tongsang Co., Ltd.",
+   "b": "Gyeongsan Tongsang Co., Ltd.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Haeryeong Trading Corporation",
+   "b": "HAERYEONG TRADING CORP.",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Tomonaga Sangyo Kabushiki Kaisha",
+   "b": "Tomonaga Sangyo K.K.",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Hisanaga Shoji Co., Ltd.",
+   "b": "Hisanaga Trading Co., Ltd.",
+   "verdict": "match",
+   "nature": "name-translated"
+  },
+  {
+   "a": "Ōtsuki Kōgyō Co., Ltd.",
+   "b": "Ohtsuki Kogyo Co., Ltd.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Tsuchimoto Seiko Co., Ltd.",
+   "b": "Tutimoto Seiko Co., Ltd.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "M.V. ZHONG XIU HAI V.026E",
+   "b": "ZHONG XIU HAI",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "MV Orchid Tamarind (ex-Nan Feng Ling)",
+   "b": "ORCHID TAMARIND",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "Kaiyuan Brilliance Navigator",
+   "b": "KAIYUAN BRILLIANCE N",
+   "verdict": "match",
+   "nature": "ais-truncation"
+  },
+  {
+   "a": "SEOHAE CRESCENT (PANAMA)",
+   "b": "Seohae Crescent",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "M/V Hozumi Maru No. 18",
+   "b": "HOZUMI MARU NO18",
+   "verdict": "match",
+   "nature": "case-and-punctuation"
+  },
+  {
+   "a": "Guangzhou Xinhongyu Garment Accessories Manufacturing Co., Ltd.",
+   "b": "GUANGZHOU XINHONGYU GARMENT ACCESSO",
+   "verdict": "match",
+   "nature": "wire-truncation"
+  },
+  {
+   "a": "Wuxi Qiyuanhe Bearing Co., Ltd.",
+   "b": "Wuxi Qiyuanhe Bearlng Co., Ltd.",
+   "verdict": "match",
+   "nature": "ocr-typo"
+  },
+  {
+   "a": "Taizhou Lübang Sanitary Ware Co., Ltd.",
+   "b": "Taizhou Lvbang Sanitary Ware Co., Ltd.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Jiaxing Ruobai Textile Co., Ltd.",
+   "b": "Jiaxing Ruobai Textlie Co., Ltd.",
+   "verdict": "match",
+   "nature": "keyboard-typo"
+  },
+  {
+   "a": "Suzhou Jin Yue Da Electronics Co., Ltd.",
+   "b": "Suzhou Jinyueda Electronics Co., Ltd.",
+   "verdict": "match",
+   "nature": "glued-or-split"
+  },
+  {
+   "a": "Foshan Nanhai Guanyue Aluminium Co., Ltd.",
+   "b": "FOSHAN GUANYUE ALUMINIUM CO LTD",
+   "verdict": "match",
+   "nature": "place-prefix-dropped"
+  },
+  {
+   "a": "Fook Sang Tat Enterprises Limited",
+   "b": "FOOK SANG TAT ENTERPRISES LTD",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Wei Ching Lan Enterprise Co., Ltd., No. 18, Ln. 72, Sec. 2, Minzu Rd., Tainan City",
+   "b": "WEI CHING LAN ENTERPRISE CO LTD",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "HEBEI KAIXUANDA CHEMICAL CO., LTD. (a.k.a. HEBEI KAIXUANDA HUAGONG)",
+   "b": "Hebei Kaixuanda Chemical Co., Ltd.",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "Tung Lien Hsing Plastic Corp.",
+   "b": "Tung Lien Hsing Plastic Corporation",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Ch'iu Feng Textile Co., Ltd.",
+   "b": "Chiu Feng Textile Co., Ltd.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Baekhyang Tongsang Co., Ltd.",
+   "b": "Baekhyang Trading Co., Ltd.",
+   "verdict": "match",
+   "nature": "name-translated"
+  },
+  {
+   "a": "Nakabori Seisakusho Co., Ltd.",
+   "b": "Nakabori Seisakusho Kabushiki Kaisha",
+   "verdict": "match",
+   "nature": "legal-form-translated"
+  },
+  {
+   "a": "Công ty TNHH MTV Gỗ Lộc Thịnh Phú",
+   "b": "Cong ty TNHH Mot Thanh Vien Go Loc Thinh Phu",
+   "verdict": "match",
+   "nature": "legal-form-spelled-out"
+  },
+  {
+   "a": "Nakhon Pathom Somboon Karnchang Limited Partnership",
+   "b": "Nakhon Pathom Somboon Karnchang Ltd., Part.",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "CV Mitra Karya Rinjani",
+   "b": "C.V. Mitra Karya Rinjani",
+   "verdict": "match",
+   "nature": "case-and-punctuation"
+  },
+  {
+   "a": "Perwira Getah Industri Sdn. Bhd.",
+   "b": "Perwira Getah Industri Sendirian Berhad",
+   "verdict": "match",
+   "nature": "legal-form-spelled-out"
+  },
+  {
+   "a": "M/V SEIRYU PHOENIX",
+   "b": "SEIRYU PHOENIX",
+   "verdict": "match",
+   "nature": "vessel-prefix-dropped"
+  },
+  {
+   "a": "Hunan Xiangtan Ruilong Heavy Industry Co., Ltd.",
+   "b": "Hunan Xiangtan Ruilong Hvy Ind Co Ltd",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Changzhou Mingruisi Motor Co., Ltd.",
+   "b": "Changzhou Mingruisi M0tor Co., Ltd.",
+   "verdict": "match",
+   "nature": "ocr-typo"
+  },
+  {
+   "a": "Hsin-Fu-Lung Hardware Industrial Co., Ltd.",
+   "b": "Hsin Fu Lung Hardware Ind. Co., Ltd.",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Qingdao Hengtairun International Trade Co., Ltd.",
+   "b": "Qingdao Hengtairun Intl Trade",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "M/V JIN RUI HAI 16",
+   "b": "JINRUIHAI16",
+   "verdict": "match",
+   "nature": "glued-or-split"
+  },
+  {
+   "a": "Samut Sakhon Chaiyaphruek Frozen Food Co., Ltd.",
+   "b": "Samut Sakhon Chaiyaphruek Frz Food Co Ltd",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Zhejiang Lanpeng Pump Industry Co., Ltd.",
+   "b": "Jiangsu Lanpeng Pump Industry Co., Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Ningbo Zhuolan Fastener Co., Ltd.",
+   "b": "Ningbo Zhuolan Plastic Co., Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Dongguan Heyuetai Plastic Products Co., Ltd.",
+   "b": "Heyuetai Holdings Limited",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Shenzhen Kelinda Electronics Co., Ltd.",
+   "b": "Kelinda Electronics (Vietnam) Co., Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Suwannaphet Frozen Foods PCL",
+   "b": "Suwannaphet Cold Storage Co., Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "ZHONG XIU HAI",
+   "b": "ZHONG XIU SHAN",
+   "verdict": "different",
+   "nature": "sister-ship"
+  },
+  {
+   "a": "JIN RUI HAI 16",
+   "b": "JIN RUI HAI 18",
+   "verdict": "different",
+   "nature": "numbered-series"
+  },
+  {
+   "a": "HOZUMI MARU NO. 18",
+   "b": "HOZUMI MARU NO. 8",
+   "verdict": "different",
+   "nature": "numbered-series"
+  },
+  {
+   "a": "Linyi Maoshun Plywood Co., Ltd.",
+   "b": "Linyi Maosheng Plywood Co., Ltd.",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "Pacific Rain Trading Co., Ltd.",
+   "b": "Pacific Reign Trading Co., Ltd.",
+   "verdict": "different",
+   "nature": "homophone"
+  },
+  {
+   "a": "Baekhyang Trading Co., Ltd.",
+   "b": "Baekhyang Bakery Co., Ltd.",
+   "verdict": "different",
+   "nature": "same-word-unrelated-business"
+  },
+  {
+   "a": "Fook Sang Tat Enterprises Limited",
+   "b": "Fook Sang Tat Enterprises Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Chen Wei-Ming Enterprise Co.",
+   "b": "Chen Kuo-Hua Enterprise Co.",
+   "verdict": "different",
+   "nature": "family-name-different-people"
+  },
+  {
+   "a": "ORCHID TAMARIND",
+   "b": "Orchid Tamarind Shipping S.A.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "KAIYUAN BRILLIANCE",
+   "b": "Kaiyuan Ship Management Co., Ltd.",
+   "verdict": "different",
+   "nature": "vessel-vs-manager"
+  },
+  {
+   "a": "MV AMBERLIGHT CASSIA",
+   "b": "Cassia Bulk Chartering Pte. Ltd.",
+   "verdict": "different",
+   "nature": "vessel-vs-charterer"
+  },
+  {
+   "a": "Lantau Bulk Carrier No. 3 Ltd.",
+   "b": "Lantau Bulk Carrier No. 5 Ltd.",
+   "verdict": "different",
+   "nature": "numbered-spv"
+  },
+  {
+   "a": "Marigold Bulkship 21 S.A.",
+   "b": "Marigold Bulkship 12 S.A.",
+   "verdict": "different",
+   "nature": "numbered-spv"
+  },
+  {
+   "a": "Haeryeong Holdings Co., Ltd.",
+   "b": "Haeryeong Trading Corporation",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Nakabori Seisakusho Co., Ltd.",
+   "b": "Nakabori (Thailand) Co., Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Công ty TNHH Dệt May Phước Lâm",
+   "b": "Công ty TNHH Bao Bì Phước Lâm",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "PT Sinar Kaloka Abadi",
+   "b": "PT Sinar Kaloka Jaya",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "PT Mitra Karya Rinjani",
+   "b": "PT Mitra Karya Sejahtera",
+   "verdict": "different",
+   "nature": "generic-words-only"
+  },
+  {
+   "a": "Qingdao Hengtairun International Trade Co., Ltd.",
+   "b": "Qingdao Fuxinglong International Trade Co., Ltd.",
+   "verdict": "different",
+   "nature": "generic-words-only"
+  },
+  {
+   "a": "Kittiwat Charoenphol Industry Co., Ltd.",
+   "b": "Kittiwat Charoenphol Holding Co., Ltd.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Tung Lien Hsing Plastic Corp.",
+   "b": "Tung Lien Hsing Plastic (Kunshan) Co., Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Kyungsan Tongsang Co., Ltd.",
+   "b": "Kyungnam Tongsang Co., Ltd.",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "Ōtsuki Kōgyō Co., Ltd.",
+   "b": "Ōtake Kōgyō Co., Ltd.",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "SEIRYU PHOENIX",
+   "b": "SEIRYU PEGASUS",
+   "verdict": "different",
+   "nature": "sister-ship"
+  },
+  {
+   "a": "YUNHAI HARMONY",
+   "b": "YUNHAI HARVEST",
+   "verdict": "different",
+   "nature": "sister-ship"
+  },
+  {
+   "a": "Foshan Nanhai Guanyue Aluminium Co., Ltd.",
+   "b": "Foshan Sanshui Guanyue Aluminium Co., Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "HOZUMI MARU NO. 18",
+   "b": "Hozumi Kaiun K.K.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "Suwannaphet Frozen Foods PCL",
+   "b": "Suwannaphet Frozen Foods Pte. Ltd.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Bright Knight Lighting Co., Ltd.",
+   "b": "Bright Night Lighting Co., Ltd.",
+   "verdict": "different",
+   "nature": "homophone"
+  },
+  {
+   "a": "PT Lembayung Kertas Nusantara Tbk",
+   "b": "PT Lembayung Hotel & Resort",
+   "verdict": "different",
+   "nature": "same-word-unrelated-business"
+  },
+  {
+   "a": "Doanh nghiệp tư nhân Lê Thị Hạnh",
+   "b": "Doanh nghiệp tư nhân Lê Thị Hồng",
+   "verdict": "different",
+   "nature": "family-name-different-people"
+  },
+  {
+   "a": "Rising Pearl Leasing (Tianjin) No. 7 Co., Ltd.",
+   "b": "Rising Pearl Leasing (Tianjin) No. 9 Co., Ltd.",
+   "verdict": "different",
+   "nature": "numbered-spv"
+  },
+  {
+   "a": "Chiu Feng Textile Co., Ltd.",
+   "b": "Chiu Feng Textile (Jiangmen) Co., Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Gyeongsan Tongsang Co., Ltd.",
+   "b": "Gyeongsan Tongsang Logistics Co., Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Kawabe Takeshi Shoten",
+   "b": "Kawabe Minoru Shoten",
+   "verdict": "different",
+   "nature": "family-name-different-people"
+  },
+  {
+   "a": "ZHONG XIU HAI",
+   "b": "Zhongxiu Shipping Co., Ltd.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "Shenzhen Kelinda Electronics Co., Ltd.",
+   "b": "Shenzhen Weiruntong Electronics Co., Ltd.",
+   "verdict": "different",
+   "nature": "generic-words-only"
+  },
+  {
+   "a": "Hsin-Fu-Lung Hardware Industrial Co., Ltd.",
+   "b": "Hsin Fu Lung Seafood Restaurant",
+   "verdict": "different",
+   "nature": "same-word-unrelated-business"
+  },
+  {
+   "a": "Jiaxing Ruobai No. 1 Textile Mill",
+   "b": "Jiaxing Ruobai No. 2 Textile Mill",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Chonburi Pattanakit Rubber Co., Ltd.",
+   "b": "Rayong Pattanakit Rubber Co., Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Haeryeong Trading Corporation",
+   "b": "Haeryeong America, Inc.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "PT Wiratama Baja Perkasa",
+   "b": "Wiratama Baja Perkasa Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Four Seas Logistics Co., Ltd.",
+   "b": "Fore Seas Logistics Co., Ltd.",
+   "verdict": "different",
+   "nature": "homophone"
+  },
+  {
+   "a": "SEOHAE CRESCENT",
+   "b": "Seohae Crescent Shipping S.A.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "MV AMBERLIGHT CASSIA",
+   "b": "MV AMBERLIGHT CAMELLIA",
+   "verdict": "different",
+   "nature": "sister-ship"
+  },
+  {
+   "a": "Oberwelden Pumpenwerk GmbH",
+   "b": "OBERWELDEN PUMPENWERK GMBH",
+   "verdict": "match",
+   "nature": "case-and-punctuation"
+  },
+  {
+   "a": "Kesselbach Armaturen GmbH & Co. KG",
+   "b": "Kesselbach Armaturen GmbH + Co KG",
+   "verdict": "match",
+   "nature": "case-and-punctuation"
+  },
+  {
+   "a": "Hölzmann Präzisionsteile GmbH",
+   "b": "Hoelzmann Praezisionsteile GmbH",
+   "verdict": "match",
+   "nature": "diacritics-expanded"
+  },
+  {
+   "a": "Gebr. Löwenthal Stanztechnik GmbH",
+   "b": "Gebrüder Löwenthal Stanztechnik GmbH",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Strauß & Veldkamp Kunststofftechnik GmbH",
+   "b": "STRAUSS UND VELDKAMP KUNSTSTOFFTECHNIK GMBH",
+   "verdict": "match",
+   "nature": "diacritics-expanded"
+  },
+  {
+   "a": "Tannfeld Verpackungen Aktiengesellschaft",
+   "b": "Tannfeld Verpackungen AG",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Van der Meulenhoek Agrotrade B.V.",
+   "b": "V.d. Meulenhoek Agrotrade BV",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Handelsonderneming De Rijkestein B.V.",
+   "b": "De Rijkestein Handelsonderneming BV",
+   "verdict": "match",
+   "nature": "word-order"
+  },
+  {
+   "a": "Staalbouw Vermandere NV",
+   "b": "Staalbouw Vermandere SA",
+   "verdict": "match",
+   "nature": "legal-form-translated"
+  },
+  {
+   "a": "Société Nouvelle des Tréfileries de Vaugrenier SAS",
+   "b": "Sté Nlle des Tréfileries de Vaugrenier SAS",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Établissements Pradoux-Merval SARL",
+   "b": "Ets Pradoux-Merval",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Laiterie Coopérative de Saint-Ambrel",
+   "b": "Laiterie Cooperative de St Ambrel",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Officine Meccaniche Castelvetri S.p.A.",
+   "b": "Off. Mecc. Castelvetri SpA",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Ferramenta Bruscagli S.r.l.",
+   "b": "Ferramenta Bruscagli Società a Responsabilità Limitata",
+   "verdict": "match",
+   "nature": "legal-form-spelled-out"
+  },
+  {
+   "a": "F.lli Casteggiani S.n.c.",
+   "b": "Fratelli Casteggiani Snc",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Aceites y Conservas del Guadarrán, S.L.",
+   "b": "ACEITES Y CONSERVAS DEL GUADARRAN SL",
+   "verdict": "match",
+   "nature": "diacritics-stripped"
+  },
+  {
+   "a": "Transformados Metálicos Olleria, S.A.U.",
+   "b": "Transformados Metálicos Olleria Sociedad Anónima Unipersonal",
+   "verdict": "match",
+   "nature": "legal-form-spelled-out"
+  },
+  {
+   "a": "Cortiças Vale do Mondeiro, Lda.",
+   "b": "CORTICAS VALE DO MONDEIRO LDA",
+   "verdict": "match",
+   "nature": "diacritics-stripped"
+  },
+  {
+   "a": "Têxteis Barrosinha, S.A.",
+   "b": "Têxteis Barrosihna, S.A.",
+   "verdict": "match",
+   "nature": "keyboard-typo"
+  },
+  {
+   "a": "Karaağaç Tekstil Sanayi ve Ticaret A.Ş.",
+   "b": "Karaagac Tekstil San. ve Tic. A.S.",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Yıldıztepe Denizcilik A.Ş.",
+   "b": "YILDIZTEPE DENIZCILIK AS",
+   "verdict": "match",
+   "nature": "diacritics-stripped"
+  },
+  {
+   "a": "Özkırım Makina Limited Şirketi",
+   "b": "Özkırım Makina Ltd. Şti.",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Λευκαδίτης Ναυτιλιακή Α.Ε.",
+   "b": "Lefkaditis Naftiliaki A.E.",
+   "verdict": "match",
+   "nature": "script-variant"
+  },
+  {
+   "a": "Chrysomallis Maritime S.A.",
+   "b": "Hrysomallis Maritime S.A.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Kavodoros Shipmanagement Inc.",
+   "b": "Kavodoros Ship Management Inc.",
+   "verdict": "match",
+   "nature": "glued-or-split"
+  },
+  {
+   "a": "Zakłady Metalowe Brzeźnica Sp. z o.o.",
+   "b": "ZAKLADY METALOWE BRZEZNICA SP Z OO",
+   "verdict": "match",
+   "nature": "diacritics-stripped"
+  },
+  {
+   "a": "Przedsiębiorstwo Handlowe Gostkowiak Sp. z o.o.",
+   "b": "P.H. Gostkowiak Sp. z o.o.",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Strojírny Vlčkovice a.s.",
+   "b": "Strojirny Vlckovice, akciová společnost",
+   "verdict": "match",
+   "nature": "legal-form-spelled-out"
+  },
+  {
+   "a": "Kovodílna Hrubeš s.r.o.",
+   "b": "Kovodilna Hrubes, spol. s r.o.",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Thrushcombe Engineering Limited",
+   "b": "Thrushcombe Eng. Ltd",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Harkaway Marine Coatings plc",
+   "b": "HARKAWAY MARINE COATINGS PUBLIC LIMITED COMPANY",
+   "verdict": "match",
+   "nature": "legal-form-spelled-out"
+  },
+  {
+   "a": "Pennock & Laidlaw Castings Ltd (in administration)",
+   "b": "Pennock & Laidlaw Castings Limited",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "Seacliffe Dairy Ingredients Teoranta",
+   "b": "Seacliffe Dairy Ingredients Limited",
+   "verdict": "match",
+   "nature": "legal-form-translated"
+  },
+  {
+   "a": "Rathmoylan Aviation Leasing Designated Activity Company",
+   "b": "Rathmoylan Aviation Leasing DAC",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Okwuosa Brothers Nigeria Limited",
+   "b": "Okwuosa Bros (Nig) Ltd",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Adebambo Agro-Allied Industries Ltd, Plot 14, Ikeja Industrial Estate, Lagos",
+   "b": "Adebambo Agro-Allied Industries Limited",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "Kwabenya Cocoa Processing Company Limited",
+   "b": "Kwabenya Cocoa Processing Co. Ltd.",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Société Chérifienne d'Emballages Ouarzazi SARL AU",
+   "b": "Ste Cherifienne d'Emballages Ouarzazi",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Établissements Benhaddou Frères",
+   "b": "Ets Ben Haddou Freres",
+   "verdict": "match",
+   "nature": "glued-or-split"
+  },
+  {
+   "a": "MV Nordfalk Leander",
+   "b": "NORDFALK LEANDER",
+   "verdict": "match",
+   "nature": "vessel-prefix-dropped"
+  },
+  {
+   "a": "M/V Kyra Evanthia (ex-Birkenhof Trader)",
+   "b": "KYRA EVANTHIA",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "Sint-Aldegondis Rivertrader",
+   "b": "SINT ALDEGONDIS RIVE",
+   "verdict": "match",
+   "nature": "ais-truncation"
+  },
+  {
+   "a": "Marettimo Grace, Valletta-registered",
+   "b": "MARETTIMO GRACE",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "M/V Kılıçkaya Bey",
+   "b": "KILICKAYA BEY",
+   "verdict": "match",
+   "nature": "diacritics-stripped"
+  },
+  {
+   "a": "Van Oosterwijck-Deprez Internationale Transporten N.V.",
+   "b": "VAN OOSTERWIJCK-DEPREZ INTERNATIONA",
+   "verdict": "match",
+   "nature": "wire-truncation"
+  },
+  {
+   "a": "Heiligenwald Feinguss GmbH",
+   "b": "Heiligenwa1d Feinguss GmbH",
+   "verdict": "match",
+   "nature": "ocr-typo"
+  },
+  {
+   "a": "Montefalcone Ceramiche S.p.A.",
+   "b": "Montefalcone Ceraimche S.p.A.",
+   "verdict": "match",
+   "nature": "keyboard-typo"
+  },
+  {
+   "a": "Oyelaran Ventures Ltd c/o Starline Clearing, Apapa",
+   "b": "Oyelaran Ventures Limited",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "Gebroeders Van Tuijl Kraanverhuur B.V.",
+   "b": "Gebr. van Tuijl Kraanverhuur BV",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Compañía Naviera Sotaberri, S.A.",
+   "b": "Cia. Naviera Sotaberri SA",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Oberwelden Pumpenwerk GmbH",
+   "b": "Oberwelden Pumpenwerk Austria GmbH",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Kesselbach Armaturen GmbH & Co. KG",
+   "b": "Kesselbach Armaturen Verwaltungs-GmbH",
+   "verdict": "different",
+   "nature": "general-partner-vs-partnership"
+  },
+  {
+   "a": "Hölzmann Präzisionsteile GmbH",
+   "b": "Hölzmann Präzisionsteile s.r.o.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Gebr. Löwenthal Stanztechnik GmbH",
+   "b": "Gebr. Löwenthal Lasertechnik GmbH",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Van der Meulenhoek Agrotrade B.V.",
+   "b": "Van der Meulenhoek Holding B.V.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Staalbouw Vermandere NV",
+   "b": "Staalbouw Vermeersch NV",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "Tréfileries de Vaugrenier SAS",
+   "b": "Tréfileries de Vaugrenier Maroc SARL",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Officine Meccaniche Castelvetri S.p.A.",
+   "b": "Officine Meccaniche Castelvetro S.p.A.",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "F.lli Casteggiani S.n.c.",
+   "b": "Casteggiani Ugo & Figli S.n.c.",
+   "verdict": "different",
+   "nature": "family-name-different-people"
+  },
+  {
+   "a": "Conservas Guadarrán Galicia, S.L.",
+   "b": "Conservas Guadarrán Andalucía, S.L.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Cortiças Vale do Mondeiro, Lda.",
+   "b": "Cortiças Vale do Mondego, Lda.",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "Karaağaç Tekstil Sanayi ve Ticaret A.Ş.",
+   "b": "Karaağaç Lojistik Sanayi ve Ticaret A.Ş.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Özkırım Holding A.Ş.",
+   "b": "Özkırım Makina Ltd. Şti.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "KYRA EVANTHIA",
+   "b": "Evanthia Maritime Corp.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "KAVODOROS SPIRIT",
+   "b": "Kavodoros Shipmanagement Inc.",
+   "verdict": "different",
+   "nature": "vessel-vs-manager"
+  },
+  {
+   "a": "KYRA EVANTHIA",
+   "b": "KYRA EVANGELIA",
+   "verdict": "different",
+   "nature": "sister-ship"
+  },
+  {
+   "a": "RIJNVAART 17",
+   "b": "RIJNVAART 71",
+   "verdict": "different",
+   "nature": "numbered-series"
+  },
+  {
+   "a": "Pelagos Tessera Shipping Inc.",
+   "b": "Pelagos Pente Shipping Inc.",
+   "verdict": "different",
+   "nature": "numbered-spv"
+  },
+  {
+   "a": "Harkaway Finance No. 2 plc",
+   "b": "Harkaway Finance No. 3 plc",
+   "verdict": "different",
+   "nature": "numbered-spv"
+  },
+  {
+   "a": "Thrushcombe Engineering Limited",
+   "b": "Thrushcombe Engineering (Ireland) Limited",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Kernel Seed Merchants Ltd",
+   "b": "Colonel Seed Merchants Ltd",
+   "verdict": "different",
+   "nature": "homophone"
+  },
+  {
+   "a": "Transports Lemaire SARL",
+   "b": "Transports Lemerre SARL",
+   "verdict": "different",
+   "nature": "homophone"
+  },
+  {
+   "a": "Seacliffe Dairy Ingredients Limited",
+   "b": "Seacliffe Dairy Ingredients UK Limited",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Rathmoylan Aviation Leasing 4 DAC",
+   "b": "Rathmoylan Aviation Leasing 7 DAC",
+   "verdict": "different",
+   "nature": "numbered-spv"
+  },
+  {
+   "a": "Okwuosa Brothers Nigeria Limited",
+   "b": "Okwuosa & Sons Nigeria Limited",
+   "verdict": "different",
+   "nature": "family-name-different-people"
+  },
+  {
+   "a": "Adebambo Agro-Allied Industries Ltd",
+   "b": "Sunrise Agro-Allied Industries Ltd",
+   "verdict": "different",
+   "nature": "generic-words-only"
+  },
+  {
+   "a": "Kwabenya Cocoa Processing Company Limited",
+   "b": "Kwabenya Cocoa Trading Company Limited",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Établissements Benhaddou Frères",
+   "b": "Établissements Benhaddou Fils",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Société Chérifienne d'Emballages Ouarzazi",
+   "b": "Pharmacie Ouarzazi",
+   "verdict": "different",
+   "nature": "same-word-unrelated-business"
+  },
+  {
+   "a": "Zakłady Metalowe Brzeźnica Sp. z o.o.",
+   "b": "Zakłady Mięsne Brzeźnica Sp. z o.o.",
+   "verdict": "different",
+   "nature": "same-word-unrelated-business"
+  },
+  {
+   "a": "P.H.U. Jan Gostkowiak",
+   "b": "P.H.U. Marek Gostkowiak",
+   "verdict": "different",
+   "nature": "family-name-different-people"
+  },
+  {
+   "a": "Strojírny Vlčkovice a.s.",
+   "b": "Strojírny Vlčkovice Slovakia s.r.o.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Kovodílna Hrubeš s.r.o.",
+   "b": "Kovodílna Hruška s.r.o.",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "Rheinische Industrietechnik GmbH",
+   "b": "Westfälische Industrietechnik GmbH",
+   "verdict": "different",
+   "nature": "generic-words-only"
+  },
+  {
+   "a": "Rijkestein Beheer B.V.",
+   "b": "Handelsonderneming De Rijkestein B.V.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Heiligenwald Feinguss GmbH",
+   "b": "Heiligenwald Feinguss Sp. z o.o.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Transformados Metálicos Olleria, S.A.U.",
+   "b": "Transformados Plásticos Olleria, S.A.U.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Naviera Sotaberri Uno, S.L.",
+   "b": "Naviera Sotaberri Dos, S.L.",
+   "verdict": "different",
+   "nature": "numbered-spv"
+  },
+  {
+   "a": "MARETTIMO GRACE",
+   "b": "MARETTIMO GLORY",
+   "verdict": "different",
+   "nature": "sister-ship"
+  },
+  {
+   "a": "KILICKAYA BEY",
+   "b": "Kılıçkaya Denizcilik A.Ş.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "Yıldıztepe Denizcilik A.Ş.",
+   "b": "Yıldıztaş Denizcilik A.Ş.",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "Chrysomallis Maritime S.A.",
+   "b": "Chrysochoidis Maritime S.A.",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "Georgios Lefkaditis Shipping",
+   "b": "Nikolaos Lefkaditis Shipping",
+   "verdict": "different",
+   "nature": "family-name-different-people"
+  },
+  {
+   "a": "Staalbouw Vermandere NV",
+   "b": "Bakkerij Vermandere BV",
+   "verdict": "different",
+   "nature": "same-word-unrelated-business"
+  },
+  {
+   "a": "Établissements Pradoux-Merval SARL",
+   "b": "Pradoux-Merval Immobilier SCI",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "SINT ALDEGONDIS RIVERTRADER",
+   "b": "Aldegondis Chartering NV",
+   "verdict": "different",
+   "nature": "vessel-vs-charterer"
+  },
+  {
+   "a": "Mediterranean Fresh Produce S.L.",
+   "b": "Atlantic Fresh Produce S.L.",
+   "verdict": "different",
+   "nature": "generic-words-only"
+  },
+  {
+   "a": "Harkaway Group plc",
+   "b": "Harkaway Marine Coatings plc",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Okwuosa Brothers Nigeria Limited",
+   "b": "Okwuosa Brothers Ghana Limited",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Têxteis Barrosinha, S.A.",
+   "b": "Confecções Barrosinha, Lda.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Bayt Al Sanabil General Trading L.L.C.",
+   "b": "BAYT AL SANABIL GENERAL TRADING LLC",
+   "verdict": "match",
+   "nature": "case-and-punctuation"
+  },
+  {
+   "a": "Qasr Almahar Petrochemicals FZE",
+   "b": "Qasr Almahar Petrochemicals Free Zone Establishment",
+   "verdict": "match",
+   "nature": "legal-form-spelled-out"
+  },
+  {
+   "a": "Meridel Crest Marine Services FZCO",
+   "b": "Meridel Crest Marine Svcs FZCO",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Al-Thumairi Building Materials Est.",
+   "b": "Althumairi Building Materials Establishment",
+   "verdict": "match",
+   "nature": "glued-or-split"
+  },
+  {
+   "a": "Al Qudaibi Trading Est.",
+   "b": "Al Gudaibi Trading Est.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Muhammad Al-Harbash Sons Co.",
+   "b": "Mohamed Al Harbash Sons Company",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "مؤسسة الرحيلي للتجارة",
+   "b": "Al Ruhaili Trading Est.",
+   "verdict": "match",
+   "nature": "script-variant"
+  },
+  {
+   "a": "Sharikat Al-Wafra Al-Handasiya",
+   "b": "Al-Wafra Engineering Company",
+   "verdict": "match",
+   "nature": "name-translated"
+  },
+  {
+   "a": "Kavosh Sanat Arvand",
+   "b": "Kavoush Sanaat Arvand",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Sherkat-e Sahami Khas-e Tolid Lavazem Pishro",
+   "b": "Tolid Lavazem Pishro Private Joint Stock Company",
+   "verdict": "match",
+   "nature": "legal-form-translated"
+  },
+  {
+   "a": "Khorshid Farayand Tabriz Co.",
+   "b": "Khurshid Farayand Tabriz Co.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Kochav Yarden Irrigation Ltd.",
+   "b": "Kokhav Yarden Irrigation Ltd.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Gökçedere Kimya Sanayi A.Ş.",
+   "b": "Gokcedere Kimya Sanayi Anonim Sirketi",
+   "verdict": "match",
+   "nature": "legal-form-spelled-out"
+  },
+  {
+   "a": "Vrindakshi Polyfab Private Limited",
+   "b": "Vrindakshi Polyfab Pvt. Ltd.",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Tanmayee Exim LLP",
+   "b": "TANMAYEE EXIM L.L.P.",
+   "verdict": "match",
+   "nature": "case-and-punctuation"
+  },
+  {
+   "a": "M/s. Hiralal Devkishan & Co.",
+   "b": "Hiralal Devkishan and Company",
+   "verdict": "match",
+   "nature": "prefix-dropped"
+  },
+  {
+   "a": "Kathiawar Ceramic Industries Private Limited",
+   "b": "Kathiawar Ceramic Inds. Pvt. Ltd.",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Sri Venkataramana Spinning Mills Ltd.",
+   "b": "Shri Venkatramana Spinning Mills Ltd.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Rajlaxmi Agro Foods Pvt Ltd",
+   "b": "Raj Laxmi Agro Foods Pvt Ltd",
+   "verdict": "match",
+   "nature": "glued-or-split"
+  },
+  {
+   "a": "Zaverchand Gems Exports, 7th Floor, Dhanlaxmi Chambers, Surat",
+   "b": "Zaverchand Gems Exports",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "Noorabad Textile Mills (Pvt.) Limited",
+   "b": "NOORABAD TEXTILE MILLS PVT LTD",
+   "verdict": "match",
+   "nature": "case-and-punctuation"
+  },
+  {
+   "a": "Gujranwala Chaudhry Sanaullah Knitwear Industries (Private) Limited",
+   "b": "GUJRANWALA CHAUDHRY SANAULLAH KNITW",
+   "verdict": "match",
+   "nature": "wire-truncation"
+  },
+  {
+   "a": "Rupshikha Knit Composite Ltd.",
+   "b": "Rupsikha Knit Composite Ltd.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Tanzeem Fashions Ltd., Plot 22, Ashulia, Savar, Dhaka",
+   "b": "Tanzeem Fashions Ltd",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "ООО «Северный Промкомплект»",
+   "b": "OOO Severny Promkomplekt",
+   "verdict": "match",
+   "nature": "script-variant"
+  },
+  {
+   "a": "OOO Ferrolimb Vostok",
+   "b": "Ferrolimb Vostok LLC",
+   "verdict": "match",
+   "nature": "legal-form-translated"
+  },
+  {
+   "a": "Obshchestvo s Ogranichennoy Otvetstvennostyu Nizhneturinsky Armaturny Zavod",
+   "b": "OOO Nizhneturinsky Armaturny Zavod",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "AO Krasnoverkhsky Kabelny Zavod",
+   "b": "AO Krasnoverkhskiy Kabelnyy Zavod",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "ТОВ «Ворсклатехпостач»",
+   "b": "TOV Vorsklatekhpostach",
+   "verdict": "match",
+   "nature": "script-variant"
+  },
+  {
+   "a": "PrAT Kyivsantekhzbut",
+   "b": "PrAT Kievsantekhzbut",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "TOO Karagandy Temir Kurylys",
+   "b": "TOO Karaganda Temir Kurylys",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Tovarishchestvo s ogranichennoy otvetstvennostyu Aktobe Zhylu Service",
+   "b": "Aktobe Zhylu Service LLP",
+   "verdict": "match",
+   "nature": "legal-form-translated"
+  },
+  {
+   "a": "Т/Х «Капитан Шелестов»",
+   "b": "KAPITAN SHELESTOV",
+   "verdict": "match",
+   "nature": "script-variant"
+  },
+  {
+   "a": "SEPID KOHSAR",
+   "b": "SEFID KOOHSAR",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "M/T Mahtab Kian (ex-Arctic Sorrel, ex-Lantana Bay)",
+   "b": "MAHTAB KIAN",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "ZARYA AZOVA (flag: Cameroon)",
+   "b": "Zarya Azova",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "Kapitan Anatoly Pereverzev",
+   "b": "KAPITAN ANATOLY PERE",
+   "verdict": "match",
+   "nature": "ais-truncation"
+  },
+  {
+   "a": "LIMITED LIABILITY COMPANY TORGOVY DOM PRIURALYE",
+   "b": "OOO TD Priuralye",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Joint Stock Company Research and Production Enterprise Kedrovit",
+   "b": "AO NPP Kedrovit",
+   "verdict": "match",
+   "nature": "legal-form-translated"
+  },
+  {
+   "a": "OOO Volzhskaya Kraska",
+   "b": "000 Volzhskaya Kraska",
+   "verdict": "match",
+   "nature": "ocr-typo"
+  },
+  {
+   "a": "Mirqab Sands Logistics FZE",
+   "b": "Mirqab Sadns Logistics FZE",
+   "verdict": "match",
+   "nature": "keyboard-typo"
+  },
+  {
+   "a": "Est. Nasser Al-Dhufairi for Trading",
+   "b": "Nasser Al-Dhufairi Trading Est.",
+   "verdict": "match",
+   "nature": "word-order"
+  },
+  {
+   "a": "Harir Sahara Foodstuff Trading L.L.C",
+   "b": "HARIR SAHARA FOODSTUFF TRDG LLC",
+   "verdict": "match",
+   "nature": "word-abbreviation"
+  },
+  {
+   "a": "Bhavani Shankar Cotton Traders c/o Ravi Clearing Agency, Mundra",
+   "b": "Bhavani Shankar Cotton Traders",
+   "verdict": "match",
+   "nature": "annotation"
+  },
+  {
+   "a": "Nahal Sorek Precision Optics Ltd.",
+   "b": "Nahal Sorek Precision Optics Limited",
+   "verdict": "match",
+   "nature": "legal-form-abbreviated"
+  },
+  {
+   "a": "Gilavar Dəniz Servis MMC",
+   "b": "Gilavar Deniz Servis LLC",
+   "verdict": "match",
+   "nature": "legal-form-translated"
+  },
+  {
+   "a": "Nandkishore & Sons Rice Mills",
+   "b": "Nandkishore and Sons Rice Mills",
+   "verdict": "match",
+   "nature": "case-and-punctuation"
+  },
+  {
+   "a": "Rimal Al Waha Building Contracting LLC",
+   "b": "Rimal Al Waha Bui1ding Contracting LLC",
+   "verdict": "match",
+   "nature": "ocr-typo"
+  },
+  {
+   "a": "شرکت کشتیرانی نیلگون خزر",
+   "b": "Nilgoon Khazar Shipping Co.",
+   "verdict": "match",
+   "nature": "script-variant"
+  },
+  {
+   "a": "שחר הגליל בע״מ",
+   "b": "Shachar HaGalil Ltd.",
+   "verdict": "match",
+   "nature": "script-variant"
+  },
+  {
+   "a": "Qasr Almahar Petrochemicals FZE",
+   "b": "Qasr Almahar Petrochemicals LLC (Oman)",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Bayt Al Sanabil General Trading L.L.C.",
+   "b": "Bayt Al Sanabil Building Materials Trading L.L.C.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Meridel Crest Marine Services FZCO",
+   "b": "Meridel Crest Holdings Ltd",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Al Qudaibi Trading Est.",
+   "b": "Al Qudaibi Contracting Est.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Est. Nasser Al-Dhufairi for Trading",
+   "b": "Est. Fahad Al-Dhufairi for Trading",
+   "verdict": "different",
+   "nature": "family-name-different-people"
+  },
+  {
+   "a": "Al-Ruhaili Trading Est.",
+   "b": "Al-Ruwaili Trading Est.",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "Kavosh Sanat Arvand",
+   "b": "Kavosh Sanat Kish",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "SEPID KOHSAR",
+   "b": "Kohsar Shipping Lines",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "SEPID KOHSAR",
+   "b": "SEPID DARYA",
+   "verdict": "different",
+   "nature": "sister-ship"
+  },
+  {
+   "a": "Nilgoon Khazar Shipping Co.",
+   "b": "Nilgoon Khazar Shipping (Malaysia) Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Kochav Yarden Irrigation Ltd.",
+   "b": "Kochav Yarden Real Estate Ltd.",
+   "verdict": "different",
+   "nature": "same-word-unrelated-business"
+  },
+  {
+   "a": "Galil Precision Optics Ltd.",
+   "b": "Nahal Sorek Precision Optics Ltd.",
+   "verdict": "different",
+   "nature": "generic-words-only"
+  },
+  {
+   "a": "Gökçedere Kimya Sanayi A.Ş.",
+   "b": "Gökçedere Kimya GmbH",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Vrindakshi Polyfab Pvt. Ltd.",
+   "b": "Vrindakshi Polypack Pvt. Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Tanmayee Exim LLP",
+   "b": "Tanmayee Exim FZE",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "M/s. Hiralal Devkishan & Co.",
+   "b": "M/s. Hiralal Devchand & Co.",
+   "verdict": "different",
+   "nature": "near-string-real-words"
+  },
+  {
+   "a": "Sri Venkataramana Spinning Mills Ltd.",
+   "b": "Sri Venkataramana Textiles Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Kathiawar Ceramic Industries Pvt. Ltd.",
+   "b": "Kathiawar Ceramics USA Inc.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Rajlaxmi Agro Foods Pvt Ltd",
+   "b": "Rajlaxmi Jewellers",
+   "verdict": "different",
+   "nature": "same-word-unrelated-business"
+  },
+  {
+   "a": "Zaverchand Gems Exports",
+   "b": "Zaverchand Investments Pvt. Ltd.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Noorabad Textile Mills (Pvt.) Limited",
+   "b": "Noorabad Sugar Mills (Pvt.) Limited",
+   "verdict": "different",
+   "nature": "same-word-unrelated-business"
+  },
+  {
+   "a": "Chaudhry Sanaullah Knitwear",
+   "b": "Chaudhry Rahmatullah Knitwear",
+   "verdict": "different",
+   "nature": "family-name-different-people"
+  },
+  {
+   "a": "Rupshikha Knit Composite Ltd.",
+   "b": "Rupshikha Denim Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Dhaka Knit Composite Ltd.",
+   "b": "Chittagong Knit Composite Ltd.",
+   "verdict": "different",
+   "nature": "generic-words-only"
+  },
+  {
+   "a": "OOO Ferrolimb Vostok",
+   "b": "OOO Ferrolimb Zapad",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "AO Ferrolimb Holding",
+   "b": "OOO Ferrolimb Vostok",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "OOO Volzhskaya Kraska",
+   "b": "OOO Volzhskaya Kraska-2",
+   "verdict": "different",
+   "nature": "numbered-spv"
+  },
+  {
+   "a": "IP Sokolov Andrey Viktorovich",
+   "b": "IP Sokolov Artem Viktorovich",
+   "verdict": "different",
+   "nature": "family-name-different-people"
+  },
+  {
+   "a": "TOV Vorsklatekhpostach",
+   "b": "TOV Vorsklatekhservis",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "TOO Karagandy Temir Kurylys",
+   "b": "TOO Pavlodar Temir Kurylys",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Aktobe Zhylu Service LLP (Kazakhstan)",
+   "b": "Aktobe Zhylu Service LLC (Russia)",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "KAPITAN SHELESTOV",
+   "b": "KAPITAN SHESTAKOV",
+   "verdict": "different",
+   "nature": "sister-ship"
+  },
+  {
+   "a": "KASPIY TRANS 11",
+   "b": "KASPIY TRANS 14",
+   "verdict": "different",
+   "nature": "numbered-series"
+  },
+  {
+   "a": "MAHTAB KIAN",
+   "b": "Kian Ship Management FZE",
+   "verdict": "different",
+   "nature": "vessel-vs-manager"
+  },
+  {
+   "a": "ZARYA AZOVA",
+   "b": "Azov Tanker Chartering LLP",
+   "verdict": "different",
+   "nature": "vessel-vs-charterer"
+  },
+  {
+   "a": "Meridel Crest Vessel Owning 3 Ltd",
+   "b": "Meridel Crest Vessel Owning 5 Ltd",
+   "verdict": "different",
+   "nature": "numbered-spv"
+  },
+  {
+   "a": "Al-Harbash Holding Co.",
+   "b": "Muhammad Al-Harbash Sons Co.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Sahara Sails Trading LLC",
+   "b": "Sahara Sales Trading LLC",
+   "verdict": "different",
+   "nature": "homophone"
+  },
+  {
+   "a": "Bhavani Shankar Cotton Traders",
+   "b": "Bhavani Shankar Cotton Ginners Pvt. Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "OOO SZ Yuzhny Kvartal 3",
+   "b": "OOO SZ Yuzhny Kvartal 4",
+   "verdict": "different",
+   "nature": "numbered-spv"
+  },
+  {
+   "a": "Eurasia Trade House LLP",
+   "b": "Eurasia Logistics Group LLP",
+   "verdict": "different",
+   "nature": "generic-words-only"
+  },
+  {
+   "a": "Nahal Sorek Precision Optics Ltd.",
+   "b": "Nahal Sorek Optics Inc.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Hüseyin Tanrıverdi Nakliyat",
+   "b": "Mehmet Tanrıverdi Nakliyat",
+   "verdict": "different",
+   "nature": "family-name-different-people"
+  },
+  {
+   "a": "Al-Thumairi Building Materials Est.",
+   "b": "Al-Thumairi Building Materials Co. W.L.L.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Tolid Lavazem Pishro",
+   "b": "Pishro Tour & Travel Agency",
+   "verdict": "different",
+   "nature": "same-word-unrelated-business"
+  },
+  {
+   "a": "Khorshid Farayand Tabriz Co.",
+   "b": "Khorshid Farayand Tabas Co.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Tanzeem Fashions Ltd",
+   "b": "Tanzeem Fabrics Ltd",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "GILAVAR STAR",
+   "b": "GILAVAR STREAM",
+   "verdict": "different",
+   "nature": "sister-ship"
+  },
+  {
+   "a": "NILGOON PEARL",
+   "b": "Nilgoon Khazar Shipping Co.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "PrAT Kyivsantekhzbut",
+   "b": "PrAT Kyivelektrozbut",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  }
+ ]
+}
