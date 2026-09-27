@@ -1,2407 +1,2407 @@
 {
- "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
- "provenance": "blind test set #11, authored on 2026-09-28 by a separate agent (a Helsinki sanctions desk and Black Sea forwarder brief, organised by trap family, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
- "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
- "paires": [
-  {
-   "a": "Kylmäsäilö Oy",
-   "b": "Kylmasailo Oy",
-   "verdict": "match",
-   "nature": "nordic-diacritics-dropped"
-  },
-  {
-   "a": "Pohjanlahden Rahti Oy",
-   "b": "Pohjanlahden Rahti Osakeyhtiö",
-   "verdict": "match",
-   "nature": "nordic-legal-form-expanded"
-  },
-  {
-   "a": "Järvenpään Teräskauppa Oy",
-   "b": "JARVENPAAN TERASKAUPPA OY",
-   "verdict": "match",
-   "nature": "nordic-diacritics-dropped"
-  },
-  {
-   "a": "Söderholm Shipping Ab",
-   "b": "Soederholm Shipping Ab",
-   "verdict": "match",
-   "nature": "nordic-diacritics-transcribed"
-  },
-  {
-   "a": "Åkerström Frakt AB",
-   "b": "Aakerstroem Frakt Aktiebolag",
-   "verdict": "match",
-   "nature": "nordic-diacritics-transcribed"
-  },
-  {
-   "a": "Nordvik Lastebil AS",
-   "b": "Nordvik Lastebil A/S",
-   "verdict": "match",
-   "nature": "nordic-legal-form-variant"
-  },
-  {
-   "a": "Brøndby Kornhandel ApS",
-   "b": "Broendby Kornhandel ApS",
-   "verdict": "match",
-   "nature": "nordic-diacritics-transcribed"
-  },
-  {
-   "a": "Kaldvik Stålservice A/S",
-   "b": "Kaldvik Staalservice Aktieselskab",
-   "verdict": "match",
-   "nature": "nordic-diacritics-transcribed"
-  },
-  {
-   "a": "SIA Rīgas Graudu Termināls",
-   "b": "SIA Rigas Graudu Terminals",
-   "verdict": "match",
-   "nature": "nordic-baltic-diacritics"
-  },
-  {
-   "a": "UAB Klaipėdos Krovinių Linija",
-   "b": "Klaipedos Kroviniu Linija UAB",
-   "verdict": "match",
-   "nature": "nordic-baltic-diacritics"
-  },
-  {
-   "a": "Tallinna Vilja OÜ",
-   "b": "Tallinna Vilja OU",
-   "verdict": "match",
-   "nature": "nordic-baltic-diacritics"
-  },
-  {
-   "a": "Põhjaranniku Logistika OÜ",
-   "b": "Pohjaranniku Logistika osaühing",
-   "verdict": "match",
-   "nature": "nordic-legal-form-expanded"
-  },
-  {
-   "a": "Nordström & Lindqvist AB (publ)",
-   "b": "Nordstrom och Lindqvist AB",
-   "verdict": "match",
-   "nature": "nordic-publ-and-conjunction"
-  },
-  {
-   "a": "Havskraft Holding AB (publ)",
-   "b": "Havskraft Holding AB",
-   "verdict": "match",
-   "nature": "nordic-publ-and-conjunction"
-  },
-  {
-   "a": "Kornlagerhuset i Norden AB",
-   "b": "Kornlager Huset i Norden AB",
-   "verdict": "match",
-   "nature": "nordic-compound-split"
-  },
-  {
-   "a": "Stålvalsverket Norrby AB",
-   "b": "Stal Valsverket Norrby AB",
-   "verdict": "match",
-   "nature": "nordic-compound-split"
-  },
-  {
-   "a": "Lindbergs Spedition AB",
-   "b": "Lindberg Spedition AB",
-   "verdict": "match",
-   "nature": "nordic-genitive-ending"
-  },
-  {
-   "a": "Andersen & Søn Transport ApS",
-   "b": "Andersen og Soen Transport ApS",
-   "verdict": "match",
-   "nature": "nordic-diacritics-transcribed"
-  },
-  {
-   "a": "Pedersen Havnetjenester A/S",
-   "b": "Pedersen Havnetjenester Aktieselskab",
-   "verdict": "match",
-   "nature": "nordic-legal-form-expanded"
-  },
-  {
-   "a": "Oy Suomen Viljaterminaali Ab",
-   "b": "Suomen Viljaterminaali Oy",
-   "verdict": "match",
-   "nature": "nordic-bilingual-form"
-  },
-  {
-   "a": "Satamapalvelu Kotka Oy",
-   "b": "Hamntjänst Kotka Ab",
-   "verdict": "match",
-   "nature": "nordic-bilingual-name"
-  },
-  {
-   "a": "Kotkan Ahtaus Oy",
-   "b": "Kotkan Ahtaus Oy, Haminan sivuliike",
-   "verdict": "match",
-   "nature": "nordic-branch"
-  },
-  {
-   "a": "UAB Baltijos Grūdų Prekyba",
-   "b": "Baltijos Grudu Prekyba, UAB",
-   "verdict": "match",
-   "nature": "nordic-baltic-diacritics"
-  },
-  {
-   "a": "AS Tallinna Laevaagentuur",
-   "b": "Tallinna Laevaagentuur AS",
-   "verdict": "match",
-   "nature": "nordic-legal-form-position"
-  },
-  {
-   "a": "SIA Ventspils Kokmateriāli",
-   "b": "Ventspils Kokmateriali SIA",
-   "verdict": "match",
-   "nature": "nordic-legal-form-position"
-  },
-  {
-   "a": "Lõunaranna Kaubandus OÜ",
-   "b": "Lounaranna Kaubandus Osauhing",
-   "verdict": "match",
-   "nature": "nordic-legal-form-expanded"
-  },
-  {
-   "a": "Hjelmsäter Maskin AB",
-   "b": "HJELMSAETER MASKIN AKTIEBOLAG",
-   "verdict": "match",
-   "nature": "nordic-diacritics-transcribed"
-  },
-  {
-   "a": "Terästorni Oy",
-   "b": "Terastorni Oy",
-   "verdict": "match",
-   "nature": "nordic-diacritics-dropped"
-  },
-  {
-   "a": "Mäkelä & Hyvönen Kuljetus Oy",
-   "b": "Makela ja Hyvonen Kuljetus Oy",
-   "verdict": "match",
-   "nature": "nordic-diacritics-dropped"
-  },
-  {
-   "a": "Fiskebäcks Rederi AB",
-   "b": "Fiskebaecks Rederi AB",
-   "verdict": "match",
-   "nature": "nordic-diacritics-transcribed"
-  },
-  {
-   "a": "Østergaard Kornkompagni A/S",
-   "b": "Ostergaard Kornkompagni A/S",
-   "verdict": "match",
-   "nature": "nordic-diacritics-dropped"
-  },
-  {
-   "a": "UAB Žalgirio Logistika",
-   "b": "UAB Zalgirio Logistika",
-   "verdict": "match",
-   "nature": "nordic-baltic-diacritics"
-  },
-  {
-   "a": "UAB Šiaurės Krantas",
-   "b": "UAB Siaures Krantas",
-   "verdict": "match",
-   "nature": "nordic-baltic-diacritics"
-  },
-  {
-   "a": "SIA Kurzemes Metāls",
-   "b": "Kurzemes Metals, SIA",
-   "verdict": "match",
-   "nature": "nordic-baltic-diacritics"
-  },
-  {
-   "a": "Oy Jääkarhu Logistics Ab",
-   "b": "Jaakarhu Logistics Oy",
-   "verdict": "match",
-   "nature": "nordic-bilingual-form"
-  },
-  {
-   "a": "Sjöfartsbolaget Kronholm AB",
-   "b": "Sjofartsbolaget Kronholm Aktiebolag",
-   "verdict": "match",
-   "nature": "nordic-legal-form-expanded"
-  },
-  {
-   "a": "Göteborgs Spannmålsexport AB",
-   "b": "Goteborgs Spannmals Export AB",
-   "verdict": "match",
-   "nature": "nordic-compound-split"
-  },
-  {
-   "a": "Porin Viljasatama Oy",
-   "b": "Pori Viljasatama Oy",
-   "verdict": "match",
-   "nature": "nordic-genitive-ending"
-  },
-  {
-   "a": "Kristiansen Fragt ApS",
-   "b": "Kristiansen Fragt Anpartsselskab",
-   "verdict": "match",
-   "nature": "nordic-legal-form-expanded"
-  },
-  {
-   "a": "Viljo Heikkisen Kuljetus Oy",
-   "b": "Viljo Heikkinen Kuljetus Oy",
-   "verdict": "match",
-   "nature": "nordic-genitive-ending"
-  },
-  {
-   "a": "Pohjanlahden Rahti Oy",
-   "b": "Pohjanmaan Rahti Oy",
-   "verdict": "different",
-   "nature": "nordic-near-place-name"
-  },
-  {
-   "a": "Söderholm Shipping Ab",
-   "b": "Söderholm Shipping AS",
-   "verdict": "different",
-   "nature": "nordic-other-country-form"
-  },
-  {
-   "a": "Andersen Fragt ApS",
-   "b": "Andersson Frakt AB",
-   "verdict": "different",
-   "nature": "nordic-sen-son"
-  },
-  {
-   "a": "Kristiansen Bunkring ApS",
-   "b": "Kristiansson Bunkring ApS",
-   "verdict": "different",
-   "nature": "nordic-sen-son"
-  },
-  {
-   "a": "Nielsen Kornhandel A/S",
-   "b": "Nilsson Kornhandel A/S",
-   "verdict": "different",
-   "nature": "nordic-sen-son"
-  },
-  {
-   "a": "Lindbergs Spedition AB",
-   "b": "Lindholms Spedition AB",
-   "verdict": "different",
-   "nature": "nordic-near-surname"
-  },
-  {
-   "a": "Tallinna Vilja OÜ",
-   "b": "Tartu Vilja OÜ",
-   "verdict": "different",
-   "nature": "nordic-near-place-name"
-  },
-  {
-   "a": "SIA Rīgas Graudu Termināls",
-   "b": "SIA Rīgas Graudu Tranzīts",
-   "verdict": "different",
-   "nature": "nordic-activity-word"
-  },
-  {
-   "a": "UAB Klaipėdos Krovinių Linija",
-   "b": "UAB Klaipėdos Krovinių Terminalas",
-   "verdict": "different",
-   "nature": "nordic-activity-word"
-  },
-  {
-   "a": "Nordström & Lindqvist AB",
-   "b": "Nordström & Lindgren AB",
-   "verdict": "different",
-   "nature": "nordic-near-surname"
-  },
-  {
-   "a": "Havskraft Holding AB (publ)",
-   "b": "Havskraft Shipping AB",
-   "verdict": "different",
-   "nature": "nordic-group-sibling"
-  },
-  {
-   "a": "Kotkan Ahtaus Oy",
-   "b": "Haminan Ahtaus Oy",
-   "verdict": "different",
-   "nature": "nordic-near-place-name"
-  },
-  {
-   "a": "Satamapalvelu Kotka Oy",
-   "b": "Satamapalvelu Kokkola Oy",
-   "verdict": "different",
-   "nature": "nordic-near-place-name"
-  },
-  {
-   "a": "Järvenpään Teräskauppa Oy",
-   "b": "Järvenpään Teräsrakenne Oy",
-   "verdict": "different",
-   "nature": "nordic-activity-word"
-  },
-  {
-   "a": "Fiskebäcks Rederi AB",
-   "b": "Fiskebäcks Rederi Två AB",
-   "verdict": "different",
-   "nature": "nordic-numbered-entity"
-  },
-  {
-   "a": "Brøndby Kornhandel ApS",
-   "b": "Brøndbyvester Kornhandel ApS",
-   "verdict": "different",
-   "nature": "nordic-near-place-name"
-  },
-  {
-   "a": "Østergaard Kornkompagni A/S",
-   "b": "Vestergaard Kornkompagni A/S",
-   "verdict": "different",
-   "nature": "nordic-near-surname"
-  },
-  {
-   "a": "Mäkelä & Hyvönen Kuljetus Oy",
-   "b": "Mäkinen & Hyvönen Kuljetus Oy",
-   "verdict": "different",
-   "nature": "nordic-near-surname"
-  },
-  {
-   "a": "UAB Žalgirio Logistika",
-   "b": "UAB Žalvario Logistika",
-   "verdict": "different",
-   "nature": "nordic-baltic-near-word"
-  },
-  {
-   "a": "UAB Šiaurės Krantas",
-   "b": "UAB Šiaurės Kraštas",
-   "verdict": "different",
-   "nature": "nordic-baltic-near-word"
-  },
-  {
-   "a": "Pedersen Havnetjenester A/S",
-   "b": "Petersen Havnetjenester A/S",
-   "verdict": "different",
-   "nature": "nordic-near-surname"
-  },
-  {
-   "a": "Suomen Viljaterminaali Oy",
-   "b": "Suomen Öljyterminaali Oy",
-   "verdict": "different",
-   "nature": "nordic-activity-word"
-  },
-  {
-   "a": "Göteborgs Spannmålsexport AB",
-   "b": "Göteborgs Spannmålsimport AB",
-   "verdict": "different",
-   "nature": "nordic-activity-word"
-  },
-  {
-   "a": "Sjöfartsbolaget Kronholm AB",
-   "b": "Sjöfartsbolaget Kronhjelm AB",
-   "verdict": "different",
-   "nature": "nordic-near-surname"
-  },
-  {
-   "a": "AS Tallinna Laevaagentuur",
-   "b": "AS Tallinna Laevaremont",
-   "verdict": "different",
-   "nature": "nordic-activity-word"
-  },
-  {
-   "a": "SIA Ventspils Kokmateriāli",
-   "b": "SIA Ventspils Kokmateriālu Osta",
-   "verdict": "different",
-   "nature": "nordic-activity-word"
-  },
-  {
-   "a": "Terästorni Oy",
-   "b": "Teräspuomi Oy",
-   "verdict": "different",
-   "nature": "nordic-compound-part"
-  },
-  {
-   "a": "Hjelmsäter Maskin AB",
-   "b": "Hjelmsäter Maskin Oy",
-   "verdict": "different",
-   "nature": "nordic-other-country-form"
-  },
-  {
-   "a": "Kotkan Ahtaus Oy",
-   "b": "Kotkan Ahtaus Eesti OÜ",
-   "verdict": "different",
-   "nature": "nordic-foreign-subsidiary"
-  },
-  {
-   "a": "Stålhuset Nord AB",
-   "b": "Stålhuset Syd AB",
-   "verdict": "different",
-   "nature": "nordic-direction-word"
-  },
-  {
-   "a": "Nordvik Lastebil AS",
-   "b": "Norvik Lastebil AS",
-   "verdict": "different",
-   "nature": "nordic-near-place-name"
-  },
-  {
-   "a": "Lõunaranna Kaubandus OÜ",
-   "b": "Lääneranna Kaubandus OÜ",
-   "verdict": "different",
-   "nature": "nordic-direction-word"
-  },
-  {
-   "a": "SIA Kurzemes Metāls",
-   "b": "SIA Kurzemes Metālapstrāde",
-   "verdict": "different",
-   "nature": "nordic-activity-word"
-  },
-  {
-   "a": "Jääkarhu Logistics Oy",
-   "b": "Jääkotka Logistics Oy",
-   "verdict": "different",
-   "nature": "nordic-compound-part"
-  },
-  {
-   "a": "Söderholm Shipping Ab",
-   "b": "Söderberg Shipping Ab",
-   "verdict": "different",
-   "nature": "nordic-near-surname"
-  },
-  {
-   "a": "Fredriksen Skipsmegling AS",
-   "b": "Fredriksson Skeppsmäkleri AB",
-   "verdict": "different",
-   "nature": "nordic-sen-son"
-  },
-  {
-   "a": "Viljavarasto Hamina Oy",
-   "b": "Viljavarasto Hamina 2 Oy",
-   "verdict": "different",
-   "nature": "nordic-numbered-entity"
-  },
-  {
-   "a": "Karlsen Bunkring AS",
-   "b": "Karlsson Bunkring AS",
-   "verdict": "different",
-   "nature": "nordic-sen-son"
-  },
-  {
-   "a": "Rasmussen Kornsilo ApS",
-   "b": "Rasmusson Kornsilo ApS",
-   "verdict": "different",
-   "nature": "nordic-sen-son"
-  },
-  {
-   "a": "Porin Viljasatama Oy",
-   "b": "Porvoon Viljasatama Oy",
-   "verdict": "different",
-   "nature": "nordic-near-place-name"
-  },
-  {
-   "a": "Karadeniz Hububat Sanayi ve Ticaret A.Ş.",
-   "b": "Karadeniz Hububat San. ve Tic. A.S.",
-   "verdict": "match",
-   "nature": "turkish-abbreviated-form"
-  },
-  {
-   "a": "Yıldızoğlu Nakliyat Ltd. Şti.",
-   "b": "Yildizoglu Nakliyat Limited Sirketi",
-   "verdict": "match",
-   "nature": "turkish-form-expanded"
-  },
-  {
-   "a": "Özkırım Denizcilik ve Ticaret A.Ş.",
-   "b": "Ozkirim Denizcilik ve Ticaret Anonim Sirketi",
-   "verdict": "match",
-   "nature": "turkish-form-expanded"
-  },
-  {
-   "a": "Çağlayan Gıda San. Tic. Ltd. Şti.",
-   "b": "Caglayan Gida Sanayi Ticaret Limited Sirketi",
-   "verdict": "match",
-   "nature": "turkish-form-expanded"
-  },
-  {
-   "a": "Şenkaya İnşaat Taahhüt A.Ş.",
-   "b": "SENKAYA INSAAT TAAHHUT AS",
-   "verdict": "match",
-   "nature": "turkish-diacritics-dropped"
-  },
-  {
-   "a": "Güneyliler Dış Ticaret Ltd. Şti.",
-   "b": "Guneyliler Dis Ticaret Ltd Sti",
-   "verdict": "match",
-   "nature": "turkish-diacritics-dropped"
-  },
-  {
-   "a": "Samsun Liman Hizmetleri A.Ş.",
-   "b": "Samsun Liman Hizmetleri Anonim Şirketi",
-   "verdict": "match",
-   "nature": "turkish-form-expanded"
-  },
-  {
-   "a": "Göktürk Çelik Dış Ticaret A.Ş.",
-   "b": "Goektuerk Celik Dis Ticaret A.S.",
-   "verdict": "match",
-   "nature": "turkish-diacritics-transcribed"
-  },
-  {
-   "a": "Doğanbey Denizcilik A.Ş.",
-   "b": "Doganbey Denizcilik Joint Stock Company",
-   "verdict": "match",
-   "nature": "turkish-form-translated"
-  },
-  {
-   "a": "Tirebolu Çelik Ticaret Ltd. Şti.",
-   "b": "Tirebolu Steel Trading Ltd.",
-   "verdict": "match",
-   "nature": "turkish-name-translated"
-  },
-  {
-   "a": "Akyol Nakliyat ve Lojistik A.Ş. İstanbul Şubesi",
-   "b": "Akyol Nakliyat ve Lojistik A.Ş.",
-   "verdict": "match",
-   "nature": "turkish-branch"
-  },
-  {
-   "a": "Bafra Un Sanayi A.Ş.",
-   "b": "Bafra Un San. A.Ş.",
-   "verdict": "match",
-   "nature": "turkish-abbreviated-form"
-  },
-  {
-   "a": "Kıyıboyu Tarım Ürünleri İth. İhr. Ltd. Şti.",
-   "b": "Kiyiboyu Tarim Urunleri Ithalat Ihracat Limited Sirketi",
-   "verdict": "match",
-   "nature": "turkish-abbreviated-form"
-  },
-  {
-   "a": "Ünalan Metal San. ve Tic. Ltd. Şti.",
-   "b": "UNALAN METAL SAN VE TIC LTD STI",
-   "verdict": "match",
-   "nature": "turkish-diacritics-dropped"
-  },
-  {
-   "a": "Kılıçarslan Hububat Ticaret A.Ş.",
-   "b": "Kilicarslan Hububat Ticaret AS",
-   "verdict": "match",
-   "nature": "turkish-dotless-i"
-  },
-  {
-   "a": "İlkadım Denizcilik Ltd. Şti.",
-   "b": "ILKADIM DENIZCILIK LTD. STI.",
-   "verdict": "match",
-   "nature": "turkish-dotted-capital-i"
-  },
-  {
-   "a": "Gemlik Dökme Yük Taşımacılığı A.Ş.",
-   "b": "Gemlik Dokme Yuk Tasimaciligi A.S.",
-   "verdict": "match",
-   "nature": "turkish-diacritics-dropped"
-  },
-  {
-   "a": "Poyrazköy Gemi İşletmeciliği A.Ş.",
-   "b": "Poyrazkoy Gemi Isletmeciligi Anonim Sirketi",
-   "verdict": "match",
-   "nature": "turkish-form-expanded"
-  },
-  {
-   "a": "Tuncerler İnşaat Malzemeleri San. Tic. Ltd. Şti.",
-   "b": "Tuncerler Insaat Malz. San. Tic. Ltd. Sti.",
-   "verdict": "match",
-   "nature": "turkish-abbreviated-form"
-  },
-  {
-   "a": "Kuşadalı Nakliyat Ltd. Şti.",
-   "b": "Kushadali Nakliyat Ltd. Sti.",
-   "verdict": "match",
-   "nature": "turkish-diacritics-transcribed"
-  },
-  {
-   "a": "Sarıyer Liman Acenteliği Ltd. Şti.",
-   "b": "Sariyer Liman Acenteligi Limited Şirketi",
-   "verdict": "match",
-   "nature": "turkish-form-expanded"
-  },
-  {
-   "a": "Hopa Sınır Ticaret A.Ş.",
-   "b": "Hopa Sinir Ticaret A.Ş.",
-   "verdict": "match",
-   "nature": "turkish-dotless-i"
-  },
-  {
-   "a": "Karadeniz Hububat Sanayi ve Ticaret A.Ş.",
-   "b": "Karadeniz Hububat A.Ş.",
-   "verdict": "match",
-   "nature": "turkish-boilerplate-dropped"
-  },
-  {
-   "a": "Yavuzlar Deniz Taşımacılığı Ticaret A.Ş.",
-   "b": "Yavuzlar Deniz Tasimaciligi Tic. AS",
-   "verdict": "match",
-   "nature": "turkish-abbreviated-form"
-  },
-  {
-   "a": "Balcıoğlu Gıda Pazarlama Ltd. Şti.",
-   "b": "Balcioglu Gida Pazarlama Ltd. Sti.",
-   "verdict": "match",
-   "nature": "turkish-soft-g"
-  },
-  {
-   "a": "Ordu Fındık Gıda San. ve Tic. A.Ş.",
-   "b": "Ordu Findik Gida Sanayi ve Ticaret AS",
-   "verdict": "match",
-   "nature": "turkish-abbreviated-form"
-  },
-  {
-   "a": "Değirmendere Ambarcılık Ltd. Şti.",
-   "b": "DEGIRMENDERE AMBARCILIK LTD.STI.",
-   "verdict": "match",
-   "nature": "turkish-diacritics-dropped"
-  },
-  {
-   "a": "Çelikyol Nakliyat A.Ş.",
-   "b": "Chelikyol Nakliyat A.S.",
-   "verdict": "match",
-   "nature": "turkish-diacritics-transcribed"
-  },
-  {
-   "a": "Beyazkaya Lojistik ve Dış Ticaret Ltd. Şti.",
-   "b": "Beyazkaya Lojistik ve Dis Tic. Ltd. Sti.",
-   "verdict": "match",
-   "nature": "turkish-abbreviated-form"
-  },
-  {
-   "a": "Kaptanoğlu Gemicilik A.Ş.",
-   "b": "Kaptanoglu Shipping Inc.",
-   "verdict": "match",
-   "nature": "turkish-name-translated"
-  },
-  {
-   "a": "Aydınoğlu Nakliyat Ltd. Şti.",
-   "b": "Aydinoglu Nakliyat Ltd. Şti. Samsun Şubesi",
-   "verdict": "match",
-   "nature": "turkish-branch"
-  },
-  {
-   "a": "Sultanhisar Tarım Ürünleri A.Ş.",
-   "b": "Sultanhisar Tarim Urunleri Anonim Sirketi",
-   "verdict": "match",
-   "nature": "turkish-form-expanded"
-  },
-  {
-   "a": "Uğurlu Nakliyat Ltd. Şti.",
-   "b": "Ugurlu Nakliyat Ltd. Sti.",
-   "verdict": "match",
-   "nature": "turkish-soft-g"
-  },
-  {
-   "a": "Erdoğmuş Hurda Metal Dış Ticaret A.Ş.",
-   "b": "Erdogmus Hurda Metal Dis Tic. A.S.",
-   "verdict": "match",
-   "nature": "turkish-abbreviated-form"
-  },
-  {
-   "a": "Söğütlü Un ve Yem Sanayi A.Ş.",
-   "b": "Sogutlu Un ve Yem San. A.S.",
-   "verdict": "match",
-   "nature": "turkish-soft-g"
-  },
-  {
-   "a": "Işıkyolu Denizcilik Ltd. Şti.",
-   "b": "ISIKYOLU DENIZCILIK LTD STI",
-   "verdict": "match",
-   "nature": "turkish-dotless-i"
-  },
-  {
-   "a": "Gökçeli İnşaat ve Ticaret A.Ş.",
-   "b": "Goekceli Insaat ve Ticaret A.S.",
-   "verdict": "match",
-   "nature": "turkish-diacritics-transcribed"
-  },
-  {
-   "a": "Demirci ve Oğulları Nakliyat Ltd. Şti.",
-   "b": "Demirci & Ogullari Nakliyat Ltd. Sti.",
-   "verdict": "match",
-   "nature": "turkish-ve-ampersand"
-  },
-  {
-   "a": "Tekinalp Kömür Ticaret A.Ş.",
-   "b": "Tekinalp Coal Trading Inc.",
-   "verdict": "match",
-   "nature": "turkish-name-translated"
-  },
-  {
-   "a": "Denizkızı Balıkçılık Ltd. Şti.",
-   "b": "Denizkizi Balikcilik Ltd. Sti.",
-   "verdict": "match",
-   "nature": "turkish-dotless-i"
-  },
-  {
-   "a": "Karadeniz Hububat San. ve Tic. A.Ş.",
-   "b": "Akdeniz Hububat San. ve Tic. A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-near-place-name"
-  },
-  {
-   "a": "Yıldızoğlu Nakliyat Ltd. Şti.",
-   "b": "Yıldırımoğlu Nakliyat Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Özkırım Denizcilik A.Ş.",
-   "b": "Özkaram Denizcilik A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Çağlayan Gıda Ltd. Şti.",
-   "b": "Çağlar Gıda Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Şenkaya İnşaat A.Ş.",
-   "b": "Şenkaya Gıda A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-sector-word"
-  },
-  {
-   "a": "Güneyliler Dış Ticaret Ltd. Şti.",
-   "b": "Güneydoğulu Dış Ticaret Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-word"
-  },
-  {
-   "a": "Samsun Liman Hizmetleri A.Ş.",
-   "b": "Samsun Liman İşletmeleri A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-activity-word"
-  },
-  {
-   "a": "Doğanbey Denizcilik A.Ş.",
-   "b": "Doğanay Denizcilik A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Kılıç Nakliyat Ltd. Şti.",
-   "b": "Kılınç Nakliyat Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Uğurlu Nakliyat Ltd. Şti.",
-   "b": "Uğurlar Nakliyat Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Bafra Un Sanayi A.Ş.",
-   "b": "Bafra Yem Sanayi A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-sector-word"
-  },
-  {
-   "a": "Kıyıboyu Tarım Ürünleri Ltd. Şti.",
-   "b": "Kıyıkent Tarım Ürünleri Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-word"
-  },
-  {
-   "a": "Ünalan Metal San. ve Tic. Ltd. Şti.",
-   "b": "Ünaldı Metal San. ve Tic. Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Akyol Nakliyat ve Lojistik A.Ş.",
-   "b": "Akyol Nakliyat ve Lojistik GmbH",
-   "verdict": "different",
-   "nature": "turkish-foreign-subsidiary"
-  },
-  {
-   "a": "Tirebolu Çelik Ticaret Ltd. Şti.",
-   "b": "Tirebolu Çelik Ticaret SRL",
-   "verdict": "different",
-   "nature": "turkish-foreign-subsidiary"
-  },
-  {
-   "a": "Gemlik Dökme Yük Taşımacılığı A.Ş.",
-   "b": "Gemlik Sıvı Yük Taşımacılığı A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-activity-word"
-  },
-  {
-   "a": "Poyrazköy Gemi İşletmeciliği A.Ş.",
-   "b": "Poyrazköy Gemi İnşa A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-activity-word"
-  },
-  {
-   "a": "Tuncerler İnşaat Malzemeleri Ltd. Şti.",
-   "b": "Tunçkanlar İnşaat Malzemeleri Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Hopa Sınır Ticaret A.Ş.",
-   "b": "Hopa Sınai Ticaret A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-near-word"
-  },
-  {
-   "a": "Sarıyer Liman Acenteliği Ltd. Şti.",
-   "b": "Sarıyer Deniz Acenteliği Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-activity-word"
-  },
-  {
-   "a": "Kuşadalı Nakliyat Ltd. Şti.",
-   "b": "Kuşadası Nakliyat Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-place-name"
-  },
-  {
-   "a": "İlkadım Denizcilik Ltd. Şti.",
-   "b": "İlkada Denizcilik Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-word"
-  },
-  {
-   "a": "Yavuzlar Deniz Taşımacılığı A.Ş.",
-   "b": "Yavuzhan Deniz Taşımacılığı A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Balcıoğlu Gıda Pazarlama Ltd. Şti.",
-   "b": "Balcılar Gıda Pazarlama Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Demirkollar Hurda Metal A.Ş.",
-   "b": "Demirkaya Hurda Metal A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Göktürk Çelik Dış Ticaret A.Ş.",
-   "b": "Gökburç Çelik Dış Ticaret A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Ordu Fındık Gıda A.Ş.",
-   "b": "Ordu Fıstık Gıda A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-near-word"
-  },
-  {
-   "a": "Kaptanoğlu Gemicilik A.Ş.",
-   "b": "Kaptanlar Gemicilik A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Beyazkaya Lojistik Ltd. Şti.",
-   "b": "Karakaya Lojistik Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Sultanhisar Tarım Ürünleri A.Ş.",
-   "b": "Sultanhan Tarım Ürünleri A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-near-place-name"
-  },
-  {
-   "a": "Çelikyol Nakliyat A.Ş.",
-   "b": "Çelikyel Nakliyat A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-near-word"
-  },
-  {
-   "a": "Değirmendere Ambarcılık Ltd. Şti.",
-   "b": "Değirmendere Ambalaj Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-sector-word"
-  },
-  {
-   "a": "Tekinalp Kömür Ticaret A.Ş.",
-   "b": "Tekinalp Kömür Taşımacılık A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-activity-word"
-  },
-  {
-   "a": "Aydınoğlu Nakliyat Ltd. Şti.",
-   "b": "Aydınlıoğlu Nakliyat Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Söğütlü Un ve Yem Sanayi A.Ş.",
-   "b": "Söğütçü Un ve Yem Sanayi A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Işıkyolu Denizcilik Ltd. Şti.",
-   "b": "Işıkyurdu Denizcilik Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-word"
-  },
-  {
-   "a": "Denizkızı Balıkçılık Ltd. Şti.",
-   "b": "Denizkuşu Balıkçılık Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-near-word"
-  },
-  {
-   "a": "Erdoğmuş Hurda Metal Dış Ticaret A.Ş.",
-   "b": "Erdoğan Hurda Metal Dış Ticaret A.Ş.",
-   "verdict": "different",
-   "nature": "turkish-near-surname"
-  },
-  {
-   "a": "Demirci ve Oğulları Nakliyat Ltd. Şti.",
-   "b": "Demirci ve Kardeşleri Nakliyat Ltd. Şti.",
-   "verdict": "different",
-   "nature": "turkish-family-word"
-  },
-  {
-   "a": "Gökçeli İnşaat ve Ticaret A.Ş.",
-   "b": "Gökçeli İnşaat ve Ticaret EOOD",
-   "verdict": "different",
-   "nature": "turkish-foreign-subsidiary"
-  },
-  {
-   "a": "OOO Yuzhnyy Zernovoy Prichal",
-   "b": "Iuzhnyi Zernovoi Prichal LLC",
-   "verdict": "match",
-   "nature": "cyrillic-yu-iu-endings"
-  },
-  {
-   "a": "ООО «Южный зерновой причал»",
-   "b": "OOO Yuzhnyy Zernovoy Prichal",
-   "verdict": "match",
-   "nature": "cyrillic-original-script"
-  },
-  {
-   "a": "TOV Chornomorska Khlibna Kompaniia",
-   "b": "Chornomorska Hlibna Kompaniya LLC",
-   "verdict": "match",
-   "nature": "cyrillic-kh-h"
-  },
-  {
-   "a": "PAO Tsemzavod Mayachnyy",
-   "b": "PJSC Cemzavod Majachnyj",
-   "verdict": "match",
-   "nature": "cyrillic-iso9-ts-c"
-  },
-  {
-   "a": "OOO Shchedryy Kolos Dona",
-   "b": "OOO Schedry Kolos Dona",
-   "verdict": "match",
-   "nature": "cyrillic-shch-sch"
-  },
-  {
-   "a": "ZAO Zhuravlyovo Agro",
-   "b": "ZAO Žuravljovo Agro",
-   "verdict": "match",
-   "nature": "cyrillic-iso9-zh"
-  },
-  {
-   "a": "AT Pivdennyi Portovyi Zavod",
-   "b": "JSC Pivdennyy Portovyy Zavod",
-   "verdict": "match",
-   "nature": "cyrillic-form-translated"
-  },
-  {
-   "a": "ООО «Азовметаллторг»",
-   "b": "OOO Azovmetalltorg",
-   "verdict": "match",
-   "nature": "cyrillic-original-script"
-  },
-  {
-   "a": "ТОВ «Дніпровський зерновий елеватор»",
-   "b": "TOV Dniprovskyi Zernovyi Elevator",
-   "verdict": "match",
-   "nature": "cyrillic-original-script"
-  },
-  {
-   "a": "TOV Izmailskyi Richkovyi Prychal",
-   "b": "Izmailskiy Rechnoy Prichal LLC",
-   "verdict": "match",
-   "nature": "cyrillic-ukrainian-russian-form"
-  },
-  {
-   "a": "OOO Tsimlyanskiy Rechnoy Flot",
-   "b": "Cimljanskij Rečnoj Flot OOO",
-   "verdict": "match",
-   "nature": "cyrillic-iso9-ts-c"
-  },
-  {
-   "a": "PAO Kuban-Agroeksport",
-   "b": "PJSC Kuban Agroexport",
-   "verdict": "match",
-   "nature": "cyrillic-ks-x"
-  },
-  {
-   "a": "OOO Taganrogskiy Metallotsentr",
-   "b": "Taganrogsky Metallocentr LLC",
-   "verdict": "match",
-   "nature": "cyrillic-iy-y-endings"
-  },
-  {
-   "a": "AO Rostovskiy Portovyy Elevator",
-   "b": "JSC Rostovsky Portovy Elevator",
-   "verdict": "match",
-   "nature": "cyrillic-form-translated"
-  },
-  {
-   "a": "OOO Torgovyy Dom Yevdokimov",
-   "b": "OOO Torgovyi Dom Evdokimov",
-   "verdict": "match",
-   "nature": "cyrillic-ye-e"
-  },
-  {
-   "a": "TOV Mykolaivskyi Kombikormovyi Zavod",
-   "b": "Nikolaevskiy Kombikormovyy Zavod LLC",
-   "verdict": "match",
-   "nature": "cyrillic-ukrainian-russian-form"
-  },
-  {
-   "a": "OOO Khimtrans-Yug",
-   "b": "OOO Himtrans-Jug",
-   "verdict": "match",
-   "nature": "cyrillic-kh-h"
-  },
-  {
-   "a": "OOO Kamen'-Portservis",
-   "b": "OOO Kamen Portservis",
-   "verdict": "match",
-   "nature": "cyrillic-soft-sign"
-  },
-  {
-   "a": "Obshchestvo s Ogranichennoy Otvetstvennostyu Donantratsit-Trans",
-   "b": "OOO Donantratsit-Trans",
-   "verdict": "match",
-   "nature": "cyrillic-form-expanded"
-  },
-  {
-   "a": "Tovarystvo z Obmezhenoiu Vidpovidalnistiu Prychornomorskyi Terminal",
-   "b": "TOV Prychornomorskyi Terminal",
-   "verdict": "match",
-   "nature": "cyrillic-form-expanded"
-  },
-  {
-   "a": "OOO Yuzhtranzitservis",
-   "b": "OOO Juzhtranzitservis",
-   "verdict": "match",
-   "nature": "cyrillic-yu-iu-endings"
-  },
-  {
-   "a": "OOO Tsentrsnab-Don",
-   "b": "OOO Centrsnab-Don",
-   "verdict": "match",
-   "nature": "cyrillic-iso9-ts-c"
-  },
-  {
-   "a": "TOV Kharkivskyi Metalotorh",
-   "b": "Kharkivskyy Metalotorh LLC",
-   "verdict": "match",
-   "nature": "cyrillic-iy-y-endings"
-  },
-  {
-   "a": "OOO Temryukskiy Morskoy Terminal",
-   "b": "Temriukskii Morskoi Terminal LLC",
-   "verdict": "match",
-   "nature": "cyrillic-yu-iu-endings"
-  },
-  {
-   "a": "ООО «Таман-Агротранс»",
-   "b": "Taman-Agrotrans LLC",
-   "verdict": "match",
-   "nature": "cyrillic-original-script"
-  },
-  {
-   "a": "OOO Stalprokat-Yug",
-   "b": "Stalprokat-Iug OOO",
-   "verdict": "match",
-   "nature": "cyrillic-yu-iu-endings"
-  },
-  {
-   "a": "TOV Zaporizkyi Metalozbut",
-   "b": "TOV Zaporiz'kyj Metalozbut",
-   "verdict": "match",
-   "nature": "cyrillic-soft-sign"
-  },
-  {
-   "a": "PAO Priazovskiy Kombinat Zhelezobetona",
-   "b": "PJSC Priazovsky Kombinat Zhelezobetona",
-   "verdict": "match",
-   "nature": "cyrillic-form-translated"
-  },
-  {
-   "a": "OOO Salskiy Elevator",
-   "b": "OOO Sal'skiy Elevator",
-   "verdict": "match",
-   "nature": "cyrillic-soft-sign"
-  },
-  {
-   "a": "OOO Don-Zernoprodukt",
-   "b": "LLC Don Zernoprodukt",
-   "verdict": "match",
-   "nature": "cyrillic-form-translated"
-  },
-  {
-   "a": "ZAO Shchekinskiy Metallosklad",
-   "b": "ZAO Ščekinskij Metallosklad",
-   "verdict": "match",
-   "nature": "cyrillic-shch-sch"
-  },
-  {
-   "a": "OOO Novotitarovskiy Elevator",
-   "b": "OOO Novotitarovskii Elevator",
-   "verdict": "match",
-   "nature": "cyrillic-iy-y-endings"
-  },
-  {
-   "a": "TOV Reniiskyi Richkovyi Terminal",
-   "b": "TOV Reniyskyy Richkovyy Terminal",
-   "verdict": "match",
-   "nature": "cyrillic-iy-y-endings"
-  },
-  {
-   "a": "OOO Kubanskaya Zhatva",
-   "b": "OOO Kubanskaja Žatva",
-   "verdict": "match",
-   "nature": "cyrillic-iso9-zh"
-  },
-  {
-   "a": "OOO Primorsko-Akhtarskiy Rybzavod",
-   "b": "Primorsko-Ahtarskij Rybzavod OOO",
-   "verdict": "match",
-   "nature": "cyrillic-kh-h"
-  },
-  {
-   "a": "OOO Azovzernotrans",
-   "b": "Azovzernotrans Limited Liability Company",
-   "verdict": "match",
-   "nature": "cyrillic-form-translated"
-  },
-  {
-   "a": "TOV Zhytomyrskyi Lisotorh",
-   "b": "TOV Zhytomyrskyi Lisotorh, Odeska filiia",
-   "verdict": "match",
-   "nature": "cyrillic-branch"
-  },
-  {
-   "a": "OOO Yeyskiy Portovyy Elevator",
-   "b": "OOO Eiskii Portovyi Elevator",
-   "verdict": "match",
-   "nature": "cyrillic-ye-e"
-  },
-  {
-   "a": "ООО «Щедрый колос Дона»",
-   "b": "OOO Shchedryy Kolos Dona",
-   "verdict": "match",
-   "nature": "cyrillic-original-script"
-  },
-  {
-   "a": "PAO Tuapsinskiy Bunkerovshchik",
-   "b": "PJSC Tuapsinsky Bunkerovschik",
-   "verdict": "match",
-   "nature": "cyrillic-shch-sch"
-  },
-  {
-   "a": "OOO Yuzhnyy Zernovoy Prichal",
-   "b": "OOO Yuzhnyy Neftyanoy Prichal",
-   "verdict": "different",
-   "nature": "cyrillic-activity-word"
-  },
-  {
-   "a": "TOV Chornomorska Khlibna Kompaniia",
-   "b": "TOV Chornomorska Rybna Kompaniia",
-   "verdict": "different",
-   "nature": "cyrillic-activity-word"
-  },
-  {
-   "a": "OOO Shchedryy Kolos Dona",
-   "b": "OOO Shchedraya Niva Dona",
-   "verdict": "different",
-   "nature": "cyrillic-near-word"
-  },
-  {
-   "a": "ZAO Zhuravlyovo Agro",
-   "b": "ZAO Zhuravlino Agro",
-   "verdict": "different",
-   "nature": "cyrillic-near-place-name"
-  },
-  {
-   "a": "OOO Azovmetalltorg",
-   "b": "OOO Azovmetallsnab",
-   "verdict": "different",
-   "nature": "cyrillic-compound-part"
-  },
-  {
-   "a": "OOO Tsimlyanskiy Rechnoy Flot",
-   "b": "OOO Tsimlyanskiy Rybnyy Flot",
-   "verdict": "different",
-   "nature": "cyrillic-near-word"
-  },
-  {
-   "a": "PAO Kuban-Agroeksport",
-   "b": "PAO Kuban-Agroimport",
-   "verdict": "different",
-   "nature": "cyrillic-compound-part"
-  },
-  {
-   "a": "OOO Taganrogskiy Metallotsentr",
-   "b": "OOO Taganrogskiy Metallokontsern",
-   "verdict": "different",
-   "nature": "cyrillic-compound-part"
-  },
-  {
-   "a": "AO Rostovskiy Portovyy Elevator",
-   "b": "AO Rostovskiy Rechnoy Elevator",
-   "verdict": "different",
-   "nature": "cyrillic-activity-word"
-  },
-  {
-   "a": "OOO Torgovyy Dom Yevdokimov",
-   "b": "OOO Torgovyy Dom Yefimov",
-   "verdict": "different",
-   "nature": "cyrillic-near-surname"
-  },
-  {
-   "a": "OOO Khimtrans-Yug",
-   "b": "OOO Khimtrans-Sever",
-   "verdict": "different",
-   "nature": "cyrillic-direction-word"
-  },
-  {
-   "a": "OOO Tsentrsnab-Don",
-   "b": "OOO Tsentrsnab-Kuban",
-   "verdict": "different",
-   "nature": "cyrillic-region-word"
-  },
-  {
-   "a": "TOV Izmailskyi Richkovyi Prychal",
-   "b": "TOV Reniiskyi Richkovyi Prychal",
-   "verdict": "different",
-   "nature": "cyrillic-near-place-name"
-  },
-  {
-   "a": "OOO Belogorye-Trans",
-   "b": "OOO Belozerye-Trans",
-   "verdict": "different",
-   "nature": "cyrillic-near-place-name"
-  },
-  {
-   "a": "OOO Kamen-Portservis",
-   "b": "OOO Kamysh-Portservis",
-   "verdict": "different",
-   "nature": "cyrillic-near-word"
-  },
-  {
-   "a": "OOO Rostov-Zerno",
-   "b": "OOO Rostok-Zerno",
-   "verdict": "different",
-   "nature": "cyrillic-near-word"
-  },
-  {
-   "a": "OOO Novotitarovskiy Elevator",
-   "b": "OOO Novotroitskiy Elevator",
-   "verdict": "different",
-   "nature": "cyrillic-near-place-name"
-  },
-  {
-   "a": "OOO Primorsko-Akhtarskiy Rybzavod",
-   "b": "OOO Primorsko-Akhtarskiy Kombikormzavod",
-   "verdict": "different",
-   "nature": "cyrillic-activity-word"
-  },
-  {
-   "a": "TOV Chornomorska Khlibna Kompaniia",
-   "b": "Chornomorska Khlibna Kompaniia SRL",
-   "verdict": "different",
-   "nature": "cyrillic-foreign-subsidiary"
-  },
-  {
-   "a": "OOO Yuzhtranzitservis",
-   "b": "OOO Yuzhtransservis",
-   "verdict": "different",
-   "nature": "cyrillic-compound-part"
-  },
-  {
-   "a": "OOO Kubanskaya Zhatva",
-   "b": "OOO Kurganskaya Zhatva",
-   "verdict": "different",
-   "nature": "cyrillic-near-place-name"
-  },
-  {
-   "a": "OOO Stalprokat-Yug",
-   "b": "OOO Stalprofil-Yug",
-   "verdict": "different",
-   "nature": "cyrillic-compound-part"
-  },
-  {
-   "a": "TOV Zaporizkyi Metalozbut",
-   "b": "TOV Zaporizkyi Metalobaza",
-   "verdict": "different",
-   "nature": "cyrillic-compound-part"
-  },
-  {
-   "a": "OOO Temryukskiy Morskoy Terminal",
-   "b": "OOO Temryukskiy Portovyy Terminal",
-   "verdict": "different",
-   "nature": "cyrillic-activity-word"
-  },
-  {
-   "a": "OOO Taman-Agrotrans",
-   "b": "OOO Taman-Avtotrans",
-   "verdict": "different",
-   "nature": "cyrillic-compound-part"
-  },
-  {
-   "a": "OOO Don-Zernoprodukt",
-   "b": "OOO Don-Zernoproekt",
-   "verdict": "different",
-   "nature": "cyrillic-compound-part"
-  },
-  {
-   "a": "OOO Salskiy Elevator",
-   "b": "OOO Salskiy Elevatorstroy",
-   "verdict": "different",
-   "nature": "cyrillic-compound-part"
-  },
-  {
-   "a": "ООО «Азовзернотранс»",
-   "b": "OOO Azovzernoterminal",
-   "verdict": "different",
-   "nature": "cyrillic-original-script-near"
-  },
-  {
-   "a": "PAO Priazovskiy Kombinat Zhelezobetona",
-   "b": "PAO Priazovskiy Zavod Zhelezobetona",
-   "verdict": "different",
-   "nature": "cyrillic-activity-word"
-  },
-  {
-   "a": "TOV Kharkivskyi Metalotorh",
-   "b": "TOV Khersonskyi Metalotorh",
-   "verdict": "different",
-   "nature": "cyrillic-near-place-name"
-  },
-  {
-   "a": "ZAO Shchekinskiy Metallosklad",
-   "b": "ZAO Shchuchinskiy Metallosklad",
-   "verdict": "different",
-   "nature": "cyrillic-near-place-name"
-  },
-  {
-   "a": "TOV Mykolaivskyi Kombikormovyi Zavod",
-   "b": "TOV Mykolaivskyi Kombikormovyi Zavod No. 2",
-   "verdict": "different",
-   "nature": "cyrillic-numbered-entity"
-  },
-  {
-   "a": "OOO Yeyskiy Portovyy Elevator",
-   "b": "OOO Yeyskiy Portovyy Kholodilnik",
-   "verdict": "different",
-   "nature": "cyrillic-activity-word"
-  },
-  {
-   "a": "PAO Tuapsinskiy Bunkerovshchik",
-   "b": "PAO Tuapsinskiy Buksirovshchik",
-   "verdict": "different",
-   "nature": "cyrillic-near-word"
-  },
-  {
-   "a": "ООО «Таман-Агротранс»",
-   "b": "ООО «Тамань-Агросервис»",
-   "verdict": "different",
-   "nature": "cyrillic-original-script-near"
-  },
-  {
-   "a": "AT Pivdennyi Portovyi Zavod",
-   "b": "AT Pivnichnyi Portovyi Zavod",
-   "verdict": "different",
-   "nature": "cyrillic-direction-word"
-  },
-  {
-   "a": "TOV Prychornomorskyi Terminal",
-   "b": "TOV Pryazovskyi Terminal",
-   "verdict": "different",
-   "nature": "cyrillic-near-place-name"
-  },
-  {
-   "a": "OOO Donantratsit-Trans",
-   "b": "OOO Donantratsit-Snab",
-   "verdict": "different",
-   "nature": "cyrillic-compound-part"
-  },
-  {
-   "a": "TOV Zhytomyrskyi Lisotorh",
-   "b": "TOV Zhytomyrskyi Lisokombinat",
-   "verdict": "different",
-   "nature": "cyrillic-compound-part"
-  },
-  {
-   "a": "PAO Tsemzavod Mayachnyy",
-   "b": "PAO Tsemzavod Mayskiy",
-   "verdict": "different",
-   "nature": "cyrillic-near-word"
-  },
-  {
-   "a": "MV KAPITAN ZAVYALOV",
-   "b": "M/V Kapitan Zavyalov",
-   "verdict": "match",
-   "nature": "vessel-prefix-variant"
-  },
-  {
-   "a": "KAPITAN ZAVYALOV",
-   "b": "KAPITAN ZAVJALOV",
-   "verdict": "match",
-   "nature": "vessel-transliteration"
-  },
-  {
-   "a": "КАПИТАН ЗАВЬЯЛОВ",
-   "b": "KAPITAN ZAV'YALOV",
-   "verdict": "match",
-   "nature": "vessel-cyrillic-original"
-  },
-  {
-   "a": "T/H NIZHNEDONSK-1408",
-   "b": "NIZHNEDONSK 1408",
-   "verdict": "match",
-   "nature": "vessel-teplokhod-prefix"
-  },
-  {
-   "a": "T/KH AZOVSKIY RUBEZH 7",
-   "b": "Azovskiy Rubezh-7",
-   "verdict": "match",
-   "nature": "vessel-teplokhod-prefix"
-  },
-  {
-   "a": "ALTAIR STAR (ex-MEKHANIK KHARITONOV)",
-   "b": "MEKHANIK KHARITONOV",
-   "verdict": "match",
-   "nature": "vessel-former-name"
-  },
-  {
-   "a": "MEKHANIK KHARITONOV",
-   "b": "MEHANIK HARITONOV",
-   "verdict": "match",
-   "nature": "vessel-transliteration"
-  },
-  {
-   "a": "MV AKDENİZ ŞAFAK",
-   "b": "M/V AKDENIZ SAFAK",
-   "verdict": "match",
-   "nature": "vessel-turkish-diacritics"
-  },
-  {
-   "a": "ŞEHİT KAPTAN ÖZER",
-   "b": "SEHIT KAPTAN OZER",
-   "verdict": "match",
-   "nature": "vessel-turkish-diacritics"
-  },
-  {
-   "a": "CAPT. SEMENYUK",
-   "b": "KAPITAN SEMENYUK",
-   "verdict": "match",
-   "nature": "vessel-rank-translated"
-  },
-  {
-   "a": "AKADEMIK PETRYAKOV",
-   "b": "AKAD. PETRYAKOV",
-   "verdict": "match",
-   "nature": "vessel-rank-abbreviated"
-  },
-  {
-   "a": "SEYIT REIS (Panama)",
-   "b": "SEYIT REIS",
-   "verdict": "match",
-   "nature": "vessel-flag-residue"
-  },
-  {
-   "a": "NIKOLAY ORLOVSKIY, port of registry Taganrog",
-   "b": "NIKOLAY ORLOVSKIY",
-   "verdict": "match",
-   "nature": "vessel-port-residue"
-  },
-  {
-   "a": "PRIAZOVYE-1204",
-   "b": "PRIAZOVYE 1204",
-   "verdict": "match",
-   "nature": "vessel-series-number"
-  },
-  {
-   "a": "DENIZ YOLCUSU 2",
-   "b": "DENIZ YOLCUSU II",
-   "verdict": "match",
-   "nature": "vessel-numeral-roman"
-  },
-  {
-   "a": "MV KARA BURUN ex ZOLOTAYA KOSA",
-   "b": "ZOLOTAYA KOSA",
-   "verdict": "match",
-   "nature": "vessel-former-name"
-  },
-  {
-   "a": "KERCHENSKIY PROLIV-3",
-   "b": "KERCHENSKY PROLIV 3",
-   "verdict": "match",
-   "nature": "vessel-transliteration"
-  },
-  {
-   "a": "VOLNA DONA-2208",
-   "b": "Volna Dona 2208",
-   "verdict": "match",
-   "nature": "vessel-series-number"
-  },
-  {
-   "a": "M/V YILDIZ KAPTAN",
-   "b": "MV YILDIZ KAPTAN (Comoros flag)",
-   "verdict": "match",
-   "nature": "vessel-flag-residue"
-  },
-  {
-   "a": "MT ÇAMLIBEL",
-   "b": "M/T CAMLIBEL",
-   "verdict": "match",
-   "nature": "vessel-turkish-diacritics"
-  },
-  {
-   "a": "GENERAL KHOTINTSEV",
-   "b": "GENERAL HOTINCEV",
-   "verdict": "match",
-   "nature": "vessel-transliteration"
-  },
-  {
-   "a": "ZHURAVUSHKA DONSKAYA",
-   "b": "ŽURAVUŠKA DONSKAJA",
-   "verdict": "match",
-   "nature": "vessel-transliteration"
-  },
-  {
-   "a": "ЖУРАВУШКА ДОНСКАЯ",
-   "b": "ZHURAVUSHKA DONSKAYA",
-   "verdict": "match",
-   "nature": "vessel-cyrillic-original"
-  },
-  {
-   "a": "barge PRIDONYE 41",
-   "b": "PRIDONYE-41 (barge)",
-   "verdict": "match",
-   "nature": "vessel-type-residue"
-  },
-  {
-   "a": "KAPITAN GUSEYNOV (ex-MARMARA GULU)",
-   "b": "MARMARA GÜLÜ",
-   "verdict": "match",
-   "nature": "vessel-former-name"
-  },
-  {
-   "a": "DENIZ KARTALI",
-   "b": "M/V DENİZ KARTALI",
-   "verdict": "match",
-   "nature": "vessel-prefix-variant"
-  },
-  {
-   "a": "STEPNOY VETER 17",
-   "b": "STEPNOI VETER 17",
-   "verdict": "match",
-   "nature": "vessel-transliteration"
-  },
-  {
-   "a": "KAPITAN YUSHKEVICH",
-   "b": "KAPITAN IUSHKEVICH",
-   "verdict": "match",
-   "nature": "vessel-transliteration"
-  },
-  {
-   "a": "MATROS TSYBULSKIY",
-   "b": "MATROS CYBULSKIJ",
-   "verdict": "match",
-   "nature": "vessel-transliteration"
-  },
-  {
-   "a": "T/H SHKIPER KOVALCHUK",
-   "b": "SKIPPER KOVALCHUK",
-   "verdict": "match",
-   "nature": "vessel-rank-translated"
-  },
-  {
-   "a": "NORD AMBER (ex-PRIAZOVYE-1207)",
-   "b": "PRIAZOVYE-1207",
-   "verdict": "match",
-   "nature": "vessel-former-name"
-  },
-  {
-   "a": "KARADENİZ ŞAHİNİ",
-   "b": "KARADENIZ SAHINI",
-   "verdict": "match",
-   "nature": "vessel-turkish-diacritics"
-  },
-  {
-   "a": "M/V SAMSUN YILDIZI",
-   "b": "SAMSUN YILDIZI, Samsun",
-   "verdict": "match",
-   "nature": "vessel-port-residue"
-  },
-  {
-   "a": "ILYA TOKAREV",
-   "b": "IL'YA TOKAREV",
-   "verdict": "match",
-   "nature": "vessel-transliteration"
-  },
-  {
-   "a": "GEROY TRUDA MAKSIMOV",
-   "b": "GEROI TRUDA MAKSIMOV",
-   "verdict": "match",
-   "nature": "vessel-transliteration"
-  },
-  {
-   "a": "ALEKSANDR ZHEREBTSOV",
-   "b": "ALEXANDER ZHEREBTSOV",
-   "verdict": "match",
-   "nature": "vessel-transliteration"
-  },
-  {
-   "a": "RUSLAN TKACHYOV",
-   "b": "RUSLAN TKACHEV",
-   "verdict": "match",
-   "nature": "vessel-transliteration"
-  },
-  {
-   "a": "TUG KORSAK 12",
-   "b": "tug KORSAK-12",
-   "verdict": "match",
-   "nature": "vessel-series-number"
-  },
-  {
-   "a": "MV ARDA NUR",
-   "b": "ARDA NUR (Moldova flag)",
-   "verdict": "match",
-   "nature": "vessel-flag-residue"
-  },
-  {
-   "a": "T/H VOLNA DONA-2208",
-   "b": "VOLNA DONA 2208, flag Russia, port Rostov-on-Don",
-   "verdict": "match",
-   "nature": "vessel-port-residue"
-  },
-  {
-   "a": "NIZHNEDONSK-1408",
-   "b": "NIZHNEDONSK-1403",
-   "verdict": "different",
-   "nature": "vessel-sister-number"
-  },
-  {
-   "a": "AZOVSKIY RUBEZH 7",
-   "b": "AZOVSKIY RUBEZH 17",
-   "verdict": "different",
-   "nature": "vessel-sister-number"
-  },
-  {
-   "a": "KAPITAN ZAVYALOV",
-   "b": "KAPITAN ZAVARZIN",
-   "verdict": "different",
-   "nature": "vessel-near-name"
-  },
-  {
-   "a": "MEKHANIK KHARITONOV",
-   "b": "MEKHANIK KHARLAMOV",
-   "verdict": "different",
-   "nature": "vessel-near-name"
-  },
-  {
-   "a": "DENIZ YOLCUSU 1",
-   "b": "DENIZ YOLCUSU 2",
-   "verdict": "different",
-   "nature": "vessel-sister-number"
-  },
-  {
-   "a": "MV KARADENİZ ŞAHİNİ",
-   "b": "Karadeniz Şahini Denizcilik Ltd. Şti.",
-   "verdict": "different",
-   "nature": "vessel-vs-owner"
-  },
-  {
-   "a": "PRIAZOVYE-1204",
-   "b": "Priazovye Shipmanagement LLC",
-   "verdict": "different",
-   "nature": "vessel-vs-manager"
-  },
-  {
-   "a": "TUG KORSAK 12",
-   "b": "BARGE KORSAK 12",
-   "verdict": "different",
-   "nature": "vessel-tug-vs-barge"
-  },
-  {
-   "a": "YILDIZ KAPTAN",
-   "b": "YILDIZ KAPTANLAR",
-   "verdict": "different",
-   "nature": "vessel-plural"
-  },
-  {
-   "a": "SEHIT KAPTAN OZER",
-   "b": "SEHIT KAPTAN OZEN",
-   "verdict": "different",
-   "nature": "vessel-one-letter"
-  },
-  {
-   "a": "AKADEMIK PETRYAKOV",
-   "b": "AKADEMIK PETROVSKIY",
-   "verdict": "different",
-   "nature": "vessel-near-name"
-  },
-  {
-   "a": "KERCHENSKIY PROLIV-3",
-   "b": "KERCHENSKIY PROLIV-8",
-   "verdict": "different",
-   "nature": "vessel-sister-number"
-  },
-  {
-   "a": "VOLNA DONA-2208",
-   "b": "VOLNA DONA-2280",
-   "verdict": "different",
-   "nature": "vessel-sister-number"
-  },
-  {
-   "a": "SEYIT REIS",
-   "b": "SEYIT REIS II",
-   "verdict": "different",
-   "nature": "vessel-sister-number"
-  },
-  {
-   "a": "KAPITAN SEMENYUK",
-   "b": "KAPITAN SEMENOV",
-   "verdict": "different",
-   "nature": "vessel-near-name"
-  },
-  {
-   "a": "M/V SAMSUN YILDIZI",
-   "b": "Samsun Yıldızı Gemi İşletmeciliği A.Ş.",
-   "verdict": "different",
-   "nature": "vessel-vs-owner"
-  },
-  {
-   "a": "ZHURAVUSHKA DONSKAYA",
-   "b": "ZHURAVUSHKA KUBANSKAYA",
-   "verdict": "different",
-   "nature": "vessel-near-name"
-  },
-  {
-   "a": "MT ÇAMLIBEL",
-   "b": "MT ÇAMLIDERE",
-   "verdict": "different",
-   "nature": "vessel-near-name"
-  },
-  {
-   "a": "GENERAL KHOTINTSEV",
-   "b": "GENERAL KHOTIMSKIY",
-   "verdict": "different",
-   "nature": "vessel-near-name"
-  },
-  {
-   "a": "STEPNOY VETER 17",
-   "b": "STEPNOY VETER 7",
-   "verdict": "different",
-   "nature": "vessel-sister-number"
-  },
-  {
-   "a": "KAPITAN YUSHKEVICH",
-   "b": "KAPITAN YURKEVICH",
-   "verdict": "different",
-   "nature": "vessel-near-name"
-  },
-  {
-   "a": "MATROS TSYBULSKIY",
-   "b": "MATROS TSYBULKIN",
-   "verdict": "different",
-   "nature": "vessel-near-name"
-  },
-  {
-   "a": "SHKIPER KOVALCHUK",
-   "b": "SHKIPER KOVALENKO",
-   "verdict": "different",
-   "nature": "vessel-near-name"
-  },
-  {
-   "a": "NORD AMBER",
-   "b": "NORD AMBERG",
-   "verdict": "different",
-   "nature": "vessel-one-letter"
-  },
-  {
-   "a": "KARADENIZ SAHINI",
-   "b": "KARADENIZ SAHINLERI",
-   "verdict": "different",
-   "nature": "vessel-plural"
-  },
-  {
-   "a": "ILYA TOKAREV",
-   "b": "ILYA TOKMAKOV",
-   "verdict": "different",
-   "nature": "vessel-near-name"
-  },
-  {
-   "a": "GEROY TRUDA MAKSIMOV",
-   "b": "GEROY TRUDA MAKAROV",
-   "verdict": "different",
-   "nature": "vessel-near-name"
-  },
-  {
-   "a": "ALEKSANDR ZHEREBTSOV",
-   "b": "ALEKSEY ZHEREBTSOV",
-   "verdict": "different",
-   "nature": "vessel-near-name"
-  },
-  {
-   "a": "RUSLAN TKACHYOV",
-   "b": "RUSLANA TKACHYOVA",
-   "verdict": "different",
-   "nature": "vessel-near-name"
-  },
-  {
-   "a": "barge PRIDONYE 41",
-   "b": "barge PRIDONYE 14",
-   "verdict": "different",
-   "nature": "vessel-sister-number"
-  },
-  {
-   "a": "ARDA NUR",
-   "b": "ARDA NURU",
-   "verdict": "different",
-   "nature": "vessel-one-letter"
-  },
-  {
-   "a": "DENIZ KARTALI",
-   "b": "DENIZ KARTALLARI",
-   "verdict": "different",
-   "nature": "vessel-plural"
-  },
-  {
-   "a": "MV DENİZ KARTALI",
-   "b": "Deniz Kartalı Denizcilik A.Ş.",
-   "verdict": "different",
-   "nature": "vessel-vs-owner"
-  },
-  {
-   "a": "ALTAIR STAR",
-   "b": "ALTAIR STARS",
-   "verdict": "different",
-   "nature": "vessel-plural"
-  },
-  {
-   "a": "MARMARA GÜLÜ",
-   "b": "MARMARA GÜLLERİ",
-   "verdict": "different",
-   "nature": "vessel-plural"
-  },
-  {
-   "a": "KAPITAN GUSEYNOV",
-   "b": "Kapitan Guseynov Shipping Ltd",
-   "verdict": "different",
-   "nature": "vessel-vs-owner"
-  },
-  {
-   "a": "PRIAZOVYE-1207",
-   "b": "PRIAZOVYE-1204",
-   "verdict": "different",
-   "nature": "vessel-sister-number"
-  },
-  {
-   "a": "TUG ATAMAN 5",
-   "b": "BARGE ATAMAN 5",
-   "verdict": "different",
-   "nature": "vessel-tug-vs-barge"
-  },
-  {
-   "a": "ZOLOTAYA KOSA",
-   "b": "ZOLOTAYA ROSA",
-   "verdict": "different",
-   "nature": "vessel-one-letter"
-  },
-  {
-   "a": "YILDIZ KAPTAN",
-   "b": "Yıldız Kaptan Gemi Acenteliği Ltd. Şti.",
-   "verdict": "different",
-   "nature": "vessel-vs-agent"
-  },
-  {
-   "a": "SAMSUN TAHIL DEPOLAMA VE DIS TICAR ET ANONIM SIRKETI",
-   "b": "Samsun Tahıl Depolama ve Dış Ticaret A.Ş.",
-   "verdict": "match",
-   "nature": "residue-swift-line-cut"
-  },
-  {
-   "a": "POHJOISRANNIKON VILJAKAUPPA OY HAMIN ANTIE 12 49400 HAMINA FI",
-   "b": "Pohjoisrannikon Viljakauppa Oy",
-   "verdict": "match",
-   "nature": "residue-address-glued"
-  },
-  {
-   "a": "/NAME/KUZEYRUZGAR LOJISTIK VE DIS TIC ARET LTD STI",
-   "b": "Kuzeyrüzgar Lojistik ve Dış Ticaret Ltd. Şti.",
-   "verdict": "match",
-   "nature": "residue-swift-line-cut"
-  },
-  {
-   "a": "BENEFICIARY: Sarıkaya Hububat Ltd. Şti.",
-   "b": "Sarikaya Hububat Ltd Sti",
-   "verdict": "match",
-   "nature": "residue-party-label"
-  },
-  {
-   "a": "ORDERING CUSTOMER: KALLIOSAARI TRADING OY",
-   "b": "Kalliosaari Trading Oy",
-   "verdict": "match",
-   "nature": "residue-party-label"
-  },
-  {
-   "a": "hi pls check laaksonen viljakuljetus oy thx",
-   "b": "Laaksonen Viljakuljetus Oy",
-   "verdict": "match",
-   "nature": "residue-chat-typing"
-  },
-  {
-   "a": "0ZKAYA NAKL1YAT LTD. ST1.",
-   "b": "Özkaya Nakliyat Ltd. Şti.",
-   "verdict": "match",
-   "nature": "residue-ocr-stamp"
-  },
-  {
-   "a": "TARNMELAN RAHTI OY",
-   "b": "Tammelan Rahti Oy",
-   "verdict": "match",
-   "nature": "residue-ocr-stamp"
-  },
-  {
-   "a": "Dnistrovska Agrotorhivlia LLC 14 Portova str Odesa 65026 Ukraine",
-   "b": "Dnistrovska Agrotorhivlia LLC",
-   "verdict": "match",
-   "nature": "residue-address-glued"
-  },
-  {
-   "a": "MESSRS. BALTIC TIMBERLINE OU",
-   "b": "Baltic Timberline OÜ",
-   "verdict": "match",
-   "nature": "residue-party-label"
-  },
-  {
-   "a": "NORDMARK + SKOGBERG AB",
-   "b": "Nordmark & Skogberg AB",
-   "verdict": "match",
-   "nature": "residue-swift-charset"
-  },
-  {
-   "a": "REF FT2231-0915 /BNF/ KAYALAR UN SANAYI AS",
-   "b": "Kayalar Un Sanayi A.Ş.",
-   "verdict": "match",
-   "nature": "residue-bank-reference"
-  },
-  {
-   "a": "CONSIGNEE: TOV ZERNOVA HAVAN, MYKOLAIV",
-   "b": "TOV Zernova Havan",
-   "verdict": "match",
-   "nature": "residue-party-label"
-  },
-  {
-   "a": "NOTIFY PARTY - Marinero Ship Agency SRL Constanta Romania",
-   "b": "Marinero Ship Agency SRL",
-   "verdict": "match",
-   "nature": "residue-address-glued"
-  },
-  {
-   "a": "VESSEL: MV KARA MARTI / IMO N/A",
-   "b": "KARA MARTI",
-   "verdict": "match",
-   "nature": "residue-vessel-field"
-  },
-  {
-   "a": "PER MV TAMAN ZARYA VOY 14",
-   "b": "TAMAN ZARYA",
-   "verdict": "match",
-   "nature": "residue-vessel-field"
-  },
-  {
-   "a": "LAIVANVARUSTAMO REPOLA OYVAASANKATU 3",
-   "b": "Laivanvarustamo Repola Oy",
-   "verdict": "match",
-   "nature": "residue-address-glued"
-  },
-  {
-   "a": "KYLMAKONTTI PALVELUT OY",
-   "b": "Kylmäkontti Palvelut Oy",
-   "verdict": "match",
-   "nature": "residue-uppercase-export"
-  },
-  {
-   "a": "SIA DAUGAVAS KRASTA LOGISTIKA RIGA LV-1045",
-   "b": "SIA Daugavas Krasta Loģistika",
-   "verdict": "match",
-   "nature": "residue-address-glued"
-  },
-  {
-   "a": "uab vetrunges kroviniu ekspedijavimas",
-   "b": "UAB Vėtrungės Krovinių Ekspedijavimas",
-   "verdict": "match",
-   "nature": "residue-chat-typing"
-  },
-  {
-   "a": "PAYEE: ANADOLUKAVAGI HUBUBAT SAN.TIC.A.S. ISTANBUL/TURKEY",
-   "b": "Anadolukavağı Hububat San. ve Tic. A.Ş.",
-   "verdict": "match",
-   "nature": "residue-party-label"
-  },
-  {
-   "a": "1/POLTAVSKA ZERNOVA KOMPANIIA TOV 2/VUL. SHKILNA 7 3/UA/POLTAVA",
-   "b": "TOV Poltavska Zernova Kompaniia",
-   "verdict": "match",
-   "nature": "residue-swift-structured"
-  },
-  {
-   "a": "OOO KALINOVYY PRlCHAL",
-   "b": "OOO Kalinovyy Prichal",
-   "verdict": "match",
-   "nature": "residue-ocr-stamp"
-  },
-  {
-   "a": "TOKATLIGIL DENIZCILIK A.S. (THE SELLER)",
-   "b": "Tokatlıgil Denizcilik A.Ş.",
-   "verdict": "match",
-   "nature": "residue-party-label"
-  },
-  {
-   "a": "ATTN MR. KORHONEN / MERIVIRTA OY",
-   "b": "Merivirta Oy",
-   "verdict": "match",
-   "nature": "residue-attention-line"
-  },
-  {
-   "a": "KAARNATAIVAS OY, Y-TUNNUS 1234567-8",
-   "b": "Kaarnataivas Oy",
-   "verdict": "match",
-   "nature": "residue-registration-number"
-  },
-  {
-   "a": "can u check odessa grainlink tov asap",
-   "b": "TOV Odesa Grainlink",
-   "verdict": "match",
-   "nature": "residue-chat-typing"
-  },
-  {
-   "a": "SHIPPER: SINOPLU SU ÜRÜNLERİ LTD. ŞTİ.",
-   "b": "Sinoplu Su Urunleri Ltd. Sti.",
-   "verdict": "match",
-   "nature": "residue-party-label"
-  },
-  {
-   "a": "LIMANTEPE GEMI KIRAL AMA VE TICARET A.S.",
-   "b": "Limantepe Gemi Kiralama ve Ticaret A.Ş.",
-   "verdict": "match",
-   "nature": "residue-swift-line-cut"
-  },
-  {
-   "a": "LLC KOLKHURI TVIRTI, POTI, GEORGIA",
-   "b": "Kolkhuri Tvirti LLC",
-   "verdict": "match",
-   "nature": "residue-address-glued"
-  },
-  {
-   "a": "SJÖGRIND LOGISTIK AB (PUBL) GOTEBORG SE",
-   "b": "Sjögrind Logistik AB",
-   "verdict": "match",
-   "nature": "residue-address-glued"
-  },
-  {
-   "a": "Valkeasaari Shpiping Oy",
-   "b": "Valkeasaari Shipping Oy",
-   "verdict": "match",
-   "nature": "residue-typo"
-  },
-  {
-   "a": "KARADAGLI NAKLIYAT LTD STI (TR)",
-   "b": "Karadağlı Nakliyat Ltd. Şti.",
-   "verdict": "match",
-   "nature": "residue-country-code"
-  },
-  {
-   "a": "Dunarea Verde Grain Logistics S.R.L. / Constanta Port Gate 7",
-   "b": "Dunarea Verde Grain Logistics SRL",
-   "verdict": "match",
-   "nature": "residue-address-glued"
-  },
-  {
-   "a": "PETROVSKAYA HLEBNAYA BAZA OOO M.P.",
-   "b": "OOO Petrovskaya Khlebnaya Baza",
-   "verdict": "match",
-   "nature": "residue-ocr-stamp"
-  },
-  {
-   "a": "For and on behalf of AKSOYLAR CELIK DIS TICARET A.S.",
-   "b": "Aksoylar Çelik Dış Ticaret A.Ş.",
-   "verdict": "match",
-   "nature": "residue-signature-line"
-  },
-  {
-   "a": "TO THE ORDER OF KUMSALLAR HUBUBAT A.S.",
-   "b": "Kumsallar Hububat A.Ş.",
-   "verdict": "match",
-   "nature": "residue-party-label"
-  },
-  {
-   "a": "59:/ACC 0042771 KIRMIZIGUL GIDA LTD STI",
-   "b": "Kırmızıgül Gıda Ltd. Şti.",
-   "verdict": "match",
-   "nature": "residue-bank-reference"
-  },
-  {
-   "a": "B/L: SHIPPED ON BOARD M/V SARI KAYA",
-   "b": "SARI KAYA",
-   "verdict": "match",
-   "nature": "residue-vessel-field"
-  },
-  {
-   "a": "M/V ÖZLEM ANA - OWNERS ACCOUNT",
-   "b": "OZLEM ANA",
-   "verdict": "match",
-   "nature": "residue-vessel-field"
-  },
-  {
-   "a": "SAMSUN TAHIL DEPOLAMA VE DIS TICAR ET ANONIM SIRKETI",
-   "b": "Samsun Tahıl Taşımacılık ve Dış Ticaret A.Ş.",
-   "verdict": "different",
-   "nature": "residue-swift-near-name"
-  },
-  {
-   "a": "POHJOISRANNIKON VILJAKAUPPA OY HAMINANTIE 12",
-   "b": "Pohjoisrannikon Viljavarasto Oy",
-   "verdict": "different",
-   "nature": "residue-address-near-name"
-  },
-  {
-   "a": "BENEFICIARY: Sarıkaya Hububat Ltd. Şti.",
-   "b": "Sarıyaka Hububat Ltd. Şti.",
-   "verdict": "different",
-   "nature": "residue-label-near-name"
-  },
-  {
-   "a": "ORDERING CUSTOMER: KALLIOSAARI TRADING OY",
-   "b": "Kalliosalmi Trading Oy",
-   "verdict": "different",
-   "nature": "residue-label-near-name"
-  },
-  {
-   "a": "pls check laaksonen viljakuljetus",
-   "b": "Laaksonen Viljakauppa Oy",
-   "verdict": "different",
-   "nature": "residue-chat-near-name"
-  },
-  {
-   "a": "0ZKAYA NAKL1YAT LTD. ST1.",
-   "b": "Özkaya Nakış Ltd. Şti.",
-   "verdict": "different",
-   "nature": "residue-ocr-near-name"
-  },
-  {
-   "a": "TARNMELAN RAHTI OY",
-   "b": "Tampereen Rahti Oy",
-   "verdict": "different",
-   "nature": "residue-ocr-near-name"
-  },
-  {
-   "a": "Dnistrovska Agrotorhivlia LLC 14 Portova str Odesa",
-   "b": "Dnistrovska Agrotekhnika LLC",
-   "verdict": "different",
-   "nature": "residue-address-near-name"
-  },
-  {
-   "a": "MESSRS. BALTIC TIMBERLINE OU",
-   "b": "Baltic Timberland OÜ",
-   "verdict": "different",
-   "nature": "residue-label-near-name"
-  },
-  {
-   "a": "NORDMARK + SKOGBERG AB",
-   "b": "Nordmark & Skogby AB",
-   "verdict": "different",
-   "nature": "residue-swift-near-name"
-  },
-  {
-   "a": "REF FT2231-0915 /BNF/ KAYALAR UN SANAYI AS",
-   "b": "Kayalar Yem Sanayi A.Ş.",
-   "verdict": "different",
-   "nature": "residue-reference-near-name"
-  },
-  {
-   "a": "CONSIGNEE: TOV ZERNOVA HAVAN, MYKOLAIV",
-   "b": "TOV Zernova Hvylia",
-   "verdict": "different",
-   "nature": "residue-label-near-name"
-  },
-  {
-   "a": "NOTIFY PARTY - Marinero Ship Agency SRL Constanta Romania",
-   "b": "Marinero Ship Agency Ltd, Varna Bulgaria",
-   "verdict": "different",
-   "nature": "residue-other-country-entity"
-  },
-  {
-   "a": "VESSEL: MV KARA MARTI / IMO N/A",
-   "b": "KARA MARTILAR",
-   "verdict": "different",
-   "nature": "residue-vessel-plural"
-  },
-  {
-   "a": "PER MV TAMAN ZARYA VOY 14",
-   "b": "TAMAN ZARYA 2",
-   "verdict": "different",
-   "nature": "residue-vessel-numbered"
-  },
-  {
-   "a": "LAIVANVARUSTAMO REPOLA OYVAASANKATU 3",
-   "b": "Laivanvarustamo Rapola Oy",
-   "verdict": "different",
-   "nature": "residue-address-near-name"
-  },
-  {
-   "a": "KYLMAKONTTI PALVELUT OY",
-   "b": "Kylmäkuljetus Palvelut Oy",
-   "verdict": "different",
-   "nature": "residue-uppercase-near-name"
-  },
-  {
-   "a": "SIA DAUGAVAS KRASTA LOGISTIKA RIGA LV-1045",
-   "b": "SIA Gaujas Krasta Loģistika",
-   "verdict": "different",
-   "nature": "residue-address-near-name"
-  },
-  {
-   "a": "PAYEE: ANADOLUKAVAGI HUBUBAT SAN.TIC.A.S. ISTANBUL/TURKEY",
-   "b": "Anadoluhisarı Hububat San. ve Tic. A.Ş.",
-   "verdict": "different",
-   "nature": "residue-label-near-name"
-  },
-  {
-   "a": "1/POLTAVSKA ZERNOVA KOMPANIIA TOV 2/VUL. SHKILNA 7 3/UA/POLTAVA",
-   "b": "TOV Poltavska Zernova Asotsiatsiia",
-   "verdict": "different",
-   "nature": "residue-swift-near-name"
-  },
-  {
-   "a": "OOO KALINOVYY PRlCHAL",
-   "b": "OOO Kalinovyy Pereval",
-   "verdict": "different",
-   "nature": "residue-ocr-near-name"
-  },
-  {
-   "a": "TOKATLIGIL DENIZCILIK A.S. (THE SELLER)",
-   "b": "Tokatlıoğlu Denizcilik A.Ş.",
-   "verdict": "different",
-   "nature": "residue-label-near-name"
-  },
-  {
-   "a": "ATTN MR. KORHONEN / MERIVIRTA OY",
-   "b": "Merivarsi Oy",
-   "verdict": "different",
-   "nature": "residue-attention-near-name"
-  },
-  {
-   "a": "KAARNATAIVAS OY, Y-TUNNUS 1234567-8",
-   "b": "Kaarnatalo Oy",
-   "verdict": "different",
-   "nature": "residue-registration-near-name"
-  },
-  {
-   "a": "can u check odessa grainlink tov asap",
-   "b": "TOV Odesa Grainline",
-   "verdict": "different",
-   "nature": "residue-chat-near-name"
-  },
-  {
-   "a": "SHIPPER: SINOPLU SU ÜRÜNLERİ LTD. ŞTİ.",
-   "b": "Sinoplu Su Yolları Ltd. Şti.",
-   "verdict": "different",
-   "nature": "residue-label-near-name"
-  },
-  {
-   "a": "LIMANTEPE GEMI KIRAL AMA VE TICARET A.S.",
-   "b": "Limantepe Gemi Kurtarma ve Ticaret A.Ş.",
-   "verdict": "different",
-   "nature": "residue-swift-near-name"
-  },
-  {
-   "a": "LLC KOLKHURI TVIRTI, POTI, GEORGIA",
-   "b": "Imeruli Tvirti LLC",
-   "verdict": "different",
-   "nature": "residue-address-near-name"
-  },
-  {
-   "a": "SJÖGRIND LOGISTIK AB (PUBL) GOTEBORG SE",
-   "b": "Sjögrind Logistik Oy",
-   "verdict": "different",
-   "nature": "residue-other-country-entity"
-  },
-  {
-   "a": "Valkeasaari Shpiping Oy",
-   "b": "Vallisaari Shipping Oy",
-   "verdict": "different",
-   "nature": "residue-typo-near-name"
-  },
-  {
-   "a": "KARADAGLI NAKLIYAT LTD STI (TR)",
-   "b": "Karadağlı Nakliyat SRL (RO)",
-   "verdict": "different",
-   "nature": "residue-other-country-entity"
-  },
-  {
-   "a": "Dunarea Verde Grain Logistics S.R.L. / Constanta Port Gate 7",
-   "b": "Dunarea Verde Grain Terminal S.R.L.",
-   "verdict": "different",
-   "nature": "residue-address-near-name"
-  },
-  {
-   "a": "PETROVSKAYA HLEBNAYA BAZA OOO M.P.",
-   "b": "OOO Petrovskaya Neftebaza",
-   "verdict": "different",
-   "nature": "residue-ocr-near-name"
-  },
-  {
-   "a": "For and on behalf of AKSOYLAR CELIK DIS TICARET A.S.",
-   "b": "Aksaylar Çelik Dış Ticaret A.Ş.",
-   "verdict": "different",
-   "nature": "residue-signature-near-name"
-  },
-  {
-   "a": "TO THE ORDER OF KUMSALLAR HUBUBAT A.S.",
-   "b": "Kumsallı Hububat A.Ş.",
-   "verdict": "different",
-   "nature": "residue-label-near-name"
-  },
-  {
-   "a": "59:/ACC 0042771 KIRMIZIGUL GIDA LTD STI",
-   "b": "Kırmızıgöl Gıda Ltd. Şti.",
-   "verdict": "different",
-   "nature": "residue-reference-near-name"
-  },
-  {
-   "a": "B/L: SHIPPED ON BOARD M/V SARI KAYA",
-   "b": "SARI KAYALAR",
-   "verdict": "different",
-   "nature": "residue-vessel-plural"
-  },
-  {
-   "a": "M/V ÖZLEM ANA - OWNERS ACCOUNT",
-   "b": "Özlem Ana Denizcilik A.Ş.",
-   "verdict": "different",
-   "nature": "residue-vessel-vs-owner"
-  },
-  {
-   "a": "uab vetrunges kroviniu ekspedijavimas",
-   "b": "UAB Vėtrungės Krovinių Terminalas",
-   "verdict": "different",
-   "nature": "residue-chat-near-name"
-  },
-  {
-   "a": "/NAME/KUZEYRUZGAR LOJISTIK VE DIS TIC ARET LTD STI",
-   "b": "Güneyrüzgar Lojistik ve Dış Ticaret Ltd. Şti.",
-   "verdict": "different",
-   "nature": "residue-swift-near-name"
-  }
- ]
+  "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+  "provenance": "blind test set #12, authored on 2026-09-28 by a separate agent (a Mumbai trade-finance desk and Australian exporter brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
+  "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+  "paires": [
+    {
+      "a": "Ramesh Kumar Sharma Pvt. Ltd.",
+      "b": "Ramesh Kumar Sharma Private Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Deccan Agro Traders Pvt. Ltd.",
+      "b": "Deccan Agro Traders Private Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Konkan Spice Exports Pvt. Ltd.",
+      "b": "Konkan Spice Exports Private Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Bhatt & Vyas Associates LLP",
+      "b": "Bhatt & Vyas Associates Limited Liability Partnership",
+      "verdict": "match",
+      "nature": "llp-fullform"
+    },
+    {
+      "a": "Sundaram Textile Mills LLP",
+      "b": "Sundaram Textile Mills Limited Liability Partnership",
+      "verdict": "match",
+      "nature": "llp-fullform"
+    },
+    {
+      "a": "Chopra Bros. Enterprises",
+      "b": "Chopra Brothers Enterprises",
+      "verdict": "match",
+      "nature": "bros-brothers"
+    },
+    {
+      "a": "Malhotra Bros. Trading Co.",
+      "b": "Malhotra Brothers Trading Co.",
+      "verdict": "match",
+      "nature": "bros-brothers"
+    },
+    {
+      "a": "Gupta & Sons Industries",
+      "b": "Gupta And Sons Industries",
+      "verdict": "match",
+      "nature": "amp-and"
+    },
+    {
+      "a": "Khanna & Sons Traders",
+      "b": "Khanna And Sons Traders",
+      "verdict": "match",
+      "nature": "amp-and"
+    },
+    {
+      "a": "Shri Dinesh Chandra Joshi Traders",
+      "b": "Dinesh Chandra Joshi Traders",
+      "verdict": "match",
+      "nature": "honorific-drop"
+    },
+    {
+      "a": "Shri Mahesh Bhai Patel Exports",
+      "b": "Mahesh Bhai Patel Exports",
+      "verdict": "match",
+      "nature": "honorific-drop"
+    },
+    {
+      "a": "M/s Trivedi Trading Company",
+      "b": "Trivedi Trading Company",
+      "verdict": "match",
+      "nature": "ms-prefix-drop"
+    },
+    {
+      "a": "M/s Nilesh Doshi & Co.",
+      "b": "Nilesh Doshi & Co.",
+      "verdict": "match",
+      "nature": "ms-prefix-drop"
+    },
+    {
+      "a": "Kulkarni Agro Industries (GSTIN 27AABCK1234M1ZP)",
+      "b": "Kulkarni Agro Industries",
+      "verdict": "match",
+      "nature": "gstin-residue"
+    },
+    {
+      "a": "Deshpande Textiles Pvt. Ltd. GSTIN 27AAECD5678N1Z3",
+      "b": "Deshpande Textiles Pvt. Ltd.",
+      "verdict": "match",
+      "nature": "gstin-residue"
+    },
+    {
+      "a": "Godavari Rice Mills Pvt. Ltd. [CIN U15122MH2010PTC201345]",
+      "b": "Godavari Rice Mills Pvt. Ltd.",
+      "verdict": "match",
+      "nature": "cin-residue"
+    },
+    {
+      "a": "Saraswati Engg. Works Pvt. Ltd. CIN: U29100GJ2015PTC083456",
+      "b": "Saraswati Engg. Works Pvt. Ltd.",
+      "verdict": "match",
+      "nature": "cin-residue"
+    },
+    {
+      "a": "Anil Agarwal & Sons",
+      "b": "Anil Agrawal & Sons",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "S. Mukherjee Exports",
+      "b": "S. Mukherji Exports",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Bandyopadhyay Trading House",
+      "b": "Banerjee Trading House",
+      "verdict": "match",
+      "nature": "bengali-surname-anglicisation"
+    },
+    {
+      "a": "Chatterjee Iron & Steel Traders",
+      "b": "Chattopadhyay Iron & Steel Traders",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "R. Chakraborty & Sons",
+      "b": "R. Chakravarty & Sons",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Choudhury Jute Exports",
+      "b": "Chowdhury Jute Exports",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Kapoor Woollen Mills Pvt. Ltd.",
+      "b": "Kapur Woollen Mills Pvt. Ltd.",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Sanghvi Diamond Exports",
+      "b": "Sanghavi Diamond Exports",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Tiwari Grain Traders",
+      "b": "Tripathi Grain Traders",
+      "verdict": "match",
+      "nature": "surname-derivation-variant"
+    },
+    {
+      "a": "Rathore Marble Industries",
+      "b": "Rathod Marble Industries",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Iyer & Subramaniam Exports",
+      "b": "Iyar & Subramaniam Exports",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Nair Coir Industries",
+      "b": "Nayar Coir Industries",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Rajkot Engg. Works (Gujarat)",
+      "b": "Rajkot Engg. Works",
+      "verdict": "match",
+      "nature": "state-descriptor-drop"
+    },
+    {
+      "a": "Coimbatore Pump Industries, Tamil Nadu",
+      "b": "Coimbatore Pump Industries",
+      "verdict": "match",
+      "nature": "state-descriptor-drop"
+    },
+    {
+      "a": "Patel-Desai Traders",
+      "b": "Patel Desai Traders",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "N.K. Bansal & Co.",
+      "b": "N K Bansal and Co",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Vikram Steel Pvt. Ltd. – Ludhiana Branch",
+      "b": "Vikram Steel Pvt. Ltd. (Regd. Office: Ludhiana)",
+      "verdict": "match",
+      "nature": "branch-of-head-office"
+    },
+    {
+      "a": "Ganesh Oil Mills Pvt. Ltd., Nagpur Branch Office",
+      "b": "Ganesh Oil Mills Pvt. Ltd.",
+      "verdict": "match",
+      "nature": "branch-of-head-office"
+    },
+    {
+      "a": "Kumar, Rakesh Traders",
+      "b": "Rakesh Kumar Traders",
+      "verdict": "match",
+      "nature": "name-order-inversion"
+    },
+    {
+      "a": "Yadav & Sons Enterprises",
+      "b": "Yadav And Sons Enterprises",
+      "verdict": "match",
+      "nature": "amp-and"
+    },
+    {
+      "a": "Saxena Bros. Industries",
+      "b": "Saxena Brothers Industries",
+      "verdict": "match",
+      "nature": "bros-brothers"
+    },
+    {
+      "a": "M/s. Harish Chandra Vyas",
+      "b": "Harish Chandra Vyas",
+      "verdict": "match",
+      "nature": "ms-prefix-drop"
+    },
+    {
+      "a": "Modi Plastics Pvt. Ltd. (GST No. 24AAACM9988K1ZQ)",
+      "b": "Modi Plastics Pvt. Ltd.",
+      "verdict": "match",
+      "nature": "gstin-residue"
+    },
+    {
+      "a": "Deccan Agro Traders Pvt. Ltd.",
+      "b": "Deccan Agro Exports Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "entity-suffix-changed"
+    },
+    {
+      "a": "Konkan Spice Traders Pvt. Ltd.",
+      "b": "Konkan Spice Enterprises Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "entity-suffix-changed"
+    },
+    {
+      "a": "Gupta & Sons Industries",
+      "b": "Gupta & Sons Trading Co.",
+      "verdict": "different",
+      "nature": "entity-suffix-changed"
+    },
+    {
+      "a": "Ramesh Kumar Sharma Pvt. Ltd.",
+      "b": "Rakesh Kumar Sharma Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "different-first-name-same-surname"
+    },
+    {
+      "a": "Suresh Chandra Joshi Traders",
+      "b": "Dinesh Chandra Joshi Traders",
+      "verdict": "different",
+      "nature": "different-first-name-same-surname"
+    },
+    {
+      "a": "Mahesh Bhai Patel Exports",
+      "b": "Naresh Bhai Patel Exports",
+      "verdict": "different",
+      "nature": "different-first-name-same-surname"
+    },
+    {
+      "a": "Nilesh Doshi & Co.",
+      "b": "Nilesh Dosi & Co.",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Trivedi Trading Company",
+      "b": "Triveni Trading Company",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Kulkarni Agro Industries",
+      "b": "Kulkani Agro Industries",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Deshpande Textiles Pvt. Ltd.",
+      "b": "Deshmukh Textiles Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Bhagwati Rice Mills Pvt. Ltd.",
+      "b": "Bhagirathi Rice Mills Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Saraswati Engg. Works Pvt. Ltd.",
+      "b": "Saraswat Engg. Works Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Chandiramani Textile Traders",
+      "b": "Chandnani Textile Traders",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Vaswani Export House",
+      "b": "Advani Export House",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Thakkar Chemicals Pvt. Ltd.",
+      "b": "Thakur Chemicals Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Khanna & Sons Traders",
+      "b": "Khanna & Co. Traders",
+      "verdict": "different",
+      "nature": "sons-vs-co"
+    },
+    {
+      "a": "Yadav & Sons Enterprises",
+      "b": "Yadav & Bros. Enterprises",
+      "verdict": "different",
+      "nature": "sons-vs-co"
+    },
+    {
+      "a": "Rajkot Engg. Works",
+      "b": "Rajkot Engg. Work",
+      "verdict": "different",
+      "nature": "generic-word-plural"
+    },
+    {
+      "a": "Coimbatore Pump Industries",
+      "b": "Coimbatore Pump Industry",
+      "verdict": "different",
+      "nature": "generic-word-plural"
+    },
+    {
+      "a": "Saraswati Mfg. Co.",
+      "b": "Saraswati Mktg. Co.",
+      "verdict": "different",
+      "nature": "abbreviation-collision"
+    },
+    {
+      "a": "Konkan Engg. Enterprises",
+      "b": "Konkan Exp. Enterprises",
+      "verdict": "different",
+      "nature": "abbreviation-collision"
+    },
+    {
+      "a": "Nashik Onion Traders Pvt. Ltd.",
+      "b": "Nagpur Onion Traders Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Ludhiana Cycle Industries",
+      "b": "Jalandhar Cycle Industries",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Bansal Home Traders",
+      "b": "Barsal Home Traders",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Goyal Cotton Exports",
+      "b": "Goyel Cotton Exports",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Mittal Steel Traders",
+      "b": "Mital Steel Traders",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Chauhan Agro Exports",
+      "b": "Chavan Agro Exports",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Rathore Marble Industries",
+      "b": "Rathi Marble Industries",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Subramaniam Coir Exports",
+      "b": "Sundaram Coir Exports",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Iyer & Subramaniam Exports",
+      "b": "Iyer & Krishnan Exports",
+      "verdict": "different",
+      "nature": "different-first-name-same-surname"
+    },
+    {
+      "a": "Shri Ramesh Traders",
+      "b": "Shri Rajesh Traders",
+      "verdict": "different",
+      "nature": "different-first-name-same-surname"
+    },
+    {
+      "a": "Modi Plastics Pvt. Ltd.",
+      "b": "Modani Plastics Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Pandya Ceramics Pvt. Ltd.",
+      "b": "Pandey Ceramics Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Doshi Bullion Traders",
+      "b": "Joshi Bullion Traders",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "N.K. Bansal & Co.",
+      "b": "S.K. Bansal & Co.",
+      "verdict": "different",
+      "nature": "different-first-name-same-surname"
+    },
+    {
+      "a": "Saxena Bros. Industries",
+      "b": "Saxena Bros. Traders",
+      "verdict": "different",
+      "nature": "entity-suffix-changed"
+    },
+    {
+      "a": "Chopra Bros. Enterprises",
+      "b": "Chopra Bro. Enterprise",
+      "verdict": "different",
+      "nature": "abbreviation-truncation"
+    },
+    {
+      "a": "Rajkot Engg. Works (Gujarat)",
+      "b": "Rajkot Engg. Works (Maharashtra)",
+      "verdict": "different",
+      "nature": "state-descriptor-changed"
+    },
+    {
+      "a": "Malhotra Bros. Trading Co.",
+      "b": "Kalhotra Bros. Trading Co.",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Sanghvi Diamond Exports",
+      "b": "Sanghvi Diamond Traders",
+      "verdict": "different",
+      "nature": "entity-suffix-changed"
+    },
+    {
+      "a": "Whitfield Mining Pty Ltd",
+      "b": "Whitfield Mining Pty. Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Kennedy Grain Co Pty Ltd",
+      "b": "Kennedy Grain Co Proprietary Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Sinclair Pastoral Pty Ltd",
+      "b": "Sinclair Pastoral Proprietary Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Fletcher Bulk Handling Pty Ltd",
+      "b": "Fletcher Bulk Handling Pty. Ltd.",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Manawatu Wool Exports Limited",
+      "b": "Manawatu Wool Exports NZ Limited",
+      "verdict": "match",
+      "nature": "nz-limited-suffix"
+    },
+    {
+      "a": "Otorohanga Dairy Traders Limited",
+      "b": "Otorohanga Dairy Traders NZ Limited",
+      "verdict": "match",
+      "nature": "nz-limited-suffix"
+    },
+    {
+      "a": "Blackwood Family Trust",
+      "b": "Blackwood as Trustee for Blackwood Family Trust",
+      "verdict": "match",
+      "nature": "trust-trustee"
+    },
+    {
+      "a": "Carmichael Grazing Trust",
+      "b": "The Trustee for Carmichael Grazing Trust",
+      "verdict": "match",
+      "nature": "trust-trustee"
+    },
+    {
+      "a": "Beaumont Iron Ore Pty Ltd (ABN 45 123 456 789)",
+      "b": "Beaumont Iron Ore Pty Ltd",
+      "verdict": "match",
+      "nature": "abn-residue"
+    },
+    {
+      "a": "Lockhart Coal Pty Ltd ACN 098 765 432",
+      "b": "Lockhart Coal Pty Ltd",
+      "verdict": "match",
+      "nature": "acn-residue"
+    },
+    {
+      "a": "Winslow Exports Pty Ltd trading as Pilbara Bulk Traders",
+      "b": "Winslow Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "trading-as-dropped"
+    },
+    {
+      "a": "Pemberton Grain Handling Pty Ltd t/a Wheatbelt Grain Co",
+      "b": "Pemberton Grain Handling Pty Ltd",
+      "verdict": "match",
+      "nature": "trading-as-dropped"
+    },
+    {
+      "a": "McAllister & Sons Pty Ltd",
+      "b": "McAllister and Sons Pty Ltd",
+      "verdict": "match",
+      "nature": "amp-and"
+    },
+    {
+      "a": "O'Doyle Grazing Co Pty Ltd",
+      "b": "O Doyle Grazing Co Pty Ltd",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Harrington Mining Pty Ltd – Newcastle Office",
+      "b": "Harrington Mining Pty Ltd (Registered Office: Perth)",
+      "verdict": "match",
+      "nature": "branch-of-head-office"
+    },
+    {
+      "a": "Radcliffe Agri Exports Pty Ltd, Gladstone Branch",
+      "b": "Radcliffe Agri Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "branch-of-head-office"
+    },
+    {
+      "a": "Whakatāne Timber Exports Limited",
+      "b": "Whakatane Timber Exports Limited",
+      "verdict": "match",
+      "nature": "maori-macron-variant"
+    },
+    {
+      "a": "Māori Bay Wool Traders Limited",
+      "b": "Maori Bay Wool Traders Limited",
+      "verdict": "match",
+      "nature": "maori-macron-variant"
+    },
+    {
+      "a": "Nullamurra Station Pty Ltd",
+      "b": "Nullamurra Stn Pty Ltd",
+      "verdict": "match",
+      "nature": "station-abbreviation"
+    },
+    {
+      "a": "Kalyeeda Downs Pty Ltd",
+      "b": "Kalyeeda Downs Proprietary Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Boorala Pastoral Co Pty Ltd (WA)",
+      "b": "Boorala Pastoral Co Pty Ltd",
+      "verdict": "match",
+      "nature": "state-descriptor-drop"
+    },
+    {
+      "a": "Fleurieu Grain Traders Pty Ltd, South Australia",
+      "b": "Fleurieu Grain Traders Pty Ltd",
+      "verdict": "match",
+      "nature": "state-descriptor-drop"
+    },
+    {
+      "a": "Farrell Shipping Agencies Pty Ltd A.C.N. 111 222 333",
+      "b": "Farrell Shipping Agencies Pty Ltd",
+      "verdict": "match",
+      "nature": "acn-residue"
+    },
+    {
+      "a": "Callahan Wheat Traders Pty Ltd A.B.N. 22 333 444 555",
+      "b": "Callahan Wheat Traders Pty Ltd",
+      "verdict": "match",
+      "nature": "abn-residue"
+    },
+    {
+      "a": "Sullivan Coal Handling Pty Ltd",
+      "b": "Sullivan Coal Handling Proprietary Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Mitchell Iron & Steel Pty Ltd",
+      "b": "Mitchell Iron & Steel Pty. Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Waikato Farm Produce Limited",
+      "b": "Waikato Farm Produce NZ Ltd",
+      "verdict": "match",
+      "nature": "nz-limited-suffix"
+    },
+    {
+      "a": "Taranaki Wool Brokers Limited",
+      "b": "Taranaki Wool Brokers New Zealand Limited",
+      "verdict": "match",
+      "nature": "nz-limited-suffix"
+    },
+    {
+      "a": "Anderson & Kennedy Pastoral Pty Ltd",
+      "b": "Anderson and Kennedy Pastoral Pty Ltd",
+      "verdict": "match",
+      "nature": "amp-and"
+    },
+    {
+      "a": "Winslow Family Trust",
+      "b": "The Trustee for the Winslow Family Trust",
+      "verdict": "match",
+      "nature": "trust-trustee"
+    },
+    {
+      "a": "Sinclair Holdings Pty Ltd t/a Riverina Grain Co",
+      "b": "Sinclair Holdings Pty Ltd",
+      "verdict": "match",
+      "nature": "trading-as-dropped"
+    },
+    {
+      "a": "Wirralong Downs Pty Ltd",
+      "b": "Wirra-long Downs Pty Ltd",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Kennedy Grain Co Pty Ltd, Port Hedland Terminal",
+      "b": "Kennedy Grain Co Pty Ltd",
+      "verdict": "match",
+      "nature": "branch-of-head-office"
+    },
+    {
+      "a": "Yorke Peninsula Grain Traders Pty Ltd (SA)",
+      "b": "Yorke Peninsula Grain Traders Pty Ltd",
+      "verdict": "match",
+      "nature": "state-descriptor-drop"
+    },
+    {
+      "a": "Ōtorohanga Dairy Traders Limited",
+      "b": "Otorohanga Dairy Traders Limited",
+      "verdict": "match",
+      "nature": "maori-macron-variant"
+    },
+    {
+      "a": "Blackwood Cattle Co Pty Ltd (ACN: 076 543 210)",
+      "b": "Blackwood Cattle Co Pty Ltd",
+      "verdict": "match",
+      "nature": "acn-residue"
+    },
+    {
+      "a": "Boorala Station Pty Ltd",
+      "b": "Boorala Stn Pty Ltd",
+      "verdict": "match",
+      "nature": "station-abbreviation"
+    },
+    {
+      "a": "Doyle Freight Forwarding Pty Ltd",
+      "b": "Doyle Freight Forwarding Proprietary Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Carmichael Exports Pty Ltd trading as Gascoyne Livestock Traders",
+      "b": "Carmichael Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "trading-as-dropped"
+    },
+    {
+      "a": "Henderson Bulk Grain Pty Ltd",
+      "b": "Henderson Bulk Grain Pty. Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Whitfield Mining Pty Ltd",
+      "b": "Whitfield Mining NZ Limited",
+      "verdict": "different",
+      "nature": "different-country-subsidiary"
+    },
+    {
+      "a": "Manawatu Wool Exports Limited",
+      "b": "Manawatu Wool Exports Pty Ltd",
+      "verdict": "different",
+      "nature": "different-country-subsidiary"
+    },
+    {
+      "a": "Taranaki Wool Brokers Limited",
+      "b": "Taranaki Wool Brokers Australia Pty Ltd",
+      "verdict": "different",
+      "nature": "different-country-subsidiary"
+    },
+    {
+      "a": "Sinclair Pastoral Pty Ltd",
+      "b": "Sinclare Pastoral Pty Ltd",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Kennedy Grain Co Pty Ltd",
+      "b": "Kennedey Grain Co Pty Ltd",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Harrington Mining Pty Ltd",
+      "b": "Harringay Mining Pty Ltd",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Radcliffe Agri Exports Pty Ltd",
+      "b": "Ratcliffe Agri Exports Pty Ltd",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Lockhart Coal Pty Ltd",
+      "b": "Lockheart Coal Pty Ltd",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Pemberton Grain Handling Pty Ltd",
+      "b": "Emberton Grain Handling Pty Ltd",
+      "verdict": "different",
+      "nature": "dropped-letter-different-entity"
+    },
+    {
+      "a": "Beaumont Iron Ore Pty Ltd",
+      "b": "Beaumont Iron Ore Ltd",
+      "verdict": "different",
+      "nature": "proprietary-vs-public-ltd"
+    },
+    {
+      "a": "Mitchell Iron & Steel Pty Ltd",
+      "b": "Mitchell Iron & Steel Ltd",
+      "verdict": "different",
+      "nature": "proprietary-vs-public-ltd"
+    },
+    {
+      "a": "Nullamurra Station Pty Ltd",
+      "b": "Nullamurra Downs Pty Ltd",
+      "verdict": "different",
+      "nature": "different-station-name"
+    },
+    {
+      "a": "Kalyeeda Downs Pty Ltd",
+      "b": "Kalyeeda Station Pty Ltd",
+      "verdict": "different",
+      "nature": "different-station-name"
+    },
+    {
+      "a": "Boorala Station Pty Ltd",
+      "b": "Boorala Plains Pty Ltd",
+      "verdict": "different",
+      "nature": "different-station-name"
+    },
+    {
+      "a": "Wirralong Downs Pty Ltd",
+      "b": "Wirralong Station Pty Ltd",
+      "verdict": "different",
+      "nature": "different-station-name"
+    },
+    {
+      "a": "Whakatāne Timber Exports Limited",
+      "b": "Whakatipu Timber Exports Limited",
+      "verdict": "different",
+      "nature": "different-maori-place"
+    },
+    {
+      "a": "Otorohanga Dairy Traders Limited",
+      "b": "Otorohanga Dairy Producers Limited",
+      "verdict": "different",
+      "nature": "different-generic-word"
+    },
+    {
+      "a": "Yorke Peninsula Grain Traders Pty Ltd",
+      "b": "Eyre Peninsula Grain Traders Pty Ltd",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Fleurieu Grain Traders Pty Ltd",
+      "b": "Flinders Grain Traders Pty Ltd",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Blackwood Family Trust",
+      "b": "Blackwood Unit Trust",
+      "verdict": "different",
+      "nature": "different-trust-instrument"
+    },
+    {
+      "a": "Carmichael Grazing Trust",
+      "b": "Carmichael Cattle Trust",
+      "verdict": "different",
+      "nature": "different-trust-instrument"
+    },
+    {
+      "a": "The Trustee for the Winslow Family Trust",
+      "b": "The Trustee for the Winslow Livestock Trust",
+      "verdict": "different",
+      "nature": "different-trust-instrument"
+    },
+    {
+      "a": "Sullivan Coal Handling Pty Ltd",
+      "b": "Sullivan Coal Handlers Pty Ltd",
+      "verdict": "different",
+      "nature": "generic-word-plural"
+    },
+    {
+      "a": "Fletcher Bulk Handling Pty Ltd",
+      "b": "Fletcher Bulk Handlers Pty Ltd",
+      "verdict": "different",
+      "nature": "generic-word-plural"
+    },
+    {
+      "a": "Sinclair Holdings Pty Ltd",
+      "b": "Sinclair Holdings (No. 2) Pty Ltd",
+      "verdict": "different",
+      "nature": "numbered-holding-entity"
+    },
+    {
+      "a": "Beaumont Iron Ore Pty Ltd",
+      "b": "Beaumont Iron Ore (No. 2) Pty Ltd",
+      "verdict": "different",
+      "nature": "numbered-holding-entity"
+    },
+    {
+      "a": "Winslow Exports Pty Ltd trading as Pilbara Bulk Traders",
+      "b": "Ashworth Exports Pty Ltd trading as Pilbara Bulk Traders",
+      "verdict": "different",
+      "nature": "same-trading-name-different-owner"
+    },
+    {
+      "a": "Pemberton Grain Handling Pty Ltd t/a Wheatbelt Grain Co",
+      "b": "Doyle Grain Handling Pty Ltd t/a Wheatbelt Grain Co",
+      "verdict": "different",
+      "nature": "same-trading-name-different-owner"
+    },
+    {
+      "a": "Farrell Shipping Agencies Pty Ltd",
+      "b": "Farrell Shipping Agents Pty Ltd",
+      "verdict": "different",
+      "nature": "different-generic-word"
+    },
+    {
+      "a": "Callahan Wheat Traders Pty Ltd",
+      "b": "Callahan Wheat Exporters Pty Ltd",
+      "verdict": "different",
+      "nature": "different-generic-word"
+    },
+    {
+      "a": "McAllister & Sons Pty Ltd",
+      "b": "McAlister & Sons Pty Ltd",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "O'Doyle Grazing Co Pty Ltd",
+      "b": "O'Boyle Grazing Co Pty Ltd",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Ashworth Grazing Pty Ltd",
+      "b": "Ashforth Grazing Pty Ltd",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Sinclair Pastoral Pty Ltd",
+      "b": "St Clair Pastoral Pty Ltd",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Kennedy Grain Co Pty Ltd, Port Hedland Terminal",
+      "b": "Kennedy Grain Co (Port Hedland) Pty Ltd",
+      "verdict": "different",
+      "nature": "subsidiary-vs-branch"
+    },
+    {
+      "a": "Radcliffe Agri Exports Pty Ltd, Gladstone Branch",
+      "b": "Radcliffe Agri Exports (Gladstone) Pty Ltd",
+      "verdict": "different",
+      "nature": "subsidiary-vs-branch"
+    },
+    {
+      "a": "Blackwood Cattle Co Pty Ltd",
+      "b": "Blackwood Cattle Corp Pty Ltd",
+      "verdict": "different",
+      "nature": "different-generic-word"
+    },
+    {
+      "a": "Boorala Pastoral Co Pty Ltd (WA)",
+      "b": "Boorala Pastoral Co Pty Ltd (NT)",
+      "verdict": "different",
+      "nature": "state-of-registration-differs"
+    },
+    {
+      "a": "Doyle Freight Forwarding Pty Ltd",
+      "b": "Doyle Freight Brokers Pty Ltd",
+      "verdict": "different",
+      "nature": "different-generic-word"
+    },
+    {
+      "a": "Mitchell Iron & Steel Pty Ltd",
+      "b": "Mitchell Iron & Metals Pty Ltd",
+      "verdict": "different",
+      "nature": "different-generic-word"
+    },
+    {
+      "a": "MV Southern Fortune",
+      "b": "Southern Fortune",
+      "verdict": "match",
+      "nature": "mv-prefix-drop"
+    },
+    {
+      "a": "MV Pacific Harmony",
+      "b": "Pacific Harmony",
+      "verdict": "match",
+      "nature": "mv-prefix-drop"
+    },
+    {
+      "a": "Ocean Pioneer (ex-Cape Diamond)",
+      "b": "Cape Diamond",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Star Voyager (ex-Southern Glory)",
+      "b": "Southern Glory",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Pacific Endeavour (ex-Grand Wheatland)",
+      "b": "Grand Wheatland",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Cape Bellona IMO 9456123",
+      "b": "Cape Bellona",
+      "verdict": "match",
+      "nature": "imo-residue"
+    },
+    {
+      "a": "Ocean Resolute IMO 9312456",
+      "b": "Ocean Resolute",
+      "verdict": "match",
+      "nature": "imo-residue"
+    },
+    {
+      "a": "MV Nautilus Trader (Call Sign VRDX7)",
+      "b": "MV Nautilus Trader",
+      "verdict": "match",
+      "nature": "call-sign-residue"
+    },
+    {
+      "a": "Cape-Hedland",
+      "b": "Cape Hedland",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Sino Iron I",
+      "b": "Sino Iron 1",
+      "verdict": "match",
+      "nature": "numeral-notation-variant"
+    },
+    {
+      "a": "Golden Wattle Bulk Carriers Pty Ltd",
+      "b": "Golden Wattle Bulk Carriers Proprietary Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Trans-Pacific Grain Logistics Co., Ltd.",
+      "b": "Trans-Pacific Grain Logistics Company Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Hai Yang Shun Feng",
+      "b": "Haiyang Shunfeng",
+      "verdict": "match",
+      "nature": "romanization-vessel-name"
+    },
+    {
+      "a": "Kwang Myong Ho",
+      "b": "Gwangmyeong Ho",
+      "verdict": "match",
+      "nature": "romanization-vessel-name"
+    },
+    {
+      "a": "Fuji Maru",
+      "b": "Fuji-Maru",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Hedland Trader Shipping K.K.",
+      "b": "Hedland Trader Shipping Kabushiki Kaisha",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Pilbara Ore Chartering Pte Ltd, Singapore Branch",
+      "b": "Pilbara Ore Chartering Pte Ltd",
+      "verdict": "match",
+      "nature": "branch-of-head-office"
+    },
+    {
+      "a": "MV Coral Horizon",
+      "b": "Coral Horizon",
+      "verdict": "match",
+      "nature": "mv-prefix-drop"
+    },
+    {
+      "a": "MV Iron Duchess",
+      "b": "Iron Duchess",
+      "verdict": "match",
+      "nature": "mv-prefix-drop"
+    },
+    {
+      "a": "Wheatland Glory (ex-Pacific Sower)",
+      "b": "Pacific Sower",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Southern Endeavour (ex-Ocean Wattle)",
+      "b": "Ocean Wattle",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Pacific Wool Carrier IMO 9587234",
+      "b": "Pacific Wool Carrier",
+      "verdict": "match",
+      "nature": "imo-residue"
+    },
+    {
+      "a": "M/V Coal Duchess",
+      "b": "MV Coal Duchess",
+      "verdict": "match",
+      "nature": "abbreviation-mv-ms"
+    },
+    {
+      "a": "M.V. Grain Empress",
+      "b": "MV Grain Empress",
+      "verdict": "match",
+      "nature": "abbreviation-mv-ms"
+    },
+    {
+      "a": "Kimberley Tow (Tug)",
+      "b": "Kimberley Tow",
+      "verdict": "match",
+      "nature": "tug-barge-suffix-drop"
+    },
+    {
+      "a": "Newcastle Bulker",
+      "b": "Newcastle-Bulker",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Northern Iron Trading Corp.",
+      "b": "Northern Iron Trading Corporation",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Gladstone Coal Exports Pty Ltd",
+      "b": "Gladstone Coal Exports Proprietary Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Chun Feng Hao",
+      "b": "Chunfeng Hao",
+      "verdict": "match",
+      "nature": "romanization-vessel-name"
+    },
+    {
+      "a": "Dae Han Ho",
+      "b": "Daehan Ho",
+      "verdict": "match",
+      "nature": "romanization-vessel-name"
+    },
+    {
+      "a": "Ocean Prosperity (Call Sign 3FQC9)",
+      "b": "Ocean Prosperity",
+      "verdict": "match",
+      "nature": "call-sign-residue"
+    },
+    {
+      "a": "MV Cape Ningaloo",
+      "b": "Cape Ningaloo",
+      "verdict": "match",
+      "nature": "mv-prefix-drop"
+    },
+    {
+      "a": "Iron Empress (ex-Southern Wattle)",
+      "b": "Southern Wattle",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Grand Coal Trader IMO 9601178",
+      "b": "Grand Coal Trader",
+      "verdict": "match",
+      "nature": "imo-residue"
+    },
+    {
+      "a": "East Asia Bulk Chartering Co Ltd",
+      "b": "East Asia Bulk Chartering Company Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Cape St George",
+      "b": "Cape St. George",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Wattle Star II",
+      "b": "Wattle Star 2",
+      "verdict": "match",
+      "nature": "numeral-notation-variant"
+    },
+    {
+      "a": "MV Perth Voyager",
+      "b": "Perth Voyager",
+      "verdict": "match",
+      "nature": "mv-prefix-drop"
+    },
+    {
+      "a": "Kaiyo Maru No. 8",
+      "b": "Kaiyo Maru No.8",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Coral Pioneer (ex-Newcastle Wattle)",
+      "b": "Newcastle Wattle",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Sino Iron I",
+      "b": "Sino Iron II",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "Wattle Star II",
+      "b": "Wattle Star III",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "Kaiyo Maru No. 8",
+      "b": "Kaiyo Maru No. 9",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "Cape Bellona",
+      "b": "Cape Bollona",
+      "verdict": "different",
+      "nature": "one-letter-changed-vessel"
+    },
+    {
+      "a": "Ocean Resolute",
+      "b": "Ocean Resolve",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Coral Horizon",
+      "b": "Coral Horizan",
+      "verdict": "different",
+      "nature": "one-letter-changed-vessel"
+    },
+    {
+      "a": "Iron Duchess",
+      "b": "Iron Duchesse",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Pacific Wool Carrier",
+      "b": "Pacific Wool Carriers",
+      "verdict": "different",
+      "nature": "plural-vessel-name"
+    },
+    {
+      "a": "Grand Coal Trader",
+      "b": "Grand Coal Traders",
+      "verdict": "different",
+      "nature": "plural-vessel-name"
+    },
+    {
+      "a": "Southern Fortune",
+      "b": "Southern Fortitude",
+      "verdict": "different",
+      "nature": "sister-ship-different-hull"
+    },
+    {
+      "a": "Pacific Harmony",
+      "b": "Pacific Harvest",
+      "verdict": "different",
+      "nature": "sister-ship-different-hull"
+    },
+    {
+      "a": "Cape Ningaloo",
+      "b": "Cape Naturaliste",
+      "verdict": "different",
+      "nature": "sister-ship-different-hull"
+    },
+    {
+      "a": "Perth Voyager",
+      "b": "Perth Navigator",
+      "verdict": "different",
+      "nature": "sister-ship-different-hull"
+    },
+    {
+      "a": "MV Nautilus Trader",
+      "b": "MV Nautilus Voyager",
+      "verdict": "different",
+      "nature": "sister-ship-different-hull"
+    },
+    {
+      "a": "Ocean Prosperity",
+      "b": "Ocean Serenity",
+      "verdict": "different",
+      "nature": "sister-ship-different-hull"
+    },
+    {
+      "a": "Golden Wattle Bulk Carriers Pty Ltd",
+      "b": "Golden Wattle Bulk Chartering Pty Ltd",
+      "verdict": "different",
+      "nature": "different-charterer-similar-name"
+    },
+    {
+      "a": "Trans-Pacific Grain Logistics Co., Ltd.",
+      "b": "Trans-Pacific Grain Trading Co., Ltd.",
+      "verdict": "different",
+      "nature": "different-charterer-similar-name"
+    },
+    {
+      "a": "Northern Iron Trading Corp.",
+      "b": "Northern Iron Trading Corp. (China)",
+      "verdict": "different",
+      "nature": "country-subsidiary-suffix"
+    },
+    {
+      "a": "East Asia Bulk Chartering Co Ltd",
+      "b": "East Asia Bulk Chartering (HK) Co Ltd",
+      "verdict": "different",
+      "nature": "country-subsidiary-suffix"
+    },
+    {
+      "a": "Hai Yang Shun Feng",
+      "b": "Hai Yang Shun Fu",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Kwang Myong Ho",
+      "b": "Kwang Myong Sung Ho",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Fuji Maru",
+      "b": "Fuji Maru No. 2",
+      "verdict": "different",
+      "nature": "numbered-fleet-entry"
+    },
+    {
+      "a": "Dae Han Ho",
+      "b": "Dae Han Ho 2",
+      "verdict": "different",
+      "nature": "numbered-fleet-entry"
+    },
+    {
+      "a": "Kimberley Tow (Tug)",
+      "b": "Kimberley Tow (Barge)",
+      "verdict": "different",
+      "nature": "tug-barge-distinct"
+    },
+    {
+      "a": "Pilbara Pusher (Tug)",
+      "b": "Pilbara Pusher (Barge)",
+      "verdict": "different",
+      "nature": "tug-barge-distinct"
+    },
+    {
+      "a": "Ocean Prosperity (Call Sign 3FQC9)",
+      "b": "Ocean Prospect (Call Sign 3FQD2)",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Cape Bellona IMO 9456123",
+      "b": "Cape Bellatrix IMO 9456987",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Newcastle Bulker",
+      "b": "Gladstone Bulker",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Wattle Star II",
+      "b": "Banksia Star II",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Grand Wheatland",
+      "b": "Grand Wattleland",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Southern Glory",
+      "b": "Southern Grace",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Pacific Sower",
+      "b": "Pacific Rower",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Ocean Wattle",
+      "b": "Ocean Willow",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Pilbara Ore Chartering Pte Ltd",
+      "b": "Pilbara Iron Chartering Pte Ltd",
+      "verdict": "different",
+      "nature": "different-charterer-similar-name"
+    },
+    {
+      "a": "Hedland Trader Shipping K.K.",
+      "b": "Hedland Traders Shipping K.K.",
+      "verdict": "different",
+      "nature": "different-charterer-similar-name"
+    },
+    {
+      "a": "Gladstone Coal Exports Pty Ltd",
+      "b": "Gladstone Coke Exports Pty Ltd",
+      "verdict": "different",
+      "nature": "different-shipper-similar-name"
+    },
+    {
+      "a": "Coral Pioneer",
+      "b": "Coral Pilgrim",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Iron Empress",
+      "b": "Iron Princess",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Chun Feng Hao",
+      "b": "Chun Feng Er Hao",
+      "verdict": "different",
+      "nature": "numbered-fleet-entry"
+    },
+    {
+      "a": "Coal Duchess",
+      "b": "Coal Marchioness",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Ranjit Cotton Traders Pvt. Ltd.",
+      "b": "RANJIT COTTON TRADERS PVT LTD",
+      "verdict": "match",
+      "nature": "uppercase-export"
+    },
+    {
+      "a": "Blackwood Cattle Co Pty Ltd",
+      "b": "FIELD 59: BLACKWOOD CATTLE CO PTY LTD",
+      "verdict": "match",
+      "nature": "uppercase-export"
+    },
+    {
+      "a": "FIELD 59: /12345\nGOLDEN WATTLE BULK CARRIERS PTY\nLTD, 14 MILL STREET, PERTH WA",
+      "b": "Golden Wattle Bulk Carriers Pty Ltd, 14 Mill Street, Perth WA",
+      "verdict": "match",
+      "nature": "field59-linewrap"
+    },
+    {
+      "a": "GLADSTONE COAL EX\nPORTS PTY LTD",
+      "b": "GLADSTONE COAL EXPORTS PTY LTD",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "TRANS-PACI\nFIC GRAIN LOGISTICS CO LTD",
+      "b": "TRANS-PACIFIC GRAIN LOGISTICS CO LTD",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "NORTHERN IRON TRADING CORP12 DOCK ROAD NEWCASTLE NSW",
+      "b": "Northern Iron Trading Corp, 12 Dock Road, Newcastle NSW",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "SANGHVI DIAMOND EXPORTS204 ZAVERI BAZAAR MUMBAI",
+      "b": "Sanghvi Diamond Exports, 204 Zaveri Bazaar, Mumbai",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "FIELD 50: KENNEDY GRAIN CO PTY LTD",
+      "b": "Kennedy Grain Co Pty Ltd",
+      "verdict": "match",
+      "nature": "field50-applicant-uppercase"
+    },
+    {
+      "a": "FIELD 59: /987654321\nHARRINGTON MINING PTY LTD",
+      "b": "Harrington Mining Pty Ltd",
+      "verdict": "match",
+      "nature": "field59-linewrap"
+    },
+    {
+      "a": "OUR REF LC/MUM/0453 KULKARNI AGRO INDUSTRIES",
+      "b": "Kulkarni Agro Industries",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "YOUR REF SYD-88213 BEAUMONT IRON ORE PTY LTD",
+      "b": "Beaumont Iron Ore Pty Ltd",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "MALHOTRA BROS TRAD\nING CO",
+      "b": "Malhotra Bros Trading Co",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "OTOROHANGA DAIR\nY TRADERS NZ LIMITED",
+      "b": "Otorohanga Dairy Traders NZ Limited",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "MCALLISTER SONS PTY LTDUNIT 4 12 PORT ROAD FREMANTLE",
+      "b": "McAllister & Sons Pty Ltd, Unit 4/12 Port Road, Fremantle",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "Deshpande Textiles Pvt. Ltd.",
+      "b": "DESHPANDE TEXTILES PVT LTD",
+      "verdict": "match",
+      "nature": "uppercase-export"
+    },
+    {
+      "a": "APPLICANT REF AUS0099 CALLAHAN WHEAT TRADERS PTY LTD",
+      "b": "Callahan Wheat Traders Pty Ltd",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "59: LOCKHART COAL PTY\nLTD, 5 WHARF ST, GLADSTONE QLD",
+      "b": "Lockhart Coal Pty Ltd, 5 Wharf St, Gladstone QLD",
+      "verdict": "match",
+      "nature": "field59-linewrap"
+    },
+    {
+      "a": "EAST ASIA BULK CHAR\nTERING CO LTD",
+      "b": "East Asia Bulk Chartering Co Ltd",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "FARRELL SHIPPING AGENCIES PTY LTDLEVEL 3 88 ST GEORGES TCE PERTH",
+      "b": "Farrell Shipping Agencies Pty Ltd, Level 3/88 St Georges Tce, Perth",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "Chopra Bros. Enterprises",
+      "b": "CHOPRA BROS ENTERPRISES",
+      "verdict": "match",
+      "nature": "uppercase-export"
+    },
+    {
+      "a": "DOC CREDIT NO IN0072 SARASWATI ENGG WORKS PVT LTD",
+      "b": "Saraswati Engg Works Pvt Ltd",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "FIELD 50: /9988776\nPILBARA ORE CHARTERING PTE LTD",
+      "b": "Pilbara Ore Chartering Pte Ltd",
+      "verdict": "match",
+      "nature": "field50-applicant-uppercase"
+    },
+    {
+      "a": "WHITFIELD MIN\nING PTY LTD",
+      "b": "Whitfield Mining Pty Ltd",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "RADCLIFFE AGRI EXPO\nRTS PTY LTD",
+      "b": "Radcliffe Agri Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "GODAVARI RICE MILLS PVT LTDPLOT 22 MIDC NASHIK",
+      "b": "Godavari Rice Mills Pvt Ltd, Plot 22, MIDC, Nashik",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "Fletcher Bulk Handling Pty Ltd",
+      "b": "FIELD 59: FLETCHER BULK HANDLING PTY LTD",
+      "verdict": "match",
+      "nature": "uppercase-export"
+    },
+    {
+      "a": "SWIFT REF MB2209X MODI PLASTICS PVT LTD",
+      "b": "Modi Plastics Pvt Ltd",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "59: /55123\nWINSLOW EXPORTS PTY LTD, 9 JETTY\nRD FREMANTLE",
+      "b": "Winslow Exports Pty Ltd, 9 Jetty Rd, Fremantle",
+      "verdict": "match",
+      "nature": "field59-linewrap"
+    },
+    {
+      "a": "SULLIVAN COAL HAND\nLING PTY LTD",
+      "b": "Sullivan Coal Handling Pty Ltd",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "COIMBATORE PUMP INDUSTRIES44 GANAPATHY ROAD COIMBATORE",
+      "b": "Coimbatore Pump Industries, 44 Ganapathy Road, Coimbatore",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "Doyle Freight Forwarding Pty Ltd",
+      "b": "FIELD 59: DOYLE FREIGHT FORWARDING PTY LTD",
+      "verdict": "match",
+      "nature": "uppercase-export"
+    },
+    {
+      "a": "L/C NO GLD-3345 GLADSTONE COAL EXPORTS PTY LTD",
+      "b": "Gladstone Coal Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "TRIVEDI TRADING COM\nPANY",
+      "b": "Trivedi Trading Company",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "FIELD 50: SUNDARAM TEXTILE MILLS LLP",
+      "b": "Sundaram Textile Mills LLP",
+      "verdict": "match",
+      "nature": "field50-applicant-uppercase"
+    },
+    {
+      "a": "MITCHELL IRON STEEL PTY LTD7 RAILWAY TCE PORT HEDLAND",
+      "b": "Mitchell Iron & Steel Pty Ltd, 7 Railway Tce, Port Hedland",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "Yadav & Sons Enterprises",
+      "b": "YADAV SONS ENTERPRISES",
+      "verdict": "match",
+      "nature": "uppercase-export"
+    },
+    {
+      "a": "ADVISING BANK REF PER5567 CARMICHAEL EXPORTS PTY LTD",
+      "b": "Carmichael Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "59: DESHPANDE TEXTILES\nPVT LTD, GAT 112 MIDC AURANGABAD",
+      "b": "Deshpande Textiles Pvt Ltd, Gat 112, MIDC, Aurangabad",
+      "verdict": "match",
+      "nature": "field59-linewrap"
+    },
+    {
+      "a": "CHATTERJEE IRON STE\nEL TRADERS",
+      "b": "Chatterjee Iron & Steel Traders",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "BOORALA PASTORAL CO PTY LTDRMB 4102 MERREDIN WA",
+      "b": "Boorala Pastoral Co Pty Ltd, RMB 4102, Merredin WA",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "GOLDEN WATTLE BULK CARRIERS PTY\nLTD",
+      "b": "GOLDEN WATTLE BULK CHARTERING PTY\nLTD",
+      "verdict": "different",
+      "nature": "linewrap-hides-suffix-change"
+    },
+    {
+      "a": "GLADSTONE COAL EX\nPORTS PTY LTD",
+      "b": "GLADSTONE COAL IM\nPORTS PTY LTD",
+      "verdict": "different",
+      "nature": "linewrap-hides-prefix-change"
+    },
+    {
+      "a": "SANGHVI DIAMOND EXPORTS204 ZAVERI BAZAAR MUMBAI",
+      "b": "SANGHVI DIAMOND TRADERS204 ZAVERI BAZAAR MUMBAI",
+      "verdict": "different",
+      "nature": "glued-address-different-name"
+    },
+    {
+      "a": "FIELD 50: KENNEDY GRAIN CO PTY LTD",
+      "b": "FIELD 59: KENNEDY GRAIN CORP PTY LTD",
+      "verdict": "different",
+      "nature": "different-party-different-entity"
+    },
+    {
+      "a": "OUR REF LC/MUM/0453 KULKARNI AGRO INDUSTRIES",
+      "b": "OUR REF LC/MUM/0453 KULKARNI AGRO ENTERPRISES",
+      "verdict": "different",
+      "nature": "bank-ref-different-entity"
+    },
+    {
+      "a": "HARRINGTON MINING PTY LTD",
+      "b": "HARRINGDON MINING PTY LTD",
+      "verdict": "different",
+      "nature": "uppercase-hides-letter-change"
+    },
+    {
+      "a": "MALHOTRA BROS TRAD\nING CO",
+      "b": "MALHOTRA BROS TRAD\nERS CO",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-letter-change"
+    },
+    {
+      "a": "OTOROHANGA DAIR\nY TRADERS NZ LIMITED",
+      "b": "OTOROHANGA DAIR\nY PRODUCERS NZ LIMITED",
+      "verdict": "different",
+      "nature": "linewrap-hides-different-word"
+    },
+    {
+      "a": "MCALLISTER SONS PTY LTDUNIT 4 12 PORT ROAD FREMANTLE",
+      "b": "MCALISTER SONS PTY LTDUNIT 4 12 PORT ROAD FREMANTLE",
+      "verdict": "different",
+      "nature": "glued-address-different-firm"
+    },
+    {
+      "a": "APPLICANT REF AUS0099 CALLAHAN WHEAT TRADERS PTY LTD",
+      "b": "APPLICANT REF AUS0099 CALLAHAN WOOL TRADERS PTY LTD",
+      "verdict": "different",
+      "nature": "bank-ref-different-entity"
+    },
+    {
+      "a": "LOCKHART COAL PTY\nLTD",
+      "b": "LOCKHEART COAL PTY\nLTD",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-letter-change"
+    },
+    {
+      "a": "EAST ASIA BULK CHAR\nTERING CO LTD",
+      "b": "EAST ASIA BULK BRO\nKERING CO LTD",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-word-change"
+    },
+    {
+      "a": "FARRELL SHIPPING AGENCIES PTY LTDLEVEL 3 88 ST GEORGES TCE PERTH",
+      "b": "FERRELL SHIPPING AGENCIES PTY LTDLEVEL 3 88 ST GEORGES TCE PERTH",
+      "verdict": "different",
+      "nature": "glued-address-different-firm"
+    },
+    {
+      "a": "CHOPRA BROS ENTERPRISES",
+      "b": "CHOPRA BROS INDUSTRIES",
+      "verdict": "different",
+      "nature": "uppercase-hides-word-change"
+    },
+    {
+      "a": "DOC CREDIT NO IN0072 SARASWATI ENGG WORKS PVT LTD",
+      "b": "DOC CREDIT NO IN0072 SARASWAT ENGG WORKS PVT LTD",
+      "verdict": "different",
+      "nature": "bank-ref-different-entity"
+    },
+    {
+      "a": "FIELD 50: /9988776\nPILBARA ORE CHARTERING PTE LTD",
+      "b": "FIELD 50: /9988776\nPILBARA IRON CHARTERING PTE LTD",
+      "verdict": "different",
+      "nature": "field50-hides-letter-change"
+    },
+    {
+      "a": "WHITFIELD MIN\nING PTY LTD",
+      "b": "WHITFELD MIN\nING PTY LTD",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-letter-change"
+    },
+    {
+      "a": "RADCLIFFE AGRI EXPO\nRTS PTY LTD",
+      "b": "RADCLIFFE AGRI IMPO\nRTS PTY LTD",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-prefix-change"
+    },
+    {
+      "a": "GODAVARI RICE MILLS PVT LTDPLOT 22 MIDC NASHIK",
+      "b": "GODAVARI RICE TRADERS PVT LTDPLOT 22 MIDC NASHIK",
+      "verdict": "different",
+      "nature": "glued-address-different-name"
+    },
+    {
+      "a": "FLETCHER BULK HANDLING PTY LTD",
+      "b": "FLETCHER BULK HANDLING PTV LTD",
+      "verdict": "different",
+      "nature": "keying-error-suffix"
+    },
+    {
+      "a": "SWIFT REF MB2209X MODI PLASTICS PVT LTD",
+      "b": "SWIFT REF MB2209X MODANI PLASTICS PVT LTD",
+      "verdict": "different",
+      "nature": "bank-ref-different-entity"
+    },
+    {
+      "a": "WINSLOW EXPORTS PTY LTD, 9 JETTY\nRD FREMANTLE",
+      "b": "WINSLOW IMPORTS PTY LTD, 9 JETTY\nRD FREMANTLE",
+      "verdict": "different",
+      "nature": "linewrap-hides-different-place"
+    },
+    {
+      "a": "SULLIVAN COAL HAND\nLING PTY LTD",
+      "b": "SULLIVAN COAL HAND\nLERS PTY LTD",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-word-change"
+    },
+    {
+      "a": "COIMBATORE PUMP INDUSTRIES44 GANAPATHY ROAD COIMBATORE",
+      "b": "COIMBATORE PUMP ENTERPRISES44 GANAPATHY ROAD COIMBATORE",
+      "verdict": "different",
+      "nature": "glued-address-different-firm"
+    },
+    {
+      "a": "DOYLE FREIGHT FORWARDING PTY LTD",
+      "b": "DOYCE FREIGHT FORWARDING PTY LTD",
+      "verdict": "different",
+      "nature": "uppercase-hides-letter-change"
+    },
+    {
+      "a": "L/C NO GLD-3345 GLADSTONE COAL EXPORTS PTY LTD",
+      "b": "L/C NO GLD-3345 GLADSTONE COKE EXPORTS PTY LTD",
+      "verdict": "different",
+      "nature": "bank-ref-different-entity"
+    },
+    {
+      "a": "TRIVEDI TRADING COM\nPANY",
+      "b": "TRIVENI TRADING COM\nPANY",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-letter-change"
+    },
+    {
+      "a": "FIELD 50: SUNDARAM TEXTILE MILLS LLP",
+      "b": "FIELD 50: SUNDARAM TEXTILE MILLS LTD",
+      "verdict": "different",
+      "nature": "field50-different-entity-type"
+    },
+    {
+      "a": "MITCHELL IRON STEEL PTY LTD7 RAILWAY TCE PORT HEDLAND",
+      "b": "MITCHELL IRON METALS PTY LTD7 RAILWAY TCE PORT HEDLAND",
+      "verdict": "different",
+      "nature": "glued-address-different-firm"
+    },
+    {
+      "a": "YADAV SONS ENTERPRISES",
+      "b": "YADAV SONS INDUSTRIES",
+      "verdict": "different",
+      "nature": "uppercase-hides-word-change"
+    },
+    {
+      "a": "ADVISING BANK REF PER5567 CARMICHAEL EXPORTS PTY LTD",
+      "b": "ADVISING BANK REF PER5567 CARMICHAEL EXPRESS PTY LTD",
+      "verdict": "different",
+      "nature": "bank-ref-different-entity"
+    },
+    {
+      "a": "DESHPANDE TEXTILES\nPVT LTD, GAT 112 MIDC AURANGABAD",
+      "b": "DESHMUKH TEXTILES\nPVT LTD, GAT 112 MIDC AURANGABAD",
+      "verdict": "different",
+      "nature": "linewrap-hides-letter-change"
+    },
+    {
+      "a": "TASMAN COAL SHIP\nPING CO LTD",
+      "b": "TASMAN COAL SHIP\nPING CORP LTD",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-word-change"
+    },
+    {
+      "a": "BOORALA PASTORAL CO PTY LTDRMB 4102 MERREDIN WA",
+      "b": "BOOROOLOOLA PASTORAL CO PTY LTDRMB 4102 MERREDIN WA",
+      "verdict": "different",
+      "nature": "glued-address-different-firm"
+    },
+    {
+      "a": "RAMESH KUMAR SHARMA PVT LTD",
+      "b": "RAKESH KUMAR SHARMA PVT LTD",
+      "verdict": "different",
+      "nature": "uppercase-hides-firstname-change"
+    },
+    {
+      "a": "IRREVOCABLE LC REF KOL/771 BANERJEE TRADING HOUSE",
+      "b": "IRREVOCABLE LC REF KOL/771 BHATTACHARJEE TRADING HOUSE",
+      "verdict": "different",
+      "nature": "bank-ref-different-entity"
+    },
+    {
+      "a": "EAST COAST GRAIN TERM\nINAL PTY LTD",
+      "b": "WEST COAST GRAIN TERM\nINAL PTY LTD",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-place-change"
+    },
+    {
+      "a": "PACIFIC RIM SHIPPING (NO 1) PTY\nLTD",
+      "b": "PACIFIC RIM SHIPPING (NO 2) PTY\nLTD",
+      "verdict": "different",
+      "nature": "linewrap-hides-numeral-change"
+    },
+    {
+      "a": "NEWCASTLE BULK TERMINAL CO PTY LTD9 WHARF ROAD NEWCASTLE",
+      "b": "NEWCASTLE BULK TERMINALS PTY LTD9 WHARF ROAD NEWCASTLE",
+      "verdict": "different",
+      "nature": "glued-address-different-firm"
+    },
+    {
+      "a": "PORT HEDLAND ORE HANDLING PTY LTD",
+      "b": "PORT HEDLAND ORE HANDLERS PTY LTD",
+      "verdict": "different",
+      "nature": "uppercase-hides-word-change"
+    },
+    {
+      "a": "RameshTradersPvtLtd",
+      "b": "Ramesh Traders Pvt Ltd",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "Malhotraa Bros Enterprises",
+      "b": "Malhotra Bros Enterprises",
+      "verdict": "match",
+      "nature": "doubled-letter-ocr"
+    },
+    {
+      "a": "Saraswati Engg Works",
+      "b": "Saraswati Engineering Works",
+      "verdict": "match",
+      "nature": "abbreviation-engg"
+    },
+    {
+      "a": "Konkan Mfg Co",
+      "b": "Konkan Manufacturing Co",
+      "verdict": "match",
+      "nature": "abbreviation-mfg"
+    },
+    {
+      "a": "Deshpande Pvt Ltd",
+      "b": "Deshpande Private Limited",
+      "verdict": "match",
+      "nature": "abbreviation-pvt"
+    },
+    {
+      "a": "Gladstone Intl Traders",
+      "b": "Gladstone International Traders",
+      "verdict": "match",
+      "nature": "abbreviation-intl"
+    },
+    {
+      "a": "Doyle Enterp Pty Ltd",
+      "b": "Doyle Enterprises Pty Ltd",
+      "verdict": "match",
+      "nature": "abbreviation-enterp"
+    },
+    {
+      "a": "Ramesh Traders pvt ltd mumbai",
+      "b": "Ramesh Traders Pvt Ltd, Mumbai",
+      "verdict": "match",
+      "nature": "whatsapp-shorthand"
+    },
+    {
+      "a": "Kennedy Grain Co Put Ltd",
+      "b": "Kennedy Grain Co Pty Ltd",
+      "verdict": "match",
+      "nature": "autocorrect-typo"
+    },
+    {
+      "a": "Harrington Miming Pty Ltd",
+      "b": "Harrington Mining Pty Ltd",
+      "verdict": "match",
+      "nature": "autocorrect-typo"
+    },
+    {
+      "a": "GladstoneCoalExportsPtyLtd",
+      "b": "Gladstone Coal Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "S A R A S W A T I  T R A D E R S",
+      "b": "Saraswati Traders",
+      "verdict": "match",
+      "nature": "scanned-stamp-caps-spacing"
+    },
+    {
+      "a": "Whitfieid Mining Pty Ltd",
+      "b": "Whitfield Mining Pty Ltd",
+      "verdict": "match",
+      "nature": "ocr-letter-confusion"
+    },
+    {
+      "a": "Beaumont Iron 0re Pty Ltd",
+      "b": "Beaumont Iron Ore Pty Ltd",
+      "verdict": "match",
+      "nature": "ocr-letter-confusion"
+    },
+    {
+      "a": "Chopraa Bros Enterprises",
+      "b": "Chopra Bros Enterprises",
+      "verdict": "match",
+      "nature": "doubled-letter-ocr"
+    },
+    {
+      "a": "sanghvi diamnd exp mumbai pls confirm order",
+      "b": "Sanghvi Diamond Exports, Mumbai",
+      "verdict": "match",
+      "nature": "whatsapp-shorthand"
+    },
+    {
+      "a": "Coimbatore Engg Industries",
+      "b": "Coimbatore Engineering Industries",
+      "verdict": "match",
+      "nature": "abbreviation-engg"
+    },
+    {
+      "a": "KulkarniAgroIndustries",
+      "b": "Kulkarni Agro Industries",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "Fletcher Bull Handling Pty Ltd",
+      "b": "Fletcher Bulk Handling Pty Ltd",
+      "verdict": "match",
+      "nature": "autocorrect-typo"
+    },
+    {
+      "a": "Callahan VVheat Traders Pty Ltd",
+      "b": "Callahan Wheat Traders Pty Ltd",
+      "verdict": "match",
+      "nature": "ocr-letter-confusion"
+    },
+    {
+      "a": "Godavari Mfg Industries",
+      "b": "Godavari Manufacturing Industries",
+      "verdict": "match",
+      "nature": "abbreviation-mfg"
+    },
+    {
+      "a": "modi plastics pvt ltd order confirmed",
+      "b": "Modi Plastics Pvt Ltd",
+      "verdict": "match",
+      "nature": "whatsapp-shorthand"
+    },
+    {
+      "a": "M A L H O T R A  B R O S",
+      "b": "Malhotra Bros",
+      "verdict": "match",
+      "nature": "scanned-stamp-caps-spacing"
+    },
+    {
+      "a": "Sullivann Coal Handling Pty Ltd",
+      "b": "Sullivan Coal Handling Pty Ltd",
+      "verdict": "match",
+      "nature": "doubled-letter-ocr"
+    },
+    {
+      "a": "Cape HedlandBulkCarriers",
+      "b": "Cape Hedland Bulk Carriers",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "Trivedi Trading Co Pvt Ltd",
+      "b": "Trivedi Trading Co Private Limited",
+      "verdict": "match",
+      "nature": "abbreviation-pvt"
+    },
+    {
+      "a": "Doyle Freight Fwd Pty Ltd",
+      "b": "Doyle Freight Forwarding Pty Ltd",
+      "verdict": "match",
+      "nature": "autocorrect-typo"
+    },
+    {
+      "a": "Farreli Shipping Agencies",
+      "b": "Farrell Shipping Agencies",
+      "verdict": "match",
+      "nature": "ocr-letter-confusion"
+    },
+    {
+      "a": "pilbara ore chartering sg office confirm bl",
+      "b": "Pilbara Ore Chartering Pte Ltd, Singapore",
+      "verdict": "match",
+      "nature": "whatsapp-shorthand"
+    },
+    {
+      "a": "Perth Intl Freight Co",
+      "b": "Perth International Freight Co",
+      "verdict": "match",
+      "nature": "abbreviation-intl"
+    },
+    {
+      "a": "Kennedyy Grain Co Pty Ltd",
+      "b": "Kennedy Grain Co Pty Ltd",
+      "verdict": "match",
+      "nature": "doubled-letter-ocr"
+    },
+    {
+      "a": "OtorohangaDairyTradersNZLtd",
+      "b": "Otorohanga Dairy Traders NZ Ltd",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "Yadav Sons Enterp",
+      "b": "Yadav Sons Enterprises",
+      "verdict": "match",
+      "nature": "abbreviation-enterp"
+    },
+    {
+      "a": "G L A D S T O N E  C O A L",
+      "b": "Gladstone Coal",
+      "verdict": "match",
+      "nature": "scanned-stamp-caps-spacing"
+    },
+    {
+      "a": "Radcliffe Agri Experts Pty Ltd",
+      "b": "Radcliffe Agri Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "autocorrect-typo"
+    },
+    {
+      "a": "Mitcheli Iron & Steel Pty Ltd",
+      "b": "Mitchell Iron & Steel Pty Ltd",
+      "verdict": "match",
+      "nature": "ocr-letter-confusion"
+    },
+    {
+      "a": "boorala pastoral co merredin wa confirm shipment",
+      "b": "Boorala Pastoral Co Pty Ltd, Merredin WA",
+      "verdict": "match",
+      "nature": "whatsapp-shorthand"
+    },
+    {
+      "a": "Rajkot Engg Works",
+      "b": "Rajkot Engineering Works",
+      "verdict": "match",
+      "nature": "abbreviation-engg"
+    },
+    {
+      "a": "Lockhartt Coal Pty Ltd",
+      "b": "Lockhart Coal Pty Ltd",
+      "verdict": "match",
+      "nature": "doubled-letter-ocr"
+    },
+    {
+      "a": "CarmichaelExportsPtyLtd",
+      "b": "Carmichael Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "Kennedy Grain Co Put Ltd",
+      "b": "Kennedy Bean Co Put Ltd",
+      "verdict": "different",
+      "nature": "autocorrect-different-firm"
+    },
+    {
+      "a": "sanghvi diamnd exp mumbai",
+      "b": "sanghvi diamnd imp mumbai",
+      "verdict": "different",
+      "nature": "whatsapp-different-firm"
+    },
+    {
+      "a": "KulkarniAgroIndustries",
+      "b": "KulkarniAgroEnterprises",
+      "verdict": "different",
+      "nature": "missing-spaces-different-firm"
+    },
+    {
+      "a": "Chopraa Bros Enterprises",
+      "b": "Chhabraa Bros Enterprises",
+      "verdict": "different",
+      "nature": "doubled-letter-different-firm"
+    },
+    {
+      "a": "Whitfieid Mining Pty Ltd",
+      "b": "Whitfieid Milling Pty Ltd",
+      "verdict": "different",
+      "nature": "ocr-confusion-different-firm"
+    },
+    {
+      "a": "Beaumont Iron 0re Pty Ltd",
+      "b": "Beaumont Iron 0xide Pty Ltd",
+      "verdict": "different",
+      "nature": "ocr-confusion-different-firm"
+    },
+    {
+      "a": "Saraswati Engg Works",
+      "b": "Saraswati Enterp Works",
+      "verdict": "different",
+      "nature": "abbreviation-collision-different-firm"
+    },
+    {
+      "a": "Konkan Mfg Co",
+      "b": "Konkan Mktg Co",
+      "verdict": "different",
+      "nature": "abbreviation-collision-different-firm"
+    },
+    {
+      "a": "modi plastics pvt ltd order confirmed",
+      "b": "moody plastics pvt ltd order confirmed",
+      "verdict": "different",
+      "nature": "whatsapp-different-firm"
+    },
+    {
+      "a": "RameshTradersPvtLtd",
+      "b": "RajeshTradersPvtLtd",
+      "verdict": "different",
+      "nature": "missing-spaces-different-firm"
+    },
+    {
+      "a": "GladstoneCoalExportsPtyLtd",
+      "b": "GladstoneCokeExportsPtyLtd",
+      "verdict": "different",
+      "nature": "missing-spaces-different-firm"
+    },
+    {
+      "a": "OtorohangaDairyTradersNZLtd",
+      "b": "OtorohangaDairyProducersNZLtd",
+      "verdict": "different",
+      "nature": "missing-spaces-different-firm"
+    },
+    {
+      "a": "CarmichaelExportsPtyLtd",
+      "b": "CarnochaelExportsPtyLtd",
+      "verdict": "different",
+      "nature": "missing-spaces-different-firm"
+    },
+    {
+      "a": "Malhotraa Bros Enterprises",
+      "b": "Malhotraa Bros Industries",
+      "verdict": "different",
+      "nature": "doubled-letter-different-firm"
+    },
+    {
+      "a": "Sullivann Coal Handling Pty Ltd",
+      "b": "Sullivann Coal Handlers Pty Ltd",
+      "verdict": "different",
+      "nature": "doubled-letter-different-firm"
+    },
+    {
+      "a": "Kennedyy Grain Co Pty Ltd",
+      "b": "Kennedyy Bean Co Pty Ltd",
+      "verdict": "different",
+      "nature": "doubled-letter-different-firm"
+    },
+    {
+      "a": "Lockhartt Coal Pty Ltd",
+      "b": "Lockheartt Coal Pty Ltd",
+      "verdict": "different",
+      "nature": "doubled-letter-different-firm"
+    },
+    {
+      "a": "Coimbatore Engg Industries",
+      "b": "Coimbatore Engg Enterprises",
+      "verdict": "different",
+      "nature": "abbreviation-collision-different-firm"
+    },
+    {
+      "a": "Rajkot Engg Works",
+      "b": "Rajkot Engg Traders",
+      "verdict": "different",
+      "nature": "abbreviation-collision-different-firm"
+    },
+    {
+      "a": "Godavari Mfg Industries",
+      "b": "Godavari Mfg Traders",
+      "verdict": "different",
+      "nature": "abbreviation-collision-different-firm"
+    },
+    {
+      "a": "Deshpande Pvt Ltd",
+      "b": "Deshmukh Pvt Ltd",
+      "verdict": "different",
+      "nature": "abbreviation-different-firm"
+    },
+    {
+      "a": "Trivedi Trading Co Pvt Ltd",
+      "b": "Trivedi Trading Corp Pvt Ltd",
+      "verdict": "different",
+      "nature": "abbreviation-different-firm"
+    },
+    {
+      "a": "Gladstone Intl Traders",
+      "b": "Gladstone Intl Exporters",
+      "verdict": "different",
+      "nature": "abbreviation-different-firm"
+    },
+    {
+      "a": "Perth Intl Freight Co",
+      "b": "Perth Intl Cargo Co",
+      "verdict": "different",
+      "nature": "abbreviation-different-firm"
+    },
+    {
+      "a": "Doyle Enterp Pty Ltd",
+      "b": "Doyle Enterp NL",
+      "verdict": "different",
+      "nature": "different-entity-type"
+    },
+    {
+      "a": "Yadav Sons Enterp",
+      "b": "Yaduv Sons Enterp",
+      "verdict": "different",
+      "nature": "abbreviation-different-firm"
+    },
+    {
+      "a": "Harrington Miming Pty Ltd",
+      "b": "Harringdon Miming Pty Ltd",
+      "verdict": "different",
+      "nature": "autocorrect-different-firm"
+    },
+    {
+      "a": "Radcliffe Agri Experts Pty Ltd",
+      "b": "Ratcliffe Agri Experts Pty Ltd",
+      "verdict": "different",
+      "nature": "autocorrect-different-firm"
+    },
+    {
+      "a": "Mitcheli Iron & Steel Pty Ltd",
+      "b": "Mitcheli Iron & Metal Pty Ltd",
+      "verdict": "different",
+      "nature": "ocr-confusion-different-firm"
+    },
+    {
+      "a": "Farreli Shipping Agencies",
+      "b": "Farreli Shipping Agents",
+      "verdict": "different",
+      "nature": "ocr-confusion-different-firm"
+    },
+    {
+      "a": "Callahan VVheat Traders Pty Ltd",
+      "b": "Callahan VVool Traders Pty Ltd",
+      "verdict": "different",
+      "nature": "ocr-confusion-different-firm"
+    },
+    {
+      "a": "boorala pastoral co merredin wa confirm shipment",
+      "b": "booralla pastoral co merredin wa confirm shipment",
+      "verdict": "different",
+      "nature": "whatsapp-different-firm"
+    },
+    {
+      "a": "pilbara ore chartering sg office confirm bl",
+      "b": "pilbara iron chartering sg office confirm bl",
+      "verdict": "different",
+      "nature": "whatsapp-different-firm"
+    },
+    {
+      "a": "sanghvi diamnd exp mumbai pls confirm order",
+      "b": "sanghvi diamond trdrs mumbai pls confirm order",
+      "verdict": "different",
+      "nature": "whatsapp-different-firm"
+    },
+    {
+      "a": "S A R A S W A T I  T R A D E R S",
+      "b": "S A R A S W A T  T R A D E R S",
+      "verdict": "different",
+      "nature": "scanned-stamp-different-firm"
+    },
+    {
+      "a": "M A L H O T R A  B R O S",
+      "b": "M A L H O T A  B R O S",
+      "verdict": "different",
+      "nature": "scanned-stamp-different-firm"
+    },
+    {
+      "a": "G L A D S T O N E  C O A L",
+      "b": "G L A D S T O N  C O A L",
+      "verdict": "different",
+      "nature": "scanned-stamp-different-firm"
+    },
+    {
+      "a": "Cape HedlandBulkCarriers",
+      "b": "Cape NewcastleBulkCarriers",
+      "verdict": "different",
+      "nature": "missing-spaces-different-firm"
+    },
+    {
+      "a": "Doyle Freight Fwd Pty Ltd",
+      "b": "Boyle Freight Fwd Pty Ltd",
+      "verdict": "different",
+      "nature": "autocorrect-different-firm"
+    },
+    {
+      "a": "Perth Intl Freight Co",
+      "b": "Perth Ind Freight Co",
+      "verdict": "different",
+      "nature": "abbreviation-collision-different-firm"
+    }
+  ]
 }
