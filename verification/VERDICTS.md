@@ -35,6 +35,8 @@ a verdict set is ever listed by any tool before it becomes training.
 | | | | | possible 0.80 | 188/200 [90-97 %] | 35/200 [13-23 %] |
 | 2026-09-28 | v18 8dd86269 / a91bf0c8 / ecritures bdd60326 | set #16 482552a9 (Piraeus shipping agent and Almaty grain bank brief by document: Greek and Cypriot registries, Central Asian documents, Black Sea and Mediterranean vessels, SWIFT fields, chat/OCR and greeklish; Opus, written in five parts; corrected conventions unchanged, no em-dash; overlap with the sixteen training sets: 0 pairs, 0 names; 0 pairs identical but for case), becomes paires-entites-17.json | 200 + 200 | strong 0.81 | 93/200 [40-53 %] | 12/200 [3-10 %] |
 | | | | | possible 0.80 | 132/200 [59-72 %] | 38/200 [14-25 %] |
+| 2026-09-28 | v19 42bd47ca / 66aac8b8 / ecritures bdd60326 | set #17 405f0cdf (Trieste freight forwarder and Belgrade bank brief by document: Italian and Slovenian registries, Serbian, Croatian, Hungarian, Romanian and Bulgarian documents, Adriatic and Danube vessels, SWIFT fields, chat/OCR; Sonnet, written in five parts in advance; corrected conventions unchanged, no em-dash; 19 near-duplicates are accent variants of one pair; overlap with the seventeen training sets: 0 pairs, 0 names; 9 pairs identical but for case), becomes paires-entites-18.json | 200 + 200 | strong 0.81 | 169/200 [79-89 %] | 28/200 [10-19 %] |
+| | | | | possible 0.80 | 181/200 [86-94 %] | 48/200 [19-30 %] |
 
 v6 on set #3 at other thresholds: 0.70 found 182 with 52 false; 0.75 found 181 with 37; 0.85 found 162
 with 19; 0.90 found 153 with 11.
