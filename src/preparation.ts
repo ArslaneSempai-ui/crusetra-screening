@@ -553,7 +553,7 @@ export const REGISTRES: readonly RegExp[] = [
   /* le RCCM de l'OHADA (« /RCCM ML BKO 2015 M 1234 », « (RCCM CI-ABJ-2015-B-1234) », jeu 16) : derrière une barre, une
      virgule ou une parenthèse, jusqu'à la fin */
   /\s*[\/(,;]\s*rccm\b\s*:?\s*[a-z0-9 .\-\/]{4,}\)?\s*$/giu,
-  /(?<=\b(?:ltd|limited|plc|inc|llc|gmbh|bhd|bv|nv|doo|d\.o\.o\.|dd|d\.d\.|ad|ood|eood|kft|srl|s\.r\.l\.|spa)\.?)[\s,]+(?:rc|bn|hrb|hra|kvk|kbo|bce|mb|pib|oib|jib|embs|mati[cč]ni\s+broj|reg(?:istration)?\.?\s*(?:no\.?|nr\.?|number)?)\s*[:.]?\s*[a-z]?\d[\d/.\-]{3,}\s*$/giu,
+  /(?<=\b(?:ltd|limited|plc|inc|llc|gmbh|bhd|bv|nv|doo|d\.o\.o\.|dd|d\.d\.|ad|ood|eood|kft|srl|s\.r\.l\.|spa|kk|k\.k\.|corp|corporation)\.?)[\s,]+(?:rc|bn|hrb|hra|kvk|kbo|bce|mb|pib|oib|jib|embs|mati[cč]ni\s+broj|brn|reg(?:istration)?\.?\s*(?:no\.?|nr\.?|number)?)\s*[:.]?\s*[a-z]?\d[\d/.\-]{3,}\s*$/giu,
   /* le numéro de société japonais (法人番号, treize chiffres), entre parenthèses ou en tête, suivi d'un tiret ou d'un deux-points
      (« Corporate Number 8011001077453 », puis le nom, jeu 11 : un numéro d'un seul côté, 0,800) */
   /(?:\(\s*)?(?:法人番号|corporate\s+number|hojin\s+bango)\s*:?\s*\d{13}(?:\s*\)|\s*[-\u2013\u2014:])?/giu,
@@ -941,6 +941,8 @@ const PREFIXES_NAVIRE = new Set(["mv", "mt", "ms", "my", "sy", "ss", "mts", "fv"
   "tms", "gms", "msv", "duwbak", "duwboot", "sleepboot", "nm",
   /* le Danube et l'Adriatique (jeu 18) : teglenica (barge), tegljač et remorker (remorqueur), potiskivač (pousseur) */
   "teglenica", "tegljac", "potiskivac", "remorker",
+  /* les documents d'Asie de l'Est (jeu 19) : PCTC (porte-voitures), PCC, VLCC, VLGC, ULCC, OSV, AHTS, PSV */
+  "pctc", "pcc", "vlcc", "vlgc", "ulcc", "osv", "ahts", "psv",
   /* l'Asie du Sud-Est (jeu 9) : BG et TK (barge, tongkang), TB (tug boat), KM (kapal motor), LCT, SPOB */
   "bg", "tk", "km", "kmp", "klm", "lct", "spob", "mtug", "mfv",
   "tanker", "vessel", "roro", "ferry", "dredger", "trawler",
@@ -1473,6 +1475,8 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      sous un autre signe serbo-croate seulement (ć, č, š, ž, une forme d.o.o., d.d., a.d.), jamais le đ vietnamien (« Nam Định », perdu
      à la mesure du 29/09 quand le pli valait partout) */
   if (/[Đđ]/.test(nom) && /[ćčšžĆČŠŽ]|\bd\.?o\.?o\.?(?![\p{L}])|\bd\.?d\.?(?![\p{L}])|\ba\.?d\.?(?![\p{L}])/iu.test(nom) && !/[ơưăạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹƠƯĂẠ]/.test(nom)) nom = nom.replace(/Đ/g, "Dj").replace(/đ/g, "dj");
+  /* le 호 coréen (« Yongdu Ho No. 7 », jeu 19) : le suffixe de navire devant le numéro n'est pas un mot du nom */
+  nom = nom.replace(/\s+[Hh]o\s+(?=[Nn]o\.?\s*\d)/u, " ");
   const rom = romaniser(wadeGiles(nom), lecture);
   /* le T/H ou T/KH du teplokhod devant un navire russe (voir TEPLOKHOD) : le M/V des documents russes, rendu tel quel
      avant la soudure des sigles (« T/H » y deviendrait « th », un mot ; « T/KH » deux mots), et une marque slave */

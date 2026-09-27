@@ -13,14 +13,13 @@ import { distanceOsa } from "./matchers/damerau.ts";
 import { preparer } from "./matchers/preparer.ts";
 import { translitterer } from "./matchers/translitteration.ts";
 import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, type Lecture } from "./ecritures.ts";
-import { SUCCURSALES } from "./preparation.ts";
+import { SUCCURSALES, FORMES, TRADUCTIONS } from "./preparation.ts";
 import { MOTS_DE_SIEGE } from "./preparation.ts";
 import { MOTS_DE_BUREAU } from "./preparation.ts";
 import { REGISTRES } from "./preparation.ts";
 import { numeroDeRegistre } from "./preparation.ts";
 import { mentionDeSuccursale } from "./preparation.ts";
 import { nommeUneSociete } from "./preparation.ts";
-import { FORMES } from "./preparation.ts";
 import { FORMES_SLAVES } from "./preparation.ts";
 import { REGIONS } from "./preparation.ts";
 import { FACTEUR_CONTENANCE } from "./score.ts";
@@ -134,6 +133,10 @@ const ANNOTATIONS: readonly RegExp[] = [
   /* jeu 18 : la référence d'un crédit derrière le nom (« DOC CREDIT REF 88213/24 », « REF LC/2024/778 », « /LCREF20240099 ») */
   /\s+(?:doc(?:umentary)?\s+credit\s+)?(?:our\s+|your\s+)?ref(?:erence)?\.?\s*(?:no\.?|#)?\s*:?\s*(?:lc|dc|l\/c)?[\s\/]*[a-z0-9\/\-]{3,}\s*$/iu,
   /\s*\/\s*(?:lc|dc)?\s*ref\w*\s*[:#]?\s*[a-z0-9\/\-]{4,}\s*$/iu,
+  /* jeu 19 : l'adresse japonaise collée à la forme (« KAMITSURU BOEKI KK3-5-12 KITAHAMA CHUO-KU OSAKA »), et « ULSAN PLANT »,
+     « Ulsan Branch » derrière une forme sans tiret ni virgule (le lieu puis le mot de l'établissement) */
+  /(?<=\b(?:kk|k\.k\.|ltd|limited|inc|llc|gmbh|co\.?,?\s*ltd\.?)\.?)\s*\d+-\d+.*$/iu,
+  /(?<=\b(?:co\.?,?\s*ltd\.?|ltd\.?|limited|inc\.?|corp\.?|k\.?k\.?|llc|gmbh|kabushiki\s+kaisha)\.?)\s+[\p{L}]{3,}\s+(?:branch|plant|factory|office|depot|warehouse)\s*$/iu,
   /* et l'étiquette qu'une annotation antérieure laisse en queue (« DOC CREDIT », « REF LC ») */
   /\s+(?:doc(?:umentary)?\s+credit|(?:our\s+|your\s+)?ref(?:erence)?\.?(?:\s+(?:lc|dc|l\/c))?|lc|dc|l\/c)\s*$/iu,
   /* jeu 15 : le CNIC pakistanais, le PIN kényan, le TIN et le NTN entre parenthèses derrière le nom */
@@ -270,6 +273,10 @@ const PORTS_ET_QUARTIERS: ReadonlySet<string> = new Set(["bandar", "kota", "jebe
   "trieste", "koper", "rijeka", "split", "ploce", "zadar", "sibenik", "pula", "bar", "durres", "venezia", "venice", "ravenna", "ancona",
   "bari", "brindisi", "monfalcone", "constanta", "varna", "burgas", "novi sad", "beograd", "belgrade", "osijek", "vukovar", "budapest",
   "ruse", "galati", "braila", "smederevo", "pancevo", "ljubljana", "zagreb", "sarajevo", "skopje", "sofia", "bucuresti", "bucharest",
+  /* l'Asie de l'Est (jeu 19) */
+  "kobe", "osaka", "yokohama", "tokyo", "nagoya", "chiba", "hakata", "fukuoka", "moji", "kitakyushu", "hiroshima", "sakai", "mizushima",
+  "busan", "ulsan", "incheon", "inchon", "pohang", "gwangyang", "kwangyang", "mokpo", "yeosu", "masan", "changwon", "pyeongtaek",
+  "kaohsiung", "keelung", "taichung", "ningbo", "qingdao", "tianjin", "dalian", "xiamen", "guangzhou", "shenzhen", "yantian", "nansha",
   "riga", "hamina", "kotka", "helsinki", "turku", "tallinn", "klaipeda", "constanta", "poti", "batumi", "goteborg", "gothenburg", "stockholm",
   "oslo", "copenhagen", "aarhus", "gdansk", "gdynia", "varna", "burgas", "odesa", "odessa", "mykolaiv", "kherson", "izmail", "samsun",
   "trabzon", "novorossiysk", "rostov", "taganrog", "izmir",
@@ -343,7 +350,7 @@ const QUEUES_COLLEES = ["ENTERPRISES", "INDUSTRIES", "ENTERPRISE", "HOLDINGS", "
   "LOGISTIKA", "EKSPORT", "TRANZIT", "SERVIS", "ASTYK", "ASTYQ", "SAVDO", "SAUDA", "TREID", "AGRO",
   "LTD", "LLC", "INC", "PLC", "BHD",
   /* et les formes de la CEI et d'Asie centrale (« JETYSUAGROTREIDTOO ») */
-  "TOO", "OOO", "LLP", "JSC", "ZAO", "OAO", /* les Balkans, la Hongrie et l'Italie (jeu 18) */ "EOOD", "OOD", "JDOO", "DOO", "KFT", "ZRT", "SRL", "SPA", "SNC", "SAS", "DD"];
+  "TOO", "OOO", "LLP", "JSC", "ZAO", "OAO", /* les Balkans, la Hongrie et l'Italie (jeu 18) */ "EOOD", "OOD", "JDOO", "DOO", "KFT", "ZRT", "SRL", "SPA", "SNC", "SAS", "DD", /* le maru collé (« KIRISAMEMARU », jeu 19) */ "MARU"];
 const QUEUES_EN_MOTS: ReadonlyMap<string, string> = new Map([["PTYLTD", "PTY LTD"], ["PTELTD", "PTE LTD"], ["PVTLTD", "PVT LTD"],
   ["SDNBHD", "SDN BHD"], ["IMPEXP", "IMP EXP"], ["EXPIMP", "EXP IMP"], ["COLTD", "CO LTD"]]);
 export function decollerLesQueues(s: string): string {
@@ -356,6 +363,8 @@ export function decollerLesQueues(s: string): string {
   }
   return queues.length ? [tete, ...queues].join(" ") : s;
 }
+/** Les mots du commerce en anglais que les tables rendent : un nom qui en porte un est une société, pas un navire nu. */
+const GENERIQUES: ReadonlySet<string> = new Set([...TRADUCTIONS.values()].flatMap((t) => t.split(" ")).filter((w) => w.length >= 4));
 /** Les formes qu'une casse mêlée écrit sans les coller à rien : jamais coupées (« mbH » coupé en « mb H » perdait le conflit GmbH
  *  contre & Co. KG, mesuré le 29/09). */
 const FORMES_A_CASSE: ReadonlySet<string> = new Set(["gmbh", "mbh", "kgaa", "gesmbh", "ggmbh", "ohg", "ekg", "sprl", "bvba", "cvba", "scrl", "sagl", "plc"]);
@@ -370,6 +379,8 @@ export function decollerLAdresse(s: string): string {
   const m = rue.exec(s);
   if (m) return m[1]!.trim();
   const mots = s.split(/\s+/);
+  /* « KIRISAMEMARU KOBE » (jeu 19) : le maru collé au nom, puis le port d'attache nu */
+  if (mots.length === 2 && /\p{L}{3,}MARU$/u.test(mots[0]!) && PORTS_ET_QUARTIERS.has(mots[1]!.toLowerCase())) return `${mots[0]!.slice(0, -4)} MARU`;
   /* « FILSPORT BOUET » : le port en deux mots, son premier collé au nom */
   if (mots.length >= 2 && PORTS_ET_QUARTIERS.has(mots[mots.length - 1]!.toLowerCase()) && /\p{L}{4,}(?:PORT|PORTO|PUERTO)$/u.test(mots[mots.length - 2]!)) {
     return [...mots.slice(0, -2), mots[mots.length - 2]!.replace(/(?:PORT|PORTO|PUERTO)$/u, "")].join(" ");
@@ -559,7 +570,18 @@ export function variantesTypees(brut: string): VarianteTypee[] {
        jeu 14) : un port connu, rien d'autre ; entre parenthèses, seulement derrière UN mot (« IJsselkwak (Kampen) »), parce
        que derrière une raison sociale la ville entre parenthèses est une filiale (« Quarnby Logistics (Shanghai) », jeu 11) */
     p = p.replace(/\s*(?:,|\s[-\u2013]\s)\s*([\p{L}' -]{3,25}?)\s*$/u, (m, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? "" : m));
-    p = p.replace(/^((?:(?:mv|mt|ms|msv|fv|tb|tug|barge|mts|tms|gms|m\.v\.|m\.t\.)\s+)?\S+)\s+\(([\p{L}' -]{3,25})\)\s*$/iu, (m, seul: string, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? seul : m));
+    p = p.replace(/^((?:(?:mv|mt|ms|msv|fv|tb|tug|barge|mts|tms|gms|m\.v\.|m\.t\.|m\/v|m\/t|m\/s|ferry|pctc)\s+\S+(?:\s+\S+)?|\S+))\s+\(([\p{L}' -]{3,25})\)\s*$/iu, (m, seul: string, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? seul : m));
+    /* le port d'attache derrière un nom de navire NU de deux ou trois mots, entre parenthèses ou nu (« Shirane Glory (Kobe) », « TAKANAMI STAR
+       ULSAN », « EUNPA HO BUSAN », jeu 19) : aucun des mots n'est une forme ni un mot du commerce, sinon c'est une société et sa ville
+       (« Quarnby Logistics (Shanghai) » reste une filiale) */
+    p = p.replace(/^((?:[\p{L}'-]+\s+){1,2}[\p{L}'-]+)\s+(\(?)([\p{L}' -]{3,25}?)\)?\s*$/u, (m, tete: string, parenthese: string, ville: string) => {
+      if (!PORTS_ET_QUARTIERS.has(normaliser(ville))) return m;
+      /* nu, le port ne tombe que d'un champ en CAPITALES : en casse mêlée « Talas Dan Azyk Bishkek » et « sanghvi diamnd exp
+         mumbai » gardent leur ville (tours 9 et 13) */
+      if (parenthese === "" && /\p{Ll}/u.test(m)) return m;
+      const mots = tete.split(/\s+/).map((w) => normaliser(w));
+      return mots.some((w) => FORMES.has(w) || TRADUCTIONS.has(w) || GENERIQUES.has(w)) ? m : tete;
+    });
     /* une adresse derrière la forme juridique : « … FZE, Jebel Ali Free Zone, Dubai »,
        « … B.V., ROTTERDAM » ; ou, derrière un nom de navire, son port d'immatriculation en un
        ou deux mots : « SIROCCO MARINER, MONROVIA » ; ou une adresse reconnaissable à ses mots
