@@ -1,2407 +1,2407 @@
 {
- "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
- "provenance": "blind test set #14, authored on 2026-09-28 by a separate agent (a Mombasa clearing agent and Karachi trade-finance brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
- "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
- "paires": [
-  {
-   "a": "Kilifi Coastal Traders Ltd",
-   "b": "Kilifi Coastal Traders Limited",
-   "verdict": "match",
-   "nature": "ltd-vs-limited"
-  },
-  {
-   "a": "Mwangi & Sons Co. Ltd",
-   "b": "Mwangi and Sons Company Limited",
-   "verdict": "match",
-   "nature": "co-ltd-vs-company-limited"
-  },
-  {
-   "a": "Odhiambo & Otieno Enterprises Ltd",
-   "b": "Odhiambo and Otieno Enterprises Limited",
-   "verdict": "match",
-   "nature": "ampersand-vs-and"
-  },
-  {
-   "a": "Shah Bros. (K) Ltd",
-   "b": "Shah Brothers Kenya Limited",
-   "verdict": "match",
-   "nature": "bros-vs-brothers"
-  },
-  {
-   "a": "Patel Hardware (K) Ltd",
-   "b": "Patel Hardware Kenya Ltd",
-   "verdict": "match",
-   "nature": "country-abbrev-k"
-  },
-  {
-   "a": "Msasani Fisheries (T) Ltd",
-   "b": "Msasani Fisheries Tanzania Limited",
-   "verdict": "match",
-   "nature": "country-abbrev-t"
-  },
-  {
-   "a": "Nakasero Pharma (U) Ltd",
-   "b": "Nakasero Pharma Uganda Limited",
-   "verdict": "match",
-   "nature": "country-abbrev-u"
-  },
-  {
-   "a": "Wanjiku Investments Ltd PIN P051234567X",
-   "b": "Wanjiku Investments Limited",
-   "verdict": "match",
-   "nature": "kra-pin-residue"
-  },
-  {
-   "a": "TIN 123-456-789 Kibaha Cement Traders Ltd",
-   "b": "Kibaha Cement Traders Limited",
-   "verdict": "match",
-   "nature": "tin-residue"
-  },
-  {
-   "a": "Juma Ochieng t/a Ochieng General Stores",
-   "b": "Ochieng General Stores",
-   "verdict": "match",
-   "nature": "trading-as"
-  },
-  {
-   "a": "Karimi Agencies (trading as Karimi Fresh Produce)",
-   "b": "Karimi Fresh Produce",
-   "verdict": "match",
-   "nature": "trading-as"
-  },
-  {
-   "a": "Mwalimu wa Pwani Sacco Society Ltd",
-   "b": "Mwalimu Wa Pwani SACCO Ltd",
-   "verdict": "match",
-   "nature": "sacco-society-omitted"
-  },
-  {
-   "a": "Nyota ya Bahari Enterprises Ltd",
-   "b": "Nyota Ya Bahari Ent. Limited",
-   "verdict": "match",
-   "nature": "enterprises-abbrev"
-  },
-  {
-   "a": "Njoroge Wa Kamau Hardware Ltd",
-   "b": "Njoroge wa Kamau Hardware Limited",
-   "verdict": "match",
-   "nature": "ltd-vs-limited"
-  },
-  {
-   "a": "Kĩrĩmara Tea Growers Society Ltd",
-   "b": "Kirimara Tea Growers Society Limited",
-   "verdict": "match",
-   "nature": "kikuyu-diacritics"
-  },
-  {
-   "a": "Akinyi Nyar Kisumu Textiles Ltd",
-   "b": "Akinyi Nyar-Kisumu Textiles Limited",
-   "verdict": "match",
-   "nature": "hyphen-and-suffix"
-  },
-  {
-   "a": "Velji Ramji & Sons Ltd",
-   "b": "Velji Ramji and Sons Limited",
-   "verdict": "match",
-   "nature": "ampersand-vs-and"
-  },
-  {
-   "a": "Shamji Hardware Ltd",
-   "b": "Shamjee Hardware Ltd",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "Radhakrishnan Motors (K) Ltd",
-   "b": "Radhakrisnan Motors (K) Ltd",
-   "verdict": "match",
-   "nature": "misspelt-proper-name"
-  },
-  {
-   "a": "Kipkorir Cereals Ltd",
-   "b": "Kipkorrir Cereals Ltd",
-   "verdict": "match",
-   "nature": "doubled-letter"
-  },
-  {
-   "a": "Baraka Mwangaza Enterprises Ltd",
-   "b": "Baraka Mwangaza Ent Ltd",
-   "verdict": "match",
-   "nature": "enterprises-abbrev"
-  },
-  {
-   "a": "Tumaini Bora Investments Ltd",
-   "b": "Tumaini Bora Inv. Ltd",
-   "verdict": "match",
-   "nature": "investments-abbrev"
-  },
-  {
-   "a": "Coastline Agro Supplies Ltd - Malindi Branch",
-   "b": "Coastline Agro Supplies Ltd",
-   "verdict": "match",
-   "nature": "branch-same-entity"
-  },
-  {
-   "a": "Kisumu Lakeside Motors Ltd (Kakamega Branch)",
-   "b": "Kisumu Lakeside Motors Limited",
-   "verdict": "match",
-   "nature": "branch-same-entity"
-  },
-  {
-   "a": "MAGOMENI STEEL WORKS LIMITED",
-   "b": "Magomeni Steel Works Ltd.",
-   "verdict": "match",
-   "nature": "uppercase-registry"
-  },
-  {
-   "a": "Reg. No. CPR/2019/123456 Shanzu Coral Hotel Suppliers Ltd",
-   "b": "Shanzu Coral Hotel Suppliers Limited",
-   "verdict": "match",
-   "nature": "registration-number-residue"
-  },
-  {
-   "a": "Mbulu Highlands Coffee Growers Co-operative Union Ltd",
-   "b": "Mbulu Highlands Coffee Growers Cooperative Union Limited",
-   "verdict": "match",
-   "nature": "cooperative-hyphen"
-  },
-  {
-   "a": "Kampuni ya Usafirishaji Pwani Ltd",
-   "b": "Pwani Transport Company Ltd",
-   "verdict": "match",
-   "nature": "swahili-translation"
-  },
-  {
-   "a": "Wakulima wa Meru Society Ltd",
-   "b": "Meru Farmers Society Ltd",
-   "verdict": "match",
-   "nature": "swahili-translation"
-  },
-  {
-   "a": "Haji Abdalla & Sons Ltd",
-   "b": "Haji Abdulla and Sons Limited",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "Oloo Fabricators",
-   "b": "Oloo Fabricators Ltd",
-   "verdict": "match",
-   "nature": "suffix-omitted"
-  },
-  {
-   "a": "The Nakuru Grain Millers Ltd",
-   "b": "Nakuru Grain Millers Limited",
-   "verdict": "match",
-   "nature": "article-dropped"
-  },
-  {
-   "a": "Wanjiru & Wambui Advocates",
-   "b": "Wanjiru and Wambui, Advocates",
-   "verdict": "match",
-   "nature": "ampersand-vs-and"
-  },
-  {
-   "a": "Njeri's Boutique Ltd",
-   "b": "Njeris Boutique Limited",
-   "verdict": "match",
-   "nature": "apostrophe-dropped"
-  },
-  {
-   "a": "Mapenzi Furnitures Ltd",
-   "b": "Mapenzi Furniture Ltd",
-   "verdict": "match",
-   "nature": "company-plural"
-  },
-  {
-   "a": "Kwa-Jomvu Quarry Ltd",
-   "b": "Kwa Jomvu Quarry Limited",
-   "verdict": "match",
-   "nature": "hyphen-and-suffix"
-  },
-  {
-   "a": "Bidii Yetu Enterprises Ltd/P051987654Z",
-   "b": "Bidii Yetu Enterprises Limited",
-   "verdict": "match",
-   "nature": "kra-pin-residue"
-  },
-  {
-   "a": "Uhuru Gardens Nursery Co Ltd",
-   "b": "Uhuru Gardens Nursery Company Ltd",
-   "verdict": "match",
-   "nature": "co-vs-company"
-  },
-  {
-   "a": "Muheza Sisal Estates Ltd",
-   "b": "Muheza Sisal Estates Ltd (Korogwe Branch)",
-   "verdict": "match",
-   "nature": "branch-same-entity"
-  },
-  {
-   "a": "Jinja Steel Rolling Mills Ltd",
-   "b": "JINJA STEEL ROLLING MILLS LTD KAMPALA",
-   "verdict": "match",
-   "nature": "uppercase-place-residue"
-  },
-  {
-   "a": "Mwangi & Sons Ltd",
-   "b": "Mwangi & Daughters Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Kilifi Coastal Traders Ltd",
-   "b": "Kilifi Coastal Transporters Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Patel Hardware (K) Ltd",
-   "b": "Patel Hardware (U) Ltd",
-   "verdict": "different",
-   "nature": "other-country-registration"
-  },
-  {
-   "a": "Shah Bros. Ltd",
-   "b": "Shah & Shah Ltd",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "Odhiambo & Otieno Enterprises Ltd",
-   "b": "Odhiambo & Onyango Enterprises Ltd",
-   "verdict": "different",
-   "nature": "other-surname"
-  },
-  {
-   "a": "Shanzu Coral Hotel Suppliers Ltd",
-   "b": "Shanzu Coral Hotel Ltd",
-   "verdict": "different",
-   "nature": "missing-defining-word"
-  },
-  {
-   "a": "Tumaini Bora Investments Ltd",
-   "b": "Tumaini Bora Sacco Society Ltd",
-   "verdict": "different",
-   "nature": "other-legal-form"
-  },
-  {
-   "a": "Kibaha Cement Traders Ltd",
-   "b": "Kibaha Cement Products Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Velji Ramji & Sons Ltd",
-   "b": "Velji Ramji & Bros Ltd",
-   "verdict": "different",
-   "nature": "sons-vs-bros"
-  },
-  {
-   "a": "Wanjiku Investments Ltd",
-   "b": "Wanjiku Wanjiru Investments Ltd",
-   "verdict": "different",
-   "nature": "added-name"
-  },
-  {
-   "a": "Msasani Fisheries (T) Ltd",
-   "b": "Msasani Fish Processors (T) Ltd",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "Karimi Fresh Produce",
-   "b": "Kariuki Fresh Produce",
-   "verdict": "different",
-   "nature": "other-surname"
-  },
-  {
-   "a": "Njoroge wa Kamau Hardware Ltd",
-   "b": "Njoroge wa Kimani Hardware Ltd",
-   "verdict": "different",
-   "nature": "other-surname"
-  },
-  {
-   "a": "Akinyi Textiles Ltd",
-   "b": "Atieno Textiles Ltd",
-   "verdict": "different",
-   "nature": "other-name"
-  },
-  {
-   "a": "Mombasa Spice Traders Ltd",
-   "b": "Mombasa Spice Traders Holdings Ltd",
-   "verdict": "different",
-   "nature": "holdings-added"
-  },
-  {
-   "a": "Coastline Agro Supplies Ltd",
-   "b": "Coastline Agro Supplies Uganda Ltd",
-   "verdict": "different",
-   "nature": "other-country-registration"
-  },
-  {
-   "a": "Kisumu Lakeside Motors Ltd",
-   "b": "Kisumu Lakeside Motor Spares Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Magomeni Steel Works Ltd",
-   "b": "Magomeni Steel Structures Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Haji Abdalla & Sons Ltd",
-   "b": "Haji Abdulla Hardware Ltd",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "Oloo Fabricators Ltd",
-   "b": "Oloo Foundry Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Nakuru Grain Millers Ltd",
-   "b": "Nakuru Grain Traders Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Mapenzi Furniture Ltd",
-   "b": "Mapenzi Fabrics Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Kwa Jomvu Quarry Ltd",
-   "b": "Kwa Jomvu Ballast Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Bidii Yetu Enterprises Ltd",
-   "b": "Bidii Yako Enterprises Ltd",
-   "verdict": "different",
-   "nature": "other-swahili-word"
-  },
-  {
-   "a": "Uhuru Gardens Nursery Co Ltd",
-   "b": "Uhuru Gardens Pre-School Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Nyota ya Bahari Enterprises Ltd",
-   "b": "Nyota ya Asubuhi Enterprises Ltd",
-   "verdict": "different",
-   "nature": "other-swahili-word"
-  },
-  {
-   "a": "Mwalimu wa Pwani Sacco Ltd",
-   "b": "Mwalimu wa Nyanza Sacco Ltd",
-   "verdict": "different",
-   "nature": "other-place"
-  },
-  {
-   "a": "Kirimara Tea Growers Society Ltd",
-   "b": "Kirimara Coffee Growers Society Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Pwani Transport Company Ltd",
-   "b": "Pwani Freight Company Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Popat Brothers (K) Ltd",
-   "b": "Popat & Popat Advocates",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "Radhakrishnan Motors (K) Ltd",
-   "b": "Radhakrishnan Motorcycles (K) Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Kipkorir Cereals Ltd",
-   "b": "Kipkorir & Kiprotich Cereals Ltd",
-   "verdict": "different",
-   "nature": "added-name"
-  },
-  {
-   "a": "Njeri's Boutique Ltd",
-   "b": "Njeri's Bakery Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Meru Farmers Society Ltd",
-   "b": "Meru Traders Society Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Ochieng General Stores",
-   "b": "Ochieng General Hardware",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Mbulu Highlands Coffee Growers Co-operative Union Ltd",
-   "b": "Mbulu Lowlands Coffee Growers Co-operative Union Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Nakasero Pharma (U) Ltd",
-   "b": "Nakasero Diagnostics (U) Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Wanjiru & Wambui Advocates",
-   "b": "Wanjiru & Wanjiku Advocates",
-   "verdict": "different",
-   "nature": "other-name"
-  },
-  {
-   "a": "Muheza Sisal Estates Ltd",
-   "b": "Muheza Sisal Spinners Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Jinja Steel Rolling Mills Ltd",
-   "b": "Jinja Steel Wire Ltd",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "Sialkot Surgical Crafts (Pvt.) Ltd.",
-   "b": "Sialkot Surgical Crafts (Private) Limited",
-   "verdict": "match",
-   "nature": "pvt-ltd-vs-private-limited"
-  },
-  {
-   "a": "Haji Muhammad Ashraf & Sons",
-   "b": "Haji Mohammad Ashraf and Sons",
-   "verdict": "match",
-   "nature": "romanisation-muhammad"
-  },
-  {
-   "a": "M/s Chaudhry Rice Mills",
-   "b": "Chaudhry Rice Mills",
-   "verdict": "match",
-   "nature": "ms-prefix"
-  },
-  {
-   "a": "Ch. Nazir Ahmed & Co.",
-   "b": "Chaudhry Nazir Ahmad & Co.",
-   "verdict": "match",
-   "nature": "honorific-abbrev"
-  },
-  {
-   "a": "Mian Tariq Textile Mills Ltd",
-   "b": "Mian Tariq Textile Mills Limited",
-   "verdict": "match",
-   "nature": "ltd-vs-limited"
-  },
-  {
-   "a": "Karachi Steel Re-Rolling Mills (Pvt) Ltd",
-   "b": "Karachi Steel Rerolling Mills Private Limited",
-   "verdict": "match",
-   "nature": "hyphen-and-suffix"
-  },
-  {
-   "a": "NTN 1234567-8 Faisalabad Yarn Traders (Pvt) Ltd",
-   "b": "Faisalabad Yarn Traders (Private) Limited",
-   "verdict": "match",
-   "nature": "ntn-residue"
-  },
-  {
-   "a": "Muhammad Aslam Traders (CNIC 42101-1234567-1)",
-   "b": "Mohammed Aslam Traders",
-   "verdict": "match",
-   "nature": "cnic-residue"
-  },
-  {
-   "a": "Husain Brothers Industries",
-   "b": "Hussain Brothers Industries",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "Qureshi Leather Works (Pvt) Ltd",
-   "b": "Quraishi Leather Works (Pvt) Ltd",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "Shaikh Abdul Rasheed & Sons",
-   "b": "Sheikh Abdul Rashid and Sons",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "Siddiqui Enterprises",
-   "b": "Siddiqi Enterprises",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "Multan Cotton Ginners",
-   "b": "Multan Cotton Ginners (Pvt) Ltd",
-   "verdict": "match",
-   "nature": "suffix-omitted"
-  },
-  {
-   "a": "Malik Bros. Engineering",
-   "b": "Malik Brothers Engineering",
-   "verdict": "match",
-   "nature": "bros-vs-brothers"
-  },
-  {
-   "a": "Chenab Breeze Fan Inds. (Pvt) Ltd",
-   "b": "Chenab Breeze Fan Industries (Private) Limited",
-   "verdict": "match",
-   "nature": "industries-abbrev"
-  },
-  {
-   "a": "Abdul Ghani & Co.",
-   "b": "Abdul Ghani and Company",
-   "verdict": "match",
-   "nature": "co-vs-company"
-  },
-  {
-   "a": "Rehman Textile Mills Ltd",
-   "b": "Rehman Textiles Mills Ltd",
-   "verdict": "match",
-   "nature": "company-plural"
-  },
-  {
-   "a": "Memon Dry Fruits Traders",
-   "b": "Meman Dry Fruits Traders",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "Soomro Rice Exporters",
-   "b": "Sumro Rice Exporters",
-   "verdict": "match",
-   "nature": "romanisation-sindhi"
-  },
-  {
-   "a": "Chaudhary Bashir Flour Mills",
-   "b": "Chaudhry Bashir Flour Mills",
-   "verdict": "match",
-   "nature": "romanisation-punjabi"
-  },
-  {
-   "a": "Zia Corporation (Pvt.) Ltd.",
-   "b": "Zia Corp (Pvt) Ltd",
-   "verdict": "match",
-   "nature": "corporation-abbrev"
-  },
-  {
-   "a": "AL-HAMD PLASTIC INDUSTRIES (PVT) LTD",
-   "b": "Al Hamd Plastic Industries (Private) Limited",
-   "verdict": "match",
-   "nature": "uppercase-bank-export"
-  },
-  {
-   "a": "Mian Bashir Ahmad & Sons",
-   "b": "Mian Bashir Ahmad & Sons (Pvt) Ltd",
-   "verdict": "match",
-   "nature": "suffix-omitted"
-  },
-  {
-   "a": "Haji Ghulam Rasool Traders",
-   "b": "H. Ghulam Rasul Traders",
-   "verdict": "match",
-   "nature": "honorific-abbrev"
-  },
-  {
-   "a": "Md. Ilyas & Brothers",
-   "b": "Muhammad Ilyas & Bros.",
-   "verdict": "match",
-   "nature": "muhammad-abbrev"
-  },
-  {
-   "a": "Lahore Auto Parts Mfg. (Pvt) Ltd",
-   "b": "Lahore Auto Parts Manufacturing (Private) Limited",
-   "verdict": "match",
-   "nature": "mfg-abbrev"
-  },
-  {
-   "a": "Al-Farooq Embroidery Works",
-   "b": "Alfarooq Embroidery Works",
-   "verdict": "match",
-   "nature": "arabic-article-glued"
-  },
-  {
-   "a": "Zulfiqar Ali Trading Co.",
-   "b": "Zulfikar Ali Trading Company",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "Pak Hosiery Knitwear (Pvt) Ltd",
-   "b": "Pakistan Hosiery Knitwear (Pvt) Ltd",
-   "verdict": "match",
-   "nature": "pak-vs-pakistan"
-  },
-  {
-   "a": "M/S. Roshan Dyes & Chemicals Traders",
-   "b": "Messrs Roshan Dyes and Chemicals Traders",
-   "verdict": "match",
-   "nature": "ms-vs-messrs"
-  },
-  {
-   "a": "SECP Reg. 0012345 Hyderabad Bangle Makers (Pvt) Ltd",
-   "b": "Hyderabad Bangle Makers Private Ltd",
-   "verdict": "match",
-   "nature": "registration-number-residue"
-  },
-  {
-   "a": "Ahmed Brothers Steel",
-   "b": "Ahmad Bros Steel",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "Bismillah Karkhana-e-Sabun",
-   "b": "Bismillah Soap Factory",
-   "verdict": "match",
-   "nature": "urdu-translation"
-  },
-  {
-   "a": "Rasheed Sons Karachi",
-   "b": "Rashid & Sons, Karachi",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "Sindh Agro Chemicals (Pvt) Ltd, Sukkur Branch",
-   "b": "Sindh Agro Chemicals (Private) Limited",
-   "verdict": "match",
-   "nature": "branch-same-entity"
-  },
-  {
-   "a": "Shabbir Cotton Waste Traders",
-   "b": "Shabir Cotton Waste Traders",
-   "verdict": "match",
-   "nature": "doubled-letter"
-  },
-  {
-   "a": "Khawaja Riaz Tanning Works",
-   "b": "Khwaja Riaz Tanning Works",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "Sardar Din Muhammad & Sons",
-   "b": "Sardar Din Mohammad and Sons",
-   "verdict": "match",
-   "nature": "romanisation-muhammad"
-  },
-  {
-   "a": "Bhalwal Oil Extraction Mills Ltd",
-   "b": "Bhalwal Oil Extraction Mill Limited",
-   "verdict": "match",
-   "nature": "company-plural"
-  },
-  {
-   "a": "Mian Muhammad Yousaf Ginning Factory",
-   "b": "Mian Mohd. Yusuf Ginning Factory",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "Sialkot Surgical Crafts (Pvt) Ltd",
-   "b": "Sialkot Sports Crafts (Pvt) Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Haji Muhammad Ashraf & Sons",
-   "b": "Haji Muhammad Asghar & Sons",
-   "verdict": "different",
-   "nature": "other-name"
-  },
-  {
-   "a": "Chaudhry Rice Mills",
-   "b": "Chaudhry Flour Mills",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Chaudhry Nazir Ahmad & Co.",
-   "b": "Chaudhry Nazir Hussain & Co.",
-   "verdict": "different",
-   "nature": "other-name"
-  },
-  {
-   "a": "Mian Tariq Textile Mills Ltd",
-   "b": "Mian Tariq Spinning Mills Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Karachi Steel Re-Rolling Mills (Pvt) Ltd",
-   "b": "Karachi Steel Pipe Mills (Pvt) Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Faisalabad Yarn Traders (Pvt) Ltd",
-   "b": "Faisalabad Yarn Dyers (Pvt) Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Muhammad Aslam Traders",
-   "b": "Muhammad Aslam & Brothers",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "Hussain Brothers Industries",
-   "b": "Hussain & Sons Industries",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "Qureshi Leather Works (Pvt) Ltd",
-   "b": "Qureshi Leather Garments (Pvt) Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Sheikh Abdul Rashid & Sons",
-   "b": "Sheikh Abdul Rauf & Sons",
-   "verdict": "different",
-   "nature": "other-name"
-  },
-  {
-   "a": "Siddiqui Enterprises",
-   "b": "Siddiqui Engineering",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Multan Cotton Ginners (Pvt) Ltd",
-   "b": "Multan Cotton Waste (Pvt) Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Malik Brothers Engineering",
-   "b": "Malik Brothers Electricals",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Chenab Breeze Fan Industries (Pvt) Ltd",
-   "b": "Chenab Breeze Air Coolers (Pvt) Ltd",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "Abdul Ghani & Co.",
-   "b": "Abdul Ghani & Sons",
-   "verdict": "different",
-   "nature": "co-vs-sons"
-  },
-  {
-   "a": "Rehman Textile Mills Ltd",
-   "b": "Rehman Towel Mills Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Memon Dry Fruits Traders",
-   "b": "Memon Fresh Fruits Traders",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Soomro Rice Exporters",
-   "b": "Soomro Rice Husking Mills",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "Chaudhry Bashir Flour Mills",
-   "b": "Chaudhry Bashir Feed Mills",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Zia Corporation (Pvt) Ltd",
-   "b": "Zia Trading Corporation (Pvt) Ltd",
-   "verdict": "different",
-   "nature": "added-word"
-  },
-  {
-   "a": "Al Hamd Plastic Industries (Pvt) Ltd",
-   "b": "Al Hamd Plastic Packages (Pvt) Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Mian Bashir Ahmad & Sons",
-   "b": "Mian Bashir Ahmad & Brothers",
-   "verdict": "different",
-   "nature": "sons-vs-bros"
-  },
-  {
-   "a": "Haji Ghulam Rasool Traders",
-   "b": "Haji Ghulam Nabi Traders",
-   "verdict": "different",
-   "nature": "other-name"
-  },
-  {
-   "a": "Muhammad Ilyas & Brothers",
-   "b": "Muhammad Ilyas & Company",
-   "verdict": "different",
-   "nature": "bros-vs-co"
-  },
-  {
-   "a": "Lahore Auto Parts Manufacturing (Pvt) Ltd",
-   "b": "Lahore Auto Parts Trading (Pvt) Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Al-Farooq Embroidery Works",
-   "b": "Al-Farooq Weaving Works",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Zulfiqar Ali Trading Co.",
-   "b": "Zulfiqar Ali Shipping Co.",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Pakistan Hosiery Knitwear (Pvt) Ltd",
-   "b": "Pakistan Hosiery Yarns (Pvt) Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Roshan Dyes & Chemicals Traders",
-   "b": "Roshan Paints & Chemicals Traders",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Hyderabad Bangle Makers (Pvt) Ltd",
-   "b": "Hyderabad Glass Works (Pvt) Ltd",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "Ahmad Brothers Steel",
-   "b": "Ahmad Brothers Cement",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Bismillah Soap Factory",
-   "b": "Bismillah Oil Factory",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Sindh Agro Chemicals (Pvt) Ltd",
-   "b": "Sindh Agro Seeds (Pvt) Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Shabbir Cotton Waste Traders",
-   "b": "Shabbir Cotton Yarn Traders",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Khawaja Riaz Tanning Works",
-   "b": "Khawaja Riaz Leather Goods",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "Sardar Din Muhammad & Sons",
-   "b": "Sardar Fateh Muhammad & Sons",
-   "verdict": "different",
-   "nature": "other-name"
-  },
-  {
-   "a": "Bhalwal Oil Extraction Mills Ltd",
-   "b": "Bhalwal Ghee Mills Ltd",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "Neelum Valley Weaving (Pvt) Ltd",
-   "b": "Neelum Valley Weaving FZE",
-   "verdict": "different",
-   "nature": "other-country-registration"
-  },
-  {
-   "a": "Indus Tractor Parts (Pvt) Ltd",
-   "b": "Indus Tractor Parts (UK) Ltd",
-   "verdict": "different",
-   "nature": "other-country-registration"
-  },
-  {
-   "a": "MV Bahari Tamu (ex Gulf Sunbird)",
-   "b": "Gulf Sunbird",
-   "verdict": "match",
-   "nature": "ex-name-alias"
-  },
-  {
-   "a": "MSV Al Rahmani (ex Safina-e-Karam)",
-   "b": "Safina-e-Karam",
-   "verdict": "match",
-   "nature": "ex-name-alias"
-  },
-  {
-   "a": "MV Lamu Pride",
-   "b": "M.V. Lamu Pride",
-   "verdict": "match",
-   "nature": "prefix-punctuation"
-  },
-  {
-   "a": "MV Zanzibar Breeze",
-   "b": "Zanzibar Breeze",
-   "verdict": "match",
-   "nature": "prefix-omitted"
-  },
-  {
-   "a": "Kilindini Star, Mombasa",
-   "b": "MV Kilindini Star",
-   "verdict": "match",
-   "nature": "port-of-registry-after-name"
-  },
-  {
-   "a": "Dhow Fatehul Bari (Mandvi)",
-   "b": "MSV Fatehul Bari",
-   "verdict": "match",
-   "nature": "type-descriptor-and-port"
-  },
-  {
-   "a": "MSV Noor-e-Bahr",
-   "b": "MSV Nur e Bahar",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "MV Pemba Trader",
-   "b": "PEMBA TRADER",
-   "verdict": "match",
-   "nature": "uppercase-prefix-omitted"
-  },
-  {
-   "a": "Tug Simba III",
-   "b": "Tug Simba 3",
-   "verdict": "match",
-   "nature": "roman-vs-arabic-numeral"
-  },
-  {
-   "a": "Barge Kipevu No. 7",
-   "b": "Barge Kipevu 7",
-   "verdict": "match",
-   "nature": "numeral-format"
-  },
-  {
-   "a": "MV Dar Express (ex-Norrland Wren)",
-   "b": "MV Norrland Wren",
-   "verdict": "match",
-   "nature": "ex-name-alias"
-  },
-  {
-   "a": "Seif Feeder 12",
-   "b": "SEIF FEEDER-12",
-   "verdict": "match",
-   "nature": "uppercase-hyphen"
-  },
-  {
-   "a": "M/V Ushindi wa Pwani",
-   "b": "MV USHINDI WA PWANI",
-   "verdict": "match",
-   "nature": "prefix-punctuation"
-  },
-  {
-   "a": "MV Karachi Crescent (ex Mandvi Bay, ex Wanshan Pearl)",
-   "b": "Wanshan Pearl",
-   "verdict": "match",
-   "nature": "ex-name-chain"
-  },
-  {
-   "a": "Coaster Mtwara Dawn",
-   "b": "MV Mtwara Dawn",
-   "verdict": "match",
-   "nature": "type-descriptor"
-  },
-  {
-   "a": "Dubai dhow Hamriya Moon",
-   "b": "Hamriya Moon (dhow)",
-   "verdict": "match",
-   "nature": "type-descriptor"
-  },
-  {
-   "a": "Gulf Crest 5",
-   "b": "GULF CREST V",
-   "verdict": "match",
-   "nature": "roman-vs-arabic-numeral"
-  },
-  {
-   "a": "MSV Sahil-e-Sindh",
-   "b": "M.S.V. Sahil e Sindh",
-   "verdict": "match",
-   "nature": "prefix-punctuation"
-  },
-  {
-   "a": "MV Águia do Índico",
-   "b": "MV AGUIA DO INDICO",
-   "verdict": "match",
-   "nature": "uppercase-no-diacritics"
-  },
-  {
-   "a": "Coral Gem (formerly Meridian Harrier)",
-   "b": "MERIDIAN HARRIER",
-   "verdict": "match",
-   "nature": "ex-name-alias"
-  },
-  {
-   "a": "Kismayo Trader f/k/a Bothnia Kite",
-   "b": "Bothnia Kite",
-   "verdict": "match",
-   "nature": "ex-name-alias"
-  },
-  {
-   "a": "MV Msafiri Mwema",
-   "b": "Msafiri Mwema",
-   "verdict": "match",
-   "nature": "prefix-omitted"
-  },
-  {
-   "a": "Zamzam Al Khair, Karachi",
-   "b": "MSV Zamzam Al Khair (Karachi)",
-   "verdict": "match",
-   "nature": "port-of-registry-after-name"
-  },
-  {
-   "a": "MV Nakhoda Salim",
-   "b": "M.V. Nakhuda Saleem",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "Tug Bandari 2",
-   "b": "Tug Bandari II",
-   "verdict": "match",
-   "nature": "roman-vs-arabic-numeral"
-  },
-  {
-   "a": "Barge Chake Chake 3",
-   "b": "Barge Chake-Chake No 3",
-   "verdict": "match",
-   "nature": "numeral-format"
-  },
-  {
-   "a": "MV Lindi Feeder (ex Halden Feeder)",
-   "b": "Halden Feeder",
-   "verdict": "match",
-   "nature": "ex-name-alias"
-  },
-  {
-   "a": "MSV Ghulam Ali Bux",
-   "b": "MSV Gulam Ali Bakhsh",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "MV Cap Delgado Trader",
-   "b": "MV Cabo Delgado Trader",
-   "verdict": "match",
-   "nature": "translation-variant"
-  },
-  {
-   "a": "Pilot boat Mvita One",
-   "b": "Pilot boat Mvita 1",
-   "verdict": "match",
-   "nature": "numeral-spelled-out"
-  },
-  {
-   "a": "MV Île Sœur",
-   "b": "MV ILE SOEUR",
-   "verdict": "match",
-   "nature": "uppercase-no-diacritics"
-  },
-  {
-   "a": "MV Comoros Queen (ex Reine des Comores)",
-   "b": "Reine des Comores",
-   "verdict": "match",
-   "nature": "ex-name-alias"
-  },
-  {
-   "a": "Barge Makupa 14",
-   "b": "Makupa 14 (barge)",
-   "verdict": "match",
-   "nature": "type-descriptor"
-  },
-  {
-   "a": "MV Ras Kitau",
-   "b": "MV Ras Kitau, Lamu",
-   "verdict": "match",
-   "nature": "port-of-registry-after-name"
-  },
-  {
-   "a": "MV Salaam Dar",
-   "b": "SALAAM DAR",
-   "verdict": "match",
-   "nature": "uppercase-prefix-omitted"
-  },
-  {
-   "a": "MSV Khatoon-e-Sahil",
-   "b": "MSV Khatun e Sahil",
-   "verdict": "match",
-   "nature": "romanisation-variant"
-  },
-  {
-   "a": "MV Pate Island Trader (ex Astral Kestrel II)",
-   "b": "Astral Kestrel II",
-   "verdict": "match",
-   "nature": "ex-name-alias-with-numeral"
-  },
-  {
-   "a": "Tug Nyati",
-   "b": "Tug Nyati (Mombasa)",
-   "verdict": "match",
-   "nature": "port-of-registry-after-name"
-  },
-  {
-   "a": "Reefer Kilwa Frost",
-   "b": "MV Kilwa Frost",
-   "verdict": "match",
-   "nature": "type-descriptor"
-  },
-  {
-   "a": "MV Tanga Horizon (ex Anatolian Dove)",
-   "b": "ANATOLIAN DOVE",
-   "verdict": "match",
-   "nature": "ex-name-alias"
-  },
-  {
-   "a": "Seif Feeder 12",
-   "b": "Seif Feeder 13",
-   "verdict": "different",
-   "nature": "numeral-changed"
-  },
-  {
-   "a": "MV Zanzibar Breeze",
-   "b": "MV Zanzibar Breezes",
-   "verdict": "different",
-   "nature": "vessel-plural"
-  },
-  {
-   "a": "MV Lamu Pride",
-   "b": "MV Lamu Bride",
-   "verdict": "different",
-   "nature": "one-letter-vessel"
-  },
-  {
-   "a": "Tug Simba III",
-   "b": "Tug Simba IV",
-   "verdict": "different",
-   "nature": "numeral-changed"
-  },
-  {
-   "a": "Barge Kipevu 7",
-   "b": "Barge Kipevu 17",
-   "verdict": "different",
-   "nature": "numeral-changed"
-  },
-  {
-   "a": "MV Kilindini Star",
-   "b": "MV Kilindini Sun",
-   "verdict": "different",
-   "nature": "sister-ship"
-  },
-  {
-   "a": "MSV Al Rahmani",
-   "b": "MSV Al Rahman",
-   "verdict": "different",
-   "nature": "one-letter-vessel"
-  },
-  {
-   "a": "Gulf Crest 5",
-   "b": "Gulf Crest 6",
-   "verdict": "different",
-   "nature": "numeral-changed"
-  },
-  {
-   "a": "MV Pemba Trader",
-   "b": "MV Pemba Trader II",
-   "verdict": "different",
-   "nature": "numeral-added"
-  },
-  {
-   "a": "MV Dar Express",
-   "b": "MV Dar Express 2",
-   "verdict": "different",
-   "nature": "numeral-added"
-  },
-  {
-   "a": "Coaster Mtwara Dawn",
-   "b": "Coaster Mtwara Dusk",
-   "verdict": "different",
-   "nature": "sister-ship"
-  },
-  {
-   "a": "Hamriya Moon",
-   "b": "Hamriya Sun",
-   "verdict": "different",
-   "nature": "sister-ship"
-  },
-  {
-   "a": "MSV Sahil-e-Sindh",
-   "b": "MSV Sahil-e-Balochistan",
-   "verdict": "different",
-   "nature": "sister-ship"
-  },
-  {
-   "a": "Coral Gem",
-   "b": "Coral Gems",
-   "verdict": "different",
-   "nature": "vessel-plural"
-  },
-  {
-   "a": "MV Msafiri Mwema",
-   "b": "MV Msafiri Mwenda",
-   "verdict": "different",
-   "nature": "other-swahili-word"
-  },
-  {
-   "a": "Zamzam Al Khair",
-   "b": "Zamzam Al Khair 2",
-   "verdict": "different",
-   "nature": "numeral-added"
-  },
-  {
-   "a": "MV Nakhoda Salim",
-   "b": "MV Nakhoda Karim",
-   "verdict": "different",
-   "nature": "other-name"
-  },
-  {
-   "a": "Tug Bandari II",
-   "b": "Tug Bandari III",
-   "verdict": "different",
-   "nature": "numeral-changed"
-  },
-  {
-   "a": "Barge Chake Chake 3",
-   "b": "Barge Chake Chake 8",
-   "verdict": "different",
-   "nature": "numeral-changed"
-  },
-  {
-   "a": "MV Lindi Feeder",
-   "b": "MV Kilwa Feeder",
-   "verdict": "different",
-   "nature": "sister-ship"
-  },
-  {
-   "a": "MSV Ghulam Ali Bux",
-   "b": "MSV Ghulam Ali Shah",
-   "verdict": "different",
-   "nature": "other-name"
-  },
-  {
-   "a": "MV Cabo Delgado Trader",
-   "b": "MV Cabo Delgado Express",
-   "verdict": "different",
-   "nature": "sister-ship"
-  },
-  {
-   "a": "Pilot boat Mvita 1",
-   "b": "Pilot boat Mvita 2",
-   "verdict": "different",
-   "nature": "numeral-changed"
-  },
-  {
-   "a": "MV Ile Soeur",
-   "b": "MV Iles Soeurs",
-   "verdict": "different",
-   "nature": "vessel-plural"
-  },
-  {
-   "a": "MV Ras Kitau",
-   "b": "MV Ras Kiambone",
-   "verdict": "different",
-   "nature": "other-place"
-  },
-  {
-   "a": "MV Salaam Dar",
-   "b": "MV Salaam Zanzibar",
-   "verdict": "different",
-   "nature": "other-place"
-  },
-  {
-   "a": "MSV Khatoon-e-Sahil",
-   "b": "MSV Khatoon-e-Bahr",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Astral Osprey II",
-   "b": "Astral Osprey III",
-   "verdict": "different",
-   "nature": "numeral-changed"
-  },
-  {
-   "a": "Tug Nyati",
-   "b": "Tug Nyala",
-   "verdict": "different",
-   "nature": "one-letter-vessel"
-  },
-  {
-   "a": "Reefer Kilwa Frost",
-   "b": "Reefer Kilwa Freeze",
-   "verdict": "different",
-   "nature": "sister-ship"
-  },
-  {
-   "a": "MV Bahari Tamu (ex Gulf Sunbird)",
-   "b": "MV Gulf Sunbird II",
-   "verdict": "different",
-   "nature": "ex-name-numeral-trap"
-  },
-  {
-   "a": "MV Karachi Crescent (ex Mandvi Bay)",
-   "b": "MV Mandvi Bay II",
-   "verdict": "different",
-   "nature": "ex-name-numeral-trap"
-  },
-  {
-   "a": "Kilindini Star, Mombasa",
-   "b": "Kilindini Stars, Mombasa",
-   "verdict": "different",
-   "nature": "vessel-plural"
-  },
-  {
-   "a": "MV Aguia do Indico",
-   "b": "MV Aguia do Atlantico",
-   "verdict": "different",
-   "nature": "sister-ship"
-  },
-  {
-   "a": "Comoros Queen",
-   "b": "Comoros Princess",
-   "verdict": "different",
-   "nature": "sister-ship"
-  },
-  {
-   "a": "Barge Makupa 14",
-   "b": "Barge Makupa 41",
-   "verdict": "different",
-   "nature": "numeral-transposed"
-  },
-  {
-   "a": "MV Ushindi wa Pwani",
-   "b": "MV Ushindi wa Bara",
-   "verdict": "different",
-   "nature": "other-swahili-word"
-  },
-  {
-   "a": "MSV Fatehul Bari",
-   "b": "MSV Fatehul Karim",
-   "verdict": "different",
-   "nature": "other-name"
-  },
-  {
-   "a": "Dhow Nur e Bahar",
-   "b": "Dhow Nur e Sahar",
-   "verdict": "different",
-   "nature": "one-letter-vessel"
-  },
-  {
-   "a": "MV Mombasa Feeder 3",
-   "b": "MV Mombasa Feeder 30",
-   "verdict": "different",
-   "nature": "numeral-changed"
-  },
-  {
-   "a": "/0011223344 MOMBASA COCONUT OIL REFINERS LTD P O BOX 90123 MOMBASA KENYA",
-   "b": "Mombasa Coconut Oil Refiners Limited",
-   "verdict": "match",
-   "nature": "field-59-address-glued"
-  },
-  {
-   "a": "KARACHI TEXTILE PRINTERS AND FINIS HERS (PVT) LTD",
-   "b": "Karachi Textile Printers & Finishers (Pvt) Ltd",
-   "verdict": "match",
-   "nature": "line-cut-35"
-  },
-  {
-   "a": "50: HAJI ABDUL SATTAR AND SONS PLOT 12 SITE AREA KARACHI PAKISTAN",
-   "b": "Haji Abdul Sattar & Sons",
-   "verdict": "match",
-   "nature": "field-50-address-glued"
-  },
-  {
-   "a": "SOCIETE COMORIENNE DE NEGOCE SARL",
-   "b": "Société Comorienne de Négoce SARL",
-   "verdict": "match",
-   "nature": "uppercase-no-diacritics"
-  },
-  {
-   "a": "59: /PK36ABCD0000001234567890 ZULFIKAR KARIM TRADING CO",
-   "b": "Zulfikar Karim Trading Company",
-   "verdict": "match",
-   "nature": "iban-residue"
-  },
-  {
-   "a": "OUR REF LC/MBA/2026/0457 NYALI FRESH EXPORTERS LTD",
-   "b": "Nyali Fresh Exporters Limited",
-   "verdict": "match",
-   "nature": "bank-ref-residue"
-  },
-  {
-   "a": "MEMON AGRO PRODUCTS PVT LTD ATTN MR IMRAN",
-   "b": "Memon Agro Products (Private) Limited",
-   "verdict": "match",
-   "nature": "attention-line-residue"
-  },
-  {
-   "a": "DAR ES SALAAM CASHEW PROCESSORS LTD//PO BOX 1122",
-   "b": "Dar es Salaam Cashew Processors Ltd",
-   "verdict": "match",
-   "nature": "address-glued-slashes"
-  },
-  {
-   "a": "MKINGA SISAL AND FIBRE EXPORTERS L TD",
-   "b": "Mkinga Sisal & Fibre Exporters Ltd",
-   "verdict": "match",
-   "nature": "line-cut-35"
-  },
-  {
-   "a": "KAMPALA COFFEE HULLERS AND EXPORTER S LIMITED",
-   "b": "Kampala Coffee Hullers & Exporters Ltd",
-   "verdict": "match",
-   "nature": "line-cut-35"
-  },
-  {
-   "a": "M/S MIAN SHAFIQ RICE EXPORTERS",
-   "b": "Mian Shafiq Rice Exporters",
-   "verdict": "match",
-   "nature": "ms-prefix-uppercase"
-  },
-  {
-   "a": "ETABLISSEMENTS BEEHARRY FRERES LTEE",
-   "b": "Établissements Beeharry Frères Ltée",
-   "verdict": "match",
-   "nature": "uppercase-no-diacritics"
-  },
-  {
-   "a": "CIE MALGACHE DE CABOTAGE SA",
-   "b": "Compagnie Malgache de Cabotage S.A.",
-   "verdict": "match",
-   "nature": "cie-abbrev"
-  },
-  {
-   "a": "SHEIKH BROTHERS SURGICAL INSTRUMENT S SIALKOT PAKISTAN",
-   "b": "Sheikh Brothers Surgical Instruments",
-   "verdict": "match",
-   "nature": "line-cut-35"
-  },
-  {
-   "a": "/ACCT 55667788 BUKOBA FISH PACKERS LTD.",
-   "b": "Bukoba Fish Packers Limited",
-   "verdict": "match",
-   "nature": "account-residue"
-  },
-  {
-   "a": "SINDH MERCANTILE BANK LTD KARACHI MAIN BRANCH",
-   "b": "Sindh Mercantile Bank Limited",
-   "verdict": "match",
-   "nature": "branch-same-entity"
-  },
-  {
-   "a": "USAMBARA TEA PACKERS CO LTD",
-   "b": "Usambara Tea Packers Company Limited",
-   "verdict": "match",
-   "nature": "co-ltd-vs-company-limited"
-  },
-  {
-   "a": "NAIROBI PHARMACEUTICAL DISTRIBU-TORS LTD",
-   "b": "Nairobi Pharmaceutical Distributors Ltd",
-   "verdict": "match",
-   "nature": "line-cut-hyphen"
-  },
-  {
-   "a": "AL SAFWA DATES TRADING C/O SEIF AGENCIES MOMBASA",
-   "b": "Al Safwa Dates Trading",
-   "verdict": "match",
-   "nature": "care-of-residue"
-  },
-  {
-   "a": "GUJRAT PRECISION FORGINGS PVT LTD",
-   "b": "Gujrat Precision Forgings (Pvt.) Ltd.",
-   "verdict": "match",
-   "nature": "uppercase-no-parentheses"
-  },
-  {
-   "a": "BENEF: MWANZA LAKE TRANSPORT LTD",
-   "b": "Mwanza Lake Transport Limited",
-   "verdict": "match",
-   "nature": "field-label-residue"
-  },
-  {
-   "a": "ENTEBBE FLOWER GROWERS LTD TIN 1000123456",
-   "b": "Entebbe Flower Growers Limited",
-   "verdict": "match",
-   "nature": "tin-residue"
-  },
-  {
-   "a": "MOHD YOUSUF AND BROS",
-   "b": "Mohammad Yusuf & Brothers",
-   "verdict": "match",
-   "nature": "romanisation-uppercase"
-  },
-  {
-   "a": "SOCIETE MAHORAISE D IMPORT EXPORT SARL",
-   "b": "Société Mahoraise d'Import-Export S.A.R.L.",
-   "verdict": "match",
-   "nature": "uppercase-no-diacritics"
-  },
-  {
-   "a": "MIRITINI CONTAINER FREIGHT STATION O PERATORS LTD",
-   "b": "Miritini Container Freight Station Operators Ltd",
-   "verdict": "match",
-   "nature": "line-cut-35"
-  },
-  {
-   "a": "NTN 4455667-1 SARGODHA CITRUS EXPORTERS",
-   "b": "Sargodha Citrus Exporters",
-   "verdict": "match",
-   "nature": "ntn-residue"
-  },
-  {
-   "a": "ODUYA AND SONS HARDWARE LIMITED NAIROBI",
-   "b": "Oduya & Sons Hardware Ltd",
-   "verdict": "match",
-   "nature": "place-residue"
-  },
-  {
-   "a": "KISUMU MAIZE MILLERS LTDPO BOX 456 KISUMU",
-   "b": "Kisumu Maize Millers Ltd",
-   "verdict": "match",
-   "nature": "address-glued-no-space"
-  },
-  {
-   "a": "JINJA SUGAR PACKERS LTD UG",
-   "b": "Jinja Sugar Packers Ltd",
-   "verdict": "match",
-   "nature": "country-code-residue"
-  },
-  {
-   "a": "MARSA AL KHOR SHIPPING LLC DUBAI",
-   "b": "Marsa Al Khor Shipping L.L.C.",
-   "verdict": "match",
-   "nature": "place-residue"
-  },
-  {
-   "a": "THE THIKA ROAD HARDWARE MART LTD",
-   "b": "Thika Road Hardware Mart Ltd",
-   "verdict": "match",
-   "nature": "article-dropped"
-  },
-  {
-   "a": "MULTAN MANGO PULP PROCE SSORS PVT LTD",
-   "b": "Multan Mango Pulp Processors (Pvt) Ltd",
-   "verdict": "match",
-   "nature": "line-cut-35"
-  },
-  {
-   "a": "AZANIA INTL FREIGHT LOGISTICS LTD",
-   "b": "Azania International Freight Logistics Ltd",
-   "verdict": "match",
-   "nature": "intl-abbrev"
-  },
-  {
-   "a": "COMPTOIR REUNIONNAIS DU CAFE SARL",
-   "b": "Comptoir Réunionnais du Café SARL",
-   "verdict": "match",
-   "nature": "uppercase-no-diacritics"
-  },
-  {
-   "a": "CHAUDHRY ABDUL HAMEED AND SONS PVT",
-   "b": "Chaudhry Abdul Hamid & Sons (Pvt) Ltd",
-   "verdict": "match",
-   "nature": "truncated-suffix"
-  },
-  {
-   "a": "MWANGA-WA-PWANI ENTERPRISES LTD",
-   "b": "Mwanga wa Pwani Enterprises Ltd",
-   "verdict": "match",
-   "nature": "uppercase-hyphen"
-  },
-  {
-   "a": "/KE12ABCD00000000123456 OTHAYA DAIRY PRODUCTS LTD OTHAYA",
-   "b": "Othaya Dairy Products Limited",
-   "verdict": "match",
-   "nature": "iban-residue"
-  },
-  {
-   "a": "MUKURWEINI CEREAL GROWERS COOPERATIVE SOC LTD",
-   "b": "Mukurweini Cereal Growers Co-operative Society Limited",
-   "verdict": "match",
-   "nature": "cooperative-abbrev"
-  },
-  {
-   "a": "59: INDUS DELTA SURGICAL PVT LTD SIALKOT",
-   "b": "Indus Delta Surgical (Private) Limited",
-   "verdict": "match",
-   "nature": "field-59-place-residue"
-  },
-  {
-   "a": "MAGARINI SALT WORKS LTD MALINDI KENYA",
-   "b": "Magarini Salt Works Limited",
-   "verdict": "match",
-   "nature": "address-glued"
-  },
-  {
-   "a": "MOMBASA COCONUT OIL REFINERS LTD",
-   "b": "MOMBASA COCONUT OIL TRADERS LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "KARACHI TEXTILE PRINTERS AND FINISHERS PVT LTD",
-   "b": "KARACHI TEXTILE PRINTERS AND DYERS PVT LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "HAJI ABDUL SATTAR AND SONS",
-   "b": "HAJI ABDUL SATTAR AND BROTHERS",
-   "verdict": "different",
-   "nature": "sons-vs-bros"
-  },
-  {
-   "a": "SOCIETE COMORIENNE DE NEGOCE SARL",
-   "b": "SOCIETE COMORIENNE DE TRANSIT SARL",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "ZULFIKAR KARIM TRADING CO",
-   "b": "ZULFIKAR KARIM SHIPPING CO",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "NYALI FRESH EXPORTERS LTD",
-   "b": "NYALI FRESH FARMS LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "MEMON AGRO PRODUCTS PVT LTD",
-   "b": "MEMON AGRO CHEMICALS PVT LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "DAR ES SALAAM CASHEW PROCESSORS LTD",
-   "b": "DAR ES SALAAM CASHEW EXPORTERS LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "MKINGA SISAL AND FIBRE EXPORTERS LTD",
-   "b": "MKINGA SISAL ESTATES LTD",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "KAMPALA COFFEE HULLERS AND EXPORTERS LTD",
-   "b": "KAMPALA COFFEE ROASTERS LTD",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "MIAN SHAFIQ RICE EXPORTERS",
-   "b": "MIAN RAFIQ RICE EXPORTERS",
-   "verdict": "different",
-   "nature": "other-name"
-  },
-  {
-   "a": "ETABLISSEMENTS BEEHARRY FRERES LTEE",
-   "b": "ETABLISSEMENTS BEEHARRY ET FILS LTEE",
-   "verdict": "different",
-   "nature": "freres-vs-fils"
-  },
-  {
-   "a": "CIE MALGACHE DE CABOTAGE SA",
-   "b": "CIE MALGACHE DE REMORQUAGE SA",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "SHEIKH BROTHERS SURGICAL INSTRUMENTS",
-   "b": "SHEIKH BROTHERS SPORTS GOODS",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "BUKOBA FISH PACKERS LTD",
-   "b": "BUKOBA FISH NETS LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "SINDH MERCANTILE BANK LTD",
-   "b": "SINDH MERCANTILE FINANCE LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "USAMBARA TEA PACKERS CO LTD",
-   "b": "USAMBARA TEA ESTATES CO LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "NAIROBI PHARMACEUTICAL DISTRIBUTORS LTD",
-   "b": "NAIROBI PHARMACEUTICAL MANUFACTURERS LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "AL SAFWA DATES TRADING",
-   "b": "AL SAFWA FOODSTUFF TRADING",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "GUJRAT PRECISION FORGINGS PVT LTD",
-   "b": "GUJRAT PRECISION CASTINGS PVT LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "MWANZA LAKE TRANSPORT LTD",
-   "b": "MWANZA LAKE FERRIES LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "ENTEBBE FLOWER GROWERS LTD",
-   "b": "ENTEBBE FLOWER EXPORTERS LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "MOHD YOUSUF AND BROS",
-   "b": "MOHD YAQOOB AND BROS",
-   "verdict": "different",
-   "nature": "other-name"
-  },
-  {
-   "a": "SOCIETE MAHORAISE D IMPORT EXPORT SARL",
-   "b": "SOCIETE MAHORAISE DE TRANSPORT SARL",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "MIRITINI CONTAINER FREIGHT STATION OPERATORS LTD",
-   "b": "MIRITINI CONTAINER DEPOT LTD",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "SARGODHA CITRUS EXPORTERS",
-   "b": "SARGODHA CITRUS NURSERIES",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "ODUYA AND SONS HARDWARE LTD",
-   "b": "ODUYA AND SONS TIMBER LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "KISUMU MAIZE MILLERS LTD",
-   "b": "KISUMU RICE MILLERS LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "JINJA SUGAR PACKERS LTD",
-   "b": "JINJA SUGAR WORKS LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "MARSA AL KHOR SHIPPING LLC",
-   "b": "MARSA AL KHOR SHIP CHANDLERS LLC",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "THIKA ROAD HARDWARE MART LTD",
-   "b": "THIKA ROAD MOTOR MART LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "MULTAN MANGO PULP PROCESSORS PVT LTD",
-   "b": "MULTAN MANGO EXPORTERS PVT LTD",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "AZANIA INTL FREIGHT LOGISTICS LTD",
-   "b": "AZANIA INTL CLEARING AGENTS LTD",
-   "verdict": "different",
-   "nature": "two-words-differ"
-  },
-  {
-   "a": "COMPTOIR REUNIONNAIS DU CAFE SARL",
-   "b": "COMPTOIR REUNIONNAIS DU SUCRE SARL",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "CHAUDHRY ABDUL HAMEED AND SONS PVT LTD",
-   "b": "CHAUDHRY ABDUL MAJEED AND SONS PVT LTD",
-   "verdict": "different",
-   "nature": "other-name"
-  },
-  {
-   "a": "MWANGA WA PWANI ENTERPRISES LTD",
-   "b": "MWANGA WA PWANI SACCO LTD",
-   "verdict": "different",
-   "nature": "other-legal-form"
-  },
-  {
-   "a": "OTHAYA DAIRY PRODUCTS LTD",
-   "b": "OTHAYA DAIRY FARMERS COOPERATIVE SOCIETY LTD",
-   "verdict": "different",
-   "nature": "other-legal-form"
-  },
-  {
-   "a": "MUKURWEINI CEREAL GROWERS COOPERATIVE SOC LTD",
-   "b": "MUKURWEINI COFFEE GROWERS COOPERATIVE SOC LTD",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "INDUS DELTA SURGICAL PVT LTD",
-   "b": "INDUS DELTA SURGICAL FZCO",
-   "verdict": "different",
-   "nature": "other-country-registration"
-  },
-  {
-   "a": "MAGARINI SALT WORKS LTD",
-   "b": "MAGARINI SALT WORKS (U) LTD",
-   "verdict": "different",
-   "nature": "other-country-registration"
-  },
-  {
-   "a": "KamauHardwareLtd",
-   "b": "Kamau Hardware Ltd",
-   "verdict": "match",
-   "nature": "missing-spaces"
-  },
-  {
-   "a": "Amani Bora Enterprisses Ltd",
-   "b": "Amani Bora Enterprises Ltd",
-   "verdict": "match",
-   "nature": "doubled-letter"
-  },
-  {
-   "a": "Otieno Hardwear Ltd",
-   "b": "Otieno Hardware Ltd",
-   "verdict": "match",
-   "nature": "autocorrect-common-word"
-  },
-  {
-   "a": "Zawadi Gen Trdg",
-   "b": "Zawadi General Trading",
-   "verdict": "match",
-   "nature": "chat-abbrev"
-  },
-  {
-   "a": "Kibet Invst Ltd",
-   "b": "Kibet Investments Ltd",
-   "verdict": "match",
-   "nature": "chat-abbrev"
-  },
-  {
-   "a": "Rahim Mfg (Pvt) Ltd",
-   "b": "Rahim Manufacturing (Private) Limited",
-   "verdict": "match",
-   "nature": "chat-abbrev"
-  },
-  {
-   "a": "Saleem Intl",
-   "b": "Saleem International",
-   "verdict": "match",
-   "nature": "chat-abbrev"
-  },
-  {
-   "a": "Wairimu Ent",
-   "b": "Wairimu Enterprises",
-   "verdict": "match",
-   "nature": "chat-abbrev"
-  },
-  {
-   "a": "M-PESA: MUTHONI GEN STORES",
-   "b": "Muthoni General Stores",
-   "verdict": "match",
-   "nature": "mobile-money-label"
-  },
-  {
-   "a": "Till: NJUGUNA HRDWARE",
-   "b": "Njuguna Hardware",
-   "verdict": "match",
-   "nature": "mobile-money-label-missing-letter"
-  },
-  {
-   "a": "JazzCash: BILAL AUTO PRTS",
-   "b": "Bilal Auto Parts",
-   "verdict": "match",
-   "nature": "mobile-money-label"
-  },
-  {
-   "a": "Easypaisa acct: Hafiz Ghee Trdrs",
-   "b": "Hafiz Ghee Traders",
-   "verdict": "match",
-   "nature": "mobile-money-label"
-  },
-  {
-   "a": "Kirnani & Sons Ltd",
-   "b": "Kimani & Sons Ltd",
-   "verdict": "match",
-   "nature": "ocr-rn-m"
-  },
-  {
-   "a": "Om0lo Transporters Ltd",
-   "b": "Omolo Transporters Ltd",
-   "verdict": "match",
-   "nature": "ocr-zero-o"
-  },
-  {
-   "a": "A1i Bros Karachi",
-   "b": "Ali Bros Karachi",
-   "verdict": "match",
-   "nature": "ocr-one-l"
-  },
-  {
-   "a": "lqbal Sons",
-   "b": "Iqbal Sons",
-   "verdict": "match",
-   "nature": "ocr-l-i"
-  },
-  {
-   "a": "*APPROVED* KHAN TRDG CO - MOMBASA",
-   "b": "Khan Trading Company",
-   "verdict": "match",
-   "nature": "stamp-residue"
-  },
-  {
-   "a": "wanjala bros ltd (the one in eldoret)",
-   "b": "Wanjala Brothers Limited",
-   "verdict": "match",
-   "nature": "chat-aside"
-  },
-  {
-   "a": "akhtar n sons",
-   "b": "Akhtar & Sons",
-   "verdict": "match",
-   "nature": "chat-n-for-and"
-  },
-  {
-   "a": "Mombasa Rd Tyres Ltd",
-   "b": "Mombasa Road Tyres Ltd",
-   "verdict": "match",
-   "nature": "chat-abbrev"
-  },
-  {
-   "a": "sindhagrotraders",
-   "b": "Sindh Agro Traders",
-   "verdict": "match",
-   "nature": "missing-spaces"
-  },
-  {
-   "a": "Riaz adn Bros",
-   "b": "Riaz & Bros",
-   "verdict": "match",
-   "nature": "typo-transposition"
-  },
-  {
-   "a": "Nyamubra Millers",
-   "b": "Nyambura Millers",
-   "verdict": "match",
-   "nature": "typo-transposition-proper-name"
-  },
-  {
-   "a": "Karachi Steal Pipes",
-   "b": "Karachi Steel Pipes",
-   "verdict": "match",
-   "nature": "autocorrect-homophone"
-  },
-  {
-   "a": "Ukunda Oil Traders Ltd Ltd",
-   "b": "Ukunda Oil Traders Ltd",
-   "verdict": "match",
-   "nature": "doubled-suffix"
-  },
-  {
-   "a": "Odera Gen Merchants Co",
-   "b": "Odera General Merchants Company",
-   "verdict": "match",
-   "nature": "chat-abbrev"
-  },
-  {
-   "a": "Hamza Intl Trdg",
-   "b": "Hamza International Trading",
-   "verdict": "match",
-   "nature": "chat-abbrev"
-  },
-  {
-   "a": "MaliyaEnt",
-   "b": "Maliya Enterprises",
-   "verdict": "match",
-   "nature": "missing-space-abbrev"
-  },
-  {
-   "a": "Wamboi Textiles",
-   "b": "Wambui Textiles",
-   "verdict": "match",
-   "nature": "keyboard-slip-proper-name"
-  },
-  {
-   "a": "Chaudry Feeds",
-   "b": "Chaudhry Feeds",
-   "verdict": "match",
-   "nature": "missing-letter-proper-name"
-  },
-  {
-   "a": "Jitegemee Saco Ltd",
-   "b": "Jitegemee Sacco Ltd",
-   "verdict": "match",
-   "nature": "missing-letter"
-  },
-  {
-   "a": "Kaloleni Quarries Limted",
-   "b": "Kaloleni Quarries Limited",
-   "verdict": "match",
-   "nature": "missing-letter-suffix"
-  },
-  {
-   "a": "moosa n brothers",
-   "b": "Moosa & Brothers",
-   "verdict": "match",
-   "nature": "chat-n-for-and"
-  },
-  {
-   "a": "*RECEIVED* KARWAN IMPEX (PVT) LTD 12 MAR 2026",
-   "b": "Karwan Impex (Private) Limited",
-   "verdict": "match",
-   "nature": "stamp-residue"
-  },
-  {
-   "a": "h k somaia n co",
-   "b": "H.K. Somaia & Co.",
-   "verdict": "match",
-   "nature": "chat-lowercase-initials"
-  },
-  {
-   "a": "Kilimani Motrs",
-   "b": "Kilimani Motors",
-   "verdict": "match",
-   "nature": "missing-letter"
-  },
-  {
-   "a": "Mtopanga Furn Wrks",
-   "b": "Mtopanga Furniture Works",
-   "verdict": "match",
-   "nature": "chat-abbrev"
-  },
-  {
-   "a": "ghulam farid rice mills (pvt)",
-   "b": "Ghulam Farid Rice Mills (Pvt) Ltd",
-   "verdict": "match",
-   "nature": "chat-lowercase-suffix-truncated"
-  },
-  {
-   "a": "Mu5a Jute Traders",
-   "b": "Musa Jute Traders",
-   "verdict": "match",
-   "nature": "ocr-five-s"
-  },
-  {
-   "a": "AbdulRazzakandSonsKarachi",
-   "b": "Abdul Razzak & Sons, Karachi",
-   "verdict": "match",
-   "nature": "missing-spaces"
-  },
-  {
-   "a": "Kamau Hardware Ltd",
-   "b": "Kamau Homeware Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Amani Bora Enterprises Ltd",
-   "b": "Amani Bora Investments Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Otieno Hardware Ltd",
-   "b": "Otieno Software Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Zawadi Gen Trdg",
-   "b": "Zawadi Gen Mfg",
-   "verdict": "different",
-   "nature": "other-abbrev"
-  },
-  {
-   "a": "Kibet Invst Ltd",
-   "b": "Kibet Ent Ltd",
-   "verdict": "different",
-   "nature": "other-abbrev"
-  },
-  {
-   "a": "Rahim Mfg (Pvt) Ltd",
-   "b": "Rahim Trdg (Pvt) Ltd",
-   "verdict": "different",
-   "nature": "other-abbrev"
-  },
-  {
-   "a": "Saleem Intl",
-   "b": "Saleem Bros",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Wairimu Ent",
-   "b": "Wairimu Sacco",
-   "verdict": "different",
-   "nature": "other-legal-form"
-  },
-  {
-   "a": "M-PESA: MUTHONI GEN STORES",
-   "b": "M-PESA: MUTHONI GEN HARDWARE",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Till: NJUGUNA HARDWARE",
-   "b": "Till: NJUGUNA MOTORS",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Bilal Auto Parts",
-   "b": "Bilal Auto Workshop",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Hafiz Ghee Traders",
-   "b": "Hafiz Oil Traders",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Kimani & Sons Ltd",
-   "b": "Kimani & Partners Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Omolo Transporters Ltd",
-   "b": "Omollo Fabricators Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Ali Bros Karachi",
-   "b": "Ali Sons Karachi",
-   "verdict": "different",
-   "nature": "sons-vs-bros"
-  },
-  {
-   "a": "Iqbal Sons",
-   "b": "Iqbal Steel",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "KHAN TRDG CO",
-   "b": "KHAN TRNSPT CO",
-   "verdict": "different",
-   "nature": "other-abbrev"
-  },
-  {
-   "a": "Wanjala Bros Ltd",
-   "b": "Wanjala Bakers Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Akhtar & Sons",
-   "b": "Akhtar & Co",
-   "verdict": "different",
-   "nature": "sons-vs-co"
-  },
-  {
-   "a": "Mombasa Road Tyres Ltd",
-   "b": "Mombasa Road Batteries Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "sindhagrotraders",
-   "b": "sindhagromachinery",
-   "verdict": "different",
-   "nature": "missing-spaces-other-word"
-  },
-  {
-   "a": "riaz bros rice",
-   "b": "riaz bros cotton",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Nyambura Millers",
-   "b": "Nyambura Bakers",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Karachi Steel Pipes",
-   "b": "Karachi Steel Wires",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Ukunda Oil Traders",
-   "b": "Ukunda Gas Traders",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Odera Gen Merch",
-   "b": "Odera Gen Contr",
-   "verdict": "different",
-   "nature": "other-abbrev"
-  },
-  {
-   "a": "Hamza Intl Trdg",
-   "b": "Hamza Intl Frwdg",
-   "verdict": "different",
-   "nature": "other-abbrev"
-  },
-  {
-   "a": "Maliya Enterprises",
-   "b": "Maliya Estates",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Wambui Textiles",
-   "b": "Wambui Tailors",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Chaudhry Feeds",
-   "b": "Chaudhry Seeds",
-   "verdict": "different",
-   "nature": "other-common-word-one-letter"
-  },
-  {
-   "a": "Jitegemee Sacco Ltd",
-   "b": "Jitegemee Youth Group",
-   "verdict": "different",
-   "nature": "other-legal-form"
-  },
-  {
-   "a": "Kaloleni Quarries Ltd",
-   "b": "Kaloleni Ballast Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Moosa & Brothers",
-   "b": "Moosa & Co",
-   "verdict": "different",
-   "nature": "bros-vs-co"
-  },
-  {
-   "a": "Karwan Impex (Pvt) Ltd",
-   "b": "Karwan Exports (Pvt) Ltd",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "H.K. Somaia & Co.",
-   "b": "H.K. Somaia & Sons",
-   "verdict": "different",
-   "nature": "co-vs-sons"
-  },
-  {
-   "a": "Kilimani Motors",
-   "b": "Kilimani Motorbikes",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Mtopanga Furniture Works",
-   "b": "Mtopanga Metal Works",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "ghulam farid rice mills",
-   "b": "ghulam farid flour mills",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Musa Jute Traders",
-   "b": "Musa Jute Mills",
-   "verdict": "different",
-   "nature": "other-word"
-  },
-  {
-   "a": "Abdul Razzak & Sons",
-   "b": "Abdul Razzak & Sons (UK) Ltd",
-   "verdict": "different",
-   "nature": "other-country-registration"
-  }
- ]
+  "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+  "provenance": "blind test set #15, authored on 2026-09-29 by a separate agent (an Abidjan customs broker and São Paulo trading bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data Fifteen em dashes inside names were replaced by hyphens before the verdict, blind (a character substitution the normalisation makes neutral); no pair was read.",
+  "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+  "paires": [
+    {
+      "a": "SARL Ivoire Négoce",
+      "b": "SARL Ivoire Negoce",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Société Sénégalaise d'Arachide",
+      "b": "Sté Sénégalaise d'Arachide",
+      "verdict": "match",
+      "nature": "legal-form-abbreviation"
+    },
+    {
+      "a": "Etablissements Koffi et Frères",
+      "b": "Ets Koffi et Frères",
+      "verdict": "match",
+      "nature": "legal-form-abbreviation"
+    },
+    {
+      "a": "Compagnie Sahélienne de Coton",
+      "b": "Cie Sahélienne de Coton",
+      "verdict": "match",
+      "nature": "legal-form-abbreviation"
+    },
+    {
+      "a": "GIE Femmes de Korhogo",
+      "b": "G.I.E. Femmes de Korhogo",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "SARL Traoré Commerce",
+      "b": "SARL TRAORE COMMERCE",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "Ets Diallo et Fils",
+      "b": "Ets Diallo & Fils",
+      "verdict": "match",
+      "nature": "connector-variant"
+    },
+    {
+      "a": "Entreprise Kouassi du Cacao",
+      "b": "Entreprise Kouassi de Cacao",
+      "verdict": "match",
+      "nature": "connector-variant"
+    },
+    {
+      "a": "Groupe Diarra Import-Export",
+      "b": "Groupe Diarra Import Export",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "SARL Bamako Négoce",
+      "b": "Bamako Négoce",
+      "verdict": "match",
+      "nature": "legal-form-omitted"
+    },
+    {
+      "a": "Société Camerounaise de Cacao",
+      "b": "Societe Camerounaise de Cacao",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Ets Ouattara et Cie",
+      "b": "Établissements Ouattara et Cie",
+      "verdict": "match",
+      "nature": "legal-form-abbreviation"
+    },
+    {
+      "a": "SUARL Keita Distribution",
+      "b": "Keita Distribution SUARL",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "Compagnie Ivoirienne de Cajou",
+      "b": "Cie Ivoirienne de Cajou",
+      "verdict": "match",
+      "nature": "legal-form-abbreviation"
+    },
+    {
+      "a": "Ets Fakhoury Frères",
+      "b": "Ets Fakhoury Freres",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "SARL Nassif et Associés",
+      "b": "SARL Nassif et Associes",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Société Haddad Import",
+      "b": "Sté Haddad Import",
+      "verdict": "match",
+      "nature": "legal-form-abbreviation"
+    },
+    {
+      "a": "GIE Sow et Bah",
+      "b": "G.I.E Sow et Bah",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "SARL Diarrassouba Commerce",
+      "b": "SARL Diarassouba Commerce",
+      "verdict": "match",
+      "nature": "single-letter-misspelling"
+    },
+    {
+      "a": "Ets Chalhoub Négoce",
+      "b": "Ets Chalhoud Négoce",
+      "verdict": "match",
+      "nature": "single-letter-misspelling"
+    },
+    {
+      "a": "Compagnie Kouamé et Fils",
+      "b": "Compagnie Kouame et Fils",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "SARL Coulibaly Textile",
+      "b": "SARL Coulibali Textile",
+      "verdict": "match",
+      "nature": "single-letter-misspelling"
+    },
+    {
+      "a": "Société Baldé Cuirs et Peaux",
+      "b": "Société Balde Cuirs et Peaux",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Ets Mbaye et Ndiaye",
+      "b": "Établissements Mbaye et Ndiaye",
+      "verdict": "match",
+      "nature": "legal-form-abbreviation"
+    },
+    {
+      "a": "SARL Sidibé Négoce",
+      "b": "SARL Sidibe Négoce",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Groupe Adjoua Distribution",
+      "b": "Groupe Adjoua Distribution SARL",
+      "verdict": "match",
+      "nature": "legal-form-omitted"
+    },
+    {
+      "a": "Entreprise Ouedraogo et Frères",
+      "b": "Entreprise Ouédraogo et Frères",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "SARL Abidjan Négoce - RCCM CI-ABJ-2011-B-4521",
+      "b": "SARL Abidjan Négoce",
+      "verdict": "match",
+      "nature": "registry-code-residue"
+    },
+    {
+      "a": "Ets Bah Commerce, NIF 0512345 K",
+      "b": "Ets Bah Commerce",
+      "verdict": "match",
+      "nature": "registry-code-residue"
+    },
+    {
+      "a": "Société Malienne du Bétail (Succursale de Sikasso)",
+      "b": "Société Malienne du Bétail",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "Compagnie Burkinabè de Négoce - Agence de Bobo-Dioulasso",
+      "b": "Compagnie Burkinabè de Négoce",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "SARL Ivoire Cajou, Succursale de San-Pédro",
+      "b": "SARL Ivoire Cajou",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "Ets Sanogo et Traoré - Point de vente de Ségou",
+      "b": "Ets Sanogo et Traoré",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "Groupe Camerounais du Cacao (Bureau de Douala)",
+      "b": "Groupe Camerounais du Cacao",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "SARL N'Diaye Négoce",
+      "b": "SARL Ndiaye Négoce",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "Ets Abou Khalil et Fils",
+      "b": "Ets Aboukhalil et Fils",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "Société Kanté Import-Export",
+      "b": "Société Kante Import-Export",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "SARL Diop et Gueye",
+      "b": "S.A.R.L. Diop et Gueye",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "Entreprise Yao Koffi Négoce",
+      "b": "Entreprise Yao Koffi Negoce",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Compagnie Sénégalaise d'Import-Export",
+      "b": "Cie Sénégalaise d'Import-Export",
+      "verdict": "match",
+      "nature": "legal-form-abbreviation"
+    },
+    {
+      "a": "SARL Ivoire Négoce",
+      "b": "SARL Ivoire Négoce Sénégal",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Société Sénégalaise d'Arachide",
+      "b": "Société Malienne d'Arachide",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Ets Koffi et Frères",
+      "b": "Ets Koffi et Sœurs",
+      "verdict": "different",
+      "nature": "different-real-word"
+    },
+    {
+      "a": "Compagnie Sahélienne de Coton",
+      "b": "Compagnie Sahélienne de Coco",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "Entreprise Malienne de Bétail",
+      "b": "Entreprise Malienne de Céréales",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "Groupe Diarra Import-Export",
+      "b": "Groupe Diakité Import-Export",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "SUARL Traoré Commerce",
+      "b": "SUARL Touré Commerce",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Ets Diallo et Fils",
+      "b": "Ets Baldé et Fils",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Société Camerounaise de Cacao",
+      "b": "Société Camerounaise de Café",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "Ets Ouattara et Cie",
+      "b": "Ets Ouédraogo et Cie",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "SARL Bamako Négoce",
+      "b": "SARL Bobo Négoce",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Compagnie Ivoirienne de Cajou",
+      "b": "Compagnie Ghanéenne de Cajou",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Ets Fakhoury Frères",
+      "b": "Ets Khoury Frères",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "SARL Nassif et Associés",
+      "b": "SARL Saab et Associés",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Société Haddad Import",
+      "b": "Société Haddad Export",
+      "verdict": "different",
+      "nature": "different-real-word"
+    },
+    {
+      "a": "GIE Sow et Bah",
+      "b": "GIE Sow et Barry",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "SARL Diarrassouba Commerce",
+      "b": "SARL Diakité Commerce",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Ets Chalhoub Négoce",
+      "b": "Ets Chamoun Négoce",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Compagnie Kouamé et Fils",
+      "b": "Compagnie Kouassi et Fils",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "SARL Coulibaly Textile",
+      "b": "SARL Coulibaly Métaux",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "Société Baldé Cuirs et Peaux",
+      "b": "Société Bah Cuirs et Peaux",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Ets Mbaye et Ndiaye",
+      "b": "Ets Mbaye et Fall",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "SARL Sidibé Négoce",
+      "b": "SARL Sissoko Négoce",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Groupe Adjoua Distribution",
+      "b": "Groupe Akissi Distribution",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Entreprise Ouedraogo et Frères",
+      "b": "Entreprise Ouedraogo et Neveux",
+      "verdict": "different",
+      "nature": "different-real-word"
+    },
+    {
+      "a": "SARL Abidjan Négoce",
+      "b": "SARL Abengourou Négoce",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Ets Bah Commerce",
+      "b": "Ets Barry Commerce",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Société Malienne du Bétail",
+      "b": "Société Guinéenne du Bétail",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Compagnie Burkinabè de Négoce",
+      "b": "Compagnie Nigérienne de Négoce",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "SARL Ivoire Cajou",
+      "b": "SARL Ivoire Karité",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "Ets Sanogo et Traoré",
+      "b": "Ets Sanogo et Konaté",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Groupe Camerounais du Cacao",
+      "b": "Groupe Gabonais du Cacao",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "SARL N'Diaye Négoce",
+      "b": "SARL N'Diaye Textile",
+      "verdict": "different",
+      "nature": "different-real-word"
+    },
+    {
+      "a": "Ets Abou Khalil et Fils",
+      "b": "Ets Abou Jaoudé et Fils",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Société Kanté Import-Export",
+      "b": "Société Konaté Import-Export",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "SARL Diop et Gueye",
+      "b": "SARL Diop et Thiam",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Entreprise Yao Koffi Négoce",
+      "b": "Entreprise Yao Kouadio Négoce",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Compagnie Sénégalaise d'Import-Export",
+      "b": "Compagnie Gambienne d'Import-Export",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Ets Keita et Frères",
+      "b": "Ets Keita et Cousins",
+      "verdict": "different",
+      "nature": "different-real-word"
+    },
+    {
+      "a": "SARL Compagnie du Coton d'Odienné",
+      "b": "SARL Compagnie du Coton de Korhogo",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Comércio de Grãos do Sul Ltda.",
+      "b": "Comércio de Grãos do Sul Ltda",
+      "verdict": "match",
+      "nature": "legal-form-variant"
+    },
+    {
+      "a": "Distribuidora Paranaense de Soja S.A.",
+      "b": "Distribuidora Paranaense de Soja S/A",
+      "verdict": "match",
+      "nature": "legal-form-variant"
+    },
+    {
+      "a": "Importadora e Exportadora Bandeirante Ltda",
+      "b": "Importadora e Exportadora Bandeirante Limitada",
+      "verdict": "match",
+      "nature": "legal-form-variant"
+    },
+    {
+      "a": "Agropecuária Santa Fé S/A",
+      "b": "Agropecuaria Santa Fe S/A",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Frigorífico Werner Schmidt EIRELI",
+      "b": "FRIGORIFICO WERNER SCHMIDT EIRELI",
+      "verdict": "match",
+      "nature": "case-accent-variant"
+    },
+    {
+      "a": "Comercial Yamamoto Ltda.",
+      "b": "Comercial Yamamoto Ltda",
+      "verdict": "match",
+      "nature": "legal-form-variant"
+    },
+    {
+      "a": "Casa Bertoli Comércio de Grãos",
+      "b": "Casa Bertoli Comercio de Graos",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Cerealera del Plata S.R.L.",
+      "b": "Cerealera del Plata SRL",
+      "verdict": "match",
+      "nature": "legal-form-variant"
+    },
+    {
+      "a": "Comercializadora Argentina de Cereales S.A.S.",
+      "b": "Comercializadora Argentina de Cereales SAS",
+      "verdict": "match",
+      "nature": "legal-form-variant"
+    },
+    {
+      "a": "Curtume Bianchi Ltda - ME",
+      "b": "Curtume Bianchi Ltda",
+      "verdict": "match",
+      "nature": "me-epp-designation-same-entity"
+    },
+    {
+      "a": "Agropecuária Kimura S.A.",
+      "b": "Agropecuaria Kimura SA",
+      "verdict": "match",
+      "nature": "case-accent-variant"
+    },
+    {
+      "a": "Comércio Rossetti de Cereais Ltda",
+      "b": "COMERCIO ROSSETTI DE CEREAIS LTDA",
+      "verdict": "match",
+      "nature": "case-accent-variant"
+    },
+    {
+      "a": "Exportadora Tanaka do Brasil Ltda.",
+      "b": "Exportadora Tanaka do Brasil Ltda - CNPJ 04.512.678/0001-90",
+      "verdict": "match",
+      "nature": "cnpj-residue"
+    },
+    {
+      "a": "Cerealista Bühler S.A.",
+      "b": "Cerealista Buhler S.A.",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Frigorífico Almeida S/A",
+      "b": "Frigorifico Almeida S.A.",
+      "verdict": "match",
+      "nature": "legal-form-variant"
+    },
+    {
+      "a": "Comercializadora del Sur S.R.L.",
+      "b": "Comercializadora del Sur, S.R.L.",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "Agroindustrial Nakashima Ltda.",
+      "b": "Agroindustrial Nakashima Ltda - Filial de Maringá",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "Cereales Bonaerenses S.A.",
+      "b": "Cereales Bonaerenses S.A. - Sucursal Rosario",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "Comércio de Soja Weissmann Ltda",
+      "b": "Comércio de Soja Weissmann Ltda - Agência de Cascavel",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "Curtume Fontanelli EIRELI",
+      "b": "Curtume Fontanelli EIRELI - Depósito de Caxias",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "Agropecuária Yoshida S.A.",
+      "b": "Agropecuaria Yoshida SA",
+      "verdict": "match",
+      "nature": "case-accent-variant"
+    },
+    {
+      "a": "Comercial Grimaldi Ltda.",
+      "b": "Comercial Grimaldi, Ltda.",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "Importadora Suzuki do Brasil Ltda",
+      "b": "Importadora Suzuqi do Brasil Ltda",
+      "verdict": "match",
+      "nature": "single-letter-misspelling"
+    },
+    {
+      "a": "Cerealera Hoffmann S.R.L.",
+      "b": "Cerealera Hofmann S.R.L.",
+      "verdict": "match",
+      "nature": "single-letter-misspelling"
+    },
+    {
+      "a": "Comércio de Grãos Bertolini Ltda.",
+      "b": "Comércio de Grãos Bertolini Ltda, CNPJ 12.345.678/0001-00",
+      "verdict": "match",
+      "nature": "cnpj-residue"
+    },
+    {
+      "a": "Agropecuaria del Plata S.A.",
+      "b": "Agropecuária del Plata S.A.",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Distribuidora Nishimura Ltda.",
+      "b": "Distribuidora Nishimura Ltda - Filial de Londrina",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "Comercializadora Rocatti S.A.S.",
+      "b": "Comercializadora Rocatti S.A.S., CUIT 30-71234567-8",
+      "verdict": "match",
+      "nature": "cuit-residue"
+    },
+    {
+      "a": "Frigorífico Kobayashi Ltda.",
+      "b": "FRIGORIFICO KOBAYASHI LTDA",
+      "verdict": "match",
+      "nature": "case-accent-variant"
+    },
+    {
+      "a": "Cerealera Bacigalupo S.R.L.",
+      "b": "Cerealera Bacigalúpo S.R.L.",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Comércio Exterior Watanabe Ltda",
+      "b": "Comercio Exterior Watanabe Ltda",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Agroquímica Rinaldi S.A.",
+      "b": "Agroquimica Rinaldi S.A.",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Cereales del Norte S.A. - Sucursal Tucumán",
+      "b": "Cereales del Norte S.A.",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "Curtiduría Pellegrino S.R.L.",
+      "b": "Curtiduria Pellegrino S.R.L.",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Comércio de Cereais Matsumoto Ltda.",
+      "b": "Comercio de Cereais Matsumoto Ltda",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Agropecuária Bittencourt S.A.",
+      "b": "Agropecuária Bittencourt S/A",
+      "verdict": "match",
+      "nature": "legal-form-variant"
+    },
+    {
+      "a": "Cerealera Gonzatto e Filhos Ltda.",
+      "b": "Cerealera Gonzato e Filhos Ltda.",
+      "verdict": "match",
+      "nature": "single-letter-misspelling"
+    },
+    {
+      "a": "Importação e Exportação Kaneko Ltda",
+      "b": "Importacao e Exportacao Kaneko Ltda",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Comercial del Sur S.A. - Depósito de Salta",
+      "b": "Comercial del Sur S.A.",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "Frigorífico Weissberg S.A.",
+      "b": "Frigorífico Weissberg, S.A.",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "Comércio de Grãos do Sul Ltda.",
+      "b": "Comércio de Grãos do Sul Argentina S.R.L.",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Distribuidora Paranaense de Soja S.A.",
+      "b": "Distribuidora Catarinense de Soja S.A.",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Importadora e Exportadora Bandeirante Ltda",
+      "b": "Importadora e Exportadora Bandeirante Uruguay S.A.",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Agropecuária Santa Fé S/A",
+      "b": "Agropecuária Santa Cruz S/A",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Frigorífico Werner Schmidt EIRELI",
+      "b": "Frigorífico Werner Hoffmann EIRELI",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Comercial Yamamoto Ltda.",
+      "b": "Comercial Yamashita Ltda.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Casa Bertoli Comércio de Grãos",
+      "b": "Casa Bertoli Comércio de Café",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "Cerealera del Plata S.R.L.",
+      "b": "Cerealera del Litoral S.R.L.",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Comercializadora Argentina de Cereales S.A.S.",
+      "b": "Comercializadora Uruguaya de Cereales S.A.S.",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Curtume Bianchi Ltda.",
+      "b": "Curtume Bianchini Ltda.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Agropecuária Kimura S.A.",
+      "b": "Agropecuária Kimura do Paraguai S.A.",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Comércio Rossetti de Cereais Ltda",
+      "b": "Comércio Rossetti de Sementes Ltda",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "Exportadora Tanaka do Brasil Ltda.",
+      "b": "Exportadora Tanaka do Peru S.R.L.",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Cerealista Bühler S.A.",
+      "b": "Cerealista Bucher S.A.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Frigorífico Almeida S/A",
+      "b": "Frigorífico Azevedo S/A",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Comercializadora del Sur S.R.L.",
+      "b": "Comercializadora del Sur Chile S.A.",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Agroindustrial Nakashima Ltda.",
+      "b": "Agroindustrial Nakamura Ltda.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Cereales Bonaerenses S.A.",
+      "b": "Cereales Cordobeses S.A.",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Comércio de Soja Weissmann Ltda",
+      "b": "Comércio de Milho Weissmann Ltda",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "Curtume Fontanelli EIRELI",
+      "b": "Curtume Fontanella EIRELI",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Agropecuária Yoshida S.A.",
+      "b": "Agropecuária Yoshioka S.A.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Comercial Grimaldi Ltda.",
+      "b": "Comercial Grimaud Ltda.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Importadora Suzuki do Brasil Ltda",
+      "b": "Importadora Suzuki do Paraguai Ltda",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Cerealera Hoffmann S.R.L.",
+      "b": "Cerealera Hartmann S.R.L.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Comércio de Grãos Bertolini Ltda.",
+      "b": "Comércio de Grãos Bertolucci Ltda.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Agropecuária del Plata S.A.",
+      "b": "Agropecuária del Plata Bolivia S.A.",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Distribuidora Nishimura Ltda.",
+      "b": "Distribuidora Nishimoto Ltda.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Comercializadora Rocatti S.A.S.",
+      "b": "Comercializadora Rocca S.A.S.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Frigorífico Kobayashi Ltda.",
+      "b": "Frigorífico Kawabata Ltda.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Cerealera Bacigalupo S.R.L.",
+      "b": "Cerealera Baccarelli S.R.L.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Comércio Exterior Watanabe Ltda",
+      "b": "Comércio Exterior Watanabe Bolívia Ltda",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Agroquímica Rinaldi S.A.",
+      "b": "Agroquímica Rinaldi Paraguay S.A.",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Cereales del Norte S.A.",
+      "b": "Cereales del Oeste S.A.",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Curtiduría Pellegrino S.R.L.",
+      "b": "Curtiduría Pellegrini S.R.L.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Comércio de Cereais Matsumoto Ltda.",
+      "b": "Comércio de Sementes Matsumoto Ltda.",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "Agropecuária Bittencourt S.A.",
+      "b": "Agropecuária Bittencourt Uruguay S.A.",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Cerealera Gonzatto e Filhos Ltda.",
+      "b": "Cerealera Gonzalez e Filhos Ltda.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Importação e Exportação Kaneko Ltda",
+      "b": "Importação e Exportação Kanno Ltda",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Comercial del Sur S.A.",
+      "b": "Comercial del Sur Paraguay S.A.",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Frigorífico Weissberg S.A.",
+      "b": "Frigorífico Weisz S.A.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "MV Étoile du Golfe (ex-Fraternité des Mers)",
+      "b": "MV Fraternité des Mers",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "N/M Cacaueiro do Atlântico",
+      "b": "N/M Cacaueiro do Atlantico",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "MV Espoir d'Abidjan",
+      "b": "M/V ESPOIR D'ABIDJAN",
+      "verdict": "match",
+      "nature": "prefix-notation-variant"
+    },
+    {
+      "a": "MV Boa Esperança",
+      "b": "MV Boa Esperanca",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "MV Fraternité des Mers, port d'Abidjan",
+      "b": "MV Fraternité des Mers",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "N/M Rio Paranaguá",
+      "b": "N/M Rio Paranagua",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "MV Costa do Marfim (ex-Ivoire Trader)",
+      "b": "MV Ivoire Trader",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "MV Amitié Atlantique",
+      "b": "MV Amitie Atlantique",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "N/M Cajueiro Real",
+      "b": "NM Cajueiro Real",
+      "verdict": "match",
+      "nature": "prefix-notation-variant"
+    },
+    {
+      "a": "MV Ferro do Sul",
+      "b": "M/V FERRO DO SUL",
+      "verdict": "match",
+      "nature": "prefix-notation-variant"
+    },
+    {
+      "a": "MV Soja Paranaense",
+      "b": "MV Soja Paranaense, Santos",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "N/M Santos Glória",
+      "b": "N/M Santos Gloria",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "MV Vent d'Harmattan",
+      "b": "MV Vent d Harmattan",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "MV Anosphère",
+      "b": "MV Anosphere",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "MV Almadies (ex-Union du Golfe)",
+      "b": "MV Union du Golfe",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "N/M Bahia Trader",
+      "b": "N/M Bahia Trader, Paranaguá",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "MV Étoile du Golfe",
+      "b": "M/V Étoile du Golfe",
+      "verdict": "match",
+      "nature": "prefix-notation-variant"
+    },
+    {
+      "a": "MV Trader Ivoire",
+      "b": "MV  Trader   Ivoire",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "MV Costa do Marfim",
+      "b": "MV Costa do Marfim, port d'Abidjan",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "N/M Cacaueiro do Atlântico, Santos",
+      "b": "N/M Cacaueiro do Atlântico",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "MV Fraternité des Mers",
+      "b": "MV FRATERNITE DES MERS",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "Rebocador Baía de Santos",
+      "b": "Rebocador Baia de Santos",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "Barcaça Paranaguá I",
+      "b": "Barcaca Paranagua I",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "MV Récif Vert (ex-Perle du Sénégal)",
+      "b": "MV Perle du Sénégal",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "MV Songhaï Trader (ex-Delta d'Or)",
+      "b": "MV Delta d'Or",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "N/M Cacau Atlântico",
+      "b": "N/M Cacau Atlantico",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "MV Comoé Trader",
+      "b": "MV Comoe Trader",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "MV Grand Bassam Star",
+      "b": "M/V GRAND BASSAM STAR",
+      "verdict": "match",
+      "nature": "prefix-notation-variant"
+    },
+    {
+      "a": "MV São Vicente Trader",
+      "b": "MV Sao Vicente Trader",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "N/M Paranaguá Glória, port de Santos",
+      "b": "N/M Paranaguá Glória",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "MV Baía de Todos os Santos",
+      "b": "MV Baia de Todos os Santos",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "MV Harmonie du Fleuve",
+      "b": "MV  Harmonie du Fleuve ",
+      "verdict": "match",
+      "nature": "case-punctuation-spacing"
+    },
+    {
+      "a": "N/M Ébène du Cacao",
+      "b": "N/M Ebene du Cacao",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "MV Assinie Trader",
+      "b": "MV Assinie Trader, Abidjan",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "MV Petite Côte",
+      "b": "MV Petite Cote",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "N/M Minério do Sul",
+      "b": "N/M Minerio do Sul",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "MV Foz do Iguaçu Trader",
+      "b": "MV Foz do Iguacu Trader",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "MV Bassam Étoile",
+      "b": "MV Bassam Etoile",
+      "verdict": "match",
+      "nature": "accent-variant"
+    },
+    {
+      "a": "MV Corisco Trader (ex-Aurore d'Afrique)",
+      "b": "MV Aurore d'Afrique",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "N/M Cajueiro Atlântico",
+      "b": "NM Cajueiro Atlântico",
+      "verdict": "match",
+      "nature": "prefix-notation-variant"
+    },
+    {
+      "a": "MV Cacaueiro do Atlântico",
+      "b": "MV Cacaueiros do Atlântico",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Ivoire Trader I",
+      "b": "MV Ivoire Trader II",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "MV Fraternité des Mers",
+      "b": "MV Fraternités des Mers",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Espoir d'Abidjan",
+      "b": "MV Espoirs d'Abidjan",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Boa Esperança",
+      "b": "MV Boa Esperancé",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "N/M Rio Paranaguá",
+      "b": "N/M Rio Paranaguás",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Costa do Marfim",
+      "b": "MV Costa do Marfim II",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "MV Amitié Atlantique",
+      "b": "MV Amitiés Atlantiques",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "N/M Cajueiro Real",
+      "b": "N/M Cajueiro Reale",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "MV Ferro do Sul",
+      "b": "MV Ferro do Sul 2",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "MV Soja Paranaense",
+      "b": "MV Sojas Paranaenses",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "N/M Santos Glória",
+      "b": "N/M Santos Glórias",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Vent d'Harmattan",
+      "b": "MV Vents d'Harmattan",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Anosphère",
+      "b": "MV Anosphères",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Union du Golfe",
+      "b": "MV Union des Golfes",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "N/M Bahia Trader",
+      "b": "N/M Bahia Trader 3",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "MV Étoile du Golfe",
+      "b": "MV Étoiles du Golfe",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Trader Ivoire",
+      "b": "MV Trader Ivoire IV",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "Rebocador Baía de Santos",
+      "b": "Barcaça Baía de Santos",
+      "verdict": "different",
+      "nature": "different-vessel-type"
+    },
+    {
+      "a": "Barcaça Paranaguá I",
+      "b": "Barcaça Paranaguá II",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "MV Récif Vert",
+      "b": "MV Récifs Verts",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Songhaï Trader",
+      "b": "MV Songhaï Trader 2",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "N/M Cacau Atlântico",
+      "b": "N/M Cacaus Atlânticos",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Comoé Trader",
+      "b": "MV Comoé Traders",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Grand Bassam Star",
+      "b": "MV Grand Bassam Stars",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV São Vicente Trader",
+      "b": "MV São Vicente Trader II",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "N/M Paranaguá Glória",
+      "b": "N/M Paranaguá Glóra",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "MV Baía de Todos os Santos",
+      "b": "MV Baía de Todos os Anjos",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "MV Harmonie du Fleuve",
+      "b": "MV Harmonie des Fleuves",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "N/M Ébène du Cacao",
+      "b": "N/M Ébènes du Cacao",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Assinie Trader",
+      "b": "MV Assinie Traders",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Petite Côte",
+      "b": "MV Petite Côte II",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "N/M Minério do Sul",
+      "b": "N/M Minérios do Sul",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Foz do Iguaçu Trader",
+      "b": "MV Foz do Iguaçu Trader 5",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "MV Bassam Étoile",
+      "b": "MV Bassam Étoiles",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Corisco Trader",
+      "b": "MV Corisco Traders",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "N/M Cajueiro Atlântico",
+      "b": "N/M Cajueiros Atlânticos",
+      "verdict": "different",
+      "nature": "plural-vs-singular"
+    },
+    {
+      "a": "MV Delta d'Or",
+      "b": "MV Delta d'Ord",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "MV Aurore d'Afrique",
+      "b": "MV Aurore d'Amérique",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "MV Perle du Sénégal",
+      "b": "MV Perle du Sénégal II",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "STE IVOIRIENNE DE COMMERCE ET D EXPORTATION",
+      "b": "SOCIETE IVOIRIENNE DE COMMERCE ET D'EXPORTATION",
+      "verdict": "match",
+      "nature": "abbreviation-expansion"
+    },
+    {
+      "a": "CIA BRASILEIRA DE CEREAIS LTDA",
+      "b": "COMPANHIA BRASILEIRA DE CEREAIS LTDA",
+      "verdict": "match",
+      "nature": "abbreviation-expansion"
+    },
+    {
+      "a": "ETS KONE ET FRERESABIDJAN",
+      "b": "ETS KONE ET FRERES",
+      "verdict": "match",
+      "nature": "glued-address-residue"
+    },
+    {
+      "a": "IMPORTADORA TANAKASANTOS SP",
+      "b": "IMPORTADORA TANAKA",
+      "verdict": "match",
+      "nature": "glued-address-residue"
+    },
+    {
+      "a": "STE SENEGALAISE D ARACHIDE\nDAKAR SENEGAL",
+      "b": "STE SENEGALAISE D ARACHIDE",
+      "verdict": "match",
+      "nature": "line-cut-rejoin"
+    },
+    {
+      "a": "COMERCIAL YAMAMOTO LTDA/00012345",
+      "b": "COMERCIAL YAMAMOTO LTDA",
+      "verdict": "match",
+      "nature": "bank-reference-residue"
+    },
+    {
+      "a": "ETABLISSEMENTS DIALLO ET FILS",
+      "b": "ETS DIALLO ET FILS",
+      "verdict": "match",
+      "nature": "abbreviation-expansion"
+    },
+    {
+      "a": "GROUPE CAMEROUNAIS DU CACAO",
+      "b": "GROUPE CAMEROUNAIS DU CACAO - SUCCURSALE DE DOUALA",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "AGROPECUARIA SANTA FE SA",
+      "b": "AGROPECUÁRIA SANTA FÉ SA",
+      "verdict": "match",
+      "nature": "uppercase-accent-stripped"
+    },
+    {
+      "a": "STE MALIENNE DU BETAIL",
+      "b": "SOCIETE MALIENNE DU BETAIL",
+      "verdict": "match",
+      "nature": "abbreviation-expansion"
+    },
+    {
+      "a": "FRIGORIFICO WERNER SCHMIDTRUA15",
+      "b": "FRIGORIFICO WERNER SCHMIDT",
+      "verdict": "match",
+      "nature": "glued-address-residue"
+    },
+    {
+      "a": "CPTE NO 4455 ETS OUATTARA ET CIE",
+      "b": "ETS OUATTARA ET CIE",
+      "verdict": "match",
+      "nature": "bank-reference-residue"
+    },
+    {
+      "a": "COMPAGNIE SAHELIENNE DE\nCOTON",
+      "b": "COMPAGNIE SAHELIENNE DE COTON",
+      "verdict": "match",
+      "nature": "line-cut-rejoin"
+    },
+    {
+      "a": "IMPORTADORA E EXPORTADORA\nBANDEIRANTE LTDA",
+      "b": "IMPORTADORA E EXPORTADORA BANDEIRANTE LTDA",
+      "verdict": "match",
+      "nature": "line-cut-rejoin"
+    },
+    {
+      "a": "SARL BAMAKO NEGOCE/RCCM ML BKO 2015",
+      "b": "SARL BAMAKO NEGOCE",
+      "verdict": "match",
+      "nature": "bank-reference-residue"
+    },
+    {
+      "a": "STE CAMEROUNAISE DE CACAOB.P. 1234 DOUALA",
+      "b": "STE CAMEROUNAISE DE CACAO",
+      "verdict": "match",
+      "nature": "glued-address-residue"
+    },
+    {
+      "a": "CIE MALIENNE DE KARITE",
+      "b": "COMPAGNIE MALIENNE DE KARITE",
+      "verdict": "match",
+      "nature": "abbreviation-expansion"
+    },
+    {
+      "a": "CURTUME BIANCHI LTDA",
+      "b": "CURTUME BIANCHI LTDA - FILIAL PORTO ALEGRE",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "ETS FAKHOURY FRERESBP 209",
+      "b": "ETS FAKHOURY FRERES",
+      "verdict": "match",
+      "nature": "glued-address-residue"
+    },
+    {
+      "a": "STE HADDAD IMPORT\nBEYROUTH LIBAN",
+      "b": "STE HADDAD IMPORT",
+      "verdict": "match",
+      "nature": "line-cut-rejoin"
+    },
+    {
+      "a": "AGROINDUSTRIAL NAKASHIMA LTDA/CNPJ04512678",
+      "b": "AGROINDUSTRIAL NAKASHIMA LTDA",
+      "verdict": "match",
+      "nature": "bank-reference-residue"
+    },
+    {
+      "a": "GIE SOW ET BAHDAKAR",
+      "b": "GIE SOW ET BAH",
+      "verdict": "match",
+      "nature": "glued-address-residue"
+    },
+    {
+      "a": "COMERCIALIZADORA ARGENTINA DE\nCEREALES SAS",
+      "b": "COMERCIALIZADORA ARGENTINA DE CEREALES SAS",
+      "verdict": "match",
+      "nature": "line-cut-rejoin"
+    },
+    {
+      "a": "STE DIARRASSOUBA COMMERCE",
+      "b": "SOCIETE DIARRASSOUBA COMMERCE",
+      "verdict": "match",
+      "nature": "abbreviation-expansion"
+    },
+    {
+      "a": "CASA BERTOLI COMERCIO DE GRAOSCURITIBA",
+      "b": "CASA BERTOLI COMERCIO DE GRAOS",
+      "verdict": "match",
+      "nature": "glued-address-residue"
+    },
+    {
+      "a": "ETS CHALHOUB NEGOCE/00789456",
+      "b": "ETS CHALHOUB NEGOCE",
+      "verdict": "match",
+      "nature": "bank-reference-residue"
+    },
+    {
+      "a": "COMPAGNIE BURKINABE DE NEGOCE",
+      "b": "CIE BURKINABE DE NEGOCE",
+      "verdict": "match",
+      "nature": "abbreviation-expansion"
+    },
+    {
+      "a": "COMERCIO ROSSETTI DE\nCEREAIS LTDA",
+      "b": "COMERCIO ROSSETTI DE CEREAIS LTDA",
+      "verdict": "match",
+      "nature": "line-cut-rejoin"
+    },
+    {
+      "a": "ENTREPRISE OUEDRAOGO ET FRERESBOBO",
+      "b": "ENTREPRISE OUEDRAOGO ET FRERES",
+      "verdict": "match",
+      "nature": "glued-address-residue"
+    },
+    {
+      "a": "FRIGORIFICO ALMEIDA SA",
+      "b": "FRIGORÍFICO ALMEIDA SA",
+      "verdict": "match",
+      "nature": "uppercase-accent-stripped"
+    },
+    {
+      "a": "STE KANTE IMPORT EXPORT",
+      "b": "SOCIETE KANTE IMPORT-EXPORT",
+      "verdict": "match",
+      "nature": "abbreviation-expansion"
+    },
+    {
+      "a": "COMERCIALIZADORA DEL SUR SRL/CUIT30712345",
+      "b": "COMERCIALIZADORA DEL SUR SRL",
+      "verdict": "match",
+      "nature": "bank-reference-residue"
+    },
+    {
+      "a": "SARL DIOP ET GUEYE",
+      "b": "SARL DIOP ET GUEYE - SUCCURSALE DE THIES",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "EXPORTADORA TANAKA DO BRASIL\nLTDA",
+      "b": "EXPORTADORA TANAKA DO BRASIL LTDA",
+      "verdict": "match",
+      "nature": "line-cut-rejoin"
+    },
+    {
+      "a": "ETS ABOU KHALIL ET FILSPORT BOUET",
+      "b": "ETS ABOU KHALIL ET FILS",
+      "verdict": "match",
+      "nature": "glued-address-residue"
+    },
+    {
+      "a": "AGROPECUARIA YOSHIDA SA/00456123",
+      "b": "AGROPECUARIA YOSHIDA SA",
+      "verdict": "match",
+      "nature": "bank-reference-residue"
+    },
+    {
+      "a": "STE SENEGALAISE D IMPORT EXPORT",
+      "b": "SOCIETE SENEGALAISE D'IMPORT-EXPORT",
+      "verdict": "match",
+      "nature": "abbreviation-expansion"
+    },
+    {
+      "a": "COMERCIO DE CEREAIS MATSUMOTO\nLTDA",
+      "b": "COMERCIO DE CEREAIS MATSUMOTO LTDA",
+      "verdict": "match",
+      "nature": "line-cut-rejoin"
+    },
+    {
+      "a": "ETS BAH COMMERCEROUTE DE KATI",
+      "b": "ETS BAH COMMERCE",
+      "verdict": "match",
+      "nature": "glued-address-residue"
+    },
+    {
+      "a": "COMERCIAL DEL SUR SA",
+      "b": "COMERCIAL DEL SUR SA - SUCURSAL MENDOZA",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "STE IVOIRIENNE DE COMMERCE ET D EXPORTATION",
+      "b": "STE IVOIRIENNE DE COMMERCE ET D IMPORTATION",
+      "verdict": "different",
+      "nature": "different-real-word"
+    },
+    {
+      "a": "CIA BRASILEIRA DE CEREAIS LTDA",
+      "b": "CIA PARAGUAIA DE CEREAIS LTDA",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "ETS KONE ET FRERES",
+      "b": "ETS KONE ET SOEURS",
+      "verdict": "different",
+      "nature": "different-real-word"
+    },
+    {
+      "a": "IMPORTADORA TANAKA",
+      "b": "IMPORTADORA TANAKA ARGENTINA SA",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "STE SENEGALAISE D ARACHIDE",
+      "b": "STE MALIENNE D ARACHIDE",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "COMERCIAL YAMAMOTO LTDA",
+      "b": "COMERCIAL YAMASHITA LTDA",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "ETS DIALLO ET FILS",
+      "b": "ETS BALDE ET FILS",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "GROUPE SENEGALAIS DU MIL",
+      "b": "GROUPE GAMBIEN DU MIL",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "AGROPECUARIA SANTA FE SA",
+      "b": "AGROPECUARIA SANTA CRUZ SA",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "STE MALIENNE DU BETAIL",
+      "b": "STE MALIENNE DES CEREALES",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "FRIGORIFICO WERNER SCHMIDT",
+      "b": "FRIGORIFICO WERNER HOFFMANN",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "ETS OUATTARA ET CIE",
+      "b": "ETS OUEDRAOGO ET CIE",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "COMPAGNIE SAHELIENNE DE COTON",
+      "b": "COMPAGNIE SAHELIENNE DE COCO",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "IMPORTADORA E EXPORTADORA BANDEIRANTE LTDA",
+      "b": "IMPORTADORA E EXPORTADORA BANDEIRANTE URUGUAY SA",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "SARL BAMAKO NEGOCE",
+      "b": "SARL BOBO NEGOCE",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "STE CAMEROUNAISE DE CACAO",
+      "b": "STE CAMEROUNAISE DE CAFE",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "CIE IVOIRIENNE DE CAJOU",
+      "b": "CIE GHANEENNE DE CAJOU",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "CURTUME BIANCHI LTDA",
+      "b": "CURTUME BIANCHINI LTDA",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "ETS FAKHOURY FRERES",
+      "b": "ETS KHOURY FRERES",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "STE HADDAD IMPORT",
+      "b": "STE HADDAD EXPORT",
+      "verdict": "different",
+      "nature": "different-real-word"
+    },
+    {
+      "a": "AGROINDUSTRIAL NAKASHIMA LTDA",
+      "b": "AGROINDUSTRIAL NAKAMURA LTDA",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "GIE KONE ET COULIBALY",
+      "b": "GIE KONE ET SIDIBE",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "COMERCIALIZADORA ARGENTINA DE CEREALES SAS",
+      "b": "COMERCIALIZADORA URUGUAYA DE CEREALES SAS",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "STE DIARRASSOUBA COMMERCE",
+      "b": "STE DIAKITE COMMERCE",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "CASA BERTOLI COMERCIO DE GRAOS",
+      "b": "CASA BERTOLI COMERCIO DE CAFE",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "ETS CHALHOUB NEGOCE",
+      "b": "ETS CHAMOUN NEGOCE",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "COMPAGNIE BURKINABE DE NEGOCE",
+      "b": "COMPAGNIE NIGERIENNE DE NEGOCE",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "COMERCIO ROSSETTI DE CEREAIS LTDA",
+      "b": "COMERCIO ROSSETTI DE SEMENTES LTDA",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "ENTREPRISE OUEDRAOGO ET FRERES",
+      "b": "ENTREPRISE OUEDRAOGO ET NEVEUX",
+      "verdict": "different",
+      "nature": "different-real-word"
+    },
+    {
+      "a": "FRIGORIFICO ALMEIDA SA",
+      "b": "FRIGORIFICO AZEVEDO SA",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "STE KANTE IMPORT EXPORT",
+      "b": "STE KONATE IMPORT EXPORT",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "COMERCIALIZADORA DEL SUR SRL",
+      "b": "COMERCIALIZADORA DEL LITORAL SRL",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "SARL FALL ET SECK",
+      "b": "SARL FALL ET DIOUF",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "EXPORTADORA TANAKA DO BRASIL LTDA",
+      "b": "EXPORTADORA TANAKA DO PERU SRL",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "ETS ABOU KHALIL ET FILS",
+      "b": "ETS ABOU JAOUDE ET FILS",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "AGROPECUARIA YOSHIDA SA",
+      "b": "AGROPECUARIA YOSHIOKA SA",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "STE SENEGALAISE D IMPORT EXPORT",
+      "b": "STE GAMBIENNE D IMPORT EXPORT",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "COMERCIO DE CEREAIS MATSUMOTO LTDA",
+      "b": "COMERCIO DE SEMENTES MATSUMOTO LTDA",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "ETS CAMARA COMMERCE",
+      "b": "ETS CISSOKO COMMERCE",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "COMERCIAL DEL SUR SA",
+      "b": "COMERCIAL DEL SUR PARAGUAY SA",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "EtsKoffietFreres",
+      "b": "Ets Koffi et Freres",
+      "verdict": "match",
+      "nature": "missing-space"
+    },
+    {
+      "a": "Comercio de Graos Rossetti",
+      "b": "Comercioo de Graos Rossetti",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "Sté Sénégalaise d'Arachide",
+      "b": "Ste Senegalaise d Arachide",
+      "verdict": "match",
+      "nature": "chat-abbreviation-no-accent"
+    },
+    {
+      "a": "Distr. Bandeirante Ltda",
+      "b": "Distribuidora Bandeirante Ltda",
+      "verdict": "match",
+      "nature": "abbreviation-chat-style"
+    },
+    {
+      "a": "Imp. Tanaka do Brasil",
+      "b": "Importadora Tanaka do Brasil",
+      "verdict": "match",
+      "nature": "abbreviation-chat-style"
+    },
+    {
+      "a": "Exp. Kaneko Ltda",
+      "b": "Exportadora Kaneko Ltda",
+      "verdict": "match",
+      "nature": "abbreviation-chat-style"
+    },
+    {
+      "a": "Ind. Bianchi Curtume",
+      "b": "Indústria Bianchi Curtume",
+      "verdict": "match",
+      "nature": "abbreviation-chat-style"
+    },
+    {
+      "a": "Com. Yamamoto",
+      "b": "Comercial Yamamoto",
+      "verdict": "match",
+      "nature": "abbreviation-chat-style"
+    },
+    {
+      "a": "Cie Ivoirienne du Cajou",
+      "b": "Cie lvoirienne du Cajou",
+      "verdict": "match",
+      "nature": "ocr-character-confusion"
+    },
+    {
+      "a": "GIE Femmes de Korhogo",
+      "b": "GIE Femmes de K0rhogo",
+      "verdict": "match",
+      "nature": "ocr-character-confusion"
+    },
+    {
+      "a": "Ets Diallo",
+      "b": "EtsDiallo",
+      "verdict": "match",
+      "nature": "missing-space"
+    },
+    {
+      "a": "Frigorifico Almeida",
+      "b": "Frig0rifico Almeida",
+      "verdict": "match",
+      "nature": "ocr-character-confusion"
+    },
+    {
+      "a": "SARL Konaté Commerce",
+      "b": "SARL Konate Commerce",
+      "verdict": "match",
+      "nature": "autocorrect-accent-drop"
+    },
+    {
+      "a": "Ets Bah Commerce",
+      "b": "Ets Bah Commercee",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "GroupeDiarraImportExport",
+      "b": "Groupe Diarra Import Export",
+      "verdict": "match",
+      "nature": "missing-space"
+    },
+    {
+      "a": "Cerealera del Plata",
+      "b": "Cerealera dell Plata",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "Ets Sanogo et Traoré",
+      "b": "EtsSanogoetTraore",
+      "verdict": "match",
+      "nature": "missing-space"
+    },
+    {
+      "a": "Comercial Grimaldi",
+      "b": "Comerciall Grimaldi",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "Sté Camerounaise de Cacao",
+      "b": "Societe Camerounaise de Cacao",
+      "verdict": "match",
+      "nature": "abbreviation-chat-style"
+    },
+    {
+      "a": "Cie Sénégalaise d'Import-Export",
+      "b": "Cie Senegalaise dImport Export",
+      "verdict": "match",
+      "nature": "autocorrect-punctuation-loss"
+    },
+    {
+      "a": "Comercio Exterior Watanabe",
+      "b": "C0mercio Exterior Watanabe",
+      "verdict": "match",
+      "nature": "ocr-character-confusion"
+    },
+    {
+      "a": "Ets Mbaye et Ndiaye",
+      "b": "Ets Mbaye et Ndiayee",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "Agropecuária Kimura",
+      "b": "Agropecuaria Kimura",
+      "verdict": "match",
+      "nature": "autocorrect-accent-drop"
+    },
+    {
+      "a": "Ets Ouattara et Cie",
+      "b": "EtsOuattaraetCie",
+      "verdict": "match",
+      "nature": "missing-space"
+    },
+    {
+      "a": "Curtume Fontanelli",
+      "b": "Curtume Font4nelli",
+      "verdict": "match",
+      "nature": "ocr-character-confusion"
+    },
+    {
+      "a": "Ets Diarrassouba Commerce",
+      "b": "Ets Diarrassouba Comerce",
+      "verdict": "match",
+      "nature": "ocr-typo-generic-word"
+    },
+    {
+      "a": "Groupe Kouadio Distribution",
+      "b": "GroupeKouadioDistribution",
+      "verdict": "match",
+      "nature": "missing-space"
+    },
+    {
+      "a": "Cerealera Bacigalupo",
+      "b": "Cerealera Bacigalup0",
+      "verdict": "match",
+      "nature": "ocr-character-confusion"
+    },
+    {
+      "a": "Ets Keita et Frères",
+      "b": "Ets Keita et Freres",
+      "verdict": "match",
+      "nature": "autocorrect-accent-drop"
+    },
+    {
+      "a": "Comercial del Sur",
+      "b": "Comerciai del Sur",
+      "verdict": "match",
+      "nature": "ocr-character-confusion"
+    },
+    {
+      "a": "Ets Abou Khalil et Fils",
+      "b": "EtsAbouKhalil etFils",
+      "verdict": "match",
+      "nature": "missing-space"
+    },
+    {
+      "a": "Frigorífico Kobayashi",
+      "b": "Frigorifico Kobayashi",
+      "verdict": "match",
+      "nature": "autocorrect-accent-drop"
+    },
+    {
+      "a": "GIE Sow et Bah",
+      "b": "GIE Soww et Bah",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "Comércio de Cereais Matsumoto",
+      "b": "Comercio de Cereais Matsumoto",
+      "verdict": "match",
+      "nature": "autocorrect-accent-drop"
+    },
+    {
+      "a": "Ets Fakhoury Frères",
+      "b": "EtsFakhouryFreres",
+      "verdict": "match",
+      "nature": "missing-space"
+    },
+    {
+      "a": "Agropecuária Bittencourt",
+      "b": "Agropecuaria Bittenc0urt",
+      "verdict": "match",
+      "nature": "ocr-character-confusion"
+    },
+    {
+      "a": "Sté Haddad Import",
+      "b": "Ste Haddad lmport",
+      "verdict": "match",
+      "nature": "ocr-character-confusion"
+    },
+    {
+      "a": "SARL Sidibé Négoce",
+      "b": "SARL Sidibe Negoce",
+      "verdict": "match",
+      "nature": "autocorrect-accent-drop"
+    },
+    {
+      "a": "Comercializadora Rocatti",
+      "b": "Comercializadora Roccatti",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "Ets Barry Commerce",
+      "b": "EtsBarryCommerce",
+      "verdict": "match",
+      "nature": "missing-space"
+    },
+    {
+      "a": "Ets Koffi et Freres",
+      "b": "Ets Koffi et Soeurs",
+      "verdict": "different",
+      "nature": "different-real-word"
+    },
+    {
+      "a": "Comercio de Graos Rossetti",
+      "b": "Comercio de Sementes Rossetti",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "Sté Sénégalaise d'Arachide",
+      "b": "Sté Malienne d'Arachide",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Distribuidora Bandeirante Ltda",
+      "b": "Distribuidora Catarinense Ltda",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Importadora Tanaka do Brasil",
+      "b": "Importadora Tanaka do Peru",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Exportadora Kaneko Ltda",
+      "b": "Exportadora Kanno Ltda",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Indústria Bianchi Curtume",
+      "b": "Indústria Bianchini Curtume",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Comercial Yamamoto",
+      "b": "Comercial Yamashita",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Cie Ivoirienne du Cajou",
+      "b": "Cie Ghanéenne du Cajou",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "GIE Femmes de Korhogo",
+      "b": "GIE Femmes de Bouaké",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Ets Diallo",
+      "b": "Ets Baldé",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Frigorifico Almeida",
+      "b": "Frigorifico Azevedo",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "SARL Traoré Commerce",
+      "b": "SARL Touré Commerce",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Ets Sarr Commerce",
+      "b": "Ets Seck Commerce",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Groupe Diarra Import Export",
+      "b": "Groupe Diakité Import Export",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Cerealera del Plata",
+      "b": "Cerealera del Litoral",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Ets Diabaté et Koné",
+      "b": "Ets Diabaté et Cissé",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Comercial Grimaldi",
+      "b": "Comercial Grimaud",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Sté Camerounaise de Cacao",
+      "b": "Sté Camerounaise de Café",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "Cie Sénégalaise d'Import-Export",
+      "b": "Cie Gambienne d'Import-Export",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Comercio Exterior Watanabe",
+      "b": "Comercio Exterior Watanabe Bolivia",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Ets Diagne et Faye",
+      "b": "Ets Diagne et Sarr",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Agropecuária Kimura",
+      "b": "Agropecuária Kimura do Paraguai",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Ets Zongo et Cie",
+      "b": "Ets Sawadogo et Cie",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Curtume Fontanelli",
+      "b": "Curtume Fontanella",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Ets Diarrassouba Commerce",
+      "b": "Ets Diakité Commerce",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Groupe Kouadio Distribution",
+      "b": "Groupe Kouassi Distribution",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Cerealera Bacigalupo",
+      "b": "Cerealera Baccarelli",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Ets Sissoko et Frères",
+      "b": "Ets Sissoko et Neveux",
+      "verdict": "different",
+      "nature": "different-real-word"
+    },
+    {
+      "a": "Comercial del Sur",
+      "b": "Comercial del Sur Paraguay",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Ets Nasser et Fils",
+      "b": "Ets Sfeir et Fils",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Frigorífico Kobayashi",
+      "b": "Frigorífico Kawabata",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "GIE Diakité et Coulibaly",
+      "b": "GIE Diakité et Sidibé",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Comércio de Cereais Matsumoto",
+      "b": "Comércio de Sementes Matsumoto",
+      "verdict": "different",
+      "nature": "different-commodity-word"
+    },
+    {
+      "a": "Ets Abinader Frères",
+      "b": "Ets Nassif Frères",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Agropecuária Bittencourt",
+      "b": "Agropecuária Bittencourt Uruguay",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Sté Haddad Import",
+      "b": "Sté Haddad Export",
+      "verdict": "different",
+      "nature": "different-real-word"
+    },
+    {
+      "a": "SARL Diabaté Négoce",
+      "b": "SARL Camara Négoce",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Comercializadora Rocatti",
+      "b": "Comercializadora Rocca",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Ets Barry Commerce",
+      "b": "Ets Baldé Commerce",
+      "verdict": "different",
+      "nature": "different-surname"
+    }
+  ]
 }
