@@ -35,11 +35,12 @@ import { commitCourant } from "./your-alerts.ts";
 import type { Cellule } from "./measure.ts";
 import {
   frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD,
-  sembleCoupe, variationVocalique, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu, CHEMINS_APPRENTISSAGE,
+  sembleCoupe, variationVocalique, voyelleEpenthetique, squeletteLongue, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux,
+  choisirSeuils, lireJeu, CHEMINS_APPRENTISSAGE,
   CHEMIN_VERDICT, RAPPEL_MIN, BLOC_MIN, LONGUEUR_CHAMP,
   type Frequences, type NomPrepare, type Reglage, type JeuMesure,
 } from "./entites.ts";
-import { cleAbjad, type Abjad } from "./ecritures.ts";
+import { cleAbjad, cleAbjadSansTa, type Abjad } from "./ecritures.ts";
 
 /** Au plus autant de candidats montrés par nom ; le compte des autres est donné. */
 export const CANDIDATS_MONTRES = 5;
@@ -262,12 +263,17 @@ export class Index {
             ranger(this.parSqInitialeLongueur, (m.sq[0] ?? "") + m.sq.length, m);
             ranger(this.parInitiale, mot[0]!, m);
             ranger(this.parSq, m.sq, m);
+            /* la voyelle longue écrite ee (« naseem ») : rangé aussi sous son squelette lu i (voir squeletteLongue) */
+            if (mot.includes("ee")) ranger(this.parSq, squeletteLongue(mot), m);
             ranger(this.parRepli, m.repli, m);
             if (mot.includes(PERDU)) ranger(this.parLongueurPerdu, String(mot.length), m);
             for (const mode of ["a", "h"]) {
               const c = cleAbjad(mot, mode === "h");
               if (c.length >= 3) ranger(this.parCleAbjad, `${mode}|${c}`, m);
             }
+            /* la ta marbuta : un mot en « -at » se range aussi sous sa clé sans ce t (voir cleAbjadSansTa) */
+            const sansTa = cleAbjadSansTa(mot);
+            if (sansTa !== undefined && sansTa.length >= 3) ranger(this.parCleAbjad, `a|${sansTa}`, m);
           } else {
             if (m.noms[m.noms.length - 1] !== k) m.noms.push(k);
             if (nom.abreges[i]) m.abregeVu = true;
@@ -277,6 +283,8 @@ export class Index {
             m.abjadVu += mode;
             const c = cleAbjad(mot, mode === "h");
             if (c.length >= 3) ranger(this.parCleAbjadNatif, `${mode}|${c}`, m);
+            const sansTa = mode === "a" ? cleAbjadSansTa(mot) : undefined;
+            if (sansTa !== undefined && sansTa.length >= 3) ranger(this.parCleAbjadNatif, `a|${sansTa}`, m);
           }
         });
         for (const [table, longueurs, bloc] of [[this.bigrammes, this.parLongueurBloc, nom.bloc],
@@ -340,12 +348,20 @@ export class Index {
       if (lu) retenus.add(lu);
     }
     if (t <= 0.95) for (const m of this.parSq.get(sq) ?? []) retenus.add(m);
+    /* et le mot demandé qui écrit ee cherche sous son squelette lu i, où les mots listés en ee sont
+       aussi rangés : les deux sens de squeletteLongue */
+    if (t <= 0.95 && mot.includes("ee")) for (const m of this.parSq.get(squeletteLongue(mot)) ?? []) retenus.add(m);
     /* les mêmes consonnes (CREDIT_ABJAD) : un nom écrit dans un abjad face à tous les mots, un nom
        latin face aux mots que des chaînes écrites dans un abjad portent */
     if (t <= CREDIT_ABJAD) {
       for (const mode of abjad !== "" ? [abjad] : ["arabe", "hebreu"] as const) {
+        const table = abjad !== "" ? this.parCleAbjad : this.parCleAbjadNatif;
         const c = cleAbjad(mot, mode === "hebreu");
-        if (c.length >= 3) for (const m of (abjad !== "" ? this.parCleAbjad : this.parCleAbjadNatif).get(`${mode[0]}|${c}`) ?? []) retenus.add(m);
+        if (c.length >= 3) for (const m of table.get(`${mode[0]}|${c}`) ?? []) retenus.add(m);
+        /* la ta marbuta, dans les deux sens : le mot demandé en « -at » cherche aussi sous sa clé sans
+           ce t, et les mots listés en « -at » sont rangés sous la leur */
+        const sansTa = mode === "arabe" ? cleAbjadSansTa(mot) : undefined;
+        if (sansTa !== undefined && sansTa.length >= 3) for (const m of table.get(`a|${sansTa}`) ?? []) retenus.add(m);
       }
     }
     if (t <= 0.9) {
@@ -363,6 +379,13 @@ export class Index {
       }
       for (const m of this.parSqInitialeLongueur.get((sq[0] ?? "") + sq.length) ?? []) {
         if (variationVocalique(sq, m.sq) && !tousDeuxAnglais(mot, m.mot)) retenus.add(m);
+      }
+      /* la voyelle d'appui d'un groupe final (« bahr », « bahar ») : une lettre d'écart au squelette,
+         même initiale */
+      for (const L of [sq.length - 1, sq.length + 1]) {
+        for (const m of this.parSqInitialeLongueur.get((sq[0] ?? "") + L) ?? []) {
+          if (voyelleEpenthetique(sq, m.sq) && !tousDeuxAnglais(mot, m.mot)) retenus.add(m);
+        }
       }
     }
     /* la distance d'édition, sur le mot et sur son squelette : l'écart de longueur est borné
