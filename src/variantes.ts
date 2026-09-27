@@ -21,12 +21,14 @@ import { numeroDeRegistre } from "./preparation.ts";
 import { mentionDeSuccursale } from "./preparation.ts";
 import { nommeUneSociete } from "./preparation.ts";
 import { FORMES } from "./preparation.ts";
+import { FORMES_SLAVES } from "./preparation.ts";
 import { REGIONS } from "./preparation.ts";
 import { FACTEUR_CONTENANCE } from "./score.ts";
 import { succursalesCompatibles } from "./score.ts";
 import { pliCantonais } from "./mots.ts";
+import { plier } from "./preparation.ts";
 
-const ANNONCES = /[\s,;]*(?:\b(?:a[./]?\s?k[./]?\s?a\.?|f[./]?\s?k[./]?\s?a\.?|formerly(?:\s+known\s+as|\s+called)?|also\s+known\s+as|previously\s+(?:known\s+as|called)|now\s+trading\s+as|d[./]?\s?b[./]?\s?a\.?|doing\s+business\s+as|t\/a|trading\s+as|now\s+known\s+as|n\.?k\.?a\.?|antes|anciennement|vormals|ehemals|voorheen|anteriormente|dawniej)(?=[\s:,])|(?<=\p{L}[\s,]*)\bex[-.\s]+(?=\p{L}))\s*:?\s*/giu;
+const ANNONCES = /[\s,;]*(?:\b(?:a[./]?\s?k[./]?\s?a\.?|f[./]?\s?k[./]?\s?a\.?|formerly(?:\s+known\s+as|\s+called)?|also\s+known\s+as|previously\s+(?:known\s+as|called)|now\s+trading\s+as|d[./]?\s?b[./]?\s?a\.?|doing\s+business\s+as|t\/a|trading\s+as|now\s+known\s+as|n\.?k\.?a\.?|antes|anciennement|vormals|ehemals|voorheen|anteriormente|dawniej)(?=[\s:,])|(?<=\p{L}[\s,]*)\bex[-.\s]+(?=\p{L})|(?<![\p{L}])(?:δ\.?\s?τ\.?|διακριτικ[οό]ς\s+τ[ίι]τλος)(?=[\s:,«"]))\s*:?\s*/giu;
 /** La même annonce, capturée : `split` rend alors les parties ET l'annonce qui les sépare, pour savoir
  *  laquelle est le nom actuel (voir `variantesTypees`). */
 const ANNONCES_CAPTUREE = new RegExp(`(${ANNONCES.source})`, ANNONCES.flags);
@@ -65,6 +67,12 @@ const PREFIXES: readonly RegExp[] = [
      et la citation du registre pakistanais (« SECP Reg. 0012345 ») */
   /^\s*(?:jazzcash|easypaisa|m-?pesa|mpesa|tigo\s*pesa|airtel\s*money|mtn\s*momo|momo|paybill|till)\s*(?:acct|account|a\/c|no\.?|number|#)?\.?\s*:?\s*(?:\d{4,}\s*)?[:\-]?\s*/iu,
   /^\s*(?:secp|cac|brela|ursb|kra|fbr)\s+reg(?:istration|\.)?\s*(?:no\.?|#)?\s*:?\s*[a-z0-9\-/]{3,}\s+/iu,
+  /* les étiquettes grecques d'un document devant le nom (jeu 17, tour 13) : « Τιμολόγιο προς: » (facture à), « Προς: », « Επωνυμία: »
+     (raison sociale), « Πλοιοκτήτης: » (armateur), « Διαχειριστής: », « Ναυλωτής: », « Αγοραστής: », « Πωλητής: », « Δικαιούχος: »,
+     « Αποστολέας: », « Παραλήπτης: », « Πελάτης: », « Προμηθευτής: » ; le deux-points ou le tiret est exigé, comme en anglais ;
+     et le numéro fiscal grec devant le nom (« ΑΦΜ 998124567 … », neuf chiffres) */
+  /^\s*(?:τιμολ[οό]γιο\s+προς|απ[οό]δειξη\s+προς|προς|επωνυμ[ιί]α|πλοιοκτ[ηή]τ(?:ης|ρια)|διαχειρ[ιί]στ(?:ης|ρια)|ναυλωτ[ηή]ς|αγοραστ[ηή]ς|πωλητ[ηή]ς|δικαιο[υύ]χος|αποστολ[εέ]ας|παραλ[ηή]πτης|πελ[αά]της|προμηθευτ[ηή]ς)\s*[:\-\u2013]\s*/iu,
+  /^\s*(?:α\.?\s?φ\.?\s?μ\.?|afm)\s*:?\s*(?:el\s?)?\d{9}\s+/iu,
   /* « CPTE NO 4455 ETS OUATTARA » (jeu 16) : le numéro de compte devant le nom, en français, espagnol, portugais, anglais */
   /^\s*(?:cpte|compte|cta|cuenta|conta|a\/c|acct|account)\.?\s*(?:no\.?|n[°º]|nr\.?|#)?\s*:?\s*[a-z0-9\-/]{3,}\s+/iu,
 ];
@@ -87,6 +95,10 @@ const ANNOTATIONS: readonly RegExp[] = [
   /\s+(?:rfc|curp|cnpj|nit|ruc|cuit|nif)\s*:?\s*[a-z0-9][a-z0-9.\/-]{5,}\b.*$/iu,
   /\s*\(\s*(?:ruc|rfc|nit|cnpj|cuit|tel|t[eé]l|fax|imo)\b[^)]*\)/giu,
   /\s+imo\s*(?:n\/a|\d{7})\b.*$/iu,
+  /* le numéro fiscal grec derrière le nom (« ΑΦΜ 998124567 »), et le bureau des impôts qui le suit ou le précède (« ΔΟΥ ΦΑΕ ΠΕΙΡΑΙΑ » :
+     jeu 17, tour 13, 0,800 par les mots orphelins) */
+  /\s+(?:α\.?\s?φ\.?\s?μ\.?|afm)\s*:?\s*(?:el\s?)?\d{9}\b.*$/iu,
+  /\s+δ\.?\s?ο\.?\s?υ\.?\s+[\p{L}' .-]{2,40}\s*$/iu,
   /\s+as\s+agents?\s+only\s*$/iu,
   /\s+〒?\s*\d{3}-\d{4}\s+[\u3000-\u9fff].*$/u,
   /\s+persona\s+(?:f[ií]sica|moral)\b.*$/iu,
@@ -305,7 +317,13 @@ export function partieDuDocument(brut: string): string {
  *  court, trois lettres au moins (les formes de deux lettres, SA, BV, AS, couperaient « MIMOSA ») ; ce qui reste devant
  *  garde six lettres au moins ; « IMP » et « EXP » seuls n'y sont pas (« NORTHSHRIMP » perdait « IMP »). */
 const QUEUES_COLLEES = ["ENTERPRISES", "INDUSTRIES", "ENTERPRISE", "HOLDINGS", "TRADING", "TRADERS", "EXPORTS", "IMPORTS", "PTYLTD", "PTELTD",
-  "PVTLTD", "SDNBHD", "IMPEXP", "EXPIMP", "EXPORT", "IMPORT", "COLTD", "FOODS", "GROUP", "GMBH", "CORP", "LTD", "LLC", "INC", "PLC", "BHD"];
+  "PVTLTD", "SDNBHD", "IMPEXP", "EXPIMP", "EXPORT", "IMPORT", "COLTD", "FOODS", "GROUP", "GMBH", "CORP", "MCHJ", "OSOO",
+  /* et les mots du commerce des céréales d'Asie centrale et leurs russismes, que le même champ colle entre le nom et la forme
+     (« ATBASARASTYKTREID », « JETYSUAGROTREIDTOO », jeu 17, tour 13) : détachés, ils se traduisent comme ceux de l'autre nom */
+  "LOGISTIKA", "EKSPORT", "TRANZIT", "SERVIS", "ASTYK", "ASTYQ", "SAVDO", "SAUDA", "TREID", "AGRO",
+  "LTD", "LLC", "INC", "PLC", "BHD",
+  /* et les formes de la CEI et d'Asie centrale (« JETYSUAGROTREIDTOO ») */
+  "TOO", "OOO", "LLP", "JSC", "ZAO", "OAO"];
 const QUEUES_EN_MOTS: ReadonlyMap<string, string> = new Map([["PTYLTD", "PTY LTD"], ["PTELTD", "PTE LTD"], ["PVTLTD", "PVT LTD"],
   ["SDNBHD", "SDN BHD"], ["IMPEXP", "IMP EXP"], ["EXPIMP", "EXP IMP"], ["COLTD", "CO LTD"]]);
 export function decollerLesQueues(s: string): string {
@@ -348,6 +366,30 @@ export function decollerLAdresse(s: string): string {
     }
   }
   return s;
+}
+/** LA VILLE DERRIÈRE UN NOM EN CAPITALES DONT LA FORME EST EN TÊTE (« OSOO ISSYK-KUL AGRO TRANZIT BISHKEK », « MCHJ ZARAFSHON UN SAVDO
+ *  SAMARKAND », « AO … PAVLODAR KAZAKHSTAN », jeu 17, tour 13 : un mot rare orphelin, 0,688 et 0,800), ou juste devant la ville dans une
+ *  variante décollée (« JETYSU AGRO TREID TOO ALMATY », que la règle de la ville nue, lue sur le nom écrit, ne voit pas) : un port ou une
+ *  ville connus (PORTS_ET_QUARTIERS), suivis ou non de leur pays, derrière deux mots de nom au moins. En casse mêlée « Almaty » est un mot
+ *  du nom. */
+const PAYS_D_ASIE_CENTRALE = /^(?:kazakhstan|uzbekistan|kyrgyzstan|tajikistan|turkmenistan)$/;
+function sansVilleEnQueue(t: string): string {
+  if (/\p{Ll}/u.test(t)) return t;
+  const mots = t.split(/\s+/);
+  if (mots.length < 4) return t;
+  const dernier = () => normaliser(mots[mots.length - 1]!);
+  if (PAYS_MOTS.has(dernier()) || PAYS_D_ASIE_CENTRALE.test(dernier())) mots.pop();
+  const formeEnTete = FORMES.has(normaliser(mots[0]!)), formeDevant = FORMES.has(normaliser(mots[mots.length - 2] ?? ""));
+  /* la ponctuation qui séparait la ville tombe avec elle (« PT PKS RIMBA KENARI, DUMAI » rend « PT PKS RIMBA KENARI », jeu 5) */
+  return mots.length >= 4 && (formeEnTete || formeDevant) && PORTS_ET_QUARTIERS.has(dernier()) ? mots.slice(0, -1).join(" ").replace(/[\s,;:\-\u2013]+$/u, "") : t;
+}
+let LIEU_DEVANT_BRANCH: RegExp | undefined;
+/* construit à l'appel et non au chargement : FORMES vient de la préparation, qui importe ce fichier (voir CARTE.md, le cycle) */
+/** Le lieu devant « branch », sans virgule ni tiret : derrière la forme (« Kano Merchant Bank Limited Sabon Gari Branch », un ou deux mots),
+ *  ou le dernier mot d'un nom dont la forme de la CEI est en tête (« AO Uly Dala Agro Holding Almaty Branch »). */
+function lieuDevantBranch(): RegExp {
+  return (LIEU_DEVANT_BRANCH ??= new RegExp(`^(\\S+(?:\\s+\\S+)+?\\s+(?:${[...FORMES].join("|")})\\.?)\\s+[\\p{L}-]{3,}(?:\\s+[\\p{L}-]{3,})?\\s+branch\\s*$`
+    + `|^((?:${[...FORMES_SLAVES].join("|")})\\s+\\S+(?:\\s+\\S+)+?)\\s+[\\p{L}-]{3,}\\s+branch\\s*$`, "iu"));
 }
 /** Les variantes d'un nom brut, textes seuls (voir `variantesTypees`). */
 export function variantes(brut: string): string[] {
@@ -402,6 +444,15 @@ export function variantesTypees(brut: string): VarianteTypee[] {
   /* le registre écrit la personne nom d'abord : « Okeke, Chidi Building Materials » (jeu 10) */
   const inverse = /^([\p{Lu}][\p{L}'-]+),\s+([\p{Lu}][\p{L}'-]+)\s+(\p{L}.*)$/u.exec(brut.trim());
   if (inverse) poser(`${inverse[2]} ${inverse[1]} ${inverse[3]}`, false, "");
+  /* LA SUCCURSALE À LA RUSSE : « Филиал ТОО «Ертіс Астық Флот» в г. Павлодар » (« Filial … v g. Pavlodar »), le mot devant et la ville
+     derrière, sans virgule ni tiret que `mentionDeSuccursale` saurait lire ; ou l'adjectif de ville devant le mot (« Павлодарский филиал
+     ТОО «X» »). La variante est la société, et la mention garde la ville (jeu 17, tour 13 : 0,685, « filial », « v », « g », « pavlodar »
+     quatre mots orphelins ; la succursale face au nom nu est la même personne) */
+  const filiale = /^\s*(?:(\p{Lu}[\p{L}-]+(?:ский|ская|skiy|skaya|skii|skaia))\s+)?(?:филиал|філія|filial|filiya|filiala)\s+(.+?)(?:\s+(?:в|у|v|u)\s+(?:г\.?|м\.?|g\.?|городе|gorode|city of)\s*(\p{L}[\p{L}-]+))?\s*$/iu.exec(brut.trim());
+  if (filiale && filiale[2] && (filiale[1] || filiale[3]) && /\p{L}{3,}/u.test(filiale[2])) {
+    const ville = filiale[3] ?? filiale[1]!.replace(/(?:ский|ская|skiy|skaya|skii|skaia)$/iu, "");
+    poser(filiale[2], false, normaliser(plier(ville)));
+  }
   /* la forme native entre parenthèses, ou l'inverse : « BAKU OIL EXPORT (Бакинский …) »,
      « 青岛海鑫国际物流有限公司 (Qingdao Haixin International Logistics Co., Ltd.) », « Katz Miriam (כץ מרים) » :
      deux écritures du même nom, chacune une variante, aucune filiale */
@@ -456,7 +507,20 @@ export function variantesTypees(brut: string): VarianteTypee[] {
     const mention = mentionDeSuccursale(p);
     const mentionDe = (x: string) => (mention !== "" && mentionDeSuccursale(x) === "" ? mention : "");
     /* une annotation ôtée au milieu du nom (« (Est. 1887) Ltd ») laisse deux espaces : une seule */
+    /* LE LIEU DEVANT « BRANCH », sans virgule ni tiret (« Kano Merchant Bank Limited Sabon Gari Branch » ; « AO Uly Dala Agro Holding Almaty
+       Branch », jeu 17, tour 13 : « almaty » orphelin, 0,800 face au nom nu) : la mention le garde (`mentionDeSuccursale`, lue plus haut), le
+       texte le perd, et la succursale face au nom nu est la même personne, le fort. Lu AVANT les annotations, dont l'une ôte « branch » seul */
+    p = p.replace(lieuDevantBranch(), (m, forme: string | undefined, tete: string | undefined) => forme ?? tete ?? m);
     do { avant = p; for (const r of ANNOTATIONS) p = p.replace(r, "").replace(/\s{2,}/g, " ").trim(); } while (p !== avant);
+    /* la ville derrière un nom en capitales dont la forme est en tête (voir `sansVilleEnQueue`) */
+    p = sansVilleEnQueue(p);
+    /* et les mots de douze capitales au moins qui collent une forme ou un générique à leur queue (« JETYSUAGROTREIDTOO ALMATY », « TOO
+       ATBASARASTYKTREID », jeu 17, tour 13 : 0,292, la forme jamais lue) : détachés ICI, après les annotations, pour que la ville collée
+       derrière parte aussi ; une variante de plus, le nom tel qu'écrit reste */
+    if (/\s/.test(p) && !/\p{Ll}/u.test(p) && /\p{Lu}{12,}/u.test(p)) {
+      const d = sansVilleEnQueue(p.split(/\s+/).map((t) => (/^\p{Lu}{12,}$/u.test(t) ? decollerLesQueues(t) : t)).join(" "));
+      if (d !== p) poser(d, ancien, mentionDe(d));
+    }
     /* « MV RONG YUAN TAI 16 AT FANGCHENG » : derrière un navire préfixé, « at » et un lieu sont le port d'embarquement */
     p = p.replace(/^((?:m\/?v|m\/?t|ms|fv|f\/v|tb|bg|km|tug|barge)\.?\s+.{3,60}?)\s+at\s+[\p{L} .'-]{2,30}$/iu, "$1");
     /* l'adresse d'un export en fin de ligne (jeu 12) : une ville connue et un code pays (« GOTEBORG SE »), un code postal

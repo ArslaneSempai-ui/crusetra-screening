@@ -18,11 +18,14 @@ import { wadeGiles } from "./wadegiles.ts";
 /* une déclaration de fonction : elle traverse le cycle mots.ts → preparation.ts, et n'est appelée qu'à la première demande */
 import { pliJaponais } from "./mots.ts";
 import { pliSlave, clesSlaves } from "./mots.ts";
+import { clesGrecques } from "./mots.ts";
 import { traductionNordique, estFinnois, GENITIFS_FINNOIS } from "./nordique.ts";
 import { GRAPHIES_INDIENNES } from "./indien.ts";
 import { TRADUCTIONS_SWAHILIES } from "./swahili.ts";
 import { estVietnamien, LOCUTIONS_VIETNAMIENNES } from "./vietnamien.ts";
-import { lireArabizi } from "./arabizi.ts";
+import { lireGreeklish } from "./greeklish.ts";
+import { lireArabizi, lireVolapuk } from "./arabizi.ts";
+import { plierCyrilliqueTurcique, lireMelangeCyrillique, lireLatinKazakh, MARQUEURS_TURCIQUES, TRADUCTIONS_TURCIQUES } from "./asie-centrale.ts";
 import { lemme } from "./mots.ts";
 import { porteUnJalon } from "./score.ts";
 import { lettrePerdue } from "./score.ts";
@@ -56,7 +59,15 @@ export const FORMES = new Set([
   "asa", "aps", "kft", "zrt", "nyrt", "sro", "doo", "ad", "eood", "ood",
   /* Amérique latine ; « Lda » au Portugal, en Angola, au Mozambique (jeu 10) */ "ltda", "lda", "eireli", "cv", "sapi", "sac", "saa",
   /* Russie et CEI */ "ooo", "oao", "zao", "pao", "ao", "jsc", "pjsc", "ojsc", "cjsc", "too",
+  /* Asie centrale (tour 13, jeu 17) : la ЖШС kazakhe telle que la translittération l'écrit et sous ses trois latins (JShS, JŞS,
+     JS'S : « jss » une fois l'apostrophe et la cédille parties), l'АҚ (AQ), la МЧЖ ouzbèke (MChJ), l'АЖ, la ЯТТ (l'entrepreneur
+     ouzbek), l'ОсОО kirghize (OsOO) et la ЖЧК ; l'entrepreneur individuel ИП, ЖК et IE, en tête seulement (voir le filtre) */
+  "zhshs", "jshs", "jss", "aq", "mchj", "mchzh", "azh", "yatt", "osoo", "zhchk", "zhk", "ip", "ie",
   /* Ukraine, Grèce, Vietnam, Thaïlande */ "prat", "pat", "tov", "ae", "epe", "ike", "oe", "ee", "sia", "tnhh", "chamkat", "jamkat",
+  /* la Grèce encore : l'Ε.Ν.Ε. (ειδική ναυτική επιχείρηση, la société armatrice de la loi 2843/2000), la Μ.Ε.Π.Ε. (l'ΕΠΕ
+     unipersonnelle), et l'adjectif « Ανώνυμη » (anonymi, anonimi) de l'Α.Ε. écrite en toutes lettres, qui se sépare de son
+     « Εταιρεία » par les mots du métier (« Ανώνυμη Εμπορική Εταιρεία » : jeu 17, tour 13) */
+  "ene", "mepe", "anonymi", "anonimi", "anonymos", "anonimos",
   /* Estonie (OÜ, écrit « OU » dans un export sans trémas : en queue seulement, voir le filtre), Lituanie (UAB) ; la SIA lettone
      est déjà là sous la grecque */ "ou", "uab",
   /* désignations russes */ "npp", "npo", "npk", "npf", "pkf",
@@ -73,7 +84,7 @@ export const FORMES = new Set([
  *  (« Ag. Prokopis » est « Agios », « As-Salam » un article arabe). Les formes russes, elles,
  *  se placent devant (« OOO Kamaflot ») et restent retirées partout. */
 const FORMES_FINALES = new Set(["ag", "se", "sa", "as", "ad", "ab", "sl", "kg", "nv", "bv", "oy",
-  "spa", "srl", "sas", "snc", "sac", "sti", "est", "kk", "gk", "yk", "cv", "ae", "epe", "ike",
+  "spa", "srl", "sas", "snc", "sac", "sti", "est", "kk", "gk", "yk", "cv", "ae", "epe", "ike", "ene", "mepe",
   /* « Teo. » (Teoranta) ferme un nom irlandais ; en tête, « Teo » est une syllabe teochew (« Teo Heng », jeu 9) */
   "teo"]);
 /** Les formes écrites en plusieurs mots, retirées AVANT les mots isolés (sinon « liability »
@@ -83,6 +94,13 @@ const FORMES_FINALES = new Set(["ag", "se", "sa", "as", "ad", "ab", "sl", "kg", 
 const PHRASES = [
   " obshchestvo s ogranichennoi otvetstvennostyu ", " obshchestvo s ogranichennoy otvetstvennostyu ",
   " tovarishchestvo s ogranichennoi otvetstvennostyu ",
+  /* les mêmes en -iu (la translittération des banques et des registres : « otvetstvennostiu »), la ЖШС kazakhe en toutes lettres
+     (жауапкершілігі шектеулі серіктестік, en cyrillique national ou dans le latin de 2021), la МЧЖ ouzbèke (mas'uliyati cheklangan
+     jamiyat) et l'АЖ (aksiyadorlik jamiyati), la ЖЧК kirghize (жоопкерчилиги чектелген коом), l'АҚ kazakhe (акционерлік қоғам) :
+     tour 13, jeu 17 */
+  " obshchestvo s ogranichennoi otvetstvennostiu ", " tovarishchestvo s ogranichennoi otvetstvennostiu ",
+  " zhauapkershiligi shekteuli seriktestik ", " jauapkershiligi shekteuli seriktestik ", " masuliyati cheklangan jamiyat ",
+  " masuliyati cheklangan zhamiyat ", " aksiyadorlik jamiyati ", " zhoopkerchiligi chektelgen koom ", " aktsionerlik kogam ", " aksionerlik qogam ",
   " publichnoe aktsionernoe obshchestvo ", " zakrytoe aktsionernoe obshchestvo ",
   " otkrytoe aktsionernoe obshchestvo ", " aktsionernoe obshchestvo ",
   " public joint stock company ", " closed joint stock company ", " open joint stock company ",
@@ -92,6 +110,8 @@ const PHRASES = [
   " private joint stock ", " public joint stock ", " closed joint stock ", " open joint stock ",
   " sherkat sahami khas ", " sherkate sahami khas ", " sahami khas ", " sahami khass ", " sahami amm ",
   " public company limited ", " designated activity company ", " perseroan terbatas ",
+  /* la Grèce : l'Ε.Ν.Ε. en anglais, et l'Α.Ε. en toutes lettres (jeu 17, tour 13) */
+  " special maritime enterprise ", " anonymi etaireia ", " anonimi etairia ", " anonymos etaireia ", " anonimos etairia ",
   " osauhing ", " aktsiaselts ", " anpartsselskab ", " sabiedriba ar ierobezotu atbildibu ", " uzdaroji akcine bendrove ",
   " usaha dagang ", " commanditaire vennootschap ", " perseroan komanditer ", " sole proprietor company ", " sole proprietorship company ",
   /* la FZ-LLC, que le tiret coupe en deux jetons, et sa forme en toutes lettres : lues AVANT la « limited liability
@@ -271,7 +291,7 @@ function traductionsJaponaisesPliees(): ReadonlyMap<string, string> {
 /** La traduction d'un mot du commerce ; `japonais` : le nom porte une forme ou un mot japonais, et ses mots de métier
  *  se cherchent aussi sous le pli des deux romanisations (« Oomura Kogyou K.K. » : kogyou restait un mot rare orphelin
  *  face à « industry », jeu 11, 28/09 : 0,361). Sans cette marque, « Teko » n'est pas « tekko » et reste un nom. */
-function traduction(j: string, japonais = false, slave = false): string | undefined {
+function traduction(j: string, japonais = false, slave = false, grec = false): string | undefined {
   const t = TRADUCTIONS.get(j);
   if (t !== undefined) return t;
   /* un générique finnois, suédois, danois ou norvégien, seul ou composé de deux (« satamapalvelu », « hamntjänst » : port
@@ -283,6 +303,9 @@ function traduction(j: string, japonais = false, slave = false): string | undefi
   /* et sous la marque slave, les mots du commerce et les grades sous le pli des romanisations du cyrillique */
   /* sous chacune de ses clés, l'allemande comprise (« Sawod » est zavod, plant : voir `clesSlaves`) */
   if (slave) for (const k of clesSlaves(j)) { const s = TRADUCTIONS.get(k) ?? traductionsSlavesPliees().get(k); if (s !== undefined) return s; }
+  /* et sous la présomption grecque, les mots du commerce grec sous chacune de leurs clés (« Nautiki » est naftiki, shipping ;
+     « naulomesitikh » est navlomesitiki, chartering : voir `traductionsGrecquesPliees`) */
+  if (grec) for (const k of clesGrecques(j)) { const g = traductionsGrecquesPliees().get(k); if (g !== undefined) return g; }
   if (!japonais) return undefined;
   return traductionsJaponaisesPliees().get(pliJaponais(j));
 }
@@ -372,6 +395,12 @@ export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   naftika: "marine", naftiko: "marine", naftikos: "marine", lipantika: "lubricants",
   etaireia: "", etairia: "", emporiki: "trading", viomichaniki: "industrial", viomichania: "industry", techniki: "technical",
   kataskevastiki: "construction", metaforiki: "transport", touristiki: "tourism",
+  /* et les mots du commerce grec des documents (jeu 17, tour 13) : l'approvisionnement des navires (« Efodiastiki »), l'avitaillement
+     (« Trofodosiai »), le courtage d'affrètement (« Navlomesitiki »), les minoteries (« Alevromyloi »), les céréales (« Sitira »), les
+     frères (« Afoi », Αφοί, que l'anglais écrit Brothers ou Bros). Leurs autres graphies (« Nautiki », « naulomesitikh ») se lisent
+     sous les clés grecques, sous la présomption grecque seulement (voir `traduction`) */
+  efodiastiki: "supplies", trofodosiai: "provisions", trofodosia: "provisions", trofodosies: "provisions", navlomesitiki: "chartering",
+  alevromyloi: "flour mills", alevromylos: "flour mill", sitira: "grain", afoi: "brothers", aphoi: "brothers", adelfoi: "brothers", adelphoi: "brothers",
   /* turc (jeu 12 : « Gemicilik » est « Shipping », « Çelik Ticaret » est « Steel Trading ») ; « un » (farine) n'y est pas,
      c'est l'article français */
   gemicilik: "shipping", komur: "coal", celik: "steel", urunleri: "products", urun: "product", yem: "feed", hububat: "grain",
@@ -521,6 +550,11 @@ export const REGISTRES: readonly RegExp[] = [
   /* le numéro de société japonais (法人番号, treize chiffres), entre parenthèses ou en tête, suivi d'un tiret ou d'un deux-points
      (« Corporate Number 8011001077453 », puis le nom, jeu 11 : un numéro d'un seul côté, 0,800) */
   /(?:\(\s*)?(?:法人番号|corporate\s+number|hojin\s+bango)\s*:?\s*\d{13}(?:\s*\)|\s*[-\u2013\u2014:])?/giu,
+  /* les numéros fiscaux d'Asie centrale, en tête ou en queue, en cyrillique ou en latin : le BIN et l'IIN kazakhs (douze chiffres),
+     l'INN kirghize (quatorze), le STIR ouzbek (neuf), l'INN, l'OGRN et le KPP russes (jeu 17, tour 13 : « ТОО «Сарыөзек Астық
+     Логистика» БИН 160240019875 » à 0,733, « ИНН 02511201910172 ОсОО «Талас Дан Азык» » à 0,800, le numéro d'un seul côté) */
+  /[\s,;(]+(?:бин|иин|инн|огрн|кпп|окпо|стир|бсн|жсн|bin|iin|inn|ogrn|kpp|okpo|stir|bsn|zhsn)\s*(?:№|no\.?|:)?\s*\d{8,15}(?:\s*\/\s*\d{6,12})?\s*\)?\s*$/giu,
+  /^\s*(?:бин|иин|инн|огрн|стир|бсн|жсн|bin|iin|inn|ogrn|stir|bsn|zhsn)\s*(?:№|no\.?|:)?\s*\d{8,15}\s+/giu,
 ];
 /** Les numéros de registre d'un nom brut, chiffres seuls, triés ; « » sans numéro. */
 export function numeroDeRegistre(brut: string): string {
@@ -566,7 +600,10 @@ export function mentionDeSuccursale(brut: string): string {
   /* sans virgule, le lieu suit la forme juridique : « Kano Merchant Bank Limited Sabon Gari Branch » */
   let j = -1;
   for (let k = 0; k < i; k++) if (FORMES.has(mots[k]!)) j = k;
-  const place = j >= 0 ? mots.slice(j + 1, i).filter((m) => !VIDES_DE_MENTION.has(m)) : [];
+  let place = j >= 0 ? mots.slice(j + 1, i).filter((m) => !VIDES_DE_MENTION.has(m)) : [];
+  /* la forme EN TÊTE (« AO Uly Dala Agro Holding Almaty Branch », jeu 17, tour 13) : tout le nom la suit, et le lieu est le dernier mot
+     devant « branch » */
+  if (j === 0 && place.length > 3) place = place.slice(-1);
   return place.length > 0 && place.length <= 3 ? place.join(" ") : "branch";
 }
 
@@ -779,6 +816,10 @@ export function plier(nom: string): string {
  *  autres écritures (hangul, arabe et persan, hébreu, sinogrammes) ont déjà été lues par
  *  `romaniser` (ecritures.ts), qui rend des jetons latins et traduit leurs mots du commerce. */
 function plierLatin(nom: string): string {
+  /* l'Asie centrale d'abord (tour 13, voir asie-centrale.ts) : les lettres latines qu'une lecture optique glisse dans un mot cyrillique
+     (« ATБACAP »), les lettres kazakhes, ouzbèkes et kirghizes ramenées au clavier russe (Ақжайық, Акжайык), et les alphabets latins
+     kazakhs de 2017, 2018 et 2021 lus dans le latin ancien des documents (Ko'ks'etau, Şyğys : Kokshetau, Shygys) */
+  nom = lireLatinKazakh(plierCyrilliqueTurcique(lireMelangeCyrillique(nom)));
   const latin = /[\u0400-\u04ff]/.test(nom) ? translitterer(nom.toLowerCase()) : nom;
   return grec(latin.replace(/[ıİłŁøØđĐħĦßæÆœŒþÞðÐəƏ]/g, (c) => LETTRES_SANS_BASE[c] ?? c));
 }
@@ -794,9 +835,19 @@ const GREC_LETTRES: Readonly<Record<string, string>> = {
   α: "a", β: "v", γ: "g", δ: "d", ε: "e", ζ: "z", η: "i", θ: "th", ι: "i", κ: "k", λ: "l", μ: "m", ν: "n",
   ξ: "x", ο: "o", π: "p", ρ: "r", σ: "s", ς: "s", τ: "t", υ: "y", φ: "f", χ: "ch", ψ: "ps", ω: "o",
 };
+/** Les capitales latines qu'une capitale grecque a pour jumelle exacte : A Α, B Β, E Ε, Z Ζ, H Η, I Ι, K Κ, M Μ, N Ν, O Ο, P Ρ, T Τ,
+ *  Y Υ, X Χ. Une saisie qui tape les capitales communes sur le clavier latin, ou une lecture optique qui les rend latines,
+ *  laisse un mot mêlé (« MAPOYΛHΣ EΦOΔIAΣTIKH » : jeu 17, tour 13, 0,481 face à « Maroulis Efodiastiki S.A. », deux mots rares
+ *  sans répondant). Dans un mot qui porte une lettre grecque et rien d'autre de latin que ces capitales, elles sont grecques ;
+ *  un mot où traîne une autre lettre latine (« ΜARSHALL » avec un Μ grec : R, S, L) n'est pas touché, lettre à lettre suffit. */
+const HOMOGLYPHES_GRECS: Readonly<Record<string, string>> = {
+  A: "Α", B: "Β", E: "Ε", Z: "Ζ", H: "Η", I: "Ι", K: "Κ", M: "Μ", N: "Ν", O: "Ο", P: "Ρ", T: "Τ", Y: "Υ", X: "Χ",
+};
 function grec(nom: string): string {
   if (!/[\u0370-\u03ff]/.test(nom)) return nom;
-  const bas = nom.normalize("NFD").replace(/\p{M}+/gu, "").toLowerCase();
+  const relu = nom.replace(/\p{L}+/gu, (w) => (/[\u0370-\u03ff]/.test(w) && /[ABEZHIKMNOPTYX]/.test(w) && !/[^\u0370-\u03ffABEZHIKMNOPTYX]/u.test(w)
+    ? w.replace(/[ABEZHIKMNOPTYX]/g, (c) => HOMOGLYPHES_GRECS[c] ?? c) : w));
+  const bas = relu.normalize("NFD").replace(/\p{M}+/gu, "").toLowerCase();
   return bas
     .replace(/(α|ε)υ(?=[θκξπστφχψ]|$|[^\p{L}])/gu, (_, v: string) => (v === "α" ? "af" : "ef"))
     .replace(/(α|ε)υ/g, (_, v: string) => (v === "α" ? "av" : "ev"))
@@ -951,10 +1002,20 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["BR", "CO", "CL", "PT"], ["ltda", "limitada", "sociedade limitada"]);
   poser(["PT", "AO", "MZ", "CV"], ["lda"]);
   poser(["BR"], ["eireli", "empresa individual de responsabilidade limitada"]);
-  poser(["RU", "BY", "KZ", "UZ", "UA", "KG", "TJ", "AM", "AZ", "GE"], ["ooo", "oao", "zao", "pao", "ao", "jsc", "pjsc", "ojsc", "cjsc", "too",
-    "obshchestvo s ogranichennoi otvetstvennostyu", "obshchestvo s ogranichennoy otvetstvennostyu",
-    "tovarishchestvo s ogranichennoi otvetstvennostyu", "publichnoe aktsionernoe obshchestvo",
-    "zakrytoe aktsionernoe obshchestvo", "otkrytoe aktsionernoe obshchestvo", "aktsionernoe obshchestvo"]);
+  poser(["RU", "BY", "KZ", "UZ", "UA", "KG", "TJ", "AM", "AZ", "GE"], ["oao", "zao", "pao", "ao", "jsc", "pjsc", "ojsc", "cjsc",
+    "publichnoe aktsionernoe obshchestvo", "zakrytoe aktsionernoe obshchestvo", "otkrytoe aktsionernoe obshchestvo", "aktsionernoe obshchestvo"]);
+  /* l'OOO n'existe pas au Kazakhstan, dont la société à responsabilité limitée est le TOO (товарищество, ЖШС), et le TOO n'existe
+     que là : « Bukhara Don Savdo OOO » et « Bukhara Don Savdo TOO » sont deux immatriculations, l'ouzbèke et la kazakhe (jeu 17,
+     tour 13 : 1,000, une fausse alerte forte). Les formes kazakhes, ouzbèkes et kirghizes disent chacune leur pays ; l'ИП, lui, est
+     l'entrepreneur individuel de toute la CEI */
+  poser(["RU", "BY", "UZ", "UA", "KG", "TJ", "AM", "AZ", "GE"], ["ooo", "obshchestvo s ogranichennoi otvetstvennostyu",
+    "obshchestvo s ogranichennoy otvetstvennostyu", "obshchestvo s ogranichennoi otvetstvennostiu"]);
+  poser(["KZ"], ["too", "zhshs", "jshs", "jss", "aq", "zhk", "tovarishchestvo s ogranichennoi otvetstvennostyu",
+    "tovarishchestvo s ogranichennoy otvetstvennostyu", "tovarishchestvo s ogranichennoi otvetstvennostiu",
+    "zhauapkershiligi shekteuli seriktestik", "jauapkershiligi shekteuli seriktestik", "aktsionerlik kogam", "aksionerlik qogam"]);
+  poser(["UZ"], ["mchj", "mchzh", "azh", "yatt", "masuliyati cheklangan jamiyat", "masuliyati cheklangan zhamiyat", "aksiyadorlik jamiyati"]);
+  poser(["KG"], ["osoo", "zhchk", "zhoopkerchiligi chektelgen koom"]);
+  poser(["RU", "BY", "KZ", "UZ", "KG", "TJ", "AM", "AZ", "GE"], ["ip"]);
   /* « joint stock company » écrit en anglais n'a PAS de pays : la Pologne (« Spółka Akcyjna »), le
      Vietnam, le Golfe, la Bulgarie le traduisent ainsi ; le lier à la CEI faisait un conflit de pays
      entre « Sokołowiec Chemical Works Spółka Akcyjna » et « … Joint-Stock Company » (27/09) */
@@ -990,7 +1051,8 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["RU", "BY", "KZ", "UA"], ["npp", "npo", "npk", "npf", "pkf", "nauchno proizvodstvennoe predpriyatie",
     "nauchno proizvodstvennoe obedinenie", "nauchno proizvodstvennyi kompleks", "nauchno proizvodstvennaya firma",
     "proizvodstvenno kommercheskaya firma", "proizvodstvennoe obedinenie"]);
-  poser(["GR", "CY"], ["ae", "epe", "ike", "oe", "ee"]);
+  poser(["GR", "CY"], ["ae", "epe", "ike", "oe", "ee", "ene", "mepe", "anonymi", "anonimi", "anonymos", "anonimos",
+    "special maritime enterprise", "anonymi etaireia", "anonimi etairia", "anonymos etaireia", "anonimos etairia"]);
   /* « SIA » est la société lettone (sabiedrība ar ierobežotu atbildību) autant que le « & Cie » grec (ΣΙΑ) */
   poser(["GR", "CY", "LV"], ["sia"]);
   poser(["FI"], ["oy", "oyj"]); poser(["SE"], ["ab"]); poser(["HU"], ["kft", "zrt", "nyrt"]);
@@ -1024,7 +1086,12 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   /* l'AT ukrainien (акціонерне товариство), PrAT et PAT : la société par actions, comme JSC et AO */
   poser(["corp"], ["pryvatne aktsionerne tovarystvo", "publichne aktsionerne tovarystvo", "aktsionerne tovarystvo"]);
   /* le TOO kazakh (товарищество с ограниченной ответственностью) se traduit LLP, LLC ou Ltd */
-  poser(["ltd", "llc", "part"], ["too", "tovarishchestvo s ogranichennoi otvetstvennostyu", "tovarishchestvo s ogranichennoy otvetstvennostyu"]);
+  poser(["ltd", "llc", "part"], ["too", "zhshs", "jshs", "jss", "tovarishchestvo s ogranichennoi otvetstvennostyu", "tovarishchestvo s ogranichennoy otvetstvennostyu",
+    "tovarishchestvo s ogranichennoi otvetstvennostiu", "zhauapkershiligi shekteuli seriktestik", "jauapkershiligi shekteuli seriktestik"]);
+  /* la МЧЖ ouzbèke et l'ОсОО kirghize se traduisent LLC ou Ltd comme l'OOO ; l'АҚ kazakhe et l'АЖ ouzbèke sont la société par actions (tour 13) */
+  poser(["ltd", "llc"], ["mchj", "mchzh", "osoo", "zhchk", "masuliyati cheklangan jamiyat", "masuliyati cheklangan zhamiyat",
+    "zhoopkerchiligi chektelgen koom", "obshchestvo s ogranichennoi otvetstvennostiu"]);
+  poser(["corp"], ["aq", "azh", "aksiyadorlik jamiyati", "aktsionerlik kogam", "aksionerlik qogam"]);
   poser(["ltd", "corp"], ["pt", "perseroan terbatas", "tbk", "ud", "usaha dagang", "commanditaire vennootschap", "perseroan komanditer", "pcl", "public company limited", "teoranta", "teo", "dac", "designated activity company"]);
   poser(["corp"], ["private joint stock company", "private joint stock", "public joint stock", "closed joint stock", "open joint stock",
     "sherkat sahami khas", "sherkate sahami khas", "sahami khas", "sahami amm",
@@ -1032,7 +1099,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "sociedad anonima unipersonal", "sociedad anonima de capital variable"]);
   poser(["part"], ["scea", "gaec", "earl"]);
   poser(["llc"], ["llc", "pllc", "gmbh", "mbh", "gesellschaft mbh", "handelsgesellschaft mbh", "ug", "sarl", "eurl", "sprl", "bvba", "srl", "sl", "slu", "bv", "aps", "kft", "sro",
-    "doo", "eood", "ood", "epe", "ike", "wll", "spc", "mmc", "s de rl", "s de rl de cv",
+    "doo", "eood", "ood", "wll", "spc", "mmc", "s de rl", "s de rl de cv",
     "limited liability company", "obshchestvo s ogranichennoi otvetstvennostyu", "obshchestvo s ogranichennoy otvetstvennostyu",
     "gesellschaft mit beschrankter haftung",
     "societe a responsabilite limitee", "sociedad limitada", "sociedad de responsabilidad limitada",
@@ -1056,6 +1123,12 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "and co kg", "kgaa", "gbr", "sce", "gesellschaft mbh co kg", "handelsgesellschaft mbh co kg"]);
   poser(["llc"], ["mbh"]);
   poser(["ltd", "llc"], ["lda"]);
+  /* l'Ε.Π.Ε. et l'Ι.Κ.Ε. grecques (εταιρεία περιορισμένης ευθύνης, ιδιωτική κεφαλαιουχική εταιρεία) s'écrivent Ltd autant que
+     LLC dans les documents en anglais (« Mavroyenis … E.P.E. », « Mavrogenis … Ltd », jeu 17 : 0,800 par le seul conflit) ;
+     l'Ε.Ν.Ε. et l'Ανώνυμη Εταιρεία sont la société par actions */
+  poser(["ltd", "llc"], ["epe", "ike", "mepe"]);
+  poser(["corp"], ["ene", "special maritime enterprise", "anonymi", "anonimi", "anonymos", "anonimos", "anonymi etaireia", "anonimi etairia",
+    "anonymos etaireia", "anonimos etairia"]);
   poser(["est"], ["est", "establishment", "establishments", "sole proprietorship"]);
   return t;
 })();
@@ -1236,8 +1309,24 @@ const MARQUEURS_HISPANIQUES = new Set(["distribuidora", "comercial", "comerciali
 const MARQUEURS_HEBREUX = new Set(["yam", "kfar", "kokhav", "kochav", "yarden", "shachar", "shahar", "galil", "hagalil", "kibbutz",
   "moshav", "negev", "haifa", "aviv", "ashdod", "eilat", "israel", "israeli", "beit", "bet", "tzafrir", "zafrir", "sde", "sdeh"]);
 const MARQUEURS_GRECS = new Set(["kai", "sia", "naftiliaki", "naftiki", "emporiki", "viomichaniki", "techniki", "kataskevastiki", "ellas",
-  "hellas", "elliniki", "hellenic", "piraeus", "pireas", "athens", "athina", "thessaloniki", "patras", "afoi", "aphoi", "adelfoi", "kapetan"]);
+  "hellas", "elliniki", "hellenic", "piraeus", "pireas", "athens", "athina", "thessaloniki", "patras", "afoi", "aphoi", "adelfoi", "kapetan",
+  /* les mots du commerce grec des documents (jeu 17, tour 13) : l'approvisionnement, l'avitaillement, le courtage d'affrètement,
+     les minoteries, les céréales, l'« Εταιρεία » et son « Ανώνυμη » */
+  "efodiastiki", "trofodosiai", "trofodosia", "trofodosies", "navlomesitiki", "naulomesitiki", "alevromyloi", "alevromylos", "sitira",
+  "etaireia", "etairia", "anonymi", "anonimi", "anonymos", "anonimos", "efoplistiki", "diacheiristiki", "metaforiki", "touristiki"]);
+/** Les mêmes marqueurs sous leurs clés grecques (`clesGrecques`) : « nautiki », « naftikh », « emporikh » marquent comme « naftiki »
+ *  et « emporiki ». Les mots courts (kai, sia) n'y sont pas : leur clé serait celle de trop de mots d'ailleurs. */
+const MARQUEURS_GRECS_PLIES: ReadonlySet<string> = new Set([...MARQUEURS_GRECS].filter((m) => m.length >= 5).flatMap((m) => [...clesGrecques(m)]));
+/** Les formes grecques en lettres latines, que la présomption grecque lit avant les tables (voir `analyserEntite`). */
+const FORMES_GRECQUES = new Set(["ae", "epe", "ike", "oe", "ee", "ene", "mepe", "anonymi", "anonimi", "anonymos", "anonimos"]);
 const SUFFIXES_GRECS = /(akis|opoulos|poulos|ides|idis|iadis|iotis|iki|ikos|ellis)$/;
+/** Un mot latin qui dit le grec : un marqueur, sous sa graphie ou sous l'une de ses clés grecques (« nautiki », « emporikh »), un
+ *  suffixe de patronyme dans un mot de six lettres au moins, ou le σχ du greeklish (« isxyros », « sxolh »), qu'aucune autre
+ *  graphie latine n'écrit. */
+function estMarqueurGrec(j: string): boolean {
+  return MARQUEURS_GRECS.has(j) || (j.length >= 6 && SUFFIXES_GRECS.test(j)) || j.includes("sx")
+    || (j.length >= 5 && clesGrecques(j).some((k) => MARQUEURS_GRECS_PLIES.has(k)));
+}
 const MARQUEURS_JAPONAIS = new Set(["kk", "gk", "yk", "kabushiki", "kaisha", "gaisha", "kabushikigaisha", "godo", "yugen", "kogyo", "kougyou", "shoji",
   "shouji", "sangyo", "sangyou", "seisakusho", "boeki", "boueki", "denki", "kagaku", "seiko", "jidosha", "unyu", "kaiun", "kaihatsu",
   "tsusho", "maru",
@@ -1272,7 +1361,9 @@ const MARQUEURS_SLAVES = new Set(["torgovyy", "torgovyi", "torgovy", "torgovyj",
   "aktsionernoe", "aktsionerne", "publichnoe", "publichne", "pryvatne", "zakrytoe", "otkrytoe", "nauchno", "proizvodstvennoe",
   "proizvodstvenno", "kapitan", "shkiper", "matros", "botsman", "bocman", "teplokhod", "teplohod"]);
 /** Les formes de la CEI et d'Ukraine, telles que le nom les écrit (voir FORMES) : elles marquent un nom slave. */
-const FORMES_SLAVES = new Set(["ooo", "oao", "zao", "pao", "ao", "too", "tov", "prat", "pat", "npp", "npo", "npk", "npf", "pkf", "fop", "chp", "flp", "spd"]);
+export const FORMES_SLAVES = new Set(["ooo", "oao", "zao", "pao", "ao", "too", "tov", "prat", "pat", "npp", "npo", "npk", "npf", "pkf", "fop", "chp", "flp", "spd",
+  /* et celles d'Asie centrale (tour 13, voir FORMES) : un nom kazakh, ouzbek ou kirghiz se lit sous le pli slave */
+  "zhshs", "jshs", "jss", "aq", "mchj", "mchzh", "azh", "yatt", "osoo", "zhchk", "zhk"]);
 /** Les suffixes des noms propres slaves (Petrov, Belyaev, Tkachyov, Petrova ; Brodsky, Salskiy, Kubanskaya, Donskaja,
  *  Rostovskoye ; Shevchenko, Kovalchuk, Semenyuk ; Ivanovich, Petrović) : sur un mot d'au moins six lettres que le
  *  dictionnaire ignore (« whisky », « husky », « Geneva », « nova » sont des mots anglais). Et les queues des composés
@@ -1309,9 +1400,28 @@ function traductionsSlavesPliees(): ReadonlyMap<string, string> {
     const m = new Map<string, string>();
     for (const [k, v] of TRADUCTIONS) { const p = pliSlave(k); if (p !== k && !m.has(p)) m.set(p, v); }
     for (const [k, v] of TRADUCTIONS_SLAVES) m.set(pliSlave(k), v);
+    /* et les mots du commerce d'Asie centrale (tour 13, voir asie-centrale.ts), sous le même pli : astyq et astyk, treid, savdo */
+    for (const [k, v] of TRADUCTIONS_TURCIQUES) m.set(pliSlave(k), v);
     TRADUCTIONS_SLAVES_PLIEES = m;
   }
   return TRADUCTIONS_SLAVES_PLIEES;
+}
+/** Les mots du commerce grec (ceux des marqueurs que TRADUCTIONS traduit) sous chacune de leurs clés grecques (`clesGrecques`) : c'est là
+ *  que « Nautiki », « naftikh », « emporikh », « naulomesitikh » retrouvent shipping, trading, chartering, sous la présomption grecque
+ *  seulement (jeu 17, tour 13 : « Xenofontos Naftiki E.P.E. » face à « Ksenofontos Nautiki EPE » à 0,236, un côté traduit et l'autre
+ *  non). Les mots courts (kai, sia) n'y sont pas, comme dans MARQUEURS_GRECS_PLIES. */
+let TRADUCTIONS_GRECQUES_PLIEES: ReadonlyMap<string, string> | undefined;
+function traductionsGrecquesPliees(): ReadonlyMap<string, string> {
+  if (!TRADUCTIONS_GRECQUES_PLIEES) {
+    const m = new Map<string, string>();
+    for (const mot of MARQUEURS_GRECS) {
+      const t = TRADUCTIONS.get(mot);
+      if (t === undefined || mot.length < 5) continue;
+      for (const k of clesGrecques(mot)) if (!m.has(k)) m.set(k, t);
+    }
+    TRADUCTIONS_GRECQUES_PLIEES = m;
+  }
+  return TRADUCTIONS_GRECQUES_PLIEES;
 }
 const MARQUEURS_CHINOIS = new Set(["youxian", "gongsi", "gufen", "zeren", "maoyi", "jinchukou", "keji", "dianzi", "gongye", "shiye",
   "zhizao", "jituan", "guoji", "wuliu", "huoyun", "hangyun", "jixie", "huagong", "fangzhi", "fuzhuang", "shipin", "jinshu",
@@ -1400,7 +1510,20 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* les chiffres de l'arabizi (« Mo7ammed », « Al 3'ubaiba », « 5alfan ») lus en lettres AVANT la normalisation, qui
      couperait l'apostrophe de 3', et avant `ocr`, qui lirait le 5 comme un s (voir arabizi.ts) ; le 5 et le 8, que la lecture
      optique lit aussi, exigent un marqueur arabe parmi les mots et un nom hors des capitales */
-  const arabizi = /\d/.test(soude) ? lireArabizi(soude, jetons(normaliser(soude)).some((j) => MARQUEURS_ARABES.has(j))) : { texte: soude, lu: false };
+  /* et, avant lui, les chiffres du greeklish (8 pour θ, 3 pour ξ, 4 pour ψ : « kymo8oh », « 8alassopori », « 3enofontos »), que
+     l'arabizi lirait comme un ayn et la lecture optique comme un B ou un a (voir greeklish.ts) : le 8 se lit seul dans un mot de
+     minuscules hors d'un marqueur arabe, le 3 et le 4 sous une présomption grecque parmi les mots (une forme, un marqueur, un
+     suffixe : voir `estMarqueurGrec`) */
+  const motsAvantChiffres = jetons(normaliser(soude));
+  const marqueurArabe = motsAvantChiffres.some((j) => MARQUEURS_ARABES.has(j));
+  const greeklish = /[834]/.test(soude)
+    ? lireGreeklish(soude, motsAvantChiffres.some((j) => FORMES_GRECQUES.has(j) || estMarqueurGrec(j)), marqueurArabe) : { texte: soude, lu: false };
+  soude = greeklish.texte;
+  /* le volapuk des clavardages russes et kazakhs (« 6ygys », « guru4 » : ш et ч), lu AVANT l'arabizi, qui lirait le 6 comme un ط sans
+     aucun marqueur arabe, et sous une présomption slave seulement : le cyrillique, une forme de la CEI, un mot du commerce russe ou
+     d'Asie centrale (voir arabizi.ts) */
+  const volapuk = /[46]/.test(soude) ? lireVolapuk(soude, /[Ѐ-ӿ]/.test(nom) || jetons(normaliser(soude)).some((j) => FORMES_SLAVES.has(j) || MARQUEURS_SLAVES.has(j) || MARQUEURS_TURCIQUES.has(j))) : { texte: soude, lu: false };
+  const arabizi = /\d/.test(volapuk.texte) ? lireArabizi(volapuk.texte, jetons(normaliser(volapuk.texte)).some((j) => MARQUEURS_ARABES.has(j))) : { texte: volapuk.texte, lu: false };
   soude = arabizi.texte
     /* l'élision française et italienne (« d'Import-Export », « l'Industrie », « Côte d'Ivoire ») : la préposition ou
        l'article tombe et le mot reste entier (jeu 10, 27/09 : « dimport » face à « import », 0,728). La minuscule d
@@ -1436,7 +1559,13 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      de nom propre (voir `Marques.slave`) : lue ici, avant les tables, parce que ses mots du commerce se traduisent sous
      le pli des romanisations du cyrillique et que « AT » en tête y est une forme */
   const slave = /[Ѐ-ӿ]/.test(nom) || teplokhod
-    || jetons(normaliser(plier(soude))).some((j) => MARQUEURS_SLAVES.has(j) || FORMES_SLAVES.has(j) || suffixeSlave(j));
+    || jetons(normaliser(plier(soude))).some((j) => MARQUEURS_SLAVES.has(j) || FORMES_SLAVES.has(j) || MARQUEURS_TURCIQUES.has(j) || suffixeSlave(j));
+  /* le nom est grec par son écriture, une forme grecque en lettres latines (Α.Ε., Ε.Π.Ε., Ι.Κ.Ε., Ο.Ε., Ε.Ν.Ε.), un mot du
+     commerce grec sous l'une de ses graphies (voir `estMarqueurGrec`) : lue ici, avant les tables, parce que ses mots du
+     commerce se traduisent sous les clés des romanisations du grec (voir `traduction`), et parce que la marque
+     `hebreuOuGrec` en vit (jeu 17, tour 13 : « Ntoumas Stevedoring I.K.E. » n'avait que sa forme pour dire le grec) */
+  const grecPresume = /[\u0370-\u03ff]/.test(nom) || greeklish.lu
+    || jetons(normaliser(plier(soude))).some((j) => FORMES_GRECQUES.has(j) || estMarqueurGrec(j));
   /* LE TYPE DU NAVIRE ENTRE PARENTHÈSES en fin de nom (« PRIDONYE-41 (barge) », « (tug) », « (tanker) ») : ce que le
      préfixe dit devant (« barge PRIDONYE 41 »), et non une filiale (jeu 12, 28/09 : 0,667, la parenthèse sans répondant
      et « barge » mot rare orphelin) */
@@ -1447,6 +1576,17 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     typeNavire = TYPES_NAVIRE.get(normaliser(typeEntreParentheses[1]!)) ?? "";
     soude = soude.slice(0, typeEntreParentheses.index);
   }
+  /* et le type écrit NU derrière le numéro du navire (« ISXYROS 5 tug » face à « Tug Ischyros 5 » : jeu 17, tour 13, 0,600, « tug »
+     mot rare orphelin) : derrière un numéro, un mot de type n'est pas un mot du nom ; sans numéro devant, il reste un mot du nom
+     (« Ocean Tug », « Harbour Barge » nomment) */
+  if (!navireEcrit) {
+    const typeApresNumero = /(\s\d{1,4})\s+(\p{L}{2,})\s*$/u.exec(soude);
+    if (typeApresNumero !== null && PREFIXES_NAVIRE.has(normaliser(typeApresNumero[2]!)) && typeApresNumero.index > 0) {
+      navireEcrit = true;
+      typeNavire = TYPES_NAVIRE.get(normaliser(typeApresNumero[2]!)) ?? "";
+      soude = soude.slice(0, typeApresNumero.index + typeApresNumero[1]!.length);
+    }
+  }
   /* Les mots ENTRE PARENTHÈSES : « Quarnby Logistics (Shanghai) », « Tervalo Shipping (Hong
      Kong) ». Dans un nom de société, la parenthèse désigne le plus souvent une entité du
      groupe, distincte ; si l'autre nom n'a rien qui y réponde, on ne parle pas de la même
@@ -1456,7 +1596,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     .flatMap((m) => {
       let dedans = ` ${jetons(normaliser(plier(m[1]!))).join(" ")} `;
       for (const [de, vers] of LOCUTIONS) dedans = dedans.split(de).join(vers);
-      return dedans.trim().split(/ +/).flatMap((j) => (CIVILITES.has(j) ? "" : ABREVIATIONS.get(j) ?? traduction(j, japonaisPresume, slave) ?? j).split(" "));
+      return dedans.trim().split(/ +/).flatMap((j) => (CIVILITES.has(j) ? "" : ABREVIATIONS.get(j) ?? traduction(j, japonaisPresume, slave, grecPresume) ?? j).split(" "));
     })
     .filter((j) => j !== "" && !FORMES.has(j)));
   /* Lettres et chiffres collés se séparent : « No18 » → « No 18 », « LANQIAOFENG16 » →
@@ -1574,7 +1714,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
        Quatre lettres au moins derrière l'article, et jamais un mot que le dictionnaire, les formes ou les tables connaissent
        (Alliance, Alpine, Alhandasiya) */
     if (arabePresume && j.length >= 6 && j.startsWith("al") && !connu(j) && !MARQUEURS_ARABES.has(j) && !MARQUEURS_PERSANS.has(j)) {
-      const reste = j.slice(2), t = traduction(reste, japonaisPresume, slave);
+      const reste = j.slice(2), t = traduction(reste, japonaisPresume, slave, grecPresume);
       if (t === undefined) return ["al", reste];
       for (const m of t.split(" ")) if (m !== "") { traduits.add(m); if (!sources.has(m)) sources.set(m, reste); }
       return ["al", ...t.split(" ").filter((m) => m !== "")];
@@ -1600,16 +1740,16 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     /* une abréviation développée se traduit comme le mot entier : « Tic. » est ticaret, donc trading (jeu 13, 28/09 :
        « Tasimaciligi Tic. AS » à 0,704 face à « Ticaret A.Ş. », l'un traduit et l'autre non) */
     if (a !== undefined) return a.split(" ").flatMap((m) => {
-      const t = m === "" ? undefined : traduction(m, japonaisPresume, slave);
+      const t = m === "" ? undefined : traduction(m, japonaisPresume, slave, grecPresume);
       if (t === undefined) return [m];
       for (const x of t.split(" ")) if (x !== "") { traduits.add(x); if (!sources.has(x)) sources.set(x, j); }
       return t.split(" ");
     });
     const p = PAYS_ADJECTIFS.get(j);
     if (p !== undefined) return [p];
-    let t = traduction(j, japonaisPresume, slave);
+    let t = traduction(j, japonaisPresume, slave, grecPresume);
     /* « Comercioo de Graos » (jeu 16) : la lettre doublée d'un mot de métier que les tables connaissent sans elle */
-    if (t === undefined && /(\p{L})\1/u.test(j) && lemme(j) === undefined) { const d = j.replace(/(\p{L})\1/gu, "$1"); t = d === j ? undefined : traduction(d, japonaisPresume, slave); }
+    if (t === undefined && /(\p{L})\1/u.test(j) && lemme(j) === undefined) { const d = j.replace(/(\p{L})\1/gu, "$1"); t = d === j ? undefined : traduction(d, japonaisPresume, slave, grecPresume); }
     if (t === undefined) return [j];
     for (const m of t.split(" ")) if (m !== "") { traduits.add(m); if (!sources.has(m)) sources.set(m, j); }
     return t.split(" ");
@@ -1623,7 +1763,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* « IP Tavrizyan A.G. » : l'entrepreneur individuel russe (ИП), ukrainien (ФОП, ЧП),
      kazakh (ИП) porte un NOM DE PERSONNE et ses initiales ; « A.G. » n'y est pas une
      Aktiengesellschaft. Après ce sigle, les mots courts restent des mots. */
-  const entrepreneur = ["ip", "fop", "chp", "flp", "spd"].includes(mots[0] ?? "");
+  const entrepreneur = ["ip", "fop", "chp", "flp", "spd", "ie", "zhk", "yatt"].includes(mots[0] ?? "");
   /* sous un qualificatif de société privée (Pty, Pte, Pvt, Sdn), le registre garde « Co » et « Corp » dans le nom déposé :
      « Trivedi Trading Co Pvt Ltd » n'est pas « Trivedi Trading Corp Pvt Ltd », « Blackwood Cattle Co Pty Ltd » n'est pas
      « … Corp Pty Ltd » (jeux 13 et 14, tour 10 : quatre paires jugées différentes à 1,000 ; aucune paire des quatorze jeux
@@ -1642,6 +1782,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     /* « OÜ » (osaühing) s'écrit « OU » sans son tréma : une forme en QUEUE seulement ; ailleurs « ou » est un mot (le
        « ou » français, le nom chinois Ou) */
     if (j === "ou" && i !== mots.length - 1) return true;
+    /* l'entrepreneur individuel (ИП, ЖК, IE, ЯТТ) n'est une forme qu'en tête, devant le nom de la personne (« IE Zhumabayev Serik »,
+       « ZHK Orazbekova G.S. », jeu 17) ; ailleurs « IP » et « IE » sont des initiales ou un sigle */
+    if ((j === "ip" || j === "ie" || j === "zhk" || j === "yatt") && i !== 0) return true;
     if (!FORMES.has(j)) return true;
     if (entrepreneur && i > 0 && j.length <= 3) return true;
     /* une forme de fin en tête reste un mot (« Ag. Prokopis », « As-Salam »), sauf écrite
@@ -1726,8 +1869,8 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      jeux, les vingt et un noms que ce digramme marque sont tous coréens) */
   const coreen = /[\uac00-\ud7a3]/u.test(nom) || tousLesMots.some((j) => MARQUEURS_COREENS.has(j))
     || (pays.has("KR") && !japonais && t.some((j) => j.includes("eo") && lemme(j) === undefined));
-  const hebreuOuGrec = /[\u0370-\u03ff\u0590-\u05ff]/.test(nom)
-    || tousLesMots.some((j) => MARQUEURS_HEBREUX.has(j) || MARQUEURS_GRECS.has(j) || (j.length >= 6 && SUFFIXES_GRECS.test(j)));
+  const hebreuOuGrec = /[\u0370-\u03ff\u0590-\u05ff]/.test(nom) || grecPresume
+    || tousLesMots.some((j) => MARQUEURS_HEBREUX.has(j) || estMarqueurGrec(j));
   const prive = tousLesMots.some((j) => QUALIFICATIFS_PRIVES.has(j)) || privePhrase;
   /* un nom écrit en tamoul est indien : le crédit v, w, b vaut pour lui (வ s'écrit v ou w) */
   const tamoul = TAMOUL.test(nom);

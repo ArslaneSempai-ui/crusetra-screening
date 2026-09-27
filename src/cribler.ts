@@ -38,7 +38,7 @@ import {
   compose, membres, gerondif, PARTICULES,
   variationVocalique, voyelleEpenthetique, squeletteLongue, pliAi, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
   CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pliJaponais, pliCoreen, CREDIT_KANA, pluriel, CHEMIN_VERDICT, RAPPEL_MIN,
-  pliSlave, CREDIT_CYRILLIQUE, pliGrec, clePhonetique, homophoneCorrige, squeletteArabe, ARTICLES_ARABES, clesSlaves, pliThai, CREDIT_THAI,
+  pliSlave, CREDIT_CYRILLIQUE, clesGrecques, CREDIT_GREC, clePhonetique, homophoneCorrige, squeletteArabe, ARTICLES_ARABES, clesSlaves, pliThai, CREDIT_THAI,
   BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare, type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme, pliEnye,
 } from "./entites.ts";
 import { cleAbjad, cleAbjadSansTa, cleAbjadVLuF, type Abjad } from "./ecritures.ts";
@@ -248,7 +248,8 @@ export class Index {
   private readonly parPliJaponaisNatif = new Map<string, MotIndexe[]>();
   private readonly parPliCoreen = new Map<string, MotIndexe[]>();
   private readonly parPliCoreenNatif = new Map<string, MotIndexe[]>();
-  /** le pli des romanisations du grec (`pliGrec`, CREDIT_ROMANISATION), dans les deux sens de la marque, comme le coréen */
+  /** les clés des romanisations du grec (`clesGrecques`, CREDIT_GREC : l'ELOT et le greeklish), dans les deux sens de la
+   *  marque, comme le coréen ; un mot est rangé sous chacune de ses clés et cherché sous chacune, comme les clés slaves */
   private readonly parPliGrec = new Map<string, MotIndexe[]>();
   private readonly parPliGrecNatif = new Map<string, MotIndexe[]>();
   /** le pli des romanisations du cyrillique (`pliSlave`, CREDIT_CYRILLIQUE), dans les deux sens de la marque comme le
@@ -329,7 +330,7 @@ export class Index {
             ranger(this.parPliCantonais, pliCantonais(mot), m);
             ranger(this.parPliJaponais, pliJaponais(mot), m);
             ranger(this.parPliCoreen, pliCoreen(mot), m);
-            ranger(this.parPliGrec, pliGrec(mot), m);
+            for (const k of clesGrecques(mot)) ranger(this.parPliGrec, k, m);
             ranger(this.parPliThai, pliThai(mot), m);
             if (mot.length >= 4) ranger(this.parClePhonetique, clePhonetique(mot), m);
             this.vocabulaire.set(mot, m);
@@ -380,7 +381,7 @@ export class Index {
           if (nom.marques.cantonais && !m.cantonaisVu) { m.cantonaisVu = true; ranger(this.parPliCantonaisNatif, pliCantonais(mot), m); }
           if (nom.marques.japonais && !m.japonaisVu) { m.japonaisVu = true; ranger(this.parPliJaponaisNatif, pliJaponais(mot), m); }
           if (nom.marques.coreen && !m.coreenVu) { m.coreenVu = true; ranger(this.parPliCoreenNatif, pliCoreen(mot), m); }
-          if (nom.marques.hebreuOuGrec && !m.grecVu) { m.grecVu = true; ranger(this.parPliGrecNatif, pliGrec(mot), m); }
+          if (nom.marques.hebreuOuGrec && !m.grecVu) { m.grecVu = true; for (const k of clesGrecques(mot)) ranger(this.parPliGrecNatif, k, m); }
           if (nom.marques.thai && !m.thaiVu) { m.thaiVu = true; ranger(this.parPliThaiNatif, pliThai(mot), m); }
           if (nom.marques.slave && !m.slaveVu) {
             m.slaveVu = true;
@@ -490,6 +491,8 @@ export class Index {
     if (t <= CREDIT_KANA) for (const m of (japonais ? this.parPliJaponais : this.parPliJaponaisNatif).get(pliJaponais(mot)) ?? []) retenus.add(m);
     /* les mêmes lettres thaïes (CREDIT_THAI), dans les deux sens de la marque */
     if (t <= CREDIT_THAI) for (const m of (thai ? this.parPliThai : this.parPliThaiNatif).get(pliThai(mot)) ?? []) retenus.add(m);
+    /* les mêmes lettres grecques (CREDIT_GREC), sous chaque clé du mot demandé, dans les deux sens de la marque grecque ou hébraïque */
+    if (t <= CREDIT_GREC) for (const k of clesGrecques(mot)) for (const m of (grec ? this.parPliGrec : this.parPliGrecNatif).get(k) ?? []) retenus.add(m);
     /* la même suite cyrillique (CREDIT_CYRILLIQUE), dans les deux sens de la marque ; et, au crédit d'une romanisation, la
        voyelle d'appui sur la clé du pli (« aleksandr », « aleksander ») : la marque se vérifie au score */
     const ps = pliSlave(mot);
@@ -511,8 +514,6 @@ export class Index {
       for (const m of this.parRepli.get(repli) ?? []) retenus.add(m);
       /* le pli coréen (CREDIT_ROMANISATION), dans les deux sens de la marque, comme le cantonais */
       for (const m of (coreen ? this.parPliCoreen : this.parPliCoreenNatif).get(pliCoreen(mot)) ?? []) retenus.add(m);
-      /* le pli grec (CREDIT_ROMANISATION), dans les deux sens de la marque grecque ou hébraïque */
-      for (const m of (grec ? this.parPliGrec : this.parPliGrecNatif).get(pliGrec(mot)) ?? []) retenus.add(m);
       /* le pli cantonais (CREDIT_ROMANISATION) : un nom lu en cantonais face à tous les mots, un nom
          latin face aux mots que des chaînes lues en cantonais portent */
       for (const m of (cantonais ? this.parPliCantonais : this.parPliCantonaisNatif).get(pliCantonais(mot)) ?? []) retenus.add(m);

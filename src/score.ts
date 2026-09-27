@@ -41,13 +41,14 @@ import { voyelleSautee } from "./mots.ts";
 import { voyelleEpenthetique } from "./mots.ts";
 import { pliJaponais } from "./mots.ts";
 import { pliCoreen } from "./mots.ts";
-import { pliGrec } from "./mots.ts";
+import { memeSuiteGrecque, CREDIT_GREC } from "./mots.ts";
 import { pliIndien } from "./mots.ts";
 import { pliTamoul } from "./mots.ts";
 import { CREDIT_ROMANISATION } from "./mots.ts";
 import { CREDIT_KANA } from "./mots.ts";
 import { suffixeEtablissement } from "./mots.ts";
 import { pliSlave, memeSuiteCyrillique } from "./mots.ts";
+import { patronymeSlave } from "./mots.ts";
 import { CREDIT_CYRILLIQUE } from "./mots.ts";
 import { pliThai, CREDIT_THAI } from "./mots.ts";
 import { queueDeComposeSlave } from "./mots.ts";
@@ -125,7 +126,9 @@ export function depuisJetons(f: Frequences, J: readonly string[], marques: Marqu
     parentheses: mots.map((m) => parentheses.has(m)),
     traduits: mots.map((m) => traduits.has(m)),
     sources: mots.map((m) => sources.get(m) ?? ""),
-    decor: mots.map((m, i) => regionDeRegistre(m) || (POINTS_CARDINAUX.has(m) && regionDeRegistre(mots[i + 1] ?? ""))),
+    decor: mots.map((m, i) => regionDeRegistre(m) || (POINTS_CARDINAUX.has(m) && regionDeRegistre(mots[i + 1] ?? ""))
+      /* et le patronyme d'une personne de la CEI derrière son nom et son prénom, sous la marque slave (tour 13, voir `patronymeSlave`) */
+      || (marques.slave && i >= 2 && patronymeSlave(m))),
     numeros: J.map(num).filter(Boolean).sort().join(" "),
     bloc: mots.join(""), blocSq: mots.map(squelette).join(""),
     civilites: [...civilites],
@@ -541,7 +544,10 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           /* les mêmes lettres thaïes sous la RTGS et la graphie d'usage (`pliThai` : « Phrachan », « Prajan » ; « Ngoen », « Ngern ») ; lue
              avant la règle chinoise des initiales, parce que « Co., Ltd. » marque aussi le nom chinois */
           const pliT = thai && x !== y && !anglais && pliThai(x) === pliThai(y);
-          const autreSyllabe = chinois && x !== y && !pliC && !pliJ && !pliS && !pliT && !initialesChinoisesCompatibles(x, y);
+          /* la même suite de lettres grecques sous deux romanisations ou en greeklish (`memeSuiteGrecque` : « Hellas », « Ellas » ;
+             « Chatzimichalis », « Hadjimichalis » ; « Xenofontos », « Ksenofontos », « 3enofontos »), sous la marque grecque ou hébraïque */
+          const pliG = hebreuOuGrec && x !== y && !anglais && memeSuiteGrecque(x, y);
+          const autreSyllabe = chinois && x !== y && !pliC && !pliJ && !pliS && !pliT && !pliG && !initialesChinoisesCompatibles(x, y);
           if (autreSyllabe) v = Math.min(v, 0.5);
           /* une équivalence de romanisation, dans le contexte de la langue : elle vaut au moins
              CREDIT_ROMANISATION, et elle lève l'ambiguïté du mot court (voir plus bas) */
@@ -556,8 +562,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
             || (indonesien && X.squelettes[i]!.replace(/o/g, "u") === Y.squelettes[j]!.replace(/o/g, "u"))
             || pliJ || pliS || appuiSlave || pliT
             || (coreen && pliCoreen(x) === pliCoreen(y))
-            /* le grec sous deux romanisations (« Hellas », « Ellas » ; « Chrysafi », « Hrisafi »), sous la marque grecque ou hébraïque */
-            || (hebreuOuGrec && pliGrec(x) === pliGrec(y))
+            || pliG
             /* v, w, b : hindi, hébreu, espagnol, portugais ; sous leur contexte, au crédit et non au
                squelette, pour que Fabre reste distinct de Favre */
             || ((indien || hispanique) && pliIndien(x) === pliIndien(y))
@@ -573,6 +578,8 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           if (pliS) v = Math.max(v, CREDIT_CYRILLIQUE);
           /* et les mêmes lettres thaïes aussi (voir CREDIT_THAI) */
           if (pliT) v = Math.max(v, CREDIT_THAI);
+          /* et les mêmes lettres grecques aussi (voir CREDIT_GREC) */
+          if (pliG) v = Math.max(v, CREDIT_GREC);
           /* L'ADJECTIF SLAVE DE LIEU : « Kubanskaya » et « Kurganskaya » se ressemblent à 0,82 par leur suffixe commun ;
              ce sont leurs radicaux qui nomment, Kuban et Kurgan, deux lieux à deux lettres près (voir `radicalSlave`).
              Sous la marque, deux mots au même suffixe et de radicaux différents valent leurs radicaux seuls ; sauf quand
@@ -1022,8 +1029,8 @@ export function descripteur(X: NomPrepare): number {
   while (n < X.mots.length && (X.traduits[n] || X.decor[n] || PARTICULES.has(X.mots[n]!))) n++;
   return n;
 }
-/** `X` avec ses adjectifs régionaux au plancher, si `Y` n'en porte aucun ; sinon `X` tel quel, sans la
- *  marque de décor (deux noms qui portent chacun un adjectif régional se distinguent par lui). */
+/** `X` avec ses adjectifs régionaux, et ses patronymes (tour 13), au plancher, si `Y` n'en porte aucun ; sinon `X` tel quel, sans la
+ *  marque de décor (deux noms qui portent chacun un adjectif régional, ou chacun un patronyme, se distinguent par lui). */
 function regionsAuPlancher(X: NomPrepare, Y: NomPrepare): NomPrepare {
   if (!X.decor.some(Boolean)) return X;
   if (Y.decor.some(Boolean)) return { ...X, decor: X.decor.map(() => false) };

@@ -496,15 +496,44 @@ export function pliJaponais(m: string): string {
     .replace(/m(?=[bmp])/g, "n")
     .replace(/o(?:h(?![aeiou])|o|u)/g, "o").replace(/uu/g, "u").replace(/(.)\1+/g, "$1");
 }
-/** Le grec sous ses romanisations, ELOT 743 (celle de `grec`, preparation.ts) et l'usage anglais des armateurs : χ écrit
- *  ch, kh ou h ; υ écrit y, i ou u ; η, ι, υ, ει, οι toutes i ; αι e ; ου u ; φ ph ou f ; θ th ; β v ou b ; l'esprit rude que
- *  l'anglais écrit h en tête et que le grec n'écrit plus (Hellas, Ellas ; Hermes, Ermis) ; les doubles. Au crédit (0,85), sous
- *  la marque grecque ou hébraïque seulement (jeu 13 : « Ελλάς Ναυτικά Λιπαντικά Α.Ε. » lu ellas face à « Hellas Marine
- *  Lubricants SA », 0,111). */
+/** Le grec sous ses romanisations, ELOT 743 (celle de `grec`, preparation.ts), la graphie phonétique des armateurs et des
+ *  registres chypriotes, la latine des noms classiques : χ écrit ch, kh ou h ; φ ph ou f ; θ th ; ρ rh ; κ c ou k ; ξ x ou ks ;
+ *  τζ tz, dj ou j (Chatzimichalis, Hadjimichalis) ; μπ, ντ, γκ en tête b, d, g (Ntoumas, Doumas), nd et mb à l'intérieur pour
+ *  nt et mp ; γ devant ι ou ε, que la phonétique écrit y (Giannoulatos, Yannoulatos ; Mavrogenis, Mavroyenis) ; αυ, ευ af, ef
+ *  devant une sourde et av, ev ailleurs (Naftiki, Nautiki) ; υ y, i ou u ; η, ι, υ, ει, οι toutes i, et le oe latin (Kymothoe,
+ *  Kimothoi) ; αι e, et le ae latin ; ου u ; β v ou b ; l'esprit rude que l'anglais écrit h en tête et que le grec n'écrit
+ *  plus (Hellas, Ellas ; Hermes, Ermis), lu APRÈS le ch pour que « Hadji- » soit « Chatzi- » ; les doubles (Psarros, Psaros).
+ *  Sous la marque grecque ou hébraïque seulement (jeu 13 : « Ελλάς Ναυτικά Λιπαντικά Α.Ε. » lu ellas face à « Hellas Marine
+ *  Lubricants SA », 0,111 ; jeu 17, tour 13 : sept paires entre 0,236 et 0,809). Ce que vaut l'égalité : CREDIT_GREC. */
 export function pliGrec(m: string): string {
-  return m.replace(/^h(?=[aeiouy])/, "").replace(/ch|kh/g, "h").replace(/ph/g, "f").replace(/th/g, "t").replace(/ou/g, "u")
-    .replace(/ei|oi|y/g, "i").replace(/ai/g, "e").replace(/[vw]/g, "b").replace(/(.)\1+/g, "$1");
+  return m.replace(/ch|kh/g, "h").replace(/ph/g, "f").replace(/th/g, "t").replace(/rh/g, "r").replace(/^h(?=[aeiouy])/, "")
+    .replace(/c/g, "k").replace(/x/g, "ks").replace(/dj|j/g, "tz")
+    .replace(/^nt/, "d").replace(/^mp/, "b").replace(/^gk/, "g").replace(/nd/g, "nt").replace(/mb/g, "mp")
+    .replace(/ge|ye/g, "e").replace(/gi(?=[aeou])/g, "i").replace(/y(?=[aeou])/g, "i")
+    .replace(/([ae])u(?=[tkpsfh])/g, "$1f").replace(/([ae])u(?=[a-z])/g, "$1v").replace(/ou/g, "u")
+    .replace(/oe/g, "i").replace(/ae/g, "e").replace(/ei|oi|y/g, "i").replace(/ai/g, "e").replace(/[vw]/g, "b").replace(/(.)\1+/g, "$1");
 }
+/** LE GREEKLISH des clavardages, la troisième convention : h est η (« emporikh », « naulomesitikh », « kymo8oh »), w est ω,
+ *  x est χ (« psuxountakis », « isxyros » : là où l'ELOT lit ξ), u seul est υ (« psu- »), et le grec n'a pas de h : un h
+ *  final est toujours η, un h après t, c ou p reste le digramme (θ, χ, φ), ailleurs il est η (« mhxanh », μηχανή). Les
+ *  chiffres (8 pour θ, 3 pour ξ, 4 pour ψ) sont lus sur le texte, avant la lecture optique (voir greeklish.ts). Lue comme
+ *  une SECONDE CLÉ du pli grec, sans décider que le nom est en greeklish : deux mots sont la même suite de lettres grecques
+ *  quand une clé de l'un est une clé de l'autre (`memeSuiteGrecque`, comme `clesSlaves` pour l'allemand du cyrillique). */
+export function pliGreeklish(m: string): string {
+  return m.replace(/w/g, "o").replace(/x/g, "ch").replace(/h$/, "i").replace(/(?<![tcp])h/g, "i").replace(/(?<![aeoy])u/g, "y");
+}
+export function clesGrecques(m: string): readonly string[] {
+  const standard = pliGrec(m), greeklish = pliGrec(pliGreeklish(m));
+  return greeklish === standard ? [standard] : [standard, greeklish];
+}
+export function memeSuiteGrecque(x: string, y: string): boolean {
+  const ky = clesGrecques(y);
+  return clesGrecques(x).some((k) => ky.includes(k));
+}
+/** Ce que vaut la même suite de lettres grecques sous deux romanisations (`pliGrec`) : un squelette égal (0,95), comme le
+ *  cyrillique et les kana. À 0,85, deux mots au crédit ne font pas un nom fort (« ΒΛΑΧΟΣ & ΨΑΡΡΟΣ Ο.Ε. », « Vlahos & Psaros
+ *  O.E. » : 0,809, jeu 17). */
+export const CREDIT_GREC = 0.95;
 /** Le hindi (व : v, w, b), l'hébreu (ב : b, v), l'espagnol et le portugais (b, v) : une seule lettre au
  *  niveau du crédit (0,85), pas du squelette : Fabre et Favre restent sous le niveau fort. */
 export function pliIndien(m: string): string {
@@ -626,6 +655,7 @@ export const CREDIT_ABJAD = 0.95;
  *  l'une ou l'autre langue selon le document (jeu 12, 28/09 : « TOV Mykolaivskyi Kombikormovyi Zavod » face à
  *  « Nikolaevskiy Kombikormovyy Zavod LLC » à 0,662). Pivdennyi est le port Youjny (Южный), traduit et non
  *  transcrit. */
+import { LIEUX_TURCIQUES } from "./asie-centrale.ts";
 const LIEUX_UKRAINIENS: readonly (readonly [string, string])[] = [
   ["mykolaiv", "nikolaev"], ["kyiv", "kiev"], ["kyyiv", "kiev"], ["kharkiv", "kharkov"], ["dnipropetrovsk", "dnepropetrovsk"],
   ["dnipro", "dnepr"], ["chornomor", "chernomor"], ["odesa", "odessa"], ["lviv", "lvov"], ["zaporizhzh", "zaporozh"],
@@ -643,11 +673,15 @@ const LIEUX_UKRAINIENS: readonly (readonly [string, string])[] = [
  * lettres cyrilliques sous deux systèmes, pas un autre mot (jeu 12, 28/09 : « ZAO Shchekinskiy Metallosklad » face à
  * « ZAO Ščekinskij Metallosklad » à 0,675, « OOO Kubanskaya Zhatva » face à « OOO Kubanskaja Žatva » à 0,783, le
  * squelette séparant sh et h, zh et z). Le c y confond ц et č, que l'ISO sans diacritique confond déjà.
+ * Et l'Asie centrale (tour 13, jeu 17, voir asie-centrale.ts) : le q du latin kazakh et ouzbek est le к du clavier russe (Astyq,
+ * Astyk ; Maqta, Makta), le gh du BGN kazakh son г (Shyghys, Shygys), le dzh d'une romanisation russe le ж que le kazakh écrit
+ * zh (Dzhambul, Zhambyl), et les toponymes sous leur nom national se ramènent au nom russe avant le pli (Buxoro, Bukhara).
  */
 export function pliSlave(m: string): string {
   let r = m;
   for (const [ua, ru] of LIEUX_UKRAINIENS) if (r.startsWith(ua)) { r = ru + r.slice(ua.length); break; }
-  return r.replace(/shch/g, "sc").replace(/tsch/g, "c").replace(/sch/g, "s").replace(/tch/g, "c").replace(/zh/g, "z").replace(/sh/g, "s")
+  for (const [national, russe] of LIEUX_TURCIQUES) if (r === national || (national.length >= 5 && r.startsWith(national))) { r = russe + r.slice(national.length); break; }
+  return r.replace(/dzh/g, "zh").replace(/q/g, "k").replace(/gh/g, "g").replace(/shch/g, "sc").replace(/tsch/g, "c").replace(/sch/g, "s").replace(/tch/g, "c").replace(/zh/g, "z").replace(/sh/g, "s")
     .replace(/ch/g, "c").replace(/ts/g, "c").replace(/kh/g, "h").replace(/x/g, "ks").replace(/w/g, "v")
     .replace(/[yj]o/g, "e").replace(/[yj]/g, "i").replace(/ie/g, "e").replace(/(.)\1+/g, "$1");
 }
@@ -671,6 +705,13 @@ export function clesSlaves(m: string): readonly string[] {
      « Sever » n'est pas « Zever » (mesuré à 0,930 sans la réserve, 28/09) */
   const lectures = [lu.replace(/\u0002/g, "sh"), lu.replace(/\u0002/g, "zh")];
   if (/^s[aeiouy]/.test(lu) && /w|sch|ss|j[aeiou]/.test(m)) for (const l of [...lectures]) lectures.push("z" + l.slice(1));
+  /* et les lettres du latin d'Asie centrale (tour 13) : le j du kazakh de 2017 à 2021 est ж (Jetysu, Zhetisu ; Qyzyljar, Kyzylzhar) hors
+     de la finale, où il est le й de l'allemande et de l'ISO (Werbodolskyj, Nikolaj) ; le x de l'ouzbek est х (Jizzax, Jizzakh) là où le
+     russe écrit ks (Agroexport garde sa clé) ; le w d'un clavardage devant un y ou une consonne est ш (Wygys, Shygys ; Wkola), là où
+     l'allemande, qui l'écrit devant une voyelle, en fait un в (Werbodolskyj, Sawod) ; le ng du BGN kazakh est ң, que le clavier russe
+     tape н (Tengiz, Teñız : teniz ; « Mangystau » garde son ng, qui y est н et г). Une lecture de plus par lettre, jamais une clé
+     standard, et un mot sans ces lettres garde sa seule clé (tour 9) */
+  for (const l of [m.replace(/j(?!$)/g, "zh"), m.replace(/x/g, "kh"), m.replace(/w(?=[ybcdfghjklmnpqrstvxz])/g, "sh"), m.replace(/ng/g, "n")]) if (l !== m) lectures.push(l);
   return [...new Set([standard, ...lectures.map(pliSlave)])];
 }
 export function memeSuiteCyrillique(x: string, y: string): boolean {
@@ -715,6 +756,14 @@ export function queueDeComposeSlave(court: string, long: string): boolean {
 export function radicalSlave(m: string): { radical: string; suffixe: string } | undefined {
   const r = /^(.{3,})(ski|skaia|skoe|skoi|ska|ske|sko)$/.exec(pliSlave(m));
   return r ? { radical: r[1]!, suffixe: r[2]! } : undefined;
+}
+/** LE PATRONYME d'une personne de la CEI et d'Asie centrale, que le registre écrit et que le document omet (« ИП Жұмабаев Серік
+ *  Болатұлы » face à « IP Zhumabaev Serik », jeu 17, tour 13 : « bolatuly » orphelin rare, 0,800) : -ovich, -evich, -ovna, -evna (le
+ *  russe), -uly, -qyzy, -kyzy (le kazakh : le fils, la fille), -ogly, -kizi (l'azéri et l'ouzbek), -zoda (le tadjik). Six lettres au
+ *  moins, jamais un mot que le dictionnaire connaît (« unduly »). Lu au score comme un décor de registre (`regionsAuPlancher`) : d'un
+ *  seul côté, au plancher ; des deux côtés, deux patronymes différents sont deux personnes. */
+export function patronymeSlave(m: string): boolean {
+  return m.length >= 6 && /(?:[oe]vich|[oe]vna|uly|qyzy|kyzy|qizi|kizi|ogly|oglu|ugli|zoda)$/.test(m) && lemme(m) === undefined;
 }
 
 /** Le plancher du rappel, à la borne BASSE de Wilson : un criblage qui rate un nom listé
