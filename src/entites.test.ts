@@ -1143,3 +1143,98 @@ test("tour 7, japonais : G.K., Y.K., Kabushiki Gaisha ; la numérotation dai ; M
   assert.ok(score("Kabushiki Kaisha Minamisawa Kinzoku (法人番号 5010401099876)", "Minamisawa Kinzoku Co., Ltd.") >= 0.81);
   assert.ok(score("Kabushiki Kaisha Minamisawa Kinzoku (法人番号 5010401099876)", "Kabushiki Kaisha Minamisawa Kinzoku (法人番号 5010401099877)") < 0.81, "deux numéros de société, deux dépôts");
 });
+
+/* ─────────────────────────── tour 7, voie hispanique (jeu 11) ─────────────────────────── */
+import { motsHispaniquesDistincts, MOTS_HISPANIQUES, pliEnye, nommeUneSociete } from "./entites.ts";
+const fr7h = frequencesDe([...rep6(300, "Trading"), ...rep6(80, "Commercial"), ...rep6(60, "Transport"), ...rep6(40, "Shipping"),
+  ...rep6(15, "Sons"), ...rep6(140, "Alpha")]);
+const s7h = (a: string, b: string) => scoreNoms(fr7h, a, b);
+
+test("tour 7, hispanique : deux mots espagnols ou portugais du vocabulaire sont deux mots, le pluriel reste au pluriel", () => {
+  assert.ok(motsHispaniquesDistincts("faro", "foro") && motsHispaniquesDistincts("manzana", "manzano") && motsHispaniquesDistincts("sureste", "suroeste"));
+  assert.ok(!motsHispaniquesDistincts("perla", "perlas") && !motsHispaniquesDistincts("flor", "flores") && !motsHispaniquesDistincts("cruz", "cruces"), "le pluriel roman n'est pas un autre mot");
+  assert.ok(!motsHispaniquesDistincts("munoz", "muniz") && !motsHispaniquesDistincts("gomez", "gamez"), "les patronymes n'y sont pas : le plafond du mot ambigu les tient");
+  assert.ok(!motsHispaniquesDistincts("faro", "faro") && !motsHispaniquesDistincts("sol", "sal"), "ni le même mot, ni les mots de moins de quatre lettres");
+  for (const m of MOTS_HISPANIQUES) assert.ok(/^[a-z]+$/.test(m), `« ${m} » doit être écrit comme la normalisation le laisse`);
+  assert.equal(simMot("faro", "foro", squelette("faro"), squelette("foro")), 0.5);
+  /* les trois fausses alertes fortes du jeu 11 (0,903, 0,920, 0,904 mesurées le 27/09) : sous le possible, même avec la marque chat
+     (un seul des deux mots au dictionnaire anglais) ou la signature d'une lettre tombée (sureste, suroeste) */
+  assert.ok(s7h("Ferretería El Faro", "Ferretería El Foro") < 0.8);
+  assert.ok(s7h("Comercial Manzana Verde", "Comercial Manzano Verde") < 0.8);
+  assert.ok(s7h("SHIPPER: TRANSPORTES REFRIGERADOS DEL SURESTE SA DE CV", "Transportes Refrigerados del Suroeste, S.A. de C.V.") < 0.8);
+  /* et l'accent tombé, la faute qui ne fait pas un autre mot du vocabulaire, restent des vrais noms */
+  assert.ok(s7h("Comercial Manzana Verde", "Comercial Manzana Verde S.A.") >= 0.81);
+  assert.ok(s7h("Ferretería El Faro", "Ferreteria El Faro") >= 0.81);
+  assert.ok(s7h("Transportes Refrigerados del Sureste, S.A. de C.V.", "TRANSPORTES REFRIGERADOS DEL SURESTE SA DE CV") >= 0.81);
+});
+
+test("tour 7, hispanique : la lecture optique d'un document en capitales, l pour I, ll pour II, 5.A. pour S.A.", () => {
+  assert.equal(preparerEntite("lSLA GRANDE CHARTERS LlMlTED"), preparerEntite("Isla Grande Charters Limited"));
+  assert.equal(preparerEntite("MV STELLA MARlS DE COLON"), "stella maris de colon");
+  assert.equal(preparerEntite("NAVlERA PUNTA CHAME 5.A."), preparerEntite("NAVIERA PUNTA CHAME S.A."));
+  assert.equal(analyserEntite("NAVlERA PUNTA CHAME 5.A.").familles.join(), "corp", "le 5.A. est une forme, pas un numéro");
+  assert.equal(preparerNom(f, "B/M DON RAM0N ll").numeros, "2", "ll après le nom d'un navire est le chiffre romain II");
+  assert.ok(analyserEntite("lSLA GRANDE CHARTERS LlMlTED").majuscules, "rendu à ses capitales, le nom est un export en majuscules");
+  /* jamais dans un nom qui porte une autre minuscule : le l y est une lettre */
+  assert.equal(preparerEntite("Al Fassi Textiles"), "al fassi textiles");
+  assert.equal(preparerEntite("VOGEL KUNSTSTOFFTECHNIK GmbH"), "vogel kunststofftechnik");
+  assert.equal(preparerEntite("McDONALD Holdings"), "mcdonald holdings");
+  assert.equal(preparerEntite("El"), "el", "une seule capitale ne dit pas que le document est en capitales : « El », « Al » gardent leur l");
+  for (const [a, b] of [["Isla Grande Charters Limited", "lSLA GRANDE CHARTERS LlMlTED"], ["MV STELLA MARlS DE COLON", "M/V Stella Maris de Colón"],
+    ["NAVIERA PUNTA CHAME S.A.", "NAVlERA PUNTA CHAME 5.A."], ["B/M DON RAMÓN II", "B/M DON RAM0N ll"], ["BELIZE MARINE HOLDINGS LIMlTED", "Belize Marine Holdings Limited"]]) {
+    assert.ok(s7h(a!, b!) >= 0.81, `${a} / ${b} : ${s7h(a!, b!)}`);
+  }
+});
+
+test("tour 7, hispanique : M/N, B/M, N/M sont M/V, R/M et Remolcador le remorqueur, Barcaza la barge ; MN sans sa barre aussi", () => {
+  for (const n of ["M/N Perla Negra", "MN Perla Negra", "B/M Perla Negra", "N/M Perla Negra", "Motonave Perla Negra", "Buque Perla Negra", "Lancha Perla Negra"]) {
+    const a = analyserEntite(n);
+    assert.ok(a.navire && a.texte === "perla negra" && a.typeNavire === "", n);
+  }
+  for (const n of ["R/M Poderoso", "Remolcador Poderoso", "Rebocador Poderoso"]) assert.equal(analyserEntite(n).typeNavire, "tug", n);
+  assert.equal(analyserEntite("Barcaza Manglar 3").typeNavire, "barge");
+  assert.equal(preparerEntite("BM Consulting"), "bm consulting", "sans la barre, BM et RM sont des initiales");
+  assert.equal(preparerEntite("RM Steel"), "rm steel");
+  for (const [a, b] of [["Barcaza BRV-12", "Barge BRV 12"], ["Barcaza Manglar 3", "Barge MANGLAR 3"], ["Tug Poderoso", "R/M Poderoso"],
+    ["Tug Titán del Canal", "Remolcador Titán del Canal"], ["M/N Perla Negra II", "Perla Negra No. 2"], ["B/M LUCERO AUSTRAL", "Lucero Austral"],
+    ["M/N ESTRELLA DEL CARIBE", "MV Estrella del Caribe"], ["M/N SAN 8LAS TRADER", "MV San Blas Trader"], ["M/N RIO CHAGRES", "MN RÍO CHAGRES"]]) {
+    assert.ok(s7h(a!, b!) >= 0.81, `${a} / ${b} : ${s7h(a!, b!)}`);
+  }
+  const s = s7h("Tug Poderoso", "Barge Poderoso");
+  assert.ok(s < 0.81 && s >= 0.8 - 1e-9, `le remorqueur et sa barge restent deux coques, au possible : ${s}`);
+  assert.ok(s7h("Remolcador Titán del Canal", "Barcaza Titán del Canal") < 0.81);
+});
+
+test("tour 7, hispanique : Corporación est Corp., l'EIRELI en toutes lettres devant le nom est l'EIRELI", () => {
+  assert.equal(preparerEntite("Corporación Marítima del Pacífico Central"), preparerEntite("Corp. Marítima del Pacífico Central"));
+  assert.deepEqual(analyserEntite("Corporación Favorita S.A.").designations, ["corp"]);
+  assert.ok(s7h("Corporación Marítima del Pacífico Central", "Corp. Marítima del Pacífico Central") >= 0.81, "mesuré à 0,800 avant");
+  assert.ok(s7h("Corporación Favorita C.A.", "Favorita Inc.") < 0.81, "Corp. face à Inc. : deux désignations");
+  const e = analyserEntite("Empresa Individual de Responsabilidade Limitada Duarte Pescados");
+  assert.equal(e.texte, "duarte pescados");
+  assert.deepEqual([e.pays, e.familles], [["BR"], ["llc", "ltd"]]);
+  assert.ok(s7h("Empresa Individual de Responsabilidade Limitada Duarte Pescados", "Duarte Pescados EIRELI") >= 0.81, "mesuré à 0,800 avant");
+});
+
+test("tour 7, hispanique : l'enseigne et son propriétaire entre parenthèses sont deux noms, pas une filiale", () => {
+  assert.deepEqual(variantes("Marisquería El Puerto (Pescados Anzures, S. de R.L.)"),
+    ["Marisquería El Puerto (Pescados Anzures, S. de R.L.)", "Marisquería El Puerto", "Pescados Anzures, S. de R.L."]);
+  assert.ok(nommeUneSociete("Pescados Anzures, S. de R.L.") && nommeUneSociete("Okafor Integrated Resources Nig. Ltd"));
+  assert.ok(!nommeUneSociete("Private Joint Stock") && !nommeUneSociete("S.A.") && !nommeUneSociete("Shanghai") && !nommeUneSociete("Singapore Branch"),
+    "une forme seule, un lieu, une succursale ne nomment pas une société");
+  assert.equal(variantes("Golestan Nakhl Trading Co. (Private Joint Stock)").length, 1);
+  assert.equal(variantes("Quarnby Logistics (Shanghai)").length, 1, "la filiale reste une filiale");
+  assert.ok(s7h("Marisquería El Puerto (Pescados Anzures, S. de R.L.)", "Pescados Anzures S. de R.L.") >= 0.81, "mesuré à 0,800 avant");
+  assert.ok(s7h("Marisquería El Puerto (Pescados Anzures)", "Pescados Anzures S. de R.L.") < 0.81, "sans forme dans la parenthèse, c'est une filiale");
+});
+
+test("tour 7, hispanique : la ñ écrite ny, sous la marque hispanique, dans les deux sens", () => {
+  assert.equal(pliEnye("nunyez"), "nunez");
+  assert.equal(pliEnye("castanyeda"), "castaneda");
+  assert.equal(pliEnye("danny"), "danny", "un ny final n'est pas une ñ");
+  assert.ok(s7h("Transportes Nuñez e Hijos, S. de R.L.", "Transportes Nunyez e Hijos S de RL") >= 0.81, "mesuré à 0,800 avant");
+  assert.ok(s7h("Transportes Nunyez e Hijos S de RL", "Transportes Nuñez e Hijos, S. de R.L.") >= 0.81);
+  assert.ok(s7h("Alimentos Procesados Castañeda", "Alimentos Procesados Castanyeda SA de CV") >= 0.81);
+  assert.ok(s7h("Danny Transportes", "Dan Transportes") < 0.81);
+  assert.ok(s7h("Nunyez Holdings Ltd", "Nunez Holdings Ltd") < 0.81, "sans marque hispanique, ny reste ny");
+});

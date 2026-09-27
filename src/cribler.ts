@@ -37,9 +37,8 @@ import {
   frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD, sembleCoupe,
   compose, membres, gerondif,
   variationVocalique, voyelleEpenthetique, squeletteLongue, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
-  CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pliJaponais, pliCoreen, CREDIT_KANA, pluriel, CHEMIN_VERDICT, RAPPEL_MIN, BLOC_MIN, LONGUEUR_CHAMP,
-  type Frequences, type NomPrepare,
-  type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme,
+  CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pliJaponais, pliCoreen, CREDIT_KANA, pluriel, CHEMIN_VERDICT, RAPPEL_MIN,
+  BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare, type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme, pliEnye,
 } from "./entites.ts";
 import { cleAbjad, cleAbjadSansTa, type Abjad } from "./ecritures.ts";
 import { distanceOsa } from "./matchers/damerau.ts";
@@ -217,6 +216,9 @@ export class Index {
   private readonly parCleAbjadNatif = new Map<string, MotIndexe[]>();
   /** le pli cantonais (`pliCantonais`) de chaque mot : c'est là qu'un nom lu en cantonais cherche ses mots */
   private readonly parPliCantonais = new Map<string, MotIndexe[]>();
+  /** le pli de la ñ écrite ny (`pliEnye`), pour les seuls mots listés qui écrivent ny : c'est là qu'un mot en n
+   *  cherche « Nunyez » ; le mot en ny cherche « Nunez » par égalité sous son pli */
+  private readonly parPliEnye = new Map<string, MotIndexe[]>();
   /** les quatre dernières lettres de chaque mot : c'est là qu'un mot cherche les composés qui FINISSENT par lui
    *  (« rohr » retrouve « stahlrohr » ; voir `compose`), l'initiale n'étant pas la sienne */
   private readonly parFinale = new Map<string, MotIndexe[]>();
@@ -293,6 +295,7 @@ export class Index {
             ranger(this.parSqInitialeLongueur, (m.sq[0] ?? "") + m.sq.length, m);
             ranger(this.parInitiale, mot[0]!, m);
             if (mot.length >= 4) ranger(this.parFinale, mot.slice(-4), m);
+            if (pliEnye(mot) !== mot) ranger(this.parPliEnye, pliEnye(mot), m);
             ranger(this.parSq, m.sq, m);
             /* la voyelle longue écrite ee (« naseem ») : rangé aussi sous son squelette lu i (voir squeletteLongue) */
             if (mot.includes("ee")) ranger(this.parSq, squeletteLongue(mot), m);
@@ -427,6 +430,10 @@ export class Index {
       for (const m of this.parSqInitialeLongueur.get((sq[0] ?? "") + sq.length) ?? []) {
         if (variationVocalique(sq, m.sq) && !tousDeuxAnglais(mot, m.mot)) retenus.add(m);
       }
+      /* la ñ écrite ny (CREDIT_ROMANISATION sous la marque hispanique, qui se vérifie au score) : les mots listés en ny
+         sous leur pli, et, pour un mot demandé en ny, le mot listé en n par égalité (voir `pliEnye`) */
+      for (const m of this.parPliEnye.get(pliEnye(mot)) ?? []) retenus.add(m);
+      if (pliEnye(mot) !== mot) { const m = this.vocabulaire.get(pliEnye(mot)); if (m) retenus.add(m); }
       /* les composés allemands et néerlandais, dans l'autre sens et dans l'autre ordre (voir `compose`) : le mot
          listé qui FINIT par le mot demandé se trouve sous ses quatre dernières lettres ; et le mot demandé qui
          est lui-même un composé cherche ses membres listés par égalité, en tête et en queue, avec ou sans le s

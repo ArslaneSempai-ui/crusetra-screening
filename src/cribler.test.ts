@@ -254,3 +254,21 @@ test("tour 7 : l'index retrouve à lui seul les deux romanisations du japonais e
     assert.notEqual(rapide.statut, "no-match", nom);
   }
 });
+
+test("tour 7, hispanique : l'index retrouve à lui seul la ñ écrite ny, dans les deux sens", () => {
+  const e: EntreeListe[] = [
+    { source: "OFAC", id: "1", nom: "Transportes Nunyez Alpha", alias: [], type: "entity" },
+    { source: "OFAC", id: "2", nom: "Transportes Nunez Beta", alias: [], type: "entity" },
+  ];
+  const fx = frequencesDe(e.map((x) => [x.nom]));
+  const ix = new Index(fx, e, 0.74);
+  /* chaque requête ne partage avec sa chaîne listée que le mot que la règle nouvelle relie (« transportes » pèse peu) */
+  for (const [nom, k] of [["Nunez Alpha", 0], ["Nunyez Beta", 1]] as const) {
+    assert.ok(ix.candidats(preparerNom(fx, nom), nom).includes(k), `${nom} doit retrouver « ${e[k]!.nom} »`);
+  }
+  for (const nom of ["Transportes Nuñez Alpha", "Transportes Nunyez Beta"]) {
+    const rapide = cribler({ ligne: 2, nom }, ix, seuils), exhaustif = cribler({ ligne: 2, nom }, ix, seuils, true);
+    assert.deepEqual(rapide, exhaustif, nom);
+    assert.equal(rapide.statut, "strong", nom);
+  }
+});

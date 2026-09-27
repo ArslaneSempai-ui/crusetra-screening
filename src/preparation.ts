@@ -32,6 +32,10 @@ import { SIGLES_PAYS } from "./variantes.ts";
 export const FORMES = new Set([
   /* anglophones */ "llc", "pllc", "ltd", "limited", "ltee", "inc", "incorporated", "corp", "corporation",
   "co", "company", "plc", "llp", "lp", "pvt", "pte", "pty",
+  /* « Corporación » et « Corporação » en tête d'un nom hispanophone ou lusophone sont le « Corp. » que le nom d'usage
+     abrège (jeu 11, 27/09 : « Corporación Marítima del Pacífico Central » à 0,800 face à « Corp. Marítima … »,
+     « corporacion » mot rare sans répondant) : la même désignation que « Corporation » (voir DESIGNATIONS) */
+  "corporacion", "corporacao",
   /* le mot « société » */ "compania", "companhia", "compagnie", "cia", "cie", "etablissements", "ets",
   "establishment", "establishments", "societe", "ste", "sociedad", "sociedade", "borisat", "sherkat", "sherkate", "sharikat", "sharika",
   "shirkat", "shirka", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio", "scea", "gaec", "earl", "dac",
@@ -100,6 +104,10 @@ const PHRASES = [
   " sociedad anonima promotora de inversion de capital variable ", " sociedad anonima promotora de inversion ",
   " sociedad anonima unipersonal ", " sociedad anonima de capital variable ",
   " sociedade anonima ", " sociedade limitada ", " limitada ", " s de rl de cv ", " s de rl ",
+  /* l'EIRELI brésilienne en toutes lettres, que le registre met devant le nom (« Empresa Individual de Responsabilidade
+     Limitada Duarte Pescados » face à « Duarte Pescados EIRELI », jeu 11, 27/09 : 0,800, « empresa individual
+     responsabilidade » trois mots rares sans répondant, « limitada » seule étant lue) */
+  " empresa individual de responsabilidade limitada ",
   " sa de cv ", " de cv ", " spol s ro ", " spol sro ",
   " societa per azioni ", " societa a responsabilita limitata ",
   " besloten vennootschap ", " naamloze vennootschap ", " sp zoo ", " sp z oo ",
@@ -270,6 +278,12 @@ export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
      Importação Ferreira », jeu 10) : la table n'avait que l'adjectif (« exportadora ») */
   exportacao: "export", importacao: "import", exportacoes: "export", importacoes: "import", exportacion: "export",
   importacion: "import", exportaciones: "export", importaciones: "import",
+  /* PAS les noms d'activité en -dora (« transportadora », « comercializadora », « distribuidora ») ni « marítima »,
+     « servicios », « seguros » : mesuré le 27/09 sur les onze jeux, les traduire ne gagnait aucune paire (les deux
+     côtés les écrivent dans la même langue) et en perdait trois : « Comer. » n'abrège plus « comercializadora »
+     devenue « trading », le poids d'« exportadora » devenu « export » laissait « Compañía Exportadora de Tubería
+     Galvanizada del Norte » sous son champ coupé, et « Marítimas » face à « Marítima » rapprochait la holding de
+     la société qui exploite */
   /* allemand et néerlandais */ handel: "trading", handels: "trading", handelsgesellschaft: "trading", spedition: "forwarding",
   schifffahrt: "shipping", schiffahrt: "shipping", reederei: "shipping", werke: "works", werk: "works", bau: "construction",
   scheepvaart: "shipping", rederij: "shipping", expeditie: "forwarding", scheepsreparatie: "ship repair",
@@ -683,17 +697,45 @@ function ocr(j: string): string {
   return j;
 }
 
+/**
+ * LA LECTURE OPTIQUE D'UN DOCUMENT EN CAPITALES (registres panaméens et béliziens, jeu 11) : une lecture
+ * optique rend la capitale I par un l minuscule (« lSLA », « LlMlTED », « MARlS », « NAVlERA »), le chiffre
+ * romain II par « ll » (« DON RAM0N ll »), et le S d'un sigle à points par un 5 (« 5.A. »). La casse est ce
+ * qui les trahit : dans un nom qui n'a aucune minuscule hors ce l, un l minuscule ne peut pas être une lettre
+ * du nom. `ocr` et `digrammeOptique` travaillent après la mise en minuscules, où « lsla » et « isla » ne se
+ * distinguent plus, et « 5.A. » y est déjà un numéro et une lettre : ces lectures-là se rendent AVANT, sur
+ * le nom brut (mesuré le 27/09 : « lSLA GRANDE CHARTERS LlMlTED » à 0,520 face à « Isla Grande Charters
+ * Limited », « NAVlERA PUNTA CHAME 5.A. » à 0,645). Un nom qui porte une autre minuscule (« Al Fassi »,
+ * « GmbH », « McDonald ») n'est pas touché ; deux capitales au moins, sinon rien ne dit que le document
+ * est en capitales.
+ */
+function capitalesLuesOptiquement(nom: string): string {
+  if (!nom.includes("l") || /(?!l)\p{Ll}/u.test(nom) || (nom.match(/\p{Lu}/gu)?.length ?? 0) < 2) return nom;
+  return nom
+    /* un sigle à points où traîne un 0, un 1, un 5 ou un 8 (« 5.A. », « 5.A. DE C.V. ») : O, I, S, B */
+    .replace(/(?<![\p{L}\d])(?:[\p{Lu}0158]\.){2,}(?![\p{L}\d])/gu,
+      (m) => (/\p{Lu}/u.test(m) && /\d/.test(m) ? m.replace(/0/g, "O").replace(/1/g, "I").replace(/5/g, "S").replace(/8/g, "B") : m))
+    .replace(/l/g, "I");
+}
+
 /** Préfixes et codes de type de navire, seulement EN TÊTE et seulement s'il reste un nom
  *  derrière : M/V, M/T, M/S, M/Y, S/Y, SS, FV, RV, LPG/C, LNG/C. */
 const PREFIXES_NAVIRE = new Set(["mv", "mt", "ms", "my", "sy", "ss", "mts", "fv", "rv", "tb", "lpgc", "lngc", "tug", "barge", "tugboat",
   /* l'Asie du Sud-Est (jeu 9) : BG et TK (barge, tongkang), TB (tug boat), KM (kapal motor), LCT, SPOB */
   "bg", "tk", "km", "kmp", "klm", "lct", "spob", "mtug", "mfv",
-  "tanker", "vessel", "roro", "ferry", "dredger", "trawler"]);
+  "tanker", "vessel", "roro", "ferry", "dredger", "trawler",
+  /* le monde hispanophone et lusophone (jeu 11) : MN (motonave, « M/N » ou « MN RÍO CHAGRES » sans sa barre), et le
+     type écrit en toutes lettres devant le nom (« Barcaza Manglar 3 », « Remolcador Titán del Canal », « Lancha »,
+     « Pesquero », « Buque », « Navio », « Motonave ») ; B/M, N/M et R/M, écrits avec leur barre, sont rendus MV et TUG
+     avant (voir `analyserEntite`) */
+  "mn", "motonave", "barcaza", "remolcador", "rebocador", "lancha", "pesquero", "buque", "navio", "velero", "yate"]);
 /** Le TYPE que le préfixe déclare quand il en déclare un : un remorqueur et sa barge portent souvent le
  *  même nom (« Tug Heron Reef », « Barge Heron Reef 2 » ; jeu 9 : « BARGE THONG CHAROEN 9 » et « TUG THONG
- *  CHAROEN 9 » jugés deux navires, quand « TB » et « TUG » écrivent le même). MV et MT ne disent rien ici. */
+ *  CHAROEN 9 » jugés deux navires, quand « TB » et « TUG » écrivent le même). MV et MT ne disent rien ici.
+ *  « Barcaza » est la barge, « Remolcador » et « Rebocador » le remorqueur (jeu 11 : « Tug Poderoso » face à
+ *  « Barge Poderoso », deux coques ; face à « R/M Poderoso », la même). */
 const TYPES_NAVIRE: ReadonlyMap<string, string> = new Map([["tug", "tug"], ["tb", "tug"], ["tugboat", "tug"], ["mtug", "tug"],
-  ["barge", "barge"], ["bg", "barge"], ["tk", "barge"]]);
+  ["barge", "barge"], ["bg", "barge"], ["tk", "barge"], ["barcaza", "barge"], ["remolcador", "tug"], ["rebocador", "tug"]]);
 const PHRASES_NAVIRE = [" motor vessel ", " motor tanker ", " motor ship ", " motor yacht ",
   " sailing yacht ", " steam ship ", " lpg carrier ", " lng carrier ", " lpg tanker ", " fishing vessel ",
   " bulk carrier ", " container ship ", " oil tanker ", " chemical tanker ", " hopper barge ", " tug barge ", " ro ro vessel ",
@@ -742,7 +784,7 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["PE"], ["sac", "saa", "sociedad anonima cerrada"]);
   poser(["BR", "CO", "CL", "PT"], ["ltda", "limitada", "sociedade limitada"]);
   poser(["PT", "AO", "MZ", "CV"], ["lda"]);
-  poser(["BR"], ["eireli"]);
+  poser(["BR"], ["eireli", "empresa individual de responsabilidade limitada"]);
   poser(["RU", "BY", "KZ", "UZ", "UA", "KG", "TJ", "AM", "AZ", "GE"], ["ooo", "oao", "zao", "pao", "ao", "jsc", "pjsc", "ojsc", "cjsc", "too",
     "obshchestvo s ogranichennoi otvetstvennostyu", "obshchestvo s ogranichennoy otvetstvennostyu",
     "tovarishchestvo s ogranichennoi otvetstvennostyu", "publichnoe aktsionernoe obshchestvo",
@@ -805,7 +847,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "chusik hoesa", "jusik hoesa", "gufen youxian gongsi", "oy", "ab", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio"]);
   /* et la Yūgen Kaisha (有限会社), que l'anglais rend « Co., Ltd. » ou « Y.K. » */
   poser(["ltd", "llc"], ["ooo", "tov", "ltda", "lda", "limitada", "sociedade limitada", "eireli", "tnhh", "cong ty tnhh", "sti", "limited sirketi", "yuhanhoesa",
-    "yugen kaisha", "yugen gaisha", "yk"]);
+    "yugen kaisha", "yugen gaisha", "yk", "empresa individual de responsabilidade limitada"]);
   /* le TOO kazakh (товарищество с ограниченной ответственностью) se traduit LLP, LLC ou Ltd */
   poser(["ltd", "llc", "part"], ["too", "tovarishchestvo s ogranichennoi otvetstvennostyu", "tovarishchestvo s ogranichennoy otvetstvennostyu"]);
   poser(["ltd", "corp"], ["pt", "perseroan terbatas", "tbk", "ud", "usaha dagang", "commanditaire vennootschap", "perseroan komanditer", "pcl", "public company limited", "teoranta", "teo", "dac", "designated activity company"]);
@@ -825,7 +867,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["fz"], ["fze", "fzco", "fzc", "fzllc", "fz", "dmcc", "jafza", "dafza", "difc", "dso", "dwc", "rakez", "kizad",
     "free zone establishment", "free zone company",
     "free zone limited liability company"]);
-  poser(["corp"], ["inc", "incorporated", "corp", "corporation", "plc", "public limited company", "ag", "se", "sa", "sas", "sasu",
+  poser(["corp"], ["inc", "incorporated", "corp", "corporation", "corporacion", "corporacao", "plc", "public limited company", "ag", "se", "sa", "sas", "sasu",
     "spa", "sau", "nv", "oyj", "as", "asa", "zrt", "nyrt", "ad", "cv", "sapi", "sac", "saa", "oao", "zao", "pao", "ao", "jsc",
     "pjsc", "ojsc", "cjsc", "prat", "pat", "ae", "joint stock company", "public joint stock company", "closed joint stock company",
     "open joint stock company", "aktsionernoe obshchestvo", "publichnoe aktsionernoe obshchestvo",
@@ -878,7 +920,7 @@ const PAYS_DU_CHINOIS_ECRIT = ["CN", "HK", "TW", "MO", "SG", "MY"];
  *  que la famille, et ne se lit que là où un registre la garde distincte. Les deux écritures
  *  d'une même désignation (« Inc. », « Incorporated » ; « Corp. », « Corporation ») restent une. */
 const DESIGNATIONS: ReadonlyMap<string, string> = new Map([
-  ["inc", "inc"], ["incorporated", "inc"], ["corp", "corp"], ["corporation", "corp"],
+  ["inc", "inc"], ["incorporated", "inc"], ["corp", "corp"], ["corporation", "corp"], ["corporacion", "corp"], ["corporacao", "corp"],
   /* les zones franches des Émirats : « Silver Dune Logistics FZCO » et « Silver Dune Logistics DMCC » sont deux
      dépôts dans deux zones (jeu 9) ; FZE, FZCO, FZC, FZ-LLC sont les formes d'une même zone, une seule désignation */
   ["fze", "fz"], ["fzco", "fz"], ["fzc", "fz"], ["fzllc", "fz"], ["fz", "fz"],
@@ -952,7 +994,12 @@ const MARQUEURS_INDIENS = new Set(["pvt", "india", "indian", "bharat", "bharati"
 const MARQUEURS_HISPANIQUES = new Set(["distribuidora", "comercial", "comercializadora", "industrias", "industria", "hermanos", "hijos",
   "compania", "companhia", "sociedad", "sociedade", "exportadora", "importadora", "agropecuaria", "agricola", "del", "los", "las",
   "grupo", "corporacion", "fabrica", "productos", "servicios", "transportes", "construcciones", "alimentos", "minera", "pesquera",
-  "textil", "textiles", "quimica", "metalicas", "mexico", "espana", "brasil", "peru", "colombia", "chile", "argentina", "venezuela"]);
+  "textil", "textiles", "quimica", "metalicas", "mexico", "espana", "brasil", "peru", "colombia", "chile", "argentina", "venezuela",
+  /* les enseignes et les métiers (jeu 11 : « Ferretería El Faro » n'avait que la marque arabe de son « El ») */
+  "ferreteria", "marisqueria", "panaderia", "carniceria", "pescaderia", "libreria", "papeleria", "zapateria", "cerrajeria",
+  "lavanderia", "farmacia", "abarrotes", "talleres", "taller", "servicos", "transportadora", "constructora", "inmobiliaria",
+  "agroindustrias", "seguros", "maritima", "maritimos", "naviera", "remolcador", "barcaza", "pesquero", "lancha", "buque",
+  "motonave", "panama", "panameno", "panamena", "mexicana", "mexicano", "brasileira", "brasileiro"]);
 const MARQUEURS_HEBREUX = new Set(["yam", "kfar", "kokhav", "kochav", "yarden", "shachar", "shahar", "galil", "hagalil", "kibbutz",
   "moshav", "negev", "haifa", "aviv", "ashdod", "eilat", "israel", "israeli", "beit", "bet", "tzafrir", "zafrir", "sde", "sdeh"]);
 const MARQUEURS_GRECS = new Set(["kai", "sia", "naftiliaki", "naftiki", "emporiki", "viomichaniki", "techniki", "kataskevastiki", "ellas",
@@ -1000,6 +1047,8 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /** pour chaque mot traduit, le mot romanisé qu'il traduit (« trading » : « boeki ») : deux mots de métier japonais
    *  différents traduits au même mot anglais sont deux raisons sociales (voir `scorePrepares`) */
   sources: ReadonlyMap<string, string> } & Marques {
+  /* la casse d'un document en capitales se lit avant tout : après, elle est perdue (voir `capitalesLuesOptiquement`) */
+  nom = capitalesLuesOptiquement(nom);
   /* L'apostrophe DANS un mot le soude (« O'Brien », « Ch'iao ») : en faire une frontière
      de mot fabriquerait des jetons d'une ou deux lettres qui ne désignent rien. « F.lli »
      (fratelli) et « LPG/C » (LPG carrier) ont une ponctuation qui porte le sens : lus avant. */
@@ -1027,6 +1076,12 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     /* « (P) Ltd. » et « (Pvt.) Ltd. », la société privée indienne : une forme, pas une filiale */
     .replace(/\(\s*P(?:vt)?\.?\s*\)\s*(?=Ltd|Limited)/gi, "Pvt ")
     .replace(/\b(LPG|LNG)\s*\/\s*C\b/gi, "$1C")
+    /* les préfixes de navire hispanophones et lusophones, avec leur barre (jeu 11) : B/M (buque a motor) et N/M (navio a
+       motor) sont le M/V des registres anglophones ; R/M (remolcador) est un remorqueur. La barre est exigée pour ceux-là :
+       sans elle, « BM » et « RM » en tête sont les initiales d'un fondateur, pas un navire. M/N (motonave) s'écrit aussi
+       sans barre dans les registres panaméens (« MN RÍO CHAGRES ») : il est dans PREFIXES_NAVIRE comme MV (mesuré le
+       27/09 : « M/N ESTRELLA DEL CARIBE » à 0,800 face à « MV Estrella del Caribe », « mn » mot rare sans répondant) */
+    .replace(/(?<![\p{L}\d])(?:B\/M|N\/M)(?![\p{L}])/giu, "MV").replace(/(?<![\p{L}\d])R\/M(?![\p{L}])/giu, "TUG")
     /* l'élision française et italienne (« d'Import-Export », « l'Industrie », « Côte d'Ivoire ») : la préposition ou
        l'article tombe et le mot reste entier (jeu 10, 27/09 : « dimport » face à « import », 0,728). La minuscule d
        seulement : « D'Angelo », « D'Souza » sont des noms, soudés comme « O'Brien » */
@@ -1232,6 +1287,17 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
     hebreuOuGrec, indien, hispanique, tamoul, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture === "cantonais", priveInconnu,
     natifs: rom.natifs, filiation, succursale, typeNavire };
+}
+
+/** Le texte d'une parenthèse NOMME-T-IL UNE SOCIÉTÉ : une forme juridique, et devant elle un nom qui n'est pas
+ *  lui-même un mot du métier (« Pescados Anzures, S. de R.L. » oui ; « Private Joint Stock », « S.A. » non : tout y
+ *  est forme) ? C'est ce qui distingue le propriétaire d'une enseigne (voir `variantesTypees`) d'une forme
+ *  mise entre parenthèses, que PHRASES et FORMES lisent déjà. */
+export function nommeUneSociete(texte: string): boolean {
+  const a = analyserEntite(texte);
+  if (!a.societe) return false;
+  const vocabulaire = vocabulaireDuMetier();
+  return a.texte.split(" ").some((m) => m.length >= 3 && !PARTICULES.has(m) && !(vocabulaire.get(m.length) ?? []).includes(m));
 }
 
 /** Les jetons d'un nom brut : préparation d'entité, puis le pipeline commun des paliers

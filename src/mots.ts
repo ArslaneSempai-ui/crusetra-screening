@@ -16,6 +16,8 @@ import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, 
 import { jetonsEntite } from "./preparation.ts";
 import { GENERIQUES_AU_PLURIEL } from "./preparation.ts";
 import { gesteDeFrappe } from "./score.ts";
+import { MOTS_HISPANIQUES } from "./mots-hispaniques.ts";
+export { MOTS_HISPANIQUES } from "./mots-hispaniques.ts";
 
 /* ─────────────────────────── les poids des mots ─────────────────────────── */
 
@@ -149,6 +151,23 @@ export function motsDistincts(a: string, b: string, voyellesLibres = true): bool
   return !rb.some((r) => ra.includes(r));
 }
 
+/**
+ * Deux mots ESPAGNOLS OU PORTUGAIS distincts : chacun dans le vocabulaire des raisons sociales
+ * (MOTS_HISPANIQUES), et l'un n'est pas le pluriel de l'autre. « Faro » et « Foro », « Manzana » et
+ * « Manzano », « Sureste » et « Suroeste » sont deux mots comme « Wine » et « Wire » : le dictionnaire
+ * anglais n'en connaît qu'un des deux, et la faute d'un clavardage ou la signature d'une lettre
+ * tombée en faisait le même (jeu 11, 27/09 : trois fausses alertes fortes). Pas d'exemption des
+ * voyelles : l'espagnol et le portugais écrivent les leurs, une voyelle de plus est un autre mot.
+ * Le pluriel roman (-s, -es ; luz, luces) reste à `simMot` et à ses règles du pluriel.
+ */
+export function motsHispaniquesDistincts(a: string, b: string): boolean {
+  if (a === b || a.length < 4 || b.length < 4) return false;
+  if (!MOTS_HISPANIQUES.has(a) || !MOTS_HISPANIQUES.has(b)) return false;
+  const [court, long] = a.length <= b.length ? [a, b] : [b, a];
+  if (long === court + "s" || long === court + "es" || (court.endsWith("z") && long === court.slice(0, -1) + "ces")) return false;
+  return true;
+}
+
 /** Les deux moitiés d'un mot COMPOSÉ anglais que le dictionnaire ne connaît pas d'un bloc :
  *  « ironbridge » (iron, bridge), « northgate » (north, gate). Chaque moitié est un mot du
  *  dictionnaire (donc d'au moins quatre lettres, voir `lemme`). En cache : le criblage pose la
@@ -184,6 +203,15 @@ export function composesDistincts(a: string, b: string, voyellesLibres = true): 
     }
   }
   return false;
+}
+
+/** La ñ ÉCRITE NY (« Nunyez », « Castanyeda », « Penya ») : un clavier sans tilde, ou l'usage catalan, l'écrit ainsi ;
+ *  les listes écrivent n (« Nunez »). Le pli ôte le y d'un « ny » que suit une voyelle, la seule place de la ñ ; « Danny »
+ *  et « Tony » gardent le leur. Sous la marque hispanique seulement (voir `scorePrepares`), et l'index cherche sous le
+ *  même pli (cribler.ts). Mesuré le 27/09 sur le jeu 11 : « Transportes Nuñez e Hijos » face à « Transportes Nunyez e
+ *  Hijos » à 0,800, « nunez » et « nunyez » un mot court ambigu. */
+export function pliEnye(m: string): string {
+  return m.replace(/ny(?=[aeiou])/g, "n");
 }
 
 /** Les deux mots sont anglais : le dictionnaire les connaît tous les deux. Le repli des
