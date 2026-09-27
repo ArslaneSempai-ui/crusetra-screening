@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import {
   preparerEntite, analyserEntite, preparerNom, scorePrepares, scoreBrut, scoreNoms, variantes, squelette, voyelles, abrege,
   motsDistincts, lemme, variationVocalique, lettrePerdue, PERDU, fauteDeFrappe, composesDistincts,
@@ -8,6 +9,7 @@ import {
   poidsDuMot, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, FAUSSES_ALERTES_MAX_FORT, SEUIL_POSSIBLE,
 } from "./entites.ts";
 import { validerPaires, type TableDUnPalier } from "./measure.ts";
+import { hangulEnLatin, pinyinDe, cleAbjad, romaniser, CHEMIN_PINYIN } from "./ecritures.ts";
 
 const f = FREQUENCES_UNIFORMES;
 const score = (a: string, b: string) => scoreNoms(f, a, b);
@@ -409,4 +411,49 @@ test("l'abréviation d'usage : un mot inconnu du dictionnaire qui commence un mo
 test("les mots de métier japonais marquent la langue : Suisan ouvre le pli des deux romanisations", () => {
   assert.ok(score("Shimotsuki Suisan", "Simotuki Suisan") > 0.81, "shi, si ; tsu, tu : mesuré à 0,800 sans la marque");
   assert.ok(score("Shimotsuki Suisan Co., Ltd.", "Shimotsuki Shoji Co., Ltd.") < 0.81, "deux sociétés du même groupe");
+});
+
+test("les écritures natives : hangul, sinogrammes, arabe et persan, hébreu, vers les mêmes tables que le latin", () => {
+  /* le hangul se décompose par arithmétique, sans table ; ses mots du commerce et sa forme se traduisent */
+  assert.equal(hangulEnLatin("새벽별"), "saebyeokbyeol");
+  assert.equal(hangulEnLatin("물류"), "mullyu", "ㄹ après une finale ㄹ s'écrit ll");
+  assert.equal(preparerEntite("새벽별물류 주식회사"), "saebyeokbyeol logistics");
+  assert.ok(score("새벽별물류 주식회사", "Saebyeokbyeol Logistics Co., Ltd.") >= 0.81);
+  assert.ok(score("새벽별물류 주식회사", "Saebyeokbyeol Trading Co., Ltd.") < 0.81, "un autre mot du commerce est une autre société");
+  /* les sinogrammes : une lecture par caractère, les mots du commerce traduits, le nom propre d'une traite */
+  assert.equal(pinyinDe("金"), "jin");
+  assert.equal(pinyinDe("鷺"), "lu", "le traditionnel se lit aussi");
+  assert.equal(preparerEntite("沧澜远洋航运有限公司"), "canglan ocean shipping");
+  assert.deepEqual([...romaniser("沧澜远洋航运有限公司").natifs], [["canglan", "沧澜"]], "le jeton garde ses caractères");
+  assert.ok(score("MV 金鷺", "MV Jin Lu") >= 0.81);
+  assert.ok(score("沧澜远洋航运有限公司", "Canglan Ocean Shipping Co., Ltd.") >= 0.81);
+  assert.ok(score("雾山精密机械股份有限公司", "Wushan Precision Machinery Co., Ltd.") >= 0.81);
+  assert.ok(score("新海贸易有限公司", "鑫海贸易有限公司") < 0.81, "homophones : xinhai tous deux, deux sociétés");
+  assert.ok(score("沧澜远洋航运有限公司", "沧澜国际物流有限公司") < 0.81, "une société sœur");
+  /* le japonais reste tel quel : un kanji a plusieurs lectures, et 霜月 n'est pas Shuangyue */
+  assert.equal(preparerEntite("株式会社霜月水産"), "株式会社霜月水産");
+  assert.ok(score("光星産業株式会社", "幸生産業株式会社") < 0.81);
+  /* les abjads : consonnes contre consonnes, l'article séparé, la forme et le commerce traduits */
+  assert.equal(preparerEntite("MT بحر الذهب"), "bhr al dhhb");
+  assert.equal(cleAbjad("bahr", false), cleAbjad("bhr", false));
+  assert.equal(cleAbjad("hanegev", true), cleAbjad("hngb", true));
+  assert.equal(cleAbjad("shachar", true), cleAbjad("shchr", true), "ח s'écrit ch, ש reste sh");
+  assert.ok(score("MT بحر الذهب", "MT Bahr Al Dhahab") >= 0.81);
+  assert.ok(score("شرکت بازرگانی سپیددشت", "Sepiddasht Trading Company") >= 0.81, "persan : شرکت et بازرگانی sont la forme et le commerce");
+  assert.ok(score("مؤسسة الرحيلي للتجارة", "Al Ruhaili Trading Est.") >= 0.81, "arabe : للتجارة est le commerce, مؤسسة la forme");
+  assert.ok(score("אורות הנגב תעשיות בע״מ", "Orot HaNegev Industries Ltd.") >= 0.81, "hébreu : ו voyelle dans אורות, בע״מ la forme");
+  assert.ok(score("שחר הגליל בע״מ", "Shachar HaGalil Ltd.") >= 0.81);
+  assert.ok(score("אורות הנגב תעשיות בע״מ", "Orot HaGalil Industries Ltd.") < 0.81, "d'autres consonnes sont un autre mot");
+  assert.equal(score("MT بحر الذهب ٢", "MT Bahr Al Dhahab 3"), 0, "un chiffre arabe oriental est un numéro, et deux numéros différents tranchent");
+  /* le thaï n'est pas lu : dit ici, pas découvert par la mesure */
+  assert.ok(score("บริษัท พระจันทร์เงิน อุตสาหกรรม จำกัด", "Phrachan Ngoen Industry Co., Ltd.") < 0.8);
+});
+
+test("la table du pinyin : une lecture par code de U+4E00 à U+9FFF, son empreinte, l'inconnu traverse", () => {
+  const octets = readFileSync(CHEMIN_PINYIN);
+  assert.equal(createHash("sha256").update(octets).digest("hex"), "47a38de123616a3a34d6c6ddc06d37e452e83e0a04e0e74ef91e2e7402bdd364",
+    "la table est celle produite par ICU 78.3 (Han-Latin, données Unicode 17.0), voir ecritures.ts");
+  assert.equal(octets.toString("utf8").split("\n").length, 20993, "20 992 lignes et la fin de fichier");
+  assert.equal(pinyinDe("一"), "yi");
+  assert.equal(pinyinDe("A"), "A", "hors table, un caractère traverse inchangé");
 });

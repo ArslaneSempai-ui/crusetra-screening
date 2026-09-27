@@ -34,11 +34,12 @@ import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
 import { commitCourant } from "./your-alerts.ts";
 import type { Cellule } from "./measure.ts";
 import {
-  frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, tronque, simMinimale, palierEntite, estCoupe,
+  frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD,
   sembleCoupe, variationVocalique, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu, CHEMINS_APPRENTISSAGE,
   CHEMIN_VERDICT, RAPPEL_MIN, BLOC_MIN, LONGUEUR_CHAMP,
   type Frequences, type NomPrepare, type Reglage, type JeuMesure,
 } from "./entites.ts";
+import { cleAbjad, type Abjad } from "./ecritures.ts";
 
 /** Au plus autant de candidats montrés par nom ; le compte des autres est donné. */
 export const CANDIDATS_MONTRES = 5;
@@ -158,7 +159,9 @@ type NomIndexe = { brut: string; nom: NomPrepare; entree: EntreeListe; alias?: s
   bg: Uint32Array; bgSq: Uint32Array };
 
 /** Un mot du vocabulaire des listes : sa forme, ses clés, et les chaînes qui le portent. */
-type MotIndexe = { mot: string; sq: string; repli: string; abregeVu: boolean; noms: number[] };
+type MotIndexe = { mot: string; sq: string; repli: string; abregeVu: boolean; noms: number[];
+  /** les abjads (a : arabe, h : hébreu) dans l'écriture desquels une chaîne listée porte ce mot */
+  abjadVu: string };
 
 /**
  * L'INDEX, ET POURQUOI IL NE PERD RIEN.
@@ -196,6 +199,12 @@ export class Index {
   private readonly parRepli = new Map<string, MotIndexe[]>();
   /** les mots listés qui portent une lettre perdue à l'encodage (« seʔora »), par longueur */
   private readonly parLongueurPerdu = new Map<string, MotIndexe[]>();
+  /** la clé consonantique (`cleAbjad`) de chaque mot, dans les deux lectures (« a| », « h| ») :
+   *  c'est là qu'un nom écrit dans un abjad cherche ses mots */
+  private readonly parCleAbjad = new Map<string, MotIndexe[]>();
+  /** la même clé, pour les seuls mots que des chaînes écrites dans un abjad portent : c'est là
+   *  qu'un nom latin cherche les leurs (voir CREDIT_ABJAD dans scorePrepares) */
+  private readonly parCleAbjadNatif = new Map<string, MotIndexe[]>();
   /** les chaînes qui portent un bigramme, par bigramme ET longueur de bloc (« an20 ») : la
    *  borne de longueur du bloc se lit dans la clé, sans parcourir les autres longueurs */
   private readonly bigrammes = new Map<string, number[]>();
@@ -246,15 +255,29 @@ export class Index {
         if (nom.mots.length === 0) { this.sansMots.push(k); continue; }
         nom.mots.forEach((mot, i) => {
           let m = this.vocabulaire.get(mot);
-          if (m) { if (m.noms[m.noms.length - 1] !== k) m.noms.push(k); if (nom.abreges[i]) m.abregeVu = true; return; }
-          m = { mot, sq: nom.squelettes[i]!, repli: nom.replis[i]!, abregeVu: nom.abreges[i]!, noms: [k] };
-          this.vocabulaire.set(mot, m);
-          ranger(this.parInitialeLongueur, mot[0]! + mot.length, m);
-          ranger(this.parSqInitialeLongueur, (m.sq[0] ?? "") + m.sq.length, m);
-          ranger(this.parInitiale, mot[0]!, m);
-          ranger(this.parSq, m.sq, m);
-          ranger(this.parRepli, m.repli, m);
-          if (mot.includes(PERDU)) ranger(this.parLongueurPerdu, String(mot.length), m);
+          if (!m) {
+            m = { mot, sq: nom.squelettes[i]!, repli: nom.replis[i]!, abregeVu: nom.abreges[i]!, noms: [k], abjadVu: "" };
+            this.vocabulaire.set(mot, m);
+            ranger(this.parInitialeLongueur, mot[0]! + mot.length, m);
+            ranger(this.parSqInitialeLongueur, (m.sq[0] ?? "") + m.sq.length, m);
+            ranger(this.parInitiale, mot[0]!, m);
+            ranger(this.parSq, m.sq, m);
+            ranger(this.parRepli, m.repli, m);
+            if (mot.includes(PERDU)) ranger(this.parLongueurPerdu, String(mot.length), m);
+            for (const mode of ["a", "h"]) {
+              const c = cleAbjad(mot, mode === "h");
+              if (c.length >= 3) ranger(this.parCleAbjad, `${mode}|${c}`, m);
+            }
+          } else {
+            if (m.noms[m.noms.length - 1] !== k) m.noms.push(k);
+            if (nom.abreges[i]) m.abregeVu = true;
+          }
+          const mode = nom.marques.abjad[0] ?? "";
+          if (mode !== "" && !m.abjadVu.includes(mode)) {
+            m.abjadVu += mode;
+            const c = cleAbjad(mot, mode === "h");
+            if (c.length >= 3) ranger(this.parCleAbjadNatif, `${mode}|${c}`, m);
+          }
         });
         for (const [table, longueurs, bloc] of [[this.bigrammes, this.parLongueurBloc, nom.bloc],
           [this.bigrammesSq, this.parLongueurBlocSq, nom.blocSq]] as const) {
@@ -288,8 +311,8 @@ export class Index {
   }
 
   /** Les chaînes listées dont un mot est assez proche de `mot` (mêmes règles que le score). */
-  private nomsParMot(mot: string, sq: string, repli: string, dernier: boolean, coupe: boolean, abreviation: boolean): number[] {
-    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}`;
+  private nomsParMot(mot: string, sq: string, repli: string, dernier: boolean, coupe: boolean, abreviation: boolean, abjad: Abjad): number[] {
+    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}|${abjad}`;
     const deja = this.cacheMots.get(cle);
     if (deja) return deja;
     const t = simMinimale(this.seuil);
@@ -317,6 +340,14 @@ export class Index {
       if (lu) retenus.add(lu);
     }
     if (t <= 0.95) for (const m of this.parSq.get(sq) ?? []) retenus.add(m);
+    /* les mêmes consonnes (CREDIT_ABJAD) : un nom écrit dans un abjad face à tous les mots, un nom
+       latin face aux mots que des chaînes écrites dans un abjad portent */
+    if (t <= CREDIT_ABJAD) {
+      for (const mode of abjad !== "" ? [abjad] : ["arabe", "hebreu"] as const) {
+        const c = cleAbjad(mot, mode === "hebreu");
+        if (c.length >= 3) for (const m of (abjad !== "" ? this.parCleAbjad : this.parCleAbjadNatif).get(`${mode[0]}|${c}`) ?? []) retenus.add(m);
+      }
+    }
     if (t <= 0.9) {
       for (const m of this.parRepli.get(repli) ?? []) retenus.add(m);
       /* les règles à 0,9 partagent l'initiale : abréviation dans un sens ou l'autre, mot
@@ -374,7 +405,7 @@ export class Index {
     }
     const coupe = estCoupe(brut);
     q.mots.forEach((m, i) => {
-      for (const k of this.nomsParMot(m, q.squelettes[i]!, q.replis[i]!, i === q.mots.length - 1, coupe, q.abreges[i]!)) retenus.add(k);
+      for (const k of this.nomsParMot(m, q.squelettes[i]!, q.replis[i]!, i === q.mots.length - 1, coupe, q.abreges[i]!, q.marques.abjad)) retenus.add(k);
     });
     /* le bloc, sur le bloc brut puis sur celui des squelettes. Pour chaque longueur de bloc
        listé dans la bande, le lemme dit combien de bigrammes doivent être partagés ; par le
