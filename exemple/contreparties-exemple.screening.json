@@ -1,9 +1,9 @@
 {
   "version": 1,
   "genre": "cascade-screening/counterparty-screening",
-  "emisLe": "2026-09-27T18:23:41.841Z",
+  "emisLe": "2026-09-27T19:21:32.482Z",
   "client": "Example Forwarding Inc. (invented)",
-  "commit": "553f5ec",
+  "commit": "75dccb3",
   "fichier": {
     "nom": "contreparties-exemple.csv",
     "sha256": "fab131564c82ea6c859845e4cf53207059d66e0acb75d1603c5d12974f6cbf89",
@@ -154,79 +154,86 @@
           "sha256": "66468ee8d5867aa099bc9cabc66bf2cc59169d0c8ff4e3f19c19fdb396a28c29",
           "match": 200,
           "different": 200
+        },
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "authored on 2026-09-28 by a separate agent (a Rotterdam customs broker and Dubai free-zone bank brief, organised by trap family: Benelux and Gulf forms, Arabic and Persian romanisations, Rhine barges and Gulf tankers, EDI and SWIFT residues, chat and OCR; explicit verdict conventions, corrected so that one letter changed in a company name is the same name misspelt except in a vessel name; Opus) that never saw the matcher nor any other pair set, as blind test set #13 (sha256 79a6a291…); every name invented; no client data, no list data; overlap with the thirteen earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v15 (entites.ts ea838aa2…, cribler.ts 292e9ddb…, ecritures.ts bdd60326…): strong 0.81 found 120/200 [53-67 %] with 16/200 false alerts [5-13 %]; possible 0.80 found 155/200 [71-83 %] with 59/200 [24-36 %]. Studied afterwards and promoted to training set 14 on 2026-09-28, so it no longer measures anything held out.",
+          "sha256": "4b1fa10dab87aa217757428d4dd0bae6078af26b36f4fdccfffdc769935dd3c3",
+          "match": 200,
+          "different": 200
         }
       ],
       "fort": {
         "rappel": {
-          "succes": 2045,
-          "n": 2170,
-          "taux": 0.9423963133640553,
-          "bas": 0.9317888209316315,
-          "haut": 0.9514402055070933
+          "succes": 2220,
+          "n": 2370,
+          "taux": 0.9367088607594937,
+          "bas": 0.9261816802623454,
+          "haut": 0.9458225848916565
         },
         "fauxPositifs": {
-          "succes": 54,
-          "n": 2170,
-          "taux": 0.02488479262672811,
-          "bas": 0.019122377271992758,
-          "haut": 0.03232644954225167
+          "succes": 56,
+          "n": 2370,
+          "taux": 0.02362869198312236,
+          "bas": 0.018240935999426566,
+          "haut": 0.030558276214227454
         }
       },
       "possible": {
         "rappel": {
-          "succes": 2144,
-          "n": 2170,
-          "taux": 0.9880184331797235,
-          "bas": 0.9825015675984214,
-          "haut": 0.991810452191797
+          "succes": 2347,
+          "n": 2370,
+          "taux": 0.990295358649789,
+          "bas": 0.9854791984525957,
+          "haut": 0.9935246238748925
         },
         "fauxPositifs": {
-          "succes": 523,
-          "n": 2170,
-          "taux": 0.24101382488479262,
-          "bas": 0.22348607911092466,
-          "haut": 0.25945692832807177
+          "succes": 578,
+          "n": 2370,
+          "taux": 0.2438818565400844,
+          "bas": 0.22701649261173576,
+          "haut": 0.26157617507089315
         }
       }
     },
     "verdict": {
       "jeu": {
         "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
-        "provenance": "blind test set #13, authored on 2026-09-28 by a separate agent (a Rotterdam customs broker and Dubai free-zone bank brief, organised by trap family, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
-        "sha256": "79a6a291fd06d5b8296b1b617fc78e3e2bc7b40bb6bc260256b806fe19e2f4b6",
+        "provenance": "blind test set #14, authored on 2026-09-28 by a separate agent (a Mombasa clearing agent and Karachi trade-finance brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
+        "sha256": "ee673be7999d54808229bd6e8350b95ec7e64726ac036e3620ffca98ab506326",
         "match": 200,
         "different": 200
       },
       "fort": {
         "rappel": {
-          "succes": 120,
+          "succes": 141,
           "n": 200,
-          "taux": 0.6,
-          "bas": 0.5308354385001253,
-          "haut": 0.6653953603162106
+          "taux": 0.705,
+          "bas": 0.6384115802925058,
+          "haut": 0.7638615572809827
         },
         "fauxPositifs": {
-          "succes": 16,
+          "succes": 2,
           "n": 200,
-          "taux": 0.08,
-          "bas": 0.04984015517626642,
-          "haut": 0.12599048979512317
+          "taux": 0.01,
+          "bas": 0.0027466006037749346,
+          "haut": 0.03572248519617954
         }
       },
       "possible": {
         "rappel": {
-          "succes": 155,
+          "succes": 173,
           "n": 200,
-          "taux": 0.775,
-          "bas": 0.7122575346140798,
-          "haut": 0.8273771621308439
+          "taux": 0.865,
+          "bas": 0.8107074954488287,
+          "haut": 0.9055349202307972
         },
         "fauxPositifs": {
-          "succes": 59,
+          "succes": 23,
           "n": 200,
-          "taux": 0.295,
-          "bas": 0.23613844271901735,
-          "haut": 0.3615884197074943
+          "taux": 0.115,
+          "bas": 0.07786317221824318,
+          "haut": 0.16664825233886393
         }
       }
     }
@@ -744,5 +751,5 @@
     "At most 5 candidates are shown per name, highest score first; the count of the others is given.",
     "The rates quoted first come from 200 matching pairs and 200 hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties."
   ],
-  "empreinte": "ef44b43109caa5ba"
+  "empreinte": "0fb9bfc004dca67a"
 }
