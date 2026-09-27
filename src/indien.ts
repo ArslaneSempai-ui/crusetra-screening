@@ -26,6 +26,9 @@ export const GRAPHIES_INDIENNES: ReadonlyMap<string, string> = new Map(Object.en
   iyar: "iyer", aiyar: "iyer", ayyar: "iyer", aiyer: "iyer", aiyangar: "iyengar", ayyangar: "iyengar", ayengar: "iyengar",
   chaudhry: "chaudhary", chaudhari: "chaudhary", chaudhuri: "chaudhary", choudhary: "chaudhary", choudhury: "chaudhary", chowdhury: "chaudhary",
   chowdhary: "chaudhary", choudhry: "chaudhary", chaudhury: "chaudhary", choudhari: "chaudhary",
+  /* le don (بخش) du Pendjab et du Sind, écrit Bakhsh, Baksh, Buksh ou Bux : « Ghulam Ali Bux » et « Gulam Ali Bakhsh » sont un même
+     boutre (jeu 15, tour 11 : 0,488, aucun squelette ne rejoint bux à bakhsh) */
+  baksh: "bakhsh", buksh: "bakhsh", bukhsh: "bakhsh", bux: "bakhsh",
   /* les fleuves et les villes : le nom d'aujourd'hui et celui du Raj, que les registres anciens et les enseignes gardent */
   cauvery: "kaveri", ganges: "ganga", tinnevelly: "tirunelveli", trichinopoly: "tiruchirappalli", tiruchirapalli: "tiruchirappalli",
   trichy: "tiruchirappalli", tuticorin: "thoothukudi", bombay: "mumbai", madras: "chennai", calcutta: "kolkata", bangalore: "bengaluru",

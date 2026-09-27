@@ -36,9 +36,9 @@ import type { Cellule } from "./measure.ts";
 import {
   frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, abregeAllemand, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD, sembleCoupe,
   compose, membres, gerondif, PARTICULES,
-  variationVocalique, voyelleEpenthetique, squeletteLongue, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
+  variationVocalique, voyelleEpenthetique, squeletteLongue, pliAi, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
   CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pliJaponais, pliCoreen, CREDIT_KANA, pluriel, CHEMIN_VERDICT, RAPPEL_MIN,
-  pliSlave, CREDIT_CYRILLIQUE, pliGrec, squeletteArabe, ARTICLES_ARABES, clesSlaves, pliThai, CREDIT_THAI,
+  pliSlave, CREDIT_CYRILLIQUE, pliGrec, clePhonetique, homophoneCorrige, squeletteArabe, ARTICLES_ARABES, clesSlaves, pliThai, CREDIT_THAI,
   BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare, type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme, pliEnye,
 } from "./entites.ts";
 import { cleAbjad, cleAbjadSansTa, cleAbjadVLuF, type Abjad } from "./ecritures.ts";
@@ -262,6 +262,9 @@ export class Index {
   /** le pli du thaï (`pliThai`, CREDIT_THAI), dans les deux sens de la marque comme le japonais */
   private readonly parPliThai = new Map<string, MotIndexe[]>();
   private readonly parPliThaiNatif = new Map<string, MotIndexe[]>();
+  /** la clé phonétique anglaise des mots listés (`clePhonetique`) : c'est là que l'homophone d'un clavardage (0,9, « Steal » pour
+   *  Steel) cherche le mot du commerce, et le mot du commerce son homophone (voir `homophoneCorrige`) */
+  private readonly parClePhonetique = new Map<string, MotIndexe[]>();
   private readonly parPliSlaveAllemand = new Map<string, MotIndexe[]>();
   private readonly parPliSlaveAllemandNatif = new Map<string, MotIndexe[]>();
   private readonly parPliSlaveInitialeLongueur = new Map<string, MotIndexe[]>();
@@ -328,6 +331,7 @@ export class Index {
             ranger(this.parPliCoreen, pliCoreen(mot), m);
             ranger(this.parPliGrec, pliGrec(mot), m);
             ranger(this.parPliThai, pliThai(mot), m);
+            if (mot.length >= 4) ranger(this.parClePhonetique, clePhonetique(mot), m);
             this.vocabulaire.set(mot, m);
             ranger(this.parInitialeLongueur, mot[0]! + mot.length, m);
             ranger(this.parSqInitialeLongueur, (m.sq[0] ?? "") + m.sq.length, m);
@@ -337,6 +341,8 @@ export class Index {
             ranger(this.parSq, m.sq, m);
             /* la voyelle longue écrite ee (« naseem ») : rangé aussi sous son squelette lu i (voir squeletteLongue) */
             if (mot.includes("ee")) ranger(this.parSq, squeletteLongue(mot), m);
+            /* et la diphtongue ai ou ei lue e (« quraishi », « kureishi ») : rangé aussi sous son squelette lu e, ee compris (voir pliAi) */
+            if (pliAi(mot) !== mot) ranger(this.parSq, squeletteLongue(pliAi(mot)), m);
             /* et sous son squelette arabe (o et u fondus, p lu f : voir squeletteArabe), quand il diffère */
             const sa = squeletteArabe(mot);
             if (sa !== m.sq) ranger(this.parSq, sa, m);
@@ -459,6 +465,8 @@ export class Index {
     /* et le mot demandé qui écrit ee cherche sous son squelette lu i, où les mots listés en ee sont
        aussi rangés : les deux sens de squeletteLongue */
     if (t <= 0.95 && mot.includes("ee")) for (const m of this.parSq.get(squeletteLongue(mot)) ?? []) retenus.add(m);
+    /* et le mot demandé qui écrit ai ou ei cherche sous son squelette lu e (voir pliAi), où les mots listés en ai, ei sont aussi rangés */
+    if (t <= 0.95 && pliAi(mot) !== mot) for (const m of this.parSq.get(squeletteLongue(pliAi(mot))) ?? []) retenus.add(m);
     /* et sous son squelette arabe (voir squeletteArabe), où les mots listés dont il diffère sont aussi rangés */
     if (t <= 0.95) for (const k of new Set([squeletteArabe(mot), squeletteArabe(mot, true, false)])) for (const m of this.parSq.get(k) ?? []) retenus.add(m);
     /* les mêmes consonnes (CREDIT_ABJAD) : un nom écrit dans un abjad face à tous les mots, un nom
@@ -577,6 +585,9 @@ export class Index {
             if (m.mot.length >= 4 && (lemme(m.mot) !== undefined) !== anglais && distanceOsa(mot, m.mot) === 1) retenus.add(m);
           }
         }
+        /* l'homophone d'un clavardage (mêmes règles que le score) : la même clé phonétique, un mot du commerce d'un côté et un mot
+           du dictionnaire de l'autre, dans les deux sens ; la marque chat se vérifie au score */
+        for (const m of this.parClePhonetique.get(clePhonetique(mot)) ?? []) if (homophoneCorrige(mot, m.mot) || homophoneCorrige(m.mot, mot)) retenus.add(m);
       }
     }
     /* la distance d'édition, sur le mot et sur son squelette : l'écart de longueur est borné
