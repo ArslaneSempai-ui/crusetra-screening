@@ -1,0 +1,2407 @@
+{
+  "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+  "provenance": "authored on 2026-09-28 by a separate agent (a Mombasa clearing and forwarding agent and Karachi trade-finance brief, organised by document: East African registries and invoices, Pakistani registry and bank documents, Indian Ocean shipping, letters of credit and SWIFT, chat and OCR; explicit verdict conventions, one letter changed in a company name being the same name misspelt except in a vessel name) that never saw the matcher nor any other pair set, as blind test set #14 (sha256 ee673be7…); every name invented; no client data, no list data; overlap with the fourteen earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v16 (entites.ts ebbd2990…, cribler.ts 6ad910de…, ecritures.ts bdd60326…): strong 0.81 found 141/200 [64-76 %] with 2/200 false alerts [0-4 %]; possible 0.80 found 173/200 [81-91 %] with 23/200 [8-17 %]. Studied afterwards and promoted to training set 15 on 2026-09-28, so it no longer measures anything held out.",
+  "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+  "paires": [
+    {
+      "a": "Kilifi Coastal Traders Ltd",
+      "b": "Kilifi Coastal Traders Limited",
+      "verdict": "match",
+      "nature": "ltd-vs-limited"
+    },
+    {
+      "a": "Mwangi & Sons Co. Ltd",
+      "b": "Mwangi and Sons Company Limited",
+      "verdict": "match",
+      "nature": "co-ltd-vs-company-limited"
+    },
+    {
+      "a": "Odhiambo & Otieno Enterprises Ltd",
+      "b": "Odhiambo and Otieno Enterprises Limited",
+      "verdict": "match",
+      "nature": "ampersand-vs-and"
+    },
+    {
+      "a": "Shah Bros. (K) Ltd",
+      "b": "Shah Brothers Kenya Limited",
+      "verdict": "match",
+      "nature": "bros-vs-brothers"
+    },
+    {
+      "a": "Patel Hardware (K) Ltd",
+      "b": "Patel Hardware Kenya Ltd",
+      "verdict": "match",
+      "nature": "country-abbrev-k"
+    },
+    {
+      "a": "Msasani Fisheries (T) Ltd",
+      "b": "Msasani Fisheries Tanzania Limited",
+      "verdict": "match",
+      "nature": "country-abbrev-t"
+    },
+    {
+      "a": "Nakasero Pharma (U) Ltd",
+      "b": "Nakasero Pharma Uganda Limited",
+      "verdict": "match",
+      "nature": "country-abbrev-u"
+    },
+    {
+      "a": "Wanjiku Investments Ltd PIN P051234567X",
+      "b": "Wanjiku Investments Limited",
+      "verdict": "match",
+      "nature": "kra-pin-residue"
+    },
+    {
+      "a": "TIN 123-456-789 Kibaha Cement Traders Ltd",
+      "b": "Kibaha Cement Traders Limited",
+      "verdict": "match",
+      "nature": "tin-residue"
+    },
+    {
+      "a": "Juma Ochieng t/a Ochieng General Stores",
+      "b": "Ochieng General Stores",
+      "verdict": "match",
+      "nature": "trading-as"
+    },
+    {
+      "a": "Karimi Agencies (trading as Karimi Fresh Produce)",
+      "b": "Karimi Fresh Produce",
+      "verdict": "match",
+      "nature": "trading-as"
+    },
+    {
+      "a": "Mwalimu wa Pwani Sacco Society Ltd",
+      "b": "Mwalimu Wa Pwani SACCO Ltd",
+      "verdict": "match",
+      "nature": "sacco-society-omitted"
+    },
+    {
+      "a": "Nyota ya Bahari Enterprises Ltd",
+      "b": "Nyota Ya Bahari Ent. Limited",
+      "verdict": "match",
+      "nature": "enterprises-abbrev"
+    },
+    {
+      "a": "Njoroge Wa Kamau Hardware Ltd",
+      "b": "Njoroge wa Kamau Hardware Limited",
+      "verdict": "match",
+      "nature": "ltd-vs-limited"
+    },
+    {
+      "a": "Kĩrĩmara Tea Growers Society Ltd",
+      "b": "Kirimara Tea Growers Society Limited",
+      "verdict": "match",
+      "nature": "kikuyu-diacritics"
+    },
+    {
+      "a": "Akinyi Nyar Kisumu Textiles Ltd",
+      "b": "Akinyi Nyar-Kisumu Textiles Limited",
+      "verdict": "match",
+      "nature": "hyphen-and-suffix"
+    },
+    {
+      "a": "Velji Ramji & Sons Ltd",
+      "b": "Velji Ramji and Sons Limited",
+      "verdict": "match",
+      "nature": "ampersand-vs-and"
+    },
+    {
+      "a": "Shamji Hardware Ltd",
+      "b": "Shamjee Hardware Ltd",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "Radhakrishnan Motors (K) Ltd",
+      "b": "Radhakrisnan Motors (K) Ltd",
+      "verdict": "match",
+      "nature": "misspelt-proper-name"
+    },
+    {
+      "a": "Kipkorir Cereals Ltd",
+      "b": "Kipkorrir Cereals Ltd",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "Baraka Mwangaza Enterprises Ltd",
+      "b": "Baraka Mwangaza Ent Ltd",
+      "verdict": "match",
+      "nature": "enterprises-abbrev"
+    },
+    {
+      "a": "Tumaini Bora Investments Ltd",
+      "b": "Tumaini Bora Inv. Ltd",
+      "verdict": "match",
+      "nature": "investments-abbrev"
+    },
+    {
+      "a": "Coastline Agro Supplies Ltd - Malindi Branch",
+      "b": "Coastline Agro Supplies Ltd",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "Kisumu Lakeside Motors Ltd (Kakamega Branch)",
+      "b": "Kisumu Lakeside Motors Limited",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "MAGOMENI STEEL WORKS LIMITED",
+      "b": "Magomeni Steel Works Ltd.",
+      "verdict": "match",
+      "nature": "uppercase-registry"
+    },
+    {
+      "a": "Reg. No. CPR/2019/123456 Shanzu Coral Hotel Suppliers Ltd",
+      "b": "Shanzu Coral Hotel Suppliers Limited",
+      "verdict": "match",
+      "nature": "registration-number-residue"
+    },
+    {
+      "a": "Mbulu Highlands Coffee Growers Co-operative Union Ltd",
+      "b": "Mbulu Highlands Coffee Growers Cooperative Union Limited",
+      "verdict": "match",
+      "nature": "cooperative-hyphen"
+    },
+    {
+      "a": "Kampuni ya Usafirishaji Pwani Ltd",
+      "b": "Pwani Transport Company Ltd",
+      "verdict": "match",
+      "nature": "swahili-translation"
+    },
+    {
+      "a": "Wakulima wa Meru Society Ltd",
+      "b": "Meru Farmers Society Ltd",
+      "verdict": "match",
+      "nature": "swahili-translation"
+    },
+    {
+      "a": "Haji Abdalla & Sons Ltd",
+      "b": "Haji Abdulla and Sons Limited",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "Oloo Fabricators",
+      "b": "Oloo Fabricators Ltd",
+      "verdict": "match",
+      "nature": "suffix-omitted"
+    },
+    {
+      "a": "The Nakuru Grain Millers Ltd",
+      "b": "Nakuru Grain Millers Limited",
+      "verdict": "match",
+      "nature": "article-dropped"
+    },
+    {
+      "a": "Wanjiru & Wambui Advocates",
+      "b": "Wanjiru and Wambui, Advocates",
+      "verdict": "match",
+      "nature": "ampersand-vs-and"
+    },
+    {
+      "a": "Njeri's Boutique Ltd",
+      "b": "Njeris Boutique Limited",
+      "verdict": "match",
+      "nature": "apostrophe-dropped"
+    },
+    {
+      "a": "Mapenzi Furnitures Ltd",
+      "b": "Mapenzi Furniture Ltd",
+      "verdict": "match",
+      "nature": "company-plural"
+    },
+    {
+      "a": "Kwa-Jomvu Quarry Ltd",
+      "b": "Kwa Jomvu Quarry Limited",
+      "verdict": "match",
+      "nature": "hyphen-and-suffix"
+    },
+    {
+      "a": "Bidii Yetu Enterprises Ltd/P051987654Z",
+      "b": "Bidii Yetu Enterprises Limited",
+      "verdict": "match",
+      "nature": "kra-pin-residue"
+    },
+    {
+      "a": "Uhuru Gardens Nursery Co Ltd",
+      "b": "Uhuru Gardens Nursery Company Ltd",
+      "verdict": "match",
+      "nature": "co-vs-company"
+    },
+    {
+      "a": "Muheza Sisal Estates Ltd",
+      "b": "Muheza Sisal Estates Ltd (Korogwe Branch)",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "Jinja Steel Rolling Mills Ltd",
+      "b": "JINJA STEEL ROLLING MILLS LTD KAMPALA",
+      "verdict": "match",
+      "nature": "uppercase-place-residue"
+    },
+    {
+      "a": "Mwangi & Sons Ltd",
+      "b": "Mwangi & Daughters Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Kilifi Coastal Traders Ltd",
+      "b": "Kilifi Coastal Transporters Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Patel Hardware (K) Ltd",
+      "b": "Patel Hardware (U) Ltd",
+      "verdict": "different",
+      "nature": "other-country-registration"
+    },
+    {
+      "a": "Shah Bros. Ltd",
+      "b": "Shah & Shah Ltd",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "Odhiambo & Otieno Enterprises Ltd",
+      "b": "Odhiambo & Onyango Enterprises Ltd",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Shanzu Coral Hotel Suppliers Ltd",
+      "b": "Shanzu Coral Hotel Ltd",
+      "verdict": "different",
+      "nature": "missing-defining-word"
+    },
+    {
+      "a": "Tumaini Bora Investments Ltd",
+      "b": "Tumaini Bora Sacco Society Ltd",
+      "verdict": "different",
+      "nature": "other-legal-form"
+    },
+    {
+      "a": "Kibaha Cement Traders Ltd",
+      "b": "Kibaha Cement Products Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Velji Ramji & Sons Ltd",
+      "b": "Velji Ramji & Bros Ltd",
+      "verdict": "different",
+      "nature": "sons-vs-bros"
+    },
+    {
+      "a": "Wanjiku Investments Ltd",
+      "b": "Wanjiku Wanjiru Investments Ltd",
+      "verdict": "different",
+      "nature": "added-name"
+    },
+    {
+      "a": "Msasani Fisheries (T) Ltd",
+      "b": "Msasani Fish Processors (T) Ltd",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "Karimi Fresh Produce",
+      "b": "Kariuki Fresh Produce",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Njoroge wa Kamau Hardware Ltd",
+      "b": "Njoroge wa Kimani Hardware Ltd",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Akinyi Textiles Ltd",
+      "b": "Atieno Textiles Ltd",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Mombasa Spice Traders Ltd",
+      "b": "Mombasa Spice Traders Holdings Ltd",
+      "verdict": "different",
+      "nature": "holdings-added"
+    },
+    {
+      "a": "Coastline Agro Supplies Ltd",
+      "b": "Coastline Agro Supplies Uganda Ltd",
+      "verdict": "different",
+      "nature": "other-country-registration"
+    },
+    {
+      "a": "Kisumu Lakeside Motors Ltd",
+      "b": "Kisumu Lakeside Motor Spares Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Magomeni Steel Works Ltd",
+      "b": "Magomeni Steel Structures Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Haji Abdalla & Sons Ltd",
+      "b": "Haji Abdulla Hardware Ltd",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "Oloo Fabricators Ltd",
+      "b": "Oloo Foundry Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Nakuru Grain Millers Ltd",
+      "b": "Nakuru Grain Traders Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Mapenzi Furniture Ltd",
+      "b": "Mapenzi Fabrics Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Kwa Jomvu Quarry Ltd",
+      "b": "Kwa Jomvu Ballast Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Bidii Yetu Enterprises Ltd",
+      "b": "Bidii Yako Enterprises Ltd",
+      "verdict": "different",
+      "nature": "other-swahili-word"
+    },
+    {
+      "a": "Uhuru Gardens Nursery Co Ltd",
+      "b": "Uhuru Gardens Pre-School Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Nyota ya Bahari Enterprises Ltd",
+      "b": "Nyota ya Asubuhi Enterprises Ltd",
+      "verdict": "different",
+      "nature": "other-swahili-word"
+    },
+    {
+      "a": "Mwalimu wa Pwani Sacco Ltd",
+      "b": "Mwalimu wa Nyanza Sacco Ltd",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Kirimara Tea Growers Society Ltd",
+      "b": "Kirimara Coffee Growers Society Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Pwani Transport Company Ltd",
+      "b": "Pwani Freight Company Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Popat Brothers (K) Ltd",
+      "b": "Popat & Popat Advocates",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "Radhakrishnan Motors (K) Ltd",
+      "b": "Radhakrishnan Motorcycles (K) Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Kipkorir Cereals Ltd",
+      "b": "Kipkorir & Kiprotich Cereals Ltd",
+      "verdict": "different",
+      "nature": "added-name"
+    },
+    {
+      "a": "Njeri's Boutique Ltd",
+      "b": "Njeri's Bakery Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Meru Farmers Society Ltd",
+      "b": "Meru Traders Society Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Ochieng General Stores",
+      "b": "Ochieng General Hardware",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Mbulu Highlands Coffee Growers Co-operative Union Ltd",
+      "b": "Mbulu Lowlands Coffee Growers Co-operative Union Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Nakasero Pharma (U) Ltd",
+      "b": "Nakasero Diagnostics (U) Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Wanjiru & Wambui Advocates",
+      "b": "Wanjiru & Wanjiku Advocates",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Muheza Sisal Estates Ltd",
+      "b": "Muheza Sisal Spinners Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Jinja Steel Rolling Mills Ltd",
+      "b": "Jinja Steel Wire Ltd",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "Sialkot Surgical Crafts (Pvt.) Ltd.",
+      "b": "Sialkot Surgical Crafts (Private) Limited",
+      "verdict": "match",
+      "nature": "pvt-ltd-vs-private-limited"
+    },
+    {
+      "a": "Haji Muhammad Ashraf & Sons",
+      "b": "Haji Mohammad Ashraf and Sons",
+      "verdict": "match",
+      "nature": "romanisation-muhammad"
+    },
+    {
+      "a": "M/s Chaudhry Rice Mills",
+      "b": "Chaudhry Rice Mills",
+      "verdict": "match",
+      "nature": "ms-prefix"
+    },
+    {
+      "a": "Ch. Nazir Ahmed & Co.",
+      "b": "Chaudhry Nazir Ahmad & Co.",
+      "verdict": "match",
+      "nature": "honorific-abbrev"
+    },
+    {
+      "a": "Mian Tariq Textile Mills Ltd",
+      "b": "Mian Tariq Textile Mills Limited",
+      "verdict": "match",
+      "nature": "ltd-vs-limited"
+    },
+    {
+      "a": "Karachi Steel Re-Rolling Mills (Pvt) Ltd",
+      "b": "Karachi Steel Rerolling Mills Private Limited",
+      "verdict": "match",
+      "nature": "hyphen-and-suffix"
+    },
+    {
+      "a": "NTN 1234567-8 Faisalabad Yarn Traders (Pvt) Ltd",
+      "b": "Faisalabad Yarn Traders (Private) Limited",
+      "verdict": "match",
+      "nature": "ntn-residue"
+    },
+    {
+      "a": "Muhammad Aslam Traders (CNIC 42101-1234567-1)",
+      "b": "Mohammed Aslam Traders",
+      "verdict": "match",
+      "nature": "cnic-residue"
+    },
+    {
+      "a": "Husain Brothers Industries",
+      "b": "Hussain Brothers Industries",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "Qureshi Leather Works (Pvt) Ltd",
+      "b": "Quraishi Leather Works (Pvt) Ltd",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "Shaikh Abdul Rasheed & Sons",
+      "b": "Sheikh Abdul Rashid and Sons",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "Siddiqui Enterprises",
+      "b": "Siddiqi Enterprises",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "Multan Cotton Ginners",
+      "b": "Multan Cotton Ginners (Pvt) Ltd",
+      "verdict": "match",
+      "nature": "suffix-omitted"
+    },
+    {
+      "a": "Malik Bros. Engineering",
+      "b": "Malik Brothers Engineering",
+      "verdict": "match",
+      "nature": "bros-vs-brothers"
+    },
+    {
+      "a": "Chenab Breeze Fan Inds. (Pvt) Ltd",
+      "b": "Chenab Breeze Fan Industries (Private) Limited",
+      "verdict": "match",
+      "nature": "industries-abbrev"
+    },
+    {
+      "a": "Abdul Ghani & Co.",
+      "b": "Abdul Ghani and Company",
+      "verdict": "match",
+      "nature": "co-vs-company"
+    },
+    {
+      "a": "Rehman Textile Mills Ltd",
+      "b": "Rehman Textiles Mills Ltd",
+      "verdict": "match",
+      "nature": "company-plural"
+    },
+    {
+      "a": "Memon Dry Fruits Traders",
+      "b": "Meman Dry Fruits Traders",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "Soomro Rice Exporters",
+      "b": "Sumro Rice Exporters",
+      "verdict": "match",
+      "nature": "romanisation-sindhi"
+    },
+    {
+      "a": "Chaudhary Bashir Flour Mills",
+      "b": "Chaudhry Bashir Flour Mills",
+      "verdict": "match",
+      "nature": "romanisation-punjabi"
+    },
+    {
+      "a": "Zia Corporation (Pvt.) Ltd.",
+      "b": "Zia Corp (Pvt) Ltd",
+      "verdict": "match",
+      "nature": "corporation-abbrev"
+    },
+    {
+      "a": "AL-HAMD PLASTIC INDUSTRIES (PVT) LTD",
+      "b": "Al Hamd Plastic Industries (Private) Limited",
+      "verdict": "match",
+      "nature": "uppercase-bank-export"
+    },
+    {
+      "a": "Mian Bashir Ahmad & Sons",
+      "b": "Mian Bashir Ahmad & Sons (Pvt) Ltd",
+      "verdict": "match",
+      "nature": "suffix-omitted"
+    },
+    {
+      "a": "Haji Ghulam Rasool Traders",
+      "b": "H. Ghulam Rasul Traders",
+      "verdict": "match",
+      "nature": "honorific-abbrev"
+    },
+    {
+      "a": "Md. Ilyas & Brothers",
+      "b": "Muhammad Ilyas & Bros.",
+      "verdict": "match",
+      "nature": "muhammad-abbrev"
+    },
+    {
+      "a": "Lahore Auto Parts Mfg. (Pvt) Ltd",
+      "b": "Lahore Auto Parts Manufacturing (Private) Limited",
+      "verdict": "match",
+      "nature": "mfg-abbrev"
+    },
+    {
+      "a": "Al-Farooq Embroidery Works",
+      "b": "Alfarooq Embroidery Works",
+      "verdict": "match",
+      "nature": "arabic-article-glued"
+    },
+    {
+      "a": "Zulfiqar Ali Trading Co.",
+      "b": "Zulfikar Ali Trading Company",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "Pak Hosiery Knitwear (Pvt) Ltd",
+      "b": "Pakistan Hosiery Knitwear (Pvt) Ltd",
+      "verdict": "match",
+      "nature": "pak-vs-pakistan"
+    },
+    {
+      "a": "M/S. Roshan Dyes & Chemicals Traders",
+      "b": "Messrs Roshan Dyes and Chemicals Traders",
+      "verdict": "match",
+      "nature": "ms-vs-messrs"
+    },
+    {
+      "a": "SECP Reg. 0012345 Hyderabad Bangle Makers (Pvt) Ltd",
+      "b": "Hyderabad Bangle Makers Private Ltd",
+      "verdict": "match",
+      "nature": "registration-number-residue"
+    },
+    {
+      "a": "Ahmed Brothers Steel",
+      "b": "Ahmad Bros Steel",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "Bismillah Karkhana-e-Sabun",
+      "b": "Bismillah Soap Factory",
+      "verdict": "match",
+      "nature": "urdu-translation"
+    },
+    {
+      "a": "Rasheed Sons Karachi",
+      "b": "Rashid & Sons, Karachi",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "Sindh Agro Chemicals (Pvt) Ltd, Sukkur Branch",
+      "b": "Sindh Agro Chemicals (Private) Limited",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "Shabbir Cotton Waste Traders",
+      "b": "Shabir Cotton Waste Traders",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "Khawaja Riaz Tanning Works",
+      "b": "Khwaja Riaz Tanning Works",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "Sardar Din Muhammad & Sons",
+      "b": "Sardar Din Mohammad and Sons",
+      "verdict": "match",
+      "nature": "romanisation-muhammad"
+    },
+    {
+      "a": "Bhalwal Oil Extraction Mills Ltd",
+      "b": "Bhalwal Oil Extraction Mill Limited",
+      "verdict": "match",
+      "nature": "company-plural"
+    },
+    {
+      "a": "Mian Muhammad Yousaf Ginning Factory",
+      "b": "Mian Mohd. Yusuf Ginning Factory",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "Sialkot Surgical Crafts (Pvt) Ltd",
+      "b": "Sialkot Sports Crafts (Pvt) Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Haji Muhammad Ashraf & Sons",
+      "b": "Haji Muhammad Asghar & Sons",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Chaudhry Rice Mills",
+      "b": "Chaudhry Flour Mills",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Chaudhry Nazir Ahmad & Co.",
+      "b": "Chaudhry Nazir Hussain & Co.",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Mian Tariq Textile Mills Ltd",
+      "b": "Mian Tariq Spinning Mills Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Karachi Steel Re-Rolling Mills (Pvt) Ltd",
+      "b": "Karachi Steel Pipe Mills (Pvt) Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Faisalabad Yarn Traders (Pvt) Ltd",
+      "b": "Faisalabad Yarn Dyers (Pvt) Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Muhammad Aslam Traders",
+      "b": "Muhammad Aslam & Brothers",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "Hussain Brothers Industries",
+      "b": "Hussain & Sons Industries",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "Qureshi Leather Works (Pvt) Ltd",
+      "b": "Qureshi Leather Garments (Pvt) Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Sheikh Abdul Rashid & Sons",
+      "b": "Sheikh Abdul Rauf & Sons",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Siddiqui Enterprises",
+      "b": "Siddiqui Engineering",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Multan Cotton Ginners (Pvt) Ltd",
+      "b": "Multan Cotton Waste (Pvt) Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Malik Brothers Engineering",
+      "b": "Malik Brothers Electricals",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Chenab Breeze Fan Industries (Pvt) Ltd",
+      "b": "Chenab Breeze Air Coolers (Pvt) Ltd",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "Abdul Ghani & Co.",
+      "b": "Abdul Ghani & Sons",
+      "verdict": "different",
+      "nature": "co-vs-sons"
+    },
+    {
+      "a": "Rehman Textile Mills Ltd",
+      "b": "Rehman Towel Mills Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Memon Dry Fruits Traders",
+      "b": "Memon Fresh Fruits Traders",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Soomro Rice Exporters",
+      "b": "Soomro Rice Husking Mills",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "Chaudhry Bashir Flour Mills",
+      "b": "Chaudhry Bashir Feed Mills",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Zia Corporation (Pvt) Ltd",
+      "b": "Zia Trading Corporation (Pvt) Ltd",
+      "verdict": "different",
+      "nature": "added-word"
+    },
+    {
+      "a": "Al Hamd Plastic Industries (Pvt) Ltd",
+      "b": "Al Hamd Plastic Packages (Pvt) Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Mian Bashir Ahmad & Sons",
+      "b": "Mian Bashir Ahmad & Brothers",
+      "verdict": "different",
+      "nature": "sons-vs-bros"
+    },
+    {
+      "a": "Haji Ghulam Rasool Traders",
+      "b": "Haji Ghulam Nabi Traders",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Muhammad Ilyas & Brothers",
+      "b": "Muhammad Ilyas & Company",
+      "verdict": "different",
+      "nature": "bros-vs-co"
+    },
+    {
+      "a": "Lahore Auto Parts Manufacturing (Pvt) Ltd",
+      "b": "Lahore Auto Parts Trading (Pvt) Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Al-Farooq Embroidery Works",
+      "b": "Al-Farooq Weaving Works",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Zulfiqar Ali Trading Co.",
+      "b": "Zulfiqar Ali Shipping Co.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Pakistan Hosiery Knitwear (Pvt) Ltd",
+      "b": "Pakistan Hosiery Yarns (Pvt) Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Roshan Dyes & Chemicals Traders",
+      "b": "Roshan Paints & Chemicals Traders",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Hyderabad Bangle Makers (Pvt) Ltd",
+      "b": "Hyderabad Glass Works (Pvt) Ltd",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "Ahmad Brothers Steel",
+      "b": "Ahmad Brothers Cement",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Bismillah Soap Factory",
+      "b": "Bismillah Oil Factory",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Sindh Agro Chemicals (Pvt) Ltd",
+      "b": "Sindh Agro Seeds (Pvt) Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Shabbir Cotton Waste Traders",
+      "b": "Shabbir Cotton Yarn Traders",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Khawaja Riaz Tanning Works",
+      "b": "Khawaja Riaz Leather Goods",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "Sardar Din Muhammad & Sons",
+      "b": "Sardar Fateh Muhammad & Sons",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Bhalwal Oil Extraction Mills Ltd",
+      "b": "Bhalwal Ghee Mills Ltd",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "Neelum Valley Weaving (Pvt) Ltd",
+      "b": "Neelum Valley Weaving FZE",
+      "verdict": "different",
+      "nature": "other-country-registration"
+    },
+    {
+      "a": "Indus Tractor Parts (Pvt) Ltd",
+      "b": "Indus Tractor Parts (UK) Ltd",
+      "verdict": "different",
+      "nature": "other-country-registration"
+    },
+    {
+      "a": "MV Bahari Tamu (ex Gulf Sunbird)",
+      "b": "Gulf Sunbird",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "MSV Al Rahmani (ex Safina-e-Karam)",
+      "b": "Safina-e-Karam",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "MV Lamu Pride",
+      "b": "M.V. Lamu Pride",
+      "verdict": "match",
+      "nature": "prefix-punctuation"
+    },
+    {
+      "a": "MV Zanzibar Breeze",
+      "b": "Zanzibar Breeze",
+      "verdict": "match",
+      "nature": "prefix-omitted"
+    },
+    {
+      "a": "Kilindini Star, Mombasa",
+      "b": "MV Kilindini Star",
+      "verdict": "match",
+      "nature": "port-of-registry-after-name"
+    },
+    {
+      "a": "Dhow Fatehul Bari (Mandvi)",
+      "b": "MSV Fatehul Bari",
+      "verdict": "match",
+      "nature": "type-descriptor-and-port"
+    },
+    {
+      "a": "MSV Noor-e-Bahr",
+      "b": "MSV Nur e Bahar",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "MV Pemba Trader",
+      "b": "PEMBA TRADER",
+      "verdict": "match",
+      "nature": "uppercase-prefix-omitted"
+    },
+    {
+      "a": "Tug Simba III",
+      "b": "Tug Simba 3",
+      "verdict": "match",
+      "nature": "roman-vs-arabic-numeral"
+    },
+    {
+      "a": "Barge Kipevu No. 7",
+      "b": "Barge Kipevu 7",
+      "verdict": "match",
+      "nature": "numeral-format"
+    },
+    {
+      "a": "MV Dar Express (ex-Norrland Wren)",
+      "b": "MV Norrland Wren",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Seif Feeder 12",
+      "b": "SEIF FEEDER-12",
+      "verdict": "match",
+      "nature": "uppercase-hyphen"
+    },
+    {
+      "a": "M/V Ushindi wa Pwani",
+      "b": "MV USHINDI WA PWANI",
+      "verdict": "match",
+      "nature": "prefix-punctuation"
+    },
+    {
+      "a": "MV Karachi Crescent (ex Mandvi Bay, ex Wanshan Pearl)",
+      "b": "Wanshan Pearl",
+      "verdict": "match",
+      "nature": "ex-name-chain"
+    },
+    {
+      "a": "Coaster Mtwara Dawn",
+      "b": "MV Mtwara Dawn",
+      "verdict": "match",
+      "nature": "type-descriptor"
+    },
+    {
+      "a": "Dubai dhow Hamriya Moon",
+      "b": "Hamriya Moon (dhow)",
+      "verdict": "match",
+      "nature": "type-descriptor"
+    },
+    {
+      "a": "Gulf Crest 5",
+      "b": "GULF CREST V",
+      "verdict": "match",
+      "nature": "roman-vs-arabic-numeral"
+    },
+    {
+      "a": "MSV Sahil-e-Sindh",
+      "b": "M.S.V. Sahil e Sindh",
+      "verdict": "match",
+      "nature": "prefix-punctuation"
+    },
+    {
+      "a": "MV Águia do Índico",
+      "b": "MV AGUIA DO INDICO",
+      "verdict": "match",
+      "nature": "uppercase-no-diacritics"
+    },
+    {
+      "a": "Coral Gem (formerly Meridian Harrier)",
+      "b": "MERIDIAN HARRIER",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Kismayo Trader f/k/a Bothnia Kite",
+      "b": "Bothnia Kite",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "MV Msafiri Mwema",
+      "b": "Msafiri Mwema",
+      "verdict": "match",
+      "nature": "prefix-omitted"
+    },
+    {
+      "a": "Zamzam Al Khair, Karachi",
+      "b": "MSV Zamzam Al Khair (Karachi)",
+      "verdict": "match",
+      "nature": "port-of-registry-after-name"
+    },
+    {
+      "a": "MV Nakhoda Salim",
+      "b": "M.V. Nakhuda Saleem",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "Tug Bandari 2",
+      "b": "Tug Bandari II",
+      "verdict": "match",
+      "nature": "roman-vs-arabic-numeral"
+    },
+    {
+      "a": "Barge Chake Chake 3",
+      "b": "Barge Chake-Chake No 3",
+      "verdict": "match",
+      "nature": "numeral-format"
+    },
+    {
+      "a": "MV Lindi Feeder (ex Halden Feeder)",
+      "b": "Halden Feeder",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "MSV Ghulam Ali Bux",
+      "b": "MSV Gulam Ali Bakhsh",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "MV Cap Delgado Trader",
+      "b": "MV Cabo Delgado Trader",
+      "verdict": "match",
+      "nature": "translation-variant"
+    },
+    {
+      "a": "Pilot boat Mvita One",
+      "b": "Pilot boat Mvita 1",
+      "verdict": "match",
+      "nature": "numeral-spelled-out"
+    },
+    {
+      "a": "MV Île Sœur",
+      "b": "MV ILE SOEUR",
+      "verdict": "match",
+      "nature": "uppercase-no-diacritics"
+    },
+    {
+      "a": "MV Comoros Queen (ex Reine des Comores)",
+      "b": "Reine des Comores",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Barge Makupa 14",
+      "b": "Makupa 14 (barge)",
+      "verdict": "match",
+      "nature": "type-descriptor"
+    },
+    {
+      "a": "MV Ras Kitau",
+      "b": "MV Ras Kitau, Lamu",
+      "verdict": "match",
+      "nature": "port-of-registry-after-name"
+    },
+    {
+      "a": "MV Salaam Dar",
+      "b": "SALAAM DAR",
+      "verdict": "match",
+      "nature": "uppercase-prefix-omitted"
+    },
+    {
+      "a": "MSV Khatoon-e-Sahil",
+      "b": "MSV Khatun e Sahil",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "MV Pate Island Trader (ex Astral Kestrel II)",
+      "b": "Astral Kestrel II",
+      "verdict": "match",
+      "nature": "ex-name-alias-with-numeral"
+    },
+    {
+      "a": "Tug Nyati",
+      "b": "Tug Nyati (Mombasa)",
+      "verdict": "match",
+      "nature": "port-of-registry-after-name"
+    },
+    {
+      "a": "Reefer Kilwa Frost",
+      "b": "MV Kilwa Frost",
+      "verdict": "match",
+      "nature": "type-descriptor"
+    },
+    {
+      "a": "MV Tanga Horizon (ex Anatolian Dove)",
+      "b": "ANATOLIAN DOVE",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Seif Feeder 12",
+      "b": "Seif Feeder 13",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "MV Zanzibar Breeze",
+      "b": "MV Zanzibar Breezes",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "MV Lamu Pride",
+      "b": "MV Lamu Bride",
+      "verdict": "different",
+      "nature": "one-letter-vessel"
+    },
+    {
+      "a": "Tug Simba III",
+      "b": "Tug Simba IV",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "Barge Kipevu 7",
+      "b": "Barge Kipevu 17",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "MV Kilindini Star",
+      "b": "MV Kilindini Sun",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "MSV Al Rahmani",
+      "b": "MSV Al Rahman",
+      "verdict": "different",
+      "nature": "one-letter-vessel"
+    },
+    {
+      "a": "Gulf Crest 5",
+      "b": "Gulf Crest 6",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "MV Pemba Trader",
+      "b": "MV Pemba Trader II",
+      "verdict": "different",
+      "nature": "numeral-added"
+    },
+    {
+      "a": "MV Dar Express",
+      "b": "MV Dar Express 2",
+      "verdict": "different",
+      "nature": "numeral-added"
+    },
+    {
+      "a": "Coaster Mtwara Dawn",
+      "b": "Coaster Mtwara Dusk",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "Hamriya Moon",
+      "b": "Hamriya Sun",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "MSV Sahil-e-Sindh",
+      "b": "MSV Sahil-e-Balochistan",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "Coral Gem",
+      "b": "Coral Gems",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "MV Msafiri Mwema",
+      "b": "MV Msafiri Mwenda",
+      "verdict": "different",
+      "nature": "other-swahili-word"
+    },
+    {
+      "a": "Zamzam Al Khair",
+      "b": "Zamzam Al Khair 2",
+      "verdict": "different",
+      "nature": "numeral-added"
+    },
+    {
+      "a": "MV Nakhoda Salim",
+      "b": "MV Nakhoda Karim",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Tug Bandari II",
+      "b": "Tug Bandari III",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "Barge Chake Chake 3",
+      "b": "Barge Chake Chake 8",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "MV Lindi Feeder",
+      "b": "MV Kilwa Feeder",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "MSV Ghulam Ali Bux",
+      "b": "MSV Ghulam Ali Shah",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "MV Cabo Delgado Trader",
+      "b": "MV Cabo Delgado Express",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "Pilot boat Mvita 1",
+      "b": "Pilot boat Mvita 2",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "MV Ile Soeur",
+      "b": "MV Iles Soeurs",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "MV Ras Kitau",
+      "b": "MV Ras Kiambone",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "MV Salaam Dar",
+      "b": "MV Salaam Zanzibar",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "MSV Khatoon-e-Sahil",
+      "b": "MSV Khatoon-e-Bahr",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Astral Osprey II",
+      "b": "Astral Osprey III",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "Tug Nyati",
+      "b": "Tug Nyala",
+      "verdict": "different",
+      "nature": "one-letter-vessel"
+    },
+    {
+      "a": "Reefer Kilwa Frost",
+      "b": "Reefer Kilwa Freeze",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "MV Bahari Tamu (ex Gulf Sunbird)",
+      "b": "MV Gulf Sunbird II",
+      "verdict": "different",
+      "nature": "ex-name-numeral-trap"
+    },
+    {
+      "a": "MV Karachi Crescent (ex Mandvi Bay)",
+      "b": "MV Mandvi Bay II",
+      "verdict": "different",
+      "nature": "ex-name-numeral-trap"
+    },
+    {
+      "a": "Kilindini Star, Mombasa",
+      "b": "Kilindini Stars, Mombasa",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "MV Aguia do Indico",
+      "b": "MV Aguia do Atlantico",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "Comoros Queen",
+      "b": "Comoros Princess",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "Barge Makupa 14",
+      "b": "Barge Makupa 41",
+      "verdict": "different",
+      "nature": "numeral-transposed"
+    },
+    {
+      "a": "MV Ushindi wa Pwani",
+      "b": "MV Ushindi wa Bara",
+      "verdict": "different",
+      "nature": "other-swahili-word"
+    },
+    {
+      "a": "MSV Fatehul Bari",
+      "b": "MSV Fatehul Karim",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Dhow Nur e Bahar",
+      "b": "Dhow Nur e Sahar",
+      "verdict": "different",
+      "nature": "one-letter-vessel"
+    },
+    {
+      "a": "MV Mombasa Feeder 3",
+      "b": "MV Mombasa Feeder 30",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "/0011223344 MOMBASA COCONUT OIL REFINERS LTD P O BOX 90123 MOMBASA KENYA",
+      "b": "Mombasa Coconut Oil Refiners Limited",
+      "verdict": "match",
+      "nature": "field-59-address-glued"
+    },
+    {
+      "a": "KARACHI TEXTILE PRINTERS AND FINIS HERS (PVT) LTD",
+      "b": "Karachi Textile Printers & Finishers (Pvt) Ltd",
+      "verdict": "match",
+      "nature": "line-cut-35"
+    },
+    {
+      "a": "50: HAJI ABDUL SATTAR AND SONS PLOT 12 SITE AREA KARACHI PAKISTAN",
+      "b": "Haji Abdul Sattar & Sons",
+      "verdict": "match",
+      "nature": "field-50-address-glued"
+    },
+    {
+      "a": "SOCIETE COMORIENNE DE NEGOCE SARL",
+      "b": "Société Comorienne de Négoce SARL",
+      "verdict": "match",
+      "nature": "uppercase-no-diacritics"
+    },
+    {
+      "a": "59: /PK36ABCD0000001234567890 ZULFIKAR KARIM TRADING CO",
+      "b": "Zulfikar Karim Trading Company",
+      "verdict": "match",
+      "nature": "iban-residue"
+    },
+    {
+      "a": "OUR REF LC/MBA/2026/0457 NYALI FRESH EXPORTERS LTD",
+      "b": "Nyali Fresh Exporters Limited",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "MEMON AGRO PRODUCTS PVT LTD ATTN MR IMRAN",
+      "b": "Memon Agro Products (Private) Limited",
+      "verdict": "match",
+      "nature": "attention-line-residue"
+    },
+    {
+      "a": "DAR ES SALAAM CASHEW PROCESSORS LTD//PO BOX 1122",
+      "b": "Dar es Salaam Cashew Processors Ltd",
+      "verdict": "match",
+      "nature": "address-glued-slashes"
+    },
+    {
+      "a": "MKINGA SISAL AND FIBRE EXPORTERS L TD",
+      "b": "Mkinga Sisal & Fibre Exporters Ltd",
+      "verdict": "match",
+      "nature": "line-cut-35"
+    },
+    {
+      "a": "KAMPALA COFFEE HULLERS AND EXPORTER S LIMITED",
+      "b": "Kampala Coffee Hullers & Exporters Ltd",
+      "verdict": "match",
+      "nature": "line-cut-35"
+    },
+    {
+      "a": "M/S MIAN SHAFIQ RICE EXPORTERS",
+      "b": "Mian Shafiq Rice Exporters",
+      "verdict": "match",
+      "nature": "ms-prefix-uppercase"
+    },
+    {
+      "a": "ETABLISSEMENTS BEEHARRY FRERES LTEE",
+      "b": "Établissements Beeharry Frères Ltée",
+      "verdict": "match",
+      "nature": "uppercase-no-diacritics"
+    },
+    {
+      "a": "CIE MALGACHE DE CABOTAGE SA",
+      "b": "Compagnie Malgache de Cabotage S.A.",
+      "verdict": "match",
+      "nature": "cie-abbrev"
+    },
+    {
+      "a": "SHEIKH BROTHERS SURGICAL INSTRUMENT S SIALKOT PAKISTAN",
+      "b": "Sheikh Brothers Surgical Instruments",
+      "verdict": "match",
+      "nature": "line-cut-35"
+    },
+    {
+      "a": "/ACCT 55667788 BUKOBA FISH PACKERS LTD.",
+      "b": "Bukoba Fish Packers Limited",
+      "verdict": "match",
+      "nature": "account-residue"
+    },
+    {
+      "a": "SINDH MERCANTILE BANK LTD KARACHI MAIN BRANCH",
+      "b": "Sindh Mercantile Bank Limited",
+      "verdict": "match",
+      "nature": "branch-same-entity"
+    },
+    {
+      "a": "USAMBARA TEA PACKERS CO LTD",
+      "b": "Usambara Tea Packers Company Limited",
+      "verdict": "match",
+      "nature": "co-ltd-vs-company-limited"
+    },
+    {
+      "a": "NAIROBI PHARMACEUTICAL DISTRIBU-TORS LTD",
+      "b": "Nairobi Pharmaceutical Distributors Ltd",
+      "verdict": "match",
+      "nature": "line-cut-hyphen"
+    },
+    {
+      "a": "AL SAFWA DATES TRADING C/O SEIF AGENCIES MOMBASA",
+      "b": "Al Safwa Dates Trading",
+      "verdict": "match",
+      "nature": "care-of-residue"
+    },
+    {
+      "a": "GUJRAT PRECISION FORGINGS PVT LTD",
+      "b": "Gujrat Precision Forgings (Pvt.) Ltd.",
+      "verdict": "match",
+      "nature": "uppercase-no-parentheses"
+    },
+    {
+      "a": "BENEF: MWANZA LAKE TRANSPORT LTD",
+      "b": "Mwanza Lake Transport Limited",
+      "verdict": "match",
+      "nature": "field-label-residue"
+    },
+    {
+      "a": "ENTEBBE FLOWER GROWERS LTD TIN 1000123456",
+      "b": "Entebbe Flower Growers Limited",
+      "verdict": "match",
+      "nature": "tin-residue"
+    },
+    {
+      "a": "MOHD YOUSUF AND BROS",
+      "b": "Mohammad Yusuf & Brothers",
+      "verdict": "match",
+      "nature": "romanisation-uppercase"
+    },
+    {
+      "a": "SOCIETE MAHORAISE D IMPORT EXPORT SARL",
+      "b": "Société Mahoraise d'Import-Export S.A.R.L.",
+      "verdict": "match",
+      "nature": "uppercase-no-diacritics"
+    },
+    {
+      "a": "MIRITINI CONTAINER FREIGHT STATION O PERATORS LTD",
+      "b": "Miritini Container Freight Station Operators Ltd",
+      "verdict": "match",
+      "nature": "line-cut-35"
+    },
+    {
+      "a": "NTN 4455667-1 SARGODHA CITRUS EXPORTERS",
+      "b": "Sargodha Citrus Exporters",
+      "verdict": "match",
+      "nature": "ntn-residue"
+    },
+    {
+      "a": "ODUYA AND SONS HARDWARE LIMITED NAIROBI",
+      "b": "Oduya & Sons Hardware Ltd",
+      "verdict": "match",
+      "nature": "place-residue"
+    },
+    {
+      "a": "KISUMU MAIZE MILLERS LTDPO BOX 456 KISUMU",
+      "b": "Kisumu Maize Millers Ltd",
+      "verdict": "match",
+      "nature": "address-glued-no-space"
+    },
+    {
+      "a": "JINJA SUGAR PACKERS LTD UG",
+      "b": "Jinja Sugar Packers Ltd",
+      "verdict": "match",
+      "nature": "country-code-residue"
+    },
+    {
+      "a": "MARSA AL KHOR SHIPPING LLC DUBAI",
+      "b": "Marsa Al Khor Shipping L.L.C.",
+      "verdict": "match",
+      "nature": "place-residue"
+    },
+    {
+      "a": "THE THIKA ROAD HARDWARE MART LTD",
+      "b": "Thika Road Hardware Mart Ltd",
+      "verdict": "match",
+      "nature": "article-dropped"
+    },
+    {
+      "a": "MULTAN MANGO PULP PROCE SSORS PVT LTD",
+      "b": "Multan Mango Pulp Processors (Pvt) Ltd",
+      "verdict": "match",
+      "nature": "line-cut-35"
+    },
+    {
+      "a": "AZANIA INTL FREIGHT LOGISTICS LTD",
+      "b": "Azania International Freight Logistics Ltd",
+      "verdict": "match",
+      "nature": "intl-abbrev"
+    },
+    {
+      "a": "COMPTOIR REUNIONNAIS DU CAFE SARL",
+      "b": "Comptoir Réunionnais du Café SARL",
+      "verdict": "match",
+      "nature": "uppercase-no-diacritics"
+    },
+    {
+      "a": "CHAUDHRY ABDUL HAMEED AND SONS PVT",
+      "b": "Chaudhry Abdul Hamid & Sons (Pvt) Ltd",
+      "verdict": "match",
+      "nature": "truncated-suffix"
+    },
+    {
+      "a": "MWANGA-WA-PWANI ENTERPRISES LTD",
+      "b": "Mwanga wa Pwani Enterprises Ltd",
+      "verdict": "match",
+      "nature": "uppercase-hyphen"
+    },
+    {
+      "a": "/KE12ABCD00000000123456 OTHAYA DAIRY PRODUCTS LTD OTHAYA",
+      "b": "Othaya Dairy Products Limited",
+      "verdict": "match",
+      "nature": "iban-residue"
+    },
+    {
+      "a": "MUKURWEINI CEREAL GROWERS COOPERATIVE SOC LTD",
+      "b": "Mukurweini Cereal Growers Co-operative Society Limited",
+      "verdict": "match",
+      "nature": "cooperative-abbrev"
+    },
+    {
+      "a": "59: INDUS DELTA SURGICAL PVT LTD SIALKOT",
+      "b": "Indus Delta Surgical (Private) Limited",
+      "verdict": "match",
+      "nature": "field-59-place-residue"
+    },
+    {
+      "a": "MAGARINI SALT WORKS LTD MALINDI KENYA",
+      "b": "Magarini Salt Works Limited",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "MOMBASA COCONUT OIL REFINERS LTD",
+      "b": "MOMBASA COCONUT OIL TRADERS LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "KARACHI TEXTILE PRINTERS AND FINISHERS PVT LTD",
+      "b": "KARACHI TEXTILE PRINTERS AND DYERS PVT LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "HAJI ABDUL SATTAR AND SONS",
+      "b": "HAJI ABDUL SATTAR AND BROTHERS",
+      "verdict": "different",
+      "nature": "sons-vs-bros"
+    },
+    {
+      "a": "SOCIETE COMORIENNE DE NEGOCE SARL",
+      "b": "SOCIETE COMORIENNE DE TRANSIT SARL",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "ZULFIKAR KARIM TRADING CO",
+      "b": "ZULFIKAR KARIM SHIPPING CO",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "NYALI FRESH EXPORTERS LTD",
+      "b": "NYALI FRESH FARMS LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "MEMON AGRO PRODUCTS PVT LTD",
+      "b": "MEMON AGRO CHEMICALS PVT LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "DAR ES SALAAM CASHEW PROCESSORS LTD",
+      "b": "DAR ES SALAAM CASHEW EXPORTERS LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "MKINGA SISAL AND FIBRE EXPORTERS LTD",
+      "b": "MKINGA SISAL ESTATES LTD",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "KAMPALA COFFEE HULLERS AND EXPORTERS LTD",
+      "b": "KAMPALA COFFEE ROASTERS LTD",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "MIAN SHAFIQ RICE EXPORTERS",
+      "b": "MIAN RAFIQ RICE EXPORTERS",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "ETABLISSEMENTS BEEHARRY FRERES LTEE",
+      "b": "ETABLISSEMENTS BEEHARRY ET FILS LTEE",
+      "verdict": "different",
+      "nature": "freres-vs-fils"
+    },
+    {
+      "a": "CIE MALGACHE DE CABOTAGE SA",
+      "b": "CIE MALGACHE DE REMORQUAGE SA",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "SHEIKH BROTHERS SURGICAL INSTRUMENTS",
+      "b": "SHEIKH BROTHERS SPORTS GOODS",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "BUKOBA FISH PACKERS LTD",
+      "b": "BUKOBA FISH NETS LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "SINDH MERCANTILE BANK LTD",
+      "b": "SINDH MERCANTILE FINANCE LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "USAMBARA TEA PACKERS CO LTD",
+      "b": "USAMBARA TEA ESTATES CO LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "NAIROBI PHARMACEUTICAL DISTRIBUTORS LTD",
+      "b": "NAIROBI PHARMACEUTICAL MANUFACTURERS LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "AL SAFWA DATES TRADING",
+      "b": "AL SAFWA FOODSTUFF TRADING",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "GUJRAT PRECISION FORGINGS PVT LTD",
+      "b": "GUJRAT PRECISION CASTINGS PVT LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "MWANZA LAKE TRANSPORT LTD",
+      "b": "MWANZA LAKE FERRIES LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "ENTEBBE FLOWER GROWERS LTD",
+      "b": "ENTEBBE FLOWER EXPORTERS LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "MOHD YOUSUF AND BROS",
+      "b": "MOHD YAQOOB AND BROS",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "SOCIETE MAHORAISE D IMPORT EXPORT SARL",
+      "b": "SOCIETE MAHORAISE DE TRANSPORT SARL",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "MIRITINI CONTAINER FREIGHT STATION OPERATORS LTD",
+      "b": "MIRITINI CONTAINER DEPOT LTD",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "SARGODHA CITRUS EXPORTERS",
+      "b": "SARGODHA CITRUS NURSERIES",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "ODUYA AND SONS HARDWARE LTD",
+      "b": "ODUYA AND SONS TIMBER LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "KISUMU MAIZE MILLERS LTD",
+      "b": "KISUMU RICE MILLERS LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "JINJA SUGAR PACKERS LTD",
+      "b": "JINJA SUGAR WORKS LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "MARSA AL KHOR SHIPPING LLC",
+      "b": "MARSA AL KHOR SHIP CHANDLERS LLC",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "THIKA ROAD HARDWARE MART LTD",
+      "b": "THIKA ROAD MOTOR MART LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "MULTAN MANGO PULP PROCESSORS PVT LTD",
+      "b": "MULTAN MANGO EXPORTERS PVT LTD",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "AZANIA INTL FREIGHT LOGISTICS LTD",
+      "b": "AZANIA INTL CLEARING AGENTS LTD",
+      "verdict": "different",
+      "nature": "two-words-differ"
+    },
+    {
+      "a": "COMPTOIR REUNIONNAIS DU CAFE SARL",
+      "b": "COMPTOIR REUNIONNAIS DU SUCRE SARL",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "CHAUDHRY ABDUL HAMEED AND SONS PVT LTD",
+      "b": "CHAUDHRY ABDUL MAJEED AND SONS PVT LTD",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "MWANGA WA PWANI ENTERPRISES LTD",
+      "b": "MWANGA WA PWANI SACCO LTD",
+      "verdict": "different",
+      "nature": "other-legal-form"
+    },
+    {
+      "a": "OTHAYA DAIRY PRODUCTS LTD",
+      "b": "OTHAYA DAIRY FARMERS COOPERATIVE SOCIETY LTD",
+      "verdict": "different",
+      "nature": "other-legal-form"
+    },
+    {
+      "a": "MUKURWEINI CEREAL GROWERS COOPERATIVE SOC LTD",
+      "b": "MUKURWEINI COFFEE GROWERS COOPERATIVE SOC LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "INDUS DELTA SURGICAL PVT LTD",
+      "b": "INDUS DELTA SURGICAL FZCO",
+      "verdict": "different",
+      "nature": "other-country-registration"
+    },
+    {
+      "a": "MAGARINI SALT WORKS LTD",
+      "b": "MAGARINI SALT WORKS (U) LTD",
+      "verdict": "different",
+      "nature": "other-country-registration"
+    },
+    {
+      "a": "KamauHardwareLtd",
+      "b": "Kamau Hardware Ltd",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "Amani Bora Enterprisses Ltd",
+      "b": "Amani Bora Enterprises Ltd",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "Otieno Hardwear Ltd",
+      "b": "Otieno Hardware Ltd",
+      "verdict": "match",
+      "nature": "autocorrect-common-word"
+    },
+    {
+      "a": "Zawadi Gen Trdg",
+      "b": "Zawadi General Trading",
+      "verdict": "match",
+      "nature": "chat-abbrev"
+    },
+    {
+      "a": "Kibet Invst Ltd",
+      "b": "Kibet Investments Ltd",
+      "verdict": "match",
+      "nature": "chat-abbrev"
+    },
+    {
+      "a": "Rahim Mfg (Pvt) Ltd",
+      "b": "Rahim Manufacturing (Private) Limited",
+      "verdict": "match",
+      "nature": "chat-abbrev"
+    },
+    {
+      "a": "Saleem Intl",
+      "b": "Saleem International",
+      "verdict": "match",
+      "nature": "chat-abbrev"
+    },
+    {
+      "a": "Wairimu Ent",
+      "b": "Wairimu Enterprises",
+      "verdict": "match",
+      "nature": "chat-abbrev"
+    },
+    {
+      "a": "M-PESA: MUTHONI GEN STORES",
+      "b": "Muthoni General Stores",
+      "verdict": "match",
+      "nature": "mobile-money-label"
+    },
+    {
+      "a": "Till: NJUGUNA HRDWARE",
+      "b": "Njuguna Hardware",
+      "verdict": "match",
+      "nature": "mobile-money-label-missing-letter"
+    },
+    {
+      "a": "JazzCash: BILAL AUTO PRTS",
+      "b": "Bilal Auto Parts",
+      "verdict": "match",
+      "nature": "mobile-money-label"
+    },
+    {
+      "a": "Easypaisa acct: Hafiz Ghee Trdrs",
+      "b": "Hafiz Ghee Traders",
+      "verdict": "match",
+      "nature": "mobile-money-label"
+    },
+    {
+      "a": "Kirnani & Sons Ltd",
+      "b": "Kimani & Sons Ltd",
+      "verdict": "match",
+      "nature": "ocr-rn-m"
+    },
+    {
+      "a": "Om0lo Transporters Ltd",
+      "b": "Omolo Transporters Ltd",
+      "verdict": "match",
+      "nature": "ocr-zero-o"
+    },
+    {
+      "a": "A1i Bros Karachi",
+      "b": "Ali Bros Karachi",
+      "verdict": "match",
+      "nature": "ocr-one-l"
+    },
+    {
+      "a": "lqbal Sons",
+      "b": "Iqbal Sons",
+      "verdict": "match",
+      "nature": "ocr-l-i"
+    },
+    {
+      "a": "*APPROVED* KHAN TRDG CO - MOMBASA",
+      "b": "Khan Trading Company",
+      "verdict": "match",
+      "nature": "stamp-residue"
+    },
+    {
+      "a": "wanjala bros ltd (the one in eldoret)",
+      "b": "Wanjala Brothers Limited",
+      "verdict": "match",
+      "nature": "chat-aside"
+    },
+    {
+      "a": "akhtar n sons",
+      "b": "Akhtar & Sons",
+      "verdict": "match",
+      "nature": "chat-n-for-and"
+    },
+    {
+      "a": "Mombasa Rd Tyres Ltd",
+      "b": "Mombasa Road Tyres Ltd",
+      "verdict": "match",
+      "nature": "chat-abbrev"
+    },
+    {
+      "a": "sindhagrotraders",
+      "b": "Sindh Agro Traders",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "Riaz adn Bros",
+      "b": "Riaz & Bros",
+      "verdict": "match",
+      "nature": "typo-transposition"
+    },
+    {
+      "a": "Nyamubra Millers",
+      "b": "Nyambura Millers",
+      "verdict": "match",
+      "nature": "typo-transposition-proper-name"
+    },
+    {
+      "a": "Karachi Steal Pipes",
+      "b": "Karachi Steel Pipes",
+      "verdict": "match",
+      "nature": "autocorrect-homophone"
+    },
+    {
+      "a": "Ukunda Oil Traders Ltd Ltd",
+      "b": "Ukunda Oil Traders Ltd",
+      "verdict": "match",
+      "nature": "doubled-suffix"
+    },
+    {
+      "a": "Odera Gen Merchants Co",
+      "b": "Odera General Merchants Company",
+      "verdict": "match",
+      "nature": "chat-abbrev"
+    },
+    {
+      "a": "Hamza Intl Trdg",
+      "b": "Hamza International Trading",
+      "verdict": "match",
+      "nature": "chat-abbrev"
+    },
+    {
+      "a": "MaliyaEnt",
+      "b": "Maliya Enterprises",
+      "verdict": "match",
+      "nature": "missing-space-abbrev"
+    },
+    {
+      "a": "Wamboi Textiles",
+      "b": "Wambui Textiles",
+      "verdict": "match",
+      "nature": "keyboard-slip-proper-name"
+    },
+    {
+      "a": "Chaudry Feeds",
+      "b": "Chaudhry Feeds",
+      "verdict": "match",
+      "nature": "missing-letter-proper-name"
+    },
+    {
+      "a": "Jitegemee Saco Ltd",
+      "b": "Jitegemee Sacco Ltd",
+      "verdict": "match",
+      "nature": "missing-letter"
+    },
+    {
+      "a": "Kaloleni Quarries Limted",
+      "b": "Kaloleni Quarries Limited",
+      "verdict": "match",
+      "nature": "missing-letter-suffix"
+    },
+    {
+      "a": "moosa n brothers",
+      "b": "Moosa & Brothers",
+      "verdict": "match",
+      "nature": "chat-n-for-and"
+    },
+    {
+      "a": "*RECEIVED* KARWAN IMPEX (PVT) LTD 12 MAR 2026",
+      "b": "Karwan Impex (Private) Limited",
+      "verdict": "match",
+      "nature": "stamp-residue"
+    },
+    {
+      "a": "h k somaia n co",
+      "b": "H.K. Somaia & Co.",
+      "verdict": "match",
+      "nature": "chat-lowercase-initials"
+    },
+    {
+      "a": "Kilimani Motrs",
+      "b": "Kilimani Motors",
+      "verdict": "match",
+      "nature": "missing-letter"
+    },
+    {
+      "a": "Mtopanga Furn Wrks",
+      "b": "Mtopanga Furniture Works",
+      "verdict": "match",
+      "nature": "chat-abbrev"
+    },
+    {
+      "a": "ghulam farid rice mills (pvt)",
+      "b": "Ghulam Farid Rice Mills (Pvt) Ltd",
+      "verdict": "match",
+      "nature": "chat-lowercase-suffix-truncated"
+    },
+    {
+      "a": "Mu5a Jute Traders",
+      "b": "Musa Jute Traders",
+      "verdict": "match",
+      "nature": "ocr-five-s"
+    },
+    {
+      "a": "AbdulRazzakandSonsKarachi",
+      "b": "Abdul Razzak & Sons, Karachi",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "Kamau Hardware Ltd",
+      "b": "Kamau Homeware Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Amani Bora Enterprises Ltd",
+      "b": "Amani Bora Investments Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Otieno Hardware Ltd",
+      "b": "Otieno Software Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Zawadi Gen Trdg",
+      "b": "Zawadi Gen Mfg",
+      "verdict": "different",
+      "nature": "other-abbrev"
+    },
+    {
+      "a": "Kibet Invst Ltd",
+      "b": "Kibet Ent Ltd",
+      "verdict": "different",
+      "nature": "other-abbrev"
+    },
+    {
+      "a": "Rahim Mfg (Pvt) Ltd",
+      "b": "Rahim Trdg (Pvt) Ltd",
+      "verdict": "different",
+      "nature": "other-abbrev"
+    },
+    {
+      "a": "Saleem Intl",
+      "b": "Saleem Bros",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Wairimu Ent",
+      "b": "Wairimu Sacco",
+      "verdict": "different",
+      "nature": "other-legal-form"
+    },
+    {
+      "a": "M-PESA: MUTHONI GEN STORES",
+      "b": "M-PESA: MUTHONI GEN HARDWARE",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Till: NJUGUNA HARDWARE",
+      "b": "Till: NJUGUNA MOTORS",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Bilal Auto Parts",
+      "b": "Bilal Auto Workshop",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Hafiz Ghee Traders",
+      "b": "Hafiz Oil Traders",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Kimani & Sons Ltd",
+      "b": "Kimani & Partners Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Omolo Transporters Ltd",
+      "b": "Omollo Fabricators Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Ali Bros Karachi",
+      "b": "Ali Sons Karachi",
+      "verdict": "different",
+      "nature": "sons-vs-bros"
+    },
+    {
+      "a": "Iqbal Sons",
+      "b": "Iqbal Steel",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "KHAN TRDG CO",
+      "b": "KHAN TRNSPT CO",
+      "verdict": "different",
+      "nature": "other-abbrev"
+    },
+    {
+      "a": "Wanjala Bros Ltd",
+      "b": "Wanjala Bakers Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Akhtar & Sons",
+      "b": "Akhtar & Co",
+      "verdict": "different",
+      "nature": "sons-vs-co"
+    },
+    {
+      "a": "Mombasa Road Tyres Ltd",
+      "b": "Mombasa Road Batteries Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "sindhagrotraders",
+      "b": "sindhagromachinery",
+      "verdict": "different",
+      "nature": "missing-spaces-other-word"
+    },
+    {
+      "a": "riaz bros rice",
+      "b": "riaz bros cotton",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Nyambura Millers",
+      "b": "Nyambura Bakers",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Karachi Steel Pipes",
+      "b": "Karachi Steel Wires",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Ukunda Oil Traders",
+      "b": "Ukunda Gas Traders",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Odera Gen Merch",
+      "b": "Odera Gen Contr",
+      "verdict": "different",
+      "nature": "other-abbrev"
+    },
+    {
+      "a": "Hamza Intl Trdg",
+      "b": "Hamza Intl Frwdg",
+      "verdict": "different",
+      "nature": "other-abbrev"
+    },
+    {
+      "a": "Maliya Enterprises",
+      "b": "Maliya Estates",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Wambui Textiles",
+      "b": "Wambui Tailors",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Chaudhry Feeds",
+      "b": "Chaudhry Seeds",
+      "verdict": "different",
+      "nature": "other-common-word-one-letter"
+    },
+    {
+      "a": "Jitegemee Sacco Ltd",
+      "b": "Jitegemee Youth Group",
+      "verdict": "different",
+      "nature": "other-legal-form"
+    },
+    {
+      "a": "Kaloleni Quarries Ltd",
+      "b": "Kaloleni Ballast Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Moosa & Brothers",
+      "b": "Moosa & Co",
+      "verdict": "different",
+      "nature": "bros-vs-co"
+    },
+    {
+      "a": "Karwan Impex (Pvt) Ltd",
+      "b": "Karwan Exports (Pvt) Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "H.K. Somaia & Co.",
+      "b": "H.K. Somaia & Sons",
+      "verdict": "different",
+      "nature": "co-vs-sons"
+    },
+    {
+      "a": "Kilimani Motors",
+      "b": "Kilimani Motorbikes",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Mtopanga Furniture Works",
+      "b": "Mtopanga Metal Works",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "ghulam farid rice mills",
+      "b": "ghulam farid flour mills",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Musa Jute Traders",
+      "b": "Musa Jute Mills",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Abdul Razzak & Sons",
+      "b": "Abdul Razzak & Sons (UK) Ltd",
+      "verdict": "different",
+      "nature": "other-country-registration"
+    }
+  ]
+}
