@@ -266,7 +266,9 @@ const PARTICULES: ReadonlySet<string> = new Set(["de", "del", "des", "du", "dell
   /* la filiation arabe et malaise : « bin », « bint », « binti », « ibn », « ben », « ould » lient deux noms ;
      un côté qui l'omet (« Yusof bin Abdullah » contre « Yusof Abdullah », jeu 9) ne perd rien, mais « Bint »
      face à « Ibn » (« Bint Al Nakhuda », « Ibn Al Nakhuda », deux navires) est un CONFLIT : voir `filiation` */
-  "bin", "bint", "binti", "ibn", "ben", "ould"]);
+  "bin", "bint", "binti", "ibn", "ben", "ould",
+  /* le swahili : « Usafirishaji wa Bahari » et « Usafirishaji Bahari » (jeu 10) */
+  "wa", "ya", "za", "cha", "kwa"]);
 /* PAS « dos » (« Flores de Rionegro Dos » est le deuxième d'une série) : mesuré le 27/09 */
 /** La filiation que le nom écrit : « m » pour bin, ibn, ben, ould ; « f » pour bint, binti. */
 const FILIATION_M: ReadonlySet<string> = new Set(["bin", "ibn", "ben", "ould", "wad", "wld"]);
@@ -293,6 +295,8 @@ const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   /* les abréviations d'un crédit documentaire et d'un registre (jeu 9) : « Gen Trdg », « Grp Hldgs », « JV », « PKS » */
   jv: "joint venture", grp: "group", hldgs: "holdings", hldg: "holding", gen: "general", trdg: "trading", trdng: "trading",
   bldg: "building", mfrs: "manufacturers", pks: "palm oil mill", bnt: "bint",
+  /* le registre nigérian et les affrètements (jeu 10) : « Nig. Ltd », « Shipmgmt » */
+  nig: "nigeria", shipmgmt: "ship management",
   /* les prénoms et civilités malais : « Mohd » est Mohamad ; Haji, Dato', Datuk, Encik, Puan ne désignent personne */
   mohd: "mohamad", muhd: "muhammad", haji: "", hajjah: "", hj: "", hjh: "", dato: "", datuk: "", datin: "", encik: "", puan: "", tuan: "",
   /* les nombres écrits en lettres deviennent des chiffres : « Nine Willows » est « 9 Willows » */
@@ -466,6 +470,10 @@ function ocr(j: string): string {
   /* un seul 1, 0 ou 5 à la fin d'un mot d'au moins quatre lettres est un l, un o, un s mal lus
      (« Trai1 ») ; deux chiffres ou plus sont un numéro (« TCB1207 ») */
   if (/^\p{L}{4,}[105]$/u.test(j)) return enLettres(j);
+  /* « AUT0 » (trois lettres) et « ELECTR0NIC5 » (des chiffres au milieu ET à la fin) : quand le mot
+     corrigé est un mot du dictionnaire, c'est une lecture fautive, pas un numéro (jeu 10, 27/09) */
+  const commeUnMot = j.replace(/0/g, "o").replace(/1/g, "i").replace(/5/g, "s").replace(/8/g, "b");
+  if (/^\p{L}+[0158](?:\p{L}+[0158]?)*$/u.test(j) && /\p{L}{3,}/u.test(j) && lemme(commeUnMot)) return enLettres(j);
   const lettres = j.replace(/\d/g, ""), chiffres = j.replace(/\D/g, "");
   /* des chiffres EN FIN de mot sont un numéro (« No18 », « TCB1207 »), pas une lecture fautive */
   if (j.length >= 4 && lettres.length >= 2 && /^[0158]+$/.test(chiffres) && !/\d$/.test(j)) return enLettres(j);
@@ -688,6 +696,8 @@ export type Marques = { pays: readonly string[]; familles: readonly string[]; na
   succursale: boolean;
   /** le type que le préfixe de navire déclare (« tug », « barge ») : deux types sont deux navires */
   typeNavire: string;
+  /** le numéro de registre écrit entre parenthèses : deux numéros différents sont deux dépôts */
+  registre: string;
   /** la marque d'un CLAVARDAGE : tout en minuscules, ou en casse mixte sans le moindre point, virgule
    *  ni parenthèse (« Kim Send Hardware & Building Materials Pre Ltd ») ; celui qui tape ne ponctue pas
    *  et son téléphone corrige ses mots (voir `scorePrepares`). Un export en majuscules n'en est pas un,
@@ -765,12 +775,13 @@ export function preparerEntite(nom: string, lecture: Lecture = "mandarin"): stri
 
 /** La préparation, avec ce qu'elle a retiré (les pays des formes juridiques, un préfixe de
  *  navire, une forme de société) et les mots que leur auteur a ABRÉGÉS d'un point. */
+const REGISTRE = /\(\s*(?:rc|reg\.?(?:\s*no\.?)?|registration\s*(?:no\.?)?|hrb|hra|kvk|cipc|cac|eori|company\s*no\.?|co\.?\s*reg\.?\s*no\.?|crn|tin|vat|nif|nit|cnpj|cuit|rfc|siret|siren|folio)\s*:?\s*([a-z0-9][a-z0-9\/\-. ]*?)(?:,\s*amtsgericht\s+[\p{L} .-]+)?\s*\)/iu;
 export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { texte: string; abreges: ReadonlySet<string>; parentheses: ReadonlySet<string>; civilites: ReadonlySet<string> } & Marques {
   /* L'apostrophe DANS un mot le soude (« O'Brien », « Ch'iao ») : en faire une frontière
      de mot fabriquerait des jetons d'une ou deux lettres qui ne désignent rien. « F.lli »
      (fratelli) et « LPG/C » (LPG carrier) ont une ponctuation qui porte le sens : lus avant. */
   const rom = romaniser(nom, lecture);
-  const soude = plierLatin(rom.texte)
+  let soude = plierLatin(rom.texte)
     /* un « ? » dans une forme juridique ou à sa fin (« LT? », « L?D », « Ltd? ») : la lettre perdue
        ou le point mal lu d'une forme, complétée AVANT que le « ? » final ne parte en ponctuation
        (mesuré le 27/09 sur le jeu 9 : « (PVT) LT? » laissait un mot « lt » orphelin, 0,800) */
@@ -807,6 +818,12 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      groupe, distincte ; si l'autre nom n'a rien qui y réponde, on ne parle pas de la même
      (voir `scorePrepares`). Les mêmes tables que le nom entier, pour retrouver ces mots
      tels que la préparation les laisse. */
+  /* LE NUMÉRO DE REGISTRE entre parenthèses (« (RC 884213) », « (Reg. No. 2014/117230/07) », « (HRB 33871,
+     Amtsgericht Köln) », « (KvK 05234871) ») : une MARQUE, pas un résidu. Le même nom sous deux numéros est
+     deux dépôts (jeu 10, 27/09 : cinq paires) ; le nom sans numéro face au nom numéroté est le même (le nom
+     commercial et le registre). Présent des deux côtés et différent, conflit ; d'un seul côté, rien. */
+  let registre = "";
+  soude = soude.replace(REGISTRE, (_, num: string) => { registre = num.replace(/[^0-9a-z]/gi, "").toLowerCase(); return " "; });
   const parentheses = new Set([...soude.matchAll(/\(([^()]+)\)/g)]
     .flatMap((m) => {
       let dedans = ` ${jetons(normaliser(plier(m[1]!))).join(" ")} `;
@@ -947,7 +964,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites,
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
     hebreuOuGrec, indien, hispanique, tamoul, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture === "cantonais", priveInconnu,
-    natifs: rom.natifs, filiation, succursale, typeNavire };
+    natifs: rom.natifs, filiation, succursale, typeNavire, registre };
 }
 
 /** Les jetons d'un nom brut : préparation d'entité, puis le pipeline commun des paliers
@@ -1291,7 +1308,7 @@ export type NomPrepare = {
 
 const SANS_MARQUES: Marques = { pays: [], familles: [], designations: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
   coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, tamoul: false, prive: false, majuscules: false, chat: false, abjad: "", cantonais: false,
-  priveInconnu: false, natifs: new Map(), filiation: "", succursale: false, typeNavire: "" };
+  priveInconnu: false, natifs: new Map(), filiation: "", succursale: false, typeNavire: "", registre: "" };
 
 export function preparerNom(f: Frequences, nom: string, lecture: Lecture = "mandarin"): NomPrepare {
   const a = analyserEntite(nom, lecture);
@@ -1777,6 +1794,7 @@ export function marquesEnConflit(a: Marques, b: Marques): boolean {
   if (a.filiation && b.filiation && a.filiation !== b.filiation) return true;
   if (a.typeNavire && b.typeNavire && a.typeNavire !== b.typeNavire) return true;
   if (a.succursale !== b.succursale) return true;
+  if (a.registre && b.registre && a.registre !== b.registre) return true;
   return (a.navire && b.societe) || (b.navire && a.societe);
 }
 
@@ -1856,6 +1874,8 @@ const PREFIXES: readonly RegExp[] = [
   /^\s*(?:by\s+order\s+of|on\s+behalf\s+of|for\s+(?:the\s+)?account\s+of|to\s+the\s+order\s+of|in\s+favou?r\s+of)\s*:?\s*/iu,
   /* « SHIPPED ON BOARD MV RONG YUAN TAI 16 AT FANGCHENG » : la mention d'embarquement devant le navire */
   /^\s*(?:shipped\s+on\s+board|laden\s+on\s+board|loaded\s+on\s+board|on\s+board|per\s+(?:vessel|m\/?v|m\/?t))\s*:?\s*/iu,
+  /* l'étiquette d'un champ SWIFT collée au nom : « :50:BALOGUN VENTURES », « :59A:… » (jeu 10) */
+  /^\s*:\d{2}[a-z]?:\s*/iu,
   /^\s*att(?:n|ention)?\.?\s*:?\s+[^,]{1,40},\s*/iu,
   /^\s*(?:our|your|yr|their)?\s*ref(?:erence)?\.?\s*(?:no\.?|#)?\s*:?\s*[a-z0-9][a-z0-9\-/.]{2,}\s+/iu,
   /^\s*(?:l\/c|lc|dc|b\/l|bl|inv(?:oice)?|p\/?o|contract|order)\s*(?:no\.?|#)\s*:?\s*[a-z0-9][a-z0-9\-/.]{2,}\s+/iu,
@@ -1869,6 +1889,14 @@ const ANNOTATIONS: readonly RegExp[] = [
      successeur de « Negev Drip Systems Ltd » (Israël, Royaume-Uni ; jeux 5 à 7) */
   /* ce qui suit le nom d'un navire sur un connaissement : « , Port of Loading: Antwerp », « POD Piraeus » */
   /[\s,]+(?:port\s+of\s+(?:loading|discharge|destination|delivery|call|registry)|loading\s+port|discharge\s+port)\s*:?\s*[\p{L} .'-]{2,30}\s*$/iu,
+  /* ce qu'un message de banque colle derrière le nom (jeu 10) : « REF LC0193045 », « A/C 331276 »,
+     « -BENEF », « -ACCT BENEF » ; et derrière un navire, son indicatif « CS:5NCT7 » et son
+     immatriculation de pêche « (GHA-1893) » ; derrière une société, son numéro de registre
+     « (RC 884213) », « (Reg. No. 2014/117230/07) », « (HRB 33871, Amtsgericht Köln) », « (KvK 05234871) » */
+  /\s+(?:ref(?:erence)?\.?|a\/c|acct\.?|account\s+no\.?)\s*:?\s*(?=[a-z0-9\-/]*\d)[a-z0-9\-/]{3,}\s*$/iu,
+  /\s*[-\u2013]\s*(?:acct\s+)?(?:benef(?:iciary)?|applicant|remitter|ordering\s+cust(?:omer)?|drawee|drawer|payee)\s*$/iu,
+  /\s+(?:cs|c\/s|call\s*sign)\s*:?\s*[a-z0-9]{4,7}\s*$/iu,
+  /\s*\(\s*[a-z]{2,3}-?\d{2,6}\s*\)\s*$/iu,
   /* les sigles POL et POD exigent leurs deux-points : sans eux, « pol » avalait Polska, Polyfab,
      Polymers (mesuré le 27/09 : quatre fausses alertes fortes d'un coup) */
   /[\s,]+\b(?:pol|pod)\s*:\s*[\p{L} .'-]{2,30}\s*$/iu,
@@ -1949,10 +1977,18 @@ const FORME_EN_LIGNE = /\b(?:co\.?,?\s*ltd\.?|co(?=\.)|limited|ltd\.?|inc\.?|llc
 
 export function variantes(brut: string): string[] {
   const vues = new Set<string>([brut.trim()]);
+  /* « (Amharic: ተስፋዬ በቀለ ንግድ) » : l'étiquette de langue s'efface, la parenthèse native reste (jeu 10) */
+  brut = brut.replace(/\(\s*(?:amharic|arabic|chinese|japanese|korean|thai|hebrew|russian|greek|hindi|tamil|persian|farsi|urdu|bengali|in\s+\p{L}+)\s*:\s*/giu, "(");
+  /* une adresse collée à la forme sans espace, champ 59 : « Company Limited45 Marina Road » (jeu 10) */
+  brut = brut.replace(/\b(limited|ltd|plc|inc|llc|corp|gmbh|bv|nv|sa|sarl|lda|ltda|pty|bhd)\.?(?=\d)/giu, "$1 ");
+  /* le registre écrit la personne nom d'abord : « Okeke, Chidi Building Materials » (jeu 10) */
+  const inverse = /^([\p{Lu}][\p{L}'-]+),\s+([\p{Lu}][\p{L}'-]+)\s+(\p{L}.*)$/u.exec(brut.trim());
+  if (inverse) vues.add(`${inverse[2]} ${inverse[1]} ${inverse[3]}`);
   /* la forme native entre parenthèses, ou l'inverse : « BAKU OIL EXPORT (Бакинский …) »,
      « 青岛海鑫国际物流有限公司 (Qingdao Haixin International Logistics Co., Ltd.) », « Katz Miriam (כץ מרים) » :
      deux écritures du même nom, chacune une variante, aucune filiale */
-  const nonLatin = /[\u0370-\u03ff\u0400-\u04ff\u0590-\u05ff\u0600-\u06ff\u0900-\u0dff\u0e00-\u0e7f\u1100-\u11ff\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/u;
+  /* et l'arménien, le géorgien, l'éthiopien (amharique, jeu 10), le birman, le lao */
+  const nonLatin = /[\u0370-\u03ff\u0400-\u04ff\u0530-\u058f\u0590-\u05ff\u0600-\u06ff\u0900-\u0dff\u0e00-\u0eff\u1000-\u10ff\u1100-\u11ff\u1200-\u137f\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/u;
   const paren = /^(.*?)\s*\(([^()]+)\)\s*$/u.exec(brut.trim());
   if (paren && paren[1]!.trim() && paren[2]!.trim() && (nonLatin.test(paren[1]!) !== nonLatin.test(paren[2]!))) {
     vues.add(paren[1]!.trim());
