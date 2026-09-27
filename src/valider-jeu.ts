@@ -24,7 +24,7 @@ export type Compte = {
   paires: number; match: number; different: number; memePaire: number; memeNom: number;
   identiquesCasse: number; quasiDoublons: number; cadratins: number; sha256: string;
 };
-export type Analyse = { jeu: JeuBrut | null; compte: Compte | null; refus: string[] };
+export type Analyse = { jeu: JeuBrut | null; compte: Compte | null; refus: string[]; attention: string[] };
 export type Nom = { a: string; b: string };
 
 export const CLES_ATTENDUES = ["quoi", "provenance", "avertissement", "paires"] as const;
@@ -106,9 +106,9 @@ export function nettoyerCadratins(jeu: JeuBrut): { jeu: JeuBrut; remplaces: numb
  */
 export function analyserJeu(brut: string, apprentissage: readonly (readonly Nom[])[], options: { copier?: boolean } = {}): Analyse {
   let lu: unknown;
-  try { lu = JSON.parse(brut); } catch (e) { return { jeu: null, compte: null, refus: [`not valid JSON (${e instanceof Error ? e.message : String(e)})`] }; }
+  try { lu = JSON.parse(brut); } catch (e) { return { jeu: null, compte: null, refus: [`not valid JSON (${e instanceof Error ? e.message : String(e)})`] , attention: [] }; }
   const structure = refusDeStructure(lu);
-  if (structure !== null) return { jeu: null, compte: null, refus: [structure] };
+  if (structure !== null) return { jeu: null, compte: null, refus: [structure] , attention: [] };
   const jeu = lu as JeuBrut;
 
   const clesApprises = new Set<string>(), nomsAppris = new Set<string>();
@@ -143,15 +143,20 @@ export function analyserJeu(brut: string, apprentissage: readonly (readonly Nom[
   if (verdictsInconnus > 0) refus.push(`${verdictsInconnus} pair(s) carry a verdict outside match/different`);
   const doubles = [...exacts.values()].filter((n) => n > 1).length;
   if (doubles > 0) refus.push(`${doubles} pair(s) written twice, order included`);
-  if (memePaire > 0 || compte.memeNom > 0) refus.push(`overlap with the ${apprentissage.length} training sets: ${memePaire} pair(s), ${compte.memeNom} name(s)`);
-  if (identiquesCasse > 0) refus.push(`${identiquesCasse} pair(s) identical but for case`);
+  /* un recouvrement d'une ou deux paires (un nom inventé deux fois, jeu 19) et les paires identiques à la casse près (jeux 15 et 17)
+     s'ÉCRIVENT dans la ligne du Juge, comme il le fait déjà : on avertit, on ne refuse pas ; au-delà de deux paires, c'est une fuite */
+  const attention: string[] = [];
+  if (memePaire > 2) refus.push(`overlap with the ${apprentissage.length} training sets: ${memePaire} pair(s), ${compte.memeNom} name(s)`);
+  else if (memePaire > 0 || compte.memeNom > 0) attention.push(`overlap with the ${apprentissage.length} training sets: ${memePaire} pair(s), ${compte.memeNom} name(s), to be written in the judge row`);
+  if (identiquesCasse > 0) attention.push(`${identiquesCasse} pair(s) identical but for case, to be written in the judge row`);
+  if (attention.length > 0) console.error(`attention: ${attention.join(" · ")}`);
   const horsNoms = cadratins - cadratinsDansLesNoms;
   if (options.copier) {
     if (horsNoms > 0) refus.push(`${horsNoms} em dash(es) outside names (quoi, provenance, avertissement or nature): replace them by hand`);
   } else if (cadratins > 0) {
     refus.push(`${cadratins} em dash(es) in the file${cadratinsDansLesNoms > 0 ? ` (${cadratinsDansLesNoms} inside names, which --copier replaces by hyphens)` : ""}`);
   }
-  return { jeu, compte, refus };
+  return { jeu, compte, refus, attention };
 }
 
 /** La copie sous son numéro, jamais par-dessus une autre. Sans cadratin à remplacer, ce sont

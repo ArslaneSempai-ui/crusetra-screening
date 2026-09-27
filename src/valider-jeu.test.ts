@@ -56,24 +56,35 @@ test("valider-jeu : le recouvrement avec l'apprentissage se voit à travers un a
   const memePaire = analyserJeu(texte(avec({ a: "SOCIETE GENERALE, SA", b: "societe generale", verdict: "match", nature: "x" })), apprentissage);
   assert.equal(memePaire.compte?.memePaire, 1);
   assert.equal(memePaire.compte?.memeNom, 2);
-  assert.ok(memePaire.refus.some((r) => /overlap with the 2 training sets: 1 pair\(s\), 2 name\(s\)/.test(r)), memePaire.refus.join(" · "));
+  /* une ou deux paires en recouvrement (un nom inventé deux fois, jeu 19) : un avertissement à écrire dans la ligne du Juge, pas un refus */
+  assert.equal(memePaire.refus.length, 0, memePaire.refus.join(" · "));
+  assert.ok(memePaire.attention.some((r) => /overlap with the 2 training sets: 1 pair\(s\), 2 name\(s\)/.test(r)), memePaire.attention.join(" · "));
   const unNom = analyserJeu(texte(avec({ a: "Ets Kone", b: "Ets Kone Abidjan", verdict: "match", nature: "x" })), apprentissage);
   assert.equal(unNom.compte?.memePaire, 0);
   assert.equal(unNom.compte?.memeNom, 1);
-  assert.equal(unNom.refus.length, 1);
+  assert.equal(unNom.refus.length, 0);
+  assert.equal(unNom.attention.length, 1);
+  /* au-delà de deux paires, c'est une fuite : refus */
+  const f = jeuComplet();
+  f.paires[0] = { a: "Société Générale S.A.", b: "Societe Generale", verdict: "match", nature: "x" };
+  f.paires[1] = { a: "Ets Koné", b: "Etablissements Kone", verdict: "match", nature: "x" };
+  f.paires[2] = { a: "SOCIETE GENERALE, SA", b: "societe generale", verdict: "different", nature: "x" };
+  const fuite = analyserJeu(texte(f), apprentissage);
+  assert.ok(fuite.refus.some((r) => /overlap with the 2 training sets: 3 pair\(s\)/.test(r)), fuite.refus.join(" · "));
 });
 
-test("valider-jeu : identiques à la casse près, quasi-doublons et cadratins sont comptés, et refusés", () => {
+test("valider-jeu : identiques à la casse près et quasi-doublons sont comptés et avertis, les cadratins refusés", () => {
   const j = jeuComplet();
   j.paires[0] = { a: "Delta Foods Ltd", b: "DELTA  foods ltd", verdict: "different", nature: "case" };
   j.paires[1] = { a: "Ets Koné Frères", b: "Ets Kone Freres SARL", verdict: "match", nature: "accent" };
   j.paires[2] = { a: "ETS KONE FRERES", b: "Ets Kone Freres, SARL", verdict: "match", nature: "accent" };
   j.paires[3] = { a: "Ferme\u2014Sud SA", b: "Ferme Sud SA", verdict: "match", nature: "dash" };
-  const { compte, refus } = analyserJeu(texte(j), []);
+  const { compte, refus, attention } = analyserJeu(texte(j), []);
   assert.equal(compte?.identiquesCasse, 1);
   assert.equal(compte?.quasiDoublons, 2);
   assert.equal(compte?.cadratins, 1);
-  assert.ok(refus.some((r) => /1 pair\(s\) identical but for case/.test(r)), refus.join(" · "));
+  assert.ok(!refus.some((r) => /identical but for case/.test(r)), "la casse avertit, ne refuse pas (jeux 15 et 17)");
+  assert.ok(attention.some((r) => /1 pair\(s\) identical but for case/.test(r)), attention.join(" · "));
   assert.ok(refus.some((r) => /1 em dash\(es\) in the file \(1 inside names/.test(r)), refus.join(" · "));
   /* avec --copier, le cadratin d'un nom sera remplacé : il ne refuse plus ; celui d'une provenance, si */
   const copie = analyserJeu(texte(j), [], { copier: true });
