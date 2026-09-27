@@ -61,6 +61,10 @@ const PREFIXES: readonly RegExp[] = [
   /^\s*(?:our|your|yr|their)?\s*ref(?:erence)?\.?\s*(?:no\.?|#)?\s*:?\s*[a-z0-9][a-z0-9\-/.]{2,}\s+/iu,
   /^\s*(?:l\/c|lc|dc|b\/l|bl|inv(?:oice)?|p\/?o|contract|order)\s*(?:no\.?|#)\s*:?\s*[a-z0-9][a-z0-9\-/.]{2,}\s+/iu,
   /^\s*(?:n\/b\s+)?hull\s*(?:no\.?\s*)?[a-z]{0,3}-?\d+\s+(?=\p{L}{3,})/iu,
+  /* jeu 15 : l'étiquette d'un paiement mobile devant le nom (« JazzCash: », « Easypaisa acct: », « Till: », « M-Pesa Paybill 123 »),
+     et la citation du registre pakistanais (« SECP Reg. 0012345 ») */
+  /^\s*(?:jazzcash|easypaisa|m-?pesa|mpesa|tigo\s*pesa|airtel\s*money|mtn\s*momo|momo|paybill|till)\s*(?:acct|account|a\/c|no\.?|number|#)?\.?\s*:?\s*(?:\d{4,}\s*)?[:\-]?\s*/iu,
+  /^\s*(?:secp|cac|brela|ursb|kra|fbr)\s+reg(?:istration|\.)?\s*(?:no\.?|#)?\s*:?\s*[a-z0-9\-/]{3,}\s+/iu,
 ];
 const ANNOTATIONS: readonly RegExp[] = [
   /\([^()]*\b(?:flag|liquidation|liquidaci[oó]n|liquidazione|liquida[çc][aã]o|liquidatie|likvidation|konkurs|faillite|fallimento|insolven\w*|administration|receivership|receivers?|bankrupt\w*|dissolved|struck\s+off|under\s+arrest|arrested|detained|carrier|tanker|vessel|bulk|container|branch|office|built|blt|established|founded|est(?:d)?\.?\s*(?:in\s+)?\d{4}|since\s+\d{4}|(?:h\/n|hull\s*(?:no\.?)?)\s*[a-z]{0,3}-?\d+)\b[^()]*\)/giu,
@@ -105,6 +109,8 @@ const ANNOTATIONS: readonly RegExp[] = [
   /* jeu 14 : le numéro ENI d'une barge du Rhin (huit chiffres), avec ou sans parenthèse ; « T.A.V. » (ter attentie van),
      l'attention néerlandaise, et tout ce qui la suit */
   /\s*\(?\s*ENI\s*:?\s*\d{8}\s*\)?\s*$/iu,
+  /* jeu 15 : le CNIC pakistanais, le PIN kényan, le TIN et le NTN entre parenthèses derrière le nom */
+  /\s*\(\s*(?:cnic|kra\s*pin|pin|tin|ntn|gstin|cin)\s*:?\s*[a-z0-9\-]{6,20}\s*\)\s*$/iu,
   /\s+t\.?\s?a\.?\s?v\.?\s+.*$/iu,
   /* « Kenanga Pacific Sdn. Bhd. - Penang Branch » : la succursale après un tiret ; « Succursale de Genève », « Sucursal Lima » ;
      et le siège ou le bureau derrière une virgule ou un tiret (« , Head Office », « , Hauptsitz », « , Havengebied Kantoor ») :
@@ -216,6 +222,9 @@ const PORTS_ET_QUARTIERS: ReadonlySet<string> = new Set(["bandar", "kota", "jebe
   "moerdijk", "krimpen", "alblasserdam", "gorinchem", "tiel", "wanssum", "roermond", "venlo", "arnhem", "doesburg", "hasselt",
   "meppel", "harlingen", "delfzijl", "groningen", "lemmer", "urk", "emmerich", "wesel", "koblenz", "ludwigshafen", "karlsruhe",
   "kehl", "strasbourg", "mulhouse", "amsterdam", "utrecht", "den bosch", "hertogenbosch", "brugge", "liege", "luik", "namur",
+  /* l'océan Indien et l'Afrique de l'Est (jeu 15) */
+  "mombasa", "kilindini", "dar es salaam", "zanzibar", "tanga", "mtwara", "kampala", "kisumu", "lamu", "malindi", "karachi", "gwadar",
+  "port qasim", "muscat", "salalah", "aden", "djibouti", "berbera", "mogadishu", "kismayo", "beira", "nacala", "durban", "maputo",
   "riga", "hamina", "kotka", "helsinki", "turku", "tallinn", "klaipeda", "constanta", "poti", "batumi", "goteborg", "gothenburg", "stockholm",
   "oslo", "copenhagen", "aarhus", "gdansk", "gdynia", "varna", "burgas", "odesa", "odessa", "mykolaiv", "kherson", "izmail", "samsun",
   "trabzon", "novorossiysk", "rostov", "taganrog", "izmir",
@@ -298,7 +307,7 @@ export function variantesTypees(brut: string): VarianteTypee[] {
      capitales, les formes et génériques collés en queue se détachent un à un (COLTD, PTYLTD, IMPEXP), et le reste demeure
      un bloc que le score compare aux mots de l'autre nom ressoudés (voir le bloc dans scorePrepares) */
   const seul = brut.trim();
-  if (!/\s/.test(seul) && /\p{L}{10,}/u.test(seul)) {
+  if (!/\s/.test(seul) && /\p{L}{8,}/u.test(seul)) {
     if (/\p{Ll}\p{Lu}/u.test(seul)) poser(seul.replace(/(\p{Ll})(\p{Lu})/gu, "$1 $2").replace(/(\p{Lu}+)(\p{Lu}\p{Ll})/gu, "$1 $2"), false, "");
     else if (!/\p{Ll}/u.test(seul)) { const d = decollerLesQueues(seul); if (d !== seul) poser(d, false, ""); }
   }
@@ -373,7 +382,7 @@ export function variantesTypees(brut: string): VarianteTypee[] {
        jeu 14) : un port connu, rien d'autre ; entre parenthèses, seulement derrière UN mot (« IJsselkwak (Kampen) »), parce
        que derrière une raison sociale la ville entre parenthèses est une filiale (« Quarnby Logistics (Shanghai) », jeu 11) */
     p = p.replace(/\s*(?:,|\s[-\u2013]\s)\s*([\p{L}' -]{3,25}?)\s*$/u, (m, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? "" : m));
-    p = p.replace(/^(\S+)\s+\(([\p{L}' -]{3,25})\)\s*$/u, (m, seul: string, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? seul : m));
+    p = p.replace(/^((?:(?:mv|mt|ms|msv|fv|tb|tug|barge|mts|tms|gms|m\.v\.|m\.t\.)\s+)?\S+)\s+\(([\p{L}' -]{3,25})\)\s*$/iu, (m, seul: string, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? seul : m));
     /* une adresse derrière la forme juridique : « … FZE, Jebel Ali Free Zone, Dubai »,
        « … B.V., ROTTERDAM » ; ou, derrière un nom de navire, son port d'immatriculation en un
        ou deux mots : « SIROCCO MARINER, MONROVIA » ; ou une adresse reconnaissable à ses mots

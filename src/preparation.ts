@@ -97,7 +97,7 @@ const PHRASES = [
      company » qu'elles contiennent, sinon il restait « free zone » et la famille llc (tour 10) */
   " fz llc ", " free zone limited liability company ",
   " joint stock company ", " limited liability company ", " limited liability partnership ",
-  " private limited ", " public limited company ", " proprietary limited ",
+  " private limited ", " private ltd ", " pvt limited ", " public limited company ", " proprietary limited ",
   " with limited liability ", " sole proprietorship ",
   " free zone establishment ", " free zone company ",
   " gesellschaft mit beschrankter haftung ", " aktiengesellschaft ", " kommanditgesellschaft ",
@@ -165,6 +165,9 @@ const LOCUTIONS: readonly [string, string][] = [
   [" torgovy dom ", " trading house "], [" torgovyi dom ", " trading house "], [" torgovyy dom ", " trading house "],
   /* malais, indonésien, vietnamien, arabe romanisé (jeu 9) */
   [" dis ticaret ", " trading "], [" dis tic ", " trading "], [" sanayi ve ticaret ", " industry trading "],
+  /* jeu 15 : « Co-operative Society » s'écrit aussi « Cooperative » et « Coop » ; le cap d'un nom de navire en trois langues */
+  [" co operative ", " cooperative "], [" co op ", " cooperative "], [" mv cap ", " mv cape "], [" mv cabo ", " mv cape "], [" mv capo ", " mv cape "],
+  [" mt cap ", " mt cape "], [" mt cabo ", " mt cape "], [" mv kaap ", " mv cape "],
   [" kelapa sawit ", " palm oil "], [" minyak kelapa sawit ", " palm oil "], [" minyak sawit ", " palm oil "],
   [" isirong sawit ", " palm kernel "], [" buah sawit ", " palm fruit "],
   [" cao su ", " rubber "], [" phan phoi ", " distribution "], [" thuc pham ", " food "], [" may mac ", " garment "],
@@ -586,6 +589,9 @@ export function regionDeRegistre(m: string): boolean {
 const MARQUEURS_NEERLANDAIS: ReadonlySet<string> = new Set(["bv", "nv", "vof", "mij", "maatschappij", "handel", "handelsonderneming",
   "scheepvaart", "expeditie", "gebroeders", "gebr", "weduwe", "wed", "zonen", "zn", "transportmaatschappij", "veevoer", "kraanverhuur",
   "expeditiemij", "scheepsbenodigdheden", "zuivelhandel", "logistiek", "cooperatieve", "ua"]);
+/** Ce qui fait d'un nom un nom PAKISTANAIS : la forme privée du sous-continent, une ville, un registre (jeu 15). */
+const MARQUEURS_PAKISTANAIS: ReadonlySet<string> = new Set(["pvt", "private", "pakistan", "karachi", "lahore", "sialkot", "faisalabad",
+  "islamabad", "rawalpindi", "peshawar", "gujranwala", "multan", "hyderabad", "quetta", "secp", "ntn", "cnic", "jazzcash", "easypaisa"]);
 const ABREVIATIONS_NEERLANDAISES: ReadonlyMap<string, string> = new Map(Object.entries({
   exp: "forwarding", hand: "trading", alg: "general", scheepv: "shipping", int: "international", exped: "forwarding", handelsond: "trading",
 }));
@@ -602,6 +608,10 @@ const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
      six paires perdues à la mesure du 28/09, le crédit d'abréviation par le début le lit déjà) */
   mij: "", transp: "transport", internat: "international", wed: "weduwe", zn: "zonen", vd: "van der", sueddt: "suddeutsche",
   hvy: "heavy",
+  /* l'Afrique de l'Est et le Pakistan (jeu 15) : « Ent » enterprises, « Rd » road, « Soc » society, « Pak » Pakistan, « Md. »
+     Muhammad, les consonnes d'un clavardage (« Trdrs », « Prts »), « Coop » et « Co-op » */
+  ent: "enterprises", rd: "road", soc: "society", md: "muhammad", trdrs: "traders", prts: "parts",
+  coop: "cooperative", "co-op": "cooperative", hrdware: "hardware", hdware: "hardware",
   /* « Nig. Ltd », le suffixe du registre nigérian (CAC) : « Okafor Integrated Resources Nig. Ltd » (jeu 10) */
   nig: "nigeria",
   /* les abréviations d'un crédit documentaire et d'un registre (jeu 9) : « Gen Trdg », « Grp Hldgs », « JV », « PKS » */
@@ -789,6 +799,8 @@ function ocr(j: string): string {
   /* un seul 1, 0 ou 5 à la fin d'un mot d'au moins quatre lettres est un l, un o, un s mal lus
      (« Trai1 ») ; deux chiffres ou plus sont un numéro (« TCB1207 ») */
   if (/^\p{L}{4,}[105]$/u.test(j)) return enLettres(j);
+  /* « A1i » (jeu 15) : un 1 entre deux lettres d'un mot de trois, un nom court mal lu, jamais un numéro */
+  if (/^\p{L}1\p{L}$/u.test(j)) return enLettres(j);
   /* « AUT0 » (trois lettres) et « ELECTR0NIC5 » (des chiffres au milieu ET à la fin) : quand le mot
      corrigé est un mot du dictionnaire, c'est une lecture fautive, pas un numéro (jeu 10, 27/09) */
   const commeUnMot = j.replace(/0/g, "o").replace(/1/g, "i").replace(/5/g, "s").replace(/8/g, "b");
@@ -923,7 +935,7 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["SG"], ["pte"]);
   poser(["AU", "ZA"], ["pty", "proprietary limited"]);
   poser(["IN", "PK", "LK", "BD"], ["pvt"]);
-  poser(["IN", "PK", "LK", "BD", "SG", "NG", "ZA", "AU", "NZ", "KE"], ["private limited"]);
+  poser(["IN", "PK", "LK", "BD", "SG", "NG", "ZA", "AU", "NZ", "KE"], ["private limited", "private ltd", "pvt limited"]);
   poser(["JP"], ["kk", "gk", "yk", "kabushiki kaisha", "kabushikigaisha", "kabushiki gaisha", "godo kaisha", "godo gaisha", "yugen kaisha", "yugen gaisha"]);
   poser(["KR"], ["chusik hoesa", "jusik hoesa", "jusikhoesa", "chusikhoesa", "yuhanhoesa"]);
   poser(["CN", "HK", "TW"], ["youxian gongsi", "gufen youxian gongsi", "youxian zeren gongsi"]);
@@ -966,7 +978,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   const t = new Map<string, string[]>();
   const poser = (familles: string[], formes: string[]) => { for (const f of formes) t.set(f, [...(t.get(f) ?? []), ...familles]); };
   poser(["ltd"], ["ltd", "limited", "ltee", "pvt", "pte", "pty", "sdn", "sendirian", "sendirian berhad", "private limited",
-    "proprietary limited", "youxian gongsi", "youxian zeren gongsi", "siren youxian gongsi", "borisat chamkat", "borisat jamkat", "chamkat", "jamkat"]);
+    "proprietary limited", "private ltd", "pvt limited", "youxian gongsi", "youxian zeren gongsi", "siren youxian gongsi", "borisat chamkat", "borisat jamkat", "chamkat", "jamkat"]);
   poser(["ltd", "corp"], ["bhd", "berhad", "kk", "kabushiki kaisha", "kabushikigaisha", "kabushiki gaisha", "jusikhoesa", "chusikhoesa",
     "chusik hoesa", "jusik hoesa", "gufen youxian gongsi", "oy", "ab", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio"]);
   /* et la Yūgen Kaisha (有限会社), que l'anglais rend « Co., Ltd. » ou « Y.K. » */
@@ -1035,7 +1047,7 @@ function qualificatifAbime(j: string): string {
   if (j.length !== 3 || FORMES.has(j)) return j;
   return ["pte", "pty", "pvt"].find((q) => [...q].filter((c, i) => c !== j[i]).length === 1) ?? j;
 }
-const PHRASES_PRIVEES = new Set(["private limited", "proprietary limited", "sendirian berhad", "siren youxian gongsi"]);
+const PHRASES_PRIVEES = new Set(["private limited", "private ltd", "pvt limited", "proprietary limited", "sendirian berhad", "siren youxian gongsi"]);
 /** Les formes chinoises qui, ÉCRITES EN CARACTÈRES, ne disent ni le pays ni le statut privé (voir `analyserEntite`). */
 const FORMES_CHINOISES = new Set(["youxian gongsi", "youxian zeren gongsi"]);
 const PAYS_DU_CHINOIS_ECRIT = ["CN", "HK", "TW", "MO", "SG", "MY"];
@@ -1331,6 +1343,11 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
        sans barre dans les registres panaméens (« MN RÍO CHAGRES ») : il est dans PREFIXES_NAVIRE comme MV (mesuré le
        27/09 : « M/N ESTRELLA DEL CARIBE » à 0,800 face à « MV Estrella del Caribe », « mn » mot rare sans répondant) */
     .replace(/(?<![\p{L}\d])(?:B\/M|N\/M)(?![\p{L}])/giu, "MV").replace(/(?<![\p{L}\d])R\/M(?![\p{L}])/giu, "TUG")
+    /* « Patel Hardware (K) Ltd », « Msasani Fisheries (T) Ltd », « Nakasero Pharma (U) Ltd » : la lettre du pays dans les registres
+       d'Afrique de l'Est, devant la forme (jeu 15) ; écrite en toutes lettres, elle rejoint « Kenya Ltd » et « Kenya Limited » */
+    .replace(/\(\s*K\s*\)(?=\s*(?:ltd|limited)\b)/giu, "(Kenya)").replace(/\(\s*T\s*\)(?=\s*(?:ltd|limited)\b)/giu, "(Tanzania)")
+    .replace(/\(\s*U\s*\)(?=\s*(?:ltd|limited)\b)/giu, "(Uganda)").replace(/\(\s*Z\s*\)(?=\s*(?:ltd|limited)\b)/giu, "(Zambia)")
+    .replace(/\(\s*EA\s*\)(?=\s*(?:ltd|limited)\b)/giu, "(East Africa)")
     /* la coque en construction, « N/B » (newbuilding) devant son numéro de chantier (« N/B S1187 » face à « NEWBUILDING HULL
        NO. S-1187 », jeu 4 : 0,278, « nb » et « hull » mots rares sans répondant) : la barre est exigée, comme pour B/M ;
        sans elle, « NB » en tête est une initiale */
@@ -1365,6 +1382,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      ses mots de métier se traduisent aussi sous le pli des deux romanisations, voir `traduction`) */
   const japonaisPresume = estJaponais(nom) || jetons(normaliser(plier(soude))).some((j) => MARQUEURS_JAPONAIS.has(j));
   const neerlandais = jetons(normaliser(soude)).some((j) => MARQUEURS_NEERLANDAIS.has(j)) || ["hand", "scheepv", "exped", "handelsond"].some((j) => abreges.has(j));
+  const pakistanais = jetons(normaliser(soude)).some((j) => MARQUEURS_PAKISTANAIS.has(j));
   /* le nom est slave par son écriture, sa forme, un mot du commerce translittéré, un grade, le teplokhod ou un suffixe
      de nom propre (voir `Marques.slave`) : lue ici, avant les tables, parce que ses mots du commerce se traduisent sous
      le pli des romanisations du cyrillique et que « AT » en tête y est une forme */
@@ -1462,7 +1480,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const separes: string[] = [];
   for (let i = 0; i < coupes.length; i++) {
     const a = coupes[i]!, b = coupes[i + 1];
-    if (enCapitales && b !== undefined && a.length >= 2 && b.length >= 2 && (!connu(a) || !connu(b)) && connu(a + b)) { separes.push(a + b); i++; }
+    if (enCapitales && b !== undefined && a.length >= 2 && (b.length >= 2 || (b === "s" && a.length >= 5)) && (!connu(a) || !connu(b)) && connu(a + b)) { separes.push(a + b); i++; }
     else separes.push(a);
   }
   /* les mots que les tables ont TRADUITS (« Comercial », « Exportação », « Handelsmaatschappij ») : des mots
@@ -1497,6 +1515,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
       for (const x of t.split(" ")) if (x !== "") { traduits.add(x); if (!sources.has(x)) sources.set(x, j); }
       return t.split(" ");
     }
+    /* « Pak » est le Pakistan sous un nom pakistanais (« Pak Hosiery Knitwear (Pvt) Ltd », jeu 15) ; ailleurs c'est le nom
+       coréen Pak (« Pak Chŏng-su Trading », perdu à la mesure du 29/09 quand l'abréviation valait partout) */
+    if (j === "pak" && pakistanais) { traduits.add("pakistan"); return ["pakistan"]; }
     /* « San. » avec son point est « Sanayi » (jeu 13 : « Bafra Un San. A.Ş. ») ; sans point, « San » reste San Miguel */
     if (j === "san" && abreges.has(j)) { traduits.add("industry"); if (!sources.has("industry")) sources.set("industry", j); return ["industry"]; }
     /* L'ARTICLE COLLÉ d'un nom arabe (« Aldeeb », « Altejaria », « Almarai ») : « al » et le mot, que les tables lisent ensuite
