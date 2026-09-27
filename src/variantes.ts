@@ -126,6 +126,9 @@ const ANNOTATIONS: readonly RegExp[] = [
   /\s+v\.?\s?\d{2,4}[nsew]?$/iu,
   /\s+\d{3,4}[nsew]$/iu,
   /\s+(?:bulk\s+carrier|lng\s+carrier|lpg\s+carrier|oil\s+tanker|chemical\s+tanker|container\s+ship|general\s+cargo)$/iu,
+  /* l'adresse japonaise derrière le nom, que le signe postal 〒 ouvre toujours (« Kimura Sōko Kabushiki Kaisha 〒105-0022
+     東京都港区海岸1-2-3 », jeu 11 : lue en pinyin, elle faisait un mot rare et des numéros d'un seul côté) */
+  /\s*〒.*$/u,
   /* un code pavillon à trois lettres entre parenthèses en fin de nom : (MHL), (PAN), (LBR).
      Deux lettres ((UK), (HK)) restent : c'est le plus souvent une filiale. */
   /\s*\([A-Z]{3}\)\s*$/u,
@@ -224,6 +227,14 @@ export function variantesTypees(brut: string): VarianteTypee[] {
   if (paren && paren[1]!.trim() && paren[2]!.trim() && (nonLatin.test(paren[1]!) !== nonLatin.test(paren[2]!))) {
     poser(paren[1]!.trim(), false, "");
     poser(paren[2]!.trim(), false, "");
+  }
+  /* la même parenthèse d'écriture native N'IMPORTE OÙ dans le nom (« Aoyagi Seisakusho (アオヤギ製作所) Co., Ltd. »,
+     « (株)Kuramochi Kōgyō », jeu 11) : le nom sans elle est une lecture de plus, son contenu une autre ; la fin de nom
+     ci-dessus n'en est que le cas où rien ne suit. Rien n'est retiré : le nom tel qu'écrit reste une variante */
+  for (const m of brut.trim().matchAll(/\(([^()]+)\)/gu)) {
+    const dedans = m[1]!.trim();
+    const dehors = `${brut.trim().slice(0, m.index)} ${brut.trim().slice(m.index! + m[0].length)}`.replace(/\s{2,}/g, " ").trim();
+    if (dedans !== "" && /\p{L}/u.test(dehors) && nonLatin.test(dedans) !== nonLatin.test(dehors)) { poser(dehors, false, ""); poser(dedans, false, ""); }
   }
   /* les suffixes SWIFT à la barre oblique (« LUCENT CORRIDOR/V.088W/HK », « …CO LTD/NANNING/CN ») :
      retirés un à un tant qu'il reste deux mots devant */

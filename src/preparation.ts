@@ -13,6 +13,8 @@ import { distanceOsa } from "./matchers/damerau.ts";
 import { preparer } from "./matchers/preparer.ts";
 import { translitterer } from "./matchers/translitteration.ts";
 import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, type Lecture } from "./ecritures.ts";
+/* une déclaration de fonction : elle traverse le cycle mots.ts → preparation.ts, et n'est appelée qu'à la première demande */
+import { pliJaponais } from "./mots.ts";
 import { lemme } from "./mots.ts";
 import { porteUnJalon } from "./score.ts";
 import { lettrePerdue } from "./score.ts";
@@ -51,12 +53,13 @@ export const FORMES = new Set([
   "dmcc", "jafza", "dafza", "difc", "dso", "dwc", "rakez", "kizad",
   /* Azerbaïdjan, Liban */ "mmc", "sal",
   /* Asie */ "sdn", "bhd", "berhad", "kk", "jusikhoesa", "chusikhoesa", "yuhanhoesa", "tbk",
+  /* les sigles japonais de la Gōdō Kaisha (G.K.) et de la Yūgen Kaisha (Y.K.), comme K.K. (jeu 11) */ "gk", "yk",
 ]);
 /** Formes qui ne se placent QU'À LA FIN d'un nom : en tête, le même jeton est autre chose
  *  (« Ag. Prokopis » est « Agios », « As-Salam » un article arabe). Les formes russes, elles,
  *  se placent devant (« OOO Kamaflot ») et restent retirées partout. */
 const FORMES_FINALES = new Set(["ag", "se", "sa", "as", "ad", "ab", "sl", "kg", "nv", "bv", "oy",
-  "spa", "srl", "sas", "snc", "sac", "sti", "est", "kk", "cv", "ae", "epe", "ike",
+  "spa", "srl", "sas", "snc", "sac", "sti", "est", "kk", "gk", "yk", "cv", "ae", "epe", "ike",
   /* « Teo. » (Teoranta) ferme un nom irlandais ; en tête, « Teo » est une syllabe teochew (« Teo Heng », jeu 9) */
   "teo"]);
 /** Les formes écrites en plusieurs mots, retirées AVANT les mots isolés (sinon « liability »
@@ -103,6 +106,8 @@ const PHRASES = [
   " anonim sirketi ", " limited sirketi ", " sirketi ",
   " sendirian berhad ", " sendirian ",
   " kabushiki kaisha ", " kabushikigaisha ", " godo kaisha ", " yugen kaisha ",
+  /* le rendaku écrit : « Kabushiki Gaisha », « Gōdō Gaisha », « Yūgen Gaisha » (jeu 11 : « Kabushiki Gaisha Morioka Tekkō » à 0,800) */
+  " kabushiki gaisha ", " godo gaisha ", " yugen gaisha ",
   " chusik hoesa ", " jusik hoesa ", " gufen youxian gongsi ", " siren youxian gongsi ", " youxian gongsi ", " youxian zeren gongsi ",
   " cong ty tnhh ", " cong ty co phan ", " cong ty ",
   " spolka z ograniczona odpowiedzialnoscia ", " spolka akcyjna ", " spolka jawna ",
@@ -197,11 +202,35 @@ const TRADUCTIONS_ARABES: ReadonlyMap<string, string> = new Map(Object.entries({
 function pliGenerique(j: string): string {
   return j.replace(/gh/g, "g").replace(/aa/g, "a").replace(/ee/g, "i").replace(/oo/g, "u");
 }
-function traduction(j: string): string | undefined {
+/** Les mots de métier des raisons sociales japonaises, romanisés, et le lemme anglais que le nom traduit écrit : un
+ *  seul par mot (jeu 11, 28/09). Leurs autres graphies ne se listent pas une à une : le pli des deux romanisations et
+ *  des voyelles longues (`pliJaponais`) les ramène à la clé (« kougyou », « kogyou » : kogyo ; « syouzi » : shoji ;
+ *  « boueki » : boeki), sous un nom que sa forme ou un autre mot dit japonais (voir `traduction`). */
+const TRADUCTIONS_JAPONAISES: ReadonlyMap<string, string> = new Map(Object.entries({
+  kogyo: "industry", shoji: "trading", sangyo: "industry", boeki: "trading", denki: "electric",
+  kagaku: "chemical", seiko: "precision", jidosha: "automotive", unyu: "transport", kaiun: "shipping", kaihatsu: "development",
+  tsusho: "trading",
+  /* le nom anglais d'un 製作所 est « Manufacturing » (jeu 11 : « Kitazono Seisakusho » face à « Kitazono Manufacturing »),
+     pas « Works » ; les métiers de la mer et de l'atelier : suisan (水産, pêche), kōun (港運, manutention portuaire),
+     sōko (倉庫), kikai (機械), zōsen (造船), denshi (電子), tekkō (鉄工) et tekkōsho (鉄工所, l'usine), kōmuten (工務店) */
+  seisakusho: "manufacturing", suisan: "fisheries", koun: "stevedoring", soko: "warehouse", kikai: "machinery", zosen: "shipbuilding",
+  denshi: "electronics", tekko: "steel", tekkosho: "steelworks", komuten: "construction",
+}));
+let TRADUCTIONS_JAPONAISES_PLIEES: ReadonlyMap<string, string> | undefined;
+function traductionsJaponaisesPliees(): ReadonlyMap<string, string> {
+  if (!TRADUCTIONS_JAPONAISES_PLIEES) TRADUCTIONS_JAPONAISES_PLIEES = new Map([...TRADUCTIONS_JAPONAISES].map(([k, v]) => [pliJaponais(k), v]));
+  return TRADUCTIONS_JAPONAISES_PLIEES;
+}
+/** La traduction d'un mot du commerce ; `japonais` : le nom porte une forme ou un mot japonais, et ses mots de métier
+ *  se cherchent aussi sous le pli des deux romanisations (« Oomura Kogyou K.K. » : kogyou restait un mot rare orphelin
+ *  face à « industry », jeu 11, 28/09 : 0,361). Sans cette marque, « Teko » n'est pas « tekko » et reste un nom. */
+function traduction(j: string, japonais = false): string | undefined {
   const t = TRADUCTIONS.get(j);
   if (t !== undefined) return t;
   const p = pliGenerique(j);
-  return p === j ? undefined : TRADUCTIONS_ARABES.get(p);
+  const a = p === j ? undefined : TRADUCTIONS_ARABES.get(p);
+  if (a !== undefined || !japonais) return a;
+  return traductionsJaponaisesPliees().get(pliJaponais(j));
 }
 export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   /* chinois (pinyin) */ maoyi: "trading", jinchukou: "import export", keji: "technology", dianzi: "electronics",
@@ -211,13 +240,13 @@ export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   gangtie: "steel", suliao: "plastic", jianzhu: "construction", nengyuan: "energy", fazhan: "development",
   touzi: "investment", kongzhi: "holdings", konggu: "holdings", shangmao: "trading", jingmao: "trading",
   yuanyang: "ocean", jingmi: "precision", haiyun: "shipping", gongju: "tools",
-  /* japonais */ kogyo: "industry", kougyou: "industry", shoji: "trading", shouji: "trading", sangyo: "industry",
-  sangyou: "industry", seisakusho: "works", boeki: "trading", boueki: "trading", denki: "electric",
-  kagaku: "chemical", seiko: "precision", seikou: "precision", jidosha: "automotive", unyu: "transport",
-  kaiun: "shipping", kaihatsu: "development", tsusho: "trading", tsuusho: "trading",
+  /* japonais : voir TRADUCTIONS_JAPONAISES, une clé par mot, ses graphies par le pli */ ...Object.fromEntries(TRADUCTIONS_JAPONAISES),
   /* coréen */ sanop: "industry", sanup: "industry", muyeok: "trading", muyok: "trading", jeongmil: "precision",
   jungmil: "precision", jeonja: "electronics", junja: "electronics", hwahak: "chemical", mulryu: "logistics",
   haeun: "shipping", gaebal: "development", tongsang: "trading",
+  /* 중공업, l'industrie lourde, en romanisation révisée et en McCune-Reischauer (jeu 11 : « Pomyung Junggongeop »
+     face à « Bomyeong Heavy Industries », 0,300) */
+  junggongeop: "heavy industries", chunggongop: "heavy industries", chunggongeop: "heavy industries",
   /* persan et arabe : voir TRADUCTIONS_ARABES */ ...Object.fromEntries(TRADUCTIONS_ARABES),
   /* « fils » et « frères » dans les langues du commerce */
   sinovi: "sons", synowie: "sons", sohne: "sons", soehne: "sons", hijos: "sons", fils: "sons", figli: "sons",
@@ -361,6 +390,9 @@ export const REGISTRES: readonly RegExp[] = [
   /\(\s*(?:rc|bn|cac|cipc|hrb|hra|kvk|crn|cin|uen|acn|abn|brn|cnpj|cuit|ruc|nit|siren|siret)\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*[a-z]?\d[\d/.\-]{2,}[^()]*\)/giu,
   /\(\s*reg(?:istration|istered)?\.?\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*[a-z]?\d[\d/.\-]{2,}[^()]*\)/giu,
   /(?<=\b(?:ltd|limited|plc|inc|llc|gmbh|bhd|bv|nv)\.?)[\s,]+(?:rc|bn|hrb|hra|kvk|reg(?:istration)?\.?\s*(?:no\.?|nr\.?|number)?)\s*[:.]?\s*[a-z]?\d[\d/.\-]{3,}\s*$/giu,
+  /* le numéro de société japonais (法人番号, treize chiffres), entre parenthèses ou en tête, suivi d'un tiret ou d'un deux-points
+     (« Corporate Number 8011001077453 », puis le nom, jeu 11 : un numéro d'un seul côté, 0,800) */
+  /(?:\(\s*)?(?:法人番号|corporate\s+number|hojin\s+bango)\s*:?\s*\d{13}(?:\s*\)|\s*[-\u2013\u2014:])?/giu,
 ];
 /** Les numéros de registre d'un nom brut, chiffres seuls, triés ; « » sans numéro. */
 export function numeroDeRegistre(brut: string): string {
@@ -731,7 +763,7 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["AU", "ZA"], ["pty", "proprietary limited"]);
   poser(["IN", "PK", "LK", "BD"], ["pvt"]);
   poser(["IN", "PK", "LK", "BD", "SG", "NG", "ZA", "AU", "NZ", "KE"], ["private limited"]);
-  poser(["JP"], ["kk", "kabushiki kaisha", "kabushikigaisha", "godo kaisha", "yugen kaisha"]);
+  poser(["JP"], ["kk", "gk", "yk", "kabushiki kaisha", "kabushikigaisha", "kabushiki gaisha", "godo kaisha", "godo gaisha", "yugen kaisha", "yugen gaisha"]);
   poser(["KR"], ["chusik hoesa", "jusik hoesa", "jusikhoesa", "chusikhoesa", "yuhanhoesa"]);
   poser(["CN", "HK", "TW"], ["youxian gongsi", "gufen youxian gongsi", "youxian zeren gongsi"]);
   /* 私人有限公司 : la société privée de Singapour (Pte. Ltd.) et de Malaisie (Sdn. Bhd.), en chinois */
@@ -769,9 +801,11 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   const poser = (familles: string[], formes: string[]) => { for (const f of formes) t.set(f, [...(t.get(f) ?? []), ...familles]); };
   poser(["ltd"], ["ltd", "limited", "ltee", "pvt", "pte", "pty", "sdn", "sendirian", "sendirian berhad", "private limited",
     "proprietary limited", "youxian gongsi", "youxian zeren gongsi", "siren youxian gongsi", "borisat chamkat", "borisat jamkat", "chamkat", "jamkat"]);
-  poser(["ltd", "corp"], ["bhd", "berhad", "kk", "kabushiki kaisha", "kabushikigaisha", "jusikhoesa", "chusikhoesa",
+  poser(["ltd", "corp"], ["bhd", "berhad", "kk", "kabushiki kaisha", "kabushikigaisha", "kabushiki gaisha", "jusikhoesa", "chusikhoesa",
     "chusik hoesa", "jusik hoesa", "gufen youxian gongsi", "oy", "ab", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio"]);
-  poser(["ltd", "llc"], ["ooo", "tov", "ltda", "lda", "limitada", "sociedade limitada", "eireli", "tnhh", "cong ty tnhh", "sti", "limited sirketi", "yuhanhoesa"]);
+  /* et la Yūgen Kaisha (有限会社), que l'anglais rend « Co., Ltd. » ou « Y.K. » */
+  poser(["ltd", "llc"], ["ooo", "tov", "ltda", "lda", "limitada", "sociedade limitada", "eireli", "tnhh", "cong ty tnhh", "sti", "limited sirketi", "yuhanhoesa",
+    "yugen kaisha", "yugen gaisha", "yk"]);
   /* le TOO kazakh (товарищество с ограниченной ответственностью) se traduit LLP, LLC ou Ltd */
   poser(["ltd", "llc", "part"], ["too", "tovarishchestvo s ogranichennoi otvetstvennostyu", "tovarishchestvo s ogranichennoy otvetstvennostyu"]);
   poser(["ltd", "corp"], ["pt", "perseroan terbatas", "tbk", "ud", "usaha dagang", "commanditaire vennootschap", "perseroan komanditer", "pcl", "public company limited", "teoranta", "teo", "dac", "designated activity company"]);
@@ -786,7 +820,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "gesellschaft mit beschrankter haftung",
     "societe a responsabilite limitee", "sociedad limitada", "sociedad de responsabilidad limitada",
     "societa a responsabilita limitata", "besloten vennootschap", "sp zoo", "sp z oo", "spolka z ograniczona odpowiedzialnoscia",
-    "godo kaisha", "yugen kaisha", "with limited liability", "spol s ro", "spol sro"]);
+    "godo kaisha", "godo gaisha", "gk", "with limited liability", "spol s ro", "spol sro"]);
   /* la zone franche est un registre à part : une FZE et une LLC du même nom sont deux sociétés */
   poser(["fz"], ["fze", "fzco", "fzc", "fzllc", "fz", "dmcc", "jafza", "dafza", "difc", "dso", "dwc", "rakez", "kizad",
     "free zone establishment", "free zone company",
@@ -903,6 +937,7 @@ const MARQUEURS_PERSANS = new Set(["sanat", "sanaat", "sanati", "sanaye", "sanay
   "shiraz", "mashhad", "karaj", "bandar", "abbas", "qeshm", "kish", "khazar", "pars", "parsian", "parsi", "novin", "omran", "toseh",
   "tosee", "naft", "fulad", "foolad", "madan", "khorshid", "khurshid", "sepid", "sefid", "mehr", "sepehr", "aria", "arya", "lavazem"]);
 const MARQUEURS_COREENS = new Set(["tongsang", "sanop", "sanup", "muyeok", "muyok", "jeongmil", "jungmil", "jeonja", "junja", "hwahak",
+  "junggongeop", "chunggongop", "chunggongeop",
   "mulryu", "haeun", "gaebal", "hanguk", "hankook", "hankuk", "korea", "korean", "daehan", "seoul", "busan", "pusan", "incheon", "inchon",
   "daegu", "taegu", "ulsan", "gwangju", "kwangju", "daejeon", "taejon", "gyeonggi", "kyonggi", "kyunggi", "chungcheong", "jeolla",
   "gyeongsang", "kyongsang", "kyung", "gyeong", "kyoung", "hwaseong", "hwasung", "cheonan", "chonan", "pyeongtaek", "pyongtaek"]);
@@ -923,7 +958,7 @@ const MARQUEURS_HEBREUX = new Set(["yam", "kfar", "kokhav", "kochav", "yarden", 
 const MARQUEURS_GRECS = new Set(["kai", "sia", "naftiliaki", "naftiki", "emporiki", "viomichaniki", "techniki", "kataskevastiki", "ellas",
   "hellas", "elliniki", "hellenic", "piraeus", "pireas", "athens", "athina", "thessaloniki", "patras", "afoi", "aphoi", "adelfoi", "kapetan"]);
 const SUFFIXES_GRECS = /(akis|opoulos|poulos|ides|idis|iadis|iotis|iki|ikos|ellis)$/;
-const MARQUEURS_JAPONAIS = new Set(["kk", "kabushiki", "kaisha", "kabushikigaisha", "godo", "yugen", "kogyo", "kougyou", "shoji",
+const MARQUEURS_JAPONAIS = new Set(["kk", "gk", "yk", "kabushiki", "kaisha", "gaisha", "kabushikigaisha", "godo", "yugen", "kogyo", "kougyou", "shoji",
   "shouji", "sangyo", "sangyou", "seisakusho", "boeki", "boueki", "denki", "kagaku", "seiko", "jidosha", "unyu", "kaiun", "kaihatsu",
   "tsusho", "maru",
   /* les mots de métier des raisons sociales japonaises, romanisés : suisan (pêche et produits de la
@@ -935,7 +970,15 @@ const MARQUEURS_JAPONAIS = new Set(["kk", "kabushiki", "kaisha", "kabushikigaish
      romanisations (`pliJaponais`) ne s'applique pas : « Shimotsuki Suisan » et « Simotuki Suisan »
      restaient au possible (mesuré le 27/09 sur le jeu 8 : 0,800) */
   "suisan", "gyogyo", "bussan", "shokai", "shoten", "kensetsu", "kikai", "kinzoku", "seizo", "zosen", "senpaku", "sekiyu",
-  "shokuhin", "seiyaku", "yakuhin", "tsushin", "tetsudo", "kumiai", "kyokai", "kogaku"]);
+  "shokuhin", "seiyaku", "yakuhin", "tsushin", "tetsudo", "kumiai", "kyokai", "kogaku",
+  /* les métiers traduits au tour 7 (jeu 11) : manutention portuaire, entrepôt, électronique, sidérurgie, bâtiment */
+  "koun", "soko", "denshi", "tekko", "tekkosho", "komuten"]);
+/** Les numéraux ordinaux japonais des navires, 第一 à 第十, sous leur clé `pliJaponais` (daiichi et daiiti, daishichi et
+ *  daisiti, daikyu et daikyuu s'y rejoignent) : le chiffre que « No. N » écrit. */
+const NUMERAUX_DAI: ReadonlyMap<string, string> = new Map(Object.entries({
+  daiichi: "1", daini: "2", daisan: "3", daiyon: "4", daishi: "4", daigo: "5", dairoku: "6", dainana: "7", daishichi: "7",
+  daihachi: "8", daikyu: "9", daiju: "10",
+}).map(([k, v]) => [pliJaponais(k), v]));
 const MARQUEURS_CHINOIS = new Set(["youxian", "gongsi", "gufen", "zeren", "maoyi", "jinchukou", "keji", "dianzi", "gongye", "shiye",
   "zhizao", "jituan", "guoji", "wuliu", "huoyun", "hangyun", "jixie", "huagong", "fangzhi", "fuzhuang", "shipin", "jinshu",
   "gangtie", "suliao", "jianzhu", "nengyuan", "fazhan", "touzi", "kongzhi", "konggu", "shangmao", "jingmao", "luntai"]);
@@ -953,7 +996,10 @@ export function preparerEntite(nom: string, lecture: Lecture = "mandarin"): stri
 /** La préparation, avec ce qu'elle a retiré (les pays des formes juridiques, un préfixe de
  *  navire, une forme de société) et les mots que leur auteur a ABRÉGÉS d'un point. */
 const REGISTRE = /\(\s*(?:rc|reg\.?(?:\s*no\.?)?|registration\s*(?:no\.?)?|hrb|hra|kvk|cipc|cac|eori|company\s*no\.?|co\.?\s*reg\.?\s*no\.?|crn|tin|vat|nif|nit|cnpj|cuit|rfc|siret|siren|folio)\s*:?\s*([a-z0-9][a-z0-9\/\-. ]*?)(?:,\s*amtsgericht\s+[\p{L} .-]+)?\s*\)/iu;
-export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { texte: string; abreges: ReadonlySet<string>; parentheses: ReadonlySet<string>; civilites: ReadonlySet<string>; traduits: ReadonlySet<string> } & Marques {
+export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { texte: string; abreges: ReadonlySet<string>; parentheses: ReadonlySet<string>; civilites: ReadonlySet<string>; traduits: ReadonlySet<string>;
+  /** pour chaque mot traduit, le mot romanisé qu'il traduit (« trading » : « boeki ») : deux mots de métier japonais
+   *  différents traduits au même mot anglais sont deux raisons sociales (voir `scorePrepares`) */
+  sources: ReadonlyMap<string, string> } & Marques {
   /* L'apostrophe DANS un mot le soude (« O'Brien », « Ch'iao ») : en faire une frontière
      de mot fabriquerait des jetons d'une ou deux lettres qui ne désignent rien. « F.lli »
      (fratelli) et « LPG/C » (LPG carrier) ont une ponctuation qui porte le sens : lus avant. */
@@ -994,6 +1040,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* Un mot suivi d'un point est une ABRÉVIATION écrite comme telle (« Petrochem. », « Dist. »,
      « Capt. ») : le mot entier qu'il commence lui correspond (voir `scorePrepares`). */
   const abreges = new Set([...soude.matchAll(/(\p{L}{2,})\./gu)].map((m) => normaliser(m[1]!)));
+  /* le nom est japonais par ses kana, sa forme ou l'un de ses mots (la marque `japonais`, lue ici avant les tables :
+     ses mots de métier se traduisent aussi sous le pli des deux romanisations, voir `traduction`) */
+  const japonaisPresume = estJaponais(nom) || jetons(normaliser(plier(soude))).some((j) => MARQUEURS_JAPONAIS.has(j));
   /* Les mots ENTRE PARENTHÈSES : « Quarnby Logistics (Shanghai) », « Tervalo Shipping (Hong
      Kong) ». Dans un nom de société, la parenthèse désigne le plus souvent une entité du
      groupe, distincte ; si l'autre nom n'a rien qui y réponde, on ne parle pas de la même
@@ -1003,7 +1052,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     .flatMap((m) => {
       let dedans = ` ${jetons(normaliser(plier(m[1]!))).join(" ")} `;
       for (const [de, vers] of LOCUTIONS) dedans = dedans.split(de).join(vers);
-      return dedans.trim().split(/ +/).flatMap((j) => (CIVILITES.has(j) ? "" : ABREVIATIONS.get(j) ?? traduction(j) ?? j).split(" "));
+      return dedans.trim().split(/ +/).flatMap((j) => (CIVILITES.has(j) ? "" : ABREVIATIONS.get(j) ?? traduction(j, japonaisPresume) ?? j).split(" "));
     })
     .filter((j) => j !== "" && !FORMES.has(j)));
   /* Lettres et chiffres collés se séparent : « No18 » → « No 18 », « LANQIAOFENG16 » →
@@ -1065,6 +1114,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* les mots que les tables ont TRADUITS (« Comercial », « Exportação », « Handelsmaatschappij ») : des mots
      du métier par construction, qu'un nom d'usage omet sans être une autre société (voir `scorePrepares`) */
   const traduits = new Set<string>();
+  const sources = new Map<string, string>();
   const sudAfricain = separes.some((j) => j === "pty" || j === "edms" || j === "eiendoms" || j === "bpk" || j === "beperk" || j === "maatskappy");
   const motsBruts = separes.flatMap((j, i) => {
     if (j === "i") return [j];
@@ -1079,9 +1129,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     if (a !== undefined) return a.split(" ");
     const p = PAYS_ADJECTIFS.get(j);
     if (p !== undefined) return [p];
-    const t = traduction(j);
+    const t = traduction(j, japonaisPresume);
     if (t === undefined) return [j];
-    for (const m of t.split(" ")) if (m !== "") traduits.add(m);
+    for (const m of t.split(" ")) if (m !== "") { traduits.add(m); if (!sources.has(m)) sources.set(m, j); }
     return t.split(" ");
   });
   /* LE QUALIFICATIF PRIVÉ ABÎMÉ : « Pre Ltd » pour Pte Ltd, le correcteur d'un téléphone ayant fait un
@@ -1120,6 +1170,19 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   if (t.length >= 3 && t[0]!.length >= 2 && t[0]!.length <= 6 && t[0] === t.slice(1, 1 + t[0]!.length).map((m) => m[0]).join("")) t = t.slice(1);
   let typeNavire = "";
   if (t.length > 1 && PREFIXES_NAVIRE.has(t[0]!)) { navire = true; typeNavire = TYPES_NAVIRE.get(t[0]!) ?? ""; t = t.slice(1); }
+  /* LA NUMÉROTATION JAPONAISE DES NAVIRES : « Dai 8 Kōfuku Maru », « Daini Tsurumi Maru » (第二鶴見丸) sont « Kofuku Maru
+     No. 8 », « Tsurumi Maru No. 2 ». Le préfixe 第 (dai) devant un chiffre s'ôte, le numéral en lettres (daiichi… daiju,
+     sous les deux romanisations) devient son chiffre, et ce chiffre est le numéro que la règle des numéros lit. En tête
+     d'un nom de navire japonais seulement, celui qui porte « Maru » : « Daiichi Sankyo » et « Daigo Sangyo » sont des
+     sociétés, « Dai Duong » un nom vietnamien (jeu 11, 28/09 : trois paires à 0,800, « dai » ou « daini » mot rare sans
+     répondant). Et « Maru » (丸) nomme un navire : la marque `navire`, comme un préfixe M/V, pour que le navire et
+     l'armateur du même nom ne se confondent pas */
+  const maru = japonaisPresume && t.length >= 2 && t.includes("maru");
+  if (maru) {
+    if (t[0] === "dai" && /^\d+$/.test(t[1]!)) t = t.slice(1);
+    else { const n = NUMERAUX_DAI.get(pliJaponais(t[0]!)); if (n !== undefined) t = [n, ...t.slice(1)]; }
+  }
+  if (maru) navire = true;
   /* « i » (« et », en serbe, croate, polonais) ne s'efface qu'ENTRE deux mots : en dernière
      position, formes juridiques ôtées, c'est le chiffre romain I (« Holdings I S.A. », mesuré
      le 27/09 : il disparaissait et « Holdings I » ne se distinguait plus de « Holdings III ») */
@@ -1147,7 +1210,13 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const japonais = estJaponais(nom) || tousLesMots.some((j) => MARQUEURS_JAPONAIS.has(j));
   const chinois = pays.has("CN") || REGIONS.has(t[0] ?? "") || ecritEnSinogrammes || lecture === "cantonais"
     || tousLesMots.some((j) => MARQUEURS_CHINOIS.has(j));
-  const coreen = /[\uac00-\ud7a3]/u.test(nom) || tousLesMots.some((j) => MARQUEURS_COREENS.has(j));
+  /* et, sous une forme d'Asie de l'Est (« Co., Ltd. », pays KR possible) et hors d'un nom japonais, un mot que le
+     dictionnaire ignore et qui écrit le digramme « eo » (ㅓ en romanisation révisée : Cheonghae, Seorim, Gyeongbo) :
+     ni le japonais ni le pinyin ne l'écrivent, et c'est la seule trace du coréen dans « Cheonghae Marine Co., Ltd. »
+     (jeu 11, 28/09 : 0,807 face à « Chunghae Marine », le pli coréen fermé faute de marque ; mesuré sur les onze
+     jeux, les vingt et un noms que ce digramme marque sont tous coréens) */
+  const coreen = /[\uac00-\ud7a3]/u.test(nom) || tousLesMots.some((j) => MARQUEURS_COREENS.has(j))
+    || (pays.has("KR") && !japonais && t.some((j) => j.includes("eo") && lemme(j) === undefined));
   const hebreuOuGrec = /[\u0370-\u03ff\u0590-\u05ff]/.test(nom)
     || tousLesMots.some((j) => MARQUEURS_HEBREUX.has(j) || MARQUEURS_GRECS.has(j) || (j.length >= 6 && SUFFIXES_GRECS.test(j)));
   const prive = tousLesMots.some((j) => QUALIFICATIFS_PRIVES.has(j)) || privePhrase;
@@ -1159,7 +1228,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const filiation = tousLesMots.some((j) => FILIATION_M.has(j)) ? "m" : tousLesMots.some((j) => FILIATION_F.has(j)) ? "f" : "";
   const succursale = mentionDeSuccursale(soude);
   const chat = t.length >= 2 && !majuscules && (!/\p{Lu}/u.test(nom) || !/[.,()]/.test(nom));
-  return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites, traduits,
+  return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites, traduits, sources,
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
     hebreuOuGrec, indien, hispanique, tamoul, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture === "cantonais", priveInconnu,
     natifs: rom.natifs, filiation, succursale, typeNavire };

@@ -343,11 +343,18 @@ export function voyelleEpenthetique(sqA: string, sqB: string): boolean {
   return long.slice(0, n - 2) + long[n - 1] === court;
 }
 
-/** Un nom préparé UNE fois : ses mots, leurs poids, leurs clés, ses numéros, son bloc. */
-
+/** Le japonais sous ses deux romanisations, Kunrei (Nihon-shiki) et Hepburn : la même suite de kana s'écrit
+ *  si ou shi, ti ou chi, tu ou tsu, hu ou fu, zi ou ji, di ou ji (ぢ), du ou zu (づ), sya ou sha, tya ou cha,
+ *  zya ou ja, dya ou ja ; le n devant b, m, p que le Hepburn traditionnel écrit m (« Nanbu », « Nambu » ;
+ *  « Shinpo », « Shimpo » ; « Honma », « Homma ») ; et la voyelle longue, que le macron perd à la
+ *  normalisation (ō : o) et que l'usage écrit oo, ou ou oh (« Ōmura », « Oomura » ; « Kōgyō », « Kogyou » ;
+ *  « Ōtsuki », « Ohtsuki »), ū écrite u ou uu. Une seule clé, comparée sous la marque `japonais` (jeu 11,
+ *  28/09 : « Huzimoto Sangyō » face à « Fujimoto Sangyo » à 0,295, « Sinwa Kōgyō » face à « Shinwa Kogyo »
+ *  à 0,798 : le pli ne suffisait pas à lever le mot rare, et la règle chinoise des initiales le précédait). */
 export function pliJaponais(m: string): string {
-  return m.replace(/tsu/g, "tu").replace(/chi/g, "ti").replace(/shi/g, "si").replace(/fu/g, "hu").replace(/ji/g, "zi").replace(/zu/g, "du")
-    .replace(/sh(?=[aou])/g, "sy").replace(/ch(?=[aou])/g, "ty").replace(/j(?=[aou])/g, "zy")
+  return m.replace(/tsu/g, "tu").replace(/chi/g, "ti").replace(/shi/g, "si").replace(/fu/g, "hu").replace(/ji/g, "zi").replace(/di/g, "zi").replace(/zu/g, "du")
+    .replace(/sh(?=[aou])/g, "sy").replace(/ch(?=[aou])/g, "ty").replace(/j(?=[aou])/g, "zy").replace(/dy(?=[aou])/g, "zy")
+    .replace(/m(?=[bmp])/g, "n")
     .replace(/o(?:h(?![aeiou])|o|u)/g, "o").replace(/uu/g, "u").replace(/(.)\1+/g, "$1");
 }
 /** Le hindi (व : v, w, b), l'hébreu (ב : b, v), l'espagnol et le portugais (b, v) : une seule lettre au
@@ -369,6 +376,15 @@ export function pliTamoul(m: string): string {
 export function pliCoreen(m: string): string {
   return m.replace(/eo/g, "o").replace(/eu/g, "u").replace(/ae/g, "e").replace(/oo|ou|u/g, "o").replace(/y(?=[aeiou])/g, "")
     .replace(/g/g, "k").replace(/d/g, "t").replace(/b/g, "p").replace(/j/g, "ch").replace(/r/g, "l").replace(/(.)\1+/g, "$1");
+}
+
+/** Les seules VOYELLES du coréen sous ses deux systèmes : ㅓ écrite eo (romanisation révisée), ŏ ou u (McCune-Reischauer et
+ *  l'usage : Chung, Sung, Hyundai), ㅡ eu ou u, ㅐ ae ou e, ㅜ u ou oo. Deux mots égaux sous ce seul pli sont le même mot coréen
+ *  sous deux systèmes, et leur crédit est celui de la voyelle d'appui (CREDIT_APPUI, 0,9), au-dessus des consonnes de
+ *  `pliCoreen` (0,85 : b et p, g et k écrivent aussi deux consonnes, ㅂ et ㅍ, ㄱ et ㅋ). Jeu 11, 28/09 : « Cheonghae Marine »
+ *  face à « Chunghae Marine » restait à 0,807 au crédit de 0,85, le mot générique tirant le nom sous le fort. */
+export function pliVoyellesCoreennes(m: string): string {
+  return m.replace(/eo/g, "o").replace(/eu/g, "u").replace(/ae/g, "e").replace(/oo|ou|u/g, "o").replace(/(.)\1+/g, "$1");
 }
 
 /** Le cantonais en jyutping, en graphie du gouvernement de Hong Kong et dans les graphies d'usage de
@@ -395,6 +411,20 @@ export function initialesChinoisesCompatibles(x: string, y: string): boolean {
  *  d'une voyelle) : moins qu'un squelette égal (0,95). À 0,9 il faisait de Meier et Mayer,
  *  de Solaris et Solares, le même mot (mesuré le 27/09 sur le jeu 5). */
 export const CREDIT_ROMANISATION = 0.85;
+/** Ce que vaut la même suite de kana sous deux romanisations (`pliJaponais` : « Sinwa », « Shinwa » ; « Huzimoto »,
+ *  « Fujimoto » ; « Ōmura », « Oomura ») : autant qu'un squelette égal (0,95), pas une variation de voyelle, parce que
+ *  Kunrei et Hepburn écrivent les mêmes kana et que le nom anglais d'une société japonaise laisse tomber son macron.
+ *  Au crédit de 0,85, un nom d'un seul mot propre et d'un mot de métier restait à 0,798 (jeu 11, 28/09 : « Sinwa
+ *  Kōgyō K.K. » face à « Shinwa Kogyo Co., Ltd. », « Zyōnan Kōgyō » face à « Jonan Kogyo »). */
+export const CREDIT_KANA = 0.95;
+/** Les suffixes d'établissement du japonais : -sho (所, 場 : l'atelier, l'usine), -jo (場), -sha (社), -kan (館), -do (堂).
+ *  Sous la marque japonaise, un mot qui n'est l'autre qu'augmenté de l'un d'eux est une AUTRE raison sociale (« Tekkō »,
+ *  « Tekkōsho » ; « Kōki », « Kōkisho »), pas le mot coupé par un champ ni son abréviation (jeu 11, 28/09 : « Nambu Tekko »
+ *  face à « Nambu Tekkosho » à 0,900 par la règle du dernier mot coupé). Trois lettres de radical au moins. */
+const SUFFIXES_ETABLISSEMENT: ReadonlySet<string> = new Set(["sho", "jo", "sha", "kan", "do"]);
+export function suffixeEtablissement(court: string, long: string): boolean {
+  return court.length >= 3 && long.length > court.length && long.startsWith(court) && SUFFIXES_ETABLISSEMENT.has(long.slice(court.length));
+}
 /** Une voyelle brève SAUTÉE par une romanisation de l'arabe (« Fatima », « Fatma » ; jeu 9) : les deux
  *  squelettes ne diffèrent que par une voyelle intérieure de plus, sur des mots d'au moins cinq lettres
  *  (« Amir » et « Amr » restent deux noms). */
