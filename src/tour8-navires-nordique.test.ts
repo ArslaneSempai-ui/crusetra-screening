@@ -82,7 +82,8 @@ test("tour 8, nordique : un mot qui en commence un autre est un membre de compos
 test("tour 8, nordique : une lettre de moins est un autre lieu, le plafond du mot court tient (Nordvik, Norvik)", () => {
   const s = score("Nordvik Lastebil AS", "Norvik Lastebil AS");
   assert.ok(s < FORT && s >= 0.5, `${s}`);
-  assert.ok(score("M/V Tarnhelm Star", "M/V Tarnhem Star") >= FORT, "hors de la marque nordique, la lettre tombée reste une faute");
+  /* tour 12 : dans un nom de navire la lettre tombée est une autre coque ; le témoin hors marque est donc une société */
+  assert.ok(score("Tarnhelm Trading Ltd", "Tarnhem Trading Ltd") >= FORT, "hors de la marque nordique et hors navire, la lettre tombée reste une faute");
   assert.equal(lettreTombee("nordvik", "norvik"), true);
   assert.equal(lettreTombee("nordhavn", "nordhvan"), false, "deux lettres inversées");
   assert.equal(lettreTombee("ashwara", "ashwarra"), false, "une lettre doublée");

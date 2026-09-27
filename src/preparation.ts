@@ -1357,8 +1357,12 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
        laisse passer ; le score la lit comme UNE lettre inconnue (`lettrePerdue`). Une suite de
        « ? » vaut autant de lettres (« T?n ??c » pour Tân Đức : Đ et ứ perdus, un jalon chacun ;
        mesuré le 27/09 sur le jeu 9, la suite partait en ponctuation et « ??c » devenait « c »).
-       Jamais un « ? » seul ni en fin de mot : là c'est une ponctuation, elle part avec les autres */
+       Jamais un « ? » seul : là c'est une ponctuation, elle part avec les autres. En FIN de mot, derrière deux capitales,
+       c'est la voyelle accentuée perdue d'un document en majuscules (« CHIRIQU? » pour Chiriquí, jeu 11, tour 12 : « chiriqu »
+       face à « chiriqui » ne valait plus que la signature d'une lettre tombée, 0,874) ; derrière une minuscule ou un chiffre,
+       c'est la question d'un clavardage, une ponctuation encore. La forme abîmée (« LT? ») a déjà été complétée juste au-dessus */
     .replace(/\?(?=\?*\p{L})/gu, PERDU)
+    .replace(/(?<=\p{Lu}{2})\?(?![\p{L}?])/gu, PERDU)
     .replace(/int'l/gi, "international").replace(/\bF\.lli\b/gi, "Fratelli")
     /* UNE FORME SOUDÉE AU NOM par un clavardage (« HoornbeekTransportBV », jeu 14) : la forme en capitales, ou dans sa
        casse propre (GmbH, Ltd, Inc), collée derrière une minuscule et suivie de rien, se détache pour être lue comme

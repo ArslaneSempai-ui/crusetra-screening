@@ -267,6 +267,20 @@ export function lettreTombee(a: string, b: string): boolean {
   if (long.slice(0, k) + long.slice(k + 1) !== court) return false;
   return long[k] !== long[k - 1] && long[k] !== long[k + 1];
 }
+/** UNE LETTRE CHANGÉE entre deux mots : une seule lettre substituée, ou une seule lettre en plus ou en moins, qui n'est ni la
+ *  transposition de deux lettres voisines ni le doublement d'une lettre (ces deux gestes portent la signature d'une faute de
+ *  frappe, voir `gesteDeFrappe`, et se mesurent à part). Ni le s d'un pluriel, qui a sa règle ; jamais sur un mot qui porte un
+ *  chiffre, un numéro ayant la sienne. Sous la marque navire, c'est une autre coque (voir `scorePrepares`). */
+export function lettreChangee(a: string, b: string): boolean {
+  if (a === b || /\d/.test(a) || /\d/.test(b)) return false;
+  if (formePlurielle(a, b) || formePlurielle(b, a)) return false;
+  if (a.length === b.length) {
+    let k = -1;
+    for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) { if (k >= 0) return false; k = i; }
+    return k >= 0;
+  }
+  return Math.abs(a.length - b.length) === 1 && lettreTombee(a, b);
+}
 /** Le GESTE d'une faute de frappe, sans regarder la longueur ni le dictionnaire : deux lettres qui se
  *  suivent inversées, ou une lettre tombée ou doublée, jamais sur l'initiale. */
 export function gesteDeFrappe(a: string, b: string): boolean {
@@ -785,6 +799,23 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
       if (m > 0.5 && m < 0.9 && !equivalentM && meilleurY >= 0 && X.mots[i]!.length <= ambiguJusqua && Y.mots[meilleurY]!.length <= ambiguJusqua
         && inconnus && !PARTICULES.has(X.mots[i]!) && !PARTICULES.has(Y.mots[meilleurY]!)
         && (chinois || coreen || (nordique && lettreTombee(X.mots[i]!, Y.mots[meilleurY]!)) || !fauteDeFrappe(X.mots[i]!, Y.mots[meilleurY]!))) motAmbigu = true;
+      /* LA LETTRE CHANGÉE D'UN NAVIRE (voir `lettreChangee`) : sous la marque navire, deux mots écrits à UNE lettre près, qu'aucune
+         marque n'explique, sont deux coques, comme le pluriel et le numéro le sont déjà (« MT Forcados Wind », « MT Forcardos Wind » :
+         jeu 10, tour 12, 0,889, une fausse alerte forte que la signature d'une lettre tombée levait). Le plafond du mot ambigu tient
+         alors quelle que soit la longueur du mot, qu'il soit ou non du dictionnaire, et quoi que dise la signature d'une faute de
+         frappe. Restent des fautes, hors de la règle : la lettre-jalon d'une lecture optique (« KEMUN1NG », « CHIRIQU? » : `simMot`
+         vaut 1), une équivalence de romanisation (`equivalentM` : les plis arabe, slave, indien ; « Nakhoda », « Nakhuda »), et le
+         crédit de la faute d'un clavardage (0,9 exactement, au-dessus du chemin de la distance : « Halyard », « Halyaro » ; « Pride »,
+         « Prode » ; « Bahr », « Bahar », trois vrais navires des jeux 5, 8 et 15 pour une seule autre coque, « Esperança », « Esperancé »,
+         mesuré au tour 12). Le prix, dit : « M/V Tarnhelm Star » face à « M/V Tarnhem Star » (jeu 8), une lettre tombée que son auteur
+         tient pour une faute, redescend au possible */
+      /* Et le e final que le squelette tait (« Real », « Reale » : jeu 16, tour 12, 0,955 par deux squelettes égaux) : un mot du
+         dictionnaire suivi d'UNE lettre qu'il ne connaît plus est ambigu (voir `lettreAjoutee`, « Park », « Parke »), et le squelette
+         égal ne le sauve pas sous la marque navire. Deux mots inconnus au même squelette restent un mot (« Zolotaya », « Zolotaja » ;
+         « Cheonji », « Chonji » : deux vrais navires du jeu 8 sans marque slave ni coréenne, perdus quand tout squelette égal comptait) */
+      if (navire && meilleurY >= 0 && m > 0.5 && m < 1 && !equivalentM && !PARTICULES.has(X.mots[i]!) && !PARTICULES.has(Y.mots[meilleurY]!)
+        && lettreChangee(X.mots[i]!, Y.mots[meilleurY]!)
+        && (m < 0.9 || (X.squelettes[i] === Y.squelettes[meilleurY] && lettreAjoutee(X.mots[i]!, Y.mots[meilleurY]!)))) motAmbigu = true;
       if (m >= 0.9 && X.poids[i]! >= 0.5 * X.poidsMax) rareCouvert[cote] = true;
       if (X.parentheses[i]) { parenthese[cote] = true; if (m >= 0.8) parentheseReconnue[cote] = true; }
       if (Y.mots.some((y) => qualificatifSoude(X.mots[i]!, y, Y.mots))) qualificatifSoudeVu = true;

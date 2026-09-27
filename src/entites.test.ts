@@ -370,7 +370,9 @@ test("OCR : la capitale I lue l en tête d'un mot, à partir de cinq lettres", (
 test("la faute de frappe lève le plafond d'ambiguïté : lettres inversées, lettre tombée ; jamais une substitution", () => {
   assert.ok(score("MV Kaspar Lindholm", "MV Kaspar Lindhlom") > 0.81, "mesuré à 0,800 avant");
   assert.ok(score("Nordhavn Kystfart AS", "Nordhvan Kystfart AS") > 0.81, "mesuré à 0,800 avant");
-  assert.ok(score("M/V Tarnhelm Star", "M/V Tarnhem Star") > 0.81, "mesuré à 0,800 avant");
+  /* tour 12 : dans un nom de NAVIRE, une lettre tombée que rien n'explique est une autre coque (la convention de tous les
+     auteurs depuis le jeu 12 ; mesuré : deux fausses alertes fortes de moins pour cette seule paire du jeu 8) */
+  assert.ok(score("M/V Tarnhelm Star", "M/V Tarnhem Star") <= 0.80, "mesuré à 0,800 au tour 12 ; au fort avant");
   assert.ok(score("Aegean Star Navigation", "Aegaen Star Navigation") > 0.81);
   /* la substitution d'une lettre, même entre touches voisines, est aussi la signature de deux mots réels :
      la lever gagnait « Torvakd » et perdait ces deux pièges (mesuré le 27/09) */
