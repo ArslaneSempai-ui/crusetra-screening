@@ -818,7 +818,7 @@ test("tour 6, formes : un ancien nom des deux côtés est possible, jamais fort 
   assert.ok(n.some((x) => x.texte === "Olmsbury Grain Corporation" && !x.ancien) && n.some((x) => x.texte === "Olmsbury Milling Corporation" && x.ancien),
     "derrière « now known as », c'est la seconde partie qui est le nom actuel");
   assert.deepEqual(variantes("LUNARIS DAWN (EX-SELVANA)"), ["LUNARIS DAWN (EX-SELVANA)", "LUNARIS DAWN", "SELVANA"], "les textes seuls, dans le même ordre");
-  const l = (texte: string, ancien: boolean, mention = "", registre = "", partie = "") => ({ texte, lecture: "mandarin" as const, ancien, mention, registre, partie });
+  const l = (texte: string, ancien: boolean, mention = "", registre = "", partie = "", paysRegistre = "") => ({ texte, lecture: "mandarin" as const, ancien, mention, registre, partie, paysRegistre });
   assert.equal(plafondDesLectures(l("Warri Osprey", true), l("Warri Osprey", true)), 0.8);
   assert.equal(plafondDesLectures(l("MV Warri Osprey", false), l("Warri Osprey", true)), 1);
   assert.ok(Math.abs(score("MV Apapa Falcon (ex Warri Osprey, 2020)", "MV Onne Pelican (ex Warri Osprey, 2006)") - 0.8) < 1e-9, "mesuré à 1,000 avant");

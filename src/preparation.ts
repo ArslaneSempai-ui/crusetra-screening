@@ -633,6 +633,8 @@ const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   /* l'Afrique de l'Est et le Pakistan (jeu 15) : « Ent » enterprises, « Rd » road, « Soc » society, « Pak » Pakistan, « Md. »
      Muhammad, les consonnes d'un clavardage (« Trdrs », « Prts »), « Coop » et « Co-op » */
   ent: "enterprises", rd: "road", soc: "society", md: "muhammad", trdrs: "traders", prts: "parts",
+  /* le grec des documents maritimes en anglais (jeu 17) : « Blk Shpg », « Shp Svcs » */
+  blk: "bulk", shpg: "shipping", shp: "ship", lnc: "inc",
   coop: "cooperative", "co-op": "cooperative", hrdware: "hardware", hdware: "hardware",
   /* « Nig. Ltd », le suffixe du registre nigérian (CAC) : « Okafor Integrated Resources Nig. Ltd » (jeu 10) */
   nig: "nigeria",
@@ -1666,6 +1668,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   if (t.length >= 3 && t[0]!.length >= 2 && t[0]!.length <= 6 && t[0] === t.slice(1, 1 + t[0]!.length).map((m) => m[0]).join("")) t = t.slice(1);
   if (navireEcrit) navire = true;
   if (t.length > 1 && PREFIXES_NAVIRE.has(t[0]!)) { navire = true; typeNavire = TYPES_NAVIRE.get(t[0]!) ?? ""; t = t.slice(1); }
+  /* « Myrtoan Grain 4 », « Pontic Bulker No. 3 » (jeu 17) : sans forme juridique, deux mots ou plus et un numéro en queue, c'est
+     une coque d'une flotte numérotée ; le pluriel et la lettre y sont une autre coque (voir `simMot`) */
+  if (!navire && !societe && t.length >= 3 && /^\d{1,3}$/.test(t[t.length - 1]!) && !/\d/.test(t[t.length - 2]!)) navire = true;
   /* LA NUMÉROTATION JAPONAISE DES NAVIRES : « Dai 8 Kōfuku Maru », « Daini Tsurumi Maru » (第二鶴見丸) sont « Kofuku Maru
      No. 8 », « Tsurumi Maru No. 2 ». Le préfixe 第 (dai) devant un chiffre s'ôte, le numéral en lettres (daiichi… daiju,
      sous les deux romanisations) devient son chiffre, et ce chiffre est le numéro que la règle des numéros lit. En tête

@@ -159,7 +159,7 @@ export function lireContreparties(texte: string): { lignes: Contrepartie[]; aver
 type NomIndexe = { brut: string; nom: NomPrepare; entree: EntreeListe; alias?: string; faible: boolean;
   /** la chaîne est un ANCIEN nom annoncé, ou a perdu une mention de succursale qui nommait `mention` : voir
    *  `plafondDesLectures`, que le criblage applique comme le score d'entité */
-  ancien: boolean; mention: string; registre: string; partie: string;
+  ancien: boolean; mention: string; registre: string; partie: string; paysRegistre: string;
   /** les bigrammes des deux blocs, codés et triés : le compte des bigrammes partagés se fait
    *  par fusion de deux tableaux triés, sans recalcul (mesuré : 35 % du temps avant) */
   bg: Uint32Array; bgSq: Uint32Array };
@@ -314,7 +314,7 @@ export class Index {
         const k = this.noms.length;
         if (premier === -1) premier = k;
         this.noms.push({ brut: texte, nom, entree: e, ...(alias ? { alias } : {}), faible: origine ? faibles.has(origine) : false,
-          ancien: l.ancien, mention: l.mention, registre: l.registre, partie: l.partie, bg: this.coder(nom.bloc), bgSq: this.coder(nom.blocSq) });
+          ancien: l.ancien, mention: l.mention, registre: l.registre, partie: l.partie, paysRegistre: l.paysRegistre, bg: this.coder(nom.bloc), bgSq: this.coder(nom.blocSq) });
         if (estCoupe(texte)) this.coupes.push(k);
         if (nom.mots.length === 0) { this.sansMots.push(k); continue; }
         nom.mots.forEach((mot, i) => {
@@ -740,7 +740,7 @@ export function cribler(c: Contrepartie, index: Index, seuils: { fort: number; p
     let s = 0;
     /* un ancien nom des deux côtés, deux succursales : le possible au plus (voir `plafondDesLectures`) */
     for (const l of lectures) {
-      const plafond = plafondDesLectures(l.lecture, { texte: n.brut, lecture: n.nom.marques.lecture, ancien: n.ancien, mention: n.mention, registre: n.registre, partie: n.partie });
+      const plafond = plafondDesLectures(l.lecture, { texte: n.brut, lecture: n.nom.marques.lecture, ancien: n.ancien, mention: n.mention, registre: n.registre, partie: n.partie, paysRegistre: n.paysRegistre });
       s = Math.max(s, Math.min(plafond, scoreBrut(index.f, l.brut, l.nom, n.brut, n.nom, options)));
     }
     if (s < seuils.possible) continue;

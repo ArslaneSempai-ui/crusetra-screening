@@ -111,6 +111,14 @@ const ANNOTATIONS: readonly RegExp[] = [
   /* jeu 14 : le numéro ENI d'une barge du Rhin (huit chiffres), avec ou sans parenthèse ; « T.A.V. » (ter attentie van),
      l'attention néerlandaise, et tout ce qui la suit */
   /\s*\(?\s*ENI\s*:?\s*\d{8}\s*\)?\s*$/iu,
+  /* jeu 17 : le pavillon derrière une barre (« / Liberia »), son code entre parenthèses en queue (« (LR) », « (TR) »), la
+     phrase turque « (Türk bayraklı) », l'immatriculation maltaise « (Malta) C 84512 », et le type de navire derrière une
+     virgule (« , dumb barge ») */
+  /\s*\/\s*(?:liberia|panama|malta|marshall\s+islands|cyprus|greece|turkey|bahamas|singapore|hong\s+kong|antigua(?:\s+and\s+barbuda)?|st\.?\s*kitts|vanuatu|togo|palau|cameroon|sierra\s+leone|comoros|tanzania|moldova|belize|cook\s+islands|gibraltar|madeira|norway|denmark|netherlands|germany|italy|spain|portugal|france|united\s+kingdom|russia|ukraine|georgia|azerbaijan|kazakhstan|iran|india|china|japan|korea|philippines|indonesia|malaysia|thailand|vietnam)\s*$/iu,
+  /\s*\((?:LR|LBR|PA|PAN|MT|MLT|MH|MHL|CY|CYP|GR|GRC|TR|TUR|BS|BHS|SG|SGP|HK|HKG|VU|TG|PW|KM|BZ|GI|AG|KN|TZ|MD|CK|NO|DK|NL|DE|IT|ES|PT|FR|GB|UK|RU|UA|GE|AZ|KZ|IR|IN|CN|JP|KR|PH|ID|MY|TH|VN)\)\s*$/u,
+  /\s*\((?:t[üu]rk|turkish|greek|liberian|panamanian|maltese|cypriot)\s+(?:bayrakl[ıi]|flag(?:ged)?)\)\s*$/iu,
+  /\s*\(\s*malta\s*\)\s*C\s*\d{4,6}\s*$/iu,
+  /\s*,\s*(?:dumb\s+|pusher\s+|motor\s+|tank\s+)?(?:barge|tug|tanker|bulker|bulk\s+carrier|pusher|lighter)\s*$/iu,
   /* jeu 15 : le CNIC pakistanais, le PIN kényan, le TIN et le NTN entre parenthèses derrière le nom */
   /\s*\(\s*(?:cnic|kra\s*pin|pin|tin|ntn|gstin|cin)\s*:?\s*[a-z0-9\-]{6,20}\s*\)\s*$/iu,
   /* « Curtume Bianchi Ltda - ME » (jeu 16) : la taille d'entreprise brésilienne (ME, EPP, MEI) derrière la forme */
@@ -235,6 +243,10 @@ const PORTS_ET_QUARTIERS: ReadonlySet<string> = new Set(["bandar", "kota", "jebe
   "abidjan", "port bouet", "bouet", "vridi", "treichville", "cocody", "dakar", "bamako", "ouagadougou", "douala", "lome", "cotonou",
   "conakry", "san pedro", "santos", "paranagua", "rio grande", "itajai", "vitoria", "salvador", "recife", "fortaleza", "manaus",
   "buenos aires", "rosario", "bahia blanca", "montevideo", "valparaiso", "callao", "guayaquil", "cartagena", "barranquilla",
+  /* la Grèce, Chypre, la Turquie et l'Asie centrale (jeu 17) */
+  "piraeus", "pireas", "peiraias", "thessaloniki", "volos", "patras", "heraklion", "limassol", "lemesos", "larnaca", "famagusta",
+  "samsun", "mersin", "izmir", "iskenderun", "trabzon", "gemlik", "aliaga", "ambarli", "tekirdag", "bandirma", "istanbul",
+  "almaty", "astana", "pavlodar", "aktau", "atyrau", "shymkent", "tashkent", "bishkek", "bukhara", "samarkand",
   "riga", "hamina", "kotka", "helsinki", "turku", "tallinn", "klaipeda", "constanta", "poti", "batumi", "goteborg", "gothenburg", "stockholm",
   "oslo", "copenhagen", "aarhus", "gdansk", "gdynia", "varna", "burgas", "odesa", "odessa", "mykolaiv", "kherson", "izmail", "samsun",
   "trabzon", "novorossiysk", "rostov", "taganrog", "izmir",
@@ -266,7 +278,23 @@ export type VarianteTypee = { texte: string; ancien: boolean; mention: string;
    *  construction, quels que soient les mots (jeu 12 : « Femi Alade Import Export Company Limited (Applicant) »
    *  face à « Alade Femi Export Import Company Limited (Beneficiary) », 0,90 sans cette propriété) ; l'étiquette
    *  est ôtée des textes, la propriété la garde, `plafondDesLectures` la lit. Une seule partie par nom brut. */
-  partie: string };
+  partie: string;
+  /** le PAYS D'IMMATRICULATION écrit entre parenthèses en queue du nom (« Evdokimos Navigation Corp. (Liberia) ») : deux pays
+   *  différents sont deux sociétés d'un même armateur (jeu 17, 28/09 : 1,000 face à « (Marshall Islands) », la parenthèse
+   *  ôtée des deux côtés) ; la propriété la garde, `plafondDesLectures` la lit ; un pays d'un seul côté ne dit rien */
+  paysRegistre: string };
+/** Les pays qu'un registre de navires ou d'armateurs écrit entre parenthèses derrière le nom, et leur code. */
+const PAYS_DE_REGISTRE: ReadonlyMap<string, string> = new Map(Object.entries({
+  liberia: "LR", panama: "PA", malta: "MT", "marshall islands": "MH", cyprus: "CY", greece: "GR", turkey: "TR", bahamas: "BS", singapore: "SG",
+  "hong kong": "HK", bermuda: "BM", "cayman islands": "KY", "british virgin islands": "VG", bvi: "VG", gibraltar: "GI", "isle of man": "IM",
+  luxembourg: "LU", switzerland: "CH", monaco: "MC", uae: "AE", "united arab emirates": "AE", dubai: "AE", seychelles: "SC", mauritius: "MU",
+  vanuatu: "VU", belize: "BZ", delaware: "US", nevada: "US", wyoming: "US", "cook islands": "CK", samoa: "WS", "st vincent": "VC", "st kitts": "KN",
+  antigua: "AG", togo: "TG", palau: "PW", comoros: "KM", "sierra leone": "SL", cameroon: "CM", tanzania: "TZ", moldova: "MD", georgia: "GE",
+}));
+export function paysDeRegistre(brut: string): string {
+  const m = /\(\s*([\p{L} .']{3,25}?)\s*\)\s*$/u.exec(brut);
+  return m ? PAYS_DE_REGISTRE.get(normaliser(m[1]!)) ?? "" : "";
+}
 /** La partie d'un document qu'un nom brut nomme, en minuscules, ou « » : les trois formes d'étiquette
  *  (parenthèse, barres SWIFT, tête ou queue de ligne). Le nom NE dit rien de sa partie : rien. */
 export function partieDuDocument(brut: string): string {
@@ -294,13 +322,13 @@ export function decollerLesQueues(s: string): string {
  *  contre & Co. KG, mesuré le 29/09). */
 const FORMES_A_CASSE: ReadonlySet<string> = new Set(["gmbh", "mbh", "kgaa", "gesmbh", "ggmbh", "ohg", "ekg", "sprl", "bvba", "cvba", "scrl", "sagl", "plc"]);
 /** Les mots de rue que l'adresse d'un export colle au nom, et les codes d'État ou de province qui suivent une ville. */
-const RUES = ["AVENIDA", "STRASSE", "STREET", "ROUTE", "CALLE", "ROAD", "RUA", "RUE"];
+const RUES = ["AVENIDA", "STRASSE", "STREET", "ROUTE", "CALLE", "ROAD", "RUA", "RUE", "ULITSA", "PROSPEKT", "KOCHASI", "UL"];
 const CODES_ETATS: ReadonlySet<string> = new Set(["SP", "RJ", "PR", "SC", "RS", "MG", "BA", "PE", "CE", "ES", "GO", "PA", "AM", "MT", "MS",
   "WA", "NSW", "QLD", "VIC", "SA", "TAS", "NT", "ACT", "ON", "QC", "BC", "AB"]);
 /** Un nom en capitales dont le dernier mot porte une ville, un port ou une rue collés : « FRERESABIDJAN » rend « FRERES », « SCHMIDTRUA15 »
  *  rend « SCHMIDT », « TANAKASANTOS SP » rend « TANAKA » ; quatre lettres de nom au moins devant, la ville cinq au moins. */
 export function decollerLAdresse(s: string): string {
-  const rue = new RegExp(`^(.*?\\p{L}{4,}?)(?:${RUES.join("|")})(?:\\s*\\d.*|\\s+(?:DE|DA|DO|DOS|DAS|DES|DU|DEL|DE\\s+LA)\\s+.*|\\s*)$`, "u");
+  const rue = new RegExp(`^(.*?\\p{L}{4,}?)(?:${RUES.join("|")})(?:\\s*\\d.*|\\s+(?:DE|DA|DO|DOS|DAS|DES|DU|DEL|DE\\s+LA)\\s+.*|\\.\\S.*|\\s*)$`, "u");
   const m = rue.exec(s);
   if (m) return m[1]!.trim();
   const mots = s.split(/\s+/);
@@ -333,6 +361,11 @@ export function variantesTypees(brut: string): VarianteTypee[] {
      « J P Morgan » gardent leur soudure (préparation) */
   const tampon = /^(?:\p{L} )+\p{L}(?:\s{2,}(?:\p{L} )+\p{L})+\s*$/u.test(brut) ? brut.trim().split(/\s{2,}/).map((m) => m.replace(/ /g, "")).join(" ") : undefined;
   brut = brut.replace(/\*+/g, " ").replace(/\s{2,}/g, " ").trim();
+  /* « (ex-Lindos Harrier until 2019) » (jeu 17) : la durée de l'ancien nom n'est pas le nom */
+  brut = brut.replace(/\s+(?:until|till|up\s+to|bis|hasta|jusqu'(?:en|[aà]))\s+(?:\d{1,2}\/)?\d{4}(?=\s*[),]|$)/giu, "");
+  /* une ligne de 35 caractères qui finit par une lettre seule après une conjonction (« SANAYI VE T », jeu 17) : la lettre est la
+     tête d'un mot coupé, elle tombe */
+  if (!/\p{Ll}/u.test(brut) && brut.length >= 30 && brut.length <= 36) brut = brut.replace(/\s+(?:VE|AND|UND|ET|EN|E|Y|I|OG|OCH)\s+\p{L}$/u, "");
   /* « (Amharic: ተስፋዬ በቀለ ንግድ) » : l'étiquette de langue s'efface, la parenthèse native reste (jeu 10) */
   brut = brut.replace(/\(\s*(?:amharic|arabic|chinese|japanese|korean|thai|hebrew|russian|greek|hindi|tamil|persian|farsi|urdu|bengali|in\s+\p{L}+)\s*:\s*/giu, "(");
   /* une adresse collée à la forme sans espace, champ 59 : « Company Limited45 Marina Road » (jeu 10) */
@@ -341,7 +374,8 @@ export function variantesTypees(brut: string): VarianteTypee[] {
   brut = brut.replace(/\b(limited|ltd|plc|inc|llc|corp|gmbh|bv|nv|sa|sarl|lda|ltda|pty|bhd)\.?(?=\d+(?![\p{L}\d]))/giu, "$1 ");
   const registre = numeroDeRegistre(brut);
   const partie = partieDuDocument(brut);
-  const poser = (texte: string, ancien: boolean, mention: string) => { if (!vues.has(texte)) vues.set(texte, { texte, ancien, mention, registre, partie }); };
+  const paysRegistre = paysDeRegistre(brut);
+  const poser = (texte: string, ancien: boolean, mention: string) => { if (!vues.has(texte)) vues.set(texte, { texte, ancien, mention, registre, partie, paysRegistre }); };
   poser(brut.trim(), false, "");
   /* UN NOM SANS ESPACES (jeu 13, 28/09 : « CarmichaelExportsPtyLtd » à 0,482, « GUANGZHOUFENGYUANIMPEXP » et
      « WEIFANGHENGTAIFOODSCOLTD » à 0,000 face à leurs noms écrits) : les majuscules intérieures coupent les mots ; en
@@ -431,6 +465,8 @@ export function variantesTypees(brut: string): VarianteTypee[] {
       (PORTS_ET_QUARTIERS.has(normaliser(ville)) && CODES_PAYS.has(code.toLowerCase()) ? "" : m));
     p = p.replace(/\s+[a-z]{2}-\d{4,5}\b.*$/iu, "").replace(/\s+\d{4,5}\s+[\p{L}-]{3,}\s+[a-z]{2}\s*$/iu, "");
     p = p.replace(/\s+\/\s*([\p{L}-]{3,})\b.*$/u, (m, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? "" : m));
+    /* la ville nue derrière une forme juridique (« ANONIM SIRKETI SAMSUN », « SITIRA LTD LIMASSOL CY », jeu 17) : une adresse */
+    p = p.replace(/(\b(?:a\.?[sş]\.?|ltd\.?|limited|llc|inc\.?|gmbh|s\.?a\.?|s\.?r\.?l\.?|ltda\.?|sirketi|[sş]ti\.?|e\.?p\.?e\.?|a\.?e\.?|o\.?e\.?|i\.?k\.?e\.?|too|llp)\s+)([\p{L}' -]{3,25}?)(?:\s+[A-Z]{2})?\s*$/iu, (m, forme: string, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? forme.trimEnd() : m));
     /* le port d'attache écrit SEUL derrière une virgule ou un tiret (« Lekstern, Werkendam », « Dintelreiger - Rotterdam »,
        jeu 14) : un port connu, rien d'autre ; entre parenthèses, seulement derrière UN mot (« IJsselkwak (Kampen) »), parce
        que derrière une raison sociale la ville entre parenthèses est une filiale (« Quarnby Logistics (Shanghai) », jeu 11) */
@@ -509,18 +545,18 @@ export function variantesTypees(brut: string): VarianteTypee[] {
  *  cantonais (voir ecritures.ts) ; un nom latin n'a qu'une lecture, sauf celles que lui donnent
  *  les sinogrammes qu'il porte (`substitutions`). C'est ici que l'index et le score prennent
  *  leurs lectures : tout ce qui s'ajoute ici est vu des deux. */
-export type LectureDe = { texte: string; lecture: Lecture; ancien: boolean; mention: string; registre: string; partie: string };
+export type LectureDe = { texte: string; lecture: Lecture; ancien: boolean; mention: string; registre: string; partie: string; paysRegistre: string };
 export function lecturesDe(brut: string): LectureDe[] {
   const vues = new Map<string, LectureDe>();
   const poser = (l: LectureDe) => { const k = `${l.lecture}|${l.texte}`; if (!vues.has(k)) vues.set(k, l); };
   for (const v of variantesTypees(brut)) {
-    const { ancien, mention, registre, partie } = v;
-    poser({ texte: v.texte, lecture: "mandarin", ancien, mention, registre, partie });
+    const { ancien, mention, registre, partie, paysRegistre } = v;
+    poser({ texte: v.texte, lecture: "mandarin", ancien, mention, registre, partie, paysRegistre });
     if (/[\u4e00-\u9fff]/u.test(v.texte) && !estJaponais(v.texte)) {
-      poser({ texte: v.texte, lecture: "cantonais", ancien, mention, registre, partie });
+      poser({ texte: v.texte, lecture: "cantonais", ancien, mention, registre, partie, paysRegistre });
       /* et la troisième, en hokkien de Singapour et de Malaisie (« 金福隆33 » : Kim Hock Leong 33, jeu 13) */
-      poser({ texte: v.texte, lecture: "hokkien", ancien, mention, registre, partie });
-      for (const s of substitutions(v.texte)) poser({ ...s, ancien, mention, registre, partie });
+      poser({ texte: v.texte, lecture: "hokkien", ancien, mention, registre, partie, paysRegistre });
+      for (const s of substitutions(v.texte)) poser({ ...s, ancien, mention, registre, partie, paysRegistre });
     }
   }
   return [...vues.values()];
@@ -538,6 +574,8 @@ export function plafondDesLectures(a: LectureDe, b: LectureDe): number {
   if (a.registre !== "" && b.registre !== "" && a.registre !== b.registre) return FACTEUR_CONTENANCE;
   /* deux parties d'un même document (l'applicant et le bénéficiaire d'un crédit) : deux personnes par construction */
   if (a.partie !== "" && b.partie !== "" && a.partie !== b.partie) return FACTEUR_CONTENANCE;
+  /* deux pays d'immatriculation entre parenthèses : deux sociétés d'un même groupe (« (Liberia) », « (Marshall Islands) », jeu 17) */
+  if (a.paysRegistre !== "" && b.paysRegistre !== "" && a.paysRegistre !== b.paysRegistre) return FACTEUR_CONTENANCE;
   return 1;
 }
 
