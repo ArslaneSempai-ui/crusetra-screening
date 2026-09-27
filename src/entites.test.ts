@@ -457,3 +457,51 @@ test("la table du pinyin : une lecture par code de U+4E00 à U+9FFF, son emprein
   assert.equal(pinyinDe("一"), "yi");
   assert.equal(pinyinDe("A"), "A", "hors table, un caractère traverse inchangé");
 });
+
+test("tour 5, voie locale : connaissements d'Asie du Sud-Est, zones franches, filiation, succursale, vieille orthographe", () => {
+  const porte = (brut: string, attendu: string) => assert.ok(variantes(brut).includes(attendu), `${brut} → ${variantes(brut).join(" | ")}`);
+  porte("SHIPPER: PT PKS RIMBA KENARI, DUMAI - CPO IN BULK", "PT PKS RIMBA KENARI");
+  assert.ok(variantes("NOTIFY: MAHTAB SEPEHR BAZARGANI CO. BANDAR ABBAS").some((v) => /BAZARGANI CO\.?$/.test(v)), "la ville derrière « CO. » est une adresse");
+  porte("NOTIFY PARTY: ORCHID RIDGE COMMODITIES DMCC, JLT, DUBAI", "ORCHID RIDGE COMMODITIES DMCC");
+  porte("TOWING VESSEL: TB. KENARI SAMUDERA-5", "TB. KENARI SAMUDERA-5");
+  porte("VESSEL/VOY: MERANTI SUNRISE V.2409S", "MERANTI SUNRISE");
+  porte("OCEAN VESSEL: CORAL KEMUNING PORT OF LOADING: DUMAI", "CORAL KEMUNING");
+  porte("SHIPPED ON BOARD MV RONG YUAN TAI 16 AT FANGCHENG", "MV RONG YUAN TAI 16");
+  porte("BARGE BAHARI MUTIARA 12 (HULL NO. BM-12)", "BARGE BAHARI MUTIARA 12");
+  porte("Kenanga Pacific Sdn. Bhd. - Penang Branch", "Kenanga Pacific Sdn. Bhd.");
+  porte("CONSIGNEE: KHALID YOUSUF BLDG MATERIALS TRDG CO LLC DEIRA", "KHALID YOUSUF BLDG MATERIALS TRDG CO LLC");
+  /* les préfixes et les TYPES de navires : TB et TUG écrivent le même remorqueur, un remorqueur n'est pas sa barge */
+  assert.ok(score("TB KENARI SAMUDERA 5", "TUG KENARI SAMUDERA 5") >= 0.81);
+  assert.ok(score("KM SINAR BAHARI 27", "F/V SINAR BAHARI 27") >= 0.81);
+  assert.ok(score("BG BAHARI MUTIARA 12", "BARGE BAHARI MUTIARA 12") >= 0.81);
+  assert.ok(score("BARGE THONG CHAROEN 9", "TUG THONG CHAROEN 9") < 0.81);
+  /* les formes : zones franches (deux zones, deux dépôts), UD et CV indonésiens, SPC en toutes lettres */
+  assert.ok(score("Silver Dune Logistics FZCO", "Silver Dune Logistics DMCC") < 0.81);
+  assert.equal(score("Silver Dune Logistics FZE", "Silver Dune Logistics FZCO"), 1, "deux formes d'une même zone");
+  assert.ok(score("UD Besi Tua Sumber Rejeki", "Usaha Dagang Besi Tua Sumber Rejeki") >= 0.81);
+  assert.ok(score("CV Cahaya Bintang Timur Jaya", "Commanditaire Vennootschap Cahaya Bintang Timur Jaya") >= 0.81);
+  assert.ok(score("Wadi Sahtan Trading & Contracting SPC", "WADI SAHTAN TRADING & CONTRACTING SOLE PROPRIETOR COMPANY") >= 0.81);
+  /* les abréviations et les civilités malaises */
+  assert.ok(score("Kenanga-Haesol Marine JV Sdn. Bhd.", "KENANGA HAESOL MARINE JOINT VENTURE SDN BHD") >= 0.81);
+  assert.ok(score("Meenakshi Sundaram Group Holdings Pte. Ltd.", "Meenakshi Sundaram Grp Hldgs Pte Ltd") >= 0.81);
+  assert.ok(score("Dar Al Noor General Trading L.L.C.", "Dar Alnoor Gen Trdg LLC") >= 0.81);
+  assert.ok(score("Mohd Faizal Frozen Food Supply", "Mohamad Faizal Frozen Food Supply") >= 0.81);
+  /* les mots génériques malais et l'arabe romanisé des marchandises */
+  assert.ok(score("Kilang Beras Seri Padi Sdn. Bhd.", "Seri Padi Rice Mill Sdn Bhd") >= 0.81);
+  assert.ok(score("PT Pabrik Kelapa Sawit Rimba Kenari", "PT Rimba Kenari Palm Oil Mill") >= 0.81);
+  assert.ok(score("Kilang Isirong Sawit Pelangi Emas Sdn. Bhd.", "Pelangi Emas Palm Kernel Mill Sdn Bhd") >= 0.81);
+  assert.ok(score("Syarikat Getah Bukit Tembusu Sdn. Bhd.", "Bukit Tembusu Rubber Company Sdn Bhd") >= 0.81);
+  assert.ok(score("Sunbulat Al Khair Rice Trading L.L.C.", "Sunbulat Al Khair Li Tijarat Al Aruz L.L.C.") >= 0.81);
+  assert.ok(score("Công ty Cổ phần Cao su Bình Lộc Hưng", "Binh Loc Hung Rubber Joint Stock Company") >= 0.81);
+  /* la filiation : omise d'un côté, rien ne se perd ; « Bint » face à « Ibn », deux personnes */
+  const fr = frequencesDe([["alpha holdings"], ["beta trading"], ["gamma shipping"], ["delta industries"], ["epsilon logistics"],
+    ["zeta group"], ["eta marine"], ["theta foods"], ["iota metals"], ["kappa trading company"]]);
+  assert.ok(scoreNoms(fr, "Yusof bin Abdullah Hardware Enterprise", "Yusof Abdullah Hardware Enterprise") >= 0.81);
+  assert.ok(scoreNoms(fr, "Bint Al Nakhuda", "Ibn Al Nakhuda") < 0.81);
+  assert.ok(score("Fatima Bint Obaid Ladies Tailoring & Textiles Trading", "Fatma Bnt Obaid Ladies Tailoring and Textiles Trading") >= 0.81);
+  /* la succursale : X - Penang Branch est X, mais pas X (Penang) Sdn. Bhd. */
+  assert.ok(score("Kenanga Pacific Sdn. Bhd. - Penang Branch", "Kenanga Pacific Sdn. Bhd.") >= 0.81);
+  assert.ok(score("Kenanga Pacific Sdn. Bhd. - Penang Branch", "Kenanga Pacific (Penang) Sdn. Bhd.") < 0.81);
+  /* la vieille orthographe indonésienne */
+  assert.ok(score("PT Tjahaja Soerya Kentjana (Surabaya)", "PT Cahaya Surya Kencana Surabaya") >= 0.81);
+});
