@@ -1132,7 +1132,10 @@ test("tour 7, japonais : G.K., Y.K., Kabushiki Gaisha ; la numérotation dai ; M
   assert.ok(score("Aoyagi Seisakusho (アオヤギ製作所) Co., Ltd.", "Aoyagi Seisakusho Co., Ltd.") >= 0.81, "mesuré à 0,800 avant");
   assert.ok(score("Aoyagi Seisakusho (アオヤギ製作所) Co., Ltd.", "Aoyama Seisakusho Co., Ltd.") < 0.81);
   assert.ok(variantes("(株)Kuramochi Kōgyō").includes("Kuramochi Kōgyō"));
-  assert.ok(!variantes("Kabushiki Kaisha Sawamura (Sawamura Corporation)").includes("Sawamura Corporation"), "une parenthèse latine n'est pas une écriture native");
+  /* une parenthèse latine n'est pas une écriture native, mais celle-ci porte une forme : c'est le second nom de la même
+     société (voie hispanique du même tour, « Marisquería El Puerto (Pescados Anzures, S. de R.L.) ») */
+  assert.ok(variantes("Kabushiki Kaisha Sawamura (Sawamura Corporation)").includes("Sawamura Corporation"));
+  assert.ok(score("Kabushiki Kaisha Sawamura (Sawamura Corporation)", "Sawamura Corporation") >= 0.81);
   /* les résidus : l'adresse derrière 〒, le numéro de société en tête ou entre parenthèses */
   assert.ok(variantes("Kimura Sōko Kabushiki Kaisha 〒105-0022 東京都港区海岸1-2-3").includes("Kimura Sōko Kabushiki Kaisha"));
   assert.ok(score("Kimura Sōko Kabushiki Kaisha 〒105-0022 東京都港区海岸1-2-3", "Kimura Soko Co., Ltd.") >= 0.81);
