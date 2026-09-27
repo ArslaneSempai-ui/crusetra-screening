@@ -68,11 +68,12 @@ v11 on the nine training sets: strong 1284/1370 with 6/1370 false alerts (v10: 1
 
 Reading of v14 (blind set 12, judged 2026-09-28). The strong level found 149/200 with 34/200 false alerts, twice
 v13's rate. Of the thirty-four, twenty-three are a single letter changed inside a proper name with everything else
-identical (Mittal / Mital, Kennedy / Kennedey, McAllister / McAlister, Radcliffe / Ratcliffe, Kulkarni / Kulkani), which
-this author labels "different firm" while the same set labels "Harrington Miming / Mining" a typo of one firm and
+identical (Mittal / Mital, Kennedy / Kennedey, McAllister / McAlister, Radcliffe / Ratcliffe, Kulkarni / Kulkani). Our
+own brief invited it: it said "one letter changed in a vessel or shop name is another vessel or another shop", and the
+author read every firm as a shop, while the same set labels "Harrington Miming / Mining" a typo of one firm and the
 earlier authors labelled one letter in a company name a typo throughout. A screening tool must raise Mital against
-Mittal: the officer decides. The rate at strong therefore measures the author's convention as much as the method, and
-the brief of the next blind author states the convention explicitly: one letter changed inside a proper name is the
-same name misspelt, except in a vessel name; two real words (Coal / Coke, Cypress / Cyprus, Chiang Mai / Chiang Rai)
+Mittal: the officer decides. The rate at strong therefore measures the brief's convention as much as the method, and
+the brief of the next blind author corrects it: one letter changed inside a company's proper name is the same name
+misspelt (match), except in a vessel name; two real words (Coal / Coke, Cypress / Cyprus, Chiang Mai / Chiang Rai)
 are two names. The remaining eleven (plurals of trade words without a vessel prefix, Bros. / Bro., Supplies /
 Suppliers, Maghreb spellings held apart by convention) go to round nine's known list with the fifty-one misses.
