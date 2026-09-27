@@ -752,3 +752,32 @@ test("tour 5 : le tamoul se lit (abugida), son sanskrit se replie au crédit, et
   assert.ok(score("ஸ்ரீ அன்னபூரணி அரிசி வியாபாரிகள்", "Sri Annapoorani Spice Merchants") < 0.81);
   assert.ok(score("மீனாட்சி சுந்தரம் க்ரூப் ஹோல்டிங்ஸ் பிரைவேட் லிமிடெட்", "Meenakshi Sundaram Group Holdings Sdn. Bhd.") < 0.81, "Private Limited contre Sdn. Bhd. : deux pays");
 });
+
+test("tour 6, voie locale : résidus de banque et de douane, immatriculations, indicatifs, numéros de registre, swahili, OCR courte", () => {
+  const porte = (brut: string, attendu: string) => assert.ok(variantes(brut).includes(attendu), `${brut} → ${variantes(brut).join(" | ")}`);
+  porte("Benue Sesame Seed Export Enterprises Limited REF LC0193045", "Benue Sesame Seed Export Enterprises Limited");
+  porte("Plateau Tin and Columbite Mining Enterprises Limited A/C 331276", "Plateau Tin and Columbite Mining Enterprises Limited");
+  porte("KADUNA TEXTILE MANUFACTURING INDUSTRIES PLC-ACCT BENEF", "KADUNA TEXTILE MANUFACTURING INDUSTRIES PLC");
+  porte(":50:BALOGUN VENTURES LAGOS LIMITED", "BALOGUN VENTURES LAGOS LIMITED");
+  porte("TUG APAPA MUSCLE CS:5NCT7", "TUG APAPA MUSCLE");
+  porte("FV ATLANTIC EGRET (GHA-1893)", "FV ATLANTIC EGRET");
+  porte("Warri Frozen Fish and Seafood Export Enterprises Limited45 Marina Road Warri", "Warri Frozen Fish and Seafood Export Enterprises Limited");
+  porte("Okeke, Chidi Building Materials Enterprises", "Chidi Okeke Building Materials Enterprises");
+  assert.ok(variantes("Tesfaye Bekele Trading PLC (Amharic: ተስፋዬ በቀለ ንግድ)").includes("Tesfaye Bekele Trading PLC"));
+  /* le numéro de registre est une marque : deux numéros différents sont deux dépôts, un seul côté numéroté est le même nom */
+  assert.equal(analyserEntite("Adeyemi Agro Commodities Nigeria Limited (RC 884213)").registre, "884213");
+  assert.equal(analyserEntite("Botha Handel en Vervoer (Pty) Ltd (Reg. No. 2014/117230/07)").registre, "201411723007");
+  assert.equal(analyserEntite("Rheinische Rheinstahl Stahlrohr Import-Export GmbH (HRB 33871, Amtsgericht Köln)").registre, "33871");
+  assert.ok(score("Nwosu Farm Produce & Sons Limited (RC 458821)", "Nwosu Farm Produce & Sons Limited (RC 488521)") < 0.81);
+  assert.ok(score("Nwosu Farm Produce & Sons Limited (RC 458821)", "Nwosu Farm Produce & Sons Limited") >= 0.81);
+  assert.ok(score("Naidoo Freight Logistics (Pty) Ltd (Reg. No. 2013/098765/07)", "Naidoo Freight Logistics (Pty) Ltd") >= 0.81);
+  /* le swahili et le registre nigérian */
+  const fr = frequencesDe([["alpha holdings"], ["beta trading"], ["gamma shipping"], ["delta industries"], ["epsilon logistics"],
+    ["zeta group"], ["eta marine"], ["theta foods"], ["iota metals"], ["kappa trading company"]]);
+  assert.ok(scoreNoms(fr, "Usafirishaji wa Bahari Kenya Limited", "Usafirishaji Bahari Kenya Limited") >= 0.81);
+  assert.equal(preparerEntite("Okafor Integrated Resources Nig. Ltd"), "okafor integrated resources nigeria");
+  /* l'OCR d'un cachet : trois lettres et un 0 final, des chiffres au milieu et à la fin */
+  assert.equal(preparerEntite("CH1NEDU AUT0 PARTS LTD").replace(/[^a-z ]/g, "?"), "ch?nedu auto parts");
+  assert.equal(preparerEntite("05EI ELECTR0NIC5 MART"), "osei electronics mart");
+  assert.equal(preparerEntite("TCB1207 Holdings"), "tcb 1207 holdings", "un numéro reste un numéro");
+});
