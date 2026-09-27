@@ -10,18 +10,12 @@
  */
 import { readFileSync } from "node:fs";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
-import { lireManifeste, lireListe, SOURCES } from "./listes.ts";
+import { frequencesDesListes } from "./frequences.ts";
 import { validerPaires, type PaireEtiquetee } from "./measure.ts";
 import {
   frequencesDe, palierEntite, mesurerJeux, choisirSeuils, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, type Frequences,
 } from "./entites.ts";
 
-export function frequencesDesListes(): Frequences {
-  const m = lireManifeste();
-  if (!m) return FREQUENCES_UNIFORMES;
-  const dispo = SOURCES.filter((s) => m.listes.some((l) => l.source === s.source && l.disponible));
-  return frequencesDe(dispo.flatMap((s) => lireListe(s.source)).map((e) => [e.nom, ...e.alias]));
-}
 
 function principal(): void {
   refuserDrapeauxInconnus(["--detail", "--sans-listes"]);
