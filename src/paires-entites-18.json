@@ -1,0 +1,2407 @@
+{
+  "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+  "provenance": "blind test set #17, authored on 2026-09-29 by a separate agent (a Trieste freight forwarder and Belgrade bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the seventeen earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v19 (entites.ts 42bd47ca…, cribler.ts 66aac8b8…, ecritures.ts bdd60326…): strong 0.81 found 169/200 [79-89 %] with 28/200 false alerts [10-19 %]; possible 0.80 found 181/200 [86-94 %] with 48/200 [19-30 %]. Studied afterwards and promoted to training set 18 on 2026-09-28, so it no longer measures anything held out.",
+  "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+  "paires": [
+    {
+      "a": "Adriatica Legnami S.r.l.",
+      "b": "Adriatica Legnami Srl",
+      "verdict": "match",
+      "nature": "legal-form-abbreviation"
+    },
+    {
+      "a": "Carnica Trasporti S.n.c. di Bront Livio & C.",
+      "b": "Carnica Trasporti Snc di Bront Livio e C.",
+      "verdict": "match",
+      "nature": "legal-form-abbreviation"
+    },
+    {
+      "a": "Tergestina Spedizioni S.p.A., Via del Molo 12, Trieste, P.IVA 00812340328",
+      "b": "Tergestina Spedizioni SpA, Via del Molo 12, Trieste, P.I. 00812340328",
+      "verdict": "match",
+      "nature": "punctuation-spacing-iva"
+    },
+    {
+      "a": "Isontina Import Export S.r.l.",
+      "b": "Isontina Import Export S.r.l., Filiale di Capodistria",
+      "verdict": "match",
+      "nature": "branch-vs-head-office"
+    },
+    {
+      "a": "Alpina Trasporti S.a.s. di Qualizza Renzo & C.",
+      "b": "Alpina Trasporti S.a.s. di Qualizza Renzo & C., Unita locale Gorizia",
+      "verdict": "match",
+      "nature": "branch-vs-head-office"
+    },
+    {
+      "a": "Ditta Cecotti Adriano S.r.l.",
+      "b": "Ditta Cecotti Adriano Srl, sede secondaria Udine",
+      "verdict": "match",
+      "nature": "branch-vs-head-office"
+    },
+    {
+      "a": "Mittal Legno S.r.l.",
+      "b": "Mital Legno S.r.l.",
+      "verdict": "match",
+      "nature": "misspelling-one-letter-proper-name"
+    },
+    {
+      "a": "Radcliffe Adriatica S.p.A.",
+      "b": "Radclife Adriatica S.p.A.",
+      "verdict": "match",
+      "nature": "misspelling-one-letter-proper-name"
+    },
+    {
+      "a": "Petris Costruzioni S.n.c.",
+      "b": "Petriss Costruzioni S.n.c.",
+      "verdict": "match",
+      "nature": "misspelling-one-letter-proper-name"
+    },
+    {
+      "a": "Kalcic Trgovina d.o.o.",
+      "b": "Kalčić Trgovina d.o.o.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Fabjan Prevozi d.o.o.",
+      "b": "Fabjan Prevozi d. o. o.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form"
+    },
+    {
+      "a": "Škerlj Trgovina in Storitve d.o.o.",
+      "b": "Skerlj Trgovina in Storitve d.o.o.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Jadranska Plovba d.o.o.",
+      "b": "Navigazione Adriatica d.o.o.",
+      "verdict": "match",
+      "nature": "bilingual-translation-name"
+    },
+    {
+      "a": "Obalna Špedicija d.o.o.",
+      "b": "Spedizione Costiera d.o.o.",
+      "verdict": "match",
+      "nature": "bilingual-translation-name"
+    },
+    {
+      "a": "Kraška Avtoprevozništvo d.d.",
+      "b": "Autotrasporti del Carso d.d.",
+      "verdict": "match",
+      "nature": "bilingual-translation-name"
+    },
+    {
+      "a": "Zanier Impianti Società Cooperativa",
+      "b": "Zanier Impianti Soc. Coop.",
+      "verdict": "match",
+      "nature": "legal-form-abbreviation-coop"
+    },
+    {
+      "a": "Cooperativa Agricola Comelli Società Cooperativa a r.l.",
+      "b": "Coop. Agricola Comelli Soc. Coop. a r.l.",
+      "verdict": "match",
+      "nature": "legal-form-abbreviation-coop"
+    },
+    {
+      "a": "Bulfon Trasporti S.n.c. di Bulfon Mario e Figli",
+      "b": "Bulfon Trasporti S.r.l., gia S.n.c. di Bulfon Mario e Figli",
+      "verdict": "match",
+      "nature": "transformation-continuity"
+    },
+    {
+      "a": "Molaro Legnami S.a.s. di Molaro Elio & C.",
+      "b": "Molaro Legnami S.r.l., trasformata da S.a.s. di Molaro Elio & C.",
+      "verdict": "match",
+      "nature": "transformation-continuity"
+    },
+    {
+      "a": "MARCUZZI SPEDIZIONI S.R.L. VIA CARSO 8 TRIESTE",
+      "b": "Marcuzzi Spedizioni S.r.l., Via Carso 8, Trieste",
+      "verdict": "match",
+      "nature": "registry-vs-invoice-formatting"
+    },
+    {
+      "a": "DITTA DRECOGNA F.LLI S.N.C. GORIZIA",
+      "b": "Ditta Drecogna F.lli S.n.c., Gorizia",
+      "verdict": "match",
+      "nature": "registry-vs-invoice-formatting"
+    },
+    {
+      "a": "Hrastnik Gradbeništvo d.o.o., MŠ 5834219000",
+      "b": "Hrastnik Gradbenistvo d.o.o., maticna stevilka 5834219000",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Pregelj Trgovina d.o.o.",
+      "b": "Pregel Trgovina d.o.o.",
+      "verdict": "match",
+      "nature": "misspelling-one-letter-proper-name"
+    },
+    {
+      "a": "Rupnik Transport in Logistika d.o.o.",
+      "b": "Rupnik Transport in Logistika, d. o. o.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form"
+    },
+    {
+      "a": "Sinožić Ribolov d.o.o.",
+      "b": "Sinozic Ribolov d.o.o.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Grubiša Nekretnine d.o.o.",
+      "b": "Grubisa Nekretnine, d.o.o.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Bassanese Serramenti S.r.l., Via Istria 4, Trieste",
+      "b": "Bassanese Serramenti Srl,ViaIstria4,Trieste",
+      "verdict": "match",
+      "nature": "address-glued-ocr"
+    },
+    {
+      "a": "Delton Impianti Elettrici S.n.c.",
+      "b": "Delton Impianti Elettrici S.n.c., filiale di Muggia",
+      "verdict": "match",
+      "nature": "branch-vs-head-office"
+    },
+    {
+      "a": "Zorman Kamnoseštvo d.o.o.",
+      "b": "Zorman Kamnosestvo, d.o.o.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Bevk Mizarstvo d.o.o.",
+      "b": "Bevk Mizarstvo d.o.o., poslovna enota Sežana",
+      "verdict": "match",
+      "nature": "branch-vs-head-office"
+    },
+    {
+      "a": "F.lli Pittino S.n.c. di Pittino Aldo e Bruno",
+      "b": "Fratelli Pittino S.n.c. di Pittino Aldo e Bruno",
+      "verdict": "match",
+      "nature": "abbreviation-expanded"
+    },
+    {
+      "a": "Comm. Bront Silvano S.a.s.",
+      "b": "Commendator Bront Silvano S.a.s.",
+      "verdict": "match",
+      "nature": "abbreviation-expanded"
+    },
+    {
+      "a": "Kavčič Prevozi d.d.",
+      "b": "Kavcic Prevozi, d.d.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Adriatica Serramenti S.p.A., P.IVA IT00812340328",
+      "b": "ADRIATICA SERRAMENTI SPA, PARTITA IVA 00812340328",
+      "verdict": "match",
+      "nature": "registry-vs-invoice-formatting"
+    },
+    {
+      "a": "Impresa Cecotti & Bront S.n.c.",
+      "b": "Impresa Cecotti e Bront S.n.c.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form"
+    },
+    {
+      "a": "Comelli Agricola Soc.Coop.",
+      "b": "Comelli Agricola Società Cooperativa",
+      "verdict": "match",
+      "nature": "legal-form-abbreviation-coop"
+    },
+    {
+      "a": "Qualizza Impianti Termoidraulici S.a.s. di Qualizza R.",
+      "b": "Qualizza Impianti Termoidraulici S.a.s. di Qualizza Renzo",
+      "verdict": "match",
+      "nature": "abbreviation-expanded"
+    },
+    {
+      "a": "Zanutti Trasporti Internazionali S.r.l.",
+      "b": "Zanuti Trasporti Internazionali S.r.l.",
+      "verdict": "match",
+      "nature": "misspelling-one-letter-proper-name"
+    },
+    {
+      "a": "Kocjančič Gostinstvo d.o.o.",
+      "b": "Kocjancic Gostinstvo, d.o.o.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Špacapan Vinarstvo d.o.o.",
+      "b": "Spacapan Vinarstvo d.o.o.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Ditta Cecotti Import Export S.r.l.",
+      "b": "Ditta Comelli Import Export S.r.l.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Isontina Import Export S.r.l.",
+      "b": "Isontina Import Export d.o.o.",
+      "verdict": "different",
+      "nature": "different-country-subsidiary"
+    },
+    {
+      "a": "Alpina Trasporti S.a.s. di Qualizza Renzo & C.",
+      "b": "Alpina Trasporti S.a.s. di Petris Renzo & C.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Adriatica Legnami S.r.l.",
+      "b": "Adriatica Metalli S.r.l.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Carnica Trasporti S.n.c. di Bront Livio & C.",
+      "b": "Carnica Trasporti S.n.c. di Molaro Livio & C.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Kraška Avtoprevozništvo d.d.",
+      "b": "Notranjska Avtoprevozništvo d.d.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Obalna Špedicija d.o.o.",
+      "b": "Soška Špedicija d.o.o.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Jadranska Plovba d.o.o.",
+      "b": "Jadranska Ribolov d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Hrastnik Gradbeništvo d.o.o.",
+      "b": "Rupnik Gradbeništvo d.o.o.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Pregelj Trgovina d.o.o.",
+      "b": "Kavčič Trgovina d.o.o.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Grubiša Nekretnine d.o.o.",
+      "b": "Sirotić Nekretnine d.o.o.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Zorman Kamnoseštvo d.o.o.",
+      "b": "Fabjan Kamnoseštvo d.o.o.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Bevk Mizarstvo d.o.o.",
+      "b": "Bevk Kovaštvo d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "F.lli Pittino S.n.c. di Pittino Aldo e Bruno",
+      "b": "F.lli Pittino S.n.c. di Pittino Elio e Renzo",
+      "verdict": "different",
+      "nature": "two-word-difference"
+    },
+    {
+      "a": "Comm. Bront Silvano S.a.s.",
+      "b": "Comm. Drecogna Silvano S.a.s.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Zanier Impianti Società Cooperativa",
+      "b": "Zanier Servizi Società Cooperativa",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Comelli Agricola Soc. Coop.",
+      "b": "Bulfon Agricola Soc. Coop.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Adriatica Serramenti S.p.A.",
+      "b": "Istriana Serramenti S.p.A.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Tergestina Spedizioni S.p.A.",
+      "b": "Tergestina Costruzioni S.p.A.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Delton Impianti Elettrici S.n.c.",
+      "b": "Delton Impianti Idraulici S.n.c.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Bassanese Serramenti S.r.l.",
+      "b": "Delton Serramenti S.r.l.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Mittal Legno S.r.l.",
+      "b": "Mistral Legno S.r.l.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Radcliffe Adriatica S.p.A.",
+      "b": "Radcliffe Istriana S.p.A.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Petris Costruzioni S.n.c.",
+      "b": "Petris Demolizioni S.n.c.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Kalčić Trgovina d.o.o.",
+      "b": "Kalčić Prevozi d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Škerlj Trgovina in Storitve d.o.o.",
+      "b": "Škerlj Gradnja in Storitve d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Rupnik Transport in Logistika d.o.o.",
+      "b": "Rupnik Turizem in Logistika d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Sinožić Ribolov d.o.o.",
+      "b": "Dobrić Ribolov d.o.o.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Kocjančič Gostinstvo d.o.o.",
+      "b": "Kocjančič Trgovina d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Špacapan Vinarstvo d.o.o.",
+      "b": "Špacapan Sadjarstvo d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Kavčič Prevozi d.d.",
+      "b": "Zorman Prevozi d.d.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Bulfon Trasporti S.n.c. di Bulfon Mario e Figli",
+      "b": "Bulfon Trasporti S.n.c. di Drecogna Mario e Figli",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Comelli Agricola Soc. Coop.",
+      "b": "Comelli Silvicola Soc. Coop.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Isontina Import Export S.r.l.",
+      "b": "Timavo Import Export S.r.l.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Carnica Trasporti S.n.c. di Bront Livio & C.",
+      "b": "Giulia Trasporti S.n.c. di Bront Livio & C.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Alpina Trasporti S.a.s. di Qualizza Renzo & C.",
+      "b": "Dolomiti Trasporti S.a.s. di Qualizza Renzo & C.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Grubiša Nekretnine d.o.o.",
+      "b": "Grubiša Gradbeništvo d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Fabjan Prevozi d.o.o.",
+      "b": "Fabjan Ribištvo d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Hrastnik Gradbeništvo d.o.o.",
+      "b": "Hrastnik Kamnoseštvo d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Pregelj Trgovina d.o.o.",
+      "b": "Pregelj Gostinstvo d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Dunav Trgovina d.o.o.",
+      "b": "Дунав Трговина д.о.о.",
+      "verdict": "match",
+      "nature": "cyrillic-latin-transliteration"
+    },
+    {
+      "a": "Moravska Industrija a.d.",
+      "b": "Моравска Индустрија а.д.",
+      "verdict": "match",
+      "nature": "cyrillic-latin-transliteration"
+    },
+    {
+      "a": "Sava Logistika d.o.o.",
+      "b": "САВА ЛОГИСТИКА Д.О.О.",
+      "verdict": "match",
+      "nature": "cyrillic-latin-transliteration"
+    },
+    {
+      "a": "Timok Prevoz d.o.o.",
+      "b": "Тимок Превоз д.о.о.",
+      "verdict": "match",
+      "nature": "cyrillic-latin-transliteration"
+    },
+    {
+      "a": "Đorđević Trans d.o.o.",
+      "b": "Djordjevic Trans d.o.o.",
+      "verdict": "match",
+      "nature": "cyrillic-latin-transliteration"
+    },
+    {
+      "a": "Nikolić Špedicija d.o.o.",
+      "b": "Nikolic Spedicija d.o.o.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Jadran Brodogradnja d.d.",
+      "b": "Jadran Brodogradnja, d. d.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form"
+    },
+    {
+      "a": "Zagorje Prijevoz d.o.o.",
+      "b": "Zagorje Prijevoz d.o.o., podružnica Split",
+      "verdict": "match",
+      "nature": "branch-vs-head-office"
+    },
+    {
+      "a": "Bosna Trgovina d.o.o.",
+      "b": "Bosna Trgovina d.o.o., poslovna jedinica Mostar",
+      "verdict": "match",
+      "nature": "branch-vs-head-office"
+    },
+    {
+      "a": "Neretva Transport d.o.o.",
+      "b": "Neretva Transport, d.o.o.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form"
+    },
+    {
+      "a": "Hodžić Gradnja d.o.o.",
+      "b": "Hodzic Gradnja d.o.o.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Selimović Import d.o.o.",
+      "b": "Selimovic Import d.o.o.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Kovács Béla Kft.",
+      "b": "Béla Kovács Kft.",
+      "verdict": "match",
+      "nature": "hungarian-name-order"
+    },
+    {
+      "a": "Tisza Kereskedelmi Kft.",
+      "b": "Tisza Kereskedelmi Korlátolt Felelősségű Társaság",
+      "verdict": "match",
+      "nature": "abbreviation-expanded"
+    },
+    {
+      "a": "Duna Szállítmányozási Zrt.",
+      "b": "Duna Szallitmanyozasi Zrt.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Kovács és Fiai Bt.",
+      "b": "Kovacs es Fiai Bt.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Nagy István Kft.",
+      "b": "István Nagy Kft.",
+      "verdict": "match",
+      "nature": "hungarian-name-order"
+    },
+    {
+      "a": "Horváth Zoltán Bt.",
+      "b": "Horvath Zoltan Bt.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Dunărea Comerț S.R.L.",
+      "b": "Dunarea Comert S.R.L.",
+      "verdict": "match",
+      "nature": "romanian-diacritics-dropped"
+    },
+    {
+      "a": "Rădulescu Import S.R.L.",
+      "b": "Radulescu Import S.R.L.",
+      "verdict": "match",
+      "nature": "romanian-diacritics-dropped"
+    },
+    {
+      "a": "Mureșul Transport S.A.",
+      "b": "Muresul Transport S.A.",
+      "verdict": "match",
+      "nature": "romanian-diacritics-dropped"
+    },
+    {
+      "a": "Constanța Marfă S.R.L.",
+      "b": "Constanta Marfa S.R.L.",
+      "verdict": "match",
+      "nature": "romanian-diacritics-dropped"
+    },
+    {
+      "a": "Popescu & Fii S.R.L.",
+      "b": "Popescu si Fii S.R.L.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form"
+    },
+    {
+      "a": "Ionescu Comert S.R.L.",
+      "b": "Ionescu Comerț S.R.L.",
+      "verdict": "match",
+      "nature": "romanian-diacritics-dropped"
+    },
+    {
+      "a": "Дунав Търговия ООД",
+      "b": "Dunav Targovia OOD",
+      "verdict": "match",
+      "nature": "cyrillic-latin-transliteration"
+    },
+    {
+      "a": "Марица Транспорт АД",
+      "b": "Maritsa Transport AD",
+      "verdict": "match",
+      "nature": "cyrillic-latin-transliteration"
+    },
+    {
+      "a": "Иванов Логистика ЕООД",
+      "b": "Ivanov Logistika EOOD",
+      "verdict": "match",
+      "nature": "cyrillic-latin-transliteration"
+    },
+    {
+      "a": "Петров Търговия ООД",
+      "b": "Petrov Targovia OOD",
+      "verdict": "match",
+      "nature": "cyrillic-latin-transliteration"
+    },
+    {
+      "a": "Георгиев Строителство АД",
+      "b": "Georgiev Stroitelstvo AD",
+      "verdict": "match",
+      "nature": "cyrillic-latin-transliteration"
+    },
+    {
+      "a": "Stanković Metali d.o.o.",
+      "b": "Stankovic Metali d.o.o.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Jovanović Osiguranje a.d.",
+      "b": "Jovanovic Osiguranje a.d.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Babić Prijevoz d.o.o.",
+      "b": "Babic Prijevoz d.o.o.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Kovačić Gradnja d.o.o.",
+      "b": "Kovacic Gradnja d.o.o.",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Mital Group d.o.o.",
+      "b": "Mittal Group d.o.o.",
+      "verdict": "match",
+      "nature": "misspelling-one-letter-proper-name"
+    },
+    {
+      "a": "Radclife Trgovina a.d.",
+      "b": "Radcliffe Trgovina a.d.",
+      "verdict": "match",
+      "nature": "misspelling-one-letter-proper-name"
+    },
+    {
+      "a": "Tisza Kereskedelmi Kft., PIB 987654321",
+      "b": "Tisza Kereskedelmi Kft. PIB: 987654321",
+      "verdict": "match",
+      "nature": "punctuation-spacing-registry-id"
+    },
+    {
+      "a": "Dunav Trgovina d.o.o., MB 20345678",
+      "b": "Dunav Trgovina d.o.o. maticni broj 20345678",
+      "verdict": "match",
+      "nature": "punctuation-spacing-registry-id"
+    },
+    {
+      "a": "Neretva Transport d.o.o., OIB 34567890123",
+      "b": "Neretva Transport d.o.o. - OIB: 34567890123",
+      "verdict": "match",
+      "nature": "punctuation-spacing-registry-id"
+    },
+    {
+      "a": "Constanța Marfă S.R.L., CUI RO12345678",
+      "b": "Constanta Marfa SRL CUI 12345678",
+      "verdict": "match",
+      "nature": "punctuation-spacing-registry-id"
+    },
+    {
+      "a": "Zagorje Prijevoz d.o.o., EUID HRSR.080987654321",
+      "b": "Zagorje Prijevoz d.o.o. - EUID: HRSR.080987654321",
+      "verdict": "match",
+      "nature": "punctuation-spacing-registry-id"
+    },
+    {
+      "a": "Dunav Trgovina d.o.o.",
+      "b": "Dunav Prevoz d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Moravska Industrija a.d.",
+      "b": "Timočka Industrija a.d.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Sava Logistika d.o.o.",
+      "b": "Dunav Logistika d.o.o.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Timok Prevoz d.o.o.",
+      "b": "Timok Gradnja d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Đorđević Trans d.o.o.",
+      "b": "Jovanović Trans d.o.o.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Nikolić Špedicija d.o.o.",
+      "b": "Stanković Špedicija d.o.o.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Jadran Brodogradnja d.d.",
+      "b": "Istra Brodogradnja d.d.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Zagorje Prijevoz d.o.o.",
+      "b": "Zagorje Trgovina d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Bosna Trgovina d.o.o.",
+      "b": "Neretva Trgovina d.o.o.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Neretva Transport d.o.o.",
+      "b": "Neretva Transport a.d.",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity"
+    },
+    {
+      "a": "Hodžić Gradnja d.o.o.",
+      "b": "Selimović Gradnja d.o.o.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Selimović Import d.o.o.",
+      "b": "Selimović Export d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Kovács Béla Kft.",
+      "b": "Kovács Sándor Kft.",
+      "verdict": "different",
+      "nature": "different-personal-name-hungarian-order"
+    },
+    {
+      "a": "Tisza Kereskedelmi Kft.",
+      "b": "Tisza Ipari Kft.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Duna Szállítmányozási Zrt.",
+      "b": "Tisza Szállítmányozási Zrt.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Kovács és Fiai Bt.",
+      "b": "Nagy és Fiai Bt.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Nagy István Kft.",
+      "b": "Nagy Károly Kft.",
+      "verdict": "different",
+      "nature": "different-personal-name-hungarian-order"
+    },
+    {
+      "a": "Horváth Zoltán Bt.",
+      "b": "Horváth Zoltán Kft.",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity"
+    },
+    {
+      "a": "Dunărea Comerț S.R.L.",
+      "b": "Mureșul Comerț S.R.L.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Rădulescu Import S.R.L.",
+      "b": "Constantinescu Import S.R.L.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Mureșul Transport S.A.",
+      "b": "Mureșul Turism S.A.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Constanța Marfă S.R.L.",
+      "b": "Constanța Pescuit S.R.L.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Popescu & Fii S.R.L.",
+      "b": "Ionescu & Fii S.R.L.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Ionescu Comerț S.R.L.",
+      "b": "Ionescu Construcții S.R.L.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Дунав Търговия ООД",
+      "b": "Марица Търговия ООД",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Марица Транспорт АД",
+      "b": "Марица Строителство АД",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Иванов Логистика ЕООД",
+      "b": "Петров Логистика ЕООД",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Петров Търговия ООД",
+      "b": "Георгиев Търговия ООД",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Георгиев Строителство АД",
+      "b": "Georgiev Transport AD",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Stanković Metali d.o.o.",
+      "b": "Stanković Tekstil d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Jovanović Osiguranje a.d.",
+      "b": "Nikolić Osiguranje a.d.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Babić Prijevoz d.o.o.",
+      "b": "Kovačić Prijevoz d.o.o.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Kovačić Gradnja d.o.o.",
+      "b": "Kovačić Trgovina d.o.o.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Petrović Grupa d.o.o.",
+      "b": "Nikolić Grupa d.o.o.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Radcliffe Trgovina a.d.",
+      "b": "Fairfield Trgovina a.d.",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "Tisza Kereskedelmi Kft.",
+      "b": "Tisza Vendéglátó Kft.",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "Dunav Trgovina d.o.o.",
+      "b": "Sava Trgovina d.o.o.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Neretva Transport d.o.o.",
+      "b": "Bosna Transport d.o.o.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Zagorje Prijevoz d.o.o.",
+      "b": "Istra Prijevoz d.o.o.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "Constanța Marfă S.R.L.",
+      "b": "Mureșul Marfă S.R.L.",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "MV Adria Star",
+      "b": "Adria Star",
+      "verdict": "match",
+      "nature": "prefix-mv-dropped"
+    },
+    {
+      "a": "Adria Star, Koper",
+      "b": "Adria Star",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "Istra Trader (ex Primorje Carrier)",
+      "b": "Primorje Carrier",
+      "verdict": "match",
+      "nature": "former-name-alias"
+    },
+    {
+      "a": "Kvarner Trader",
+      "b": "Jadran Star (ex Kvarner Trader)",
+      "verdict": "match",
+      "nature": "former-name-alias"
+    },
+    {
+      "a": "Koper Pioneer",
+      "b": "KOPER PIONEER",
+      "verdict": "match",
+      "nature": "case-only-difference"
+    },
+    {
+      "a": "Rijeka Express, Rijeka",
+      "b": "Rijeka Express",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "Bar Navigator",
+      "b": "Bar Navigator, Bar",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "Danube Pioneer",
+      "b": "Dunav Pionir (ex Danube Pioneer)",
+      "verdict": "match",
+      "nature": "former-name-alias"
+    },
+    {
+      "a": "Sava Star",
+      "b": "Sava Star, Novi Sad",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "Tisa Trader",
+      "b": "TISA TRADER",
+      "verdict": "match",
+      "nature": "case-only-difference"
+    },
+    {
+      "a": "Morava Glory",
+      "b": "Morava Glory, Bar",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "Dunav Princess (ex Sava Empress)",
+      "b": "Sava Empress",
+      "verdict": "match",
+      "nature": "former-name-alias"
+    },
+    {
+      "a": "Constanta Carrier",
+      "b": "Constanța Carrier",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Novi Sad Trader",
+      "b": "Novi Sad Trader, Novi Sad",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "Adriatic Feeder I",
+      "b": "Adriatic Feeder I, Koper",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "Adriatic Feeder II",
+      "b": "ADRIATIC FEEDER II",
+      "verdict": "match",
+      "nature": "case-only-difference"
+    },
+    {
+      "a": "Istra Trader",
+      "b": "Istra  Trader",
+      "verdict": "match",
+      "nature": "punctuation-spacing-only"
+    },
+    {
+      "a": "Kvarner Pioneer (ex Sisak Glory)",
+      "b": "Sisak Glory",
+      "verdict": "match",
+      "nature": "former-name-alias"
+    },
+    {
+      "a": "Bar Carrier",
+      "b": "Bar Carrier, Bar",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "Dunav Potiskivač",
+      "b": "Dunav Potiskivac",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Tisa Gurač",
+      "b": "Tisa Gurac",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped"
+    },
+    {
+      "a": "Teglenica NS-2234",
+      "b": "Teglenica NS 2234",
+      "verdict": "match",
+      "nature": "punctuation-spacing-only"
+    },
+    {
+      "a": "Barza DN-118",
+      "b": "Barza DN-118, Novi Sad",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "Moravska Zvezda (ex Dunavska Zvezda)",
+      "b": "Dunavska Zvezda",
+      "verdict": "match",
+      "nature": "former-name-alias"
+    },
+    {
+      "a": "Adria Carrier",
+      "b": "M.V. Adria Carrier",
+      "verdict": "match",
+      "nature": "prefix-mv-dropped"
+    },
+    {
+      "a": "Koper Pioneer, Koper",
+      "b": "Koper Pioneer",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "Rijeka Glory",
+      "b": "RIJEKA  GLORY",
+      "verdict": "match",
+      "nature": "punctuation-spacing-only"
+    },
+    {
+      "a": "Jadranka Trader (ex Istarka Carrier)",
+      "b": "Istarka Carrier",
+      "verdict": "match",
+      "nature": "former-name-alias"
+    },
+    {
+      "a": "Danubius 1",
+      "b": "Danubius-1",
+      "verdict": "match",
+      "nature": "punctuation-spacing-only"
+    },
+    {
+      "a": "Danube Feeder 2",
+      "b": "Danube Feeder No. 2",
+      "verdict": "match",
+      "nature": "abbreviation-expanded"
+    },
+    {
+      "a": "Constanța Feeder",
+      "b": "Constanța Feeder, Constanța",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "Sava Pioneer",
+      "b": "Sava Pioneer, Novi Sad",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "Bar Trader (ex Crnogorka)",
+      "b": "Crnogorka",
+      "verdict": "match",
+      "nature": "former-name-alias"
+    },
+    {
+      "a": "Istra Carrier",
+      "b": "ISTRA CARRIER, Koper",
+      "verdict": "match",
+      "nature": "registry-vs-afloat-formatting"
+    },
+    {
+      "a": "Morava Trader",
+      "b": "Morava  Trader",
+      "verdict": "match",
+      "nature": "punctuation-spacing-only"
+    },
+    {
+      "a": "Dunav Empress (ex Sava Duchess)",
+      "b": "Sava Duchess",
+      "verdict": "match",
+      "nature": "former-name-alias"
+    },
+    {
+      "a": "Koper Carrier",
+      "b": "Koper Carrier, Koper",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "Rijeka Pioneer",
+      "b": "M.V. Rijeka Pioneer",
+      "verdict": "match",
+      "nature": "prefix-mv-dropped"
+    },
+    {
+      "a": "Novi Sad Pusher",
+      "b": "Novi Sad Pusher, Novi Sad",
+      "verdict": "match",
+      "nature": "port-of-registry-appended"
+    },
+    {
+      "a": "Bar Feeder",
+      "b": "BAR FEEDER",
+      "verdict": "match",
+      "nature": "case-only-difference"
+    },
+    {
+      "a": "Adriatic Feeder I",
+      "b": "Adriatic Feeder II",
+      "verdict": "different",
+      "nature": "numbered-fleet-different-hull"
+    },
+    {
+      "a": "Adriatic Feeder II",
+      "b": "Adriatic Feeder III",
+      "verdict": "different",
+      "nature": "numbered-fleet-different-hull"
+    },
+    {
+      "a": "Rijeka Express 3",
+      "b": "Rijeka Express 4",
+      "verdict": "different",
+      "nature": "numeral-changed-different-hull"
+    },
+    {
+      "a": "Koper Trader",
+      "b": "Koper Traders",
+      "verdict": "different",
+      "nature": "plural-different-hull"
+    },
+    {
+      "a": "Danube Pioneer",
+      "b": "Danube Pioneers",
+      "verdict": "different",
+      "nature": "plural-different-hull"
+    },
+    {
+      "a": "Sava Star",
+      "b": "Sava Starr",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Bar Navigator",
+      "b": "Bar Navigatorr",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Istra Trader",
+      "b": "Istria Trader",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Morava Glory",
+      "b": "Morava Glori",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Dunav Princess",
+      "b": "Dunav Princes",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Novi Sad Trader",
+      "b": "Novi Sad Traider",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Constanta Carrier",
+      "b": "Constanta Carrierr",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Tisa Trader",
+      "b": "Tisza Trader",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Teglenica NS-2234",
+      "b": "Teglenica NS-2235",
+      "verdict": "different",
+      "nature": "numeral-changed-different-hull"
+    },
+    {
+      "a": "Barza DN-118",
+      "b": "Barza DN-119",
+      "verdict": "different",
+      "nature": "numeral-changed-different-hull"
+    },
+    {
+      "a": "Danubius 1",
+      "b": "Danubius 2",
+      "verdict": "different",
+      "nature": "numeral-changed-different-hull"
+    },
+    {
+      "a": "Danube Feeder 2",
+      "b": "Danube Feeder 3",
+      "verdict": "different",
+      "nature": "numeral-changed-different-hull"
+    },
+    {
+      "a": "Adria Star",
+      "b": "Adria Stars",
+      "verdict": "different",
+      "nature": "plural-different-hull"
+    },
+    {
+      "a": "Kvarner Trader",
+      "b": "Kvarner Traders",
+      "verdict": "different",
+      "nature": "plural-different-hull"
+    },
+    {
+      "a": "Jadran Star",
+      "b": "Jadran Starr",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Bar Carrier",
+      "b": "Bar Carriers",
+      "verdict": "different",
+      "nature": "plural-different-hull"
+    },
+    {
+      "a": "Rijeka Glory",
+      "b": "Rijeka Glori",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Rijeka Pioneer",
+      "b": "Rijeka Pioner",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Sava Pioneer",
+      "b": "Sava Pionner",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Koper Carrier",
+      "b": "Kopar Carrier",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Bar Feeder",
+      "b": "Bar Feedar",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Bar Trader",
+      "b": "Bar Tradder",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Jadranka Trader",
+      "b": "Jadranska Trader",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Adriatic Carrier",
+      "b": "Adriatic Voyager",
+      "verdict": "different",
+      "nature": "different-vessel-name-word"
+    },
+    {
+      "a": "Danube Duchess",
+      "b": "Danube Empress",
+      "verdict": "different",
+      "nature": "different-vessel-name-word"
+    },
+    {
+      "a": "Koper Glory",
+      "b": "Koper Legacy",
+      "verdict": "different",
+      "nature": "different-vessel-name-word"
+    },
+    {
+      "a": "Rijeka Fortune",
+      "b": "Rijeka Endeavour",
+      "verdict": "different",
+      "nature": "different-vessel-name-word"
+    },
+    {
+      "a": "Adriatic Feeder I",
+      "b": "Adriatic Feeder III",
+      "verdict": "different",
+      "nature": "numbered-fleet-different-hull"
+    },
+    {
+      "a": "Rijeka Express 3",
+      "b": "Rijeka Express 5",
+      "verdict": "different",
+      "nature": "numeral-changed-different-hull"
+    },
+    {
+      "a": "Teglenica NS-2234",
+      "b": "Teglenica NS-3234",
+      "verdict": "different",
+      "nature": "numeral-changed-different-hull"
+    },
+    {
+      "a": "Danube Feeder 2",
+      "b": "Danube Feeder 12",
+      "verdict": "different",
+      "nature": "numeral-changed-different-hull"
+    },
+    {
+      "a": "Novi Sad Pusher",
+      "b": "Novi Sad Pushers",
+      "verdict": "different",
+      "nature": "plural-different-hull"
+    },
+    {
+      "a": "Morava Trader",
+      "b": "Morava Traders",
+      "verdict": "different",
+      "nature": "plural-different-hull"
+    },
+    {
+      "a": "Sava Duchess",
+      "b": "Sava Duchesss",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "Dunavska Zvezda",
+      "b": "Dunavska Zvezdaa",
+      "verdict": "different",
+      "nature": "one-letter-changed-different-hull"
+    },
+    {
+      "a": "RODOPI MINERALS EOOD\n42 TSAR ASEN BLVD\nPLOVDIV 4000\nBULGARIA",
+      "b": "Родопи Минералс ЕООД, бул. Цар Асен 42, Пловдив 4000, България",
+      "verdict": "match",
+      "nature": "cyrillic-transliteration-swift"
+    },
+    {
+      "a": "TISZA STEEL TRADING KFT",
+      "b": "Tisza Steel Trading Kft.",
+      "verdict": "match",
+      "nature": "uppercase-only-swift"
+    },
+    {
+      "a": "SREMSKA INDUSTRI-\nJA DOO\nNOVI SAD",
+      "b": "Sremska Industrija d.o.o., Novi Sad",
+      "verdict": "match",
+      "nature": "swift-line-cut-hyphenation"
+    },
+    {
+      "a": "BANATAGROEXPORTDOO,ZRENJANIN,SRB",
+      "b": "Banat Agro Export d.o.o., Zrenjanin, Srbija",
+      "verdict": "match",
+      "nature": "address-glued-swift"
+    },
+    {
+      "a": "VOJVODINA GRAIN TRADING DOO",
+      "b": "Vojvodina Grain Trading d.o.o.",
+      "verdict": "match",
+      "nature": "uppercase-only-swift"
+    },
+    {
+      "a": "POSAVINA TIMBER DOO",
+      "b": "Posavina Timber d.o.o.",
+      "verdict": "match",
+      "nature": "uppercase-only-swift"
+    },
+    {
+      "a": "SLAVONIJA FOODS DD",
+      "b": "Slavonija Foods d.d.",
+      "verdict": "match",
+      "nature": "uppercase-only-swift"
+    },
+    {
+      "a": "MARITSA CHEMICALS AD",
+      "b": "Марица Химия АД",
+      "verdict": "match",
+      "nature": "cyrillic-transliteration-swift"
+    },
+    {
+      "a": "DEBRECEN MACHINERY ZRT",
+      "b": "Debrecen Machinery Zrt.",
+      "verdict": "match",
+      "nature": "uppercase-only-swift"
+    },
+    {
+      "a": "TIMISOARA METALS SRL",
+      "b": "Timișoara Metals S.R.L.",
+      "verdict": "match",
+      "nature": "romanian-diacritics-dropped-swift"
+    },
+    {
+      "a": "NOVI SAD PETROLEUM DOO",
+      "b": "Novi Sad Petroleum d.o.o.",
+      "verdict": "match",
+      "nature": "uppercase-only-swift"
+    },
+    {
+      "a": "RODOPI MINERALS EOOD REF LC-2024-0451",
+      "b": "Rodopi Minerals EOOD",
+      "verdict": "match",
+      "nature": "bank-reference-appended"
+    },
+    {
+      "a": "OLTENIA COMMODITIES SRL",
+      "b": "Oltenia Commodities S.R.L.",
+      "verdict": "match",
+      "nature": "legal-form-abbreviation"
+    },
+    {
+      "a": "TISZA STEEL TRADI-\nNG KFT\nDEBRECENI UT 12\nSZEGED 6720",
+      "b": "Tisza Steel Trading Kft., Debreceni ut 12, Szeged 6720",
+      "verdict": "match",
+      "nature": "swift-line-cut-hyphenation"
+    },
+    {
+      "a": "SREMSKA INDUSTRIJA DOO, MB 20981234",
+      "b": "Sremska Industrija DOO MB:20981234",
+      "verdict": "match",
+      "nature": "punctuation-spacing-registry-id"
+    },
+    {
+      "a": "BANAT AGRO EXPORT DOO",
+      "b": "Banat Agro Export, d.o.o.",
+      "verdict": "match",
+      "nature": "uppercase-only-swift"
+    },
+    {
+      "a": "MITTAL COMMODITIES SRL",
+      "b": "MITAL COMMODITIES SRL",
+      "verdict": "match",
+      "nature": "misspelling-one-letter-proper-name"
+    },
+    {
+      "a": "RADCLIFFE TRADING KFT",
+      "b": "RADCLIFE TRADING KFT",
+      "verdict": "match",
+      "nature": "misspelling-one-letter-proper-name"
+    },
+    {
+      "a": "NOVI SAD PETROLEUM DOO, PIB 104567890",
+      "b": "Novi Sad Petroleum d.o.o. - PIB 104567890",
+      "verdict": "match",
+      "nature": "punctuation-spacing-registry-id"
+    },
+    {
+      "a": "SLAVONIJAFOODSDD,OSIJEK,HR",
+      "b": "Slavonija Foods d.d., Osijek, Hrvatska",
+      "verdict": "match",
+      "nature": "address-glued-swift"
+    },
+    {
+      "a": "POSAVINA TIMBER DOO, MB 71234567",
+      "b": "Posavina Timber d.o.o. maticni broj 71234567",
+      "verdict": "match",
+      "nature": "punctuation-spacing-registry-id"
+    },
+    {
+      "a": "MARITSA CHEMICALS AD DOC CREDIT REF 88213/24",
+      "b": "Maritsa Chemicals AD",
+      "verdict": "match",
+      "nature": "bank-reference-appended"
+    },
+    {
+      "a": "DEBRECEN MACHINERY ZRT, ADOSZAM 12345678",
+      "b": "Debrecen Machinery Zrt. adoszam: 12345678",
+      "verdict": "match",
+      "nature": "punctuation-spacing-registry-id"
+    },
+    {
+      "a": "TIMISOARA METALS SRL, CUI RO23456789",
+      "b": "Timisoara Metals SRL - CUI 23456789",
+      "verdict": "match",
+      "nature": "punctuation-spacing-registry-id"
+    },
+    {
+      "a": "VOJVODINA GRAIN TRA-\nDING DOO",
+      "b": "Vojvodina Grain Trading DOO",
+      "verdict": "match",
+      "nature": "swift-line-cut-hyphenation"
+    },
+    {
+      "a": "OLTENIA COMMODITIES SRL, STR PRINCIPALA 5",
+      "b": "Oltenia Commodities S.R.L., Str. Principala 5",
+      "verdict": "match",
+      "nature": "punctuation-spacing-address"
+    },
+    {
+      "a": "RODOPI MINERALS EOOD",
+      "b": "RODOPI  MINERALS  EOOD",
+      "verdict": "match",
+      "nature": "punctuation-spacing-only"
+    },
+    {
+      "a": "TISZA STEEL TRADING KFT",
+      "b": "TISZA STEEL TRADING K.F.T.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form"
+    },
+    {
+      "a": "SREMSKA INDUSTRIJA DOO",
+      "b": "SREMSKA INDUSTRIJA D.O.O.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form"
+    },
+    {
+      "a": "BANAT AGRO EXPO-\nRT DOO\nZRENJANIN",
+      "b": "Banat Agro Export d.o.o., Zrenjanin",
+      "verdict": "match",
+      "nature": "swift-line-cut-hyphenation"
+    },
+    {
+      "a": "NOVI SAD PETROLEUM DOO",
+      "b": "Novi Sad Petroleum, DOO",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form"
+    },
+    {
+      "a": "POSAVINA TIMB-\nER DOO",
+      "b": "Posavina Timber d.o.o.",
+      "verdict": "match",
+      "nature": "swift-line-cut-hyphenation"
+    },
+    {
+      "a": "MARITSA CHEMICALS AD",
+      "b": "МАРИЦА ХИМИКАЛИ АД",
+      "verdict": "match",
+      "nature": "cyrillic-transliteration-swift"
+    },
+    {
+      "a": "DEBRECEN MACHINERY ZRT",
+      "b": "DEBRECEN MACHINERY Z.R.T.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form"
+    },
+    {
+      "a": "BANAT AGRO EXPORT DOO",
+      "b": "BANAT AGRO EXPORT D.O.O.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form"
+    },
+    {
+      "a": "MARITSA CHEMICALS AD",
+      "b": "MARITSA CHEMICALS A.D.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form"
+    },
+    {
+      "a": "VOJVODINA GRAIN TRADING DOO REF LC/2024/778",
+      "b": "Vojvodina Grain Trading d.o.o.",
+      "verdict": "match",
+      "nature": "bank-reference-appended"
+    },
+    {
+      "a": "RODOPI MINERALS EOOD",
+      "b": "RODOPI MINERALS E.O.O.D.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form"
+    },
+    {
+      "a": "POSAVINA TIMBER DOO",
+      "b": "POSAVINA TIMBER, DOO",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form"
+    },
+    {
+      "a": "NOVISADPETROLEUMDOO/LCREF20240099",
+      "b": "Novi Sad Petroleum d.o.o.",
+      "verdict": "match",
+      "nature": "address-glued-swift"
+    },
+    {
+      "a": "RODOPI MINERALS EOOD",
+      "b": "RODOPI CHEMICALS EOOD",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "TISZA STEEL TRADING KFT",
+      "b": "TISZA TIMBER TRADING KFT",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "SREMSKA INDUSTRIJA DOO",
+      "b": "SLAVONSKA INDUSTRIJA DOO",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "BANAT AGRO EXPORT DOO",
+      "b": "BANAT AGRO IMPORT DOO",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "VOJVODINA GRAIN TRADING DOO",
+      "b": "VOJVODINA STEEL TRADING DOO",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "POSAVINA TIMBER DOO",
+      "b": "PODRINJE TIMBER DOO",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "SLAVONIJA FOODS DD",
+      "b": "DALMACIJA FOODS DD",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "MARITSA CHEMICALS AD",
+      "b": "RODOPI CHEMICALS AD",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "DEBRECEN MACHINERY ZRT",
+      "b": "SZEGED MACHINERY ZRT",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "TIMISOARA METALS SRL",
+      "b": "CONSTANTA METALS SRL",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "NOVI SAD PETROLEUM DOO",
+      "b": "NOVI SAD CHEMICALS DOO",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "OLTENIA COMMODITIES SRL",
+      "b": "MOLDOVA COMMODITIES SRL",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "PETROVIC TRA-\nDING DOO",
+      "b": "NIKOLIC TRADING DOO",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "RODOPI MINERALS EOOD",
+      "b": "RILA MINERALS EOOD",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "TISZA STEEL TRADING KFT",
+      "b": "DUNA STEEL TRADING KFT",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "SREMSKA INDUSTRIJA DOO",
+      "b": "SREMSKA LOGISTIKA DOO",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "BANAT AGRO EXPORT DOO",
+      "b": "BACKA AGRO EXPORT DOO",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "VOJVODINA GRAIN TRADING DOO",
+      "b": "SREM GRAIN TRADING DOO",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "POSAVINA TIMBER DOO",
+      "b": "POSAVINA METALS DOO",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "SLAVONIJA FOODS DD",
+      "b": "SLAVONIJA CHEMICALS DD",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "MARITSA CHEMICALS AD",
+      "b": "MARITSA TEXTILES AD",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "DEBRECEN MACHINERY ZRT",
+      "b": "DEBRECEN TEXTILES ZRT",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "TIMISOARA METALS SRL",
+      "b": "TIMISOARA TIMBER SRL",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "NOVI SAD PETROLEUM DOO",
+      "b": "BEOGRAD PETROLEUM DOO",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "OLTENIA COMMODITIES SRL",
+      "b": "OLTENIA MINERALS SRL",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "MITTAL COMMODITIES SRL",
+      "b": "STANESCU COMMODITIES SRL",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "RADCLIFFE TRADING KFT",
+      "b": "FAIRFIELD TRADING KFT",
+      "verdict": "different",
+      "nature": "different-surname-same-form"
+    },
+    {
+      "a": "МАРИЦА ХИМИЯ АД",
+      "b": "РОДОПИ ХИМИЯ АД",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "СРЕМСКА ИНДУСТРИЈА ДОО",
+      "b": "СЛАВОНСКА ИНДУСТРИЈА ДОО",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "BANAT AGRO EXPO-\nRT DOO",
+      "b": "BANAT FOOD EXPO-\nRT DOO",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "TISZA STEEL TRADING KFT",
+      "b": "TISZA STEEL SERVICES KFT",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "VOJVODINA GRAIN TRADING DOO",
+      "b": "VOJVODINA GRAIN LOGISTICS DOO",
+      "verdict": "different",
+      "nature": "different-business-sector-word"
+    },
+    {
+      "a": "NOVISADPETROLEUMDOO",
+      "b": "BEOGRADPETROLEUMDOO",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "SLAVONIJAFOODSDD",
+      "b": "DALMACIJAFOODSDD",
+      "verdict": "different",
+      "nature": "different-place-same-business-word"
+    },
+    {
+      "a": "RODOPI MINERALS EOOD",
+      "b": "RODOPI MINERALS AD",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity"
+    },
+    {
+      "a": "NOVI SAD PETROLEUM DOO",
+      "b": "NOVI SAD PETROLEUM AD",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity"
+    },
+    {
+      "a": "SLAVONIJA FOODS DD",
+      "b": "SLAVONIJA FOODS DOO",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity"
+    },
+    {
+      "a": "TIMISOARA METALS SRL",
+      "b": "TIMISOARA METALS SA",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity"
+    },
+    {
+      "a": "DEBRECEN MACHINERY ZRT",
+      "b": "DEBRECEN MACHINERY KFT",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity"
+    },
+    {
+      "a": "OLTENIA COMMODITIES SRL",
+      "b": "OLTENIA COMMODITIES SA",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity"
+    },
+    {
+      "a": "Soc. Coop. Comelli",
+      "b": "Società Cooperativa Comelli",
+      "verdict": "match",
+      "nature": "whatsapp-abbreviation"
+    },
+    {
+      "a": "Ind. Bront",
+      "b": "Industria Bront",
+      "verdict": "match",
+      "nature": "whatsapp-abbreviation"
+    },
+    {
+      "a": "Comm. Zanut",
+      "b": "Commerciale Zanut",
+      "verdict": "match",
+      "nature": "whatsapp-abbreviation"
+    },
+    {
+      "a": "Trasp. Delton",
+      "b": "Trasporti Delton",
+      "verdict": "match",
+      "nature": "whatsapp-abbreviation"
+    },
+    {
+      "a": "Sped. Rossetti",
+      "b": "Spedizioni Rossetti",
+      "verdict": "match",
+      "nature": "whatsapp-abbreviation"
+    },
+    {
+      "a": "CecottiSrl",
+      "b": "Cecotti Srl",
+      "verdict": "match",
+      "nature": "missing-space-chat"
+    },
+    {
+      "a": "BrontLegnami",
+      "b": "Bront Legnami",
+      "verdict": "match",
+      "nature": "missing-space-chat"
+    },
+    {
+      "a": "Zanutt Trasporti",
+      "b": "Zanut Trasporti",
+      "verdict": "match",
+      "nature": "doubled-letter-typo"
+    },
+    {
+      "a": "Rosseti Sped.",
+      "b": "Rossetti Sped.",
+      "verdict": "match",
+      "nature": "doubled-letter-typo"
+    },
+    {
+      "a": "Comeli Coop",
+      "b": "Comelli Coop",
+      "verdict": "match",
+      "nature": "doubled-letter-typo"
+    },
+    {
+      "a": "Delton Impiantti Elettrici",
+      "b": "Delton Impianti Elettrici",
+      "verdict": "match",
+      "nature": "doubled-letter-typo"
+    },
+    {
+      "a": "Nikolic Prevoz",
+      "b": "Nikolić Prevoz",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped-chat"
+    },
+    {
+      "a": "Kovac Trans",
+      "b": "Kovač Trans",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped-chat"
+    },
+    {
+      "a": "Horvath Fuvar",
+      "b": "Horváth Fuvar",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped-chat"
+    },
+    {
+      "a": "Nagy Szallitas",
+      "b": "Nagy Szállítás",
+      "verdict": "match",
+      "nature": "accent-diacritic-dropped-chat"
+    },
+    {
+      "a": "Popescu Comert",
+      "b": "Popescu Comerț",
+      "verdict": "match",
+      "nature": "romanian-diacritics-dropped-chat"
+    },
+    {
+      "a": "Ivanov Trans",
+      "b": "Иванов Транс",
+      "verdict": "match",
+      "nature": "cyrillic-latin-transliteration-chat"
+    },
+    {
+      "a": "Zanuz Trasporti",
+      "b": "Zanut Trasporti",
+      "verdict": "match",
+      "nature": "autocorrect-substitution"
+    },
+    {
+      "a": "Rossetti Sepd.",
+      "b": "Rossetti Sped.",
+      "verdict": "match",
+      "nature": "letter-transposition-typo"
+    },
+    {
+      "a": "Comelli Cop.",
+      "b": "Comelli Coop.",
+      "verdict": "match",
+      "nature": "missing-letter-typo"
+    },
+    {
+      "a": "C_COTTI S.R.L.",
+      "b": "CECOTTI S.R.L.",
+      "verdict": "match",
+      "nature": "ocr-stamp-garbled"
+    },
+    {
+      "a": "ZAN_T TRASPORTI",
+      "b": "ZANUT TRASPORTI",
+      "verdict": "match",
+      "nature": "ocr-stamp-garbled"
+    },
+    {
+      "a": "8RONT LEGNAMI",
+      "b": "BRONT LEGNAMI",
+      "verdict": "match",
+      "nature": "ocr-stamp-garbled"
+    },
+    {
+      "a": "DELT0N IMPIANTI",
+      "b": "DELTON IMPIANTI",
+      "verdict": "match",
+      "nature": "ocr-stamp-garbled"
+    },
+    {
+      "a": "NIK0LIC PREVOZ",
+      "b": "NIKOLIC PREVOZ",
+      "verdict": "match",
+      "nature": "ocr-stamp-garbled"
+    },
+    {
+      "a": "il Cecotti",
+      "b": "Cecotti S.r.l.",
+      "verdict": "match",
+      "nature": "chat-shorthand-nickname"
+    },
+    {
+      "a": "dal Bront",
+      "b": "Bront Legnami",
+      "verdict": "match",
+      "nature": "chat-shorthand-nickname"
+    },
+    {
+      "a": "lo Zanut",
+      "b": "Zanut Trasporti",
+      "verdict": "match",
+      "nature": "chat-shorthand-nickname"
+    },
+    {
+      "a": "Rossetti",
+      "b": "Rossetti Sped.",
+      "verdict": "match",
+      "nature": "chat-shorthand-nickname"
+    },
+    {
+      "a": "Nikolić",
+      "b": "Nikolić Prevoz",
+      "verdict": "match",
+      "nature": "chat-shorthand-nickname"
+    },
+    {
+      "a": "Kovač Trans doo",
+      "b": "Kovač Trans d.o.o.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form-chat"
+    },
+    {
+      "a": "Horváth Fuvar kft",
+      "b": "Horváth Fuvar Kft.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form-chat"
+    },
+    {
+      "a": "Comelli coop soc",
+      "b": "Comelli Soc. Coop.",
+      "verdict": "match",
+      "nature": "word-order-abbreviation-chat"
+    },
+    {
+      "a": "Nagy Szállítás Bt",
+      "b": "Nagy Szállítás Bt.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form-chat"
+    },
+    {
+      "a": "Popescu Comerț srl",
+      "b": "Popescu Comerț S.R.L.",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form-chat"
+    },
+    {
+      "a": "Ivanov Trans ood",
+      "b": "Ivanov Trans OOD",
+      "verdict": "match",
+      "nature": "punctuation-spacing-legal-form-chat"
+    },
+    {
+      "a": "mital commodities",
+      "b": "Mittal Commodities",
+      "verdict": "match",
+      "nature": "misspelling-one-letter-proper-name-chat"
+    },
+    {
+      "a": "radclife trading",
+      "b": "Radcliffe Trading",
+      "verdict": "match",
+      "nature": "misspelling-one-letter-proper-name-chat"
+    },
+    {
+      "a": "Zanut Trasp srl trieste",
+      "b": "Zanut Trasporti S.r.l., Trieste",
+      "verdict": "match",
+      "nature": "missing-space-chat"
+    },
+    {
+      "a": "delton impiantielettrici snc",
+      "b": "Delton Impianti Elettrici S.n.c.",
+      "verdict": "match",
+      "nature": "missing-space-chat"
+    },
+    {
+      "a": "Cecotti Srl",
+      "b": "Comelli Srl",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Bront Legnami",
+      "b": "Bront Metalli",
+      "verdict": "different",
+      "nature": "different-business-sector-word-chat"
+    },
+    {
+      "a": "Zanut Trasporti",
+      "b": "Zanut Spedizioni",
+      "verdict": "different",
+      "nature": "different-business-sector-word-chat"
+    },
+    {
+      "a": "Delton Impianti Elettrici",
+      "b": "Delton Impianti Idraulici",
+      "verdict": "different",
+      "nature": "different-business-sector-word-chat"
+    },
+    {
+      "a": "Rossetti Sped.",
+      "b": "Bassanese Sped.",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Comelli Coop",
+      "b": "Bulfon Coop",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Nikolić Prevoz",
+      "b": "Stanković Prevoz",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Kovač Trans",
+      "b": "Horvat Trans",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Horváth Fuvar",
+      "b": "Nagy Fuvar",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Nagy Szállítás",
+      "b": "Kovács Szállítás",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Popescu Comerț",
+      "b": "Ionescu Comerț",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Ivanov Trans",
+      "b": "Petrov Trans",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Zanut Trasporti Trieste",
+      "b": "Zanut Trasporti Udine",
+      "verdict": "different",
+      "nature": "different-place-same-business-word-chat"
+    },
+    {
+      "a": "Cecotti Srl Gorizia",
+      "b": "Cecotti Srl Muggia",
+      "verdict": "different",
+      "nature": "different-place-same-business-word-chat"
+    },
+    {
+      "a": "Kovač Trans d.o.o.",
+      "b": "Kovač Trans a.d.",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity-chat"
+    },
+    {
+      "a": "Horváth Fuvar Kft.",
+      "b": "Horváth Fuvar Bt.",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity-chat"
+    },
+    {
+      "a": "Nagy Szállítás Bt.",
+      "b": "Nagy Szállítás Kft.",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity-chat"
+    },
+    {
+      "a": "Popescu Comerț S.R.L.",
+      "b": "Popescu Comerț S.A.",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity-chat"
+    },
+    {
+      "a": "Ivanov Trans OOD",
+      "b": "Ivanov Trans EOOD",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity-chat"
+    },
+    {
+      "a": "Comelli Soc. Coop.",
+      "b": "Comelli Srl",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity-chat"
+    },
+    {
+      "a": "Bront Legnami Srl",
+      "b": "Bront Legnami Snc",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity-chat"
+    },
+    {
+      "a": "Zanut Trasporti Srl",
+      "b": "Zanut Trasporti Sas",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity-chat"
+    },
+    {
+      "a": "Delton Impianti Elettrici Snc",
+      "b": "Delton Impianti Elettrici Srl",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity-chat"
+    },
+    {
+      "a": "Rossetti Sped. Srl",
+      "b": "Rossetti Sped. Snc",
+      "verdict": "different",
+      "nature": "different-legal-form-distinct-entity-chat"
+    },
+    {
+      "a": "il Cecotti",
+      "b": "il Comelli",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "dal Bront",
+      "b": "dal Delton",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "lo Zanut",
+      "b": "lo Zanier",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Rossetti",
+      "b": "Bassanese",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Nikolić",
+      "b": "Stanković",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "mital commodities",
+      "b": "stanescu commodities",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "radclife trading",
+      "b": "fairfield trading",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Zanut Trasp srl trieste",
+      "b": "Zanier Trasp srl trieste",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "delton impiantielettrici snc",
+      "b": "bront impiantielettrici snc",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Comelli coop soc",
+      "b": "Bulfon coop soc",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Kovač Trans doo",
+      "b": "Horvat Trans doo",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Nagy Szállítás Bt",
+      "b": "Kovács Szállítás Bt",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Ivanov Trans ood",
+      "b": "Georgiev Trans ood",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "ZAN_T TRASPORTI",
+      "b": "ZANIER TRASPORTI",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "8RONT LEGNAMI",
+      "b": "DELTON LEGNAMI",
+      "verdict": "different",
+      "nature": "different-surname-same-form-chat"
+    },
+    {
+      "a": "Nikolić Prevoz",
+      "b": "Nikolić Gradnja",
+      "verdict": "different",
+      "nature": "different-business-sector-word-chat"
+    }
+  ]
+}
