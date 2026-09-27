@@ -1,0 +1,2407 @@
+{
+ "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+ "provenance": "authored on 2026-09-27 by a separate agent (a Tokyo trading house, Panama ship registry and Mexico customs brief, organised by error source, with explicit verdict conventions; a seventh model) that never saw the matcher nor any other pair set, as blind test set #10 (sha256 985eb7c1…); every name invented; no client data, no list data; overlap with the ten earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v12 (entites.ts dc363c55…, cribler.ts 949b2356…, ecritures.ts 4348bc88…): strong 0.81 found 128/200 [57-70 %] with 6/200 false alerts [1-6 %]; possible 0.80 found 179/200 [84-93 %] with 45/200 [17-29 %]. Studied afterwards and promoted to training set 11 on 2026-09-28, so it no longer measures anything held out.",
+ "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+ "paires": [
+  {
+   "a": "Comercializadora Peñaloza y Asociados, S.A. de C.V.",
+   "b": "COMERCIALIZADORA PENALOZA Y ASOCIADOS SA DE CV",
+   "verdict": "match",
+   "nature": "latam-accent-dropped-uppercase"
+  },
+  {
+   "a": "Transportes Nuñez e Hijos, S. de R.L.",
+   "b": "Transportes Nunyez e Hijos S de RL",
+   "verdict": "match",
+   "nature": "latam-ny-for-enye"
+  },
+  {
+   "a": "Industrias Ibáñez Carvajal, S.A.P.I. de C.V.",
+   "b": "Industrias Ibanez Carvajal SAPI de CV",
+   "verdict": "match",
+   "nature": "latam-accent-dropped"
+  },
+  {
+   "a": "Agroexportadora Muñoz Ltda.",
+   "b": "Agroexportadora Munoz Limitada",
+   "verdict": "match",
+   "nature": "latam-ltda-expanded"
+  },
+  {
+   "a": "Fábrica de Calçados Marinho EIRELI",
+   "b": "Fabrica de Calcados Marinho E.I.R.E.L.I.",
+   "verdict": "match",
+   "nature": "latam-cedilla-dropped"
+  },
+  {
+   "a": "Distribuidora Ortega y Ortega, S.A.S.",
+   "b": "Distribuidora Ortega & Ortega SAS",
+   "verdict": "match",
+   "nature": "latam-y-ampersand"
+  },
+  {
+   "a": "Frigorífico do Vale Ltda",
+   "b": "Frigorifico do Vale Ltda.",
+   "verdict": "match",
+   "nature": "latam-accent-dropped"
+  },
+  {
+   "a": "Constructora Zúñiga Hermanos, S.A.",
+   "b": "Constructora Zuniga Hnos. SA",
+   "verdict": "match",
+   "nature": "latam-hermanos-abbrev"
+  },
+  {
+   "a": "Grupo Empresarial Ávila Mendoza, S.A. de C.V.",
+   "b": "Grupo Empresarial Avila Mendoza SA de CV",
+   "verdict": "match",
+   "nature": "latam-accent-dropped"
+  },
+  {
+   "a": "Laboratorios Quiñones e Ibarra, S.A. de C.V.",
+   "b": "Laboratorios Quinones y Ibarra SA de CV",
+   "verdict": "match",
+   "nature": "latam-e-y-conjunction"
+  },
+  {
+   "a": "Serviços Marítimos Peixoto Ltda.",
+   "b": "Servicos Maritimos Peixoto Ltda",
+   "verdict": "match",
+   "nature": "latam-cedilla-accent-dropped"
+  },
+  {
+   "a": "Almacenes Ordoñez Rocha, S. de R.L. de C.V.",
+   "b": "Almacenes Ordonez Rocha S de RL de CV",
+   "verdict": "match",
+   "nature": "latam-enye-n"
+  },
+  {
+   "a": "Comercial Piña Delgado, S.A.S.",
+   "b": "Comercial Pina Delgado S.A.S",
+   "verdict": "match",
+   "nature": "latam-enye-n"
+  },
+  {
+   "a": "Importadora Yáñez del Pacífico, S.A. de C.V.",
+   "b": "Importadora Yanez del Pacifico SA de CV",
+   "verdict": "match",
+   "nature": "latam-accent-dropped"
+  },
+  {
+   "a": "Pesquera Bahía Serena, S.A.",
+   "b": "PESQUERA BAHIA SERENA SA",
+   "verdict": "match",
+   "nature": "latam-accent-dropped-uppercase"
+  },
+  {
+   "a": "Tecnologías Aplicadas Sotomayor, S.A.P.I. de C.V.",
+   "b": "Tecnologias Aplicadas Sotomayor S.A.P.I. de C.V.",
+   "verdict": "match",
+   "nature": "latam-accent-dropped"
+  },
+  {
+   "a": "Cafés Especiais Serra Azul EIRELI",
+   "b": "Cafes Especiais Serra Azul Eireli",
+   "verdict": "match",
+   "nature": "latam-accent-dropped"
+  },
+  {
+   "a": "Transportadora Peña Blanca, S. de R.L.",
+   "b": "Transportadora Pena Blanca S de R L",
+   "verdict": "match",
+   "nature": "latam-enye-n-form-spaced"
+  },
+  {
+   "a": "Envases Metálicos Guerrero y Cía., S.A.",
+   "b": "Envases Metalicos Guerrero y Compañia SA",
+   "verdict": "match",
+   "nature": "latam-cia-expanded"
+  },
+  {
+   "a": "Mineração Três Rios Ltda.",
+   "b": "Mineracao Tres Rios Ltda",
+   "verdict": "match",
+   "nature": "latam-tilde-cedilla-dropped"
+  },
+  {
+   "a": "Textiles Hernández-Gómez, S.A. de C.V.",
+   "b": "Textiles Hernandez Gomez SA de CV",
+   "verdict": "match",
+   "nature": "latam-hyphen-double-surname"
+  },
+  {
+   "a": "Autopartes Núñez & Salgado, S.A.S.",
+   "b": "Autopartes Nunez y Salgado SAS",
+   "verdict": "match",
+   "nature": "latam-ampersand-y"
+  },
+  {
+   "a": "Refrigeración Industrial del Bajío, S.A. de C.V.",
+   "b": "Refrigeracion Industrial del Bajio SA de CV",
+   "verdict": "match",
+   "nature": "latam-accent-dropped"
+  },
+  {
+   "a": "Bodegas Aristizábal e Hijos Ltda.",
+   "b": "Bodegas Aristizabal e Hijos Limitada",
+   "verdict": "match",
+   "nature": "latam-ltda-expanded"
+  },
+  {
+   "a": "Empacadora Santa Mónica, S.A. de C.V.",
+   "b": "Empacadora Santa Monica S.A. de C.V.",
+   "verdict": "match",
+   "nature": "latam-accent-dropped"
+  },
+  {
+   "a": "Navegação Costeira Almeida Ltda.",
+   "b": "Navegacao Costeira Almeida Ltda",
+   "verdict": "match",
+   "nature": "latam-cedilla-tilde-dropped"
+  },
+  {
+   "a": "Soluciones Logísticas Peñafiel, S.A.S.",
+   "b": "Soluciones Logisticas Penafiel S A S",
+   "verdict": "match",
+   "nature": "latam-form-spaced"
+  },
+  {
+   "a": "Ferretería La Unión de Ocaña, S.A.",
+   "b": "Ferreteria La Union de Ocana SA",
+   "verdict": "match",
+   "nature": "latam-accent-enye-dropped"
+  },
+  {
+   "a": "Distribuciones Farmacéuticas Ruiz Escalante, S.A.P.I. de C.V.",
+   "b": "Distribuciones Farmaceuticas Ruíz Escalante SAPI de CV",
+   "verdict": "match",
+   "nature": "latam-stray-accent"
+  },
+  {
+   "a": "Companhia Agrícola São Benedito S.A.",
+   "b": "Cia. Agricola Sao Benedito SA",
+   "verdict": "match",
+   "nature": "latam-companhia-cia"
+  },
+  {
+   "a": "Servicios Portuarios Muñiz y Cía., S. de R.L. de C.V.",
+   "b": "Servicios Portuarios Muniz y Cia S de RL de CV",
+   "verdict": "match",
+   "nature": "latam-enye-cia"
+  },
+  {
+   "a": "Inversiones Beltrán-Ocampo, S.A.S.",
+   "b": "Inversiones Beltran Ocampo SAS",
+   "verdict": "match",
+   "nature": "latam-hyphen-double-surname"
+  },
+  {
+   "a": "Alimentos Procesados Castañeda, S.A. de C.V.",
+   "b": "Alimentos Procesados Castanyeda SA de CV",
+   "verdict": "match",
+   "nature": "latam-ny-for-enye"
+  },
+  {
+   "a": "Química Rodríguez e Isaza Ltda.",
+   "b": "Quimica Rodriguez y Isaza Ltda",
+   "verdict": "match",
+   "nature": "latam-e-y-conjunction"
+  },
+  {
+   "a": "Transportes Terrestres Villaseñor, S.A. de C.V.",
+   "b": "Transportes Terrestres Villasenor SA DE CV",
+   "verdict": "match",
+   "nature": "latam-enye-n"
+  },
+  {
+   "a": "Construções Navais Porto Seguro Ltda.",
+   "b": "Construcoes Navais Porto Seguro Ltda",
+   "verdict": "match",
+   "nature": "latam-tilde-cedilla-dropped"
+  },
+  {
+   "a": "Comercializadora Núñez Peñaranda, S. de R.L.",
+   "b": "Comercializadora Nunez Penaranda S. de R.L.",
+   "verdict": "match",
+   "nature": "latam-enye-n"
+  },
+  {
+   "a": "Consultoría Jurídica Ordóñez y Asociados, S.A.S.",
+   "b": "Consultoria Juridica Ordonez & Asoc. S.A.S.",
+   "verdict": "match",
+   "nature": "latam-asociados-abbrev"
+  },
+  {
+   "a": "Maquinaria Pesada Iturbide, Sociedad Anónima de Capital Variable",
+   "b": "Maquinaria Pesada Iturbide S.A. de C.V.",
+   "verdict": "match",
+   "nature": "latam-form-expanded"
+  },
+  {
+   "a": "Ganadería Los Álamos, S. de R.L. de C.V.",
+   "b": "Ganaderia Los Alamos S. de R.L. de C.V.",
+   "verdict": "match",
+   "nature": "latam-accent-dropped"
+  },
+  {
+   "a": "Transportes Nuñez e Hijos, S. de R.L.",
+   "b": "Transportes Nunez y Hermanos S de RL",
+   "verdict": "different",
+   "nature": "latam-hijos-hermanos"
+  },
+  {
+   "a": "Distribuidora Ortega y Ortega, S.A.S.",
+   "b": "Distribuidora Ortega y Ortiz SAS",
+   "verdict": "different",
+   "nature": "latam-second-surname"
+  },
+  {
+   "a": "Comercializadora Peñaloza y Asociados, S.A. de C.V.",
+   "b": "Comercializadora Penalver y Asociados SA de CV",
+   "verdict": "different",
+   "nature": "latam-surname-swap"
+  },
+  {
+   "a": "Agroexportadora Muñoz Ltda.",
+   "b": "Agroexportadora Muniz Ltda",
+   "verdict": "different",
+   "nature": "latam-munoz-muniz"
+  },
+  {
+   "a": "Fábrica de Calçados Marinho EIRELI",
+   "b": "Fabrica de Calcas Marinho EIRELI",
+   "verdict": "different",
+   "nature": "latam-product-word"
+  },
+  {
+   "a": "Frigorífico do Vale Ltda",
+   "b": "Frigorifico do Vale Verde Ltda",
+   "verdict": "different",
+   "nature": "latam-added-word"
+  },
+  {
+   "a": "Constructora Zúñiga Hermanos, S.A.",
+   "b": "Constructora Zuniga e Hijos SA",
+   "verdict": "different",
+   "nature": "latam-hermanos-hijos"
+  },
+  {
+   "a": "Grupo Empresarial Ávila Mendoza, S.A. de C.V.",
+   "b": "Grupo Empresarial Avila Mendieta SA de CV",
+   "verdict": "different",
+   "nature": "latam-second-surname"
+  },
+  {
+   "a": "Laboratorios Quiñones e Ibarra, S.A. de C.V.",
+   "b": "Laboratorios Quinones e Ibanez SA de CV",
+   "verdict": "different",
+   "nature": "latam-second-surname"
+  },
+  {
+   "a": "Serviços Marítimos Peixoto Ltda.",
+   "b": "Servicos Portuarios Peixoto Ltda",
+   "verdict": "different",
+   "nature": "latam-activity-word"
+  },
+  {
+   "a": "Almacenes Ordoñez Rocha, S. de R.L. de C.V.",
+   "b": "Almacenes Ordonez Rojas S de RL de CV",
+   "verdict": "different",
+   "nature": "latam-second-surname"
+  },
+  {
+   "a": "Comercial Piña Delgado, S.A.S.",
+   "b": "Comercial Pinto Delgado SAS",
+   "verdict": "different",
+   "nature": "latam-surname-swap"
+  },
+  {
+   "a": "Importadora Yáñez del Pacífico, S.A. de C.V.",
+   "b": "Importadora Yanez del Atlantico SA de CV",
+   "verdict": "different",
+   "nature": "latam-region-word"
+  },
+  {
+   "a": "Pesquera Bahía Serena, S.A.",
+   "b": "Pesquera Bahia Solano SA",
+   "verdict": "different",
+   "nature": "latam-place-word"
+  },
+  {
+   "a": "Tecnologías Aplicadas Sotomayor, S.A.P.I. de C.V.",
+   "b": "Tecnologias Avanzadas Sotomayor SAPI de CV",
+   "verdict": "different",
+   "nature": "latam-adjective-swap"
+  },
+  {
+   "a": "Cafés Especiais Serra Azul EIRELI",
+   "b": "Cafes Especiais Serra Verde EIRELI",
+   "verdict": "different",
+   "nature": "latam-color-word"
+  },
+  {
+   "a": "Transportadora Peña Blanca, S. de R.L.",
+   "b": "Transportadora Pena Negra S de RL",
+   "verdict": "different",
+   "nature": "latam-color-word"
+  },
+  {
+   "a": "Envases Metálicos Guerrero y Cía., S.A.",
+   "b": "Envases Plasticos Guerrero y Cia SA",
+   "verdict": "different",
+   "nature": "latam-material-word"
+  },
+  {
+   "a": "Mineração Três Rios Ltda.",
+   "b": "Mineracao Dois Rios Ltda",
+   "verdict": "different",
+   "nature": "latam-numeral-word"
+  },
+  {
+   "a": "Textiles Hernández-Gómez, S.A. de C.V.",
+   "b": "Textiles Hernandez Gamez SA de CV",
+   "verdict": "different",
+   "nature": "latam-gomez-gamez"
+  },
+  {
+   "a": "Autopartes Núñez & Salgado, S.A.S.",
+   "b": "Autopartes Nunez y Salcedo SAS",
+   "verdict": "different",
+   "nature": "latam-second-surname"
+  },
+  {
+   "a": "Refrigeración Industrial del Bajío, S.A. de C.V.",
+   "b": "Refrigeracion Comercial del Bajio SA de CV",
+   "verdict": "different",
+   "nature": "latam-activity-word"
+  },
+  {
+   "a": "Bodegas Aristizábal e Hijos Ltda.",
+   "b": "Vinedos Aristizabal e Hijos Ltda",
+   "verdict": "different",
+   "nature": "latam-activity-word"
+  },
+  {
+   "a": "Empacadora Santa Mónica, S.A. de C.V.",
+   "b": "Empacadora Santa Marta SA de CV",
+   "verdict": "different",
+   "nature": "latam-saint-name"
+  },
+  {
+   "a": "Navegação Costeira Almeida Ltda.",
+   "b": "Navegacao Fluvial Almeida Ltda",
+   "verdict": "different",
+   "nature": "latam-activity-word"
+  },
+  {
+   "a": "Soluciones Logísticas Peñafiel, S.A.S.",
+   "b": "Soluciones Logisticas Penaflor SAS",
+   "verdict": "different",
+   "nature": "latam-surname-swap"
+  },
+  {
+   "a": "Ferretería La Unión de Ocaña, S.A.",
+   "b": "Ferreteria La Union de Ocampo SA",
+   "verdict": "different",
+   "nature": "latam-place-word"
+  },
+  {
+   "a": "Distribuciones Farmacéuticas Ruiz Escalante, S.A.P.I. de C.V.",
+   "b": "Distribuciones Farmaceuticas Ruiz Escamilla SAPI de CV",
+   "verdict": "different",
+   "nature": "latam-second-surname"
+  },
+  {
+   "a": "Companhia Agrícola São Benedito S.A.",
+   "b": "Cia Agricola Sao Bento SA",
+   "verdict": "different",
+   "nature": "latam-saint-name"
+  },
+  {
+   "a": "Servicios Portuarios Muñiz y Cía., S. de R.L. de C.V.",
+   "b": "Servicios Aduanales Muniz y Cia S de RL de CV",
+   "verdict": "different",
+   "nature": "latam-activity-word"
+  },
+  {
+   "a": "Inversiones Beltrán-Ocampo, S.A.S.",
+   "b": "Inversiones Beltran Ochoa SAS",
+   "verdict": "different",
+   "nature": "latam-second-surname"
+  },
+  {
+   "a": "Alimentos Procesados Castañeda, S.A. de C.V.",
+   "b": "Alimentos Congelados Castaneda SA de CV",
+   "verdict": "different",
+   "nature": "latam-activity-word"
+  },
+  {
+   "a": "Química Rodríguez e Isaza Ltda.",
+   "b": "Quimica Rodriguez e Isaacs Ltda",
+   "verdict": "different",
+   "nature": "latam-second-surname"
+  },
+  {
+   "a": "Transportes Terrestres Villaseñor, S.A. de C.V.",
+   "b": "Transportes Maritimos Villasenor SA de CV",
+   "verdict": "different",
+   "nature": "latam-activity-word"
+  },
+  {
+   "a": "Construções Navais Porto Seguro Ltda.",
+   "b": "Construcoes Civis Porto Seguro Ltda",
+   "verdict": "different",
+   "nature": "latam-activity-word"
+  },
+  {
+   "a": "Comercializadora Núñez Peñaranda, S. de R.L.",
+   "b": "Comercializadora Nunez Penalosa S de RL",
+   "verdict": "different",
+   "nature": "latam-second-surname"
+  },
+  {
+   "a": "Consultoría Jurídica Ordóñez y Asociados, S.A.S.",
+   "b": "Consultoria Contable Ordonez y Asociados SAS",
+   "verdict": "different",
+   "nature": "latam-activity-word"
+  },
+  {
+   "a": "Maquinaria Pesada Iturbide, Sociedad Anónima de Capital Variable",
+   "b": "Maquinaria Agricola Iturbide SA de CV",
+   "verdict": "different",
+   "nature": "latam-activity-word"
+  },
+  {
+   "a": "Ganadería Los Álamos, S. de R.L. de C.V.",
+   "b": "Ganaderia Los Olmos S de RL de CV",
+   "verdict": "different",
+   "nature": "latam-tree-word"
+  },
+  {
+   "a": "Distribuidora Hermanos Salazar, S.A. de C.V.",
+   "b": "Distribuidora Hermanos Salinas SA de CV",
+   "verdict": "different",
+   "nature": "latam-surname-swap"
+  },
+  {
+   "a": "M/N ESTRELLA DEL CARIBE",
+   "b": "MV Estrella del Caribe",
+   "verdict": "match",
+   "nature": "ocr-prefix-mn-mv"
+  },
+  {
+   "a": "B/M LUCERO AUSTRAL",
+   "b": "Lucero Austral",
+   "verdict": "match",
+   "nature": "ocr-prefix-dropped"
+  },
+  {
+   "a": "MT GOLFO DE CHIRIQU?",
+   "b": "M/T Golfo de Chiriquí",
+   "verdict": "match",
+   "nature": "ocr-question-mark-accent"
+  },
+  {
+   "a": "LPG/C 0RQUIDEA DEL PACIFIC0",
+   "b": "LPG/C Orquídea del Pacífico",
+   "verdict": "match",
+   "nature": "ocr-zero-for-o"
+  },
+  {
+   "a": "NAVIERA BOCAS DEL TOR0 S.A.",
+   "b": "Naviera Bocas del Toro, S.A.",
+   "verdict": "match",
+   "nature": "ocr-zero-for-o"
+  },
+  {
+   "a": "C0MPANIA MARITIMA ISLA C0IBA S.A.",
+   "b": "Compañía Marítima Isla Coiba S.A.",
+   "verdict": "match",
+   "nature": "ocr-zero-enye-lost"
+  },
+  {
+   "a": "ATLANTIC 8ELIZE FISHERIES LTD.",
+   "b": "Atlantic Belize Fisheries Ltd",
+   "verdict": "match",
+   "nature": "ocr-eight-for-b"
+  },
+  {
+   "a": "M/N SAN 8LAS TRADER",
+   "b": "MV San Blas Trader",
+   "verdict": "match",
+   "nature": "ocr-eight-for-b-prefix"
+  },
+  {
+   "a": "PESQUERA VERAGUAS 5.A.",
+   "b": "Pesquera Veraguas S.A.",
+   "verdict": "match",
+   "nature": "ocr-five-for-s-form"
+  },
+  {
+   "a": "TRAN5PORTES FLUVIALE5 DEL DARIEN S.A.",
+   "b": "Transportes Fluviales del Darién S.A.",
+   "verdict": "match",
+   "nature": "ocr-five-for-s"
+  },
+  {
+   "a": "MV CARIBBEAN 5UNRISE",
+   "b": "M/V Caribbean Sunrise",
+   "verdict": "match",
+   "nature": "ocr-five-for-s"
+  },
+  {
+   "a": "ARMAD0RA PERLA5 DEL SUR S.A.",
+   "b": "Armadora Perlas del Sur S.A.",
+   "verdict": "match",
+   "nature": "ocr-mixed-digits"
+  },
+  {
+   "a": "M/T CORAL DE PORTOBEL0",
+   "b": "MT Coral de Portobelo",
+   "verdict": "match",
+   "nature": "ocr-zero-for-o"
+  },
+  {
+   "a": "BELIZE MARINE HOLDINGS LIMlTED",
+   "b": "Belize Marine Holdings Limited",
+   "verdict": "match",
+   "nature": "ocr-l-for-i"
+  },
+  {
+   "a": "NAVIERA PUNTA CHAME S.A.",
+   "b": "NAVlERA PUNTA CHAME 5.A.",
+   "verdict": "match",
+   "nature": "ocr-l-for-i-five-for-s"
+  },
+  {
+   "a": "M/N PRINCESA DE AZUER0",
+   "b": "M/N Princesa de Azuero",
+   "verdict": "match",
+   "nature": "ocr-zero-for-o"
+  },
+  {
+   "a": "COMPAÑIA DE REMOLCADORES BAHIA LIMON S.A.",
+   "b": "COMPANIA DE REMOLCADORES BAHIA LIMON, S.A.",
+   "verdict": "match",
+   "nature": "ocr-enye-lost"
+  },
+  {
+   "a": "MV STELLA MARlS DE COLON",
+   "b": "M/V Stella Maris de Colón",
+   "verdict": "match",
+   "nature": "ocr-l-for-i"
+  },
+  {
+   "a": "GOLFO DULCE SHlPPING CORP.",
+   "b": "Golfo Dulce Shipping Corporation",
+   "verdict": "match",
+   "nature": "ocr-l-for-i-corp-expanded"
+  },
+  {
+   "a": "PLACENClA CARGO LINES LTD",
+   "b": "Placencia Cargo Lines Ltd.",
+   "verdict": "match",
+   "nature": "ocr-l-for-i"
+  },
+  {
+   "a": "B/M DON RAMÓN II",
+   "b": "B/M DON RAM0N ll",
+   "verdict": "match",
+   "nature": "ocr-zero-ll-for-ii"
+  },
+  {
+   "a": "SEAFOOD PROCESSORS OF DANGRlGA LTD",
+   "b": "Seafood Processors of Dangriga Ltd",
+   "verdict": "match",
+   "nature": "ocr-l-for-i"
+  },
+  {
+   "a": "ARENAS BLANCAS 14",
+   "b": "ARENAS 8LANCAS l4",
+   "verdict": "match",
+   "nature": "ocr-numbered-fleet-mixed"
+  },
+  {
+   "a": "M/N RIO CHAGRES",
+   "b": "MN RÍO CHAGRES",
+   "verdict": "match",
+   "nature": "ocr-prefix-slash-accent"
+  },
+  {
+   "a": "NAVIERA DEL ISTMO S.A.",
+   "b": "NAVIERA DEL I5TMO S.A.",
+   "verdict": "match",
+   "nature": "ocr-five-for-s"
+  },
+  {
+   "a": "AGENCIA NAVIERA TABOGA, S.A.",
+   "b": "AGENCIA NAVIERA TAB0GA SA",
+   "verdict": "match",
+   "nature": "ocr-zero-for-o"
+  },
+  {
+   "a": "M/V AMBERGRIS QUEEN",
+   "b": "MV AM8ERGRIS QUEEN",
+   "verdict": "match",
+   "nature": "ocr-eight-for-b"
+  },
+  {
+   "a": "MT SANTA CATALINA DEL MAR",
+   "b": "M.T. SANTA CATALlNA DEL MAR",
+   "verdict": "match",
+   "nature": "ocr-l-for-i-prefix-dots"
+  },
+  {
+   "a": "CAMARONERA DEL PACIFICO 7",
+   "b": "CAMARONERA DEL PACIFIC0 7",
+   "verdict": "match",
+   "nature": "ocr-numbered-fleet-zero"
+  },
+  {
+   "a": "REMOLCADOR BAHIA DE PARITA",
+   "b": "REM0LCADOR 8AHIA DE PARITA",
+   "verdict": "match",
+   "nature": "ocr-mixed-digits"
+  },
+  {
+   "a": "M/V Carmen de Bocas",
+   "b": "M/V Carrnen de Bocas",
+   "verdict": "match",
+   "nature": "ocr-rn-for-m"
+  },
+  {
+   "a": "Naviera Almirante Ltd.",
+   "b": "Naviera Alrnirante Ltd.",
+   "verdict": "match",
+   "nature": "ocr-rn-for-m"
+  },
+  {
+   "a": "Belize Timber & Marine Co. Ltd.",
+   "b": "Belize Tirnber & Marine Co. Ltd.",
+   "verdict": "match",
+   "nature": "ocr-rn-for-m"
+  },
+  {
+   "a": "Compañía Pesquera Montijo S.A.",
+   "b": "COMPA?IA PESQUERA MONTIJO S.A.",
+   "verdict": "match",
+   "nature": "ocr-question-mark-enye"
+  },
+  {
+   "a": "Transportes Marítimos Bahía Piña S.A.",
+   "b": "TRANSPORTES MARITIMOS BAHIA PI?A S.A.",
+   "verdict": "match",
+   "nature": "ocr-question-mark-enye"
+  },
+  {
+   "a": "M/N ESPÍRITU DE VERAGUAS",
+   "b": "M/N ESP?RITU DE VERAGUAS",
+   "verdict": "match",
+   "nature": "ocr-question-mark-accent"
+  },
+  {
+   "a": "Isla Grande Charters Limited",
+   "b": "lSLA GRANDE CHARTERS LlMlTED",
+   "verdict": "match",
+   "nature": "ocr-l-for-i-uppercase"
+  },
+  {
+   "a": "LPG/C CIELO DE PANAMÁ",
+   "b": "LPG/C CIEL0 DE PANAMA",
+   "verdict": "match",
+   "nature": "ocr-zero-accent"
+  },
+  {
+   "a": "M/T Bahía de Almirante",
+   "b": "MT BAHIA DE ALMIRANTE",
+   "verdict": "match",
+   "nature": "ocr-prefix-uppercase-accent"
+  },
+  {
+   "a": "FLOTA CAMARONERA DEL GOLFO No. 3",
+   "b": "FL0TA CAMARONERA DEL GOLFO N° 3",
+   "verdict": "match",
+   "nature": "ocr-numbered-fleet-degree"
+  },
+  {
+   "a": "M/N ESTRELLA DEL CARIBE",
+   "b": "M/N ESTRELLA DEL CARIBE II",
+   "verdict": "different",
+   "nature": "ocr-numeral-sibling"
+  },
+  {
+   "a": "B/M LUCERO AUSTRAL",
+   "b": "B/M LUCER0 BOREAL",
+   "verdict": "different",
+   "nature": "ocr-vessel-word"
+  },
+  {
+   "a": "MT GOLFO DE CHIRIQUI",
+   "b": "MT G0LFO DE MONTIJO",
+   "verdict": "different",
+   "nature": "ocr-vessel-place"
+  },
+  {
+   "a": "LPG/C ORQUIDEA DEL PACIFICO",
+   "b": "LPG/C 0RQUIDEA DEL ATLANTICO",
+   "verdict": "different",
+   "nature": "ocr-vessel-ocean"
+  },
+  {
+   "a": "NAVIERA BOCAS DEL TORO S.A.",
+   "b": "NAVIERA BOCAS DEL DRAG0 S.A.",
+   "verdict": "different",
+   "nature": "ocr-company-place"
+  },
+  {
+   "a": "COMPANIA MARITIMA ISLA COIBA S.A.",
+   "b": "C0MPANIA MARITIMA ISLA C0L0N S.A.",
+   "verdict": "different",
+   "nature": "ocr-company-place"
+  },
+  {
+   "a": "ATLANTIC BELIZE FISHERIES LTD.",
+   "b": "PACIFIC 8ELIZE FISHERIES LTD.",
+   "verdict": "different",
+   "nature": "ocr-company-ocean"
+  },
+  {
+   "a": "M/N SAN BLAS TRADER",
+   "b": "M/N SAN 8LAS TRADER II",
+   "verdict": "different",
+   "nature": "ocr-numeral-sibling"
+  },
+  {
+   "a": "PESQUERA VERAGUAS S.A.",
+   "b": "PE5QUERA VERAGUAS DOS S.A.",
+   "verdict": "different",
+   "nature": "ocr-company-numeral-word"
+  },
+  {
+   "a": "TRANSPORTES FLUVIALES DEL DARIEN S.A.",
+   "b": "TRAN5PORTES FLUVIALES DEL CHAGRES S.A.",
+   "verdict": "different",
+   "nature": "ocr-company-place"
+  },
+  {
+   "a": "MV CARIBBEAN SUNRISE",
+   "b": "MV CARIBBEAN 5UNSET",
+   "verdict": "different",
+   "nature": "ocr-vessel-word"
+  },
+  {
+   "a": "M/N PERLAS DEL PACIFICO",
+   "b": "M/N PERLA DEL PACIFIC0",
+   "verdict": "different",
+   "nature": "ocr-vessel-plural"
+  },
+  {
+   "a": "M/T CORAL DE PORTOBELO",
+   "b": "M/T CORALES DE PORTOBEL0",
+   "verdict": "different",
+   "nature": "ocr-vessel-plural"
+  },
+  {
+   "a": "BELIZE MARINE HOLDINGS LIMITED",
+   "b": "BELIZE MARINE SERVICES LIMlTED",
+   "verdict": "different",
+   "nature": "ocr-company-word"
+  },
+  {
+   "a": "NAVIERA PUNTA CHAME S.A.",
+   "b": "NAVIERA PUNTA MALA 5.A.",
+   "verdict": "different",
+   "nature": "ocr-company-place"
+  },
+  {
+   "a": "M/N PRINCESA DE AZUERO",
+   "b": "M/N PRINCESA DE AZUER0 III",
+   "verdict": "different",
+   "nature": "ocr-numeral-sibling"
+  },
+  {
+   "a": "COMPANIA DE REMOLCADORES BAHIA LIMON S.A.",
+   "b": "COMPANIA DE REMOLCADORES BAHIA LAS MINAS S.A.",
+   "verdict": "different",
+   "nature": "ocr-company-place"
+  },
+  {
+   "a": "MV STELLA MARIS DE COLON",
+   "b": "MV STELLA MARlS DE CRISTOBAL",
+   "verdict": "different",
+   "nature": "ocr-vessel-place"
+  },
+  {
+   "a": "GOLFO DULCE SHIPPING CORP.",
+   "b": "GOLFO DULCE TANKERS C0RP.",
+   "verdict": "different",
+   "nature": "ocr-company-word"
+  },
+  {
+   "a": "PLACENCIA CARGO LINES LTD",
+   "b": "PLACENClA FERRY LINES LTD",
+   "verdict": "different",
+   "nature": "ocr-company-word"
+  },
+  {
+   "a": "B/M DON RAMON II",
+   "b": "B/M DON RAM0N III",
+   "verdict": "different",
+   "nature": "ocr-numeral-sibling"
+  },
+  {
+   "a": "SEAFOOD PROCESSORS OF DANGRIGA LTD",
+   "b": "SEAFOOD EXPORTERS OF DANGRlGA LTD",
+   "verdict": "different",
+   "nature": "ocr-company-word"
+  },
+  {
+   "a": "ARENAS BLANCAS 14",
+   "b": "ARENAS 8LANCAS 24",
+   "verdict": "different",
+   "nature": "ocr-numbered-fleet-sibling"
+  },
+  {
+   "a": "M/N RIO CHAGRES",
+   "b": "M/N RI0 CHUCUNAQUE",
+   "verdict": "different",
+   "nature": "ocr-vessel-river"
+  },
+  {
+   "a": "NAVIERA DEL ISTMO S.A.",
+   "b": "NAVIERA DEL I5TMO SUR S.A.",
+   "verdict": "different",
+   "nature": "ocr-company-added-word"
+  },
+  {
+   "a": "AGENCIA NAVIERA TABOGA S.A.",
+   "b": "AGENCIA ADUANERA TAB0GA S.A.",
+   "verdict": "different",
+   "nature": "ocr-company-activity"
+  },
+  {
+   "a": "MV AMBERGRIS QUEEN",
+   "b": "MV AM8ERGRIS PRINCESS",
+   "verdict": "different",
+   "nature": "ocr-vessel-word"
+  },
+  {
+   "a": "MT SANTA CATALINA DEL MAR",
+   "b": "MT SANTA CAROLlNA DEL MAR",
+   "verdict": "different",
+   "nature": "ocr-vessel-saint"
+  },
+  {
+   "a": "CAMARONERA DEL PACIFICO 7",
+   "b": "CAMARONERA DEL PACIFIC0 17",
+   "verdict": "different",
+   "nature": "ocr-numbered-fleet-sibling"
+  },
+  {
+   "a": "REMOLCADOR BAHIA DE PARITA",
+   "b": "REM0LCADOR BAHIA DE PANAMA",
+   "verdict": "different",
+   "nature": "ocr-vessel-place"
+  },
+  {
+   "a": "M/V Carmen de Bocas",
+   "b": "M/V Carrnela de Bocas",
+   "verdict": "different",
+   "nature": "ocr-vessel-name"
+  },
+  {
+   "a": "Naviera Almirante Ltd.",
+   "b": "Naviera Alrnirantazgo Ltd.",
+   "verdict": "different",
+   "nature": "ocr-company-word"
+  },
+  {
+   "a": "Belize Timber & Marine Co. Ltd.",
+   "b": "Belize Tirnber & Mining Co. Ltd.",
+   "verdict": "different",
+   "nature": "ocr-company-activity"
+  },
+  {
+   "a": "Compañía Pesquera Montijo S.A.",
+   "b": "COMPA?IA CAMARONERA MONTIJO S.A.",
+   "verdict": "different",
+   "nature": "ocr-company-activity"
+  },
+  {
+   "a": "Transportes Marítimos Bahía Piña S.A.",
+   "b": "TRANSPORTES TERRESTRES BAHIA PI?A S.A.",
+   "verdict": "different",
+   "nature": "ocr-company-activity"
+  },
+  {
+   "a": "M/N ESPIRITU DE VERAGUAS",
+   "b": "M/N ESP?RITU DE HERRERA",
+   "verdict": "different",
+   "nature": "ocr-vessel-province"
+  },
+  {
+   "a": "Isla Grande Charters Limited",
+   "b": "lSLA GRANDE CHARTERS & TOURS LlMlTED",
+   "verdict": "different",
+   "nature": "ocr-company-added-words"
+  },
+  {
+   "a": "LPG/C CIELO DE PANAMA",
+   "b": "LPG/C CIEL0 DE PANAMA 2",
+   "verdict": "different",
+   "nature": "ocr-numeral-sibling"
+  },
+  {
+   "a": "M/T Bahía de Almirante",
+   "b": "MT BAHIA DE ALMIRANTE II",
+   "verdict": "different",
+   "nature": "ocr-numeral-sibling"
+  },
+  {
+   "a": "FLOTA CAMARONERA DEL GOLFO No. 3",
+   "b": "FL0TA CAMARONERA DEL GOLFO N° 7",
+   "verdict": "different",
+   "nature": "ocr-numbered-fleet-sibling"
+  },
+  {
+   "a": "Kabushiki Kaisha Ōtsuki Shōji",
+   "b": "Otsuki Shoji Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-macron-kk-coltd"
+  },
+  {
+   "a": "Ohtsuki Shoji K.K.",
+   "b": "Otsuki Trading Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-oh-long-vowel-shoji-trading"
+  },
+  {
+   "a": "Hokushin Kaiun Kabushiki Kaisha",
+   "b": "Hokushin Shipping Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-kaiun-shipping"
+  },
+  {
+   "a": "Tōhō Unyu K.K.",
+   "b": "Toho Unyu Kabushiki Kaisha",
+   "verdict": "match",
+   "nature": "jp-macron-dropped-kk"
+  },
+  {
+   "a": "Sinwa Kōgyō K.K.",
+   "b": "Shinwa Kogyo Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-kunrei-si-shi"
+  },
+  {
+   "a": "Tyūō Seisakusho K.K.",
+   "b": "Chuo Seisakusho Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-kunrei-tyu-chu"
+  },
+  {
+   "a": "Huzimoto Sangyō K.K.",
+   "b": "Fujimoto Sangyo Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-kunrei-hu-fu"
+  },
+  {
+   "a": "Kawanami Bōeki Kabushiki Kaisha",
+   "b": "Kawanami Boeki Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-macron-dropped"
+  },
+  {
+   "a": "Kawanami Boeki K.K.",
+   "b": "Kawanami Trading Company Limited",
+   "verdict": "match",
+   "nature": "jp-boeki-trading"
+  },
+  {
+   "a": "Sakuragawa Kogyo Co., Ltd. (桜川工業株式会社)",
+   "b": "Sakuragawa Kōgyō K.K.",
+   "verdict": "match",
+   "nature": "jp-kanji-parenthetical"
+  },
+  {
+   "a": "Aoyagi Seisakusho (アオヤギ製作所) Co., Ltd.",
+   "b": "Aoyagi Seisakusho Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-katakana-parenthetical"
+  },
+  {
+   "a": "Matsuzono Sangyō Kabushiki Kaisha",
+   "b": "Matsuzono Industries Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-sangyo-industries"
+  },
+  {
+   "a": "Nishikōri Kaiun K.K.",
+   "b": "Nishikoori Kaiun Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-oo-long-vowel"
+  },
+  {
+   "a": "Ryūsei Unyu Kabushiki Kaisha",
+   "b": "Ryusei Transport Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-unyu-transport"
+  },
+  {
+   "a": "Kabushiki Kaisha Hōryū Kōsan",
+   "b": "Horyu Kosan Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-macron-kk-fronted"
+  },
+  {
+   "a": "Kitazono Seisakusho Kabushiki Kaisha",
+   "b": "Kitazono Manufacturing Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-seisakusho-manufacturing"
+  },
+  {
+   "a": "Ōmura Kōgyō K.K.",
+   "b": "Oomura Kogyou K.K.",
+   "verdict": "match",
+   "nature": "jp-ou-oo-long-vowel"
+  },
+  {
+   "a": "Yūki Bōeki K.K.",
+   "b": "Yuuki Boueki Co Ltd",
+   "verdict": "match",
+   "nature": "jp-uu-ou-long-vowel"
+  },
+  {
+   "a": "Seiryū Kaiun Kabushiki Kaisha",
+   "b": "Seiryu Kaiun Co., Ltd. (清流海運株式会社)",
+   "verdict": "match",
+   "nature": "jp-kanji-parenthetical"
+  },
+  {
+   "a": "Kabushiki Kaisha Nanbu Tekkō",
+   "b": "Nambu Tekko Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-nb-mb-hepburn"
+  },
+  {
+   "a": "Kabushiki Kaisha Shinpo Denki",
+   "b": "Shimpo Denki Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-np-mp-hepburn"
+  },
+  {
+   "a": "Hirata Zōsen Kabushiki Kaisha",
+   "b": "Hirata Shipbuilding Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-zosen-shipbuilding"
+  },
+  {
+   "a": "Isikawa Bōeki K.K.",
+   "b": "Ishikawa Boeki Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-kunrei-si-shi"
+  },
+  {
+   "a": "Tuduki Unyu K.K.",
+   "b": "Tsuzuki Unyu Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-kunrei-tu-tsu-du-zu"
+  },
+  {
+   "a": "Zyōnan Kōgyō K.K.",
+   "b": "Jonan Kogyo Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-kunrei-zy-j"
+  },
+  {
+   "a": "M/V Hakuyō Maru",
+   "b": "MV HAKUYO MARU",
+   "verdict": "match",
+   "nature": "jp-vessel-macron"
+  },
+  {
+   "a": "Yamazoe Kagaku Kōgyō K.K.",
+   "b": "Yamazoe Chemical Industries Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-kagaku-kogyo-chemical"
+  },
+  {
+   "a": "Kabushiki Kaisha Ōhashi Denshi",
+   "b": "Ohashi Electronics Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-denshi-electronics"
+  },
+  {
+   "a": "Fukagawa Suisan Kabushiki Kaisha",
+   "b": "Fukagawa Fisheries Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-suisan-fisheries"
+  },
+  {
+   "a": "Kabushiki Kaisha Sakaide Kōun",
+   "b": "Sakaide Stevedoring Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-koun-stevedoring"
+  },
+  {
+   "a": "Seihō Maru No. 3",
+   "b": "SEIHO MARU NO. 3",
+   "verdict": "match",
+   "nature": "jp-vessel-macron-numbered"
+  },
+  {
+   "a": "Tsurumaki Sōko Kabushiki Kaisha",
+   "b": "Tsurumaki Warehouse Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-soko-warehouse"
+  },
+  {
+   "a": "Hanseong Sangsa Co., Ltd.",
+   "b": "Hansung Sangsa Co., Ltd.",
+   "verdict": "match",
+   "nature": "kr-eo-u-variant"
+  },
+  {
+   "a": "Bomyeong Heavy Industries Co., Ltd.",
+   "b": "Pomyung Junggongeop Co., Ltd.",
+   "verdict": "match",
+   "nature": "kr-variant-translation"
+  },
+  {
+   "a": "Cheonghae Marine Co., Ltd.",
+   "b": "Chunghae Marine Co., Ltd.",
+   "verdict": "match",
+   "nature": "kr-eo-u-variant"
+  },
+  {
+   "a": "Ilseon Jeongmil Co., Ltd.",
+   "b": "Ilsun Precision Co., Ltd.",
+   "verdict": "match",
+   "nature": "kr-variant-translation"
+  },
+  {
+   "a": "Yeonhwa Mulsan Co., Ltd.",
+   "b": "Yunhwa Mulsan Co., Ltd.",
+   "verdict": "match",
+   "nature": "kr-eo-u-variant"
+  },
+  {
+   "a": "Kabushiki Kaisha Miyahara Kaiun",
+   "b": "Miyahara Kaiun K.K.",
+   "verdict": "match",
+   "nature": "jp-kk-position"
+  },
+  {
+   "a": "Ōkubo Tsūshō K.K.",
+   "b": "Okubo Tsusho Co., Ltd.",
+   "verdict": "match",
+   "nature": "jp-macron-dropped-tsusho"
+  },
+  {
+   "a": "Kabushiki Kaisha Nishihama Kikai",
+   "b": "Nishihama Machinery Co., Ltd. (西浜機械)",
+   "verdict": "match",
+   "nature": "jp-kikai-machinery-kanji"
+  },
+  {
+   "a": "Ōtsuki Shōji K.K.",
+   "b": "Ōtsuki Kōgyō K.K.",
+   "verdict": "different",
+   "nature": "jp-shoji-kogyo"
+  },
+  {
+   "a": "Hokushin Kaiun Co., Ltd.",
+   "b": "Hokushin Kisen Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-kaiun-kisen"
+  },
+  {
+   "a": "Toho Unyu K.K.",
+   "b": "Tōhō Unsō K.K.",
+   "verdict": "different",
+   "nature": "jp-unyu-unso"
+  },
+  {
+   "a": "Shinwa Kōgyō K.K.",
+   "b": "Shinwa Kōsan K.K.",
+   "verdict": "different",
+   "nature": "jp-kogyo-kosan"
+  },
+  {
+   "a": "Chūō Seisakusho Co., Ltd.",
+   "b": "Chūō Seikōsho Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-seisakusho-seikosho"
+  },
+  {
+   "a": "Fujimoto Sangyo Co., Ltd.",
+   "b": "Fujimoto Sangyo Kaihatsu Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-added-word"
+  },
+  {
+   "a": "Kawanami Boeki Co., Ltd.",
+   "b": "Kawanami Bussan Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-boeki-bussan"
+  },
+  {
+   "a": "Sakuragawa Kōgyō K.K.",
+   "b": "Sakuragaoka Kōgyō K.K.",
+   "verdict": "different",
+   "nature": "jp-place-swap"
+  },
+  {
+   "a": "Aoyagi Seisakusho Co., Ltd.",
+   "b": "Aoyama Seisakusho Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-surname-swap"
+  },
+  {
+   "a": "Matsuzono Industries Co., Ltd.",
+   "b": "Matsuzono Industrial Transport Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-added-word-en"
+  },
+  {
+   "a": "Nishikori Kaiun Co., Ltd.",
+   "b": "Nishikori Kaiji Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-kaiun-kaiji"
+  },
+  {
+   "a": "Ryusei Unyu Co., Ltd.",
+   "b": "Ryusen Unyu Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-near-string"
+  },
+  {
+   "a": "Hōryū Kōsan K.K.",
+   "b": "Hōryū Fudōsan K.K.",
+   "verdict": "different",
+   "nature": "jp-kosan-fudosan"
+  },
+  {
+   "a": "Kitazono Seisakusho Co., Ltd.",
+   "b": "Kitazono Tekkōsho Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-seisakusho-tekkosho"
+  },
+  {
+   "a": "Ōmura Kōgyō K.K.",
+   "b": "Ōmura Kōki K.K.",
+   "verdict": "different",
+   "nature": "jp-kogyo-koki"
+  },
+  {
+   "a": "Yūki Bōeki K.K.",
+   "b": "Yūki Shōji K.K.",
+   "verdict": "different",
+   "nature": "jp-boeki-shoji"
+  },
+  {
+   "a": "Seiryū Kaiun K.K.",
+   "b": "Seiun Kaiun K.K.",
+   "verdict": "different",
+   "nature": "jp-near-string"
+  },
+  {
+   "a": "Nambu Tekko Co., Ltd.",
+   "b": "Nambu Tekkosho Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-tekko-tekkosho"
+  },
+  {
+   "a": "Shimpo Denki Co., Ltd.",
+   "b": "Shimpo Denshi Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-denki-denshi"
+  },
+  {
+   "a": "Hirata Zosen Co., Ltd.",
+   "b": "Hirata Zōki Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-zosen-zoki"
+  },
+  {
+   "a": "Ishikawa Bōeki K.K.",
+   "b": "Ishizaki Bōeki K.K.",
+   "verdict": "different",
+   "nature": "jp-surname-swap"
+  },
+  {
+   "a": "Tsuzuki Unyu Co., Ltd.",
+   "b": "Tsuzuki Kōtsū Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-unyu-kotsu"
+  },
+  {
+   "a": "Jonan Kogyo Co., Ltd.",
+   "b": "Johoku Kogyo Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-nan-hoku"
+  },
+  {
+   "a": "Shirakaba Shokai Co., Ltd.",
+   "b": "Shirakawa Shōkai Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-near-string"
+  },
+  {
+   "a": "Yamazoe Chemical Industries Co., Ltd.",
+   "b": "Yamazoe Chemical Trading Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-industries-trading"
+  },
+  {
+   "a": "Ohashi Electronics Co., Ltd.",
+   "b": "Ohashi Electric Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-electronics-electric"
+  },
+  {
+   "a": "Fukagawa Suisan K.K.",
+   "b": "Fukagawa Reizō K.K.",
+   "verdict": "different",
+   "nature": "jp-suisan-reizo"
+  },
+  {
+   "a": "Sakaide Kōun K.K.",
+   "b": "Sakaide Kaiun K.K.",
+   "verdict": "different",
+   "nature": "jp-koun-kaiun"
+  },
+  {
+   "a": "Nagasato Yuso Co., Ltd.",
+   "b": "Nagasako Yūsō Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-near-string"
+  },
+  {
+   "a": "Tsurumaki Warehouse Co., Ltd.",
+   "b": "Tsurumaki Transport Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-warehouse-transport"
+  },
+  {
+   "a": "Hanseong Sangsa Co., Ltd.",
+   "b": "Hanseong Mulsan Co., Ltd.",
+   "verdict": "different",
+   "nature": "kr-sangsa-mulsan"
+  },
+  {
+   "a": "Bomyeong Heavy Industries Co., Ltd.",
+   "b": "Bomyeong Shipbuilding Co., Ltd.",
+   "verdict": "different",
+   "nature": "kr-activity-word"
+  },
+  {
+   "a": "Cheonghae Marine Co., Ltd.",
+   "b": "Cheongho Marine Co., Ltd.",
+   "verdict": "different",
+   "nature": "kr-near-string"
+  },
+  {
+   "a": "Ilsun Precision Co., Ltd.",
+   "b": "Ilsin Precision Co., Ltd.",
+   "verdict": "different",
+   "nature": "kr-near-string"
+  },
+  {
+   "a": "Yeonhwa Mulsan Co., Ltd.",
+   "b": "Yeonhwa Mulsan Vietnam Co., Ltd.",
+   "verdict": "different",
+   "nature": "kr-country-subsidiary"
+  },
+  {
+   "a": "Miyahara Kaiun K.K.",
+   "b": "Miyahara Kaiun Singapore Pte. Ltd.",
+   "verdict": "different",
+   "nature": "jp-country-subsidiary"
+  },
+  {
+   "a": "Okubo Tsusho Co., Ltd.",
+   "b": "Okubo Tsūun Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-tsusho-tsuun"
+  },
+  {
+   "a": "Nishihama Machinery Co., Ltd.",
+   "b": "Nishihama Machine Tools Co., Ltd.",
+   "verdict": "different",
+   "nature": "jp-added-word-en"
+  },
+  {
+   "a": "MV Hakuyo Maru",
+   "b": "MV Hakuyo Maru No. 2",
+   "verdict": "different",
+   "nature": "jp-vessel-numbered-sibling"
+  },
+  {
+   "a": "Seiho Maru No. 3",
+   "b": "Seiho Maru No. 8",
+   "verdict": "different",
+   "nature": "jp-vessel-numbered-sibling"
+  },
+  {
+   "a": "Naviera Golfo de San Miguel, S.A. — Folio 155874 (S) Registro Público de Panamá",
+   "b": "Naviera Golfo de San Miguel S.A.",
+   "verdict": "match",
+   "nature": "residue-panama-folio"
+  },
+  {
+   "a": "COMERCIALIZADORA TEXTIL DEL NORTE SA DE CV RFC CTN950812K73",
+   "b": "Comercializadora Textil del Norte, S.A. de C.V.",
+   "verdict": "match",
+   "nature": "residue-rfc-glued"
+  },
+  {
+   "a": "AGROINDUSTRIAS VALLE DE MEXICALI SAPI DE CV / RFC: AVM040917QX2",
+   "b": "Agroindustrias Valle de Mexicali, S.A.P.I. de C.V.",
+   "verdict": "match",
+   "nature": "residue-rfc"
+  },
+  {
+   "a": "Kabushiki Kaisha Minamisawa Kinzoku (法人番号 5010401099876)",
+   "b": "Minamisawa Kinzoku Co., Ltd.",
+   "verdict": "match",
+   "nature": "residue-jp-corporate-number"
+  },
+  {
+   "a": "Corporate Number 8011001077453 — Kurihara Kaiun Kabushiki Kaisha",
+   "b": "Kurihara Kaiun K.K.",
+   "verdict": "match",
+   "nature": "residue-jp-corporate-number-en"
+  },
+  {
+   "a": "Distribuidora Peninsular de Alimentos S. de R.L. de C.V., Av. Insurgentes Sur 1602, Col. Crédito Constructor, CDMX",
+   "b": "Distribuidora Peninsular de Alimentos, S. de R.L. de C.V.",
+   "verdict": "match",
+   "nature": "residue-address-glued"
+  },
+  {
+   "a": "SHIPPER: TRANSPORTES REFRIGERADOS DEL SURESTE SA DE CV",
+   "b": "Transportes Refrigerados del Sureste, S.A. de C.V.",
+   "verdict": "match",
+   "nature": "residue-party-label"
+  },
+  {
+   "a": "CONSIGNEE: SAKAMOTO TSUSHO KABUSHIKI KAISHA",
+   "b": "Sakamoto Tsūshō Co., Ltd.",
+   "verdict": "match",
+   "nature": "residue-party-label-romanisation"
+  },
+  {
+   "a": "NOTIFY PARTY: NAVIERA ISLA CEBACO SA ATTN CAPT R. MORENO",
+   "b": "Naviera Isla Cébaco, S.A.",
+   "verdict": "match",
+   "nature": "residue-notify-line"
+  },
+  {
+   "a": "/BENEFICIARY/ PESQUERA DEL ARCHIPIELAGO SA/PANAMA",
+   "b": "Pesquera del Archipiélago S.A.",
+   "verdict": "match",
+   "nature": "residue-swift-beneficiary"
+  },
+  {
+   "a": ":59:/PA12BNPA00001234567890 IMPORTADORA MEDINA Y CASTELLANOS SA DE CV",
+   "b": "Importadora Medina y Castellanos, S.A. de C.V.",
+   "verdict": "match",
+   "nature": "residue-swift-59"
+  },
+  {
+   "a": "ORDERING CUSTOMER: KABUSHIKI KAISHA HANAMURA BOEKI, 2-14-7 KAIGAN, MINATO-KU, TOKYO",
+   "b": "Hanamura Bōeki K.K.",
+   "verdict": "match",
+   "nature": "residue-swift-50-address"
+  },
+  {
+   "a": "TRANSPORTADORA INTERNACIONAL DE CARG A PESADA DEL PACIFICO SA DE CV",
+   "b": "Transportadora Internacional de Carga Pesada del Pacífico, S.A. de C.V.",
+   "verdict": "match",
+   "nature": "residue-swift-35-cut"
+  },
+  {
+   "a": "CIA MARITIMA DEL GOLFO DE PANAMA S A / CTA 0012 3456 7890",
+   "b": "Compañía Marítima del Golfo de Panamá, S.A.",
+   "verdict": "match",
+   "nature": "residue-bank-account"
+  },
+  {
+   "a": "REF: INV-2026-0781 / SERVICIOS ADUANALES OCHOA Y MORALES SC",
+   "b": "Servicios Aduanales Ochoa y Morales, S.C.",
+   "verdict": "match",
+   "nature": "residue-invoice-ref"
+  },
+  {
+   "a": "M/V CORAZON DEL ISTMO V.014E",
+   "b": "MV Corazón del Istmo",
+   "verdict": "match",
+   "nature": "residue-voyage-number"
+  },
+  {
+   "a": "MT BAHIA DE CHARCO AZUL / VOY 2611 / LOADPORT BALBOA",
+   "b": "M/T Bahía de Charco Azul",
+   "verdict": "match",
+   "nature": "residue-voyage-port"
+  },
+  {
+   "a": "MV NORTHERN LAGOON EXPRESS – POL BELIZE CITY – POD PROGRESO",
+   "b": "Northern Lagoon Express",
+   "verdict": "match",
+   "nature": "residue-port-pair"
+  },
+  {
+   "a": "Kimura Sōko Kabushiki Kaisha 〒105-0022 東京都港区海岸1-2-3",
+   "b": "Kimura Soko Co., Ltd.",
+   "verdict": "match",
+   "nature": "residue-jp-address"
+  },
+  {
+   "a": "OGATA UNYU K.K. (TEL 03-5555-0100)",
+   "b": "Ogata Unyu Kabushiki Kaisha",
+   "verdict": "match",
+   "nature": "residue-phone"
+  },
+  {
+   "a": "MARIA DEL ROSARIO ANZALDUA GARCIA / CURP AAGR790315MNLNRS08",
+   "b": "María del Rosario Anzaldúa García",
+   "verdict": "match",
+   "nature": "residue-curp-person"
+  },
+  {
+   "a": "JOSE ANTONIO ESQUIVEL BENAVIDES RFC EEBJ800220A1 PERSONA FISICA CON ACTIVIDAD EMPRESARIAL",
+   "b": "José Antonio Esquivel Benavides",
+   "verdict": "match",
+   "nature": "residue-rfc-person"
+  },
+  {
+   "a": "Grupo Logístico Ancla del Caribe, S.A. — Ficha 887123, Documento 2456789",
+   "b": "GRUPO LOGISTICO ANCLA DEL CARIBE SA",
+   "verdict": "match",
+   "nature": "residue-panama-ficha"
+  },
+  {
+   "a": "SOC. ANON. TALLERES NAVALES DE VACAMONTE (RUC 1234567-1-654321 DV 45)",
+   "b": "Talleres Navales de Vacamonte, S.A.",
+   "verdict": "match",
+   "nature": "residue-panama-ruc"
+  },
+  {
+   "a": "Pescados y Mariscos del Golfo Ltda. — NIT 900.123.456-7",
+   "b": "Pescados y Mariscos del Golfo Limitada",
+   "verdict": "match",
+   "nature": "residue-nit"
+  },
+  {
+   "a": "Companhia Mineira de Cabotagem S.A. CNPJ 12.345.678/0001-90",
+   "b": "Cia. Mineira de Cabotagem S.A.",
+   "verdict": "match",
+   "nature": "residue-cnpj"
+  },
+  {
+   "a": "ARMADORES DEL PACIFICO SUR SA C/O AGENCIA MARITIMA CRISTOBAL",
+   "b": "Armadores del Pacífico Sur, S.A.",
+   "verdict": "match",
+   "nature": "residue-care-of"
+  },
+  {
+   "a": "Yoshinaga Kaiun K.K. as agents only",
+   "b": "Yoshinaga Kaiun Co., Ltd.",
+   "verdict": "match",
+   "nature": "residue-as-agents"
+  },
+  {
+   "a": "OWNERS: HIGASHIYAMA SENPAKU KABUSHIKI KAISHA, TOKYO",
+   "b": "Higashiyama Senpaku Co., Ltd.",
+   "verdict": "match",
+   "nature": "residue-owners-label"
+  },
+  {
+   "a": "CHARTERERS: ARIMURA SHOJI CO LTD",
+   "b": "Arimura Shōji Kabushiki Kaisha",
+   "verdict": "match",
+   "nature": "residue-charterers-label"
+  },
+  {
+   "a": "MV SIRENA DE TABOGA IMO N/A CALL SIGN HP1234 FLAG PANAMA",
+   "b": "M/N Sirena de Taboga",
+   "verdict": "match",
+   "nature": "residue-callsign-flag"
+  },
+  {
+   "a": "B/M ESMERALDA DEL DARIEN — MATRICULA PMA-45678-B",
+   "b": "Esmeralda del Darién",
+   "verdict": "match",
+   "nature": "residue-matricula"
+  },
+  {
+   "a": "LPG/C CIELO DE COLON (BUILT 2009 / GT 4,512 / PANAMA)",
+   "b": "LPG/C Cielo de Colón",
+   "verdict": "match",
+   "nature": "residue-particulars"
+  },
+  {
+   "a": "*** COMPANIA DE SEGUROS MARITIMOS ISTMENOS S.A. *** PANAMA, REP. DE PANAMA",
+   "b": "Compañía de Seguros Marítimos Istmeños, S.A.",
+   "verdict": "match",
+   "nature": "residue-asterisks-country"
+  },
+  {
+   "a": "APPLICANT: KANEDA SANGYO KK / 3-1-1 MARUNOUCHI CHIYODA-KU",
+   "b": "Kaneda Sangyō Kabushiki Kaisha",
+   "verdict": "match",
+   "nature": "residue-applicant-label"
+  },
+  {
+   "a": "50: IMPORTADORA Y EXPORTADORA DOS OCEANOS SA DE CV",
+   "b": "Importadora y Exportadora Dos Océanos, S.A. de C.V.",
+   "verdict": "match",
+   "nature": "residue-swift-50"
+  },
+  {
+   "a": "70: /RFB/INV 4471 PAGO A ELECTRONICA INDUSTRIAL MONTERREY SA DE CV",
+   "b": "Electrónica Industrial Monterrey, S.A. de C.V.",
+   "verdict": "match",
+   "nature": "residue-swift-70"
+  },
+  {
+   "a": "Registro Público de Panamá, Tomo 1245, Folio 332, Asiento 1 — Inversiones Marítimas Bahía Honda, S.A.",
+   "b": "Inversiones Marítimas Bahía Honda S.A.",
+   "verdict": "match",
+   "nature": "residue-tomo-folio"
+  },
+  {
+   "a": "SERVICOS DE REBOCADORES COSTA VERDE LTDA CNPJ 98.765.432/0001-10 SANTOS SP",
+   "b": "Serviços de Rebocadores Costa Verde Ltda.",
+   "verdict": "match",
+   "nature": "residue-cnpj-city"
+  },
+  {
+   "a": "TAKASE BOEKI CO LTD JP",
+   "b": "Takase Bōeki K.K.",
+   "verdict": "match",
+   "nature": "residue-country-code"
+  },
+  {
+   "a": "Naviera Golfo de San Miguel, S.A. — Folio 155874 (S)",
+   "b": "Naviera Golfo de Montijo, S.A.",
+   "verdict": "different",
+   "nature": "residue-folio-different-gulf"
+  },
+  {
+   "a": "COMERCIALIZADORA TEXTIL DEL NORTE SA DE CV RFC CTN950812K73",
+   "b": "Comercializadora Textil del Noreste, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "residue-rfc-norte-noreste"
+  },
+  {
+   "a": "AGROINDUSTRIAS VALLE DE MEXICALI SAPI DE CV / RFC: AVM040917QX2",
+   "b": "Agroindustrias Valle de Mexicali Exportaciones, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "residue-rfc-added-word"
+  },
+  {
+   "a": "Kabushiki Kaisha Minamisawa Kinzoku (法人番号 5010401099876)",
+   "b": "Minamisawa Kinzoku Kōgyō Co., Ltd.",
+   "verdict": "different",
+   "nature": "residue-jp-number-added-word"
+  },
+  {
+   "a": "Corporate Number 8011001077453 — Kurihara Kaiun Kabushiki Kaisha",
+   "b": "Kurihara Kisen K.K.",
+   "verdict": "different",
+   "nature": "residue-jp-kaiun-kisen"
+  },
+  {
+   "a": "Distribuidora Peninsular de Alimentos S. de R.L. de C.V., Av. Insurgentes Sur 1602, CDMX",
+   "b": "Distribuidora Peninsular de Bebidas, S. de R.L. de C.V.",
+   "verdict": "different",
+   "nature": "residue-address-activity"
+  },
+  {
+   "a": "SHIPPER: TRANSPORTES REFRIGERADOS DEL SURESTE SA DE CV",
+   "b": "Transportes Refrigerados del Suroeste, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "residue-sureste-suroeste"
+  },
+  {
+   "a": "CONSIGNEE: SAKAMOTO TSUSHO KABUSHIKI KAISHA",
+   "b": "Sakamoto Tsūun Co., Ltd.",
+   "verdict": "different",
+   "nature": "residue-tsusho-tsuun"
+  },
+  {
+   "a": "NOTIFY PARTY: NAVIERA ISLA CEBACO SA ATTN CAPT R. MORENO",
+   "b": "Naviera Isla Caña, S.A.",
+   "verdict": "different",
+   "nature": "residue-notify-different-island"
+  },
+  {
+   "a": "/BENEFICIARY/ PESQUERA DEL ARCHIPIELAGO SA/PANAMA",
+   "b": "Pesquera del Archipiélago de las Perlas, S.A.",
+   "verdict": "different",
+   "nature": "residue-added-words"
+  },
+  {
+   "a": ":59:/PA12BNPA00001234567890 IMPORTADORA MEDINA Y CASTELLANOS SA DE CV",
+   "b": "Importadora Medina y Castellón, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "residue-swift-surname-swap"
+  },
+  {
+   "a": "ORDERING CUSTOMER: KABUSHIKI KAISHA HANAMURA BOEKI, MINATO-KU, TOKYO",
+   "b": "Hanamura Bussan K.K.",
+   "verdict": "different",
+   "nature": "residue-boeki-bussan"
+  },
+  {
+   "a": "TRANSPORTADORA INTERNACIONAL DE CARG A PESADA DEL PACIFICO SA DE CV",
+   "b": "Transportadora Internacional de Carga Pesada del Golfo, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "residue-cut-different-region"
+  },
+  {
+   "a": "CIA MARITIMA DEL GOLFO DE PANAMA S A / CTA 0012 3456 7890",
+   "b": "Compañía Marítima del Golfo de Chiriquí, S.A.",
+   "verdict": "different",
+   "nature": "residue-bank-different-gulf"
+  },
+  {
+   "a": "REF: INV-2026-0781 / SERVICIOS ADUANALES OCHOA Y MORALES SC",
+   "b": "Servicios Aduanales Ochoa y Mora, S.C.",
+   "verdict": "different",
+   "nature": "residue-surname-swap"
+  },
+  {
+   "a": "M/V CORAZON DEL ISTMO V.014E",
+   "b": "MV Corazón del Istmo II",
+   "verdict": "different",
+   "nature": "residue-voyage-numeral-sibling"
+  },
+  {
+   "a": "MT BAHIA DE CHARCO AZUL / VOY 2611 / LOADPORT BALBOA",
+   "b": "M/T Bahía de Charco Verde",
+   "verdict": "different",
+   "nature": "residue-voyage-different-vessel"
+  },
+  {
+   "a": "MV NORTHERN LAGOON EXPRESS – POL BELIZE CITY – POD PROGRESO",
+   "b": "MV Northern Lagoon Trader",
+   "verdict": "different",
+   "nature": "residue-port-different-vessel"
+  },
+  {
+   "a": "Kimura Sōko Kabushiki Kaisha 〒105-0022 東京都港区海岸1-2-3",
+   "b": "Kimura Unyu Sōko Co., Ltd.",
+   "verdict": "different",
+   "nature": "residue-jp-added-word"
+  },
+  {
+   "a": "OGATA UNYU K.K. (TEL 03-5555-0100)",
+   "b": "Ogata Kōun K.K.",
+   "verdict": "different",
+   "nature": "residue-unyu-koun"
+  },
+  {
+   "a": "MARIA DEL ROSARIO ANZALDUA GARCIA / CURP AAGR790315MNLNRS08",
+   "b": "María del Rosario Anzaldúa Guerra",
+   "verdict": "different",
+   "nature": "residue-curp-surname-swap"
+  },
+  {
+   "a": "JOSE ANTONIO ESQUIVEL BENAVIDES RFC EEBJ800220A1",
+   "b": "José Alberto Esquivel Benavides",
+   "verdict": "different",
+   "nature": "residue-rfc-given-name"
+  },
+  {
+   "a": "Grupo Logístico Ancla del Caribe, S.A. — Ficha 887123",
+   "b": "Grupo Logístico Ancla del Pacífico, S.A.",
+   "verdict": "different",
+   "nature": "residue-ficha-different-ocean"
+  },
+  {
+   "a": "SOC. ANON. TALLERES NAVALES DE VACAMONTE (RUC 1234567-1-654321 DV 45)",
+   "b": "Talleres Navales de Veracruz, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "residue-ruc-different-place"
+  },
+  {
+   "a": "Pescados y Mariscos del Golfo Ltda. — NIT 900.123.456-7",
+   "b": "Pescados y Mariscos del Pacífico Ltda.",
+   "verdict": "different",
+   "nature": "residue-nit-different-name"
+  },
+  {
+   "a": "Companhia Mineira de Cabotagem S.A. CNPJ 12.345.678/0001-90",
+   "b": "Companhia Mineira de Navegação S.A.",
+   "verdict": "different",
+   "nature": "residue-cnpj-activity"
+  },
+  {
+   "a": "ARMADORES DEL PACIFICO SUR SA C/O AGENCIA MARITIMA CRISTOBAL",
+   "b": "Agencia Marítima Cristóbal, S.A.",
+   "verdict": "different",
+   "nature": "residue-care-of-agent-not-principal"
+  },
+  {
+   "a": "Yoshinaga Kaiun K.K. as agents only",
+   "b": "Yoshinaga Shōji K.K.",
+   "verdict": "different",
+   "nature": "residue-kaiun-shoji"
+  },
+  {
+   "a": "OWNERS: HIGASHIYAMA SENPAKU KABUSHIKI KAISHA, TOKYO",
+   "b": "Higashiyama Senpaku Kanri Co., Ltd.",
+   "verdict": "different",
+   "nature": "residue-owner-vs-manager"
+  },
+  {
+   "a": "CHARTERERS: ARIMURA SHOJI CO LTD",
+   "b": "Arimura Kaiun Co., Ltd.",
+   "verdict": "different",
+   "nature": "residue-shoji-kaiun"
+  },
+  {
+   "a": "MV SIRENA DE TABOGA IMO N/A CALL SIGN HP1234 FLAG PANAMA",
+   "b": "M/N Sirena de Taboga II",
+   "verdict": "different",
+   "nature": "residue-numeral-sibling"
+  },
+  {
+   "a": "B/M ESMERALDA DEL DARIEN — MATRICULA PMA-45678-B",
+   "b": "B/M Esmeralda del Darién III",
+   "verdict": "different",
+   "nature": "residue-numeral-sibling"
+  },
+  {
+   "a": "LPG/C CIELO DE COLON (BUILT 2009 / GT 4,512 / PANAMA)",
+   "b": "LPG/C Cielos de Colón",
+   "verdict": "different",
+   "nature": "residue-plural-sibling"
+  },
+  {
+   "a": "*** COMPANIA DE SEGUROS MARITIMOS ISTMENOS S.A. ***",
+   "b": "Compañía de Seguros Generales Istmeños, S.A.",
+   "verdict": "different",
+   "nature": "residue-activity-word"
+  },
+  {
+   "a": "APPLICANT: KANEDA SANGYO KK / 3-1-1 MARUNOUCHI CHIYODA-KU",
+   "b": "Kaneda Sangyō (Thailand) Co., Ltd.",
+   "verdict": "different",
+   "nature": "residue-country-subsidiary"
+  },
+  {
+   "a": "50: IMPORTADORA Y EXPORTADORA DOS OCEANOS SA DE CV",
+   "b": "Importadora y Exportadora Tres Océanos, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "residue-numeral-word"
+  },
+  {
+   "a": "70: /RFB/INV 4471 PAGO A ELECTRONICA INDUSTRIAL MONTERREY SA DE CV",
+   "b": "Electrónica Industrial de Monterrey Norte, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "residue-added-words"
+  },
+  {
+   "a": "Registro Público de Panamá, Tomo 1245, Folio 332 — Inversiones Marítimas Bahía Honda, S.A.",
+   "b": "Inversiones Marítimas Bahía Escondida, S.A.",
+   "verdict": "different",
+   "nature": "residue-tomo-different-bay"
+  },
+  {
+   "a": "SERVICOS DE REBOCADORES COSTA VERDE LTDA CNPJ 98.765.432/0001-10 SANTOS SP",
+   "b": "Serviços de Rebocadores Costa Azul Ltda.",
+   "verdict": "different",
+   "nature": "residue-cnpj-color-word"
+  },
+  {
+   "a": "TAKASE BOEKI CO LTD JP",
+   "b": "Takase Bōeki (Hong Kong) Ltd.",
+   "verdict": "different",
+   "nature": "residue-country-subsidiary"
+  },
+  {
+   "a": "MV Aurora del Istmo (ex Northern Aurora)",
+   "b": "Northern Aurora",
+   "verdict": "match",
+   "nature": "trap-former-name-alias"
+  },
+  {
+   "a": "MT Kaisei Maru (ex Golden Verbena)",
+   "b": "GOLDEN VERBENA",
+   "verdict": "match",
+   "nature": "trap-former-name-alias"
+  },
+  {
+   "a": "Bahía Serena (ex Serene Bay)",
+   "b": "MV Serene Bay",
+   "verdict": "match",
+   "nature": "trap-former-name-alias"
+  },
+  {
+   "a": "MV Estrella de Belén (ex Bethlehem Star)",
+   "b": "Bethlehem Star",
+   "verdict": "match",
+   "nature": "trap-former-name-alias"
+  },
+  {
+   "a": "MT Nuevo Amanecer (ex New Dawn, ex Dawn Trader)",
+   "b": "Dawn Trader",
+   "verdict": "match",
+   "nature": "trap-second-former-name"
+  },
+  {
+   "a": "Comercial Peñuelas S.A., Sucursal Guadalajara",
+   "b": "Comercial Peñuelas, S.A.",
+   "verdict": "match",
+   "nature": "trap-branch-sucursal"
+  },
+  {
+   "a": "Hanamori Shōji K.K., Osaka Branch",
+   "b": "Hanamori Shoji Co., Ltd.",
+   "verdict": "match",
+   "nature": "trap-branch-en"
+  },
+  {
+   "a": "Hanamori Shoji Co., Ltd. Nagoya Shiten",
+   "b": "Hanamori Shōji Kabushiki Kaisha",
+   "verdict": "match",
+   "nature": "trap-branch-shiten"
+  },
+  {
+   "a": "Marítima Andrade Ltda. – Filial Paranaguá",
+   "b": "Marítima Andrade Ltda.",
+   "verdict": "match",
+   "nature": "trap-branch-filial"
+  },
+  {
+   "a": "Naviera Golfo Azul, S.A. (agencia Balboa)",
+   "b": "Naviera Golfo Azul S.A.",
+   "verdict": "match",
+   "nature": "trap-branch-agencia"
+  },
+  {
+   "a": "Remolcadores del Canal S.A. – Sucursal Cristóbal",
+   "b": "Remolcadores del Canal, S.A.",
+   "verdict": "match",
+   "nature": "trap-branch-sucursal"
+  },
+  {
+   "a": "Compañía Panameña de Remolque y Salvamento, S.A.",
+   "b": "Cía. Panameña de Remolque y Salvamento S.A.",
+   "verdict": "match",
+   "nature": "trap-cia-abbrev"
+  },
+  {
+   "a": "Sociedad Anónima Talleres Ibarra",
+   "b": "Talleres Ibarra, S.A.",
+   "verdict": "match",
+   "nature": "trap-form-fronted"
+  },
+  {
+   "a": "Sociedad Anónima Promotora de Inversión de Capital Variable Textiles Roldán",
+   "b": "Textiles Roldán, S.A.P.I. de C.V.",
+   "verdict": "match",
+   "nature": "trap-sapi-expanded-fronted"
+  },
+  {
+   "a": "Empresa Individual de Responsabilidade Limitada Duarte Pescados",
+   "b": "Duarte Pescados EIRELI",
+   "verdict": "match",
+   "nature": "trap-eireli-expanded-fronted"
+  },
+  {
+   "a": "Ferrer y Ballesteros, S. en C.",
+   "b": "S. en C. Ferrer y Ballesteros",
+   "verdict": "match",
+   "nature": "trap-form-fronted"
+  },
+  {
+   "a": "Importaciones Zapata, S. de R.L. de C.V.",
+   "b": "Importaciones Zapata SRL de CV",
+   "verdict": "match",
+   "nature": "trap-srl-abbrev"
+  },
+  {
+   "a": "The Belize Mahogany Company Limited",
+   "b": "Belize Mahogany Co. Ltd.",
+   "verdict": "match",
+   "nature": "trap-the-dropped"
+  },
+  {
+   "a": "Corporación Marítima del Pacífico Central",
+   "b": "Corp. Marítima del Pacífico Central",
+   "verdict": "match",
+   "nature": "trap-corp-abbrev"
+  },
+  {
+   "a": "Kabushiki Gaisha Morioka Tekkō",
+   "b": "Morioka Tekko Kabushiki Kaisha",
+   "verdict": "match",
+   "nature": "trap-gaisha-kaisha"
+  },
+  {
+   "a": "(株)Kuramochi Kōgyō",
+   "b": "Kuramochi Kogyo Co., Ltd.",
+   "verdict": "match",
+   "nature": "trap-kabu-parenthetical"
+  },
+  {
+   "a": "㈱Ōnishi Denki",
+   "b": "Onishi Denki Co., Ltd.",
+   "verdict": "match",
+   "nature": "trap-kabu-unicode"
+  },
+  {
+   "a": "Kabushiki Kaisha Sawamura (Sawamura Corporation)",
+   "b": "Sawamura Corporation",
+   "verdict": "match",
+   "nature": "trap-english-name-parenthetical"
+  },
+  {
+   "a": "Yūgen Kaisha Tanigawa Suisan",
+   "b": "Tanigawa Suisan Y.K.",
+   "verdict": "match",
+   "nature": "trap-yk-form"
+  },
+  {
+   "a": "Gōdō Kaisha Nishida Kōmuten",
+   "b": "Nishida Komuten G.K.",
+   "verdict": "match",
+   "nature": "trap-gk-form"
+  },
+  {
+   "a": "Rojas Hermanos, S.A. de C.V. d/b/a Ferretería El Tornillo",
+   "b": "Ferretería El Tornillo",
+   "verdict": "match",
+   "nature": "trap-dba-alias"
+  },
+  {
+   "a": "Marisquería El Puerto (Pescados Anzures, S. de R.L.)",
+   "b": "Pescados Anzures S. de R.L.",
+   "verdict": "match",
+   "nature": "trap-trade-name-owner-parenthetical"
+  },
+  {
+   "a": "MV Perla Negra No. 2",
+   "b": "PERLA NEGRA 2",
+   "verdict": "match",
+   "nature": "trap-numbered-same-hull"
+  },
+  {
+   "a": "M/N Perla Negra II",
+   "b": "Perla Negra No. 2",
+   "verdict": "match",
+   "nature": "trap-roman-arabic-numeral"
+  },
+  {
+   "a": "Kōfuku Maru No. 18",
+   "b": "KOFUKU MARU NO.18",
+   "verdict": "match",
+   "nature": "trap-numbered-same-hull"
+  },
+  {
+   "a": "Dai 8 Kōfuku Maru",
+   "b": "Kofuku Maru No. 8",
+   "verdict": "match",
+   "nature": "trap-dai-prefix-numbering"
+  },
+  {
+   "a": "Daini Tsurumi Maru",
+   "b": "Tsurumi Maru No. 2",
+   "verdict": "match",
+   "nature": "trap-daini-numbering"
+  },
+  {
+   "a": "Daisan Hōsei Maru",
+   "b": "Hosei Maru No. 3",
+   "verdict": "match",
+   "nature": "trap-daisan-numbering"
+  },
+  {
+   "a": "Tug Titán del Canal",
+   "b": "Remolcador Titán del Canal",
+   "verdict": "match",
+   "nature": "trap-tug-translation"
+  },
+  {
+   "a": "Barcaza Manglar 3",
+   "b": "Barge MANGLAR 3",
+   "verdict": "match",
+   "nature": "trap-barge-translation"
+  },
+  {
+   "a": "Tug Poderoso",
+   "b": "R/M Poderoso",
+   "verdict": "match",
+   "nature": "trap-tug-prefix"
+  },
+  {
+   "a": "Fishing vessel Doña Elvira",
+   "b": "F/V Dona Elvira",
+   "verdict": "match",
+   "nature": "trap-fv-prefix"
+  },
+  {
+   "a": "Barcaza BRV-12",
+   "b": "Barge BRV 12",
+   "verdict": "match",
+   "nature": "trap-barge-alnum"
+  },
+  {
+   "a": "Kōyō Maru No. 21",
+   "b": "Koyo Maru 21",
+   "verdict": "match",
+   "nature": "trap-numbered-same-hull"
+  },
+  {
+   "a": "LPG/C Aries Gas (ex Gas Aries)",
+   "b": "MT Gas Aries",
+   "verdict": "match",
+   "nature": "trap-former-name-word-order"
+  },
+  {
+   "a": "Kuramochi Kogyo Co., Ltd.",
+   "b": "Kuramochi Kogyo (Mexico), S.A. de C.V.",
+   "verdict": "different",
+   "nature": "trap-country-subsidiary"
+  },
+  {
+   "a": "Textiles Roldán, S.A.P.I. de C.V.",
+   "b": "Textiles Roldán do Brasil Ltda.",
+   "verdict": "different",
+   "nature": "trap-country-subsidiary"
+  },
+  {
+   "a": "Hanamori Shoji Co., Ltd.",
+   "b": "Hanamori Shoji America, Inc.",
+   "verdict": "different",
+   "nature": "trap-country-subsidiary"
+  },
+  {
+   "a": "Comercial Peñuelas, S.A.",
+   "b": "Comercial Peñuelas de Guatemala, S.A.",
+   "verdict": "different",
+   "nature": "trap-country-subsidiary"
+  },
+  {
+   "a": "Grupo Industrial Ferrer, S.A.B. de C.V.",
+   "b": "Ferrer Servicios Logísticos, S.A. de C.V.",
+   "verdict": "different",
+   "nature": "trap-activity-subsidiary"
+  },
+  {
+   "a": "Sawamura Holdings Co., Ltd.",
+   "b": "Sawamura Corporation",
+   "verdict": "different",
+   "nature": "trap-holding-vs-operating"
+  },
+  {
+   "a": "Inversiones Marítimas Andrade, S.A.",
+   "b": "Marítima Andrade Ltda.",
+   "verdict": "different",
+   "nature": "trap-holding-vs-operating"
+  },
+  {
+   "a": "Tanigawa Suisan Y.K.",
+   "b": "Tanigawa Suisan Holdings K.K.",
+   "verdict": "different",
+   "nature": "trap-holding-vs-operating"
+  },
+  {
+   "a": "Belize Mahogany Co. Ltd.",
+   "b": "Belize Mahogany (Panama), S.A.",
+   "verdict": "different",
+   "nature": "trap-other-jurisdiction"
+  },
+  {
+   "a": "Naviera Golfo Azul, S.A.",
+   "b": "Naviera Golfo Azul de Honduras, S. de R.L.",
+   "verdict": "different",
+   "nature": "trap-other-jurisdiction"
+  },
+  {
+   "a": "Ferretería Rojas Hermanos",
+   "b": "Panadería Rojas Hermanos",
+   "verdict": "different",
+   "nature": "trap-family-different-business"
+  },
+  {
+   "a": "Transportes Zapata e Hijos",
+   "b": "Importaciones Zapata e Hijos",
+   "verdict": "different",
+   "nature": "trap-family-different-business"
+  },
+  {
+   "a": "Ōnishi Denki Co., Ltd.",
+   "b": "Ōnishi Denki Kōji Co., Ltd.",
+   "verdict": "different",
+   "nature": "trap-activity-suffix"
+  },
+  {
+   "a": "MV Golden Manatee",
+   "b": "MV Golden Tapir",
+   "verdict": "different",
+   "nature": "trap-sister-ship"
+  },
+  {
+   "a": "MT Aries Gas",
+   "b": "MT Taurus Gas",
+   "verdict": "different",
+   "nature": "trap-sister-ship"
+  },
+  {
+   "a": "Kōyō Maru No. 21",
+   "b": "Kōyō Maru No. 12",
+   "verdict": "different",
+   "nature": "trap-numbered-series"
+  },
+  {
+   "a": "Daini Tsurumi Maru",
+   "b": "Daisan Tsurumi Maru",
+   "verdict": "different",
+   "nature": "trap-dai-series"
+  },
+  {
+   "a": "Perla Negra II",
+   "b": "Perla Negra III",
+   "verdict": "different",
+   "nature": "trap-roman-series"
+  },
+  {
+   "a": "Camaronero Doña Elvira 4",
+   "b": "Camaronero Doña Elvira 5",
+   "verdict": "different",
+   "nature": "trap-numbered-series"
+  },
+  {
+   "a": "Tug Poderoso",
+   "b": "Barge Poderoso",
+   "verdict": "different",
+   "nature": "trap-tug-vs-barge"
+  },
+  {
+   "a": "Remolcador Titán del Canal",
+   "b": "Barcaza Titán del Canal",
+   "verdict": "different",
+   "nature": "trap-tug-vs-barge"
+  },
+  {
+   "a": "MV Estrella de Belén",
+   "b": "Estrella de Belén Shipping, S.A.",
+   "verdict": "different",
+   "nature": "trap-vessel-vs-owner"
+  },
+  {
+   "a": "Kōfuku Maru No. 18",
+   "b": "Kōfuku Kaiun Kabushiki Kaisha",
+   "verdict": "different",
+   "nature": "trap-vessel-vs-owner"
+  },
+  {
+   "a": "MT Nuevo Amanecer",
+   "b": "Nuevo Amanecer Ship Management Inc.",
+   "verdict": "different",
+   "nature": "trap-vessel-vs-manager"
+  },
+  {
+   "a": "Comercial Manzana Verde",
+   "b": "Comercial Manzano Verde",
+   "verdict": "different",
+   "nature": "trap-near-word-es"
+  },
+  {
+   "a": "Marisquería El Puerto",
+   "b": "Marisquería Los Puertos",
+   "verdict": "different",
+   "nature": "trap-shop-plural"
+  },
+  {
+   "a": "Panadería La Espiga",
+   "b": "Panadería Las Espigas",
+   "verdict": "different",
+   "nature": "trap-shop-plural"
+  },
+  {
+   "a": "Padaria Pão Quente",
+   "b": "Padaria Pães Quentes",
+   "verdict": "different",
+   "nature": "trap-shop-plural-pt"
+  },
+  {
+   "a": "Sakura Shōji K.K.",
+   "b": "Sakurai Shōji K.K.",
+   "verdict": "different",
+   "nature": "trap-near-string-jp"
+  },
+  {
+   "a": "Hoshino Kaiun K.K.",
+   "b": "Hoshina Kaiun K.K.",
+   "verdict": "different",
+   "nature": "trap-one-letter-sibling"
+  },
+  {
+   "a": "Tamura Kōgyō K.K.",
+   "b": "Tamura Kōgei K.K.",
+   "verdict": "different",
+   "nature": "trap-near-word-jp"
+  },
+  {
+   "a": "Naviera Corales, S.A.",
+   "b": "Naviera Corrales, S.A.",
+   "verdict": "different",
+   "nature": "trap-near-word-es"
+  },
+  {
+   "a": "Ferretería El Faro",
+   "b": "Ferretería El Foro",
+   "verdict": "different",
+   "nature": "trap-one-letter-sibling"
+  },
+  {
+   "a": "Barcaza BRV-12",
+   "b": "Barcaza BRV-21",
+   "verdict": "different",
+   "nature": "trap-alnum-series"
+  },
+  {
+   "a": "Kabushiki Gaisha Morioka Tekkō",
+   "b": "Morioka Tekkō Hanbai K.K.",
+   "verdict": "different",
+   "nature": "trap-sales-subsidiary"
+  },
+  {
+   "a": "Hosei Maru No. 3",
+   "b": "Hosei Maru No. 33",
+   "verdict": "different",
+   "nature": "trap-numbered-series"
+  },
+  {
+   "a": "Gōdō Kaisha Nishida Kōmuten",
+   "b": "Nishida Kensetsu K.K.",
+   "verdict": "different",
+   "nature": "trap-komuten-kensetsu"
+  },
+  {
+   "a": "Corporación Marítima del Pacífico Central",
+   "b": "Corporación Marítima del Pacífico Sur",
+   "verdict": "different",
+   "nature": "trap-region-word"
+  },
+  {
+   "a": "Duarte Pescados EIRELI",
+   "b": "Duarte Pescados e Frutos do Mar Ltda.",
+   "verdict": "different",
+   "nature": "trap-added-words"
+  },
+  {
+   "a": "Ferretería El Tornillo",
+   "b": "Ferretería El Tornillo de Oro",
+   "verdict": "different",
+   "nature": "trap-shop-added-words"
+  }
+ ]
+}
