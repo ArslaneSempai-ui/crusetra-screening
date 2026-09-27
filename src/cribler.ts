@@ -34,9 +34,9 @@ import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
 import { commitCourant } from "./your-alerts.ts";
 import type { Cellule } from "./measure.ts";
 import {
-  frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD,
-  sembleCoupe, variationVocalique, voyelleEpenthetique, squeletteLongue, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux,
-  choisirSeuils, lireJeu, CHEMINS_APPRENTISSAGE,
+  frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD, sembleCoupe,
+  variationVocalique, voyelleEpenthetique, squeletteLongue, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
+  CHEMINS_APPRENTISSAGE, lecturesDe, pliCantonais, pluriel,
   CHEMIN_VERDICT, RAPPEL_MIN, BLOC_MIN, LONGUEUR_CHAMP,
   type Frequences, type NomPrepare, type Reglage, type JeuMesure,
 } from "./entites.ts";
@@ -162,7 +162,9 @@ type NomIndexe = { brut: string; nom: NomPrepare; entree: EntreeListe; alias?: s
 /** Un mot du vocabulaire des listes : sa forme, ses clés, et les chaînes qui le portent. */
 type MotIndexe = { mot: string; sq: string; repli: string; abregeVu: boolean; noms: number[];
   /** les abjads (a : arabe, h : hébreu) dans l'écriture desquels une chaîne listée porte ce mot */
-  abjadVu: string };
+  abjadVu: string;
+  /** une chaîne listée lue en cantonais porte ce mot */
+  cantonaisVu: boolean };
 
 /**
  * L'INDEX, ET POURQUOI IL NE PERD RIEN.
@@ -206,6 +208,11 @@ export class Index {
   /** la même clé, pour les seuls mots que des chaînes écrites dans un abjad portent : c'est là
    *  qu'un nom latin cherche les leurs (voir CREDIT_ABJAD dans scorePrepares) */
   private readonly parCleAbjadNatif = new Map<string, MotIndexe[]>();
+  /** le pli cantonais (`pliCantonais`) de chaque mot : c'est là qu'un nom lu en cantonais cherche ses mots */
+  private readonly parPliCantonais = new Map<string, MotIndexe[]>();
+  /** le même pli, pour les seuls mots que des chaînes lues en cantonais portent : c'est là qu'un
+   *  nom latin cherche les leurs (voir `cantonais` dans scorePrepares) */
+  private readonly parPliCantonaisNatif = new Map<string, MotIndexe[]>();
   /** les chaînes qui portent un bigramme, par bigramme ET longueur de bloc (« an20 ») : la
    *  borne de longueur du bloc se lit dans la clé, sans parcourir les autres longueurs */
   private readonly bigrammes = new Map<string, number[]>();
@@ -240,9 +247,9 @@ export class Index {
       /* chaque nom et chaque alias, avec leurs variantes (« ex- », annotations) : une variante
          est indexée comme un alias, et le relevé la montre comme la chaîne qui a porté le score */
       const chaines = [[e.nom, undefined], ...e.alias.map((a) => [a, a] as const)] as const;
-      const lectures = chaines.flatMap(([t, a]) => variantes(t).map((v) => [v, v === e.nom ? undefined : v, a] as const));
-      for (const [texte, alias, origine] of lectures) {
-        const prepare = preparerNom(f, texte);
+      const lectures = chaines.flatMap(([t, a]) => lecturesDe(t).map((l) => [l.texte, l.texte === e.nom ? undefined : l.texte, a, l.lecture] as const));
+      for (const [texte, alias, origine, lecture] of lectures) {
+        const prepare = preparerNom(f, texte, lecture);
         /* la liste DIT qu'il s'agit d'un navire : même marque qu'un préfixe « M/V », et même
            conflit face à une forme de société (« Davar Shipping Co. Limited » contre le navire
            « DORE », alias « DAVAR », mesuré le 27/09 sur l'exemple) */
@@ -257,7 +264,8 @@ export class Index {
         nom.mots.forEach((mot, i) => {
           let m = this.vocabulaire.get(mot);
           if (!m) {
-            m = { mot, sq: nom.squelettes[i]!, repli: nom.replis[i]!, abregeVu: nom.abreges[i]!, noms: [k], abjadVu: "" };
+            m = { mot, sq: nom.squelettes[i]!, repli: nom.replis[i]!, abregeVu: nom.abreges[i]!, noms: [k], abjadVu: "", cantonaisVu: false };
+            ranger(this.parPliCantonais, pliCantonais(mot), m);
             this.vocabulaire.set(mot, m);
             ranger(this.parInitialeLongueur, mot[0]! + mot.length, m);
             ranger(this.parSqInitialeLongueur, (m.sq[0] ?? "") + m.sq.length, m);
@@ -286,6 +294,7 @@ export class Index {
             const sansTa = mode === "a" ? cleAbjadSansTa(mot) : undefined;
             if (sansTa !== undefined && sansTa.length >= 3) ranger(this.parCleAbjadNatif, `a|${sansTa}`, m);
           }
+          if (nom.marques.cantonais && !m.cantonaisVu) { m.cantonaisVu = true; ranger(this.parPliCantonaisNatif, pliCantonais(mot), m); }
         });
         for (const [table, longueurs, bloc] of [[this.bigrammes, this.parLongueurBloc, nom.bloc],
           [this.bigrammesSq, this.parLongueurBlocSq, nom.blocSq]] as const) {
@@ -319,8 +328,8 @@ export class Index {
   }
 
   /** Les chaînes listées dont un mot est assez proche de `mot` (mêmes règles que le score). */
-  private nomsParMot(mot: string, sq: string, repli: string, dernier: boolean, coupe: boolean, abreviation: boolean, abjad: Abjad): number[] {
-    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}|${abjad}`;
+  private nomsParMot(mot: string, sq: string, repli: string, dernier: boolean, coupe: boolean, abreviation: boolean, abjad: Abjad, cantonais: boolean): number[] {
+    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}|${abjad}|${cantonais ? 1 : 0}`;
     const deja = this.cacheMots.get(cle);
     if (deja) return deja;
     const t = simMinimale(this.seuil);
@@ -366,12 +375,15 @@ export class Index {
     }
     if (t <= 0.9) {
       for (const m of this.parRepli.get(repli) ?? []) retenus.add(m);
+      /* le pli cantonais (CREDIT_ROMANISATION) : un nom lu en cantonais face à tous les mots, un nom
+         latin face aux mots que des chaînes lues en cantonais portent */
+      for (const m of (cantonais ? this.parPliCantonais : this.parPliCantonaisNatif).get(pliCantonais(mot)) ?? []) retenus.add(m);
       /* les règles à 0,9 partagent l'initiale : abréviation dans un sens ou l'autre, mot
          tronqué, mot abrégé d'un point, dernier mot d'un nom coupé ; et la variation d'une
-         voyelle, qui garde longueur et initiale du squelette */
+         voyelle, qui garde longueur et initiale du squelette ; le pluriel anglais (0,95) aussi */
       for (const m of this.parInitiale.get(mot[0]!) ?? []) {
         const autre = m.mot;
-        if (abrege(mot, autre) || abrege(autre, mot)
+        if (abrege(mot, autre) || abrege(autre, mot) || pluriel(mot, autre) || pluriel(autre, mot)
           || ((dernier || coupe && dernier) && tronque(mot, autre)) || tronque(autre, mot)
           || (abreviation && autre.length > mot.length && autre.startsWith(mot))
           || (m.abregeVu && mot.length > autre.length && mot.startsWith(autre))
@@ -428,7 +440,7 @@ export class Index {
     }
     const coupe = estCoupe(brut);
     q.mots.forEach((m, i) => {
-      for (const k of this.nomsParMot(m, q.squelettes[i]!, q.replis[i]!, i === q.mots.length - 1, coupe, q.abreges[i]!, q.marques.abjad)) retenus.add(k);
+      for (const k of this.nomsParMot(m, q.squelettes[i]!, q.replis[i]!, i === q.mots.length - 1, coupe, q.abreges[i]!, q.marques.abjad, q.marques.cantonais)) retenus.add(k);
     });
     /* le bloc, sur le bloc brut puis sur celui des squelettes. Pour chaque longueur de bloc
        listé dans la bande, le lemme dit combien de bigrammes doivent être partagés ; par le
@@ -507,7 +519,7 @@ function compterBigrammes(s: string): Map<string, number> {
  *  même liste regroupées, trié, coupé à CANDIDATS_MONTRES. `exhaustif` compare à tout : c'est
  *  le témoin de l'index, pas un mode d'usage. */
 export function cribler(c: Contrepartie, index: Index, seuils: { fort: number; possible: number }, exhaustif = false): Resultat {
-  const lectures = variantes(c.nom).map((v) => ({ brut: v, nom: preparerNom(index.f, v) }));
+  const lectures = lecturesDe(c.nom).map((l) => ({ brut: l.texte, nom: preparerNom(index.f, l.texte, l.lecture) }));
   if (index.memo.size > 500_000) index.memo.clear();
   const options = { auMoins: seuils.possible, memo: index.memo };
   const meilleurs = new Map<string, Candidat>();

@@ -16,7 +16,13 @@
  *     à la fois ; les mots du commerce (远洋, 航运, 有限公司) se traduisent avant, et le reste,
  *     le nom propre, devient UN jeton (« 沧澜 » : canglan). Deux noms de caractères différents
  *     peuvent se lire pareil (« 新海 », « 鑫海 », homophones) : chaque jeton garde ses
- *     caractères (`natifs`), et le score les regarde quand les deux côtés en ont.
+ *     caractères (`natifs`), et le score les regarde quand les deux côtés en ont. Hong Kong,
+ *     le Guangdong et Macao romanisent en CANTONAIS (永成 : Wing Shing, pas Yongcheng) : la
+ *     même table existe en jyutping (`jyutping.txt`), et un nom en sinogrammes se lit DEUX
+ *     fois (`Lecture`), en mandarin, puis en cantonais syllabe par syllabe dans la graphie du
+ *     gouvernement de Hong Kong (`hongkong`), là où le mandarin soude le nom propre : les
+ *     registres de Hong Kong écrivent « Wing Shing », ceux du continent « Yongcheng ». Chaque
+ *     lecture est une variante que l'index voit (`lecturesDe`, entites.ts).
  *
  * Le JAPONAIS reste tel quel : un kanji a plusieurs lectures (« 霜月 » se lit Shimotsuki, pas
  * Shuangyue), et une lecture chinoise d'un nom japonais ne rencontrerait rien. Le THAÏ aussi :
@@ -30,6 +36,9 @@ import { readFileSync } from "node:fs";
 
 export type Abjad = "" | "arabe" | "hebreu";
 export type Romanise = { texte: string; natifs: Map<string, string> };
+/** La lecture d'un nom en sinogrammes : le mandarin (pinyin, le nom propre soudé) ou le cantonais
+ *  (jyutping en graphie de Hong Kong, syllabe par syllabe). Un nom latin se lit pareil sous les deux. */
+export type Lecture = "mandarin" | "cantonais";
 
 /* ─────────────────────────── les mots du commerce, par écriture ─────────────────────────── */
 
@@ -44,7 +53,7 @@ const GENERIQUES_HANGUL: ReadonlyMap<string, string> = new Map(Object.entries({
   "해운": "shipping", "기계": "machinery", "건설": "construction", "개발": "development", "식품": "food", "제약": "pharmaceutical",
   "에너지": "energy", "그룹": "group", "국제": "international", "조선": "shipbuilding", "철강": "steel", "섬유": "textile",
   "자동차": "automotive", "엔지니어링": "engineering", "홀딩스": "holdings", "인터내셔널": "international", "마린": "marine",
-  "서플라이": "supply", "시스템": "systems", "코리아": "korea",
+  "서플라이": "supply", "시스템": "systems", "코리아": "korea", "자원": "resources",
 }));
 
 /** Le persan écrit ک et ی là où l'arabe écrit ك et ي : une seule lettre pour les deux, dans
@@ -118,6 +127,18 @@ const GENERIQUES_HANZI: ReadonlyMap<string, string> = new Map(Object.entries({
   "塑膠": "plastics", "塑胶": "plastics", "建筑": "construction", "建築": "construction", "能源": "energy", "发展": "development",
   "發展": "development", "投资": "investment", "投資": "investment", "控股": "holdings", "轮胎": "tire", "輪胎": "tire",
   "水产": "seafood", "水產": "seafood", "汽车": "automotive", "汽車": "automotive", "医药": "pharmaceutical", "醫藥": "pharmaceutical",
+  /* le commerce de Singapour et de Malaisie écrit en chinois (jeu 9, 27/09 : 协和电器供应私人有限公司,
+     聯成廢金屬回收有限公司, 宝吉棕榈油贸易私人有限公司) : les mots que le côté anglais écrit */
+  "电器": "electrical", "電器": "electrical", "供应": "supplies", "供應": "supplies", "橡胶": "rubber", "橡膠": "rubber",
+  "糖业": "sugar", "糖業": "sugar", "废金属": "scrap metal", "廢金屬": "scrap metal", "回收": "recycling",
+  /* 廢金屬回收 est le métier du recyclage des métaux, que l'anglais nomme « Metal Recycling » ou « Recycling
+     Metals » sans dire « scrap » : la locution entière avant ses mots (jeu 9 : 聯成廢金屬回收有限公司) */
+  "废金属回收": "metal recycling", "廢金屬回收": "metal recycling",
+  "海产": "seafood", "海產": "seafood", "五金": "hardware", "文具": "stationery", "棕榈油": "palm oil", "棕櫚油": "palm oil",
+  /* la société privée de Singapour (Pte. Ltd.) et de Malaisie (Sdn. Bhd.) : 私人有限公司, lue avant 有限公司 */
+  "私人有限公司": "siren youxian gongsi",
+  /* « (马) » dans un nom malaisien est « (M) », Malaysia, comme le côté anglais l'abrège */
+  "(马)": "(m)", "(馬)": "(m)", "（马）": "(m)", "（馬）": "(m)", "马来西亚": "malaysia", "馬來西亞": "malaysia", "新加坡": "singapore",
   /* les lieux que l'usage n'écrit pas en pinyin */ "台中": "taichung", "臺中": "taichung", "台北": "taipei", "臺北": "taipei",
   "高雄": "kaohsiung", "新竹": "hsinchu", "基隆": "keelung", "香港": "hongkong", "澳门": "macau", "澳門": "macau",
   "九龙": "kowloon", "九龍": "kowloon", "中国": "china", "中國": "china",
@@ -198,16 +219,66 @@ export function pinyinDe(caractere: string): string {
   return (cp >= 0x4e00 && cp <= 0x9fff ? PINYIN[cp - 0x4e00] : "") || caractere;
 }
 
+/**
+ * LA TABLE DU JYUTPING : la lecture cantonaise des mêmes 20 992 codes, sans ton, dans la même
+ * disposition que `pinyin.txt` (ligne i : U+4E00 + i, vide quand le champ manque : 169 codes).
+ *
+ * Provenance : le champ kCantonese de la base Unihan, Unicode 18.0.0 (Unihan_Readings.txt dans
+ * Unihan.zip, unicode.org/Public/UCD/latest/ucd/, sha256 4c93ea9c…d43e), produit sur cette
+ * machine le 27/09/2026 par un script de quinze lignes : pour chaque ligne « U+XXXX kCantonese
+ * lecture » dont le code est dans le bloc unifié, la lecture sans son chiffre de ton ; aucun
+ * code n'y porte deux lectures (compté : zéro valeur à espace). Les données Unihan sont sous la
+ * licence Unicode (UNICODE LICENSE V3), même mention que le pinyin. L'empreinte du fichier est
+ * vérifiée par la suite.
+ */
+export const CHEMIN_JYUTPING = new URL("./jyutping.txt", import.meta.url);
+const JYUTPING: readonly string[] = readFileSync(CHEMIN_JYUTPING, "utf8").split("\n");
+
+/** La lecture jyutping d'un caractère, sans ton, ou vide s'il n'en a pas. */
+export function jyutpingDe(caractere: string): string {
+  const cp = caractere.codePointAt(0)!;
+  return (cp >= 0x4e00 && cp <= 0x9fff ? JYUTPING[cp - 0x4e00] : "") || "";
+}
+
+/**
+ * Une syllabe jyutping dans la GRAPHIE DU GOUVERNEMENT DE HONG KONG, celle des registres et des
+ * enseignes : les initiales non aspirées s'écrivent p, t, k (bou : Po ; dak : Tak ; gam : Kam),
+ * z et c s'écrivent ch (zoeng : Cheung), j s'écrit y (jan : Yan), aa s'écrit a (maan : Man),
+ * oe s'écrit eu (zoeng : Cheung), eo s'écrit u (seon : Sun), yu s'écrit u, et uen, uet devant n
+ * et t (zyu : Chu ; lyun : Luen ; syut : Suet), ou s'écrit o (bou : Po). Ce que cette graphie
+ * laisse libre (sh ou s, ts ou ch, ue ou u, ee ou ei) se replie au score, dans `pliCantonais`
+ * (entites.ts).
+ */
+export function hongkong(syllabe: string): string {
+  return syllabe.replace(/^gw/, "kw").replace(/^[zc]/, "ch").replace(/^j/, "y").replace(/^g/, "k").replace(/^b/, "p").replace(/^d/, "t")
+    .replace(/aa/, "a").replace(/oe/, "eu").replace(/eo/, "u").replace(/(?<=[a-z])yun$/, "uen").replace(/(?<=[a-z])yut$/, "uet")
+    .replace(/(?<=[a-z])yu/, "u").replace(/ou$/, "o");
+}
+
 const CLES_HANZI = alternative(GENERIQUES_HANZI);
-function hanzi(nom: string, natifs: Map<string, string>): string {
-  return nom.replace(CLES_HANZI, (m) => ` ${GENERIQUES_HANZI.get(m) ?? m} `)
-    .replace(/[\u4e00-\u9fff]+/gu, (suite) => {
-      /* le nom propre : ses caractères se lisent d'une traite (« 沧澜 » : canglan), et le jeton
-         garde ses caractères pour que le score distingue les homophones */
-      const lecture = [...suite].map(pinyinDe).join("");
-      if (/^[a-z]+$/.test(lecture)) natifs.set(lecture, suite);
-      return ` ${lecture} `;
-    });
+const SINOGRAMMES = /[\u4e00-\u9fff]+/gu;
+function hanzi(nom: string, natifs: Map<string, string>, lecture: Lecture): string {
+  const generiques = nom.replace(CLES_HANZI, (m) => ` ${GENERIQUES_HANZI.get(m) ?? m} `);
+  /* le nom propre en mandarin : ses caractères se lisent d'une traite (« 沧澜 » : canglan), et le
+     jeton garde ses caractères pour que le score distingue les homophones */
+  const mandarin = (suite: string) => {
+    const l = [...suite].map(pinyinDe).join("");
+    if (/^[a-z]+$/.test(l)) natifs.set(l, suite);
+    return ` ${l} `;
+  };
+  if (lecture === "mandarin") return generiques.replace(SINOGRAMMES, mandarin);
+  /* en cantonais : syllabe par syllabe, comme Hong Kong écrit ses noms (« 永成 » : wing sing),
+     chaque syllabe gardant son caractère ; un caractère sans lecture cantonaise (169 codes du
+     bloc) garde sa lecture mandarine plutôt que de traverser en sinogramme, cette lecture
+     n'étant qu'une seconde chance. Ce qui est entre parenthèses est un lieu (深圳), que Hong
+     Kong même nomme en mandarin : il se lit comme dans l'autre lecture. */
+  const cantonais = (suite: string) => [...suite].map((c) => {
+    const j = jyutpingDe(c);
+    const l = j === "" ? pinyinDe(c) : hongkong(j);
+    if (/^[a-z]+$/.test(l)) natifs.set(l, c);
+    return ` ${l} `;
+  }).join("");
+  return generiques.replace(/\([^()]*\)/gu, (p) => p.replace(SINOGRAMMES, mandarin)).replace(SINOGRAMMES, cantonais);
 }
 
 /* ─────────────────────────── les abjads ─────────────────────────── */
@@ -365,11 +436,11 @@ export function abjadDe(nom: string): Abjad {
  * Un nom, ses écritures non latines ramenées à des jetons latins ; `natifs` donne, pour chaque
  * jeton lu dans des sinogrammes, les caractères qu'il a lus. Un nom latin ressort tel quel.
  */
-export function romaniser(nom: string): Romanise {
+export function romaniser(nom: string, lecture: Lecture = "mandarin"): Romanise {
   const natifs = new Map<string, string>();
   let t = nom;
   if (/[\uac00-\ud7a3]/u.test(t)) t = hangul(t);
-  if (/[\u4e00-\u9fff]/u.test(t) && !estJaponais(t)) t = hanzi(t, natifs);
+  if (/[\u4e00-\u9fff]/u.test(t) && !estJaponais(t)) t = hanzi(t, natifs, lecture);
   if (/[\u0590-\u05ff]/u.test(t)) t = hebreu(t);
   if (/[\u0600-\u06ff]/u.test(t)) t = arabe(t);
   return { texte: t, natifs };
