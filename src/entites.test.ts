@@ -234,3 +234,37 @@ test("les romanisations : ц, coréen, Wade-Giles, orthographe britannique, vari
   assert.ok(score("NAJM AL WAHAT", "NEJM EL WAHAT") >= 0.81);
   assert.ok(score("Greenholt Agro Traders", "Grainholt Agro Traders") < 0.81, "mesuré à 0,924 quand a et i se repliaient");
 });
+
+test("les résidus d'un document : alias avec points, forme native entre parenthèses, champs de connaissement, adresse, coque", () => {
+  assert.ok(variantes("BEIRUT CEDAR TRADING SAL, f.k.a. LEBANON CEDAR IMPORT EXPORT SAL").includes("LEBANON CEDAR IMPORT EXPORT SAL"));
+  assert.ok(variantes("BAKU OIL EXPORT CONSORTIUM (Бакинский нефтеэкспортный консорциум)").includes("BAKU OIL EXPORT CONSORTIUM"),
+    "la forme native entre parenthèses est une autre écriture, pas une filiale");
+  assert.ok(variantes("青岛海鑫国际物流有限公司 (Qingdao Haixin International Logistics Co., Ltd.)").includes("Qingdao Haixin International Logistics Co., Ltd."));
+  assert.ok(!variantes("Quarnby Logistics (Shanghai) Co., Ltd.").includes("Quarnby Logistics Co., Ltd."), "une ville en latin entre parenthèses reste une filiale");
+  assert.ok(variantes("ULSAN DAEWOO PETROCHEM SAME AS CONSIGNEE ABOVE").includes("ULSAN DAEWOO PETROCHEM"));
+  assert.ok(variantes("NINGBO XINYUE PLASTIC CO LTD ATTN MR LI").includes("NINGBO XINYUE PLASTIC CO LTD"));
+  assert.ok(variantes("DAEHAN SHIPPING CO LTD BUSAN KOREA").includes("DAEHAN SHIPPING CO LTD"));
+  assert.ok(!variantes("Cobalt Mesa Packaging, S.A. de C.V.").includes("Cobalt Mesa Packaging, S.A."), "« de C.V. » n'est pas une adresse");
+  assert.ok(!variantes("Thornbury Chemical Corporation of Canada Ltd.").includes("Thornbury Chemical Corporation"), "une filiale par pays n'est pas une adresse");
+  assert.deepEqual(variantes("OOO Kamskiy Agrokhim"), ["OOO Kamskiy Agrokhim"], "une forme en tête ne coupe rien");
+  assert.ok(variantes("Atlantic Pioneer, Hull No. 482").includes("Atlantic Pioneer"));
+  assert.deepEqual(variantes("NEWBUILDING HULL NO. H2217"), ["NEWBUILDING HULL NO. H2217"], "le numéro de coque est tout le nom");
+  assert.ok(variantes("MERIDIAN GLORY LIBERIA").includes("MERIDIAN GLORY"));
+  assert.ok(variantes("HANSA CARRIER VOY 9").includes("HANSA CARRIER"));
+  assert.equal(score("Yuen Kei Fung Garment (H.K.) Co., Limited", "Yuen Kei Fung Garment (Hong Kong) Company Limited"), 1);
+  assert.equal(score("Sinar Kaloka Abadi, PT", "PT Sinar Kaloka Abadi"), 1, "PT en tête ou en queue");
+  assert.equal(score("IVANOV STEEL TRADING OOO", "ООО Иванов Сталь Трейдинг"), 1, "le russe générique se traduit");
+  assert.equal(score("CTY TNHH XNK PHUOC THANH", "Công Ty TNHH Xuất Nhập Khẩu Phước Thành"), 1);
+});
+
+test("les contextes de langue : arabe et persan, japonais, coréen, hindi, hébreu et grec, chinois", () => {
+  assert.ok(score("Khorshid Farayand Tabriz Co.", "Khurshid Farayand Tabriz Co.") >= 0.81, "persan sans article : marqueur Tabriz");
+  assert.ok(score("Ōkubara Shōji Co., Ltd.", "Ohkubara Shoji Co., Ltd.") >= 0.81, "japonais : ō, oh ; le marqueur shoji se lit avant sa traduction");
+  assert.ok(score("Kyungsan Tongsang Co., Ltd.", "Gyeongsan Tongsang Co., Ltd.") >= 0.81, "coréen : McCune-Reischauer et romanisation révisée");
+  assert.ok(score("Vrindavan Kesari Spices Exports", "Brindavan Kesari Spices Exports") >= 0.81, "hindi : v, b, au crédit");
+  assert.ok(score("Kfar Sava Irrigation Systems Ltd", "Kfar Saba Irrigation Systems Ltd") >= 0.81, "hébreu : ב");
+  assert.ok(score("Ets Fabre et Fils", "Ets Favre et Fils") < 0.81, "français : Fabre n'est pas Favre");
+  assert.ok(score("Anping Jinqiao Wire Mesh Products Co., Ltd.", "Anping Yinqiao Wire Mesh Products Co., Ltd.") < 0.81, "pinyin : j n'est pas y");
+  assert.ok(score("Meier Metallbau GmbH", "Mayer Metallbau GmbH") < 0.81);
+  assert.ok(score("Jinyang Chemical Co., Ltd.", "Jinyoung Chemical Co., Ltd.") < 0.81);
+});

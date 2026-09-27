@@ -50,6 +50,7 @@ const FORMES = new Set([
   /* Indonésie, en tête seulement (voir le filtre) */ "pt",
   /* Turquie */ "sti",
   /* Golfe */ "fze", "fzco", "fzc", "fzllc", "fz", "wll", "spc", "est",
+  /* Azerbaïdjan, Liban */ "mmc", "sal",
   /* Asie */ "sdn", "bhd", "berhad", "kk", "jusikhoesa", "chusikhoesa", "tbk",
 ]);
 /** Formes qui ne se placent QU'À LA FIN d'un nom : en tête, le même jeton est autre chose
@@ -67,7 +68,7 @@ const PHRASES = [
   " publichnoe aktsionernoe obshchestvo ", " zakrytoe aktsionernoe obshchestvo ",
   " otkrytoe aktsionernoe obshchestvo ", " aktsionernoe obshchestvo ",
   " public joint stock company ", " closed joint stock company ", " open joint stock company ",
-  " private joint stock company ", " sherkat sahami khas ", " sherkate sahami khas ", " sahami khas ", " sahami amm ",
+  " private joint stock company ", " sherkat sahami khas ", " sherkate sahami khas ", " sahami khas ", " sahami khass ", " sahami amm ",
   " public company limited ", " designated activity company ", " perseroan terbatas ",
   " joint stock company ", " limited liability company ", " limited liability partnership ",
   " private limited ", " public limited company ", " proprietary limited ",
@@ -117,6 +118,20 @@ const LOCUTIONS: readonly [string, string][] = [
   [" det may ", " textile garment "], [" giay da ", " leather shoes "], [" thep ", " steel "], [" xay dung ", " construction "],
   [" co khi ", " mechanical "], [" dien tu ", " electronics "], [" thuy san ", " seafood "], [" nong san ", " agricultural products "],
   [" mot thanh vien ", " "], [" mtv ", " "], [" one member ", " "],
+  [" xnk ", " import export "], [" cty ", " "], [" tong cong ty ", " "], [" hop tac xa ", " cooperative "], [" htx ", " cooperative "],
+  [" det lua ", " silk weaving "], [" lua ", " silk "], [" gao ", " rice "], [" nhua ", " plastics "], [" go ", " wood "],
+  [" tp ho chi minh ", " hochiminh "], [" ho chi minh city ", " hochiminh "], [" ho chi minh ", " hochiminh "], [" tp ", " "],
+  [" thanh pho ", " "], [" ha noi ", " hanoi "], [" hai phong ", " haiphong "], [" da nang ", " danang "], [" nam dinh ", " namdinh "],
+  [" can tho ", " cantho "], [" sai gon ", " saigon "], [" binh duong ", " binhduong "], [" dong nai ", " dongnai "],
+  /* villes thaïes et chinoises que les documents soudent */
+  [" chiang mai ", " chiangmai "], [" hat yai ", " hatyai "], [" hong kong ", " hongkong "],
+  /* russe : les mots génériques d'entreprise, translittérés, vers l'anglais */
+  [" stal ", " steel "], [" treiding ", " trading "], [" treyding ", " trading "], [" torgovlya ", " trade "],
+  [" promyshlennost ", " industry "], [" promyshlennaya ", " industrial "], [" zavod ", " plant "], [" kombinat ", " works "],
+  [" fabrika ", " factory "], [" neft ", " oil "], [" khimiya ", " chemical "], [" khimicheskiy ", " chemical "],
+  [" metallurgicheskiy ", " metallurgical "], [" mashinostroitelny ", " machine building "], [" stroitelstvo ", " construction "],
+  [" sudokhodnaya kompaniya ", " shipping "], [" sudokhodstvo ", " shipping "], [" morskoy ", " marine "], [" gruppa ", " group "],
+  [" kompaniya ", " "], [" kompania ", " "], [" firma ", " "],
   /* polonais : les descripteurs d'entreprise, en sigle ou en toutes lettres, ne nomment pas */
   [" przedsiebiorstwo produkcyjno handlowo uslugowe ", " "], [" przedsiebiorstwo handlowo uslugowe ", " "],
   [" przedsiebiorstwo produkcyjno handlowe ", " "], [" przedsiebiorstwo wielobranzowe ", " "],
@@ -169,7 +184,7 @@ const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   svcs: "services", assoc: "associates", st: "saint", capt: "captain", sta: "santa", sto: "santo",
   gle: "generale", gal: "general", fres: "freres", entreprises: "enterprises", entreprise: "enterprise", les: "",
   td: "trading house", nlle: "nouvelle", nouv: "nouvelle",
-  hnos: "brothers", gebr: "brothers", hk: "hong kong",
+  hnos: "brothers", gebr: "brothers", hk: "hongkong",
   /* les nombres écrits en lettres deviennent des chiffres : « Nine Willows » est « 9 Willows » */
   zero: "0", one: "1", two: "2", three: "3", four: "4", five: "5", six: "6", seven: "7", eight: "8",
   nine: "9", ten: "10", eleven: "11", twelve: "12",
@@ -187,7 +202,7 @@ const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
  */
 const LETTRES_SANS_BASE: Readonly<Record<string, string>> = {
   "ı": "i", "İ": "I", "ł": "l", "Ł": "L", "ø": "o", "Ø": "O", "đ": "d", "Đ": "D", "ħ": "h", "Ħ": "H",
-  "ß": "ss", "æ": "ae", "Æ": "AE", "œ": "oe", "Œ": "OE", "þ": "th", "Þ": "Th", "ð": "d", "Ð": "D",
+  "ß": "ss", "æ": "ae", "Æ": "AE", "œ": "oe", "Œ": "OE", "þ": "th", "Þ": "Th", "ð": "d", "Ð": "D", "ə": "e", "Ə": "E",
 };
 function plier(nom: string): string {
   /* le cyrillique et l'arabe sont translittérés ICI, avant l'analyse des formes : « ООО » doit
@@ -195,7 +210,7 @@ function plier(nom: string): string {
      répondant, et « ООО Северный Транзит » plafonnait au possible face à « OOO Severny Tranzit ») */
   const persan = nom.replace(/[پ]/g, "p").replace(/[چ]/g, "ch").replace(/[ژ]/g, "zh").replace(/[گ]/g, "g").replace(/[ک]/g, "\u0643").replace(/[ی]/g, "\u064a");
   const latin = /[\u0400-\u04ff\u0600-\u06ff]/.test(persan) ? translitterer(persan.toLowerCase()) : persan;
-  return grec(latin.replace(/[ıİłŁøØđĐħĦßæÆœŒþÞðÐ]/g, (c) => LETTRES_SANS_BASE[c] ?? c));
+  return grec(latin.replace(/[ıİłŁøØđĐħĦßæÆœŒþÞðÐəƏ]/g, (c) => LETTRES_SANS_BASE[c] ?? c));
 }
 
 /**
@@ -270,7 +285,8 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["IE"], ["dac", "designated activity company", "teoranta", "teo", "cuideachta"]);
   poser(["TH"], ["pcl", "public company limited"]);
   poser(["ID"], ["pt", "perseroan terbatas", "tbk"]);
-  poser(["IR"], ["sherkat sahami khas", "sherkate sahami khas", "sahami khas", "sahami amm"]);
+  poser(["IR"], ["sherkat sahami khas", "sherkate sahami khas", "sahami khas", "sahami khass", "sahami amm"]);
+  poser(["AZ"], ["mmc"]); poser(["LB"], ["sal"]);
   poser(["FR", "LU", "MA", "TN", "LB"], ["sarl", "societe a responsabilite limitee"]);
   poser(["FR", "CO"], ["sas"]);
   poser(["FR", "IT"], ["snc"]);
@@ -349,7 +365,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "sociedad anonima unipersonal", "sociedad anonima de capital variable"]);
   poser(["part"], ["scea", "gaec", "earl"]);
   poser(["llc"], ["llc", "pllc", "gmbh", "ug", "sarl", "eurl", "sprl", "bvba", "srl", "sl", "slu", "bv", "aps", "kft", "sro",
-    "doo", "eood", "ood", "epe", "ike", "wll", "spc", "s de rl", "s de rl de cv",
+    "doo", "eood", "ood", "epe", "ike", "wll", "spc", "mmc", "s de rl", "s de rl de cv",
     "limited liability company", "obshchestvo s ogranichennoi otvetstvennostyu", "obshchestvo s ogranichennoy otvetstvennostyu",
     "gesellschaft mit beschrankter haftung",
     "societe a responsabilite limitee", "sociedad limitada", "sociedad de responsabilidad limitada",
@@ -392,7 +408,7 @@ const PHRASES_PRIVEES = new Set(["private limited", "proprietary limited", "send
  *  laisse voir (l'article arabe, une forme japonaise, une province chinoise), qui décide où
  *  les variations de romanisation sont créditées. */
 export type Marques = { pays: readonly string[]; familles: readonly string[]; navire: boolean; societe: boolean;
-  arabe: boolean; japonais: boolean; chinois: boolean; coreen: boolean; hebreuOuGrec: boolean; indien: boolean;
+  arabe: boolean; japonais: boolean; chinois: boolean; coreen: boolean; hebreuOuGrec: boolean; indien: boolean; hispanique: boolean;
   /** un qualificatif de société privée (Pty, Pte, Pvt, Sdn, (P)) : « X Pty Ltd » n'est pas « X Ltd » */
   prive: boolean;
   /** le nom entier est en majuscules et compte plusieurs mots : un export de système, où les
@@ -415,7 +431,12 @@ const MARQUEURS_INDIENS = new Set(["pvt", "india", "indian", "bharat", "bharati"
   "delhi", "chennai", "madras", "kolkata", "calcutta", "bangalore", "bengaluru", "hyderabad", "pune", "ahmedabad", "surat", "jaipur",
   "gujarat", "maharashtra", "tamil", "nadu", "kerala", "punjab", "rajasthan", "karnataka", "andhra", "telangana", "bengal", "noida",
   "gurgaon", "gurugram", "ludhiana", "kanpur", "coimbatore", "tirupur", "jodhpur", "agra", "kathiawar", "shree", "shri", "sri",
-  "lal", "bhai", "kumar", "singh", "sahib", "chand", "das", "prasad", "devi", "ram", "krishna", "ganesh", "lakshmi", "laxmi"]);
+  "lal", "bhai", "kumar", "singh", "sahib", "chand", "das", "prasad", "devi", "ram", "krishna", "ganesh", "lakshmi", "laxmi",
+  "agro", "agrotech", "kesari", "masala", "basmati", "handloom", "handicrafts", "jute", "sarees", "saree"]);
+const MARQUEURS_HISPANIQUES = new Set(["distribuidora", "comercial", "comercializadora", "industrias", "industria", "hermanos", "hijos",
+  "compania", "companhia", "sociedad", "sociedade", "exportadora", "importadora", "agropecuaria", "agricola", "del", "los", "las",
+  "grupo", "corporacion", "fabrica", "productos", "servicios", "transportes", "construcciones", "alimentos", "minera", "pesquera",
+  "textil", "textiles", "quimica", "metalicas", "mexico", "espana", "brasil", "peru", "colombia", "chile", "argentina", "venezuela"]);
 const MARQUEURS_HEBREUX = new Set(["yam", "kfar", "kokhav", "kochav", "yarden", "shachar", "shahar", "galil", "hagalil", "kibbutz",
   "moshav", "negev", "haifa", "aviv", "ashdod", "eilat", "israel", "israeli", "beit", "bet", "tzafrir", "zafrir", "sde", "sdeh"]);
 const MARQUEURS_GRECS = new Set(["kai", "sia", "naftiliaki", "naftiki", "emporiki", "viomichaniki", "techniki", "kataskevastiki", "ellas",
@@ -471,7 +492,11 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
      (voir `scorePrepares`). Les mêmes tables que le nom entier, pour retrouver ces mots
      tels que la préparation les laisse. */
   const parentheses = new Set([...soude.matchAll(/\(([^()]+)\)/g)]
-    .flatMap((m) => jetons(normaliser(plier(m[1]!))).flatMap((j) => (ABREVIATIONS.get(j) ?? TRADUCTIONS.get(j) ?? j).split(" ")))
+    .flatMap((m) => {
+      let dedans = ` ${jetons(normaliser(plier(m[1]!))).join(" ")} `;
+      for (const [de, vers] of LOCUTIONS) dedans = dedans.split(de).join(vers);
+      return dedans.trim().split(/ +/).flatMap((j) => (ABREVIATIONS.get(j) ?? TRADUCTIONS.get(j) ?? j).split(" "));
+    })
     .filter((j) => j !== "" && !FORMES.has(j)));
   /* Lettres et chiffres collés se séparent : « No18 » → « No 18 », « LANQIAOFENG16 » →
      « LANQIAOFENG 16 » ; le numéro d'un navire devient un jeton que la règle des numéros lit. */
@@ -520,8 +545,9 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
   const entrepreneur = ["ip", "fop", "chp", "flp", "spd"].includes(mots[0] ?? "");
   let t = mots.filter((j, i) => {
     if (j === "") return false;
-    /* « PT » (perseroan terbatas) ne se place qu'en tête ; ailleurs c'est un mot */
-    if (j === "pt" && i > 0) return true;
+    /* « PT » (perseroan terbatas) se place en tête, ou en queue après une virgule (« Sinar Kaloka
+       Abadi, PT ») ; ailleurs c'est un mot */
+    if (j === "pt" && i > 0 && i !== mots.length - 1) return true;
     if (!FORMES.has(j)) return true;
     if (entrepreneur && i > 0 && j.length <= 3) return true;
     /* une forme de fin en tête reste un mot (« Ag. Prokopis », « As-Salam »), sauf écrite
@@ -553,9 +579,10 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
     || tousLesMots.some((j) => MARQUEURS_HEBREUX.has(j) || MARQUEURS_GRECS.has(j) || (j.length >= 6 && SUFFIXES_GRECS.test(j)));
   const prive = tousLesMots.some((j) => QUALIFICATIFS_PRIVES.has(j)) || privePhrase;
   const indien = tousLesMots.some((j) => MARQUEURS_INDIENS.has(j));
+  const hispanique = ["MX", "ES", "BR", "PE", "CO", "CL", "AR", "PT", "UY", "BO"].some((k) => pays.has(k)) || tousLesMots.some((j) => MARQUEURS_HISPANIQUES.has(j));
   const majuscules = !/\p{Ll}/u.test(nom) && /\p{Lu}/u.test(nom) && t.length >= 2;
   return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses,
-    pays: [...pays].sort(), familles: [...familles].sort(), navire, societe, arabe, japonais, chinois, coreen, hebreuOuGrec, indien, prive, majuscules };
+    pays: [...pays].sort(), familles: [...familles].sort(), navire, societe, arabe, japonais, chinois, coreen, hebreuOuGrec, indien, hispanique, prive, majuscules };
 }
 
 /** Les jetons d'un nom brut : préparation d'entité, puis le pipeline commun des paliers
@@ -795,7 +822,7 @@ export type NomPrepare = {
 };
 
 const SANS_MARQUES: Marques = { pays: [], familles: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
-  coreen: false, hebreuOuGrec: false, indien: false, prive: false, majuscules: false };
+  coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, prive: false, majuscules: false };
 
 export function preparerNom(f: Frequences, nom: string): NomPrepare {
   const a = analyserEntite(nom);
@@ -932,6 +959,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   const romanisation = A.marques.arabe || B.marques.arabe || A.marques.japonais || B.marques.japonais;
   const japonais = A.marques.japonais || B.marques.japonais, coreen = A.marques.coreen || B.marques.coreen;
   const hebreuOuGrec = A.marques.hebreuOuGrec || B.marques.hebreuOuGrec, indien = A.marques.indien || B.marques.indien;
+  const hispanique = A.marques.hispanique || B.marques.hispanique;
   /* en pinyin, l'initiale est un phonème : Jin n'est pas Yin, Chang n'est pas Shang ; seules les
      paires d'aspiration du Wade-Giles se confondent (k, g ; t, d ; p, b ; ts, z, c ; ch, zh, j, q ; hs, x) */
   const chinois = A.marques.chinois || B.marques.chinois;
@@ -946,7 +974,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
         const dernierY = j === Y.mots.length - 1;
         /* la clé porte tout ce qui décide : les deux mots, leurs marques d'abréviation, et
            leur position de dernier mot (la troncature ne vaut que pour lui) */
-        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${chinois ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}` : "";
+        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${chinois ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}` : "";
         /* le cache code l'équivalence de romanisation en ajoutant 2 à la valeur (elle est dans [0, 1]) */
         const enCache = memo?.get(cle);
         let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
@@ -961,13 +989,15 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
             (romanisation && (X.replis[i] === Y.replis[j] || variationVocalique(X.squelettes[i]!, Y.squelettes[j]!)))
             || (japonais && pliJaponais(x) === pliJaponais(y))
             || (coreen && pliCoreen(x) === pliCoreen(y))
-            || (indien && pliIndien(x) === pliIndien(y))
+            /* v, w, b : hindi, hébreu, espagnol, portugais ; sous leur contexte, au crédit et non au
+               squelette, pour que Fabre reste distinct de Favre */
+            || ((indien || hispanique) && pliIndien(x) === pliIndien(y))
             || (hebreuOuGrec && (X.squelettes[i]!.replace(/X/g, "h") === Y.squelettes[j]!.replace(/X/g, "h") || pliIndien(x) === pliIndien(y))));
           if (equivalent) v = Math.max(v, CREDIT_ROMANISATION);
           /* dans un export tout en majuscules, un mot court qu'aucun dictionnaire ne connaît et
              qui commence un mot long de l'autre nom est une abréviation sans point (« HVY IND ») */
-          if (v < 0.9 && ((X.marques.majuscules && x.length <= 4 && x.length >= 2 && y.length >= 7 && y.startsWith(x) && !lemme(x))
-            || (Y.marques.majuscules && y.length <= 4 && y.length >= 2 && x.length >= 7 && x.startsWith(y) && !lemme(y)))) v = 0.9;
+          if (v < 0.9 && ((X.marques.majuscules && x.length >= 2 && x.length <= 9 && y.length >= x.length + 3 && y.length >= 6 && y.startsWith(x) && !lemme(x))
+            || (Y.marques.majuscules && y.length >= 2 && y.length <= 9 && x.length >= y.length + 3 && x.length >= 6 && x.startsWith(y) && !lemme(y)))) v = 0.9;
           /* un mot abrégé d'un point correspond au mot entier qu'il commence, ou dont il garde
              les lettres dans l'ordre depuis l'initiale (« Petrochem. », « Dist. », « Capt. ») ;
              dans les DEUX sens, sinon le côté entier ne rendait qu'un demi-crédit */
@@ -1136,7 +1166,7 @@ export function scoreBrut(f: Frequences, a: string, A: NomPrepare, b: string, B:
  * Le nom tel qu'écrit reste toujours une variante : on ajoute des lectures, on n'en retire
  * aucune. Un « (Shanghai) » n'est PAS retiré : c'est souvent une filiale, pas une annotation.
  */
-const ANNONCES = /\s*(?:\b(?:a\.?\s?k\.?\s?a\.?|f\/?\s?k\/?\s?a\.?|formerly(?:\s+known\s+as)?|d\/?\s?b\/?\s?a\.?|doing\s+business\s+as|t\/a|trading\s+as)(?=[\s:])|(?<=\p{L}[\s,]*)\bex[-.\s]+(?=\p{L}))\s*:?\s*/giu;
+const ANNONCES = /[\s,;]*(?:\b(?:a[./]?\s?k[./]?\s?a\.?|f[./]?\s?k[./]?\s?a\.?|formerly(?:\s+known\s+as)?|d[./]?\s?b[./]?\s?a\.?|doing\s+business\s+as|t\/a|trading\s+as|now\s+known\s+as|n\.?k\.?a\.?)(?=[\s:,])|(?<=\p{L}[\s,]*)\bex[-.\s]+(?=\p{L}))\s*:?\s*/giu;
 const ANNOTATIONS: readonly RegExp[] = [
   /\([^()]*\b(?:flag|liquidation|administration|receivership|bankrupt\w*|dissolved|struck\s+off|carrier|tanker|vessel|bulk|container|branch)\b[^()]*\)/giu,
   /\s*[-–,;(]\s*[\p{L}. ]{2,25}\bflag(?:ged)?\)?\s*$/iu,
@@ -1152,6 +1182,17 @@ const ANNOTATIONS: readonly RegExp[] = [
   /\s+voy\.?\s*\d{2,5}[a-z]?\s*$/iu,
   /\s+(?:in|en|em)\s+(?:liquidazione|liquidation|liquidación|liquidacion|liquidação|liquidacao|liquidatie|likvidation)\s*$/iu,
   /,\s*flag\s*:?\s*[\p{L} ]{2,30}\s*$/iu,
+  /* les résidus des champs d'un connaissement : « NOTIFY PARTY », « SAME AS CONSIGNEE ABOVE »,
+     « ATTN MR LI » ; un numéro de coque ; « VOYAGE 9 » ; « ROOM 302 », « UNIT 4B », « BLDG 2 » */
+  /\s+(?:notify(?:\s+party)?\s*)?(?:same\s+as\s+(?:consignee|shipper|notify|above|applicant)(?:\s+above)?)\s*$/iu,
+  /\s+notify(?:\s+party)?\s*$/iu,
+  /\s+att(?:n|ention)?\.?:?\s+.*$/iu,
+  /* un numéro de coque après un NOM : « Atlantic Pioneer, Hull No. 482 » ; mais « NEWBUILDING HULL
+     NO. H2217 » n'a que son numéro pour nom, il le garde */
+  /(?<=\p{L}{3,}\s+(?:\p{L}+\s+)*)[\s,]+(?:n\/b\s+)?hull\s*(?:no\.?\s*)?[a-z]?-?\d+\s*$/iu,
+  /[\s,]+voy(?:age)?\.?\s*\d{1,5}[a-z]?\s*$/iu,
+  /\s+(?:room|rm|unit|bldg|building|floor|fl|suite|ste|office|off|plot|shop)\.?\s*\d+[a-z]?\s*$/iu,
+  /\s+(?:in\s+)?lay-?up\s*$/iu,
   /* les partenaires d'une société de personnes italienne : « S.n.c. di Perrone Luigi & C. » */
   /\s+di\s+[\p{L}.' ]+&\s*c\.?\s*$/iu,
   /\s+v\.?\s?\d{2,4}[nsew]?$/iu,
@@ -1184,8 +1225,21 @@ const PAVILLONS: ReadonlySet<string> = new Set(["panama", "liberia", "marshall i
   "british virgin islands", "kiribati", "samoa", "niue", "sao tome", "sao tome and principe", "gambia", "guinea bissau",
   "mhl", "pan", "lbr", "mlt", "bhs", "cyp", "atg", "vut", "khm", "tgo", "cmr", "gab", "sle", "tza", "mng", "blz", "hnd", "bol"]);
 
+/** Les formes juridiques telles qu'un export en majuscules les écrit, pour couper une adresse
+ *  qui les suit sans virgule : « DAEHAN SHIPPING CO LTD BUSAN KOREA ». */
+const FORME_EN_LIGNE = /\b(?:co\.?,?\s*ltd\.?|limited|ltd\.?|inc\.?|llc|l\.l\.c\.|corp\.?|corporation|gmbh|s\.?a\.?|b\.?v\.?|n\.?v\.?|pte\.?\s*ltd\.?|pvt\.?\s*ltd\.?|sdn\.?\s*bhd\.?|s\.?p\.?a\.?|s\.?r\.?l\.?|a\.?s\.?|plc|kk|k\.k\.|jsc|ooo|fze|fzco|est\.?)\b/giu;
+
 export function variantes(brut: string): string[] {
   const vues = new Set<string>([brut.trim()]);
+  /* la forme native entre parenthèses, ou l'inverse : « BAKU OIL EXPORT (Бакинский …) »,
+     « 青岛海鑫国际物流有限公司 (Qingdao Haixin International Logistics Co., Ltd.) », « Katz Miriam (כץ מרים) » :
+     deux écritures du même nom, chacune une variante, aucune filiale */
+  const nonLatin = /[\u0370-\u03ff\u0400-\u04ff\u0590-\u05ff\u0600-\u06ff\u0900-\u0dff\u0e00-\u0e7f\u1100-\u11ff\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/u;
+  const paren = /^(.*?)\s*\(([^()]+)\)\s*$/u.exec(brut.trim());
+  if (paren && paren[1]!.trim() && paren[2]!.trim() && (nonLatin.test(paren[1]!) !== nonLatin.test(paren[2]!))) {
+    vues.add(paren[1]!.trim());
+    vues.add(paren[2]!.trim());
+  }
   /* les suffixes SWIFT à la barre oblique (« LUCENT CORRIDOR/V.088W/HK », « …CO LTD/NANNING/CN ») :
      retirés un à un tant qu'il reste deux mots devant */
   let sansBarres = brut.trim();
@@ -1227,6 +1281,27 @@ export function variantes(brut: string): string[] {
        société, la même parenthèse serait une filiale, mais aucune forme ne la suit ici */
     p = p.replace(/\s*\(\s*([\p{L} ]{3,30})\s*\)\s*$/u, (m, pays: string) => (PAVILLONS.has(normaliser(pays)) ? "" : m)).trim();
     if (p.length > 0 && /\p{L}/u.test(p)) vues.add(p);
+    /* une adresse sans virgule derrière la forme juridique, dans un export : ce qui suit la
+       dernière forme, quand ce sont des mots et non une autre forme, s'ôte */
+    let dernier: RegExpExecArray | null = null;
+    for (const m of p.matchAll(FORME_EN_LIGNE)) dernier = m;
+    if (dernier && dernier.index !== undefined && dernier.index > 0) {
+      const fin = dernier.index + dernier[0].length;
+      const queue = p.slice(fin).trim();
+      const motsQueue = jetons(normaliser(queue));
+      /* la queue doit porter un signal d'ADRESSE (pays, ville, pavillon, chiffre, mot de bâtiment)
+         et aucune forme : « de C.V. » n'est pas une adresse, « of Canada Ltd. » non plus */
+      const adresse = motsQueue.some((m) => PAYS_MOTS.has(m) || PAVILLONS.has(m) || REGIONS.has(m) || /^\d+[a-z]?$/.test(m)
+        || /^(?:room|rm|unit|bldg|building|floor|fl|suite|ste|street|st|road|rd|avenue|ave|zone|area|district|city|port|tower|plaza|plot|block)$/.test(m));
+      if (queue.length > 0 && adresse && /^[\p{L}\d .'-]{2,40}$/u.test(queue) && !new RegExp(FORME_EN_LIGNE.source, "iu").test(queue)
+        && p.slice(0, dernier.index).trim().split(/\s+/).length >= 1) {
+        vues.add(p.slice(0, fin).trim());
+      }
+    }
+    /* un pavillon nu en fin de nom de navire : « MERIDIAN GLORY LIBERIA » */
+    const mots = p.split(/\s+/);
+    if (mots.length >= 3 && PAVILLONS.has(normaliser(mots[mots.length - 1]!))) vues.add(mots.slice(0, -1).join(" "));
+    if (mots.length >= 4 && PAVILLONS.has(normaliser(mots.slice(-2).join(" ")))) vues.add(mots.slice(0, -2).join(" "));
   }
   return [...vues];
 }
@@ -1265,6 +1340,7 @@ export const CHEMINS_APPRENTISSAGE = [
   new URL("./paires-entites-4.json", import.meta.url),
   new URL("./paires-entites-5.json", import.meta.url),
   new URL("./paires-entites-6.json", import.meta.url),
+  new URL("./paires-entites-7.json", import.meta.url),
 ];
 /** Le jeu de VERDICT : écrit par une autre main qui n'a vu ni ce fichier ni les autres jeux,
  *  lu une seule fois la méthode figée, JAMAIS utilisé pour choisir un seuil. Ses taux sont
@@ -1301,8 +1377,8 @@ export function pliJaponais(m: string): string {
     .replace(/sh(?=[aou])/g, "sy").replace(/ch(?=[aou])/g, "ty").replace(/j(?=[aou])/g, "zy")
     .replace(/o(?:h(?![aeiou])|o|u)/g, "o").replace(/uu/g, "u").replace(/(.)\1+/g, "$1");
 }
-/** Le hindi (व : v, w, b) et l'hébreu (ב : b, v) : une seule lettre, dans leur contexte seulement,
- *  parce qu'en français Fabre n'est pas Favre. */
+/** Le hindi (व : v, w, b), l'hébreu (ב : b, v), l'espagnol et le portugais (b, v) : une seule lettre au
+ *  niveau du crédit (0,85), pas du squelette : Fabre et Favre restent sous le niveau fort. */
 export function pliIndien(m: string): string {
   return m.replace(/[vw]/g, "b").replace(/(.)\1+/g, "$1");
 }
