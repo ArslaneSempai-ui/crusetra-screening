@@ -37,6 +37,8 @@ a verdict set is ever listed by any tool before it becomes training.
 | | | | | possible 0.80 | 132/200 [59-72 %] | 38/200 [14-25 %] |
 | 2026-09-28 | v19 42bd47ca / 66aac8b8 / ecritures bdd60326 | set #17 405f0cdf (Trieste freight forwarder and Belgrade bank brief by document: Italian and Slovenian registries, Serbian, Croatian, Hungarian, Romanian and Bulgarian documents, Adriatic and Danube vessels, SWIFT fields, chat/OCR; Sonnet, written in five parts in advance; corrected conventions unchanged, no em-dash; 19 near-duplicates are accent variants of one pair; overlap with the seventeen training sets: 0 pairs, 0 names; 9 pairs identical but for case), becomes paires-entites-18.json | 200 + 200 | strong 0.81 | 169/200 [79-89 %] | 28/200 [10-19 %] |
 | | | | | possible 0.80 | 181/200 [86-94 %] | 48/200 [19-30 %] |
+| 2026-09-28 | v20 7e7a32c7 / 0f773c96 / ecritures bdd60326 | set #18 2d19fd26 (Osaka trading house and Busan bank brief by document: Japanese registries in kanji, kana and two romanisations, Korean documents in hangul, hanja and two romanisations, East Asian vessels, SWIFT fields, chat/OCR; Opus, written in five parts in advance; corrected conventions unchanged, no em-dash; overlap with the eighteen training sets: 0 pairs, 0 names; 0 pairs identical but for case), becomes paires-entites-19.json | 200 + 200 | strong 0.81 | 95/200 [41-54 %] | 9/200 [2-8 %] |
+| | | | | possible 0.80 | 125/200 [56-69 %] | 45/200 [17-29 %] |
 
 v6 on set #3 at other thresholds: 0.70 found 182 with 52 false; 0.75 found 181 with 37; 0.85 found 162
 with 19; 0.90 found 153 with 11.

@@ -1,1 +1,2407 @@
-{"quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)", "provenance": "blind test set #17, authored on 2026-09-29 by a separate agent (a Trieste freight forwarder and Belgrade bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data", "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set", "paires": [{"a": "Adriatica Legnami S.r.l.", "b": "Adriatica Legnami Srl", "verdict": "match", "nature": "legal-form-abbreviation"}, {"a": "Carnica Trasporti S.n.c. di Bront Livio & C.", "b": "Carnica Trasporti Snc di Bront Livio e C.", "verdict": "match", "nature": "legal-form-abbreviation"}, {"a": "Tergestina Spedizioni S.p.A., Via del Molo 12, Trieste, P.IVA 00812340328", "b": "Tergestina Spedizioni SpA, Via del Molo 12, Trieste, P.I. 00812340328", "verdict": "match", "nature": "punctuation-spacing-iva"}, {"a": "Isontina Import Export S.r.l.", "b": "Isontina Import Export S.r.l., Filiale di Capodistria", "verdict": "match", "nature": "branch-vs-head-office"}, {"a": "Alpina Trasporti S.a.s. di Qualizza Renzo & C.", "b": "Alpina Trasporti S.a.s. di Qualizza Renzo & C., Unita locale Gorizia", "verdict": "match", "nature": "branch-vs-head-office"}, {"a": "Ditta Cecotti Adriano S.r.l.", "b": "Ditta Cecotti Adriano Srl, sede secondaria Udine", "verdict": "match", "nature": "branch-vs-head-office"}, {"a": "Mittal Legno S.r.l.", "b": "Mital Legno S.r.l.", "verdict": "match", "nature": "misspelling-one-letter-proper-name"}, {"a": "Radcliffe Adriatica S.p.A.", "b": "Radclife Adriatica S.p.A.", "verdict": "match", "nature": "misspelling-one-letter-proper-name"}, {"a": "Petris Costruzioni S.n.c.", "b": "Petriss Costruzioni S.n.c.", "verdict": "match", "nature": "misspelling-one-letter-proper-name"}, {"a": "Kalcic Trgovina d.o.o.", "b": "Kalčić Trgovina d.o.o.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Fabjan Prevozi d.o.o.", "b": "Fabjan Prevozi d. o. o.", "verdict": "match", "nature": "punctuation-spacing-legal-form"}, {"a": "Škerlj Trgovina in Storitve d.o.o.", "b": "Skerlj Trgovina in Storitve d.o.o.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Jadranska Plovba d.o.o.", "b": "Navigazione Adriatica d.o.o.", "verdict": "match", "nature": "bilingual-translation-name"}, {"a": "Obalna Špedicija d.o.o.", "b": "Spedizione Costiera d.o.o.", "verdict": "match", "nature": "bilingual-translation-name"}, {"a": "Kraška Avtoprevozništvo d.d.", "b": "Autotrasporti del Carso d.d.", "verdict": "match", "nature": "bilingual-translation-name"}, {"a": "Zanier Impianti Società Cooperativa", "b": "Zanier Impianti Soc. Coop.", "verdict": "match", "nature": "legal-form-abbreviation-coop"}, {"a": "Cooperativa Agricola Comelli Società Cooperativa a r.l.", "b": "Coop. Agricola Comelli Soc. Coop. a r.l.", "verdict": "match", "nature": "legal-form-abbreviation-coop"}, {"a": "Bulfon Trasporti S.n.c. di Bulfon Mario e Figli", "b": "Bulfon Trasporti S.r.l., gia S.n.c. di Bulfon Mario e Figli", "verdict": "match", "nature": "transformation-continuity"}, {"a": "Molaro Legnami S.a.s. di Molaro Elio & C.", "b": "Molaro Legnami S.r.l., trasformata da S.a.s. di Molaro Elio & C.", "verdict": "match", "nature": "transformation-continuity"}, {"a": "MARCUZZI SPEDIZIONI S.R.L. VIA CARSO 8 TRIESTE", "b": "Marcuzzi Spedizioni S.r.l., Via Carso 8, Trieste", "verdict": "match", "nature": "registry-vs-invoice-formatting"}, {"a": "DITTA DRECOGNA F.LLI S.N.C. GORIZIA", "b": "Ditta Drecogna F.lli S.n.c., Gorizia", "verdict": "match", "nature": "registry-vs-invoice-formatting"}, {"a": "Hrastnik Gradbeništvo d.o.o., MŠ 5834219000", "b": "Hrastnik Gradbenistvo d.o.o., maticna stevilka 5834219000", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Pregelj Trgovina d.o.o.", "b": "Pregel Trgovina d.o.o.", "verdict": "match", "nature": "misspelling-one-letter-proper-name"}, {"a": "Rupnik Transport in Logistika d.o.o.", "b": "Rupnik Transport in Logistika, d. o. o.", "verdict": "match", "nature": "punctuation-spacing-legal-form"}, {"a": "Sinožić Ribolov d.o.o.", "b": "Sinozic Ribolov d.o.o.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Grubiša Nekretnine d.o.o.", "b": "Grubisa Nekretnine, d.o.o.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Bassanese Serramenti S.r.l., Via Istria 4, Trieste", "b": "Bassanese Serramenti Srl,ViaIstria4,Trieste", "verdict": "match", "nature": "address-glued-ocr"}, {"a": "Delton Impianti Elettrici S.n.c.", "b": "Delton Impianti Elettrici S.n.c., filiale di Muggia", "verdict": "match", "nature": "branch-vs-head-office"}, {"a": "Zorman Kamnoseštvo d.o.o.", "b": "Zorman Kamnosestvo, d.o.o.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Bevk Mizarstvo d.o.o.", "b": "Bevk Mizarstvo d.o.o., poslovna enota Sežana", "verdict": "match", "nature": "branch-vs-head-office"}, {"a": "F.lli Pittino S.n.c. di Pittino Aldo e Bruno", "b": "Fratelli Pittino S.n.c. di Pittino Aldo e Bruno", "verdict": "match", "nature": "abbreviation-expanded"}, {"a": "Comm. Bront Silvano S.a.s.", "b": "Commendator Bront Silvano S.a.s.", "verdict": "match", "nature": "abbreviation-expanded"}, {"a": "Kavčič Prevozi d.d.", "b": "Kavcic Prevozi, d.d.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Adriatica Serramenti S.p.A., P.IVA IT00812340328", "b": "ADRIATICA SERRAMENTI SPA, PARTITA IVA 00812340328", "verdict": "match", "nature": "registry-vs-invoice-formatting"}, {"a": "Impresa Cecotti & Bront S.n.c.", "b": "Impresa Cecotti e Bront S.n.c.", "verdict": "match", "nature": "punctuation-spacing-legal-form"}, {"a": "Comelli Agricola Soc.Coop.", "b": "Comelli Agricola Società Cooperativa", "verdict": "match", "nature": "legal-form-abbreviation-coop"}, {"a": "Qualizza Impianti Termoidraulici S.a.s. di Qualizza R.", "b": "Qualizza Impianti Termoidraulici S.a.s. di Qualizza Renzo", "verdict": "match", "nature": "abbreviation-expanded"}, {"a": "Zanutti Trasporti Internazionali S.r.l.", "b": "Zanuti Trasporti Internazionali S.r.l.", "verdict": "match", "nature": "misspelling-one-letter-proper-name"}, {"a": "Kocjančič Gostinstvo d.o.o.", "b": "Kocjancic Gostinstvo, d.o.o.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Špacapan Vinarstvo d.o.o.", "b": "Spacapan Vinarstvo d.o.o.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Ditta Cecotti Import Export S.r.l.", "b": "Ditta Comelli Import Export S.r.l.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Isontina Import Export S.r.l.", "b": "Isontina Import Export d.o.o.", "verdict": "different", "nature": "different-country-subsidiary"}, {"a": "Alpina Trasporti S.a.s. di Qualizza Renzo & C.", "b": "Alpina Trasporti S.a.s. di Petris Renzo & C.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Adriatica Legnami S.r.l.", "b": "Adriatica Metalli S.r.l.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Carnica Trasporti S.n.c. di Bront Livio & C.", "b": "Carnica Trasporti S.n.c. di Molaro Livio & C.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Kraška Avtoprevozništvo d.d.", "b": "Notranjska Avtoprevozništvo d.d.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Obalna Špedicija d.o.o.", "b": "Soška Špedicija d.o.o.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Jadranska Plovba d.o.o.", "b": "Jadranska Ribolov d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Hrastnik Gradbeništvo d.o.o.", "b": "Rupnik Gradbeništvo d.o.o.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Pregelj Trgovina d.o.o.", "b": "Kavčič Trgovina d.o.o.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Grubiša Nekretnine d.o.o.", "b": "Sirotić Nekretnine d.o.o.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Zorman Kamnoseštvo d.o.o.", "b": "Fabjan Kamnoseštvo d.o.o.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Bevk Mizarstvo d.o.o.", "b": "Bevk Kovaštvo d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "F.lli Pittino S.n.c. di Pittino Aldo e Bruno", "b": "F.lli Pittino S.n.c. di Pittino Elio e Renzo", "verdict": "different", "nature": "two-word-difference"}, {"a": "Comm. Bront Silvano S.a.s.", "b": "Comm. Drecogna Silvano S.a.s.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Zanier Impianti Società Cooperativa", "b": "Zanier Servizi Società Cooperativa", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Comelli Agricola Soc. Coop.", "b": "Bulfon Agricola Soc. Coop.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Adriatica Serramenti S.p.A.", "b": "Istriana Serramenti S.p.A.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Tergestina Spedizioni S.p.A.", "b": "Tergestina Costruzioni S.p.A.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Delton Impianti Elettrici S.n.c.", "b": "Delton Impianti Idraulici S.n.c.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Bassanese Serramenti S.r.l.", "b": "Delton Serramenti S.r.l.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Mittal Legno S.r.l.", "b": "Mistral Legno S.r.l.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Radcliffe Adriatica S.p.A.", "b": "Radcliffe Istriana S.p.A.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Petris Costruzioni S.n.c.", "b": "Petris Demolizioni S.n.c.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Kalčić Trgovina d.o.o.", "b": "Kalčić Prevozi d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Škerlj Trgovina in Storitve d.o.o.", "b": "Škerlj Gradnja in Storitve d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Rupnik Transport in Logistika d.o.o.", "b": "Rupnik Turizem in Logistika d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Sinožić Ribolov d.o.o.", "b": "Dobrić Ribolov d.o.o.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Kocjančič Gostinstvo d.o.o.", "b": "Kocjančič Trgovina d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Špacapan Vinarstvo d.o.o.", "b": "Špacapan Sadjarstvo d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Kavčič Prevozi d.d.", "b": "Zorman Prevozi d.d.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Bulfon Trasporti S.n.c. di Bulfon Mario e Figli", "b": "Bulfon Trasporti S.n.c. di Drecogna Mario e Figli", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Comelli Agricola Soc. Coop.", "b": "Comelli Silvicola Soc. Coop.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Isontina Import Export S.r.l.", "b": "Timavo Import Export S.r.l.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Carnica Trasporti S.n.c. di Bront Livio & C.", "b": "Giulia Trasporti S.n.c. di Bront Livio & C.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Alpina Trasporti S.a.s. di Qualizza Renzo & C.", "b": "Dolomiti Trasporti S.a.s. di Qualizza Renzo & C.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Grubiša Nekretnine d.o.o.", "b": "Grubiša Gradbeništvo d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Fabjan Prevozi d.o.o.", "b": "Fabjan Ribištvo d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Hrastnik Gradbeništvo d.o.o.", "b": "Hrastnik Kamnoseštvo d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Pregelj Trgovina d.o.o.", "b": "Pregelj Gostinstvo d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Dunav Trgovina d.o.o.", "b": "Дунав Трговина д.о.о.", "verdict": "match", "nature": "cyrillic-latin-transliteration"}, {"a": "Moravska Industrija a.d.", "b": "Моравска Индустрија а.д.", "verdict": "match", "nature": "cyrillic-latin-transliteration"}, {"a": "Sava Logistika d.o.o.", "b": "САВА ЛОГИСТИКА Д.О.О.", "verdict": "match", "nature": "cyrillic-latin-transliteration"}, {"a": "Timok Prevoz d.o.o.", "b": "Тимок Превоз д.о.о.", "verdict": "match", "nature": "cyrillic-latin-transliteration"}, {"a": "Đorđević Trans d.o.o.", "b": "Djordjevic Trans d.o.o.", "verdict": "match", "nature": "cyrillic-latin-transliteration"}, {"a": "Nikolić Špedicija d.o.o.", "b": "Nikolic Spedicija d.o.o.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Jadran Brodogradnja d.d.", "b": "Jadran Brodogradnja, d. d.", "verdict": "match", "nature": "punctuation-spacing-legal-form"}, {"a": "Zagorje Prijevoz d.o.o.", "b": "Zagorje Prijevoz d.o.o., podružnica Split", "verdict": "match", "nature": "branch-vs-head-office"}, {"a": "Bosna Trgovina d.o.o.", "b": "Bosna Trgovina d.o.o., poslovna jedinica Mostar", "verdict": "match", "nature": "branch-vs-head-office"}, {"a": "Neretva Transport d.o.o.", "b": "Neretva Transport, d.o.o.", "verdict": "match", "nature": "punctuation-spacing-legal-form"}, {"a": "Hodžić Gradnja d.o.o.", "b": "Hodzic Gradnja d.o.o.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Selimović Import d.o.o.", "b": "Selimovic Import d.o.o.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Kovács Béla Kft.", "b": "Béla Kovács Kft.", "verdict": "match", "nature": "hungarian-name-order"}, {"a": "Tisza Kereskedelmi Kft.", "b": "Tisza Kereskedelmi Korlátolt Felelősségű Társaság", "verdict": "match", "nature": "abbreviation-expanded"}, {"a": "Duna Szállítmányozási Zrt.", "b": "Duna Szallitmanyozasi Zrt.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Kovács és Fiai Bt.", "b": "Kovacs es Fiai Bt.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Nagy István Kft.", "b": "István Nagy Kft.", "verdict": "match", "nature": "hungarian-name-order"}, {"a": "Horváth Zoltán Bt.", "b": "Horvath Zoltan Bt.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Dunărea Comerț S.R.L.", "b": "Dunarea Comert S.R.L.", "verdict": "match", "nature": "romanian-diacritics-dropped"}, {"a": "Rădulescu Import S.R.L.", "b": "Radulescu Import S.R.L.", "verdict": "match", "nature": "romanian-diacritics-dropped"}, {"a": "Mureșul Transport S.A.", "b": "Muresul Transport S.A.", "verdict": "match", "nature": "romanian-diacritics-dropped"}, {"a": "Constanța Marfă S.R.L.", "b": "Constanta Marfa S.R.L.", "verdict": "match", "nature": "romanian-diacritics-dropped"}, {"a": "Popescu & Fii S.R.L.", "b": "Popescu si Fii S.R.L.", "verdict": "match", "nature": "punctuation-spacing-legal-form"}, {"a": "Ionescu Comert S.R.L.", "b": "Ionescu Comerț S.R.L.", "verdict": "match", "nature": "romanian-diacritics-dropped"}, {"a": "Дунав Търговия ООД", "b": "Dunav Targovia OOD", "verdict": "match", "nature": "cyrillic-latin-transliteration"}, {"a": "Марица Транспорт АД", "b": "Maritsa Transport AD", "verdict": "match", "nature": "cyrillic-latin-transliteration"}, {"a": "Иванов Логистика ЕООД", "b": "Ivanov Logistika EOOD", "verdict": "match", "nature": "cyrillic-latin-transliteration"}, {"a": "Петров Търговия ООД", "b": "Petrov Targovia OOD", "verdict": "match", "nature": "cyrillic-latin-transliteration"}, {"a": "Георгиев Строителство АД", "b": "Georgiev Stroitelstvo AD", "verdict": "match", "nature": "cyrillic-latin-transliteration"}, {"a": "Stanković Metali d.o.o.", "b": "Stankovic Metali d.o.o.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Jovanović Osiguranje a.d.", "b": "Jovanovic Osiguranje a.d.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Babić Prijevoz d.o.o.", "b": "Babic Prijevoz d.o.o.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Kovačić Gradnja d.o.o.", "b": "Kovacic Gradnja d.o.o.", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Mital Group d.o.o.", "b": "Mittal Group d.o.o.", "verdict": "match", "nature": "misspelling-one-letter-proper-name"}, {"a": "Radclife Trgovina a.d.", "b": "Radcliffe Trgovina a.d.", "verdict": "match", "nature": "misspelling-one-letter-proper-name"}, {"a": "Tisza Kereskedelmi Kft., PIB 987654321", "b": "Tisza Kereskedelmi Kft. PIB: 987654321", "verdict": "match", "nature": "punctuation-spacing-registry-id"}, {"a": "Dunav Trgovina d.o.o., MB 20345678", "b": "Dunav Trgovina d.o.o. maticni broj 20345678", "verdict": "match", "nature": "punctuation-spacing-registry-id"}, {"a": "Neretva Transport d.o.o., OIB 34567890123", "b": "Neretva Transport d.o.o. - OIB: 34567890123", "verdict": "match", "nature": "punctuation-spacing-registry-id"}, {"a": "Constanța Marfă S.R.L., CUI RO12345678", "b": "Constanta Marfa SRL CUI 12345678", "verdict": "match", "nature": "punctuation-spacing-registry-id"}, {"a": "Zagorje Prijevoz d.o.o., EUID HRSR.080987654321", "b": "Zagorje Prijevoz d.o.o. - EUID: HRSR.080987654321", "verdict": "match", "nature": "punctuation-spacing-registry-id"}, {"a": "Dunav Trgovina d.o.o.", "b": "Dunav Prevoz d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Moravska Industrija a.d.", "b": "Timočka Industrija a.d.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Sava Logistika d.o.o.", "b": "Dunav Logistika d.o.o.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Timok Prevoz d.o.o.", "b": "Timok Gradnja d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Đorđević Trans d.o.o.", "b": "Jovanović Trans d.o.o.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Nikolić Špedicija d.o.o.", "b": "Stanković Špedicija d.o.o.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Jadran Brodogradnja d.d.", "b": "Istra Brodogradnja d.d.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Zagorje Prijevoz d.o.o.", "b": "Zagorje Trgovina d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Bosna Trgovina d.o.o.", "b": "Neretva Trgovina d.o.o.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Neretva Transport d.o.o.", "b": "Neretva Transport a.d.", "verdict": "different", "nature": "different-legal-form-distinct-entity"}, {"a": "Hodžić Gradnja d.o.o.", "b": "Selimović Gradnja d.o.o.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Selimović Import d.o.o.", "b": "Selimović Export d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Kovács Béla Kft.", "b": "Kovács Sándor Kft.", "verdict": "different", "nature": "different-personal-name-hungarian-order"}, {"a": "Tisza Kereskedelmi Kft.", "b": "Tisza Ipari Kft.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Duna Szállítmányozási Zrt.", "b": "Tisza Szállítmányozási Zrt.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Kovács és Fiai Bt.", "b": "Nagy és Fiai Bt.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Nagy István Kft.", "b": "Nagy Károly Kft.", "verdict": "different", "nature": "different-personal-name-hungarian-order"}, {"a": "Horváth Zoltán Bt.", "b": "Horváth Zoltán Kft.", "verdict": "different", "nature": "different-legal-form-distinct-entity"}, {"a": "Dunărea Comerț S.R.L.", "b": "Mureșul Comerț S.R.L.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Rădulescu Import S.R.L.", "b": "Constantinescu Import S.R.L.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Mureșul Transport S.A.", "b": "Mureșul Turism S.A.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Constanța Marfă S.R.L.", "b": "Constanța Pescuit S.R.L.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Popescu & Fii S.R.L.", "b": "Ionescu & Fii S.R.L.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Ionescu Comerț S.R.L.", "b": "Ionescu Construcții S.R.L.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Дунав Търговия ООД", "b": "Марица Търговия ООД", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Марица Транспорт АД", "b": "Марица Строителство АД", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Иванов Логистика ЕООД", "b": "Петров Логистика ЕООД", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Петров Търговия ООД", "b": "Георгиев Търговия ООД", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Георгиев Строителство АД", "b": "Georgiev Transport AD", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Stanković Metali d.o.o.", "b": "Stanković Tekstil d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Jovanović Osiguranje a.d.", "b": "Nikolić Osiguranje a.d.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Babić Prijevoz d.o.o.", "b": "Kovačić Prijevoz d.o.o.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Kovačić Gradnja d.o.o.", "b": "Kovačić Trgovina d.o.o.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Petrović Grupa d.o.o.", "b": "Nikolić Grupa d.o.o.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Radcliffe Trgovina a.d.", "b": "Fairfield Trgovina a.d.", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "Tisza Kereskedelmi Kft.", "b": "Tisza Vendéglátó Kft.", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "Dunav Trgovina d.o.o.", "b": "Sava Trgovina d.o.o.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Neretva Transport d.o.o.", "b": "Bosna Transport d.o.o.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Zagorje Prijevoz d.o.o.", "b": "Istra Prijevoz d.o.o.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "Constanța Marfă S.R.L.", "b": "Mureșul Marfă S.R.L.", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "MV Adria Star", "b": "Adria Star", "verdict": "match", "nature": "prefix-mv-dropped"}, {"a": "Adria Star, Koper", "b": "Adria Star", "verdict": "match", "nature": "port-of-registry-appended"}, {"a": "Istra Trader (ex Primorje Carrier)", "b": "Primorje Carrier", "verdict": "match", "nature": "former-name-alias"}, {"a": "Kvarner Trader", "b": "Jadran Star (ex Kvarner Trader)", "verdict": "match", "nature": "former-name-alias"}, {"a": "Koper Pioneer", "b": "KOPER PIONEER", "verdict": "match", "nature": "case-only-difference"}, {"a": "Rijeka Express, Rijeka", "b": "Rijeka Express", "verdict": "match", "nature": "port-of-registry-appended"}, {"a": "Bar Navigator", "b": "Bar Navigator, Bar", "verdict": "match", "nature": "port-of-registry-appended"}, {"a": "Danube Pioneer", "b": "Dunav Pionir (ex Danube Pioneer)", "verdict": "match", "nature": "former-name-alias"}, {"a": "Sava Star", "b": "Sava Star, Novi Sad", "verdict": "match", "nature": "port-of-registry-appended"}, {"a": "Tisa Trader", "b": "TISA TRADER", "verdict": "match", "nature": "case-only-difference"}, {"a": "Morava Glory", "b": "Morava Glory, Bar", "verdict": "match", "nature": "port-of-registry-appended"}, {"a": "Dunav Princess (ex Sava Empress)", "b": "Sava Empress", "verdict": "match", "nature": "former-name-alias"}, {"a": "Constanta Carrier", "b": "Constanța Carrier", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Novi Sad Trader", "b": "Novi Sad Trader, Novi Sad", "verdict": "match", "nature": "port-of-registry-appended"}, {"a": "Adriatic Feeder I", "b": "Adriatic Feeder I, Koper", "verdict": "match", "nature": "port-of-registry-appended"}, {"a": "Adriatic Feeder II", "b": "ADRIATIC FEEDER II", "verdict": "match", "nature": "case-only-difference"}, {"a": "Istra Trader", "b": "Istra  Trader", "verdict": "match", "nature": "punctuation-spacing-only"}, {"a": "Kvarner Pioneer (ex Sisak Glory)", "b": "Sisak Glory", "verdict": "match", "nature": "former-name-alias"}, {"a": "Bar Carrier", "b": "Bar Carrier, Bar", "verdict": "match", "nature": "port-of-registry-appended"}, {"a": "Dunav Potiskivač", "b": "Dunav Potiskivac", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Tisa Gurač", "b": "Tisa Gurac", "verdict": "match", "nature": "accent-diacritic-dropped"}, {"a": "Teglenica NS-2234", "b": "Teglenica NS 2234", "verdict": "match", "nature": "punctuation-spacing-only"}, {"a": "Barza DN-118", "b": "Barza DN-118, Novi Sad", "verdict": "match", "nature": "port-of-registry-appended"}, {"a": "Moravska Zvezda (ex Dunavska Zvezda)", "b": "Dunavska Zvezda", "verdict": "match", "nature": "former-name-alias"}, {"a": "Adria Carrier", "b": "M.V. Adria Carrier", "verdict": "match", "nature": "prefix-mv-dropped"}, {"a": "Koper Pioneer, Koper", "b": "Koper Pioneer", "verdict": "match", "nature": "port-of-registry-appended"}, {"a": "Rijeka Glory", "b": "RIJEKA  GLORY", "verdict": "match", "nature": "punctuation-spacing-only"}, {"a": "Jadranka Trader (ex Istarka Carrier)", "b": "Istarka Carrier", "verdict": "match", "nature": "former-name-alias"}, {"a": "Danubius 1", "b": "Danubius-1", "verdict": "match", "nature": "punctuation-spacing-only"}, {"a": "Danube Feeder 2", "b": "Danube Feeder No. 2", "verdict": "match", "nature": "abbreviation-expanded"}, {"a": "Constanța Feeder", "b": "Constanța Feeder, Constanța", "verdict": "match", "nature": "port-of-registry-appended"}, {"a": "Sava Pioneer", "b": "Sava Pioneer, Novi Sad", "verdict": "match", "nature": "port-of-registry-appended"}, {"a": "Bar Trader (ex Crnogorka)", "b": "Crnogorka", "verdict": "match", "nature": "former-name-alias"}, {"a": "Istra Carrier", "b": "ISTRA CARRIER, Koper", "verdict": "match", "nature": "registry-vs-afloat-formatting"}, {"a": "Morava Trader", "b": "Morava  Trader", "verdict": "match", "nature": "punctuation-spacing-only"}, {"a": "Dunav Empress (ex Sava Duchess)", "b": "Sava Duchess", "verdict": "match", "nature": "former-name-alias"}, {"a": "Koper Carrier", "b": "Koper Carrier, Koper", "verdict": "match", "nature": "port-of-registry-appended"}, {"a": "Rijeka Pioneer", "b": "M.V. Rijeka Pioneer", "verdict": "match", "nature": "prefix-mv-dropped"}, {"a": "Novi Sad Pusher", "b": "Novi Sad Pusher, Novi Sad", "verdict": "match", "nature": "port-of-registry-appended"}, {"a": "Bar Feeder", "b": "BAR FEEDER", "verdict": "match", "nature": "case-only-difference"}, {"a": "Adriatic Feeder I", "b": "Adriatic Feeder II", "verdict": "different", "nature": "numbered-fleet-different-hull"}, {"a": "Adriatic Feeder II", "b": "Adriatic Feeder III", "verdict": "different", "nature": "numbered-fleet-different-hull"}, {"a": "Rijeka Express 3", "b": "Rijeka Express 4", "verdict": "different", "nature": "numeral-changed-different-hull"}, {"a": "Koper Trader", "b": "Koper Traders", "verdict": "different", "nature": "plural-different-hull"}, {"a": "Danube Pioneer", "b": "Danube Pioneers", "verdict": "different", "nature": "plural-different-hull"}, {"a": "Sava Star", "b": "Sava Starr", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Bar Navigator", "b": "Bar Navigatorr", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Istra Trader", "b": "Istria Trader", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Morava Glory", "b": "Morava Glori", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Dunav Princess", "b": "Dunav Princes", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Novi Sad Trader", "b": "Novi Sad Traider", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Constanta Carrier", "b": "Constanta Carrierr", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Tisa Trader", "b": "Tisza Trader", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Teglenica NS-2234", "b": "Teglenica NS-2235", "verdict": "different", "nature": "numeral-changed-different-hull"}, {"a": "Barza DN-118", "b": "Barza DN-119", "verdict": "different", "nature": "numeral-changed-different-hull"}, {"a": "Danubius 1", "b": "Danubius 2", "verdict": "different", "nature": "numeral-changed-different-hull"}, {"a": "Danube Feeder 2", "b": "Danube Feeder 3", "verdict": "different", "nature": "numeral-changed-different-hull"}, {"a": "Adria Star", "b": "Adria Stars", "verdict": "different", "nature": "plural-different-hull"}, {"a": "Kvarner Trader", "b": "Kvarner Traders", "verdict": "different", "nature": "plural-different-hull"}, {"a": "Jadran Star", "b": "Jadran Starr", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Bar Carrier", "b": "Bar Carriers", "verdict": "different", "nature": "plural-different-hull"}, {"a": "Rijeka Glory", "b": "Rijeka Glori", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Rijeka Pioneer", "b": "Rijeka Pioner", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Sava Pioneer", "b": "Sava Pionner", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Koper Carrier", "b": "Kopar Carrier", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Bar Feeder", "b": "Bar Feedar", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Bar Trader", "b": "Bar Tradder", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Jadranka Trader", "b": "Jadranska Trader", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Adriatic Carrier", "b": "Adriatic Voyager", "verdict": "different", "nature": "different-vessel-name-word"}, {"a": "Danube Duchess", "b": "Danube Empress", "verdict": "different", "nature": "different-vessel-name-word"}, {"a": "Koper Glory", "b": "Koper Legacy", "verdict": "different", "nature": "different-vessel-name-word"}, {"a": "Rijeka Fortune", "b": "Rijeka Endeavour", "verdict": "different", "nature": "different-vessel-name-word"}, {"a": "Adriatic Feeder I", "b": "Adriatic Feeder III", "verdict": "different", "nature": "numbered-fleet-different-hull"}, {"a": "Rijeka Express 3", "b": "Rijeka Express 5", "verdict": "different", "nature": "numeral-changed-different-hull"}, {"a": "Teglenica NS-2234", "b": "Teglenica NS-3234", "verdict": "different", "nature": "numeral-changed-different-hull"}, {"a": "Danube Feeder 2", "b": "Danube Feeder 12", "verdict": "different", "nature": "numeral-changed-different-hull"}, {"a": "Novi Sad Pusher", "b": "Novi Sad Pushers", "verdict": "different", "nature": "plural-different-hull"}, {"a": "Morava Trader", "b": "Morava Traders", "verdict": "different", "nature": "plural-different-hull"}, {"a": "Sava Duchess", "b": "Sava Duchesss", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "Dunavska Zvezda", "b": "Dunavska Zvezdaa", "verdict": "different", "nature": "one-letter-changed-different-hull"}, {"a": "RODOPI MINERALS EOOD\n42 TSAR ASEN BLVD\nPLOVDIV 4000\nBULGARIA", "b": "Родопи Минералс ЕООД, бул. Цар Асен 42, Пловдив 4000, България", "verdict": "match", "nature": "cyrillic-transliteration-swift"}, {"a": "TISZA STEEL TRADING KFT", "b": "Tisza Steel Trading Kft.", "verdict": "match", "nature": "uppercase-only-swift"}, {"a": "SREMSKA INDUSTRI-\nJA DOO\nNOVI SAD", "b": "Sremska Industrija d.o.o., Novi Sad", "verdict": "match", "nature": "swift-line-cut-hyphenation"}, {"a": "BANATAGROEXPORTDOO,ZRENJANIN,SRB", "b": "Banat Agro Export d.o.o., Zrenjanin, Srbija", "verdict": "match", "nature": "address-glued-swift"}, {"a": "VOJVODINA GRAIN TRADING DOO", "b": "Vojvodina Grain Trading d.o.o.", "verdict": "match", "nature": "uppercase-only-swift"}, {"a": "POSAVINA TIMBER DOO", "b": "Posavina Timber d.o.o.", "verdict": "match", "nature": "uppercase-only-swift"}, {"a": "SLAVONIJA FOODS DD", "b": "Slavonija Foods d.d.", "verdict": "match", "nature": "uppercase-only-swift"}, {"a": "MARITSA CHEMICALS AD", "b": "Марица Химия АД", "verdict": "match", "nature": "cyrillic-transliteration-swift"}, {"a": "DEBRECEN MACHINERY ZRT", "b": "Debrecen Machinery Zrt.", "verdict": "match", "nature": "uppercase-only-swift"}, {"a": "TIMISOARA METALS SRL", "b": "Timișoara Metals S.R.L.", "verdict": "match", "nature": "romanian-diacritics-dropped-swift"}, {"a": "NOVI SAD PETROLEUM DOO", "b": "Novi Sad Petroleum d.o.o.", "verdict": "match", "nature": "uppercase-only-swift"}, {"a": "RODOPI MINERALS EOOD REF LC-2024-0451", "b": "Rodopi Minerals EOOD", "verdict": "match", "nature": "bank-reference-appended"}, {"a": "OLTENIA COMMODITIES SRL", "b": "Oltenia Commodities S.R.L.", "verdict": "match", "nature": "legal-form-abbreviation"}, {"a": "TISZA STEEL TRADI-\nNG KFT\nDEBRECENI UT 12\nSZEGED 6720", "b": "Tisza Steel Trading Kft., Debreceni ut 12, Szeged 6720", "verdict": "match", "nature": "swift-line-cut-hyphenation"}, {"a": "SREMSKA INDUSTRIJA DOO, MB 20981234", "b": "Sremska Industrija DOO MB:20981234", "verdict": "match", "nature": "punctuation-spacing-registry-id"}, {"a": "BANAT AGRO EXPORT DOO", "b": "Banat Agro Export, d.o.o.", "verdict": "match", "nature": "uppercase-only-swift"}, {"a": "MITTAL COMMODITIES SRL", "b": "MITAL COMMODITIES SRL", "verdict": "match", "nature": "misspelling-one-letter-proper-name"}, {"a": "RADCLIFFE TRADING KFT", "b": "RADCLIFE TRADING KFT", "verdict": "match", "nature": "misspelling-one-letter-proper-name"}, {"a": "NOVI SAD PETROLEUM DOO, PIB 104567890", "b": "Novi Sad Petroleum d.o.o. - PIB 104567890", "verdict": "match", "nature": "punctuation-spacing-registry-id"}, {"a": "SLAVONIJAFOODSDD,OSIJEK,HR", "b": "Slavonija Foods d.d., Osijek, Hrvatska", "verdict": "match", "nature": "address-glued-swift"}, {"a": "POSAVINA TIMBER DOO, MB 71234567", "b": "Posavina Timber d.o.o. maticni broj 71234567", "verdict": "match", "nature": "punctuation-spacing-registry-id"}, {"a": "MARITSA CHEMICALS AD DOC CREDIT REF 88213/24", "b": "Maritsa Chemicals AD", "verdict": "match", "nature": "bank-reference-appended"}, {"a": "DEBRECEN MACHINERY ZRT, ADOSZAM 12345678", "b": "Debrecen Machinery Zrt. adoszam: 12345678", "verdict": "match", "nature": "punctuation-spacing-registry-id"}, {"a": "TIMISOARA METALS SRL, CUI RO23456789", "b": "Timisoara Metals SRL - CUI 23456789", "verdict": "match", "nature": "punctuation-spacing-registry-id"}, {"a": "VOJVODINA GRAIN TRA-\nDING DOO", "b": "Vojvodina Grain Trading DOO", "verdict": "match", "nature": "swift-line-cut-hyphenation"}, {"a": "OLTENIA COMMODITIES SRL, STR PRINCIPALA 5", "b": "Oltenia Commodities S.R.L., Str. Principala 5", "verdict": "match", "nature": "punctuation-spacing-address"}, {"a": "RODOPI MINERALS EOOD", "b": "RODOPI  MINERALS  EOOD", "verdict": "match", "nature": "punctuation-spacing-only"}, {"a": "TISZA STEEL TRADING KFT", "b": "TISZA STEEL TRADING K.F.T.", "verdict": "match", "nature": "punctuation-spacing-legal-form"}, {"a": "SREMSKA INDUSTRIJA DOO", "b": "SREMSKA INDUSTRIJA D.O.O.", "verdict": "match", "nature": "punctuation-spacing-legal-form"}, {"a": "BANAT AGRO EXPO-\nRT DOO\nZRENJANIN", "b": "Banat Agro Export d.o.o., Zrenjanin", "verdict": "match", "nature": "swift-line-cut-hyphenation"}, {"a": "NOVI SAD PETROLEUM DOO", "b": "Novi Sad Petroleum, DOO", "verdict": "match", "nature": "punctuation-spacing-legal-form"}, {"a": "POSAVINA TIMB-\nER DOO", "b": "Posavina Timber d.o.o.", "verdict": "match", "nature": "swift-line-cut-hyphenation"}, {"a": "MARITSA CHEMICALS AD", "b": "МАРИЦА ХИМИКАЛИ АД", "verdict": "match", "nature": "cyrillic-transliteration-swift"}, {"a": "DEBRECEN MACHINERY ZRT", "b": "DEBRECEN MACHINERY Z.R.T.", "verdict": "match", "nature": "punctuation-spacing-legal-form"}, {"a": "BANAT AGRO EXPORT DOO", "b": "BANAT AGRO EXPORT D.O.O.", "verdict": "match", "nature": "punctuation-spacing-legal-form"}, {"a": "MARITSA CHEMICALS AD", "b": "MARITSA CHEMICALS A.D.", "verdict": "match", "nature": "punctuation-spacing-legal-form"}, {"a": "VOJVODINA GRAIN TRADING DOO REF LC/2024/778", "b": "Vojvodina Grain Trading d.o.o.", "verdict": "match", "nature": "bank-reference-appended"}, {"a": "RODOPI MINERALS EOOD", "b": "RODOPI MINERALS E.O.O.D.", "verdict": "match", "nature": "punctuation-spacing-legal-form"}, {"a": "POSAVINA TIMBER DOO", "b": "POSAVINA TIMBER, DOO", "verdict": "match", "nature": "punctuation-spacing-legal-form"}, {"a": "NOVISADPETROLEUMDOO/LCREF20240099", "b": "Novi Sad Petroleum d.o.o.", "verdict": "match", "nature": "address-glued-swift"}, {"a": "RODOPI MINERALS EOOD", "b": "RODOPI CHEMICALS EOOD", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "TISZA STEEL TRADING KFT", "b": "TISZA TIMBER TRADING KFT", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "SREMSKA INDUSTRIJA DOO", "b": "SLAVONSKA INDUSTRIJA DOO", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "BANAT AGRO EXPORT DOO", "b": "BANAT AGRO IMPORT DOO", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "VOJVODINA GRAIN TRADING DOO", "b": "VOJVODINA STEEL TRADING DOO", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "POSAVINA TIMBER DOO", "b": "PODRINJE TIMBER DOO", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "SLAVONIJA FOODS DD", "b": "DALMACIJA FOODS DD", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "MARITSA CHEMICALS AD", "b": "RODOPI CHEMICALS AD", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "DEBRECEN MACHINERY ZRT", "b": "SZEGED MACHINERY ZRT", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "TIMISOARA METALS SRL", "b": "CONSTANTA METALS SRL", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "NOVI SAD PETROLEUM DOO", "b": "NOVI SAD CHEMICALS DOO", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "OLTENIA COMMODITIES SRL", "b": "MOLDOVA COMMODITIES SRL", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "PETROVIC TRA-\nDING DOO", "b": "NIKOLIC TRADING DOO", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "RODOPI MINERALS EOOD", "b": "RILA MINERALS EOOD", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "TISZA STEEL TRADING KFT", "b": "DUNA STEEL TRADING KFT", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "SREMSKA INDUSTRIJA DOO", "b": "SREMSKA LOGISTIKA DOO", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "BANAT AGRO EXPORT DOO", "b": "BACKA AGRO EXPORT DOO", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "VOJVODINA GRAIN TRADING DOO", "b": "SREM GRAIN TRADING DOO", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "POSAVINA TIMBER DOO", "b": "POSAVINA METALS DOO", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "SLAVONIJA FOODS DD", "b": "SLAVONIJA CHEMICALS DD", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "MARITSA CHEMICALS AD", "b": "MARITSA TEXTILES AD", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "DEBRECEN MACHINERY ZRT", "b": "DEBRECEN TEXTILES ZRT", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "TIMISOARA METALS SRL", "b": "TIMISOARA TIMBER SRL", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "NOVI SAD PETROLEUM DOO", "b": "BEOGRAD PETROLEUM DOO", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "OLTENIA COMMODITIES SRL", "b": "OLTENIA MINERALS SRL", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "MITTAL COMMODITIES SRL", "b": "STANESCU COMMODITIES SRL", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "RADCLIFFE TRADING KFT", "b": "FAIRFIELD TRADING KFT", "verdict": "different", "nature": "different-surname-same-form"}, {"a": "МАРИЦА ХИМИЯ АД", "b": "РОДОПИ ХИМИЯ АД", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "СРЕМСКА ИНДУСТРИЈА ДОО", "b": "СЛАВОНСКА ИНДУСТРИЈА ДОО", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "BANAT AGRO EXPO-\nRT DOO", "b": "BANAT FOOD EXPO-\nRT DOO", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "TISZA STEEL TRADING KFT", "b": "TISZA STEEL SERVICES KFT", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "VOJVODINA GRAIN TRADING DOO", "b": "VOJVODINA GRAIN LOGISTICS DOO", "verdict": "different", "nature": "different-business-sector-word"}, {"a": "NOVISADPETROLEUMDOO", "b": "BEOGRADPETROLEUMDOO", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "SLAVONIJAFOODSDD", "b": "DALMACIJAFOODSDD", "verdict": "different", "nature": "different-place-same-business-word"}, {"a": "RODOPI MINERALS EOOD", "b": "RODOPI MINERALS AD", "verdict": "different", "nature": "different-legal-form-distinct-entity"}, {"a": "NOVI SAD PETROLEUM DOO", "b": "NOVI SAD PETROLEUM AD", "verdict": "different", "nature": "different-legal-form-distinct-entity"}, {"a": "SLAVONIJA FOODS DD", "b": "SLAVONIJA FOODS DOO", "verdict": "different", "nature": "different-legal-form-distinct-entity"}, {"a": "TIMISOARA METALS SRL", "b": "TIMISOARA METALS SA", "verdict": "different", "nature": "different-legal-form-distinct-entity"}, {"a": "DEBRECEN MACHINERY ZRT", "b": "DEBRECEN MACHINERY KFT", "verdict": "different", "nature": "different-legal-form-distinct-entity"}, {"a": "OLTENIA COMMODITIES SRL", "b": "OLTENIA COMMODITIES SA", "verdict": "different", "nature": "different-legal-form-distinct-entity"}, {"a": "Soc. Coop. Comelli", "b": "Società Cooperativa Comelli", "verdict": "match", "nature": "whatsapp-abbreviation"}, {"a": "Ind. Bront", "b": "Industria Bront", "verdict": "match", "nature": "whatsapp-abbreviation"}, {"a": "Comm. Zanut", "b": "Commerciale Zanut", "verdict": "match", "nature": "whatsapp-abbreviation"}, {"a": "Trasp. Delton", "b": "Trasporti Delton", "verdict": "match", "nature": "whatsapp-abbreviation"}, {"a": "Sped. Rossetti", "b": "Spedizioni Rossetti", "verdict": "match", "nature": "whatsapp-abbreviation"}, {"a": "CecottiSrl", "b": "Cecotti Srl", "verdict": "match", "nature": "missing-space-chat"}, {"a": "BrontLegnami", "b": "Bront Legnami", "verdict": "match", "nature": "missing-space-chat"}, {"a": "Zanutt Trasporti", "b": "Zanut Trasporti", "verdict": "match", "nature": "doubled-letter-typo"}, {"a": "Rosseti Sped.", "b": "Rossetti Sped.", "verdict": "match", "nature": "doubled-letter-typo"}, {"a": "Comeli Coop", "b": "Comelli Coop", "verdict": "match", "nature": "doubled-letter-typo"}, {"a": "Delton Impiantti Elettrici", "b": "Delton Impianti Elettrici", "verdict": "match", "nature": "doubled-letter-typo"}, {"a": "Nikolic Prevoz", "b": "Nikolić Prevoz", "verdict": "match", "nature": "accent-diacritic-dropped-chat"}, {"a": "Kovac Trans", "b": "Kovač Trans", "verdict": "match", "nature": "accent-diacritic-dropped-chat"}, {"a": "Horvath Fuvar", "b": "Horváth Fuvar", "verdict": "match", "nature": "accent-diacritic-dropped-chat"}, {"a": "Nagy Szallitas", "b": "Nagy Szállítás", "verdict": "match", "nature": "accent-diacritic-dropped-chat"}, {"a": "Popescu Comert", "b": "Popescu Comerț", "verdict": "match", "nature": "romanian-diacritics-dropped-chat"}, {"a": "Ivanov Trans", "b": "Иванов Транс", "verdict": "match", "nature": "cyrillic-latin-transliteration-chat"}, {"a": "Zanuz Trasporti", "b": "Zanut Trasporti", "verdict": "match", "nature": "autocorrect-substitution"}, {"a": "Rossetti Sepd.", "b": "Rossetti Sped.", "verdict": "match", "nature": "letter-transposition-typo"}, {"a": "Comelli Cop.", "b": "Comelli Coop.", "verdict": "match", "nature": "missing-letter-typo"}, {"a": "C_COTTI S.R.L.", "b": "CECOTTI S.R.L.", "verdict": "match", "nature": "ocr-stamp-garbled"}, {"a": "ZAN_T TRASPORTI", "b": "ZANUT TRASPORTI", "verdict": "match", "nature": "ocr-stamp-garbled"}, {"a": "8RONT LEGNAMI", "b": "BRONT LEGNAMI", "verdict": "match", "nature": "ocr-stamp-garbled"}, {"a": "DELT0N IMPIANTI", "b": "DELTON IMPIANTI", "verdict": "match", "nature": "ocr-stamp-garbled"}, {"a": "NIK0LIC PREVOZ", "b": "NIKOLIC PREVOZ", "verdict": "match", "nature": "ocr-stamp-garbled"}, {"a": "il Cecotti", "b": "Cecotti S.r.l.", "verdict": "match", "nature": "chat-shorthand-nickname"}, {"a": "dal Bront", "b": "Bront Legnami", "verdict": "match", "nature": "chat-shorthand-nickname"}, {"a": "lo Zanut", "b": "Zanut Trasporti", "verdict": "match", "nature": "chat-shorthand-nickname"}, {"a": "Rossetti", "b": "Rossetti Sped.", "verdict": "match", "nature": "chat-shorthand-nickname"}, {"a": "Nikolić", "b": "Nikolić Prevoz", "verdict": "match", "nature": "chat-shorthand-nickname"}, {"a": "Kovač Trans doo", "b": "Kovač Trans d.o.o.", "verdict": "match", "nature": "punctuation-spacing-legal-form-chat"}, {"a": "Horváth Fuvar kft", "b": "Horváth Fuvar Kft.", "verdict": "match", "nature": "punctuation-spacing-legal-form-chat"}, {"a": "Comelli coop soc", "b": "Comelli Soc. Coop.", "verdict": "match", "nature": "word-order-abbreviation-chat"}, {"a": "Nagy Szállítás Bt", "b": "Nagy Szállítás Bt.", "verdict": "match", "nature": "punctuation-spacing-legal-form-chat"}, {"a": "Popescu Comerț srl", "b": "Popescu Comerț S.R.L.", "verdict": "match", "nature": "punctuation-spacing-legal-form-chat"}, {"a": "Ivanov Trans ood", "b": "Ivanov Trans OOD", "verdict": "match", "nature": "punctuation-spacing-legal-form-chat"}, {"a": "mital commodities", "b": "Mittal Commodities", "verdict": "match", "nature": "misspelling-one-letter-proper-name-chat"}, {"a": "radclife trading", "b": "Radcliffe Trading", "verdict": "match", "nature": "misspelling-one-letter-proper-name-chat"}, {"a": "Zanut Trasp srl trieste", "b": "Zanut Trasporti S.r.l., Trieste", "verdict": "match", "nature": "missing-space-chat"}, {"a": "delton impiantielettrici snc", "b": "Delton Impianti Elettrici S.n.c.", "verdict": "match", "nature": "missing-space-chat"}, {"a": "Cecotti Srl", "b": "Comelli Srl", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Bront Legnami", "b": "Bront Metalli", "verdict": "different", "nature": "different-business-sector-word-chat"}, {"a": "Zanut Trasporti", "b": "Zanut Spedizioni", "verdict": "different", "nature": "different-business-sector-word-chat"}, {"a": "Delton Impianti Elettrici", "b": "Delton Impianti Idraulici", "verdict": "different", "nature": "different-business-sector-word-chat"}, {"a": "Rossetti Sped.", "b": "Bassanese Sped.", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Comelli Coop", "b": "Bulfon Coop", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Nikolić Prevoz", "b": "Stanković Prevoz", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Kovač Trans", "b": "Horvat Trans", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Horváth Fuvar", "b": "Nagy Fuvar", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Nagy Szállítás", "b": "Kovács Szállítás", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Popescu Comerț", "b": "Ionescu Comerț", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Ivanov Trans", "b": "Petrov Trans", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Zanut Trasporti Trieste", "b": "Zanut Trasporti Udine", "verdict": "different", "nature": "different-place-same-business-word-chat"}, {"a": "Cecotti Srl Gorizia", "b": "Cecotti Srl Muggia", "verdict": "different", "nature": "different-place-same-business-word-chat"}, {"a": "Kovač Trans d.o.o.", "b": "Kovač Trans a.d.", "verdict": "different", "nature": "different-legal-form-distinct-entity-chat"}, {"a": "Horváth Fuvar Kft.", "b": "Horváth Fuvar Bt.", "verdict": "different", "nature": "different-legal-form-distinct-entity-chat"}, {"a": "Nagy Szállítás Bt.", "b": "Nagy Szállítás Kft.", "verdict": "different", "nature": "different-legal-form-distinct-entity-chat"}, {"a": "Popescu Comerț S.R.L.", "b": "Popescu Comerț S.A.", "verdict": "different", "nature": "different-legal-form-distinct-entity-chat"}, {"a": "Ivanov Trans OOD", "b": "Ivanov Trans EOOD", "verdict": "different", "nature": "different-legal-form-distinct-entity-chat"}, {"a": "Comelli Soc. Coop.", "b": "Comelli Srl", "verdict": "different", "nature": "different-legal-form-distinct-entity-chat"}, {"a": "Bront Legnami Srl", "b": "Bront Legnami Snc", "verdict": "different", "nature": "different-legal-form-distinct-entity-chat"}, {"a": "Zanut Trasporti Srl", "b": "Zanut Trasporti Sas", "verdict": "different", "nature": "different-legal-form-distinct-entity-chat"}, {"a": "Delton Impianti Elettrici Snc", "b": "Delton Impianti Elettrici Srl", "verdict": "different", "nature": "different-legal-form-distinct-entity-chat"}, {"a": "Rossetti Sped. Srl", "b": "Rossetti Sped. Snc", "verdict": "different", "nature": "different-legal-form-distinct-entity-chat"}, {"a": "il Cecotti", "b": "il Comelli", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "dal Bront", "b": "dal Delton", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "lo Zanut", "b": "lo Zanier", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Rossetti", "b": "Bassanese", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Nikolić", "b": "Stanković", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "mital commodities", "b": "stanescu commodities", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "radclife trading", "b": "fairfield trading", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Zanut Trasp srl trieste", "b": "Zanier Trasp srl trieste", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "delton impiantielettrici snc", "b": "bront impiantielettrici snc", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Comelli coop soc", "b": "Bulfon coop soc", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Kovač Trans doo", "b": "Horvat Trans doo", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Nagy Szállítás Bt", "b": "Kovács Szállítás Bt", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Ivanov Trans ood", "b": "Georgiev Trans ood", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "ZAN_T TRASPORTI", "b": "ZANIER TRASPORTI", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "8RONT LEGNAMI", "b": "DELTON LEGNAMI", "verdict": "different", "nature": "different-surname-same-form-chat"}, {"a": "Nikolić Prevoz", "b": "Nikolić Gradnja", "verdict": "different", "nature": "different-business-sector-word-chat"}]}
+{
+ "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+ "provenance": "blind test set #18, authored on 2026-09-29 by a separate agent (an Osaka trading house and Busan bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
+ "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+ "paires": [
+  {
+   "a": "株式会社星ノ浦物産",
+   "b": "Hoshinoura Bussan K.K.",
+   "verdict": "match",
+   "nature": "kanji-vs-hepburn"
+  },
+  {
+   "a": "風松工業株式会社",
+   "b": "Kazamatsu Kōgyō Co., Ltd.",
+   "verdict": "match",
+   "nature": "kanji-vs-hepburn"
+  },
+  {
+   "a": "白駒電機株式会社",
+   "b": "Shirakoma Denki Corporation",
+   "verdict": "match",
+   "nature": "kanji-vs-hepburn"
+  },
+  {
+   "a": "株式会社大鷲精工",
+   "b": "Owashi Seiko Co., Ltd.",
+   "verdict": "match",
+   "nature": "kanji-vs-hepburn"
+  },
+  {
+   "a": "株式会社千鳥ヶ瀬商事",
+   "b": "カブシキガイシャ チドリガセショウジ",
+   "verdict": "match",
+   "nature": "kanji-vs-kana"
+  },
+  {
+   "a": "藤見化成株式会社",
+   "b": "フジミカセイ株式会社",
+   "verdict": "match",
+   "nature": "kanji-vs-kana"
+  },
+  {
+   "a": "Tsutsuki Tsūshō K.K.",
+   "b": "Tutuki Tûsyô K.K.",
+   "verdict": "match",
+   "nature": "hepburn-vs-kunrei"
+  },
+  {
+   "a": "Sumiyoshibara Seisakusho Co., Ltd.",
+   "b": "Sumiyosibara Seisakusyo Co., Ltd.",
+   "verdict": "match",
+   "nature": "hepburn-vs-kunrei"
+  },
+  {
+   "a": "Asagiri Shokuhin K.K.",
+   "b": "Asagiri Syokuhin K.K.",
+   "verdict": "match",
+   "nature": "hepburn-vs-kunrei"
+  },
+  {
+   "a": "Chidorigase Shōji Co., Ltd.",
+   "b": "Tidorigase Syôzi Co., Ltd.",
+   "verdict": "match",
+   "nature": "hepburn-vs-kunrei"
+  },
+  {
+   "a": "Marushin Jūki K.K.",
+   "b": "Marusin Zyûki K.K.",
+   "verdict": "match",
+   "nature": "hepburn-vs-kunrei"
+  },
+  {
+   "a": "Sōryū Kagaku Kōgyō K.K.",
+   "b": "Souryuu Kagaku Kougyou K.K.",
+   "verdict": "match",
+   "nature": "macron-vs-wapuro"
+  },
+  {
+   "a": "Tokiwadai Bōeki Co., Ltd.",
+   "b": "Tokiwadai Boueki Co., Ltd.",
+   "verdict": "match",
+   "nature": "macron-vs-wapuro"
+  },
+  {
+   "a": "Ōwashi Seikō K.K.",
+   "b": "Ohwashi Seiko K.K.",
+   "verdict": "match",
+   "nature": "macron-vs-wapuro"
+  },
+  {
+   "a": "Narumihama Shōkai K.K.",
+   "b": "Narumihama Shoukai Co., Ltd.",
+   "verdict": "match",
+   "nature": "macron-vs-wapuro"
+  },
+  {
+   "a": "株式会社星ノ浦物産",
+   "b": "星ノ浦物産株式会社",
+   "verdict": "match",
+   "nature": "kabushiki-position"
+  },
+  {
+   "a": "株式会社茜谷製紙",
+   "b": "茜谷製紙株式会社",
+   "verdict": "match",
+   "nature": "kabushiki-position"
+  },
+  {
+   "a": "Hibarigaoka Sangyo K.K.",
+   "b": "Hibarigaoka Sangyo Co., Ltd.",
+   "verdict": "match",
+   "nature": "legal-form-translation"
+  },
+  {
+   "a": "Kazamatsu Kogyo Kabushiki Kaisha",
+   "b": "Kazamatsu Kogyo Corporation",
+   "verdict": "match",
+   "nature": "legal-form-translation"
+  },
+  {
+   "a": "白駒電機株式会社",
+   "b": "Shirakoma Electric Co., Ltd.",
+   "verdict": "match",
+   "nature": "name-translation"
+  },
+  {
+   "a": "蒼龍化学工業株式会社",
+   "b": "Soryu Chemical Industries Co., Ltd.",
+   "verdict": "match",
+   "nature": "name-translation"
+  },
+  {
+   "a": "若潮水産株式会社",
+   "b": "Wakashio Fisheries Co., Ltd.",
+   "verdict": "match",
+   "nature": "name-translation"
+  },
+  {
+   "a": "株式会社鶴ヶ丘精密 法人番号3120001184527",
+   "b": "株式会社鶴ヶ丘精密",
+   "verdict": "match",
+   "nature": "houjin-bangou-residue"
+  },
+  {
+   "a": "常盤台貿易株式会社（法人番号 7010401093318）",
+   "b": "常盤台貿易株式会社",
+   "verdict": "match",
+   "nature": "houjin-bangou-residue"
+  },
+  {
+   "a": "Corporate Number 5140001077264 Hishinuma Gokin K.K.",
+   "b": "Hishinuma Gōkin K.K.",
+   "verdict": "match",
+   "nature": "houjin-bangou-residue"
+  },
+  {
+   "a": "株式会社八雲堂 御中",
+   "b": "株式会社八雲堂",
+   "verdict": "match",
+   "nature": "invoice-honorific"
+  },
+  {
+   "a": "月岡繊維株式会社 御中",
+   "b": "Tsukioka Sen'i K.K.",
+   "verdict": "match",
+   "nature": "invoice-honorific"
+  },
+  {
+   "a": "株式会社北楠海運 神戸支店",
+   "b": "株式会社北楠海運",
+   "verdict": "match",
+   "nature": "branch-office"
+  },
+  {
+   "a": "Chojamachi Chemical Co., Ltd. Osaka Branch",
+   "b": "Chojamachi Chemical Co., Ltd.",
+   "verdict": "match",
+   "nature": "branch-office"
+  },
+  {
+   "a": "藤見化成株式会社 名古屋営業所",
+   "b": "藤見化成株式会社",
+   "verdict": "match",
+   "nature": "branch-office"
+  },
+  {
+   "a": "Hoshinoura Bussan K.K.",
+   "b": "Hoshinura Bussan K.K.",
+   "verdict": "match",
+   "nature": "company-misspelling"
+  },
+  {
+   "a": "Tsukioka Sen'i Co., Ltd.",
+   "b": "Tsukiokka Sen'i Co., Ltd.",
+   "verdict": "match",
+   "nature": "company-misspelling"
+  },
+  {
+   "a": "Akaneya Seishi K.K.",
+   "b": "Akaneye Seishi K.K.",
+   "verdict": "match",
+   "nature": "company-misspelling"
+  },
+  {
+   "a": "ＫＡＺＡＭＡＴＳＵ　ＫＯＧＹＯ　ＫＫ",
+   "b": "Kazamatsu Kōgyō Co., Ltd.",
+   "verdict": "match",
+   "nature": "fullwidth-romaji"
+  },
+  {
+   "a": "合同会社小鳩屋",
+   "b": "Kobatoya G.K.",
+   "verdict": "match",
+   "nature": "godo-kaisha"
+  },
+  {
+   "a": "Kobatoya Godo Kaisha",
+   "b": "Kobatoya LLC",
+   "verdict": "match",
+   "nature": "godo-kaisha"
+  },
+  {
+   "a": "有限会社岬屋酒造",
+   "b": "Misakiya Shuzo Y.K.",
+   "verdict": "match",
+   "nature": "yugen-kaisha"
+  },
+  {
+   "a": "Misakiya Shuzō Yūgen Kaisha",
+   "b": "Misakiya Shuzo Limited",
+   "verdict": "match",
+   "nature": "yugen-kaisha"
+  },
+  {
+   "a": "丸信重機株式会社",
+   "b": "マルシンジュウキ株式会社",
+   "verdict": "match",
+   "nature": "kanji-vs-kana"
+  },
+  {
+   "a": "株式会社鳴海浜商会",
+   "b": "Narumihama Shokai Co., Ltd.",
+   "verdict": "match",
+   "nature": "kanji-vs-hepburn"
+  },
+  {
+   "a": "株式会社北楠海運",
+   "b": "株式会社南楠海運",
+   "verdict": "different",
+   "nature": "other-place-word"
+  },
+  {
+   "a": "Kitakusu Kaiun K.K.",
+   "b": "Kitakusu Kisen K.K.",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "星ノ浦物産株式会社",
+   "b": "星ノ浦商事株式会社",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Hoshinoura Bussan K.K.",
+   "b": "Hoshinoura Sangyo K.K.",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "風松工業株式会社",
+   "b": "風松建設株式会社",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Shirakoma Denki Corporation",
+   "b": "Shirakoma Denshi Corporation",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Owashi Seiko Co., Ltd.",
+   "b": "Otaka Seiko Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "藤見化成株式会社",
+   "b": "藤沢化成株式会社",
+   "verdict": "different",
+   "nature": "other-place-word"
+  },
+  {
+   "a": "Tsutsuki Tsusho Co., Ltd.",
+   "b": "Tsutsuki Tsusho (Thailand) Co., Ltd.",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "白駒電機株式会社",
+   "b": "白駒電機（上海）有限公司",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "Chidorigase Shoji K.K.",
+   "b": "Chidorigase Shoji Korea Co., Ltd.",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "株式会社風松ホールディングス",
+   "b": "風松工業株式会社",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Soryu Kagaku Holdings K.K.",
+   "b": "Soryu Kagaku Kogyo K.K.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "第一丸信重機株式会社",
+   "b": "第二丸信重機株式会社",
+   "verdict": "different",
+   "nature": "numbered-entity"
+  },
+  {
+   "a": "株式会社東日本朝霧食品",
+   "b": "株式会社西日本朝霧食品",
+   "verdict": "different",
+   "nature": "regional-entity"
+  },
+  {
+   "a": "Chojamachi Chemical Kansai Co., Ltd.",
+   "b": "Chojamachi Chemical Kanto Co., Ltd.",
+   "verdict": "different",
+   "nature": "regional-entity"
+  },
+  {
+   "a": "朝霧食品株式会社",
+   "b": "Asagiri Suisan K.K.",
+   "verdict": "different",
+   "nature": "cross-script-other-word"
+  },
+  {
+   "a": "若潮水産株式会社",
+   "b": "Wakashio Shokuhin Co., Ltd.",
+   "verdict": "different",
+   "nature": "cross-script-other-word"
+  },
+  {
+   "a": "常盤台貿易株式会社",
+   "b": "Tokiwadai Kaihatsu K.K.",
+   "verdict": "different",
+   "nature": "cross-script-other-word"
+  },
+  {
+   "a": "株式会社鶴ヶ丘精密",
+   "b": "株式会社鶴ヶ丘精機",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Tsurugaoka Seimitsu K.K.",
+   "b": "Kamegaoka Seimitsu K.K.",
+   "verdict": "different",
+   "nature": "other-place-word"
+  },
+  {
+   "a": "Hishinuma Gokin K.K.",
+   "b": "Hishinuma Kinzoku K.K.",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Hishinuma Gōkin K.K.",
+   "b": "Hasunuma Gōkin K.K.",
+   "verdict": "different",
+   "nature": "other-place-word"
+  },
+  {
+   "a": "株式会社八雲堂",
+   "b": "株式会社八重堂",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "月岡繊維株式会社",
+   "b": "月見繊維株式会社",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "Tsukioka Sen'i K.K.",
+   "b": "Tsukioka Shoji K.K.",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "株式会社鳴海浜商会",
+   "b": "株式会社鳴海浜商店",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Narumihama Shokai K.K.",
+   "b": "Narumigaoka Shokai K.K.",
+   "verdict": "different",
+   "nature": "other-place-word"
+  },
+  {
+   "a": "丸信重機株式会社",
+   "b": "丸信重工株式会社",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Marushin Juki K.K.",
+   "b": "Maruyoshi Juki K.K.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "合同会社小鳩屋",
+   "b": "合同会社小鶴屋",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "Kobatoya G.K.",
+   "b": "Kobatoya Hawaii LLC",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "有限会社岬屋酒造",
+   "b": "有限会社岬屋醤油",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Misakiya Shuzo Y.K.",
+   "b": "Minatoya Shuzo Y.K.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "Sumiyoshibara Seisakusho Co., Ltd.",
+   "b": "Sumiyoshibara Kogyosho Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Sumiyoshibara Seisakusho Co., Ltd.",
+   "b": "Sumiyoshidai Seisakusho Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-place-word"
+  },
+  {
+   "a": "株式会社津々木通商 法人番号 2011001050731",
+   "b": "株式会社津久井通商",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "Hibarigaoka Sangyo K.K.",
+   "b": "Hibarigaoka Kosan K.K.",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "株式会社星ノ浦物産 大阪支店",
+   "b": "株式会社星ノ浦物流 大阪支店",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Tokiwadai Boeki Co., Ltd.",
+   "b": "Tokiwadai Boeki (Vietnam) Co., Ltd.",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "주식회사 서림해운",
+   "b": "Seorim Haeun Co., Ltd.",
+   "verdict": "match",
+   "nature": "hangul-vs-revised"
+  },
+  {
+   "a": "서림해운 주식회사",
+   "b": "Sŏrim Haeun Co., Ltd.",
+   "verdict": "match",
+   "nature": "hangul-vs-mccune"
+  },
+  {
+   "a": "Seorim Haeun Co., Ltd.",
+   "b": "Sorim Haeun Co., Ltd.",
+   "verdict": "match",
+   "nature": "revised-vs-mccune"
+  },
+  {
+   "a": "瑞林海運株式會社",
+   "b": "주식회사 서림해운",
+   "verdict": "match",
+   "nature": "hanja-vs-hangul"
+  },
+  {
+   "a": "冬柏商事株式會社",
+   "b": "Dongbaek Sangsa Co., Ltd.",
+   "verdict": "match",
+   "nature": "hanja-vs-revised"
+  },
+  {
+   "a": "Dongbaek Sangsa Corp.",
+   "b": "Tongbaek Sangsa Corp.",
+   "verdict": "match",
+   "nature": "revised-vs-mccune"
+  },
+  {
+   "a": "동백상사(주)",
+   "b": "주식회사 동백상사",
+   "verdict": "match",
+   "nature": "jusikhoesa-abbreviation"
+  },
+  {
+   "a": "㈜백록화학",
+   "b": "Baengnok Hwahak Co., Ltd.",
+   "verdict": "match",
+   "nature": "hangul-vs-revised"
+  },
+  {
+   "a": "Baengnok Hwahak Co., Ltd.",
+   "b": "Paengnok Hwahak Co., Ltd.",
+   "verdict": "match",
+   "nature": "revised-vs-mccune"
+  },
+  {
+   "a": "白鹿化學株式會社",
+   "b": "백록화학 주식회사",
+   "verdict": "match",
+   "nature": "hanja-vs-hangul"
+  },
+  {
+   "a": "백록화학 주식회사",
+   "b": "Baengnok Chemical Co., Ltd.",
+   "verdict": "match",
+   "nature": "name-translation"
+  },
+  {
+   "a": "주식회사 도담산업",
+   "b": "도담산업 주식회사",
+   "verdict": "match",
+   "nature": "jusikhoesa-position"
+  },
+  {
+   "a": "Dodam Saneop Co., Ltd.",
+   "b": "Todam Sanop Co., Ltd.",
+   "verdict": "match",
+   "nature": "revised-vs-mccune"
+  },
+  {
+   "a": "도담산업(주)",
+   "b": "Dodam Industrial Co., Ltd.",
+   "verdict": "match",
+   "nature": "name-translation"
+  },
+  {
+   "a": "㈜운봉기계",
+   "b": "Unbong Gigye Co., Ltd.",
+   "verdict": "match",
+   "nature": "hangul-vs-revised"
+  },
+  {
+   "a": "Unbong Gigye Corp.",
+   "b": "Unbong Kigye Corp.",
+   "verdict": "match",
+   "nature": "revised-vs-mccune"
+  },
+  {
+   "a": "雲峰機械株式會社",
+   "b": "Unbong Machinery Co., Ltd.",
+   "verdict": "match",
+   "nature": "name-translation"
+  },
+  {
+   "a": "대륜중공업 주식회사",
+   "b": "Daeryun Heavy Industries Co., Ltd.",
+   "verdict": "match",
+   "nature": "name-translation"
+  },
+  {
+   "a": "Daeryun Junggongeop Co., Ltd.",
+   "b": "Taeryun Chunggongop Co., Ltd.",
+   "verdict": "match",
+   "nature": "revised-vs-mccune"
+  },
+  {
+   "a": "大輪重工業株式會社",
+   "b": "주식회사 대륜중공업",
+   "verdict": "match",
+   "nature": "hanja-vs-hangul"
+  },
+  {
+   "a": "청학조선 주식회사",
+   "b": "Ch'ŏnghak Chosŏn Co., Ltd.",
+   "verdict": "match",
+   "nature": "hangul-vs-mccune"
+  },
+  {
+   "a": "Cheonghak Joseon Co., Ltd.",
+   "b": "Cheonghak Shipbuilding Co., Ltd.",
+   "verdict": "match",
+   "nature": "name-translation"
+  },
+  {
+   "a": "유한회사 미르섬유",
+   "b": "Mireu Seomyu Ltd.",
+   "verdict": "match",
+   "nature": "yuhan-hoesa"
+  },
+  {
+   "a": "Mireu Seomyu Yuhan Hoesa",
+   "b": "Miru Somyu Ltd.",
+   "verdict": "match",
+   "nature": "revised-vs-mccune"
+  },
+  {
+   "a": "주식회사 새봄제약",
+   "b": "Saebom Pharmaceutical Co., Ltd.",
+   "verdict": "match",
+   "nature": "name-translation"
+  },
+  {
+   "a": "Saebom Jeyak Co., Ltd.",
+   "b": "Saebom Cheyak Co., Ltd.",
+   "verdict": "match",
+   "nature": "revised-vs-mccune"
+  },
+  {
+   "a": "솔뫼식품 주식회사",
+   "b": "Solmoe Foods Co., Ltd.",
+   "verdict": "match",
+   "nature": "name-translation"
+  },
+  {
+   "a": "솔뫼식품(주)",
+   "b": "Solmoe Sikp'um Co., Ltd.",
+   "verdict": "match",
+   "nature": "hangul-vs-mccune"
+  },
+  {
+   "a": "주식회사 가람철강 (사업자등록번호 214-86-53907)",
+   "b": "주식회사 가람철강",
+   "verdict": "match",
+   "nature": "brn-residue"
+  },
+  {
+   "a": "Garam Cheolgang Co., Ltd. BRN 214-86-53907",
+   "b": "Garam Steel Co., Ltd.",
+   "verdict": "match",
+   "nature": "brn-residue"
+  },
+  {
+   "a": "사업자등록번호: 130-81-77420 ㈜은솔전자",
+   "b": "은솔전자 주식회사",
+   "verdict": "match",
+   "nature": "brn-residue"
+  },
+  {
+   "a": "예금주 주식회사 풍암정밀",
+   "b": "Pungam Jeongmil Co., Ltd.",
+   "verdict": "match",
+   "nature": "account-holder-residue"
+  },
+  {
+   "a": "P'ungam Chŏngmil Co., Ltd.",
+   "b": "Pungam Precision Co., Ltd.",
+   "verdict": "match",
+   "nature": "name-translation"
+  },
+  {
+   "a": "주식회사 효림물류 부산지점",
+   "b": "주식회사 효림물류",
+   "verdict": "match",
+   "nature": "branch-office"
+  },
+  {
+   "a": "Hyorim Logistics Co., Ltd. Ulsan Branch",
+   "b": "Hyorim Mullyu Co., Ltd.",
+   "verdict": "match",
+   "nature": "branch-office"
+  },
+  {
+   "a": "동백상사 주식회사 인천지점",
+   "b": "Dongbaek Sangsa Co., Ltd.",
+   "verdict": "match",
+   "nature": "branch-office"
+  },
+  {
+   "a": "Seorim Haeun Co., Ltd.",
+   "b": "Seorin Haeun Co., Ltd.",
+   "verdict": "match",
+   "nature": "company-misspelling"
+  },
+  {
+   "a": "Eunsol Jeonja Co., Ltd.",
+   "b": "Eunsoll Jeonja Co., Ltd.",
+   "verdict": "match",
+   "nature": "company-misspelling"
+  },
+  {
+   "a": "해솔물산 주식회사",
+   "b": "HAESOL MULSAN CO LTD",
+   "verdict": "match",
+   "nature": "hangul-vs-revised"
+  },
+  {
+   "a": "Unbong Gigye Co., Ltd.",
+   "b": "Umbong Gigye Co., Ltd.",
+   "verdict": "match",
+   "nature": "company-misspelling"
+  },
+  {
+   "a": "주식회사 서림해운",
+   "b": "주식회사 서림해양",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Seorim Haeun Co., Ltd.",
+   "b": "Dongrim Haeun Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "瑞林海運株式會社",
+   "b": "瑞林海運(香港)有限公司",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "Dongbaek Sangsa Co., Ltd.",
+   "b": "Dongbaek Sangsa Japan Co., Ltd.",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "동백상사 주식회사",
+   "b": "동백물산 주식회사",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Dongbaek Sangsa Corp.",
+   "b": "Dongchon Sangsa Corp.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "㈜백록화학",
+   "b": "㈜백운화학",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "Baengnok Hwahak Co., Ltd.",
+   "b": "Baengnok Seogyu Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "白鹿化學株式會社",
+   "b": "白鹿製藥株式會社",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "도담산업 주식회사",
+   "b": "도담건설 주식회사",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "부산도담산업 주식회사",
+   "b": "울산도담산업 주식회사",
+   "verdict": "different",
+   "nature": "regional-entity"
+  },
+  {
+   "a": "Dodam Industrial Co., Ltd.",
+   "b": "Dodam Industrial (Vietnam) Co., Ltd.",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "㈜운봉기계",
+   "b": "㈜운봉전기",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Unbong Machinery Co., Ltd.",
+   "b": "Wolbong Machinery Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "대륜중공업 주식회사",
+   "b": "대륜홀딩스 주식회사",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Daeryun Heavy Industries Co., Ltd.",
+   "b": "Daeryun Heavy Industries Philippines Inc.",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "Daeryun Junggongeop Co., Ltd.",
+   "b": "Samryun Junggongeop Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "靑鶴造船株式會社",
+   "b": "白鶴造船株式會社",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "청학조선 주식회사",
+   "b": "청학해운 주식회사",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Cheonghak Shipbuilding Co., Ltd.",
+   "b": "Cheonghak Ship Repair Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "유한회사 미르섬유",
+   "b": "유한회사 미르패션",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Mireu Seomyu Ltd.",
+   "b": "Mirae Seomyu Ltd.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "주식회사 새봄제약",
+   "b": "주식회사 새봄바이오",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Saebom Pharmaceutical Co., Ltd.",
+   "b": "Saebyeol Pharmaceutical Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "솔뫼식품 주식회사",
+   "b": "솔뫼수산 주식회사",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Solmoe Foods Co., Ltd.",
+   "b": "Solbat Foods Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "주식회사 가람철강 (사업자등록번호 214-86-53907)",
+   "b": "주식회사 가람강관",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Garam Steel Co., Ltd.",
+   "b": "Garam Steel Japan K.K.",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "은솔전자 주식회사",
+   "b": "은솔전기 주식회사",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Eunsol Jeonja Co., Ltd.",
+   "b": "Eunbit Jeonja Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "풍암정밀 주식회사",
+   "b": "풍암금속 주식회사",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "P'ungam Chŏngmil Co., Ltd.",
+   "b": "P'yŏngam Chŏngmil Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "주식회사 효림물류",
+   "b": "주식회사 효림해운",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Hyorim Logistics Co., Ltd.",
+   "b": "Hyeonrim Logistics Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "해솔물산 주식회사",
+   "b": "해솔무역 주식회사",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Haesol Mulsan Corp.",
+   "b": "Haedam Mulsan Corp.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "예금주 주식회사 서림해운",
+   "b": "예금주 주식회사 서림상선",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "Seorim Haeun Co., Ltd. Busan Branch",
+   "b": "Seorim Haeun Singapore Pte. Ltd.",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "도담산업(주)",
+   "b": "도원산업(주)",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "冬柏商事株式會社",
+   "b": "春柏商事株式會社",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "霧雨丸",
+   "b": "Kirisame Maru",
+   "verdict": "match",
+   "nature": "vessel-kanji-vs-romanised"
+  },
+  {
+   "a": "第八星風丸",
+   "b": "Hoshikaze Maru No. 8",
+   "verdict": "match",
+   "nature": "vessel-kanji-vs-romanised"
+  },
+  {
+   "a": "Hoshikaze Maru No. 8",
+   "b": "No.8 Hoshikaze Maru",
+   "verdict": "match",
+   "nature": "vessel-numbering-format"
+  },
+  {
+   "a": "Dai-hachi Hoshikaze Maru",
+   "b": "第八星風丸",
+   "verdict": "match",
+   "nature": "vessel-numbering-format"
+  },
+  {
+   "a": "은파호",
+   "b": "Eunpa Ho",
+   "verdict": "match",
+   "nature": "vessel-hangul-vs-romanised"
+  },
+  {
+   "a": "Eunpa Ho",
+   "b": "Ŭnp'a Ho",
+   "verdict": "match",
+   "nature": "vessel-revised-vs-mccune"
+  },
+  {
+   "a": "EUNPA HO BUSAN",
+   "b": "Eunpa Ho",
+   "verdict": "match",
+   "nature": "vessel-port-of-registry"
+  },
+  {
+   "a": "Dalmuri Ho (ex Ferry Mizukagami)",
+   "b": "Ferry Mizukagami",
+   "verdict": "match",
+   "nature": "vessel-ex-name"
+  },
+  {
+   "a": "Dalmuri Ho (ex Ferry Mizukagami)",
+   "b": "달무리호",
+   "verdict": "match",
+   "nature": "vessel-ex-name-current"
+  },
+  {
+   "a": "Haeoreum Ho (ex Kirisame Maru)",
+   "b": "霧雨丸",
+   "verdict": "match",
+   "nature": "vessel-ex-name"
+  },
+  {
+   "a": "Lapis Highway (ex Glaucous Leader)",
+   "b": "Glaucous Leader",
+   "verdict": "match",
+   "nature": "vessel-ex-name"
+  },
+  {
+   "a": "Lapis Highway (ex-Glaucous Leader)",
+   "b": "Lapis Highway",
+   "verdict": "match",
+   "nature": "vessel-ex-name-current"
+  },
+  {
+   "a": "Seohae Lumina (ex LNG Hikaridake)",
+   "b": "LNG Hikaridake",
+   "verdict": "match",
+   "nature": "vessel-ex-name"
+  },
+  {
+   "a": "MV Cobalt Hibari",
+   "b": "Cobalt Hibari",
+   "verdict": "match",
+   "nature": "vessel-type-prefix"
+  },
+  {
+   "a": "M/V AOZORA VENTURE",
+   "b": "Aozora Venture",
+   "verdict": "match",
+   "nature": "vessel-type-prefix"
+  },
+  {
+   "a": "Aozora Venture, Kobe",
+   "b": "Aozora Venture",
+   "verdict": "match",
+   "nature": "vessel-port-of-registry"
+  },
+  {
+   "a": "Shirane Glory (Kobe)",
+   "b": "Shirane Glory",
+   "verdict": "match",
+   "nature": "vessel-port-of-registry"
+  },
+  {
+   "a": "TAKANAMI STAR ULSAN",
+   "b": "Takanami Star",
+   "verdict": "match",
+   "nature": "vessel-port-of-registry"
+  },
+  {
+   "a": "PCTC Umisachi Ace",
+   "b": "Umisachi Ace",
+   "verdict": "match",
+   "nature": "vessel-type-prefix"
+  },
+  {
+   "a": "LNG/C LNG TSUKUYOMI",
+   "b": "LNG Tsukuyomi",
+   "verdict": "match",
+   "nature": "vessel-type-prefix"
+  },
+  {
+   "a": "Haneul Aurora",
+   "b": "Hanŭl Aurora",
+   "verdict": "match",
+   "nature": "vessel-revised-vs-mccune"
+  },
+  {
+   "a": "하늘 오로라",
+   "b": "Haneul Aurora",
+   "verdict": "match",
+   "nature": "vessel-hangul-vs-romanised"
+  },
+  {
+   "a": "Tug Namisuke Maru No. 3",
+   "b": "第三浪助丸",
+   "verdict": "match",
+   "nature": "vessel-kanji-vs-romanised"
+  },
+  {
+   "a": "제7 용두호",
+   "b": "Yongdu Ho No. 7",
+   "verdict": "match",
+   "nature": "vessel-numbering-format"
+  },
+  {
+   "a": "Yongdu No. 7",
+   "b": "Yongdu Ho No. 7",
+   "verdict": "match",
+   "nature": "vessel-suffix-dropped"
+  },
+  {
+   "a": "KIRISAMEMARU KOBE",
+   "b": "Kirisame Maru",
+   "verdict": "match",
+   "nature": "vessel-spacing-glued"
+  },
+  {
+   "a": "コバルト・ヒバリ",
+   "b": "Cobalt Hibari",
+   "verdict": "match",
+   "nature": "vessel-katakana-vs-latin"
+  },
+  {
+   "a": "タカナミ・スター",
+   "b": "Takanami Star",
+   "verdict": "match",
+   "nature": "vessel-katakana-vs-latin"
+  },
+  {
+   "a": "海幸エース",
+   "b": "Umisachi Ace",
+   "verdict": "match",
+   "nature": "vessel-kanji-vs-romanised"
+  },
+  {
+   "a": "LNGツクヨミ",
+   "b": "LNG Tsukuyomi",
+   "verdict": "match",
+   "nature": "vessel-katakana-vs-latin"
+  },
+  {
+   "a": "Seohae Lumina",
+   "b": "서해 루미나",
+   "verdict": "match",
+   "nature": "vessel-hangul-vs-romanised"
+  },
+  {
+   "a": "Seohae Lumina, Busan",
+   "b": "Sŏhae Lumina",
+   "verdict": "match",
+   "nature": "vessel-revised-vs-mccune"
+  },
+  {
+   "a": "フェリーみずかがみ",
+   "b": "Ferry Mizukagami",
+   "verdict": "match",
+   "nature": "vessel-kana-vs-romanised"
+  },
+  {
+   "a": "Ferry Mizu Kagami",
+   "b": "Ferry Mizukagami (Kobe)",
+   "verdict": "match",
+   "nature": "vessel-port-of-registry"
+  },
+  {
+   "a": "Kotori Bulker",
+   "b": "小鳥バルカー",
+   "verdict": "match",
+   "nature": "vessel-kanji-vs-romanised"
+  },
+  {
+   "a": "Gaon Pioneer",
+   "b": "Kaon Pioneer",
+   "verdict": "match",
+   "nature": "vessel-revised-vs-mccune"
+  },
+  {
+   "a": "Gaon Pioneer",
+   "b": "가온 파이오니어",
+   "verdict": "match",
+   "nature": "vessel-hangul-vs-romanised"
+  },
+  {
+   "a": "M/T Tsuyukusa Crest (Kobe)",
+   "b": "Tsuyukusa Crest",
+   "verdict": "match",
+   "nature": "vessel-port-of-registry"
+  },
+  {
+   "a": "第十一浪助丸",
+   "b": "Namisuke Maru No. 11",
+   "verdict": "match",
+   "nature": "vessel-kanji-vs-romanised"
+  },
+  {
+   "a": "Lapis Highway",
+   "b": "ラピス・ハイウェイ",
+   "verdict": "match",
+   "nature": "vessel-katakana-vs-latin"
+  },
+  {
+   "a": "第八星風丸",
+   "b": "第十八星風丸",
+   "verdict": "different",
+   "nature": "vessel-numeral"
+  },
+  {
+   "a": "Hoshikaze Maru No. 8",
+   "b": "Hoshikaze Maru No. 6",
+   "verdict": "different",
+   "nature": "vessel-numeral"
+  },
+  {
+   "a": "No.8 Hoshikaze Maru",
+   "b": "No.3 Hoshikaze Maru",
+   "verdict": "different",
+   "nature": "vessel-numeral"
+  },
+  {
+   "a": "Namisuke Maru No. 11",
+   "b": "Namisuke Maru No. 1",
+   "verdict": "different",
+   "nature": "vessel-numeral"
+  },
+  {
+   "a": "TUG NAMISUKE MARU NO. 3",
+   "b": "BARGE NAMISUKE NO. 3",
+   "verdict": "different",
+   "nature": "vessel-tug-vs-barge"
+  },
+  {
+   "a": "Tug Geumbit No. 2",
+   "b": "Barge Geumbit No. 2",
+   "verdict": "different",
+   "nature": "vessel-tug-vs-barge"
+  },
+  {
+   "a": "Eunpa Ho",
+   "b": "Eunha Ho",
+   "verdict": "different",
+   "nature": "vessel-one-letter"
+  },
+  {
+   "a": "은파호",
+   "b": "은하호",
+   "verdict": "different",
+   "nature": "vessel-one-letter"
+  },
+  {
+   "a": "Kirisame Maru",
+   "b": "Kirisane Maru",
+   "verdict": "different",
+   "nature": "vessel-one-letter"
+  },
+  {
+   "a": "霧雨丸",
+   "b": "春雨丸",
+   "verdict": "different",
+   "nature": "vessel-other-word"
+  },
+  {
+   "a": "Cobalt Hibari",
+   "b": "Cobalt Hibiki",
+   "verdict": "different",
+   "nature": "vessel-other-word"
+  },
+  {
+   "a": "Aozora Venture",
+   "b": "Aozora Venture II",
+   "verdict": "different",
+   "nature": "vessel-numeral"
+  },
+  {
+   "a": "Aozora Venture",
+   "b": "Aozora Ventures",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "Takanami Star",
+   "b": "Takanami Stars",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "Takanami Star",
+   "b": "Takanami Moon",
+   "verdict": "different",
+   "nature": "vessel-sister-ship"
+  },
+  {
+   "a": "Shirane Glory",
+   "b": "Shirane Gloria",
+   "verdict": "different",
+   "nature": "vessel-other-word"
+  },
+  {
+   "a": "Shirane Glory",
+   "b": "Shirakami Glory",
+   "verdict": "different",
+   "nature": "vessel-other-word"
+  },
+  {
+   "a": "Lapis Highway",
+   "b": "Lapis Highways",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "Lapis Highway (ex Glaucous Leader)",
+   "b": "Glaucous Leaders",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "Glaucous Leader",
+   "b": "Glaucous Pioneer",
+   "verdict": "different",
+   "nature": "vessel-other-word"
+  },
+  {
+   "a": "Umisachi Ace",
+   "b": "Yamasachi Ace",
+   "verdict": "different",
+   "nature": "vessel-sister-ship"
+  },
+  {
+   "a": "Umisachi Ace",
+   "b": "Umisachi Ace 2",
+   "verdict": "different",
+   "nature": "vessel-numeral"
+  },
+  {
+   "a": "LNG Tsukuyomi",
+   "b": "LNG Tsukuyomi II",
+   "verdict": "different",
+   "nature": "vessel-numeral"
+  },
+  {
+   "a": "LNG Tsukuyomi",
+   "b": "LNG Tsukiakari",
+   "verdict": "different",
+   "nature": "vessel-sister-ship"
+  },
+  {
+   "a": "Seohae Lumina (ex LNG Hikaridake)",
+   "b": "LNG Hikaridake II",
+   "verdict": "different",
+   "nature": "vessel-numeral"
+  },
+  {
+   "a": "Seohae Lumina",
+   "b": "Donghae Lumina",
+   "verdict": "different",
+   "nature": "vessel-sister-ship"
+  },
+  {
+   "a": "Haneul Aurora",
+   "b": "Haneul Borealis",
+   "verdict": "different",
+   "nature": "vessel-sister-ship"
+  },
+  {
+   "a": "Haneul Aurora",
+   "b": "Baram Aurora",
+   "verdict": "different",
+   "nature": "vessel-other-word"
+  },
+  {
+   "a": "Dalmuri Ho",
+   "b": "Dalmuri Ho No. 7",
+   "verdict": "different",
+   "nature": "vessel-numeral"
+  },
+  {
+   "a": "Dalmuri Ho (ex Ferry Mizukagami)",
+   "b": "Ferry Mizukagami 2",
+   "verdict": "different",
+   "nature": "vessel-numeral"
+  },
+  {
+   "a": "Ferry Mizukagami",
+   "b": "Ferry Mizuhikari",
+   "verdict": "different",
+   "nature": "vessel-other-word"
+  },
+  {
+   "a": "Haeoreum Ho",
+   "b": "Haeneomi Ho",
+   "verdict": "different",
+   "nature": "vessel-other-word"
+  },
+  {
+   "a": "Yongdu Ho No. 7",
+   "b": "Yongdu Ho No. 17",
+   "verdict": "different",
+   "nature": "vessel-numeral"
+  },
+  {
+   "a": "제7 용두호",
+   "b": "제7 용마호",
+   "verdict": "different",
+   "nature": "vessel-other-word"
+  },
+  {
+   "a": "Gaon Pioneer",
+   "b": "Daon Pioneer",
+   "verdict": "different",
+   "nature": "vessel-one-letter"
+  },
+  {
+   "a": "Kotori Bulker",
+   "b": "Kotori Bulkers",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "Kotori Bulker",
+   "b": "Kotomi Bulker",
+   "verdict": "different",
+   "nature": "vessel-one-letter"
+  },
+  {
+   "a": "Tsuyukusa Crest",
+   "b": "Tsuyukusa Crown",
+   "verdict": "different",
+   "nature": "vessel-other-word"
+  },
+  {
+   "a": "海幸エース",
+   "b": "海幸エース2",
+   "verdict": "different",
+   "nature": "vessel-numeral"
+  },
+  {
+   "a": "MV Cobalt Hibari",
+   "b": "MV Cobalt Hikari",
+   "verdict": "different",
+   "nature": "vessel-one-letter"
+  },
+  {
+   "a": ":59:/0012345678901\nKAMITSURU BOEKI KABUSHIKI KAISHA\n3-5-12 KITAHAMA CHUO-KU\nOSAKA JAPAN",
+   "b": "Kamitsuru Bōeki K.K.",
+   "verdict": "match",
+   "nature": "swift-field-59"
+  },
+  {
+   "a": "KAMITSURU BOEKI KK3-5-12 KITAHAMA CHUO-KU OSAKA",
+   "b": "Kamitsuru Boeki Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-glued-address"
+  },
+  {
+   "a": "YODOURA KASEI KOGYO KABUSHIKI KAISH\nA\n1-8-3 MINAMIHORIE NISHI-KU OSAKA",
+   "b": "Yodoura Kasei Kōgyō K.K.",
+   "verdict": "match",
+   "nature": "swift-line-cut"
+  },
+  {
+   "a": "YODOURA KASEI KOGYO CO LTD",
+   "b": "淀浦化成工業株式会社",
+   "verdict": "match",
+   "nature": "swift-vs-kanji"
+  },
+  {
+   "a": "SHIOMIDAI DENKI SEISAKUSHO KABUSHIK\nI KAISHA",
+   "b": "Shiomidai Denki Seisakusho K.K.",
+   "verdict": "match",
+   "nature": "swift-line-cut"
+  },
+  {
+   "a": "SHIOMIDAI DENKI SEISAKUSHO KK",
+   "b": "Shiomidai Electric Works Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-name-translation"
+  },
+  {
+   "a": "HANAMIZUKI TSUSHO CO LTD",
+   "b": "Hanamizuki Tsūshō Kabushiki Kaisha",
+   "verdict": "match",
+   "nature": "swift-no-macron"
+  },
+  {
+   "a": "HANAMIZUKI TSUSHO CO LTD2-7-1 UMEDAKITA-KU OSAKA",
+   "b": "Hanamizuki Tsusho Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-glued-address"
+  },
+  {
+   "a": "RYUHOKU SHOJI KK",
+   "b": "Ryūhoku Shōji Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-no-macron"
+  },
+  {
+   "a": "RYUUHOKU SHOUJI KK",
+   "b": "Ryuhoku Shoji K.K.",
+   "verdict": "match",
+   "nature": "swift-wapuro-spelling"
+  },
+  {
+   "a": "OKITSUNAMI SEIKO KK OSAKA BRANCH",
+   "b": "Okitsunami Seikō K.K.",
+   "verdict": "match",
+   "nature": "swift-branch"
+  },
+  {
+   "a": "/7730015\nOKITSUNAMI SEIKO KABUSHIKI KAISHA",
+   "b": "Okitsunami Seiko K.K.",
+   "verdict": "match",
+   "nature": "swift-account-line"
+  },
+  {
+   "a": "IWAFUNE KAIUN KK\nREF LC-OSK-2609-0417",
+   "b": "Iwafune Kaiun K.K.",
+   "verdict": "match",
+   "nature": "swift-bank-reference"
+  },
+  {
+   "a": "IWAFUNE KAIUN KABUSHIKI KAISHA",
+   "b": "岩舟海運株式会社",
+   "verdict": "match",
+   "nature": "swift-vs-kanji"
+  },
+  {
+   "a": "OMIGAWA STEEL CORPORATION\nKOBE WORKS",
+   "b": "Omigawa Steel Corporation",
+   "verdict": "match",
+   "nature": "swift-branch"
+  },
+  {
+   "a": "OMIGAWA STL CORP",
+   "b": "Omigawa Steel Corp.",
+   "verdict": "match",
+   "nature": "swift-abbreviation"
+  },
+  {
+   "a": ":59:CHORONG HAEUN CO LTD\n12F 88 JUNGANG-DAERO JUNG-GU\nBUSAN KOREA",
+   "b": "Chorong Haeun Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-field-59"
+  },
+  {
+   "a": "CHORONG SHIPPING CO LTD",
+   "b": "초롱해운 주식회사",
+   "verdict": "match",
+   "nature": "swift-vs-hangul"
+  },
+  {
+   "a": "CH'ORONG HAEUN CO LTD",
+   "b": "Chorong Shipping Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-mccune"
+  },
+  {
+   "a": "SINBARAM TRADING AND LOGISTICS CO L\nTD",
+   "b": "Sinbaram Trading & Logistics Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-charset-ampersand"
+  },
+  {
+   "a": "SINBARAM TRDG + LOGISTICS CO LTD",
+   "b": "Sinbaram Trading & Logistics Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-abbreviation"
+  },
+  {
+   "a": "GEUMNAE CHEMICAL CO LTD",
+   "b": "KUMNAE CHEMICAL CO LTD",
+   "verdict": "match",
+   "nature": "swift-mccune"
+  },
+  {
+   "a": "GEUMNAE HWAHAK CO LTD ULSAN PLANT",
+   "b": "Geumnae Chemical Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-branch"
+  },
+  {
+   "a": "BYEOLMURI INDUSTRIAL CO LTD\nREF INV 26-0917 CONTRACT BM-44",
+   "b": "Byeolmuri Industrial Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-bank-reference"
+  },
+  {
+   "a": "PYOLMURI INDUSTRIAL CO LTD",
+   "b": "Byeolmuri Industrial Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-mccune"
+  },
+  {
+   "a": "BYEOLMURI SANEOP CO LTD",
+   "b": "별무리산업 주식회사",
+   "verdict": "match",
+   "nature": "swift-vs-hangul"
+  },
+  {
+   "a": "SEOLMAE PRECISION CO LTD",
+   "b": "SOLMAE PRECISION CO LTD",
+   "verdict": "match",
+   "nature": "swift-mccune"
+  },
+  {
+   "a": "SEOLMAE JEONGMIL CO LTD",
+   "b": "Seolmae Precision Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-name-translation"
+  },
+  {
+   "a": "HWAJEONG TEXTILE CO LTD\n5 SEOMYEON-RO BUSANJIN-GU BUSAN",
+   "b": "Hwajeong Textile Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-address-line"
+  },
+  {
+   "a": "HWAJONG SOMYU CO LTD",
+   "b": "Hwajeong Seomyu Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-mccune"
+  },
+  {
+   "a": ":50:/1002-345-678901\nHWAJEONG TEXTILE CO LTD",
+   "b": "화정섬유 주식회사",
+   "verdict": "match",
+   "nature": "swift-vs-hangul"
+  },
+  {
+   "a": "KAMITSURU TRADING CO LTD",
+   "b": "上鶴貿易株式会社",
+   "verdict": "match",
+   "nature": "swift-name-translation"
+  },
+  {
+   "a": "HANAMIZUKI TUSYO KK",
+   "b": "Hanamizuki Tsusho K.K.",
+   "verdict": "match",
+   "nature": "swift-kunrei"
+  },
+  {
+   "a": "SHIOMIDAI DENKI SEISAKUSYO KK",
+   "b": "Shiomidai Denki Seisakusho K.K.",
+   "verdict": "match",
+   "nature": "swift-kunrei"
+  },
+  {
+   "a": "RYUHOKU SHOJI CO LTD\nATTN ACCOUNTS DEPT",
+   "b": "Ryuhoku Shoji Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-attention-line"
+  },
+  {
+   "a": "IWAFUNE KAIUN KK",
+   "b": "IWAFUME KAIUN KK",
+   "verdict": "match",
+   "nature": "swift-misspelling"
+  },
+  {
+   "a": "CHORONG HAEUN CO LTD",
+   "b": "CHOLONG HAEUN CO LTD",
+   "verdict": "match",
+   "nature": "swift-misspelling"
+  },
+  {
+   "a": "OMIGAWA STEEL CORPORATION",
+   "b": "OMIKAWA STEEL CORPORATION",
+   "verdict": "match",
+   "nature": "swift-misspelling"
+  },
+  {
+   "a": "YODOURA KASEI KOGYO CO LTD",
+   "b": "YODOURA KASEI KOGYO CO LTD OSAKA JAPAN",
+   "verdict": "match",
+   "nature": "swift-address-residue"
+  },
+  {
+   "a": "GEUMNAE CHEMICAL CO LTD ACCT 110-234-567890",
+   "b": "Geumnae Chemical Co., Ltd.",
+   "verdict": "match",
+   "nature": "swift-account-line"
+  },
+  {
+   "a": "KAMITSURU BOEKI KK",
+   "b": "KAMITSURU BUSSAN KK",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "KAMITSURU BOEKI KK3-5-12 KITAHAMA CHUO-KU OSAKA",
+   "b": "SHIMOTSURU BOEKI KK3-5-12 KITAHAMA CHUO-KU OSAKA",
+   "verdict": "different",
+   "nature": "swift-same-address-other-name"
+  },
+  {
+   "a": "YODOURA KASEI KOGYO KABUSHIKI KAISH\nA",
+   "b": "YODOURA KASEI HANBAI KABUSHIKI KAIS\nHA",
+   "verdict": "different",
+   "nature": "swift-line-cut-other-word"
+  },
+  {
+   "a": "YODOURA KASEI KOGYO CO LTD",
+   "b": "YODOHAMA KASEI KOGYO CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-proper-name"
+  },
+  {
+   "a": "SHIOMIDAI DENKI SEISAKUSHO KK",
+   "b": "SHIOMIDAI DENKI KOGYO KK",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "SHIOMIDAI ELECTRIC WORKS CO LTD",
+   "b": "SHIOMIGAOKA ELECTRIC WORKS CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-proper-name"
+  },
+  {
+   "a": "HANAMIZUKI TSUSHO CO LTD",
+   "b": "HANAMIZUKI TSUSHO (SHANGHAI) CO LTD",
+   "verdict": "different",
+   "nature": "swift-country-subsidiary"
+  },
+  {
+   "a": "HANAMIZUKI TSUSHO CO LTD",
+   "b": "HANASHOBU TSUSHO CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-proper-name"
+  },
+  {
+   "a": "RYUHOKU SHOJI CO LTD",
+   "b": "RYUNAN SHOJI CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-proper-name"
+  },
+  {
+   "a": "RYUHOKU SHOJI KK",
+   "b": "RYUHOKU SHOKAI KK",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "OKITSUNAMI SEIKO KK",
+   "b": "OKITSUNAMI SEIMITSU KK",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "OKITSUNAMI SEIKO KK OSAKA BRANCH",
+   "b": "OKITSUNAMI SEIKO (M) SDN BHD",
+   "verdict": "different",
+   "nature": "swift-country-subsidiary"
+  },
+  {
+   "a": "IWAFUNE KAIUN KK",
+   "b": "IWAFUNE KISEN KK",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "IWAFUNE KAIUN KK\nREF LC-OSK-2609-0417",
+   "b": "ISHIFUNE KAIUN KK\nREF LC-OSK-2609-0417",
+   "verdict": "different",
+   "nature": "swift-same-reference-other-name"
+  },
+  {
+   "a": "OMIGAWA STEEL CORPORATION",
+   "b": "OMIGAWA STEEL TRADING CORPORATION",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "OMIGAWA STEEL CORPORATION\nKOBE WORKS",
+   "b": "OMIGAWA STAINLESS CORPORATION\nKOBE WORKS",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "CHORONG HAEUN CO LTD",
+   "b": "CHORONG HAEYANG CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "CHORONG SHIPPING CO LTD",
+   "b": "CHORONG SHIPPING (HK) LTD",
+   "verdict": "different",
+   "nature": "swift-country-subsidiary"
+  },
+  {
+   "a": ":59:CHORONG HAEUN CO LTD\n12F 88 JUNGANG-DAERO JUNG-GU\nBUSAN KOREA",
+   "b": ":59:CHEONGRONG HAEUN CO LTD\n12F 88 JUNGANG-DAERO JUNG-GU\nBUSAN KOREA",
+   "verdict": "different",
+   "nature": "swift-same-address-other-name"
+  },
+  {
+   "a": "SINBARAM TRADING AND LOGISTICS CO L\nTD",
+   "b": "SINBARAM TRAVEL AND LOGISTICS CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "SINBARAM TRADING + LOGISTICS CO LTD",
+   "b": "SAEBARAM TRADING + LOGISTICS CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-proper-name"
+  },
+  {
+   "a": "GEUMNAE CHEMICAL CO LTD",
+   "b": "GEUMNAE CHEMTECH CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "KUMNAE CHEMICAL CO LTD",
+   "b": "KUMSAN CHEMICAL CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-proper-name"
+  },
+  {
+   "a": "BYEOLMURI INDUSTRIAL CO LTD",
+   "b": "BYEOLMURI INDUSTRIAL VIETNAM CO LTD",
+   "verdict": "different",
+   "nature": "swift-country-subsidiary"
+  },
+  {
+   "a": "BYEOLMURI SANEOP CO LTD",
+   "b": "BYEOLBIT SANEOP CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-proper-name"
+  },
+  {
+   "a": "PYOLMURI INDUSTRIAL CO LTD",
+   "b": "PYOLMURI ENGINEERING CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "SEOLMAE PRECISION CO LTD",
+   "b": "SEOLHWA PRECISION CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-proper-name"
+  },
+  {
+   "a": "SEOLMAE JEONGMIL CO LTD",
+   "b": "SEOLMAE MULSAN CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "HWAJEONG TEXTILE CO LTD",
+   "b": "HWAJEONG TEXTILE MACHINERY CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "HWAJONG SOMYU CO LTD",
+   "b": "HWARANG SOMYU CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-proper-name"
+  },
+  {
+   "a": "/1002-345-678901\nHWAJEONG TEXTILE CO LTD",
+   "b": "/1002-345-678901\nHWAJEONG TRADING CO LTD",
+   "verdict": "different",
+   "nature": "swift-same-account-other-word"
+  },
+  {
+   "a": "KAMITSURU TRADING CO LTD",
+   "b": "KAMITSURU TRADING (THAILAND) CO LTD",
+   "verdict": "different",
+   "nature": "swift-country-subsidiary"
+  },
+  {
+   "a": "HANAMIZUKI TUSYO KK",
+   "b": "HANAMIZUKI SYOZI KK",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "SHIOMIDAI DENKI SEISAKUSYO KK",
+   "b": "SHIOMIDAI SEIKI SEISAKUSYO KK",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "RYUUHOKU SHOUJI KK",
+   "b": "RYUUHOKU SHOUKEN KK",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "IWAFUNE KAIUN KABUSHIKI KAISHA",
+   "b": "IWAFUNE KAIUN SHOJI KABUSHIKI KAISHA",
+   "verdict": "different",
+   "nature": "swift-other-business-word"
+  },
+  {
+   "a": "OMIGAWA STL CORP",
+   "b": "OMINATO STL CORP",
+   "verdict": "different",
+   "nature": "swift-other-proper-name"
+  },
+  {
+   "a": "CH'ORONG HAEUN CO LTD",
+   "b": "CH'ONGNYONG HAEUN CO LTD",
+   "verdict": "different",
+   "nature": "swift-other-proper-name"
+  },
+  {
+   "a": "BYEOLMURI INDUSTRIAL CO LTD\nREF INV 26-0917 CONTRACT BM-44",
+   "b": "BYEOLMURI LOGISTICS CO LTD\nREF INV 26-0917 CONTRACT BM-44",
+   "verdict": "different",
+   "nature": "swift-same-reference-other-word"
+  },
+  {
+   "a": "SEOLMAE PRECISION CO LTD",
+   "b": "SEOLMAE PRECISION JAPAN KK",
+   "verdict": "different",
+   "nature": "swift-country-subsidiary"
+  },
+  {
+   "a": "kazehaya denki san",
+   "b": "Kazehaya Denki K.K.",
+   "verdict": "match",
+   "nature": "chat-honorific"
+  },
+  {
+   "a": "風早電機さん",
+   "b": "株式会社風早電機",
+   "verdict": "match",
+   "nature": "chat-honorific"
+  },
+  {
+   "a": "kazehayadenki kk",
+   "b": "Kazehaya Denki Kabushiki Kaisha",
+   "verdict": "match",
+   "nature": "chat-missing-spaces"
+  },
+  {
+   "a": "Kazehaya Elec. K.K.",
+   "b": "Kazehaya Electric K.K.",
+   "verdict": "match",
+   "nature": "abbreviation-elec"
+  },
+  {
+   "a": "KAZEHAYA DENKl K.K.",
+   "b": "Kazehaya Denki K.K.",
+   "verdict": "match",
+   "nature": "ocr-letter-confusion"
+  },
+  {
+   "a": "Mizunoe Mfg. Co., Ltd.",
+   "b": "Mizunoe Manufacturing Co., Ltd.",
+   "verdict": "match",
+   "nature": "abbreviation-mfg"
+  },
+  {
+   "a": "MIZUNOE MFG C0., LTD.",
+   "b": "Mizunoe Mfg. Co., Ltd.",
+   "verdict": "match",
+   "nature": "ocr-letter-confusion"
+  },
+  {
+   "a": "mizunoe seisakusho",
+   "b": "株式会社水之江製作所",
+   "verdict": "match",
+   "nature": "chat-romaji-vs-kanji"
+  },
+  {
+   "a": "Mizunoee Seisakusho",
+   "b": "Mizunoe Seisakusho K.K.",
+   "verdict": "match",
+   "nature": "doubled-letter"
+  },
+  {
+   "a": "Toyoshio Trdg. K.K.",
+   "b": "Toyoshio Trading K.K.",
+   "verdict": "match",
+   "nature": "abbreviation-trdg"
+  },
+  {
+   "a": "toyoshio shoji",
+   "b": "Toyoshio Trdg. K.K.",
+   "verdict": "match",
+   "nature": "chat-romaji-translation"
+  },
+  {
+   "a": "Toyosshio Trading",
+   "b": "Toyoshio Trading Kabushiki Kaisha",
+   "verdict": "match",
+   "nature": "doubled-letter"
+  },
+  {
+   "a": "Hakuryo Ind. Co., Ltd.",
+   "b": "Hakuryo Industries Co., Ltd.",
+   "verdict": "match",
+   "nature": "abbreviation-ind"
+  },
+  {
+   "a": "hakuryou kougyou",
+   "b": "Hakuryō Kōgyō Co., Ltd.",
+   "verdict": "match",
+   "nature": "chat-wapuro"
+  },
+  {
+   "a": "HAKURY0 IND CO LTD",
+   "b": "Hakuryo Ind. Co., Ltd.",
+   "verdict": "match",
+   "nature": "ocr-letter-confusion"
+  },
+  {
+   "a": "Asanagi Shoten Y.K.",
+   "b": "Asanagi Shoten Yugen Kaisha",
+   "verdict": "match",
+   "nature": "abbreviation-yk"
+  },
+  {
+   "a": "有限会社朝凪商店",
+   "b": "asanagi shoten",
+   "verdict": "match",
+   "nature": "chat-romaji-vs-kanji"
+  },
+  {
+   "a": "Kurobane Kasei K.K.",
+   "b": "Kurobane Kasei Kabushiki Kaisha",
+   "verdict": "match",
+   "nature": "abbreviation-kk"
+  },
+  {
+   "a": "kurobanekasei",
+   "b": "Kurobane Kasei K.K.",
+   "verdict": "match",
+   "nature": "chat-missing-spaces"
+  },
+  {
+   "a": "Kurobaen Kasei K.K.",
+   "b": "Kurobane Kasei K.K.",
+   "verdict": "match",
+   "nature": "typo-transposition"
+  },
+  {
+   "a": "Nishikibashi Shoji K.K.",
+   "b": "Nishikibasi Syozi K.K.",
+   "verdict": "match",
+   "nature": "kunrei-typing"
+  },
+  {
+   "a": "株式会社西錦橋商事 代表取締役之印",
+   "b": "Nishikibashi Shoji K.K.",
+   "verdict": "match",
+   "nature": "stamp-residue"
+  },
+  {
+   "a": "Nishikibashi Shouji",
+   "b": "西錦橋商事株式会社",
+   "verdict": "match",
+   "nature": "chat-wapuro"
+  },
+  {
+   "a": "daebit sangsa",
+   "b": "(주)대빛상사",
+   "verdict": "match",
+   "nature": "chat-romanised-korean"
+  },
+  {
+   "a": "Daebit Trdg. Co., Ltd.",
+   "b": "Daebit Trading Co., Ltd.",
+   "verdict": "match",
+   "nature": "abbreviation-trdg"
+  },
+  {
+   "a": "daebitsangsa",
+   "b": "Daebit Sangsa Co., Ltd.",
+   "verdict": "match",
+   "nature": "chat-missing-spaces"
+  },
+  {
+   "a": "Taebit Sangsa",
+   "b": "대빛상사 주식회사",
+   "verdict": "match",
+   "nature": "chat-mccune"
+  },
+  {
+   "a": "Sinnae Elec. Co., Ltd.",
+   "b": "Sinnae Electric Co., Ltd.",
+   "verdict": "match",
+   "nature": "abbreviation-elec"
+  },
+  {
+   "a": "shinnae jeongi",
+   "b": "Sinnae Electric Co., Ltd.",
+   "verdict": "match",
+   "nature": "chat-romanised-korean"
+  },
+  {
+   "a": "SlNNAE ELEC CO LTD",
+   "b": "Sinnae Elec. Co., Ltd.",
+   "verdict": "match",
+   "nature": "ocr-letter-confusion"
+  },
+  {
+   "a": "Haneulbit Mfg. Co., Ltd.",
+   "b": "Haneulbit Manufacturing Co., Ltd.",
+   "verdict": "match",
+   "nature": "abbreviation-mfg"
+  },
+  {
+   "a": "hanulbit",
+   "b": "Haneulbit Mfg. Co., Ltd.",
+   "verdict": "match",
+   "nature": "chat-mccune"
+  },
+  {
+   "a": "Haneullbit Mfg",
+   "b": "HANEULBIT MFG CO LTD",
+   "verdict": "match",
+   "nature": "doubled-letter"
+  },
+  {
+   "a": "Moraenae Foods Co., Ltd.",
+   "b": "moraenae sikpum",
+   "verdict": "match",
+   "nature": "chat-romanised-korean"
+  },
+  {
+   "a": "(주)모래내식품 대표이사 직인",
+   "b": "Moraenae Foods Co., Ltd.",
+   "verdict": "match",
+   "nature": "stamp-residue"
+  },
+  {
+   "a": "Garcon Ind. Co., Ltd.",
+   "b": "Garaon Industrial Co., Ltd.",
+   "verdict": "match",
+   "nature": "autocorrect"
+  },
+  {
+   "a": "Beaksong Steel Co., Ltd.",
+   "b": "Baeksong Steel Co., Ltd.",
+   "verdict": "match",
+   "nature": "typo-transposition"
+  },
+  {
+   "a": "wakatake maru 5",
+   "b": "Wakatake Maru No. 5",
+   "verdict": "match",
+   "nature": "chat-vessel"
+  },
+  {
+   "a": "naraenuri-ho",
+   "b": "나래누리호",
+   "verdict": "match",
+   "nature": "chat-vessel"
+  },
+  {
+   "a": "第五若竹丸",
+   "b": "wakatake maru no5",
+   "verdict": "match",
+   "nature": "chat-vessel"
+  },
+  {
+   "a": "Mizunoe Mfg. Co., Ltd.",
+   "b": "Mizunoe Mktg. Co., Ltd.",
+   "verdict": "different",
+   "nature": "abbreviation-other-word"
+  },
+  {
+   "a": "Hakuryo Ind. Co., Ltd.",
+   "b": "Hakuryo Intl. Co., Ltd.",
+   "verdict": "different",
+   "nature": "abbreviation-other-word"
+  },
+  {
+   "a": "Kazehaya Elec. K.K.",
+   "b": "Kazehaya Eng. K.K.",
+   "verdict": "different",
+   "nature": "abbreviation-other-word"
+  },
+  {
+   "a": "Toyoshio Trdg. K.K.",
+   "b": "Toyoshio Trpt. K.K.",
+   "verdict": "different",
+   "nature": "abbreviation-other-word"
+  },
+  {
+   "a": "Sinnae Elec. Co., Ltd.",
+   "b": "Sinnae Chem. Co., Ltd.",
+   "verdict": "different",
+   "nature": "abbreviation-other-word"
+  },
+  {
+   "a": "Haneulbit Mfg. Co., Ltd.",
+   "b": "Haneulbit Mfg. (Qingdao) Co., Ltd.",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "Daebit Trdg. Co., Ltd.",
+   "b": "Daebit Eng. Co., Ltd.",
+   "verdict": "different",
+   "nature": "abbreviation-other-word"
+  },
+  {
+   "a": "kazehaya denki",
+   "b": "kazehaya denshi",
+   "verdict": "different",
+   "nature": "chat-other-word"
+  },
+  {
+   "a": "kazehayadenki",
+   "b": "kazamidenki",
+   "verdict": "different",
+   "nature": "chat-missing-spaces-other-name"
+  },
+  {
+   "a": "mizunoe seisakusho",
+   "b": "mizunoe seiyaku",
+   "verdict": "different",
+   "nature": "chat-other-word"
+  },
+  {
+   "a": "toyoshio shoji",
+   "b": "toyonami shoji",
+   "verdict": "different",
+   "nature": "chat-other-name"
+  },
+  {
+   "a": "hakuryou kougyou",
+   "b": "hakuryou kousan",
+   "verdict": "different",
+   "nature": "chat-other-word"
+  },
+  {
+   "a": "Asanagi Shoten Y.K.",
+   "b": "Yunagi Shoten Y.K.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "asanagi shoten",
+   "b": "asanagi shuzo",
+   "verdict": "different",
+   "nature": "chat-other-word"
+  },
+  {
+   "a": "kurobanekasei",
+   "b": "kurobanekenzai",
+   "verdict": "different",
+   "nature": "chat-missing-spaces-other-word"
+  },
+  {
+   "a": "Kurobane Kasei K.K.",
+   "b": "Shirobane Kasei K.K.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "Nishikibashi Shoji K.K.",
+   "b": "Nishikibashi Seiko K.K.",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "株式会社西錦橋商事 代表取締役之印",
+   "b": "株式会社東錦橋商事 代表取締役之印",
+   "verdict": "different",
+   "nature": "stamp-other-name"
+  },
+  {
+   "a": "daebit sangsa",
+   "b": "daebit saneop",
+   "verdict": "different",
+   "nature": "chat-other-word"
+  },
+  {
+   "a": "daebitsangsa",
+   "b": "saebyeoksangsa",
+   "verdict": "different",
+   "nature": "chat-missing-spaces-other-name"
+  },
+  {
+   "a": "(주)대빛상사",
+   "b": "(주)대빛물산",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "shinnae jeongi",
+   "b": "shinnae jeonja",
+   "verdict": "different",
+   "nature": "chat-other-word"
+  },
+  {
+   "a": "Sinnae Electric Co., Ltd.",
+   "b": "Sinchon Electric Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "hanulbit",
+   "b": "hanulgil",
+   "verdict": "different",
+   "nature": "chat-other-name"
+  },
+  {
+   "a": "Moraenae Foods Co., Ltd.",
+   "b": "Moraenae Fisheries Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-business-word"
+  },
+  {
+   "a": "moraenae sikpum",
+   "b": "moraesil sikpum",
+   "verdict": "different",
+   "nature": "chat-other-name"
+  },
+  {
+   "a": "Garaon Industrial Co., Ltd.",
+   "b": "Garaon Industrial Vietnam Co., Ltd.",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "Baeksong Steel Co., Ltd.",
+   "b": "Heuksong Steel Co., Ltd.",
+   "verdict": "different",
+   "nature": "other-proper-name"
+  },
+  {
+   "a": "wakatake maru 5",
+   "b": "Wakatake Maru No. 15",
+   "verdict": "different",
+   "nature": "chat-vessel-numeral"
+  },
+  {
+   "a": "第五若竹丸",
+   "b": "第五若松丸",
+   "verdict": "different",
+   "nature": "chat-vessel-other-word"
+  },
+  {
+   "a": "naraenuri-ho",
+   "b": "Naraenari Ho",
+   "verdict": "different",
+   "nature": "chat-vessel-one-letter"
+  },
+  {
+   "a": "naraenuri ho 2",
+   "b": "Naraenuri Ho",
+   "verdict": "different",
+   "nature": "chat-vessel-numeral"
+  },
+  {
+   "a": "wakatakemaru5",
+   "b": "wakatakemaru8",
+   "verdict": "different",
+   "nature": "chat-vessel-numeral"
+  },
+  {
+   "a": "Kazehaya Denki K.K.",
+   "b": "KAZEHAYA DENKI (THAILAND) CO., LTD.",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "KAZEHAYA DENKl K.K.",
+   "b": "KAZEHAYA DENKl KOGYO K.K.",
+   "verdict": "different",
+   "nature": "ocr-other-word"
+  },
+  {
+   "a": "MIZUNOE MFG C0., LTD.",
+   "b": "MIZUNAMI MFG C0., LTD.",
+   "verdict": "different",
+   "nature": "ocr-other-name"
+  },
+  {
+   "a": "HAKURY0 IND CO LTD",
+   "b": "HAKUSAN IND CO LTD",
+   "verdict": "different",
+   "nature": "ocr-other-name"
+  },
+  {
+   "a": "SlNNAE ELEC CO LTD",
+   "b": "SlNDANG ELEC CO LTD",
+   "verdict": "different",
+   "nature": "ocr-other-name"
+  },
+  {
+   "a": "Toyoshio Trading K.K.",
+   "b": "Toyoshio Trading Singapore Pte. Ltd.",
+   "verdict": "different",
+   "nature": "country-subsidiary"
+  },
+  {
+   "a": "Asanagi Shoten Yugen Kaisha",
+   "b": "Asanagi Suisan Yugen Kaisha",
+   "verdict": "different",
+   "nature": "other-business-word"
+  }
+ ]
+}
