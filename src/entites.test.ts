@@ -8,6 +8,7 @@ import {
   estSyllabeIsolee,
   tronque, estCoupe, apport, simMinimale, choisirSeuils, marquesEnConflit, frequencesDe, mesurerJeux, qualificatifSoude,
   poidsDuMot, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, FAUSSES_ALERTES_MAX_FORT, SEUIL_POSSIBLE, lecturesDe, pliCantonais, pliTamoul,
+  variantesTypees, plafondDesLectures, mentionDeSuccursale, succursalesCompatibles, numeroDeRegistre, formePlurielle, sembleCoupe,
 } from "./entites.ts";
 import { validerPaires, type TableDUnPalier } from "./measure.ts";
 import { hangulEnLatin, pinyinDe, cleAbjad, cleAbjadSansTa, romaniser, CHEMIN_PINYIN, CHEMIN_JYUTPING, jyutpingDe, hongkong, thaiEnLatin, tamoulEnLatin } from "./ecritures.ts";
@@ -764,10 +765,7 @@ test("tour 6, voie locale : résidus de banque et de douane, immatriculations, i
   porte("Warri Frozen Fish and Seafood Export Enterprises Limited45 Marina Road Warri", "Warri Frozen Fish and Seafood Export Enterprises Limited");
   porte("Okeke, Chidi Building Materials Enterprises", "Chidi Okeke Building Materials Enterprises");
   assert.ok(variantes("Tesfaye Bekele Trading PLC (Amharic: ተስፋዬ በቀለ ንግድ)").includes("Tesfaye Bekele Trading PLC"));
-  /* le numéro de registre est une marque : deux numéros différents sont deux dépôts, un seul côté numéroté est le même nom */
-  assert.equal(analyserEntite("Adeyemi Agro Commodities Nigeria Limited (RC 884213)").registre, "884213");
-  assert.equal(analyserEntite("Botha Handel en Vervoer (Pty) Ltd (Reg. No. 2014/117230/07)").registre, "201411723007");
-  assert.equal(analyserEntite("Rheinische Rheinstahl Stahlrohr Import-Export GmbH (HRB 33871, Amtsgericht Köln)").registre, "33871");
+  /* le numéro de registre (variante typée de la voie formes) : deux numéros différents sont deux dépôts, un seul côté numéroté est le même nom */
   assert.ok(score("Nwosu Farm Produce & Sons Limited (RC 458821)", "Nwosu Farm Produce & Sons Limited (RC 488521)") < 0.81);
   assert.ok(score("Nwosu Farm Produce & Sons Limited (RC 458821)", "Nwosu Farm Produce & Sons Limited") >= 0.81);
   assert.ok(score("Naidoo Freight Logistics (Pty) Ltd (Reg. No. 2013/098765/07)", "Naidoo Freight Logistics (Pty) Ltd") >= 0.81);
@@ -780,4 +778,116 @@ test("tour 6, voie locale : résidus de banque et de douane, immatriculations, i
   assert.equal(preparerEntite("CH1NEDU AUT0 PARTS LTD").replace(/[^a-z ]/g, "?"), "ch?nedu auto parts");
   assert.equal(preparerEntite("05EI ELECTR0NIC5 MART"), "osei electronics mart");
   assert.equal(preparerEntite("TCB1207 Holdings"), "tcb 1207 holdings", "un numéro reste un numéro");
+});
+
+test("tour 6, formes : le pluriel n'est le même mot que pour un mot du commerce ; ailleurs c'est un autre nom", () => {
+  assert.ok(pluriel("metals", "metal") && pluriel("industries", "industry") && pluriel("valves", "valve") && pluriel("provisions", "provision"));
+  assert.ok(!pluriel("egrets", "egret") && !pluriel("stores", "store") && !pluriel("shops", "shop") && !pluriel("pearls", "pearl"), "un mot distinctif au pluriel");
+  assert.ok(formePlurielle("njoroges", "njoroge") && !formePlurielle("njoroge", "njoroges"));
+  assert.equal(simMot("egret", "egrets", squelette("egret"), squelette("egrets")), 0.5, "deux mots anglais distincts, pas une lettre de différence");
+  assert.equal(simMot("metals", "metal", squelette("metals"), squelette("metal"), true, false), 0.5, "dans un nom de navire, tout pluriel est une autre coque");
+  /* les quatre navires et les deux boutiques du jeu 10 */
+  for (const [a, b] of [["MV Bonny Egret", "MV Bonny Egrets"], ["MV Nembe Fortune", "MV Nembe Fortunes"], ["MV Kalabari Star", "MV Kalabari Stars"],
+    ["MV Ocean Trader", "MV Ocean Traders"], ["Patience Provisions Store", "Patience Provisions Stores Limited"], ["YU5UF PR0VISI0NS SH0P", "YU5UF PR0VISI0NS SH0PS"],
+    ["Kamau Njoroge Provisions", "Kamau Njoroges Provisions"]]) assert.ok(score(a, b) < 0.81, `${a} / ${b} : ${score(a, b)}`);
+  /* ce que le tour cinq avait gagné tient, et les pluriels des marchandises aussi */
+  assert.ok(score("Luen Shing Recycling Metals Limited", "聯成廢金屬回收有限公司") >= 0.81);
+  assert.ok(score("Wenzhou Longhua Valve Co., Ltd.", "Wenzhou Longhua Valves Co., Ltd.") >= 0.81);
+  assert.ok(score("The Wexcombe Malting Company Limited", "Wexcombe Maltings") >= 0.81);
+  /* le pluriel d'un clavardage sans forme d'aucun côté : le téléphone ôte ou ajoute le s */
+  assert.ok(score("Ngozi Chukwuemeka Stores", "Ngozi Chukwuemeka Store") >= 0.81);
+  /* les deux autres portes fermées : le dernier mot « tronqué » d'un s, et le champ coupé dans un pluriel ou dans une forme */
+  assert.equal(tronque("egret", "egrets"), false);
+  assert.equal(tronque("engineer", "engineering"), true);
+  assert.equal(fauteDeFrappe("njoroge", "njoroges"), false, "un s final n'est pas le geste d'une faute");
+  assert.equal(sembleCoupe("Société Malienne d'Import-Export SA", "Société Malienne d'Import-Export SARL"), false, "SA n'est pas SARL coupé : deux sociétés");
+  assert.equal(sembleCoupe("Patience Provisions Store", "Patience Provisions Stores Limited"), false);
+  assert.equal(sembleCoupe("FOSHAN JINYUAN CERAMIC SA", "Foshan Jinyuan Ceramic Sanitary Ware Co., Ltd."), true, "SA coupé dans Sanitary reste une coupe");
+  assert.ok(score("Foshan Jinyuan Ceramic Sanitary Ware Co., Ltd.", "FOSHAN JINYUAN CERAMIC SA") >= 0.81);
+  assert.ok(score("Société Malienne d'Import-Export SARL", "Société Malienne d'Import-Export SA") < 0.81);
+});
+
+test("tour 6, formes : un ancien nom des deux côtés est possible, jamais fort ; d'un seul côté, la même coque", () => {
+  const v = variantesTypees("MV Apapa Falcon (ex Warri Osprey, 2020)");
+  assert.ok(v.some((x) => x.texte === "Warri Osprey" && x.ancien) && v.some((x) => x.texte === "MV Apapa Falcon" && !x.ancien), JSON.stringify(v));
+  const n = variantesTypees("Olmsbury Milling Corporation, now known as Olmsbury Grain Corporation");
+  assert.ok(n.some((x) => x.texte === "Olmsbury Grain Corporation" && !x.ancien) && n.some((x) => x.texte === "Olmsbury Milling Corporation" && x.ancien),
+    "derrière « now known as », c'est la seconde partie qui est le nom actuel");
+  assert.deepEqual(variantes("LUNARIS DAWN (EX-SELVANA)"), ["LUNARIS DAWN (EX-SELVANA)", "LUNARIS DAWN", "SELVANA"], "les textes seuls, dans le même ordre");
+  const l = (texte: string, ancien: boolean, mention = "", registre = "") => ({ texte, lecture: "mandarin" as const, ancien, mention, registre });
+  assert.equal(plafondDesLectures(l("Warri Osprey", true), l("Warri Osprey", true)), 0.8);
+  assert.equal(plafondDesLectures(l("MV Warri Osprey", false), l("Warri Osprey", true)), 1);
+  assert.ok(Math.abs(score("MV Apapa Falcon (ex Warri Osprey, 2020)", "MV Onne Pelican (ex Warri Osprey, 2006)") - 0.8) < 1e-9, "mesuré à 1,000 avant");
+  assert.ok(score("MV Warri Osprey", "MV Apapa Falcon (ex Warri Osprey)") >= 0.81);
+  assert.ok(score("Olmsbury Grain Corporation f/k/a Olmsbury Milling Corporation", "Olmsbury Milling Corporation") >= 0.81);
+});
+
+test("tour 6, formes : la succursale dit ce qu'elle nomme ; le siège n'est pas la succursale, Cotonou n'est pas Lomé", () => {
+  assert.equal(mentionDeSuccursale("Hamburg Handelsbank AG, Speicherstadt Branch"), "speicherstadt");
+  assert.equal(mentionDeSuccursale("Hamburg Handelsbank AG, Hauptsitz"), "siege");
+  assert.equal(mentionDeSuccursale("Mombasa Coastal Bank Plc, Nairobi Head Office"), "siege");
+  assert.equal(mentionDeSuccursale("Rotterdam Trade Bank N.V., Hoofdkantoor"), "siege");
+  assert.equal(mentionDeSuccursale("Rotterdam Trade Bank N.V., Havengebied Kantoor"), "havengebied");
+  assert.equal(mentionDeSuccursale("Kenanga Pacific Sdn. Bhd. - Penang Branch"), "penang");
+  assert.equal(mentionDeSuccursale("Kano Merchant Bank Limited Sabon Gari Branch"), "sabon gari", "sans virgule, le lieu suit la forme");
+  assert.equal(mentionDeSuccursale("Krause GmbH, Zweigniederlassung Leipzig (HRB 22045, AG Leipzig)"), "leipzig", "le numéro de registre s'ôte d'abord");
+  assert.equal(mentionDeSuccursale("Kamau Provisions Branch"), "branch", "la succursale sans dire laquelle");
+  assert.equal(mentionDeSuccursale("Office National des Ports"), "", "« Office » seul est un mot du nom");
+  assert.equal(mentionDeSuccursale("Acme Ltd, Office 12, Building 3"), "", "une adresse ne nomme rien");
+  assert.ok(succursalesCompatibles("", "") && succursalesCompatibles("penang", "penang") && succursalesCompatibles("branch", "penang"));
+  assert.ok(!succursalesCompatibles("", "penang") && !succursalesCompatibles("siege", "penang") && !succursalesCompatibles("siege", "branch") && !succursalesCompatibles("cotonou", "lome"));
+  /* la variante sans la mention la garde en propriété */
+  assert.ok(variantesTypees("Hamburg Handelsbank AG, Speicherstadt Branch").some((v) => v.texte === "Hamburg Handelsbank AG" && v.mention === "speicherstadt"));
+  assert.ok(variantesTypees("Hamburg Handelsbank AG, Hauptsitz").some((v) => v.texte === "Hamburg Handelsbank AG" && v.mention === "siege"));
+  for (const [a, b] of [["Hamburg Handelsbank AG, Speicherstadt Branch", "Hamburg Handelsbank AG, Hauptsitz"],
+    ["Kano Merchant Bank Limited, Sabon Gari Branch", "Kano Merchant Bank Limited, Head Office"],
+    ["Rotterdam Trade Bank N.V., Havengebied Kantoor", "Rotterdam Trade Bank N.V., Hoofdkantoor"],
+    ["Bight of Benin Logistics Limited, Cotonou Branch", "Bight of Benin Logistics Limited, Lome Branch"],
+    /* 34 lettres : le nom coupé garde la mention que la coupe emportait */
+    ["Southern Africa Forwarding Limited, Durban Branch", "Southern Africa Forwarding Limited, Maputo Branch"]]) {
+    assert.ok(Math.abs(score(a, b) - 0.8) < 1e-9, `${a} / ${b} : ${score(a, b)} (mesuré à 1,000 avant)`);
+  }
+  /* la même personne morale : une mention d'un seul côté, la variante sans elle rejoint l'autre */
+  assert.ok(score("Kenanga Pacific Sdn. Bhd. - Penang Branch", "Kenanga Pacific Sdn. Bhd.") >= 0.81);
+  assert.ok(score("Kano Merchant Bank Limited, Head Office", "Kano Merchant Bank Limited") >= 0.81);
+  assert.ok(score("Kano Merchant Bank Limited Sabon Gari Branch", "Kano Merchant Bank Limited, Sabon Gari Branch") >= 0.81);
+  assert.ok(score("Office National des Ports", "Office National des Ports SA") >= 0.81);
+});
+
+test("tour 6, formes : la GmbH & Co. KG n'est pas la GmbH ; SARL et SA, Lda et SA, Ltd et PLC, BV et NV sont possibles, jamais forts", () => {
+  const m = (n: string) => analyserEntite(n);
+  assert.deepEqual(m("Vogel Kunststofftechnik GmbH & Co. KG").familles, ["part"]);
+  assert.deepEqual(m("Hoffmann Textilmaschinen Handelsgesellschaft mbH").familles, ["llc"], "mbH est une GmbH");
+  assert.equal(marquesEnConflit(m("Vogel Kunststofftechnik GmbH"), m("Vogel Kunststofftechnik GmbH & Co. KG")), true);
+  assert.equal(marquesEnConflit(m("Transportes Lisboa Lda"), m("Transportes Lisboa SA")), true);
+  for (const [a, b] of [["Vogel Kunststofftechnik GmbH", "Vogel Kunststofftechnik GmbH & Co. KG"],
+    ["Hoffmann Textilmaschinen Handelsgesellschaft mbH", "Hoffmann Textilmaschinen Handelsgesellschaft mbH & Co. KG"],
+    ["Transportes Lisboa Lda", "Transportes Lisboa SA"], ["Harrow Grain Ltd", "Harrow Grain PLC"], ["Vermeer Beheer BV", "Vermeer Beheer NV"]]) {
+    assert.ok(Math.abs(score(a, b) - 0.8) < 1e-9, `${a} / ${b} : ${score(a, b)}`);
+  }
+  assert.equal(score("Vogel Kunststofftechnik GmbH & Co. KG", "Vogel Kunststofftechnik GmbH & Co KG"), 1);
+  assert.equal(score("Vogel Kunststofftechnik GmbH & Co. Kommanditgesellschaft", "Vogel Kunststofftechnik GmbH & Co. KG"), 1);
+  assert.equal(score("Keller Handelsgesellschaft mbH", "Keller Handelsgesellschaft GmbH"), 1);
+});
+
+test("tour 6, formes : le nom commercial sans forme face au nom déposé avec son pays, ses qualificatifs et son numéro de registre", () => {
+  assert.equal(numeroDeRegistre("Adeyemi Agro Commodities Nigeria Limited (RC 884213)"), "884213");
+  assert.equal(numeroDeRegistre("Botha Handel en Vervoer (Pty) Ltd (Reg. No. 2014/117230/07)"), "201411723007");
+  assert.equal(numeroDeRegistre("Krause Werkzeugmaschinen GmbH (HRB 55620, AG Dresden)"), "55620");
+  assert.equal(numeroDeRegistre("Okafor Integrated Resources Nig. Ltd RC 762904"), "762904");
+  assert.equal(numeroDeRegistre("MV RC 1234"), "", "un numéro de registre suit une forme ou vit entre parenthèses");
+  assert.equal(preparerEntite("Okafor Integrated Resources Nig. Ltd"), "okafor integrated resources nigeria");
+  assert.ok(variantes("Botha Handel en Vervoer (Pty) Ltd (Reg. No. 2014/117230/07)").includes("Botha Handel en Vervoer (Pty) Ltd"), "la barre du numéro n'est pas un suffixe SWIFT");
+  for (const [a, b] of [["Adeyemi Agro Commodities", "Adeyemi Agro Commodities Nigeria Limited"], ["Okafor Integrated Resources", "Okafor Integrated Resources Nig. Ltd"],
+    ["Balogun Global Ventures", "Balogun Global Ventures Enterprises Limited"], ["Chukwu Petroleum Services", "Chukwu Petroleum Services Integrated Limited"],
+    ["Nwosu Farm Produce", "Nwosu Farm Produce & Sons Limited"], ["Adeyemi Agro Commodities Nigeria Limited (RC 884213)", "Adeyemi Agro Commodities"],
+    ["Botha Handel en Vervoer (Pty) Ltd (Reg. No. 2014/117230/07)", "Botha Handel en Vervoer"], ["Krause Werkzeugmaschinen GmbH (HRB 55620, AG Dresden)", "Krause Werkzeugmaschinen GmbH"]]) {
+    assert.ok(score(a, b) >= 0.81, `${a} / ${b} : ${score(a, b)} (mesuré à 0,800 avant)`);
+  }
+  /* les deux côtés avec une forme : la filiale ; la holding ; un seul mot ; deux numéros de registre ; la succursale allemande et son siège */
+  for (const [a, b] of [["Adeyemi Agro Commodities Nigeria Ltd", "Adeyemi Agro Commodities Ltd"], ["CHELYABINSK METAL WORKS", "Chelyabinsk Metal Works Holdings JSC"],
+    ["Shell", "Shell Nigeria Limited"], ["Adeyemi Agro Commodities Nigeria Limited (RC 884213)", "Adeyemi Agro Commodities Nigeria Limited (RC 918532)"],
+    ["Krause Werkzeugmaschinen GmbH, Zweigniederlassung Leipzig (HRB 22045, AG Leipzig)", "Krause Werkzeugmaschinen GmbH (HRB 55620, AG Dresden)"]]) {
+    assert.ok(score(a, b) < 0.81, `${a} / ${b} : ${score(a, b)}`);
+  }
 });

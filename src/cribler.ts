@@ -36,7 +36,7 @@ import type { Cellule } from "./measure.ts";
 import {
   frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD, sembleCoupe,
   variationVocalique, voyelleEpenthetique, squeletteLongue, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
-  CHEMINS_APPRENTISSAGE, lecturesDe, pliCantonais, pluriel, CHEMIN_VERDICT, RAPPEL_MIN, BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare,
+  CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pluriel, CHEMIN_VERDICT, RAPPEL_MIN, BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare,
   type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme,
 } from "./entites.ts";
 import { cleAbjad, cleAbjadSansTa, type Abjad } from "./ecritures.ts";
@@ -155,6 +155,9 @@ export function lireContreparties(texte: string): { lignes: Contrepartie[]; aver
 /* ─────────────────────────── l'index ─────────────────────────── */
 
 type NomIndexe = { brut: string; nom: NomPrepare; entree: EntreeListe; alias?: string; faible: boolean;
+  /** la chaîne est un ANCIEN nom annoncé, ou a perdu une mention de succursale qui nommait `mention` : voir
+   *  `plafondDesLectures`, que le criblage applique comme le score d'entité */
+  ancien: boolean; mention: string; registre: string;
   /** les bigrammes des deux blocs, codés et triés : le compte des bigrammes partagés se fait
    *  par fusion de deux tableaux triés, sans recalcul (mesuré : 35 % du temps avant) */
   bg: Uint32Array; bgSq: Uint32Array };
@@ -247,8 +250,9 @@ export class Index {
       /* chaque nom et chaque alias, avec leurs variantes (« ex- », annotations) : une variante
          est indexée comme un alias, et le relevé la montre comme la chaîne qui a porté le score */
       const chaines = [[e.nom, undefined], ...e.alias.map((a) => [a, a] as const)] as const;
-      const lectures = chaines.flatMap(([t, a]) => lecturesDe(t).map((l) => [l.texte, l.texte === e.nom ? undefined : l.texte, a, l.lecture] as const));
-      for (const [texte, alias, origine, lecture] of lectures) {
+      const lectures = chaines.flatMap(([t, a]) => lecturesDe(t).map((l) => [l.texte, l.texte === e.nom ? undefined : l.texte, a, l] as const));
+      for (const [texte, alias, origine, l] of lectures) {
+        const lecture = l.lecture;
         const prepare = preparerNom(f, texte, lecture);
         /* la liste DIT qu'il s'agit d'un navire : même marque qu'un préfixe « M/V », et même
            conflit face à une forme de société (« Davar Shipping Co. Limited » contre le navire
@@ -258,7 +262,7 @@ export class Index {
         const k = this.noms.length;
         if (premier === -1) premier = k;
         this.noms.push({ brut: texte, nom, entree: e, ...(alias ? { alias } : {}), faible: origine ? faibles.has(origine) : false,
-          bg: this.coder(nom.bloc), bgSq: this.coder(nom.blocSq) });
+          ancien: l.ancien, mention: l.mention, registre: l.registre, bg: this.coder(nom.bloc), bgSq: this.coder(nom.blocSq) });
         if (estCoupe(texte)) this.coupes.push(k);
         if (nom.mots.length === 0) { this.sansMots.push(k); continue; }
         nom.mots.forEach((mot, i) => {
@@ -535,7 +539,7 @@ function compterBigrammes(s: string): Map<string, number> {
  *  même liste regroupées, trié, coupé à CANDIDATS_MONTRES. `exhaustif` compare à tout : c'est
  *  le témoin de l'index, pas un mode d'usage. */
 export function cribler(c: Contrepartie, index: Index, seuils: { fort: number; possible: number }, exhaustif = false): Resultat {
-  const lectures = lecturesDe(c.nom).map((l) => ({ brut: l.texte, nom: preparerNom(index.f, l.texte, l.lecture) }));
+  const lectures = lecturesDe(c.nom).map((l) => ({ brut: l.texte, nom: preparerNom(index.f, l.texte, l.lecture), lecture: l }));
   if (index.memo.size > 500_000) index.memo.clear();
   const options = { auMoins: seuils.possible, memo: index.memo };
   const meilleurs = new Map<string, Candidat>();
@@ -548,7 +552,11 @@ export function cribler(c: Contrepartie, index: Index, seuils: { fort: number; p
   for (const k of ks) {
     const n = index.noms[k]!;
     let s = 0;
-    for (const l of lectures) s = Math.max(s, scoreBrut(index.f, l.brut, l.nom, n.brut, n.nom, options));
+    /* un ancien nom des deux côtés, deux succursales : le possible au plus (voir `plafondDesLectures`) */
+    for (const l of lectures) {
+      const plafond = plafondDesLectures(l.lecture, { texte: n.brut, lecture: n.nom.marques.cantonais ? "cantonais" : "mandarin", ancien: n.ancien, mention: n.mention, registre: n.registre });
+      s = Math.max(s, Math.min(plafond, scoreBrut(index.f, l.brut, l.nom, n.brut, n.nom, options)));
+    }
     if (s < seuils.possible) continue;
     garder(`${n.entree.source}:${n.entree.id}`, candidat(n, Math.round(s * 1000) / 1000, "name"));
   }

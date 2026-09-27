@@ -191,3 +191,19 @@ test("tour 5 : un nom thaï cherche ses mots par la clé consonantique, dans les
     assert.equal(rapide.candidats.length, 2, `${nom} : la chaîne thaïe et la latine`);
   }
 });
+
+test("tour 6 : l'index range au possible l'ancien nom des deux côtés, la succursale face au siège, deux numéros de registre", () => {
+  const e: EntreeListe[] = [
+    { source: "OFAC", id: "n1", nom: "MV Onne Pelican (ex Warri Osprey, 2006)", alias: [], type: "vessel" },
+    { source: "OFAC", id: "s1", nom: "Hamburg Handelsbank AG, Hauptsitz", alias: [], type: "entity" },
+    { source: "OFAC", id: "r1", nom: "Adeyemi Agro Commodities Nigeria Limited (RC 918532)", alias: [], type: "entity" },
+  ];
+  const ix = new Index(frequencesDe(e.map((x) => [x.nom, ...x.alias])), e, 0.74);
+  const statut = (nom: string) => cribler({ ligne: 2, nom }, ix, seuils).statut;
+  assert.equal(statut("MV Apapa Falcon (ex Warri Osprey, 2020)"), "possible", "l'ancien nom des deux côtés");
+  assert.equal(statut("MV Warri Osprey"), "strong", "l'ancien nom d'un seul côté est la même coque");
+  assert.equal(statut("Hamburg Handelsbank AG, Speicherstadt Branch"), "possible");
+  assert.equal(statut("Hamburg Handelsbank AG"), "strong", "le siège est la personne morale");
+  assert.equal(statut("Adeyemi Agro Commodities Nigeria Limited (RC 884213)"), "possible", "deux dépôts");
+  assert.equal(statut("Adeyemi Agro Commodities"), "strong", "le nom commercial sans forme");
+});
