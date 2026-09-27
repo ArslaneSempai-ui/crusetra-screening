@@ -135,6 +135,10 @@ const LOCUTIONS: readonly [string, string][] = [
   [" det may ", " textile garment "], [" giay da ", " leather shoes "], [" thep ", " steel "], [" xay dung ", " construction "],
   [" co khi ", " mechanical "], [" dien tu ", " electronics "], [" thuy san ", " seafood "], [" nong san ", " agricultural products "],
   [" mot thanh vien ", " "], [" mtv ", " "], [" one member ", " "],
+  /* les sigles d'un clavardage vietnamien : « cty cp » est « công ty cổ phần », la société par actions,
+     que la phrase retire ensuite (jeu 9, 27/09 : « cty cp phan phoi minh khang » plafonné à 0,800, « cp »
+     mot rare orphelin) ; « phân phối » (distribution) est un mot du commerce, traduit comme les autres */
+  [" cty cp ", " cong ty co phan "], [" cong ty cp ", " cong ty co phan "], [" phan phoi ", " distribution "],
   [" xnk ", " import export "], [" cty ", " "], [" tong cong ty ", " "], [" hop tac xa ", " cooperative "], [" htx ", " cooperative "],
   [" det lua ", " silk weaving "], [" lua ", " silk "], [" gao ", " rice "], [" nhua ", " plastics "], [" go ", " wood "],
   [" tp ho chi minh ", " hochiminh "], [" ho chi minh city ", " hochiminh "], [" ho chi minh ", " hochiminh "], [" tp ", " "],
@@ -281,6 +285,8 @@ const SUCCURSALES: ReadonlySet<string> = new Set(["branch", "succursale", "sucur
 const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   intl: "international", bros: "brothers", mfg: "manufacturing", mgmt: "management",
   svcs: "services", assoc: "associates", st: "saint", capt: "captain", sta: "santa", sto: "santo",
+  /* les abréviations d'un clavardage ou d'un connaissement, sans point ni majuscules (jeu 9, 27/09 :
+     « najmat alsahel electronics trdg llc », « mulji devshi n sons gen trading ») */
   gle: "generale", gal: "general", fres: "freres", entreprises: "enterprises", entreprise: "enterprise", les: "",
   td: "trading house", nlle: "nouvelle", nouv: "nouvelle",
   hnos: "brothers", gebr: "brothers", hk: "hongkong",
@@ -294,8 +300,105 @@ const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   nine: "9", ten: "10", eleven: "11", twelve: "12",
   /* mots de liaison, ézafé persan, titres de civilité indiens (« Shree », « M/s. ») */
   and: "", et: "", ve: "", und: "", y: "", e: "", i: "", ye: "", kai: "", for: "", of: "", the: "",
-  shri: "", shree: "", sri: "", sree: "", smt: "",
 }));
+/** Les CIVILITÉS indiennes d'une maison de commerce (« Shree », « Shri », « Sri », « Smt. ») : retirées
+ *  comme un mot de liaison, mais RETENUES, parce qu'un clavardage les soude au mot qui suit
+ *  (« sripelangi distributors » pour « Sri Pelangi Distributors ») et que le score doit savoir que
+ *  l'autre nom l'a écrite (voir `scorePrepares`). */
+export const CIVILITES: ReadonlySet<string> = new Set(["shri", "shree", "sri", "sree", "smt"]);
+/**
+ * LE VOCABULAIRE DU MÉTIER : les mots que la préparation connaît par leurs tables (formes juridiques,
+ * locutions, traductions, abréviations), rangés par longueur. Un mot qu'une lecture optique a abîmé
+ * (« LIRNITED », « L1MITED », « C?NG TY ») ne se reconnaît qu'à cette aune : rendu à ce vocabulaire,
+ * il redevient la forme ou le mot générique que les tables retirent ou traduisent. Les nombres en
+ * lettres n'en sont pas : « T?N » n'est pas « ten », et un numéro d'un seul côté plafonnerait la paire.
+ * Construit à la première demande : les tables qu'il lit sont déclarées au-dessus.
+ */
+let VOCABULAIRE_DU_METIER: ReadonlyMap<number, readonly string[]> | undefined;
+function vocabulaireDuMetier(): ReadonlyMap<number, readonly string[]> {
+  if (VOCABULAIRE_DU_METIER) return VOCABULAIRE_DU_METIER;
+  const mots = new Set<string>(FORMES);
+  for (const p of PHRASES) for (const m of p.trim().split(" ")) mots.add(m);
+  for (const [de, vers] of LOCUTIONS) {
+    /* une locution qui ne fait que SOUDER un lieu (« da nang » : « danang ») n'apprend pas un mot du
+       métier : « nang » y ferait concurrence à « nong » (de « nong san »), et « N?ng » resterait perdu */
+    const v = vers.trim();
+    if (v !== "" && !v.includes(" ") && de.replace(/ /g, "").includes(v)) continue;
+    for (const m of de.trim().split(" ")) mots.add(m);
+  }
+  for (const m of TRADUCTIONS.keys()) mots.add(m);
+  for (const [m, vers] of ABREVIATIONS) if (!/^\d+$/.test(vers)) mots.add(m);
+  const parLongueur = new Map<number, string[]>();
+  for (const m of mots) {
+    const l = parLongueur.get(m.length);
+    if (l) l.push(m); else parLongueur.set(m.length, [m]);
+  }
+  VOCABULAIRE_DU_METIER = parLongueur;
+  return parLongueur;
+}
+/** Le mot est connu : du vocabulaire du métier, ou du dictionnaire anglais (`lemme`). */
+function motConnu(m: string): boolean {
+  return (vocabulaireDuMetier().get(m.length) ?? []).includes(m) || lemme(m) !== undefined;
+}
+
+/**
+ * LES DIGRAMMES D'UNE LECTURE OPTIQUE : « rn » lu pour m (« LIRNITED »), « cl » pour d (« LTCL »),
+ * « vv » pour w (« VVORKS »). Un mot que rien ne connaît, et qui, le digramme rendu, est une forme,
+ * un mot du métier ou un mot du dictionnaire, est ce mot ; il faut le rendre AVANT la lecture des
+ * formes, sinon « Lirnited » restait un mot rare sans répondant (mesuré le 27/09 sur le jeu 9 :
+ * « WING SHING GROUP HOLDINGS LIRNITED » plafonné à 0,800). Jamais l'inverse, et jamais sur un mot
+ * connu : « Carnowell » reste Carnowell, « Warner » reste Warner (le squelette lit déjà rn comme m
+ * entre deux noms propres, au score).
+ */
+const DIGRAMMES_OPTIQUES: readonly (readonly [string, string])[] = [["rn", "m"], ["cl", "d"], ["vv", "w"]];
+function digrammeOptique(j: string): string {
+  if (j.length < 4 || !/\p{L}/u.test(j) || /\d/.test(j) || motConnu(j)) return j;
+  for (const [lu, vrai] of DIGRAMMES_OPTIQUES) {
+    if (!j.includes(lu)) continue;
+    const rendu = j.split(lu).join(vrai);
+    if (motConnu(rendu)) return rendu;
+  }
+  return j;
+}
+
+/**
+ * UNE FORME ABÎMÉE D'UN « ? » : le mot autour du « ? » (« LT? » : « lt » et « » ; « L?D » : « l » et
+ * « d »), complété par rien (le point d'une abréviation mal lu : « Ltd? ») ou par une lettre, est-il
+ * une forme juridique ? Deux lettres au moins autour du « ? » : « S? » serait n'importe quoi. Rendu
+ * en minuscules, ce que la normalisation fait de toute façon ; undefined si rien ne complète.
+ */
+const LETTRES = "abcdefghijklmnopqrstuvwxyz";
+function formeAbimee(avant: string, apres: string): string | undefined {
+  const a = normaliser(avant), b = normaliser(apres);
+  if (a.length + b.length < 2) return undefined;
+  if (FORMES.has(a + b)) return a + b;
+  for (const c of LETTRES) if (FORMES.has(a + c + b)) return a + c + b;
+  return undefined;
+}
+
+/**
+ * UN MOT À LETTRE-JALON QUE LE VOCABULAIRE DU MÉTIER CONNAÎT D'UNE SEULE FAÇON : « cʔng » est « cong »
+ * (de « cong ty »), « nʔng » est « nong » (de « nong san »), « lʕmited » est « limited ». Rendu au mot,
+ * il retrouve sa table : la forme part, la locution se traduit, comme sur l'autre nom (mesuré le 27/09
+ * sur le jeu 9 : « C?NG TY TNHH » gardait « cʔng ty » pour deux mots rares, 0,800 ; « N?ng san » ne
+ * rencontrait plus « agricultural products », 0,400). Deux mots du vocabulaire qui conviennent, et le
+ * jalon reste (« ʔʔc » est « inc », « llc », « sac » : on ne choisit pas) ; un nom propre n'est jamais
+ * touché, le score lit son jalon (`lettrePerdue`).
+ */
+function motDuMetierPerdu(j: string): string {
+  if (!porteUnJalon(j)) return j;
+  const perdus = j.split(PERDU).length - 1;
+  let trouve: string | undefined;
+  for (let L = j.length; L <= j.length + perdus; L++) {
+    for (const m of vocabulaireDuMetier().get(L) ?? []) {
+      if (!lettrePerdue(j, m)) continue;
+      if (trouve !== undefined) return j;
+      trouve = m;
+    }
+  }
+  return trouve ?? j;
+}
+
 /**
  * Les lettres que la décomposition Unicode ne ramène PAS à leur base : « ı » turc, « ł »
  * polonais, « ø » danois, « đ » croate, « ß », les ligatures. `normaliser` retire les marques
@@ -345,20 +448,32 @@ function grec(nom: string): string {
 
 /**
  * LES CONFUSIONS D'UNE LECTURE OPTIQUE (OCR) : un mot fait de lettres où traînent un 0, un 1,
- * un 5 ou un 8 était « o », « l », « s », « b » (« C0LBROOK », « E5BRAND », « 8EARING ») ; un numéro court où traînent
- * un « o » ou un « l » était un chiffre (« BELLAMARE 1O »). Hors de ces deux cas, rien ne
- * bouge : « S1187 » reste un numéro de coque, « 3M » un nom.
+ * un 5 ou un 8 était « o », « l » ou « i », « s », « b » (« C0LBROOK », « E5BRAND », « 8EARING »,
+ * « 8AHARI ») ; un numéro court où traînent un « o » ou un « l » était un chiffre (« BELLAMARE 1O »,
+ * « MUTIARA l2 »). Hors de ces deux cas, rien ne bouge : « S1187 » reste un numéro de coque,
+ * « 3M » un nom.
+ *
+ * Le 1 est la seule lecture AMBIGUË : un l minuscule ou une I capitale, que la casse perdue à la
+ * normalisation ne départage plus (« KEMUN1NG » est Kemuning, « Trai1 » est Trail). Il devient la
+ * lettre-jalon LU_UN, que le score lit comme un i ou un l et rien d'autre (`lettrePerdue`). Lu « l »
+ * d'office, « kemunlng » face à « kemuning » restait un mot ambigu plafonné au possible (mesuré le
+ * 27/09 sur le jeu 9 : « MT C0RAL KEMUN1NG » à 0,800, « JAT1 LESTAR1 NU5ANTARA » à 0,727).
  */
 function ocr(j: string): string {
   if (j === "000") return "ooo";
   if (!/\d/.test(j) || !/\p{L}/u.test(j)) return j;
+  const enLettres = (m: string) => m.replace(/0/g, "o").replace(/1/g, LU_UN).replace(/5/g, "s").replace(/8/g, "b");
   /* un seul 1, 0 ou 5 à la fin d'un mot d'au moins quatre lettres est un l, un o, un s mal lus
      (« Trai1 ») ; deux chiffres ou plus sont un numéro (« TCB1207 ») */
-  if (/^\p{L}{4,}[105]$/u.test(j)) return j.replace(/1$/, "l").replace(/0$/, "o").replace(/5$/, "s");
+  if (/^\p{L}{4,}[105]$/u.test(j)) return enLettres(j);
   const lettres = j.replace(/\d/g, ""), chiffres = j.replace(/\D/g, "");
   /* des chiffres EN FIN de mot sont un numéro (« No18 », « TCB1207 »), pas une lecture fautive */
-  if (j.length >= 4 && lettres.length >= 2 && /^[0158]+$/.test(chiffres) && !/\d$/.test(j)) return j.replace(/0/g, "o").replace(/1/g, "l").replace(/5/g, "s").replace(/8/g, "b");
+  if (j.length >= 4 && lettres.length >= 2 && /^[0158]+$/.test(chiffres) && !/\d$/.test(j)) return enLettres(j);
   if (j.length <= 4 && /^[olis]+$/.test(lettres)) return j.replace(/o/g, "0").replace(/[li]/g, "1").replace(/s/g, "5");
+  /* un chiffre confondu EN TÊTE d'un mot court (« 8G » pour BG, le préfixe d'une barge) : un numéro
+     ne commence pas par un chiffre que suivent des lettres qui ne sont pas elles-mêmes des chiffres
+     mal lus ; les mots d'ordre (« 1st », « 8th ») passent aussi, des deux côtés de la comparaison */
+  if (/^[0158]\p{L}+$/u.test(j)) return enLettres(j);
   return j;
 }
 
@@ -525,6 +640,12 @@ const REGIONS: ReadonlySet<string> = new Set([
 ]);
 
 const QUALIFICATIFS_PRIVES = new Set(["pty", "pte", "pvt", "sdn", "sendirian"]);
+/** Un mot de trois lettres à UNE substitution de pte, pty ou pvt, hors des formes : ce qualificatif
+ *  (voir `analyserEntite`, devant Ltd). Sinon le mot lui-même. */
+function qualificatifAbime(j: string): string {
+  if (j.length !== 3 || FORMES.has(j)) return j;
+  return ["pte", "pty", "pvt"].find((q) => [...q].filter((c, i) => c !== j[i]).length === 1) ?? j;
+}
 const PHRASES_PRIVEES = new Set(["private limited", "proprietary limited", "sendirian berhad", "siren youxian gongsi"]);
 /** Les formes chinoises qui, ÉCRITES EN CARACTÈRES, ne disent ni le pays ni le statut privé (voir `analyserEntite`). */
 const FORMES_CHINOISES = new Set(["youxian gongsi", "youxian zeren gongsi"]);
@@ -564,6 +685,11 @@ export type Marques = { pays: readonly string[]; familles: readonly string[]; na
   succursale: boolean;
   /** le type que le préfixe de navire déclare (« tug », « barge ») : deux types sont deux navires */
   typeNavire: string;
+  /** la marque d'un CLAVARDAGE : tout en minuscules, ou en casse mixte sans le moindre point, virgule
+   *  ni parenthèse (« Kim Send Hardware & Building Materials Pre Ltd ») ; celui qui tape ne ponctue pas
+   *  et son téléphone corrige ses mots (voir `scorePrepares`). Un export en majuscules n'en est pas un,
+   *  ni un nom qui porte une annotation entre parenthèses (« Chin Hong Trading Pte Ltd (振丰贸易) ») */
+  chat: boolean;
   /** le nom est écrit dans un abjad (arabe et persan, hébreu) : ses mots n'ont pas de voyelles,
    *  et se comparent aux consonnes de l'autre côté (voir `cleAbjad`) */
   abjad: Abjad;
@@ -634,17 +760,23 @@ export function preparerEntite(nom: string, lecture: Lecture = "mandarin"): stri
 
 /** La préparation, avec ce qu'elle a retiré (les pays des formes juridiques, un préfixe de
  *  navire, une forme de société) et les mots que leur auteur a ABRÉGÉS d'un point. */
-export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { texte: string; abreges: ReadonlySet<string>; parentheses: ReadonlySet<string> } & Marques {
+export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { texte: string; abreges: ReadonlySet<string>; parentheses: ReadonlySet<string>; civilites: ReadonlySet<string> } & Marques {
   /* L'apostrophe DANS un mot le soude (« O'Brien », « Ch'iao ») : en faire une frontière
      de mot fabriquerait des jetons d'une ou deux lettres qui ne désignent rien. « F.lli »
      (fratelli) et « LPG/C » (LPG carrier) ont une ponctuation qui porte le sens : lus avant. */
   const rom = romaniser(nom, lecture);
   const soude = plierLatin(rom.texte)
+    /* un « ? » dans une forme juridique ou à sa fin (« LT? », « L?D », « Ltd? ») : la lettre perdue
+       ou le point mal lu d'une forme, complétée AVANT que le « ? » final ne parte en ponctuation
+       (mesuré le 27/09 sur le jeu 9 : « (PVT) LT? » laissait un mot « lt » orphelin, 0,800) */
+    .replace(/(?<![\p{L}?])(\p{L}*)\?(\p{L}*)(?![\p{L}?])/gu, (m, avant: string, apres: string) => formeAbimee(avant, apres) ?? m)
     /* la lettre qu'un encodage a PERDUE : un « ? » dans un mot ou en tête (« SE?ORA » pour
        Señora, « ?ugowski » pour Ługowski) devient la lettre-jalon PERDU, que la normalisation
-       laisse passer ; le score la lit comme UNE lettre inconnue (`lettrePerdue`). Jamais un
-       « ? » seul ni en fin de mot : là c'est une ponctuation, elle part avec les autres */
-    .replace(/(?<!\?)\?(?=\p{L})/gu, PERDU)
+       laisse passer ; le score la lit comme UNE lettre inconnue (`lettrePerdue`). Une suite de
+       « ? » vaut autant de lettres (« T?n ??c » pour Tân Đức : Đ et ứ perdus, un jalon chacun ;
+       mesuré le 27/09 sur le jeu 9, la suite partait en ponctuation et « ??c » devenait « c »).
+       Jamais un « ? » seul ni en fin de mot : là c'est une ponctuation, elle part avec les autres */
+    .replace(/\?(?=\?*\p{L})/gu, PERDU)
     .replace(/int'l/gi, "international").replace(/\bF\.lli\b/gi, "Fratelli")
     /* « M/s. » et « Messrs. », la civilité indienne et britannique d'une maison de commerce */
     .replace(/^\s*(?:M\/s\.?|Messrs\.?)\s+/i, "")
@@ -674,13 +806,13 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     .flatMap((m) => {
       let dedans = ` ${jetons(normaliser(plier(m[1]!))).join(" ")} `;
       for (const [de, vers] of LOCUTIONS) dedans = dedans.split(de).join(vers);
-      return dedans.trim().split(/ +/).flatMap((j) => (ABREVIATIONS.get(j) ?? traduction(j) ?? j).split(" "));
+      return dedans.trim().split(/ +/).flatMap((j) => (CIVILITES.has(j) ? "" : ABREVIATIONS.get(j) ?? traduction(j) ?? j).split(" "));
     })
     .filter((j) => j !== "" && !FORMES.has(j)));
   /* Lettres et chiffres collés se séparent : « No18 » → « No 18 », « LANQIAOFENG16 » →
      « LANQIAOFENG 16 » ; le numéro d'un navire devient un jeton que la règle des numéros lit. */
   const brut = jetons(jetons(normaliser(soude)).map(ocr).join(" ")
-    .replace(/(\p{L})(\d)/gu, "$1 $2").replace(/(\d)(\p{L})/gu, "$1 $2"));
+    .replace(/(\p{L})(\d)/gu, "$1 $2").replace(/(\d)(\p{L})/gu, "$1 $2")).map(digrammeOptique).map(motDuMetierPerdu);
   const joints = brut;
   /* « No. », « Nr. », « Number » devant un numéro ne sont que le mot « numéro ». */
   const sansNo = joints.filter((j, i) => !(/^(no|nr|num|number)$/.test(j) && /^\d+$/.test(joints[i + 1] ?? "")));
@@ -729,12 +861,22 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     }
     texte = texte.split(p).join(" ");
   }
+  const civilites = new Set<string>();
   const separes = texte.trim().split(/ +/);
-  const mots = separes.flatMap((j, i) => (j === "i" ? j
+  const motsBruts = separes.flatMap((j, i) => {
+    if (j === "i") return [j];
+    if (CIVILITES.has(j)) { civilites.add(j); return []; }
     /* « li » (ل, « pour ») devant un mot du commerce arabe est la préposition, comme « lil » :
        « Li Tijarat Al Aruz » est « Rice Trading » (jeu 9) ; devant tout autre mot c'est un nom (« Li Ning ») */
-    : j === "li" && TRADUCTIONS_ARABES.has(separes[i + 1] ?? "") ? ""
-    : (ABREVIATIONS.get(j) ?? traduction(j) ?? j)).split(" "));
+    if (j === "li" && TRADUCTIONS_ARABES.has(separes[i + 1] ?? "")) return [];
+    return (ABREVIATIONS.get(j) ?? traduction(j) ?? j).split(" ");
+  });
+  /* LE QUALIFICATIF PRIVÉ ABÎMÉ : « Pre Ltd » pour Pte Ltd, le correcteur d'un téléphone ayant fait un
+     mot du sigle (jeu 9, 27/09 : « Kim Send Hardware & Building Materials Pre Ltd », « pre » mot rare
+     orphelin, 0,720). Devant « Ltd » ou « Limited », un mot de trois lettres qui n'est pas une forme et
+     ne diffère de pte, pty ou pvt que par UNE lettre substituée est ce qualificatif : rien d'autre de
+     trois lettres ne précède Ltd dans l'usage. Le prix, assumé : « Happy Pet Ltd » y perd son « Pet ». */
+  const mots = motsBruts.map((j, i) => (motsBruts[i + 1] === "ltd" || motsBruts[i + 1] === "limited") ? qualificatifAbime(j) : j);
   /* « IP Tavrizyan A.G. » : l'entrepreneur individuel russe (ИП), ukrainien (ФОП, ЧП),
      kazakh (ИП) porte un NOM DE PERSONNE et ses initiales ; « A.G. » n'y est pas une
      Aktiengesellschaft. Après ce sigle, les mots courts restent des mots. */
@@ -771,6 +913,11 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* et le « I » du Wade-Giles (« Shun I Fa », yi) vit parmi des monosyllabes : le « i » slave
      ne s'efface qu'à côté d'un mot d'au moins cinq lettres */
   t = t.filter((j, i) => j !== "i" || i === t.length - 1 || !((t[i - 1]?.length ?? 0) >= 5 || (t[i + 1]?.length ?? 0) >= 5));
+  /* « n » ENTRE deux mots est le « and » d'un clavardage (« Mulji Devshi n Sons ») ; écrit avec son
+     point (« N. Kumar Traders »), c'est une initiale, qui reste ; en tête ou en queue aussi (mesuré le
+     27/09 sur le jeu 9 : « mulji devshi n sons gen trading » à 0,689, « n » mot rare sans répondant) */
+  const initialeN = /(?<![\p{L}.])n\.(?!\p{L})/iu.test(soude);
+  t = t.filter((j, i) => j !== "n" || i === 0 || i === t.length - 1 || initialeN);
   /* les marqueurs se lisent AVANT la traduction (« tongsang », « shoji » deviennent « trading ») et
      avant le retrait des civilités (« Shree ») */
   const tousLesMots = [...articles, ...mots];
@@ -789,9 +936,10 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const majuscules = !/\p{Ll}/u.test(nom) && /\p{Lu}/u.test(nom) && t.length >= 2;
   const filiation = tousLesMots.some((j) => FILIATION_M.has(j)) ? "m" : tousLesMots.some((j) => FILIATION_F.has(j)) ? "f" : "";
   const succursale = tousLesMots.some((j) => SUCCURSALES.has(j));
-  return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses,
+  const chat = t.length >= 2 && !majuscules && (!/\p{Lu}/u.test(nom) || !/[.,()]/.test(nom));
+  return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites,
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
-    hebreuOuGrec, indien, hispanique, prive, majuscules, abjad: abjadDe(nom), cantonais: lecture === "cantonais", priveInconnu,
+    hebreuOuGrec, indien, hispanique, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture === "cantonais", priveInconnu,
     natifs: rom.natifs, filiation, succursale, typeNavire };
 }
 
@@ -1048,8 +1196,14 @@ const BRITANNIQUE: ReadonlyMap<string, string> = new Map(Object.entries({
  * confondent : on les fond, pour une syllabe isolée seulement (une attaque, un noyau, une
  * finale n, ng ou r), là où l'ambiguïté est celle du système et pas celle d'un mot anglais.
  */
+/** Une SYLLABE ISOLÉE, telle que le chinois, le vietnamien, le coréen ou le malais l'écrivent : une
+ *  attaque, un noyau, une finale n, ng ou r, six lettres au plus. Deux syllabes à une lettre près sont
+ *  deux syllabes (Heng, Hong ; Phong, Phuong), quoi que le dictionnaire anglais en dise. */
+export function estSyllabeIsolee(mot: string): boolean {
+  return mot.length <= 6 && /^[bcdfghjklmnpqrstwxyz]{0,3}[aeiou]{1,3}(?:ng|n|r)?$/.test(mot);
+}
 function syllabeChinoise(mot: string): string {
-  if (mot.length > 6 || !/^[bcdfghjklmnpqrstwxyz]{0,3}[aeiou]{1,3}(?:ng|n|r)?$/.test(mot)) return mot;
+  if (!estSyllabeIsolee(mot)) return mot;
   return mot
     .replace(/^hs/, "x").replace(/^(?:ts|tz|c)(?=[aeiou])/, "z").replace(/^(?:ch|zh|q|j)/, "ch")
     .replace(/^t/, "d").replace(/^p/, "b").replace(/^k/, "g")
@@ -1119,6 +1273,9 @@ export type NomPrepare = {
   /** les mots écrits entre parenthèses (« (Shanghai) ») */
   parentheses: readonly boolean[];
   numeros: string; bloc: string;
+  /** les civilités que la préparation a ôtées (« sri », « shree ») : un clavardage les soude au mot
+   *  qui suit, et le score ne le lit que si l'autre nom les a écrites (voir CIVILITES) */
+  civilites: readonly string[];
   /** le bloc des squelettes : la comparaison des mots collés s'y fait, pour que « Aldeeb »
    *  et « Al Dheeb » ne paient pas leur romanisation en plus de leur espace */
   blocSq: string;
@@ -1126,17 +1283,17 @@ export type NomPrepare = {
 };
 
 const SANS_MARQUES: Marques = { pays: [], familles: [], designations: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
-  coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, prive: false, majuscules: false, abjad: "", cantonais: false,
+  coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, prive: false, majuscules: false, chat: false, abjad: "", cantonais: false,
   priveInconnu: false, natifs: new Map(), filiation: "", succursale: false, typeNavire: "" };
 
 export function preparerNom(f: Frequences, nom: string, lecture: Lecture = "mandarin"): NomPrepare {
   const a = analyserEntite(nom, lecture);
-  const { texte: _t, abreges, parentheses, ...marques } = a;
-  return depuisJetons(f, jetons(preparer(a.texte)), marques, abreges, parentheses);
+  const { texte: _t, abreges, parentheses, civilites, ...marques } = a;
+  return depuisJetons(f, jetons(preparer(a.texte)), marques, abreges, parentheses, civilites);
 }
 
 export function depuisJetons(f: Frequences, J: readonly string[], marques: Marques = SANS_MARQUES,
-  abreges: ReadonlySet<string> = new Set(), parentheses: ReadonlySet<string> = new Set()): NomPrepare {
+  abreges: ReadonlySet<string> = new Set(), parentheses: ReadonlySet<string> = new Set(), civilites: ReadonlySet<string> = new Set()): NomPrepare {
   /* Un chiffre romain n'est un NUMÉRO qu'en fin de nom (« Karina II », « Star I ») : au milieu,
      « I » est un mot (« Shun I Fa », le « yi » chinois en Wade-Giles, mesuré le 27/09 : la
      règle des numéros le lisait « 1 » et rendait 0 face à « Shun Yi Fa No. 232 »). */
@@ -1151,6 +1308,7 @@ export function depuisJetons(f: Frequences, J: readonly string[], marques: Marqu
     parentheses: mots.map((m) => parentheses.has(m)),
     numeros: J.map(num).filter(Boolean).sort().join(" "),
     bloc: mots.join(""), blocSq: mots.map(squelette).join(""),
+    civilites: [...civilites],
     marques,
   };
 }
@@ -1174,7 +1332,7 @@ export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesL
   if (a === b) return 1;
   /* la lettre perdue d'un encodage (« seʔora » pour Señora) tient lieu d'une lettre, et d'une
      seule : le mot vaut l'égalité quand tout le reste est égal, lettre pour lettre */
-  if ((a.includes(PERDU) || b.includes(PERDU)) && lettrePerdue(a, b)) return 1;
+  if ((porteUnJalon(a) || porteUnJalon(b)) && lettrePerdue(a, b)) return 1;
   if (pluriel(a, b) || pluriel(b, a)) return 0.95;
   if (abrege(a, b) || abrege(b, a)) return 0.9;
   if (motsDistincts(a, b, voyellesLibres) || composesDistincts(a, b, voyellesLibres)) return 0.5;
@@ -1193,17 +1351,27 @@ export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesL
 /** La lettre-jalon d'une lettre PERDUE à l'encodage (« SE?ORA », « ?ugowski ») : le coup de glotte
  *  (U+0294), une lettre pour la normalisation, qu'aucun nom n'écrit. Posée par `analyserEntite`. */
 export const PERDU = "\u0294";
+/** La lettre-jalon du 1 d'une lecture optique (« KEMUN1NG », « Trai1 ») : la fricative pharyngale
+ *  (U+0295), une lettre pour la normalisation, qu'aucun nom n'écrit. Elle vaut un i ou un l, rien
+ *  d'autre (voir `ocr`). Posée par `ocr`, donc par `analyserEntite`. */
+export const LU_UN = "\u0295";
+/** Le mot porte une lettre-jalon, de l'une ou l'autre sorte. */
+export function porteUnJalon(mot: string): boolean {
+  return mot.includes(PERDU) || mot.includes(LU_UN);
+}
 /** Les lettres que `plier` rend par deux : æ, œ, ß, þ. Une lettre perdue en vaut deux là. */
 const DIGRAMMES_PLIES: ReadonlySet<string> = new Set(["ae", "oe", "ss", "th"]);
 /** Deux mots égaux lettre pour lettre, sauf là où l'un porte la lettre-jalon, qui vaut UNE lettre
  *  de l'autre (« seʔora », « senora »), ou l'une des lettres que `plier` rend par deux (« skjʔrgʔrd »,
- *  « skjaergard » : æ). Jamais davantage : « stra?e » et « strass » ne se lisent pas. */
+ *  « skjaergard » : æ). Jamais davantage : « stra?e » et « strass » ne se lisent pas. Le jalon du 1
+ *  lu optiquement (LU_UN) ne vaut qu'un i ou un l (« kemunʕng », « kemuning »). */
 export function lettrePerdue(a: string, b: string): boolean {
   const suite = (i: number, j: number): boolean => {
     if (i === a.length || j === b.length) return i === a.length && j === b.length;
     if (a[i] === b[j]) return suite(i + 1, j + 1);
     if (a[i] === PERDU) return suite(i + 1, j + 1) || (DIGRAMMES_PLIES.has(b.slice(j, j + 2)) && suite(i + 1, j + 2));
     if (b[j] === PERDU) return suite(i + 1, j + 1) || (DIGRAMMES_PLIES.has(a.slice(i, i + 2)) && suite(i + 2, j + 1));
+    if ((a[i] === LU_UN && (b[j] === "i" || b[j] === "l")) || (b[j] === LU_UN && (a[i] === "i" || a[i] === "l"))) return suite(i + 1, j + 1);
     return false;
   };
   return Math.abs(a.length - b.length) <= 3 && suite(0, 0);
@@ -1350,6 +1518,9 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
      celle du coréen (jeu 9, 27/09 : « Wing Shing Group Holdings » contre 永成集團控股, à 0,800 par le
      seul bloc des squelettes quand 永成 ne se lisait qu'en mandarin) */
   const cantonais = A.marques.cantonais || B.marques.cantonais;
+  /* l'un des deux noms vient d'un clavardage : une lettre de différence avec un mot que le
+     dictionnaire connaît y est une faute ou le correcteur d'un téléphone (voir plus bas) */
+  const chat = A.marques.chat || B.marques.chat;
   /* là où une romanisation écrit les voyelles librement, deux mots anglais qui n'en diffèrent que
      par une ne sont pas deux mots (Amir, Emir ; Lung, Long en Wade-Giles et en pinyin, mesuré le
      27/09 sur le jeu 4) ; sans aucune marque de langue, si (Marlin, Merlin ; voir `motsDistincts`).
@@ -1371,7 +1542,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
         const nx = X.marques.natifs.get(x) ?? "", ny = Y.marques.natifs.get(y) ?? "";
         /* la clé porte tout ce qui décide : les deux mots, leurs marques d'abréviation, et
            leur position de dernier mot (la troncature ne vaut que pour lui) */
-        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
+        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
         /* le cache code l'équivalence de romanisation en ajoutant 2 à la valeur (elle est dans [0, 1]) */
         const enCache = memo?.get(cle);
         let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
@@ -1432,6 +1603,18 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           if (v < CREDIT_ROMANISATION && !chinois && !coreen && !japonais
             && ((x.length >= 4 && y.length >= x.length + 3 && y.startsWith(x) && !lemme(x))
               || (y.length >= 4 && x.length >= y.length + 3 && x.startsWith(y) && !lemme(y)))) v = CREDIT_ROMANISATION;
+          /* LA FAUTE D'UN CLAVARDAGE : sous la marque chat, un mot que le dictionnaire connaît face à un
+             mot qu'il ne connaît pas, à UNE lettre près hors l'initiale (substituée, tombée, doublée,
+             inversée), est la faute d'un pouce ou le correcteur d'un téléphone qui a fait un mot anglais
+             d'un nom (« Kim Send » pour Kim Seng, jeu 9, 27/09 : 0,720), pas deux mots. Deux mots que le
+             dictionnaire connaît restent deux mots (Marlin, Merlin ; Rail, Mail), deux qu'il ignore restent
+             ambigus (Phuong, Phong) ; l'initiale reste l'initiale (Qadir, Nadir) ; et deux syllabes isolées
+             sont deux syllabes, marque chinoise ou pas (Heng, Hong : mesuré le 27/09 sur le jeu 9, « Chin
+             Heng Trading » et « Chin Hong Trading » montaient à 0,919 sur la variante sans leurs
+             sinogrammes). Mesuré sur les neuf jeux : aucun piège ne monte */
+          if (v < 0.9 && chat && !chinois && !coreen && !japonais && x.length >= 4 && y.length >= 4 && x[0] === y[0]
+            && !(estSyllabeIsolee(x) && estSyllabeIsolee(y))
+            && (lemme(x) === undefined) !== (lemme(y) === undefined) && distanceOsa(x, y) === 1) v = 0.9;
           if (v < 0.9 && X.abreges[i] && x.length < y.length && (y.startsWith(x) || abrege(x, y))) v = 0.9;
           if (v < 0.9 && Y.abreges[j] && y.length < x.length && (x.startsWith(y) || abrege(y, x))) v = 0.9;
           if (v < 0.9 && dernierX && tronque(x, y)) v = 0.9;
@@ -1442,6 +1625,20 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           memo?.set(cle, equivalent ? v + 2 : v);
         }
         if (v > m) { m = v; meilleurY = j; equivalentM = equivalent; }
+      }
+      /* une civilité que l'autre nom écrit à part et que celui-ci SOUDE au mot suivant (« sripelangi »
+         pour « Sri Pelangi »), ou l'inverse : le même mot, la civilité en plus (jeu 9, 27/09 : 0,529).
+         Il faut que l'autre côté l'ait écrite : « Srinivas » n'est pas « Nivas » */
+      if (m < 1) {
+        const x = X.mots[i]!;
+        for (const c of Y.civilites) {
+          const k = x.startsWith(c) && x.length >= c.length + 4 ? Y.mots.indexOf(x.slice(c.length)) : -1;
+          if (k >= 0) { m = 1; meilleurY = k; equivalentM = false; break; }
+        }
+        if (m < 1) for (const c of X.civilites) {
+          const k = Y.mots.indexOf(c + x);
+          if (k >= 0) { m = 1; meilleurY = k; equivalentM = false; break; }
+        }
       }
       if (m < 0.8) { orphelins[cote] = true; orphelinsMots[cote].push(X.mots[i]!); }
       /* un mot géographique en tête (« Fujian Quanzhou Xingtai Shoes ») n'est pas un mot en

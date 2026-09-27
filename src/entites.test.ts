@@ -4,7 +4,8 @@ import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import {
   preparerEntite, analyserEntite, preparerNom, scorePrepares, scoreBrut, scoreNoms, variantes, squelette, voyelles, abrege, motsDistincts, lemme,
-  variationVocalique, voyelleEpenthetique, squeletteLongue, lettrePerdue, PERDU, fauteDeFrappe, composesDistincts, simMot, pluriel,
+  variationVocalique, voyelleEpenthetique, squeletteLongue, lettrePerdue, PERDU, fauteDeFrappe, composesDistincts, simMot, pluriel, LU_UN,
+  estSyllabeIsolee,
   tronque, estCoupe, apport, simMinimale, choisirSeuils, marquesEnConflit, frequencesDe, mesurerJeux, qualificatifSoude,
   poidsDuMot, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, FAUSSES_ALERTES_MAX_FORT, SEUIL_POSSIBLE, lecturesDe, pliCantonais,
 } from "./entites.ts";
@@ -627,4 +628,71 @@ test("le pluriel anglais d'un mot du dictionnaire est le même mot ; 廢金屬�
   assert.equal(simMot("metals", "metal", squelette("metals"), squelette("metal")), 0.95);
   assert.equal(preparerEntite("聯成廢金屬回收有限公司", "cantonais"), "luen sing metal recycling");
   assert.ok(score("Luen Shing Recycling Metals Limited", "聯成廢金屬回收有限公司") >= 0.81, "mesuré à 0,138 avant, 0,729 avec « scrap metal » et le pluriel à 0,833");
+});
+
+test("tour 5, OCR : un chiffre confondu en tête (« 8G »), un numéro mêlé (« l2 »), et le 1 qui vaut i ou l", () => {
+  assert.ok(score("BG BAHARI MUTIARA 12", "8G 8AHARI MUTIARA l2") > 0.81, "mesuré à 0,000 avant : « l2 » lu mot, « 12 » lu numéro");
+  assert.ok(score("MT CORAL KEMUNING", "MT C0RAL KEMUN1NG") > 0.81, "mesuré à 0,800 avant : « kemunlng » était un mot ambigu");
+  assert.equal(preparerEntite("SHIRATSUNE MARU NO18"), preparerEntite("Shiratsune Maru No. 18"), "un chiffre en fin de mot reste un numéro");
+  assert.equal(preparerEntite("HULL S1187"), "hull s 1187", "un numéro de coque n'est pas un mot mal lu");
+  assert.equal(lettrePerdue(`kemun${LU_UN}ng`, "kemuning"), true);
+  assert.equal(lettrePerdue(`kemun${LU_UN}ng`, "kemunlng"), true);
+  assert.equal(lettrePerdue(`kemun${LU_UN}ng`, "kemunang"), false, "le 1 n'est qu'un i ou un l");
+});
+
+test("tour 5, OCR : rn lu pour m dans une forme ou un mot connu, jamais dans un nom propre", () => {
+  assert.ok(score("Wing Shing Group Holdings Limited", "WING SHING GROUP HOLDINGS LIRNITED") > 0.81, "mesuré à 0,800 avant");
+  assert.equal(preparerEntite("Lirnited Liability Company Alpha"), "alpha");
+  assert.equal(preparerEntite("Grnbh Beta"), preparerEntite("GmbH Beta"));
+  assert.equal(preparerEntite("Carnowell Flange Works"), "carnowell flange works", "un nom propre inconnu reste tel quel");
+  assert.equal(preparerEntite("Warner Trading"), "warner trading", "un mot connu ne bouge pas");
+});
+
+test("tour 5, la lettre perdue : une suite de « ? », une forme complétée, un mot du métier retrouvé", () => {
+  assert.ok(score("Công ty Cổ phần Nông sản Tân Đức Minh", "Cong ty Co phan N?ng san T?n ??c Minh") > 0.81, "mesuré à 0,400 avant");
+  assert.ok(score("Công ty TNHH Kenanga Pacific Việt Nam", "C?NG TY TNHH KENANGA PACIFIC VI?T NAM") > 0.81, "mesuré à 0,800 avant");
+  assert.ok(score("Qamar-ul-Islam Surgical Instruments (Pvt.) Ltd.", "QAMAR UL ISLAM SURGICAL INSTRUMENTS (PVT) LT?") > 0.81, "mesuré à 0,800 avant");
+  assert.equal(preparerEntite("Alpha Trading L?d"), "alpha trading");
+  assert.equal(preparerEntite("Alpha Trading Ltd?"), "alpha trading");
+  assert.equal(preparerEntite("What? Ever Ltd"), "what ever", "un « ? » après un mot ordinaire reste une ponctuation");
+  assert.equal(preparerEntite("T?n ??c Minh"), `t${PERDU}n ${PERDU}${PERDU}c minh`, "« ??c » : deux lettres perdues ; ni « inc » ni « llc », on ne choisit pas");
+  assert.equal(preparerEntite("N?ng san Minh"), preparerEntite("Nong san Minh"), "« nong » de « nong san », le seul mot du métier qui convienne");
+  assert.equal(preparerEntite("Alpha L1mited"), "alpha");
+});
+
+test("tour 5, clavardage : abréviations sans point, sigles vietnamiens, « n » entre deux mots", () => {
+  assert.ok(score("Najmat Al Sahel Electronics Trading L.L.C.", "najmat alsahel electronics trdg llc") > 0.81, "mesuré à 0,628 avant");
+  assert.ok(score("Mulji Devshi & Sons General Trading L.L.C.", "mulji devshi n sons gen trading") > 0.81, "mesuré à 0,689 avant");
+  assert.ok(score("Công ty Cổ phần Phân phối Minh Khang", "cty cp phan phoi minh khang") > 0.81, "mesuré à 0,800 avant");
+  assert.equal(preparerEntite("Meenakshi Grp Hldgs Bldg"), "meenakshi group holdings building");
+  assert.equal(preparerEntite("N. Kumar Traders"), "n kumar traders", "une initiale avec son point reste");
+  assert.equal(preparerEntite("Rock n Roll Ltd"), "rock roll");
+  assert.equal(preparerEntite("Kumar Traders N"), "kumar traders n", "en queue, « n » n'est pas un « and »");
+});
+
+test("tour 5, clavardage : une civilité soudée au mot suivant ne se lit que si l'autre nom l'a écrite", () => {
+  assert.ok(score("Sri Pelangi Distributors Sdn. Bhd.", "sripelangi distributors sdn bhd") > 0.81, "mesuré à 0,529 avant");
+  assert.ok(score("Shree Ganesh Traders", "shreeganesh traders") > 0.81);
+  assert.ok(score("Srinivas Traders", "Nivas Traders") < 0.81, "« Sri » n'a pas été écrit à part : Srinivas n'est pas Nivas");
+  assert.deepEqual(preparerNom(f, "Sri Pelangi Distributors").civilites, ["sri"]);
+  assert.equal(preparerEntite("Shree Ganesh Traders"), "ganesh traders", "la civilité s'ôte toujours du texte");
+});
+
+test("tour 5, clavardage : le qualificatif privé à une lettre près devant Ltd, et la faute d'un mot que le dictionnaire connaît", () => {
+  assert.ok(score("Kim Seng Hardware & Building Materials Pte. Ltd.", "Kim Send Hardware & Building Materials Pre Ltd") > 0.81, "mesuré à 0,720 avant");
+  assert.equal(preparerEntite("Alpha Pre Ltd"), preparerEntite("Alpha Pte Ltd"));
+  assert.ok(analyserEntite("Alpha Pre Ltd").prive);
+  assert.ok(score("M/T Bellanova Pride", "M/T Bellanova Prode") > 0.81, "mesuré à 0,810 avant : la faute d'une touche voisine");
+  assert.ok(score("Marlin Fisheries", "Merlin Fisheries") < 0.81, "deux mots que le dictionnaire connaît restent deux mots");
+  assert.ok(score("Halvern Rail Services Ltd", "Halvern Mail Services Ltd") < 0.81);
+  assert.ok(score("Qadir Brothers Trading", "Nadir Brothers Trading") < 0.81, "l'initiale reste l'initiale");
+  assert.ok(score("Chin Heng Trading Pte Ltd", "Chin Hong Trading Pte Ltd") < 0.81, "deux syllabes isolées sont deux syllabes");
+  assert.ok(score("Cong ty TNHH Det May Nam Phuong", "Cong ty TNHH Det May Nam Phong") < 0.81, "deux mots que le dictionnaire ignore restent ambigus");
+  assert.equal(estSyllabeIsolee("heng") && estSyllabeIsolee("phuong"), true);
+  assert.equal(estSyllabeIsolee("send") || estSyllabeIsolee("pride"), false);
+  assert.equal(analyserEntite("Kim Send Hardware Pre Ltd").chat, true);
+  assert.equal(analyserEntite("kim seng hardware pte. ltd.").chat, true, "tout en minuscules");
+  assert.equal(analyserEntite("KIM SEND HARDWARE PRE LTD").chat, false, "un export en majuscules n'est pas un clavardage");
+  assert.equal(analyserEntite("Kim Seng Hardware Pte. Ltd.").chat, false, "un registre ponctue");
+  assert.equal(analyserEntite("Chin Hong Trading Pte Ltd (振丰贸易)").chat, false, "une annotation entre parenthèses n'est pas un clavardage");
 });
