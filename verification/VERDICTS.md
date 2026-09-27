@@ -17,6 +17,8 @@ a verdict set is ever listed by any tool before it becomes training.
 | | | | | possible 0.80 | 175/200 [82-91 %] | 35/200 [13-23 %] |
 | 2026-09-27 18h | v9 a4488270 / f23ecac0 | set #7 ca2fad4c (Rotterdam brief by field-error source, fourth model; overlap with the seven training sets: 0 pairs, 0 names), becomes paires-entites-8.json | 200 + 200 | strong 0.81 | 139/200 [63-75 %] | 9/200 [2-8 %] |
 | | | | | possible 0.80 | 179/200 [84-93 %] | 71/200 [29-42 %] |
+| 2026-09-27 17h | v10 b05e1be0 / 7f564556 | set #8 197c7ead (Singapore trade-finance KYC brief by counterparty type, Opus; overlap with the eight training sets: 0 pairs, 1 name), becomes paires-entites-9.json | 200 + 200 | strong 0.81 | 110/200 [48-62 %] | 3/200 [1-4 %] |
+| | | | | possible 0.80 | 129/200 [58-71 %] | 48/200 [19-30 %] |
 
 v6 on set #3 at other thresholds: 0.70 found 182 with 52 false; 0.75 found 181 with 37; 0.85 found 162
 with 19; 0.90 found 153 with 11.
@@ -37,3 +39,9 @@ possible level. Set #6 was then studied (16h15) and became training set 7.
 v9 on set #7 at other thresholds: 0.70 found 180 with 76 false; 0.75 found 180 with 72; 0.85 found 136 with 8;
 0.90 found 128 with 6. Set #7 carries 110 vessel pairs (27 %) and 37 sibling-one-word traps, 19 holding-vs-operating,
 18 sister ships: the possible level flags most of them by design, which is the 35 % false-alert rate at 0.80.
+
+v10 on set #8 at other thresholds: 0.70 found 140 with 72 false; 0.75 found 136 with 54; 0.85 found 108 with 4;
+0.90 found 102 with 4. Set #8 is a different population from sets #3 to #7 (ASEAN dialect romanisations, Tamil, Thai,
+Gulf and South Asian houses, chat typing, native scripts): its rates are not comparable with the earlier rows, only
+with later methods judged on sets of the same brief. v10 on the eight training sets: strong 1098/1170 with 6/1170
+false alerts (v9: 1047 with 14).

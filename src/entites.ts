@@ -26,6 +26,7 @@ import type { Matcher, PalierId } from "./matcher.ts";
 import { distanceOsa } from "./matchers/damerau.ts";
 import { preparer } from "./matchers/preparer.ts";
 import { translitterer } from "./matchers/translitteration.ts";
+import { romaniser, cleAbjad, abjadDe, estJaponais, type Abjad } from "./ecritures.ts";
 
 /* ─────────────────────────── la préparation ─────────────────────────── */
 
@@ -51,7 +52,7 @@ const FORMES = new Set([
   /* Turquie */ "sti",
   /* Golfe */ "fze", "fzco", "fzc", "fzllc", "fz", "wll", "spc", "est",
   /* Azerbaïdjan, Liban */ "mmc", "sal",
-  /* Asie */ "sdn", "bhd", "berhad", "kk", "jusikhoesa", "chusikhoesa", "tbk",
+  /* Asie */ "sdn", "bhd", "berhad", "kk", "jusikhoesa", "chusikhoesa", "yuhanhoesa", "tbk",
 ]);
 /** Formes qui ne se placent QU'À LA FIN d'un nom : en tête, le même jeton est autre chose
  *  (« Ag. Prokopis » est « Agios », « As-Salam » un article arabe). Les formes russes, elles,
@@ -154,6 +155,7 @@ const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   huagong: "chemical", fangzhi: "textile", fuzhuang: "garment", shipin: "food", jinshu: "metal",
   gangtie: "steel", suliao: "plastic", jianzhu: "construction", nengyuan: "energy", fazhan: "development",
   touzi: "investment", kongzhi: "holdings", konggu: "holdings", shangmao: "trading", jingmao: "trading",
+  yuanyang: "ocean", jingmi: "precision", haiyun: "shipping", gongju: "tools",
   /* japonais */ kogyo: "industry", kougyou: "industry", shoji: "trading", shouji: "trading", sangyo: "industry",
   sangyou: "industry", seisakusho: "works", boeki: "trading", boueki: "trading", denki: "electric",
   kagaku: "chemical", seiko: "precision", seikou: "precision", jidosha: "automotive", unyu: "transport",
@@ -240,11 +242,15 @@ const LETTRES_SANS_BASE: Readonly<Record<string, string>> = {
   "ß": "ss", "æ": "ae", "Æ": "AE", "œ": "oe", "Œ": "OE", "þ": "th", "Þ": "Th", "ð": "d", "Ð": "D", "ə": "e", "Ə": "E",
 };
 function plier(nom: string): string {
-  /* le cyrillique et l'arabe sont translittérés ICI, avant l'analyse des formes : « ООО » doit
-     être lu « OOO » pour être une forme (mesuré le 27/09 : sinon il restait un mot rare sans
-     répondant, et « ООО Северный Транзит » plafonnait au possible face à « OOO Severny Tranzit ») */
-  const persan = nom.replace(/[پ]/g, "p").replace(/[چ]/g, "ch").replace(/[ژ]/g, "zh").replace(/[گ]/g, "g").replace(/[ک]/g, "\u0643").replace(/[ی]/g, "\u064a");
-  const latin = /[\u0400-\u04ff\u0600-\u06ff]/.test(persan) ? translitterer(persan.toLowerCase()) : persan;
+  return plierLatin(romaniser(nom).texte);
+}
+/** Le cyrillique est translittéré ICI, avant l'analyse des formes : « ООО » doit être lu
+ *  « OOO » pour être une forme (mesuré le 27/09 : sinon il restait un mot rare sans répondant,
+ *  et « ООО Северный Транзит » plafonnait au possible face à « OOO Severny Tranzit »). Les
+ *  autres écritures (hangul, arabe et persan, hébreu, sinogrammes) ont déjà été lues par
+ *  `romaniser` (ecritures.ts), qui rend des jetons latins et traduit leurs mots du commerce. */
+function plierLatin(nom: string): string {
+  const latin = /[\u0400-\u04ff]/.test(nom) ? translitterer(nom.toLowerCase()) : nom;
   return grec(latin.replace(/[ıİłŁøØđĐħĦßæÆœŒþÞðÐəƏ]/g, (c) => LETTRES_SANS_BASE[c] ?? c));
 }
 
@@ -356,7 +362,7 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["IN", "PK", "LK", "BD"], ["pvt"]);
   poser(["IN", "PK", "LK", "BD", "SG", "NG", "ZA", "AU", "NZ", "KE"], ["private limited"]);
   poser(["JP"], ["kk", "kabushiki kaisha", "kabushikigaisha", "godo kaisha", "yugen kaisha"]);
-  poser(["KR"], ["chusik hoesa", "jusik hoesa", "jusikhoesa", "chusikhoesa"]);
+  poser(["KR"], ["chusik hoesa", "jusik hoesa", "jusikhoesa", "chusikhoesa", "yuhanhoesa"]);
   poser(["CN", "HK", "TW"], ["youxian gongsi", "gufen youxian gongsi", "youxian zeren gongsi"]);
   poser(["US", "CA", "PH"], ["inc", "incorporated", "pllc"]);
   poser(["CA"], ["ltee"]); poser(["SE"], ["aktiebolag"]); poser(["DK"], ["aktieselskab"]); poser(["NO"], ["aksjeselskap"]); poser(["FI"], ["osakeyhtio"]);
@@ -393,7 +399,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "proprietary limited", "youxian gongsi", "youxian zeren gongsi", "borisat chamkat", "borisat jamkat", "chamkat", "jamkat"]);
   poser(["ltd", "corp"], ["bhd", "berhad", "kk", "kabushiki kaisha", "kabushikigaisha", "jusikhoesa", "chusikhoesa",
     "chusik hoesa", "jusik hoesa", "gufen youxian gongsi", "oy", "ab", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio"]);
-  poser(["ltd", "llc"], ["ooo", "tov", "ltda", "limitada", "sociedade limitada", "eireli", "tnhh", "cong ty tnhh", "sti", "limited sirketi"]);
+  poser(["ltd", "llc"], ["ooo", "tov", "ltda", "limitada", "sociedade limitada", "eireli", "tnhh", "cong ty tnhh", "sti", "limited sirketi", "yuhanhoesa"]);
   /* le TOO kazakh (товарищество с ограниченной ответственностью) se traduit LLP, LLC ou Ltd */
   poser(["ltd", "llc", "part"], ["too", "tovarishchestvo s ogranichennoi otvetstvennostyu", "tovarishchestvo s ogranichennoy otvetstvennostyu"]);
   poser(["ltd", "corp"], ["pt", "perseroan terbatas", "tbk", "pcl", "public company limited", "teoranta", "teo", "dac", "designated activity company"]);
@@ -464,7 +470,13 @@ export type Marques = { pays: readonly string[]; familles: readonly string[]; na
   designations: readonly string[];
   /** le nom entier est en majuscules et compte plusieurs mots : un export de système, où les
    *  mots courts sont souvent abrégés sans point (« HVY IND ») */
-  majuscules: boolean };
+  majuscules: boolean;
+  /** le nom est écrit dans un abjad (arabe et persan, hébreu) : ses mots n'ont pas de voyelles,
+   *  et se comparent aux consonnes de l'autre côté (voir `cleAbjad`) */
+  abjad: Abjad;
+  /** pour un jeton lu dans des sinogrammes, les caractères lus : deux lectures égales de
+   *  caractères différents sont des homophones (« 新海 », « 鑫海 »), pas le même mot */
+  natifs: ReadonlyMap<string, string> };
 
 const MARQUEURS_ARABES = new Set(["al", "el", "ul", "bin", "bint", "ibn", "abu", "abou", "abd", "abdul", "abdel", "abdal", "umm",
   "sharikat", "sharika", "shirkat", "muassasat", "moassasat", "muassasa", "tijara", "tijarah", "tijariya", "sherkat", "bazargani",
@@ -526,7 +538,8 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
   /* L'apostrophe DANS un mot le soude (« O'Brien », « Ch'iao ») : en faire une frontière
      de mot fabriquerait des jetons d'une ou deux lettres qui ne désignent rien. « F.lli »
      (fratelli) et « LPG/C » (LPG carrier) ont une ponctuation qui porte le sens : lus avant. */
-  const soude = plier(nom)
+  const rom = romaniser(nom);
+  const soude = plierLatin(rom.texte)
     /* la lettre qu'un encodage a PERDUE : un « ? » dans un mot ou en tête (« SE?ORA » pour
        Señora, « ?ugowski » pour Ługowski) devient la lettre-jalon PERDU, que la normalisation
        laisse passer ; le score la lit comme UNE lettre inconnue (`lettrePerdue`). Jamais un
@@ -644,9 +657,12 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
      avant le retrait des civilités (« Shree ») */
   const tousLesMots = [...articles, ...mots];
   const arabe = /[\u0600-\u06ff]/.test(nom) || tousLesMots.some((j) => MARQUEURS_ARABES.has(j) || MARQUEURS_PERSANS.has(j));
-  const japonais = tousLesMots.some((j) => MARQUEURS_JAPONAIS.has(j));
-  const chinois = pays.has("CN") || REGIONS.has(t[0] ?? "") || tousLesMots.some((j) => MARQUEURS_CHINOIS.has(j));
-  const coreen = tousLesMots.some((j) => MARQUEURS_COREENS.has(j));
+  /* un nom écrit en kana ou avec une forme japonaise, en sinogrammes, en hangul, est de cette
+     langue avant tout marqueur : ses jetons viennent de `romaniser` (ecritures.ts) */
+  const japonais = estJaponais(nom) || tousLesMots.some((j) => MARQUEURS_JAPONAIS.has(j));
+  const chinois = pays.has("CN") || REGIONS.has(t[0] ?? "") || (/[\u4e00-\u9fff]/u.test(nom) && !estJaponais(nom))
+    || tousLesMots.some((j) => MARQUEURS_CHINOIS.has(j));
+  const coreen = /[\uac00-\ud7a3]/u.test(nom) || tousLesMots.some((j) => MARQUEURS_COREENS.has(j));
   const hebreuOuGrec = /[\u0370-\u03ff\u0590-\u05ff]/.test(nom)
     || tousLesMots.some((j) => MARQUEURS_HEBREUX.has(j) || MARQUEURS_GRECS.has(j) || (j.length >= 6 && SUFFIXES_GRECS.test(j)));
   const prive = tousLesMots.some((j) => QUALIFICATIFS_PRIVES.has(j)) || privePhrase;
@@ -655,7 +671,7 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
   const majuscules = !/\p{Ll}/u.test(nom) && /\p{Lu}/u.test(nom) && t.length >= 2;
   return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses,
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
-    hebreuOuGrec, indien, hispanique, prive, majuscules };
+    hebreuOuGrec, indien, hispanique, prive, majuscules, abjad: abjadDe(nom), natifs: rom.natifs };
 }
 
 /** Les jetons d'un nom brut : préparation d'entité, puis le pipeline commun des paliers
@@ -945,7 +961,7 @@ export type NomPrepare = {
 };
 
 const SANS_MARQUES: Marques = { pays: [], familles: [], designations: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
-  coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, prive: false, majuscules: false };
+  coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, prive: false, majuscules: false, abjad: "", natifs: new Map() };
 
 export function preparerNom(f: Frequences, nom: string): NomPrepare {
   const a = analyserEntite(nom);
@@ -1157,6 +1173,9 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
      27/09 sur le jeu 4) ; sans aucune marque de langue, si (Marlin, Merlin ; voir `motsDistincts`).
      L'espagnol et le portugais écrivent leurs voyelles : leur marque n'ouvre rien */
   const voyellesLibres = romanisation || hebreuOuGrec || chinois || coreen || indien;
+  /* un côté écrit dans un abjad (arabe et persan, hébreu) n'a pas de voyelles : ses mots se
+     comparent aux consonnes du côté latin (`cleAbjad`), et l'égalité vaut un squelette égal */
+  const abjad = A.marques.abjad || B.marques.abjad;
   const memo = options.memo;
   const cote = (X: NomPrepare, Y: NomPrepare, cote: 0 | 1) => {
     let s = 0;
@@ -1166,9 +1185,11 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
       for (let j = 0; j < Y.mots.length && m < 1; j++) {
         const x = X.mots[i]!, y = Y.mots[j]!;
         const dernierY = j === Y.mots.length - 1;
+        /* un jeton lu dans des sinogrammes garde ses caractères (voir `natifs`) */
+        const nx = X.marques.natifs.get(x) ?? "", ny = Y.marques.natifs.get(y) ?? "";
         /* la clé porte tout ce qui décide : les deux mots, leurs marques d'abréviation, et
            leur position de dernier mot (la troncature ne vaut que pour lui) */
-        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${chinois ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}` : "";
+        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${chinois ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
         /* le cache code l'équivalence de romanisation en ajoutant 2 à la valeur (elle est dans [0, 1]) */
         const enCache = memo?.get(cle);
         let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
@@ -1188,6 +1209,15 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
             || ((indien || hispanique) && pliIndien(x) === pliIndien(y))
             || (hebreuOuGrec && (X.squelettes[i]!.replace(/X/g, "h") === Y.squelettes[j]!.replace(/X/g, "h") || pliIndien(x) === pliIndien(y))));
           if (equivalent) v = Math.max(v, CREDIT_ROMANISATION);
+          /* les mêmes consonnes qu'un mot venu d'un abjad : ce côté n'a jamais eu de voyelles à
+             comparer, c'est l'égalité de squelette de son écriture (« بحر » bhr et « Bahr »,
+             « הנגב » hngb et « HaNegev »). Mesuré le 27/09 sur les paires des jeux 6 et 8 : au
+             crédit de 0,85, « بحر الذهب » restait à 0,744, « سپیددشت » à 0,787 et « שחר הגליל » à
+             0,700, sous le possible, chaque mot du nom propre n'apportant que 0,7 */
+          if (abjad !== "" && x !== y && !tousDeuxAnglais(x, y)) {
+            const kx = cleAbjad(x, abjad === "hebreu");
+            if (kx.length >= 3 && kx === cleAbjad(y, abjad === "hebreu")) { equivalent = true; v = Math.max(v, CREDIT_ABJAD); }
+          }
           /* dans un export tout en majuscules, un mot court qu'aucun dictionnaire ne connaît et
              qui commence un mot long de l'autre nom est une abréviation sans point (« HVY IND ») */
           if (v < 0.9 && ((X.marques.majuscules && x.length >= 2 && x.length <= 9 && y.length >= x.length + 3 && y.length >= 6 && y.startsWith(x) && !lemme(x))
@@ -1207,6 +1237,9 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           if (v < 0.9 && Y.abreges[j] && y.length < x.length && (x.startsWith(y) || abrege(y, x))) v = 0.9;
           if (v < 0.9 && dernierX && tronque(x, y)) v = 0.9;
           if (v < 0.9 && dernierY && tronque(y, x)) v = 0.9;
+          /* deux lectures de sinogrammes différents sont des homophones (« 新海 », « 鑫海 » : xinhai
+             tous deux), et un homophone est un autre mot */
+          if (nx !== "" && ny !== "" && nx !== ny) v = Math.min(v, 0.5);
           memo?.set(cle, equivalent ? v + 2 : v);
         }
         if (v > m) { m = v; meilleurY = j; equivalentM = equivalent; }
@@ -1663,6 +1696,9 @@ export function initialesChinoisesCompatibles(x: string, y: string): boolean {
  *  d'une voyelle) : moins qu'un squelette égal (0,95). À 0,9 il faisait de Meier et Mayer,
  *  de Solaris et Solares, le même mot (mesuré le 27/09 sur le jeu 5). */
 export const CREDIT_ROMANISATION = 0.85;
+/** Ce que vaut l'égalité des consonnes face à un mot écrit dans un abjad : autant qu'un
+ *  squelette égal (0,95), parce que ce côté-là n'a pas de voyelles à mettre en défaut. */
+export const CREDIT_ABJAD = 0.95;
 
 /** Le plancher du rappel, à la borne BASSE de Wilson : un criblage qui rate un nom listé
  *  coûte plus cher que dix alertes à relire, donc on exige d'abord de ne pas rater. */
