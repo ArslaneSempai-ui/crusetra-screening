@@ -1,0 +1,2407 @@
+{
+  "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+  "provenance": "blind test set #18, authored on 2026-09-29 by a separate agent (an Osaka trading house and Busan bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the eighteen earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v20 (entites.ts 7e7a32c7…, cribler.ts 0f773c96…, ecritures.ts bdd60326…): strong 0.81 found 95/200 [41-54 %] with 9/200 false alerts [2-8 %]; possible 0.80 found 125/200 [56-69 %] with 45/200 [17-29 %]. Studied afterwards and promoted to training set 19 on 2026-09-28, so it no longer measures anything held out.",
+  "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+  "paires": [
+    {
+      "a": "株式会社星ノ浦物産",
+      "b": "Hoshinoura Bussan K.K.",
+      "verdict": "match",
+      "nature": "kanji-vs-hepburn"
+    },
+    {
+      "a": "風松工業株式会社",
+      "b": "Kazamatsu Kōgyō Co., Ltd.",
+      "verdict": "match",
+      "nature": "kanji-vs-hepburn"
+    },
+    {
+      "a": "白駒電機株式会社",
+      "b": "Shirakoma Denki Corporation",
+      "verdict": "match",
+      "nature": "kanji-vs-hepburn"
+    },
+    {
+      "a": "株式会社大鷲精工",
+      "b": "Owashi Seiko Co., Ltd.",
+      "verdict": "match",
+      "nature": "kanji-vs-hepburn"
+    },
+    {
+      "a": "株式会社千鳥ヶ瀬商事",
+      "b": "カブシキガイシャ チドリガセショウジ",
+      "verdict": "match",
+      "nature": "kanji-vs-kana"
+    },
+    {
+      "a": "藤見化成株式会社",
+      "b": "フジミカセイ株式会社",
+      "verdict": "match",
+      "nature": "kanji-vs-kana"
+    },
+    {
+      "a": "Tsutsuki Tsūshō K.K.",
+      "b": "Tutuki Tûsyô K.K.",
+      "verdict": "match",
+      "nature": "hepburn-vs-kunrei"
+    },
+    {
+      "a": "Sumiyoshibara Seisakusho Co., Ltd.",
+      "b": "Sumiyosibara Seisakusyo Co., Ltd.",
+      "verdict": "match",
+      "nature": "hepburn-vs-kunrei"
+    },
+    {
+      "a": "Asagiri Shokuhin K.K.",
+      "b": "Asagiri Syokuhin K.K.",
+      "verdict": "match",
+      "nature": "hepburn-vs-kunrei"
+    },
+    {
+      "a": "Chidorigase Shōji Co., Ltd.",
+      "b": "Tidorigase Syôzi Co., Ltd.",
+      "verdict": "match",
+      "nature": "hepburn-vs-kunrei"
+    },
+    {
+      "a": "Marushin Jūki K.K.",
+      "b": "Marusin Zyûki K.K.",
+      "verdict": "match",
+      "nature": "hepburn-vs-kunrei"
+    },
+    {
+      "a": "Sōryū Kagaku Kōgyō K.K.",
+      "b": "Souryuu Kagaku Kougyou K.K.",
+      "verdict": "match",
+      "nature": "macron-vs-wapuro"
+    },
+    {
+      "a": "Tokiwadai Bōeki Co., Ltd.",
+      "b": "Tokiwadai Boueki Co., Ltd.",
+      "verdict": "match",
+      "nature": "macron-vs-wapuro"
+    },
+    {
+      "a": "Ōwashi Seikō K.K.",
+      "b": "Ohwashi Seiko K.K.",
+      "verdict": "match",
+      "nature": "macron-vs-wapuro"
+    },
+    {
+      "a": "Narumihama Shōkai K.K.",
+      "b": "Narumihama Shoukai Co., Ltd.",
+      "verdict": "match",
+      "nature": "macron-vs-wapuro"
+    },
+    {
+      "a": "株式会社星ノ浦物産",
+      "b": "星ノ浦物産株式会社",
+      "verdict": "match",
+      "nature": "kabushiki-position"
+    },
+    {
+      "a": "株式会社茜谷製紙",
+      "b": "茜谷製紙株式会社",
+      "verdict": "match",
+      "nature": "kabushiki-position"
+    },
+    {
+      "a": "Hibarigaoka Sangyo K.K.",
+      "b": "Hibarigaoka Sangyo Co., Ltd.",
+      "verdict": "match",
+      "nature": "legal-form-translation"
+    },
+    {
+      "a": "Kazamatsu Kogyo Kabushiki Kaisha",
+      "b": "Kazamatsu Kogyo Corporation",
+      "verdict": "match",
+      "nature": "legal-form-translation"
+    },
+    {
+      "a": "白駒電機株式会社",
+      "b": "Shirakoma Electric Co., Ltd.",
+      "verdict": "match",
+      "nature": "name-translation"
+    },
+    {
+      "a": "蒼龍化学工業株式会社",
+      "b": "Soryu Chemical Industries Co., Ltd.",
+      "verdict": "match",
+      "nature": "name-translation"
+    },
+    {
+      "a": "若潮水産株式会社",
+      "b": "Wakashio Fisheries Co., Ltd.",
+      "verdict": "match",
+      "nature": "name-translation"
+    },
+    {
+      "a": "株式会社鶴ヶ丘精密 法人番号3120001184527",
+      "b": "株式会社鶴ヶ丘精密",
+      "verdict": "match",
+      "nature": "houjin-bangou-residue"
+    },
+    {
+      "a": "常盤台貿易株式会社（法人番号 7010401093318）",
+      "b": "常盤台貿易株式会社",
+      "verdict": "match",
+      "nature": "houjin-bangou-residue"
+    },
+    {
+      "a": "Corporate Number 5140001077264 Hishinuma Gokin K.K.",
+      "b": "Hishinuma Gōkin K.K.",
+      "verdict": "match",
+      "nature": "houjin-bangou-residue"
+    },
+    {
+      "a": "株式会社八雲堂 御中",
+      "b": "株式会社八雲堂",
+      "verdict": "match",
+      "nature": "invoice-honorific"
+    },
+    {
+      "a": "月岡繊維株式会社 御中",
+      "b": "Tsukioka Sen'i K.K.",
+      "verdict": "match",
+      "nature": "invoice-honorific"
+    },
+    {
+      "a": "株式会社北楠海運 神戸支店",
+      "b": "株式会社北楠海運",
+      "verdict": "match",
+      "nature": "branch-office"
+    },
+    {
+      "a": "Chojamachi Chemical Co., Ltd. Osaka Branch",
+      "b": "Chojamachi Chemical Co., Ltd.",
+      "verdict": "match",
+      "nature": "branch-office"
+    },
+    {
+      "a": "藤見化成株式会社 名古屋営業所",
+      "b": "藤見化成株式会社",
+      "verdict": "match",
+      "nature": "branch-office"
+    },
+    {
+      "a": "Hoshinoura Bussan K.K.",
+      "b": "Hoshinura Bussan K.K.",
+      "verdict": "match",
+      "nature": "company-misspelling"
+    },
+    {
+      "a": "Tsukioka Sen'i Co., Ltd.",
+      "b": "Tsukiokka Sen'i Co., Ltd.",
+      "verdict": "match",
+      "nature": "company-misspelling"
+    },
+    {
+      "a": "Akaneya Seishi K.K.",
+      "b": "Akaneye Seishi K.K.",
+      "verdict": "match",
+      "nature": "company-misspelling"
+    },
+    {
+      "a": "ＫＡＺＡＭＡＴＳＵ　ＫＯＧＹＯ　ＫＫ",
+      "b": "Kazamatsu Kōgyō Co., Ltd.",
+      "verdict": "match",
+      "nature": "fullwidth-romaji"
+    },
+    {
+      "a": "合同会社小鳩屋",
+      "b": "Kobatoya G.K.",
+      "verdict": "match",
+      "nature": "godo-kaisha"
+    },
+    {
+      "a": "Kobatoya Godo Kaisha",
+      "b": "Kobatoya LLC",
+      "verdict": "match",
+      "nature": "godo-kaisha"
+    },
+    {
+      "a": "有限会社岬屋酒造",
+      "b": "Misakiya Shuzo Y.K.",
+      "verdict": "match",
+      "nature": "yugen-kaisha"
+    },
+    {
+      "a": "Misakiya Shuzō Yūgen Kaisha",
+      "b": "Misakiya Shuzo Limited",
+      "verdict": "match",
+      "nature": "yugen-kaisha"
+    },
+    {
+      "a": "丸信重機株式会社",
+      "b": "マルシンジュウキ株式会社",
+      "verdict": "match",
+      "nature": "kanji-vs-kana"
+    },
+    {
+      "a": "株式会社鳴海浜商会",
+      "b": "Narumihama Shokai Co., Ltd.",
+      "verdict": "match",
+      "nature": "kanji-vs-hepburn"
+    },
+    {
+      "a": "株式会社北楠海運",
+      "b": "株式会社南楠海運",
+      "verdict": "different",
+      "nature": "other-place-word"
+    },
+    {
+      "a": "Kitakusu Kaiun K.K.",
+      "b": "Kitakusu Kisen K.K.",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "星ノ浦物産株式会社",
+      "b": "星ノ浦商事株式会社",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Hoshinoura Bussan K.K.",
+      "b": "Hoshinoura Sangyo K.K.",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "風松工業株式会社",
+      "b": "風松建設株式会社",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Shirakoma Denki Corporation",
+      "b": "Shirakoma Denshi Corporation",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Owashi Seiko Co., Ltd.",
+      "b": "Otaka Seiko Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "藤見化成株式会社",
+      "b": "藤沢化成株式会社",
+      "verdict": "different",
+      "nature": "other-place-word"
+    },
+    {
+      "a": "Tsutsuki Tsusho Co., Ltd.",
+      "b": "Tsutsuki Tsusho (Thailand) Co., Ltd.",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "白駒電機株式会社",
+      "b": "白駒電機（上海）有限公司",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "Chidorigase Shoji K.K.",
+      "b": "Chidorigase Shoji Korea Co., Ltd.",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "株式会社風松ホールディングス",
+      "b": "風松工業株式会社",
+      "verdict": "different",
+      "nature": "holding-vs-operating"
+    },
+    {
+      "a": "Soryu Kagaku Holdings K.K.",
+      "b": "Soryu Kagaku Kogyo K.K.",
+      "verdict": "different",
+      "nature": "holding-vs-operating"
+    },
+    {
+      "a": "第一丸信重機株式会社",
+      "b": "第二丸信重機株式会社",
+      "verdict": "different",
+      "nature": "numbered-entity"
+    },
+    {
+      "a": "株式会社東日本朝霧食品",
+      "b": "株式会社西日本朝霧食品",
+      "verdict": "different",
+      "nature": "regional-entity"
+    },
+    {
+      "a": "Chojamachi Chemical Kansai Co., Ltd.",
+      "b": "Chojamachi Chemical Kanto Co., Ltd.",
+      "verdict": "different",
+      "nature": "regional-entity"
+    },
+    {
+      "a": "朝霧食品株式会社",
+      "b": "Asagiri Suisan K.K.",
+      "verdict": "different",
+      "nature": "cross-script-other-word"
+    },
+    {
+      "a": "若潮水産株式会社",
+      "b": "Wakashio Shokuhin Co., Ltd.",
+      "verdict": "different",
+      "nature": "cross-script-other-word"
+    },
+    {
+      "a": "常盤台貿易株式会社",
+      "b": "Tokiwadai Kaihatsu K.K.",
+      "verdict": "different",
+      "nature": "cross-script-other-word"
+    },
+    {
+      "a": "株式会社鶴ヶ丘精密",
+      "b": "株式会社鶴ヶ丘精機",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Tsurugaoka Seimitsu K.K.",
+      "b": "Kamegaoka Seimitsu K.K.",
+      "verdict": "different",
+      "nature": "other-place-word"
+    },
+    {
+      "a": "Hishinuma Gokin K.K.",
+      "b": "Hishinuma Kinzoku K.K.",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Hishinuma Gōkin K.K.",
+      "b": "Hasunuma Gōkin K.K.",
+      "verdict": "different",
+      "nature": "other-place-word"
+    },
+    {
+      "a": "株式会社八雲堂",
+      "b": "株式会社八重堂",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "月岡繊維株式会社",
+      "b": "月見繊維株式会社",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "Tsukioka Sen'i K.K.",
+      "b": "Tsukioka Shoji K.K.",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "株式会社鳴海浜商会",
+      "b": "株式会社鳴海浜商店",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Narumihama Shokai K.K.",
+      "b": "Narumigaoka Shokai K.K.",
+      "verdict": "different",
+      "nature": "other-place-word"
+    },
+    {
+      "a": "丸信重機株式会社",
+      "b": "丸信重工株式会社",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Marushin Juki K.K.",
+      "b": "Maruyoshi Juki K.K.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "合同会社小鳩屋",
+      "b": "合同会社小鶴屋",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "Kobatoya G.K.",
+      "b": "Kobatoya Hawaii LLC",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "有限会社岬屋酒造",
+      "b": "有限会社岬屋醤油",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Misakiya Shuzo Y.K.",
+      "b": "Minatoya Shuzo Y.K.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "Sumiyoshibara Seisakusho Co., Ltd.",
+      "b": "Sumiyoshibara Kogyosho Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Sumiyoshibara Seisakusho Co., Ltd.",
+      "b": "Sumiyoshidai Seisakusho Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-place-word"
+    },
+    {
+      "a": "株式会社津々木通商 法人番号 2011001050731",
+      "b": "株式会社津久井通商",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "Hibarigaoka Sangyo K.K.",
+      "b": "Hibarigaoka Kosan K.K.",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "株式会社星ノ浦物産 大阪支店",
+      "b": "株式会社星ノ浦物流 大阪支店",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Tokiwadai Boeki Co., Ltd.",
+      "b": "Tokiwadai Boeki (Vietnam) Co., Ltd.",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "주식회사 서림해운",
+      "b": "Seorim Haeun Co., Ltd.",
+      "verdict": "match",
+      "nature": "hangul-vs-revised"
+    },
+    {
+      "a": "서림해운 주식회사",
+      "b": "Sŏrim Haeun Co., Ltd.",
+      "verdict": "match",
+      "nature": "hangul-vs-mccune"
+    },
+    {
+      "a": "Seorim Haeun Co., Ltd.",
+      "b": "Sorim Haeun Co., Ltd.",
+      "verdict": "match",
+      "nature": "revised-vs-mccune"
+    },
+    {
+      "a": "瑞林海運株式會社",
+      "b": "주식회사 서림해운",
+      "verdict": "match",
+      "nature": "hanja-vs-hangul"
+    },
+    {
+      "a": "冬柏商事株式會社",
+      "b": "Dongbaek Sangsa Co., Ltd.",
+      "verdict": "match",
+      "nature": "hanja-vs-revised"
+    },
+    {
+      "a": "Dongbaek Sangsa Corp.",
+      "b": "Tongbaek Sangsa Corp.",
+      "verdict": "match",
+      "nature": "revised-vs-mccune"
+    },
+    {
+      "a": "동백상사(주)",
+      "b": "주식회사 동백상사",
+      "verdict": "match",
+      "nature": "jusikhoesa-abbreviation"
+    },
+    {
+      "a": "㈜백록화학",
+      "b": "Baengnok Hwahak Co., Ltd.",
+      "verdict": "match",
+      "nature": "hangul-vs-revised"
+    },
+    {
+      "a": "Baengnok Hwahak Co., Ltd.",
+      "b": "Paengnok Hwahak Co., Ltd.",
+      "verdict": "match",
+      "nature": "revised-vs-mccune"
+    },
+    {
+      "a": "白鹿化學株式會社",
+      "b": "백록화학 주식회사",
+      "verdict": "match",
+      "nature": "hanja-vs-hangul"
+    },
+    {
+      "a": "백록화학 주식회사",
+      "b": "Baengnok Chemical Co., Ltd.",
+      "verdict": "match",
+      "nature": "name-translation"
+    },
+    {
+      "a": "주식회사 도담산업",
+      "b": "도담산업 주식회사",
+      "verdict": "match",
+      "nature": "jusikhoesa-position"
+    },
+    {
+      "a": "Dodam Saneop Co., Ltd.",
+      "b": "Todam Sanop Co., Ltd.",
+      "verdict": "match",
+      "nature": "revised-vs-mccune"
+    },
+    {
+      "a": "도담산업(주)",
+      "b": "Dodam Industrial Co., Ltd.",
+      "verdict": "match",
+      "nature": "name-translation"
+    },
+    {
+      "a": "㈜운봉기계",
+      "b": "Unbong Gigye Co., Ltd.",
+      "verdict": "match",
+      "nature": "hangul-vs-revised"
+    },
+    {
+      "a": "Unbong Gigye Corp.",
+      "b": "Unbong Kigye Corp.",
+      "verdict": "match",
+      "nature": "revised-vs-mccune"
+    },
+    {
+      "a": "雲峰機械株式會社",
+      "b": "Unbong Machinery Co., Ltd.",
+      "verdict": "match",
+      "nature": "name-translation"
+    },
+    {
+      "a": "대륜중공업 주식회사",
+      "b": "Daeryun Heavy Industries Co., Ltd.",
+      "verdict": "match",
+      "nature": "name-translation"
+    },
+    {
+      "a": "Daeryun Junggongeop Co., Ltd.",
+      "b": "Taeryun Chunggongop Co., Ltd.",
+      "verdict": "match",
+      "nature": "revised-vs-mccune"
+    },
+    {
+      "a": "大輪重工業株式會社",
+      "b": "주식회사 대륜중공업",
+      "verdict": "match",
+      "nature": "hanja-vs-hangul"
+    },
+    {
+      "a": "청학조선 주식회사",
+      "b": "Ch'ŏnghak Chosŏn Co., Ltd.",
+      "verdict": "match",
+      "nature": "hangul-vs-mccune"
+    },
+    {
+      "a": "Cheonghak Joseon Co., Ltd.",
+      "b": "Cheonghak Shipbuilding Co., Ltd.",
+      "verdict": "match",
+      "nature": "name-translation"
+    },
+    {
+      "a": "유한회사 미르섬유",
+      "b": "Mireu Seomyu Ltd.",
+      "verdict": "match",
+      "nature": "yuhan-hoesa"
+    },
+    {
+      "a": "Mireu Seomyu Yuhan Hoesa",
+      "b": "Miru Somyu Ltd.",
+      "verdict": "match",
+      "nature": "revised-vs-mccune"
+    },
+    {
+      "a": "주식회사 새봄제약",
+      "b": "Saebom Pharmaceutical Co., Ltd.",
+      "verdict": "match",
+      "nature": "name-translation"
+    },
+    {
+      "a": "Saebom Jeyak Co., Ltd.",
+      "b": "Saebom Cheyak Co., Ltd.",
+      "verdict": "match",
+      "nature": "revised-vs-mccune"
+    },
+    {
+      "a": "솔뫼식품 주식회사",
+      "b": "Solmoe Foods Co., Ltd.",
+      "verdict": "match",
+      "nature": "name-translation"
+    },
+    {
+      "a": "솔뫼식품(주)",
+      "b": "Solmoe Sikp'um Co., Ltd.",
+      "verdict": "match",
+      "nature": "hangul-vs-mccune"
+    },
+    {
+      "a": "주식회사 가람철강 (사업자등록번호 214-86-53907)",
+      "b": "주식회사 가람철강",
+      "verdict": "match",
+      "nature": "brn-residue"
+    },
+    {
+      "a": "Garam Cheolgang Co., Ltd. BRN 214-86-53907",
+      "b": "Garam Steel Co., Ltd.",
+      "verdict": "match",
+      "nature": "brn-residue"
+    },
+    {
+      "a": "사업자등록번호: 130-81-77420 ㈜은솔전자",
+      "b": "은솔전자 주식회사",
+      "verdict": "match",
+      "nature": "brn-residue"
+    },
+    {
+      "a": "예금주 주식회사 풍암정밀",
+      "b": "Pungam Jeongmil Co., Ltd.",
+      "verdict": "match",
+      "nature": "account-holder-residue"
+    },
+    {
+      "a": "P'ungam Chŏngmil Co., Ltd.",
+      "b": "Pungam Precision Co., Ltd.",
+      "verdict": "match",
+      "nature": "name-translation"
+    },
+    {
+      "a": "주식회사 효림물류 부산지점",
+      "b": "주식회사 효림물류",
+      "verdict": "match",
+      "nature": "branch-office"
+    },
+    {
+      "a": "Hyorim Logistics Co., Ltd. Ulsan Branch",
+      "b": "Hyorim Mullyu Co., Ltd.",
+      "verdict": "match",
+      "nature": "branch-office"
+    },
+    {
+      "a": "동백상사 주식회사 인천지점",
+      "b": "Dongbaek Sangsa Co., Ltd.",
+      "verdict": "match",
+      "nature": "branch-office"
+    },
+    {
+      "a": "Seorim Haeun Co., Ltd.",
+      "b": "Seorin Haeun Co., Ltd.",
+      "verdict": "match",
+      "nature": "company-misspelling"
+    },
+    {
+      "a": "Eunsol Jeonja Co., Ltd.",
+      "b": "Eunsoll Jeonja Co., Ltd.",
+      "verdict": "match",
+      "nature": "company-misspelling"
+    },
+    {
+      "a": "해솔물산 주식회사",
+      "b": "HAESOL MULSAN CO LTD",
+      "verdict": "match",
+      "nature": "hangul-vs-revised"
+    },
+    {
+      "a": "Unbong Gigye Co., Ltd.",
+      "b": "Umbong Gigye Co., Ltd.",
+      "verdict": "match",
+      "nature": "company-misspelling"
+    },
+    {
+      "a": "주식회사 서림해운",
+      "b": "주식회사 서림해양",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Seorim Haeun Co., Ltd.",
+      "b": "Dongrim Haeun Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "瑞林海運株式會社",
+      "b": "瑞林海運(香港)有限公司",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "Dongbaek Sangsa Co., Ltd.",
+      "b": "Dongbaek Sangsa Japan Co., Ltd.",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "동백상사 주식회사",
+      "b": "동백물산 주식회사",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Dongbaek Sangsa Corp.",
+      "b": "Dongchon Sangsa Corp.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "㈜백록화학",
+      "b": "㈜백운화학",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "Baengnok Hwahak Co., Ltd.",
+      "b": "Baengnok Seogyu Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "白鹿化學株式會社",
+      "b": "白鹿製藥株式會社",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "도담산업 주식회사",
+      "b": "도담건설 주식회사",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "부산도담산업 주식회사",
+      "b": "울산도담산업 주식회사",
+      "verdict": "different",
+      "nature": "regional-entity"
+    },
+    {
+      "a": "Dodam Industrial Co., Ltd.",
+      "b": "Dodam Industrial (Vietnam) Co., Ltd.",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "㈜운봉기계",
+      "b": "㈜운봉전기",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Unbong Machinery Co., Ltd.",
+      "b": "Wolbong Machinery Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "대륜중공업 주식회사",
+      "b": "대륜홀딩스 주식회사",
+      "verdict": "different",
+      "nature": "holding-vs-operating"
+    },
+    {
+      "a": "Daeryun Heavy Industries Co., Ltd.",
+      "b": "Daeryun Heavy Industries Philippines Inc.",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "Daeryun Junggongeop Co., Ltd.",
+      "b": "Samryun Junggongeop Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "靑鶴造船株式會社",
+      "b": "白鶴造船株式會社",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "청학조선 주식회사",
+      "b": "청학해운 주식회사",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Cheonghak Shipbuilding Co., Ltd.",
+      "b": "Cheonghak Ship Repair Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "유한회사 미르섬유",
+      "b": "유한회사 미르패션",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Mireu Seomyu Ltd.",
+      "b": "Mirae Seomyu Ltd.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "주식회사 새봄제약",
+      "b": "주식회사 새봄바이오",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Saebom Pharmaceutical Co., Ltd.",
+      "b": "Saebyeol Pharmaceutical Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "솔뫼식품 주식회사",
+      "b": "솔뫼수산 주식회사",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Solmoe Foods Co., Ltd.",
+      "b": "Solbat Foods Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "주식회사 가람철강 (사업자등록번호 214-86-53907)",
+      "b": "주식회사 가람강관",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Garam Steel Co., Ltd.",
+      "b": "Garam Steel Japan K.K.",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "은솔전자 주식회사",
+      "b": "은솔전기 주식회사",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Eunsol Jeonja Co., Ltd.",
+      "b": "Eunbit Jeonja Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "풍암정밀 주식회사",
+      "b": "풍암금속 주식회사",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "P'ungam Chŏngmil Co., Ltd.",
+      "b": "P'yŏngam Chŏngmil Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "주식회사 효림물류",
+      "b": "주식회사 효림해운",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Hyorim Logistics Co., Ltd.",
+      "b": "Hyeonrim Logistics Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "해솔물산 주식회사",
+      "b": "해솔무역 주식회사",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Haesol Mulsan Corp.",
+      "b": "Haedam Mulsan Corp.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "예금주 주식회사 서림해운",
+      "b": "예금주 주식회사 서림상선",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "Seorim Haeun Co., Ltd. Busan Branch",
+      "b": "Seorim Haeun Singapore Pte. Ltd.",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "도담산업(주)",
+      "b": "도원산업(주)",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "冬柏商事株式會社",
+      "b": "春柏商事株式會社",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "霧雨丸",
+      "b": "Kirisame Maru",
+      "verdict": "match",
+      "nature": "vessel-kanji-vs-romanised"
+    },
+    {
+      "a": "第八星風丸",
+      "b": "Hoshikaze Maru No. 8",
+      "verdict": "match",
+      "nature": "vessel-kanji-vs-romanised"
+    },
+    {
+      "a": "Hoshikaze Maru No. 8",
+      "b": "No.8 Hoshikaze Maru",
+      "verdict": "match",
+      "nature": "vessel-numbering-format"
+    },
+    {
+      "a": "Dai-hachi Hoshikaze Maru",
+      "b": "第八星風丸",
+      "verdict": "match",
+      "nature": "vessel-numbering-format"
+    },
+    {
+      "a": "은파호",
+      "b": "Eunpa Ho",
+      "verdict": "match",
+      "nature": "vessel-hangul-vs-romanised"
+    },
+    {
+      "a": "Eunpa Ho",
+      "b": "Ŭnp'a Ho",
+      "verdict": "match",
+      "nature": "vessel-revised-vs-mccune"
+    },
+    {
+      "a": "EUNPA HO BUSAN",
+      "b": "Eunpa Ho",
+      "verdict": "match",
+      "nature": "vessel-port-of-registry"
+    },
+    {
+      "a": "Dalmuri Ho (ex Ferry Mizukagami)",
+      "b": "Ferry Mizukagami",
+      "verdict": "match",
+      "nature": "vessel-ex-name"
+    },
+    {
+      "a": "Dalmuri Ho (ex Ferry Mizukagami)",
+      "b": "달무리호",
+      "verdict": "match",
+      "nature": "vessel-ex-name-current"
+    },
+    {
+      "a": "Haeoreum Ho (ex Kirisame Maru)",
+      "b": "霧雨丸",
+      "verdict": "match",
+      "nature": "vessel-ex-name"
+    },
+    {
+      "a": "Lapis Highway (ex Glaucous Leader)",
+      "b": "Glaucous Leader",
+      "verdict": "match",
+      "nature": "vessel-ex-name"
+    },
+    {
+      "a": "Lapis Highway (ex-Glaucous Leader)",
+      "b": "Lapis Highway",
+      "verdict": "match",
+      "nature": "vessel-ex-name-current"
+    },
+    {
+      "a": "Seohae Lumina (ex LNG Hikaridake)",
+      "b": "LNG Hikaridake",
+      "verdict": "match",
+      "nature": "vessel-ex-name"
+    },
+    {
+      "a": "MV Cobalt Hibari",
+      "b": "Cobalt Hibari",
+      "verdict": "match",
+      "nature": "vessel-type-prefix"
+    },
+    {
+      "a": "M/V AOZORA VENTURE",
+      "b": "Aozora Venture",
+      "verdict": "match",
+      "nature": "vessel-type-prefix"
+    },
+    {
+      "a": "Aozora Venture, Kobe",
+      "b": "Aozora Venture",
+      "verdict": "match",
+      "nature": "vessel-port-of-registry"
+    },
+    {
+      "a": "Shirane Glory (Kobe)",
+      "b": "Shirane Glory",
+      "verdict": "match",
+      "nature": "vessel-port-of-registry"
+    },
+    {
+      "a": "TAKANAMI STAR ULSAN",
+      "b": "Takanami Star",
+      "verdict": "match",
+      "nature": "vessel-port-of-registry"
+    },
+    {
+      "a": "PCTC Umisachi Ace",
+      "b": "Umisachi Ace",
+      "verdict": "match",
+      "nature": "vessel-type-prefix"
+    },
+    {
+      "a": "LNG/C LNG TSUKUYOMI",
+      "b": "LNG Tsukuyomi",
+      "verdict": "match",
+      "nature": "vessel-type-prefix"
+    },
+    {
+      "a": "Haneul Aurora",
+      "b": "Hanŭl Aurora",
+      "verdict": "match",
+      "nature": "vessel-revised-vs-mccune"
+    },
+    {
+      "a": "하늘 오로라",
+      "b": "Haneul Aurora",
+      "verdict": "match",
+      "nature": "vessel-hangul-vs-romanised"
+    },
+    {
+      "a": "Tug Namisuke Maru No. 3",
+      "b": "第三浪助丸",
+      "verdict": "match",
+      "nature": "vessel-kanji-vs-romanised"
+    },
+    {
+      "a": "제7 용두호",
+      "b": "Yongdu Ho No. 7",
+      "verdict": "match",
+      "nature": "vessel-numbering-format"
+    },
+    {
+      "a": "Yongdu No. 7",
+      "b": "Yongdu Ho No. 7",
+      "verdict": "match",
+      "nature": "vessel-suffix-dropped"
+    },
+    {
+      "a": "KIRISAMEMARU KOBE",
+      "b": "Kirisame Maru",
+      "verdict": "match",
+      "nature": "vessel-spacing-glued"
+    },
+    {
+      "a": "コバルト・ヒバリ",
+      "b": "Cobalt Hibari",
+      "verdict": "match",
+      "nature": "vessel-katakana-vs-latin"
+    },
+    {
+      "a": "タカナミ・スター",
+      "b": "Takanami Star",
+      "verdict": "match",
+      "nature": "vessel-katakana-vs-latin"
+    },
+    {
+      "a": "海幸エース",
+      "b": "Umisachi Ace",
+      "verdict": "match",
+      "nature": "vessel-kanji-vs-romanised"
+    },
+    {
+      "a": "LNGツクヨミ",
+      "b": "LNG Tsukuyomi",
+      "verdict": "match",
+      "nature": "vessel-katakana-vs-latin"
+    },
+    {
+      "a": "Seohae Lumina",
+      "b": "서해 루미나",
+      "verdict": "match",
+      "nature": "vessel-hangul-vs-romanised"
+    },
+    {
+      "a": "Seohae Lumina, Busan",
+      "b": "Sŏhae Lumina",
+      "verdict": "match",
+      "nature": "vessel-revised-vs-mccune"
+    },
+    {
+      "a": "フェリーみずかがみ",
+      "b": "Ferry Mizukagami",
+      "verdict": "match",
+      "nature": "vessel-kana-vs-romanised"
+    },
+    {
+      "a": "Ferry Mizu Kagami",
+      "b": "Ferry Mizukagami (Kobe)",
+      "verdict": "match",
+      "nature": "vessel-port-of-registry"
+    },
+    {
+      "a": "Kotori Bulker",
+      "b": "小鳥バルカー",
+      "verdict": "match",
+      "nature": "vessel-kanji-vs-romanised"
+    },
+    {
+      "a": "Gaon Pioneer",
+      "b": "Kaon Pioneer",
+      "verdict": "match",
+      "nature": "vessel-revised-vs-mccune"
+    },
+    {
+      "a": "Gaon Pioneer",
+      "b": "가온 파이오니어",
+      "verdict": "match",
+      "nature": "vessel-hangul-vs-romanised"
+    },
+    {
+      "a": "M/T Tsuyukusa Crest (Kobe)",
+      "b": "Tsuyukusa Crest",
+      "verdict": "match",
+      "nature": "vessel-port-of-registry"
+    },
+    {
+      "a": "第十一浪助丸",
+      "b": "Namisuke Maru No. 11",
+      "verdict": "match",
+      "nature": "vessel-kanji-vs-romanised"
+    },
+    {
+      "a": "Lapis Highway",
+      "b": "ラピス・ハイウェイ",
+      "verdict": "match",
+      "nature": "vessel-katakana-vs-latin"
+    },
+    {
+      "a": "第八星風丸",
+      "b": "第十八星風丸",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "Hoshikaze Maru No. 8",
+      "b": "Hoshikaze Maru No. 6",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "No.8 Hoshikaze Maru",
+      "b": "No.3 Hoshikaze Maru",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "Namisuke Maru No. 11",
+      "b": "Namisuke Maru No. 1",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "TUG NAMISUKE MARU NO. 3",
+      "b": "BARGE NAMISUKE NO. 3",
+      "verdict": "different",
+      "nature": "vessel-tug-vs-barge"
+    },
+    {
+      "a": "Tug Geumbit No. 2",
+      "b": "Barge Geumbit No. 2",
+      "verdict": "different",
+      "nature": "vessel-tug-vs-barge"
+    },
+    {
+      "a": "Eunpa Ho",
+      "b": "Eunha Ho",
+      "verdict": "different",
+      "nature": "vessel-one-letter"
+    },
+    {
+      "a": "은파호",
+      "b": "은하호",
+      "verdict": "different",
+      "nature": "vessel-one-letter"
+    },
+    {
+      "a": "Kirisame Maru",
+      "b": "Kirisane Maru",
+      "verdict": "different",
+      "nature": "vessel-one-letter"
+    },
+    {
+      "a": "霧雨丸",
+      "b": "春雨丸",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "Cobalt Hibari",
+      "b": "Cobalt Hibiki",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "Aozora Venture",
+      "b": "Aozora Venture II",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "Aozora Venture",
+      "b": "Aozora Ventures",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "Takanami Star",
+      "b": "Takanami Stars",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "Takanami Star",
+      "b": "Takanami Moon",
+      "verdict": "different",
+      "nature": "vessel-sister-ship"
+    },
+    {
+      "a": "Shirane Glory",
+      "b": "Shirane Gloria",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "Shirane Glory",
+      "b": "Shirakami Glory",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "Lapis Highway",
+      "b": "Lapis Highways",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "Lapis Highway (ex Glaucous Leader)",
+      "b": "Glaucous Leaders",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "Glaucous Leader",
+      "b": "Glaucous Pioneer",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "Umisachi Ace",
+      "b": "Yamasachi Ace",
+      "verdict": "different",
+      "nature": "vessel-sister-ship"
+    },
+    {
+      "a": "Umisachi Ace",
+      "b": "Umisachi Ace 2",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "LNG Tsukuyomi",
+      "b": "LNG Tsukuyomi II",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "LNG Tsukuyomi",
+      "b": "LNG Tsukiakari",
+      "verdict": "different",
+      "nature": "vessel-sister-ship"
+    },
+    {
+      "a": "Seohae Lumina (ex LNG Hikaridake)",
+      "b": "LNG Hikaridake II",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "Seohae Lumina",
+      "b": "Donghae Lumina",
+      "verdict": "different",
+      "nature": "vessel-sister-ship"
+    },
+    {
+      "a": "Haneul Aurora",
+      "b": "Haneul Borealis",
+      "verdict": "different",
+      "nature": "vessel-sister-ship"
+    },
+    {
+      "a": "Haneul Aurora",
+      "b": "Baram Aurora",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "Dalmuri Ho",
+      "b": "Dalmuri Ho No. 7",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "Dalmuri Ho (ex Ferry Mizukagami)",
+      "b": "Ferry Mizukagami 2",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "Ferry Mizukagami",
+      "b": "Ferry Mizuhikari",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "Haeoreum Ho",
+      "b": "Haeneomi Ho",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "Yongdu Ho No. 7",
+      "b": "Yongdu Ho No. 17",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "제7 용두호",
+      "b": "제7 용마호",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "Gaon Pioneer",
+      "b": "Daon Pioneer",
+      "verdict": "different",
+      "nature": "vessel-one-letter"
+    },
+    {
+      "a": "Kotori Bulker",
+      "b": "Kotori Bulkers",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "Kotori Bulker",
+      "b": "Kotomi Bulker",
+      "verdict": "different",
+      "nature": "vessel-one-letter"
+    },
+    {
+      "a": "Tsuyukusa Crest",
+      "b": "Tsuyukusa Crown",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "海幸エース",
+      "b": "海幸エース2",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "MV Cobalt Hibari",
+      "b": "MV Cobalt Hikari",
+      "verdict": "different",
+      "nature": "vessel-one-letter"
+    },
+    {
+      "a": ":59:/0012345678901\nKAMITSURU BOEKI KABUSHIKI KAISHA\n3-5-12 KITAHAMA CHUO-KU\nOSAKA JAPAN",
+      "b": "Kamitsuru Bōeki K.K.",
+      "verdict": "match",
+      "nature": "swift-field-59"
+    },
+    {
+      "a": "KAMITSURU BOEKI KK3-5-12 KITAHAMA CHUO-KU OSAKA",
+      "b": "Kamitsuru Boeki Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-glued-address"
+    },
+    {
+      "a": "YODOURA KASEI KOGYO KABUSHIKI KAISH\nA\n1-8-3 MINAMIHORIE NISHI-KU OSAKA",
+      "b": "Yodoura Kasei Kōgyō K.K.",
+      "verdict": "match",
+      "nature": "swift-line-cut"
+    },
+    {
+      "a": "YODOURA KASEI KOGYO CO LTD",
+      "b": "淀浦化成工業株式会社",
+      "verdict": "match",
+      "nature": "swift-vs-kanji"
+    },
+    {
+      "a": "SHIOMIDAI DENKI SEISAKUSHO KABUSHIK\nI KAISHA",
+      "b": "Shiomidai Denki Seisakusho K.K.",
+      "verdict": "match",
+      "nature": "swift-line-cut"
+    },
+    {
+      "a": "SHIOMIDAI DENKI SEISAKUSHO KK",
+      "b": "Shiomidai Electric Works Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-name-translation"
+    },
+    {
+      "a": "HANAMIZUKI TSUSHO CO LTD",
+      "b": "Hanamizuki Tsūshō Kabushiki Kaisha",
+      "verdict": "match",
+      "nature": "swift-no-macron"
+    },
+    {
+      "a": "HANAMIZUKI TSUSHO CO LTD2-7-1 UMEDAKITA-KU OSAKA",
+      "b": "Hanamizuki Tsusho Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-glued-address"
+    },
+    {
+      "a": "RYUHOKU SHOJI KK",
+      "b": "Ryūhoku Shōji Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-no-macron"
+    },
+    {
+      "a": "RYUUHOKU SHOUJI KK",
+      "b": "Ryuhoku Shoji K.K.",
+      "verdict": "match",
+      "nature": "swift-wapuro-spelling"
+    },
+    {
+      "a": "OKITSUNAMI SEIKO KK OSAKA BRANCH",
+      "b": "Okitsunami Seikō K.K.",
+      "verdict": "match",
+      "nature": "swift-branch"
+    },
+    {
+      "a": "/7730015\nOKITSUNAMI SEIKO KABUSHIKI KAISHA",
+      "b": "Okitsunami Seiko K.K.",
+      "verdict": "match",
+      "nature": "swift-account-line"
+    },
+    {
+      "a": "IWAFUNE KAIUN KK\nREF LC-OSK-2609-0417",
+      "b": "Iwafune Kaiun K.K.",
+      "verdict": "match",
+      "nature": "swift-bank-reference"
+    },
+    {
+      "a": "IWAFUNE KAIUN KABUSHIKI KAISHA",
+      "b": "岩舟海運株式会社",
+      "verdict": "match",
+      "nature": "swift-vs-kanji"
+    },
+    {
+      "a": "OMIGAWA STEEL CORPORATION\nKOBE WORKS",
+      "b": "Omigawa Steel Corporation",
+      "verdict": "match",
+      "nature": "swift-branch"
+    },
+    {
+      "a": "OMIGAWA STL CORP",
+      "b": "Omigawa Steel Corp.",
+      "verdict": "match",
+      "nature": "swift-abbreviation"
+    },
+    {
+      "a": ":59:CHORONG HAEUN CO LTD\n12F 88 JUNGANG-DAERO JUNG-GU\nBUSAN KOREA",
+      "b": "Chorong Haeun Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-field-59"
+    },
+    {
+      "a": "CHORONG SHIPPING CO LTD",
+      "b": "초롱해운 주식회사",
+      "verdict": "match",
+      "nature": "swift-vs-hangul"
+    },
+    {
+      "a": "CH'ORONG HAEUN CO LTD",
+      "b": "Chorong Shipping Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-mccune"
+    },
+    {
+      "a": "SINBARAM TRADING AND LOGISTICS CO L\nTD",
+      "b": "Sinbaram Trading & Logistics Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-charset-ampersand"
+    },
+    {
+      "a": "SINBARAM TRDG + LOGISTICS CO LTD",
+      "b": "Sinbaram Trading & Logistics Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-abbreviation"
+    },
+    {
+      "a": "GEUMNAE CHEMICAL CO LTD",
+      "b": "KUMNAE CHEMICAL CO LTD",
+      "verdict": "match",
+      "nature": "swift-mccune"
+    },
+    {
+      "a": "GEUMNAE HWAHAK CO LTD ULSAN PLANT",
+      "b": "Geumnae Chemical Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-branch"
+    },
+    {
+      "a": "BYEOLMURI INDUSTRIAL CO LTD\nREF INV 26-0917 CONTRACT BM-44",
+      "b": "Byeolmuri Industrial Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-bank-reference"
+    },
+    {
+      "a": "PYOLMURI INDUSTRIAL CO LTD",
+      "b": "Byeolmuri Industrial Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-mccune"
+    },
+    {
+      "a": "BYEOLMURI SANEOP CO LTD",
+      "b": "별무리산업 주식회사",
+      "verdict": "match",
+      "nature": "swift-vs-hangul"
+    },
+    {
+      "a": "SEOLMAE PRECISION CO LTD",
+      "b": "SOLMAE PRECISION CO LTD",
+      "verdict": "match",
+      "nature": "swift-mccune"
+    },
+    {
+      "a": "SEOLMAE JEONGMIL CO LTD",
+      "b": "Seolmae Precision Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-name-translation"
+    },
+    {
+      "a": "HWAJEONG TEXTILE CO LTD\n5 SEOMYEON-RO BUSANJIN-GU BUSAN",
+      "b": "Hwajeong Textile Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-address-line"
+    },
+    {
+      "a": "HWAJONG SOMYU CO LTD",
+      "b": "Hwajeong Seomyu Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-mccune"
+    },
+    {
+      "a": ":50:/1002-345-678901\nHWAJEONG TEXTILE CO LTD",
+      "b": "화정섬유 주식회사",
+      "verdict": "match",
+      "nature": "swift-vs-hangul"
+    },
+    {
+      "a": "KAMITSURU TRADING CO LTD",
+      "b": "上鶴貿易株式会社",
+      "verdict": "match",
+      "nature": "swift-name-translation"
+    },
+    {
+      "a": "HANAMIZUKI TUSYO KK",
+      "b": "Hanamizuki Tsusho K.K.",
+      "verdict": "match",
+      "nature": "swift-kunrei"
+    },
+    {
+      "a": "SHIOMIDAI DENKI SEISAKUSYO KK",
+      "b": "Shiomidai Denki Seisakusho K.K.",
+      "verdict": "match",
+      "nature": "swift-kunrei"
+    },
+    {
+      "a": "RYUHOKU SHOJI CO LTD\nATTN ACCOUNTS DEPT",
+      "b": "Ryuhoku Shoji Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-attention-line"
+    },
+    {
+      "a": "IWAFUNE KAIUN KK",
+      "b": "IWAFUME KAIUN KK",
+      "verdict": "match",
+      "nature": "swift-misspelling"
+    },
+    {
+      "a": "CHORONG HAEUN CO LTD",
+      "b": "CHOLONG HAEUN CO LTD",
+      "verdict": "match",
+      "nature": "swift-misspelling"
+    },
+    {
+      "a": "OMIGAWA STEEL CORPORATION",
+      "b": "OMIKAWA STEEL CORPORATION",
+      "verdict": "match",
+      "nature": "swift-misspelling"
+    },
+    {
+      "a": "YODOURA KASEI KOGYO CO LTD",
+      "b": "YODOURA KASEI KOGYO CO LTD OSAKA JAPAN",
+      "verdict": "match",
+      "nature": "swift-address-residue"
+    },
+    {
+      "a": "GEUMNAE CHEMICAL CO LTD ACCT 110-234-567890",
+      "b": "Geumnae Chemical Co., Ltd.",
+      "verdict": "match",
+      "nature": "swift-account-line"
+    },
+    {
+      "a": "KAMITSURU BOEKI KK",
+      "b": "KAMITSURU BUSSAN KK",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "KAMITSURU BOEKI KK3-5-12 KITAHAMA CHUO-KU OSAKA",
+      "b": "SHIMOTSURU BOEKI KK3-5-12 KITAHAMA CHUO-KU OSAKA",
+      "verdict": "different",
+      "nature": "swift-same-address-other-name"
+    },
+    {
+      "a": "YODOURA KASEI KOGYO KABUSHIKI KAISH\nA",
+      "b": "YODOURA KASEI HANBAI KABUSHIKI KAIS\nHA",
+      "verdict": "different",
+      "nature": "swift-line-cut-other-word"
+    },
+    {
+      "a": "YODOURA KASEI KOGYO CO LTD",
+      "b": "YODOHAMA KASEI KOGYO CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-proper-name"
+    },
+    {
+      "a": "SHIOMIDAI DENKI SEISAKUSHO KK",
+      "b": "SHIOMIDAI DENKI KOGYO KK",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "SHIOMIDAI ELECTRIC WORKS CO LTD",
+      "b": "SHIOMIGAOKA ELECTRIC WORKS CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-proper-name"
+    },
+    {
+      "a": "HANAMIZUKI TSUSHO CO LTD",
+      "b": "HANAMIZUKI TSUSHO (SHANGHAI) CO LTD",
+      "verdict": "different",
+      "nature": "swift-country-subsidiary"
+    },
+    {
+      "a": "HANAMIZUKI TSUSHO CO LTD",
+      "b": "HANASHOBU TSUSHO CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-proper-name"
+    },
+    {
+      "a": "RYUHOKU SHOJI CO LTD",
+      "b": "RYUNAN SHOJI CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-proper-name"
+    },
+    {
+      "a": "RYUHOKU SHOJI KK",
+      "b": "RYUHOKU SHOKAI KK",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "OKITSUNAMI SEIKO KK",
+      "b": "OKITSUNAMI SEIMITSU KK",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "OKITSUNAMI SEIKO KK OSAKA BRANCH",
+      "b": "OKITSUNAMI SEIKO (M) SDN BHD",
+      "verdict": "different",
+      "nature": "swift-country-subsidiary"
+    },
+    {
+      "a": "IWAFUNE KAIUN KK",
+      "b": "IWAFUNE KISEN KK",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "IWAFUNE KAIUN KK\nREF LC-OSK-2609-0417",
+      "b": "ISHIFUNE KAIUN KK\nREF LC-OSK-2609-0417",
+      "verdict": "different",
+      "nature": "swift-same-reference-other-name"
+    },
+    {
+      "a": "OMIGAWA STEEL CORPORATION",
+      "b": "OMIGAWA STEEL TRADING CORPORATION",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "OMIGAWA STEEL CORPORATION\nKOBE WORKS",
+      "b": "OMIGAWA STAINLESS CORPORATION\nKOBE WORKS",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "CHORONG HAEUN CO LTD",
+      "b": "CHORONG HAEYANG CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "CHORONG SHIPPING CO LTD",
+      "b": "CHORONG SHIPPING (HK) LTD",
+      "verdict": "different",
+      "nature": "swift-country-subsidiary"
+    },
+    {
+      "a": ":59:CHORONG HAEUN CO LTD\n12F 88 JUNGANG-DAERO JUNG-GU\nBUSAN KOREA",
+      "b": ":59:CHEONGRONG HAEUN CO LTD\n12F 88 JUNGANG-DAERO JUNG-GU\nBUSAN KOREA",
+      "verdict": "different",
+      "nature": "swift-same-address-other-name"
+    },
+    {
+      "a": "SINBARAM TRADING AND LOGISTICS CO L\nTD",
+      "b": "SINBARAM TRAVEL AND LOGISTICS CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "SINBARAM TRADING + LOGISTICS CO LTD",
+      "b": "SAEBARAM TRADING + LOGISTICS CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-proper-name"
+    },
+    {
+      "a": "GEUMNAE CHEMICAL CO LTD",
+      "b": "GEUMNAE CHEMTECH CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "KUMNAE CHEMICAL CO LTD",
+      "b": "KUMSAN CHEMICAL CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-proper-name"
+    },
+    {
+      "a": "BYEOLMURI INDUSTRIAL CO LTD",
+      "b": "BYEOLMURI INDUSTRIAL VIETNAM CO LTD",
+      "verdict": "different",
+      "nature": "swift-country-subsidiary"
+    },
+    {
+      "a": "BYEOLMURI SANEOP CO LTD",
+      "b": "BYEOLBIT SANEOP CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-proper-name"
+    },
+    {
+      "a": "PYOLMURI INDUSTRIAL CO LTD",
+      "b": "PYOLMURI ENGINEERING CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "SEOLMAE PRECISION CO LTD",
+      "b": "SEOLHWA PRECISION CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-proper-name"
+    },
+    {
+      "a": "SEOLMAE JEONGMIL CO LTD",
+      "b": "SEOLMAE MULSAN CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "HWAJEONG TEXTILE CO LTD",
+      "b": "HWAJEONG TEXTILE MACHINERY CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "HWAJONG SOMYU CO LTD",
+      "b": "HWARANG SOMYU CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-proper-name"
+    },
+    {
+      "a": "/1002-345-678901\nHWAJEONG TEXTILE CO LTD",
+      "b": "/1002-345-678901\nHWAJEONG TRADING CO LTD",
+      "verdict": "different",
+      "nature": "swift-same-account-other-word"
+    },
+    {
+      "a": "KAMITSURU TRADING CO LTD",
+      "b": "KAMITSURU TRADING (THAILAND) CO LTD",
+      "verdict": "different",
+      "nature": "swift-country-subsidiary"
+    },
+    {
+      "a": "HANAMIZUKI TUSYO KK",
+      "b": "HANAMIZUKI SYOZI KK",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "SHIOMIDAI DENKI SEISAKUSYO KK",
+      "b": "SHIOMIDAI SEIKI SEISAKUSYO KK",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "RYUUHOKU SHOUJI KK",
+      "b": "RYUUHOKU SHOUKEN KK",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "IWAFUNE KAIUN KABUSHIKI KAISHA",
+      "b": "IWAFUNE KAIUN SHOJI KABUSHIKI KAISHA",
+      "verdict": "different",
+      "nature": "swift-other-business-word"
+    },
+    {
+      "a": "OMIGAWA STL CORP",
+      "b": "OMINATO STL CORP",
+      "verdict": "different",
+      "nature": "swift-other-proper-name"
+    },
+    {
+      "a": "CH'ORONG HAEUN CO LTD",
+      "b": "CH'ONGNYONG HAEUN CO LTD",
+      "verdict": "different",
+      "nature": "swift-other-proper-name"
+    },
+    {
+      "a": "BYEOLMURI INDUSTRIAL CO LTD\nREF INV 26-0917 CONTRACT BM-44",
+      "b": "BYEOLMURI LOGISTICS CO LTD\nREF INV 26-0917 CONTRACT BM-44",
+      "verdict": "different",
+      "nature": "swift-same-reference-other-word"
+    },
+    {
+      "a": "SEOLMAE PRECISION CO LTD",
+      "b": "SEOLMAE PRECISION JAPAN KK",
+      "verdict": "different",
+      "nature": "swift-country-subsidiary"
+    },
+    {
+      "a": "kazehaya denki san",
+      "b": "Kazehaya Denki K.K.",
+      "verdict": "match",
+      "nature": "chat-honorific"
+    },
+    {
+      "a": "風早電機さん",
+      "b": "株式会社風早電機",
+      "verdict": "match",
+      "nature": "chat-honorific"
+    },
+    {
+      "a": "kazehayadenki kk",
+      "b": "Kazehaya Denki Kabushiki Kaisha",
+      "verdict": "match",
+      "nature": "chat-missing-spaces"
+    },
+    {
+      "a": "Kazehaya Elec. K.K.",
+      "b": "Kazehaya Electric K.K.",
+      "verdict": "match",
+      "nature": "abbreviation-elec"
+    },
+    {
+      "a": "KAZEHAYA DENKl K.K.",
+      "b": "Kazehaya Denki K.K.",
+      "verdict": "match",
+      "nature": "ocr-letter-confusion"
+    },
+    {
+      "a": "Mizunoe Mfg. Co., Ltd.",
+      "b": "Mizunoe Manufacturing Co., Ltd.",
+      "verdict": "match",
+      "nature": "abbreviation-mfg"
+    },
+    {
+      "a": "MIZUNOE MFG C0., LTD.",
+      "b": "Mizunoe Mfg. Co., Ltd.",
+      "verdict": "match",
+      "nature": "ocr-letter-confusion"
+    },
+    {
+      "a": "mizunoe seisakusho",
+      "b": "株式会社水之江製作所",
+      "verdict": "match",
+      "nature": "chat-romaji-vs-kanji"
+    },
+    {
+      "a": "Mizunoee Seisakusho",
+      "b": "Mizunoe Seisakusho K.K.",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "Toyoshio Trdg. K.K.",
+      "b": "Toyoshio Trading K.K.",
+      "verdict": "match",
+      "nature": "abbreviation-trdg"
+    },
+    {
+      "a": "toyoshio shoji",
+      "b": "Toyoshio Trdg. K.K.",
+      "verdict": "match",
+      "nature": "chat-romaji-translation"
+    },
+    {
+      "a": "Toyosshio Trading",
+      "b": "Toyoshio Trading Kabushiki Kaisha",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "Hakuryo Ind. Co., Ltd.",
+      "b": "Hakuryo Industries Co., Ltd.",
+      "verdict": "match",
+      "nature": "abbreviation-ind"
+    },
+    {
+      "a": "hakuryou kougyou",
+      "b": "Hakuryō Kōgyō Co., Ltd.",
+      "verdict": "match",
+      "nature": "chat-wapuro"
+    },
+    {
+      "a": "HAKURY0 IND CO LTD",
+      "b": "Hakuryo Ind. Co., Ltd.",
+      "verdict": "match",
+      "nature": "ocr-letter-confusion"
+    },
+    {
+      "a": "Asanagi Shoten Y.K.",
+      "b": "Asanagi Shoten Yugen Kaisha",
+      "verdict": "match",
+      "nature": "abbreviation-yk"
+    },
+    {
+      "a": "有限会社朝凪商店",
+      "b": "asanagi shoten",
+      "verdict": "match",
+      "nature": "chat-romaji-vs-kanji"
+    },
+    {
+      "a": "Kurobane Kasei K.K.",
+      "b": "Kurobane Kasei Kabushiki Kaisha",
+      "verdict": "match",
+      "nature": "abbreviation-kk"
+    },
+    {
+      "a": "kurobanekasei",
+      "b": "Kurobane Kasei K.K.",
+      "verdict": "match",
+      "nature": "chat-missing-spaces"
+    },
+    {
+      "a": "Kurobaen Kasei K.K.",
+      "b": "Kurobane Kasei K.K.",
+      "verdict": "match",
+      "nature": "typo-transposition"
+    },
+    {
+      "a": "Nishikibashi Shoji K.K.",
+      "b": "Nishikibasi Syozi K.K.",
+      "verdict": "match",
+      "nature": "kunrei-typing"
+    },
+    {
+      "a": "株式会社西錦橋商事 代表取締役之印",
+      "b": "Nishikibashi Shoji K.K.",
+      "verdict": "match",
+      "nature": "stamp-residue"
+    },
+    {
+      "a": "Nishikibashi Shouji",
+      "b": "西錦橋商事株式会社",
+      "verdict": "match",
+      "nature": "chat-wapuro"
+    },
+    {
+      "a": "daebit sangsa",
+      "b": "(주)대빛상사",
+      "verdict": "match",
+      "nature": "chat-romanised-korean"
+    },
+    {
+      "a": "Daebit Trdg. Co., Ltd.",
+      "b": "Daebit Trading Co., Ltd.",
+      "verdict": "match",
+      "nature": "abbreviation-trdg"
+    },
+    {
+      "a": "daebitsangsa",
+      "b": "Daebit Sangsa Co., Ltd.",
+      "verdict": "match",
+      "nature": "chat-missing-spaces"
+    },
+    {
+      "a": "Taebit Sangsa",
+      "b": "대빛상사 주식회사",
+      "verdict": "match",
+      "nature": "chat-mccune"
+    },
+    {
+      "a": "Sinnae Elec. Co., Ltd.",
+      "b": "Sinnae Electric Co., Ltd.",
+      "verdict": "match",
+      "nature": "abbreviation-elec"
+    },
+    {
+      "a": "shinnae jeongi",
+      "b": "Sinnae Electric Co., Ltd.",
+      "verdict": "match",
+      "nature": "chat-romanised-korean"
+    },
+    {
+      "a": "SlNNAE ELEC CO LTD",
+      "b": "Sinnae Elec. Co., Ltd.",
+      "verdict": "match",
+      "nature": "ocr-letter-confusion"
+    },
+    {
+      "a": "Haneulbit Mfg. Co., Ltd.",
+      "b": "Haneulbit Manufacturing Co., Ltd.",
+      "verdict": "match",
+      "nature": "abbreviation-mfg"
+    },
+    {
+      "a": "hanulbit",
+      "b": "Haneulbit Mfg. Co., Ltd.",
+      "verdict": "match",
+      "nature": "chat-mccune"
+    },
+    {
+      "a": "Haneullbit Mfg",
+      "b": "HANEULBIT MFG CO LTD",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "Moraenae Foods Co., Ltd.",
+      "b": "moraenae sikpum",
+      "verdict": "match",
+      "nature": "chat-romanised-korean"
+    },
+    {
+      "a": "(주)모래내식품 대표이사 직인",
+      "b": "Moraenae Foods Co., Ltd.",
+      "verdict": "match",
+      "nature": "stamp-residue"
+    },
+    {
+      "a": "Garcon Ind. Co., Ltd.",
+      "b": "Garaon Industrial Co., Ltd.",
+      "verdict": "match",
+      "nature": "autocorrect"
+    },
+    {
+      "a": "Beaksong Steel Co., Ltd.",
+      "b": "Baeksong Steel Co., Ltd.",
+      "verdict": "match",
+      "nature": "typo-transposition"
+    },
+    {
+      "a": "wakatake maru 5",
+      "b": "Wakatake Maru No. 5",
+      "verdict": "match",
+      "nature": "chat-vessel"
+    },
+    {
+      "a": "naraenuri-ho",
+      "b": "나래누리호",
+      "verdict": "match",
+      "nature": "chat-vessel"
+    },
+    {
+      "a": "第五若竹丸",
+      "b": "wakatake maru no5",
+      "verdict": "match",
+      "nature": "chat-vessel"
+    },
+    {
+      "a": "Mizunoe Mfg. Co., Ltd.",
+      "b": "Mizunoe Mktg. Co., Ltd.",
+      "verdict": "different",
+      "nature": "abbreviation-other-word"
+    },
+    {
+      "a": "Hakuryo Ind. Co., Ltd.",
+      "b": "Hakuryo Intl. Co., Ltd.",
+      "verdict": "different",
+      "nature": "abbreviation-other-word"
+    },
+    {
+      "a": "Kazehaya Elec. K.K.",
+      "b": "Kazehaya Eng. K.K.",
+      "verdict": "different",
+      "nature": "abbreviation-other-word"
+    },
+    {
+      "a": "Toyoshio Trdg. K.K.",
+      "b": "Toyoshio Trpt. K.K.",
+      "verdict": "different",
+      "nature": "abbreviation-other-word"
+    },
+    {
+      "a": "Sinnae Elec. Co., Ltd.",
+      "b": "Sinnae Chem. Co., Ltd.",
+      "verdict": "different",
+      "nature": "abbreviation-other-word"
+    },
+    {
+      "a": "Haneulbit Mfg. Co., Ltd.",
+      "b": "Haneulbit Mfg. (Qingdao) Co., Ltd.",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "Daebit Trdg. Co., Ltd.",
+      "b": "Daebit Eng. Co., Ltd.",
+      "verdict": "different",
+      "nature": "abbreviation-other-word"
+    },
+    {
+      "a": "kazehaya denki",
+      "b": "kazehaya denshi",
+      "verdict": "different",
+      "nature": "chat-other-word"
+    },
+    {
+      "a": "kazehayadenki",
+      "b": "kazamidenki",
+      "verdict": "different",
+      "nature": "chat-missing-spaces-other-name"
+    },
+    {
+      "a": "mizunoe seisakusho",
+      "b": "mizunoe seiyaku",
+      "verdict": "different",
+      "nature": "chat-other-word"
+    },
+    {
+      "a": "toyoshio shoji",
+      "b": "toyonami shoji",
+      "verdict": "different",
+      "nature": "chat-other-name"
+    },
+    {
+      "a": "hakuryou kougyou",
+      "b": "hakuryou kousan",
+      "verdict": "different",
+      "nature": "chat-other-word"
+    },
+    {
+      "a": "Asanagi Shoten Y.K.",
+      "b": "Yunagi Shoten Y.K.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "asanagi shoten",
+      "b": "asanagi shuzo",
+      "verdict": "different",
+      "nature": "chat-other-word"
+    },
+    {
+      "a": "kurobanekasei",
+      "b": "kurobanekenzai",
+      "verdict": "different",
+      "nature": "chat-missing-spaces-other-word"
+    },
+    {
+      "a": "Kurobane Kasei K.K.",
+      "b": "Shirobane Kasei K.K.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "Nishikibashi Shoji K.K.",
+      "b": "Nishikibashi Seiko K.K.",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "株式会社西錦橋商事 代表取締役之印",
+      "b": "株式会社東錦橋商事 代表取締役之印",
+      "verdict": "different",
+      "nature": "stamp-other-name"
+    },
+    {
+      "a": "daebit sangsa",
+      "b": "daebit saneop",
+      "verdict": "different",
+      "nature": "chat-other-word"
+    },
+    {
+      "a": "daebitsangsa",
+      "b": "saebyeoksangsa",
+      "verdict": "different",
+      "nature": "chat-missing-spaces-other-name"
+    },
+    {
+      "a": "(주)대빛상사",
+      "b": "(주)대빛물산",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "shinnae jeongi",
+      "b": "shinnae jeonja",
+      "verdict": "different",
+      "nature": "chat-other-word"
+    },
+    {
+      "a": "Sinnae Electric Co., Ltd.",
+      "b": "Sinchon Electric Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "hanulbit",
+      "b": "hanulgil",
+      "verdict": "different",
+      "nature": "chat-other-name"
+    },
+    {
+      "a": "Moraenae Foods Co., Ltd.",
+      "b": "Moraenae Fisheries Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-business-word"
+    },
+    {
+      "a": "moraenae sikpum",
+      "b": "moraesil sikpum",
+      "verdict": "different",
+      "nature": "chat-other-name"
+    },
+    {
+      "a": "Garaon Industrial Co., Ltd.",
+      "b": "Garaon Industrial Vietnam Co., Ltd.",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "Baeksong Steel Co., Ltd.",
+      "b": "Heuksong Steel Co., Ltd.",
+      "verdict": "different",
+      "nature": "other-proper-name"
+    },
+    {
+      "a": "wakatake maru 5",
+      "b": "Wakatake Maru No. 15",
+      "verdict": "different",
+      "nature": "chat-vessel-numeral"
+    },
+    {
+      "a": "第五若竹丸",
+      "b": "第五若松丸",
+      "verdict": "different",
+      "nature": "chat-vessel-other-word"
+    },
+    {
+      "a": "naraenuri-ho",
+      "b": "Naraenari Ho",
+      "verdict": "different",
+      "nature": "chat-vessel-one-letter"
+    },
+    {
+      "a": "naraenuri ho 2",
+      "b": "Naraenuri Ho",
+      "verdict": "different",
+      "nature": "chat-vessel-numeral"
+    },
+    {
+      "a": "wakatakemaru5",
+      "b": "wakatakemaru8",
+      "verdict": "different",
+      "nature": "chat-vessel-numeral"
+    },
+    {
+      "a": "Kazehaya Denki K.K.",
+      "b": "KAZEHAYA DENKI (THAILAND) CO., LTD.",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "KAZEHAYA DENKl K.K.",
+      "b": "KAZEHAYA DENKl KOGYO K.K.",
+      "verdict": "different",
+      "nature": "ocr-other-word"
+    },
+    {
+      "a": "MIZUNOE MFG C0., LTD.",
+      "b": "MIZUNAMI MFG C0., LTD.",
+      "verdict": "different",
+      "nature": "ocr-other-name"
+    },
+    {
+      "a": "HAKURY0 IND CO LTD",
+      "b": "HAKUSAN IND CO LTD",
+      "verdict": "different",
+      "nature": "ocr-other-name"
+    },
+    {
+      "a": "SlNNAE ELEC CO LTD",
+      "b": "SlNDANG ELEC CO LTD",
+      "verdict": "different",
+      "nature": "ocr-other-name"
+    },
+    {
+      "a": "Toyoshio Trading K.K.",
+      "b": "Toyoshio Trading Singapore Pte. Ltd.",
+      "verdict": "different",
+      "nature": "country-subsidiary"
+    },
+    {
+      "a": "Asanagi Shoten Yugen Kaisha",
+      "b": "Asanagi Suisan Yugen Kaisha",
+      "verdict": "different",
+      "nature": "other-business-word"
+    }
+  ]
+}
