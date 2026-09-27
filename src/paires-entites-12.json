@@ -1,0 +1,2407 @@
+{
+ "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+ "provenance": "authored on 2026-09-28 by a separate agent (a Helsinki sanctions desk and Black Sea forwarder brief, organised by trap family, with explicit verdict conventions; an eighth model) that never saw the matcher nor any other pair set, as blind test set #11 (sha256 a963a80c…); every name invented; no client data, no list data; overlap with the eleven earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v13 (entites.ts 3702a136…, cribler.ts 83ac2577…, ecritures.ts aec60a13…): strong 0.81 found 135/200 [61-74 %] with 14/200 false alerts [4-11 %]; possible 0.80 found 165/200 [77-87 %] with 44/200 [17-28 %]. Studied afterwards and promoted to training set 12 on 2026-09-28, so it no longer measures anything held out.",
+ "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+ "paires": [
+  {
+   "a": "Kylmäsäilö Oy",
+   "b": "Kylmasailo Oy",
+   "verdict": "match",
+   "nature": "nordic-diacritics-dropped"
+  },
+  {
+   "a": "Pohjanlahden Rahti Oy",
+   "b": "Pohjanlahden Rahti Osakeyhtiö",
+   "verdict": "match",
+   "nature": "nordic-legal-form-expanded"
+  },
+  {
+   "a": "Järvenpään Teräskauppa Oy",
+   "b": "JARVENPAAN TERASKAUPPA OY",
+   "verdict": "match",
+   "nature": "nordic-diacritics-dropped"
+  },
+  {
+   "a": "Söderholm Shipping Ab",
+   "b": "Soederholm Shipping Ab",
+   "verdict": "match",
+   "nature": "nordic-diacritics-transcribed"
+  },
+  {
+   "a": "Åkerström Frakt AB",
+   "b": "Aakerstroem Frakt Aktiebolag",
+   "verdict": "match",
+   "nature": "nordic-diacritics-transcribed"
+  },
+  {
+   "a": "Nordvik Lastebil AS",
+   "b": "Nordvik Lastebil A/S",
+   "verdict": "match",
+   "nature": "nordic-legal-form-variant"
+  },
+  {
+   "a": "Brøndby Kornhandel ApS",
+   "b": "Broendby Kornhandel ApS",
+   "verdict": "match",
+   "nature": "nordic-diacritics-transcribed"
+  },
+  {
+   "a": "Kaldvik Stålservice A/S",
+   "b": "Kaldvik Staalservice Aktieselskab",
+   "verdict": "match",
+   "nature": "nordic-diacritics-transcribed"
+  },
+  {
+   "a": "SIA Rīgas Graudu Termināls",
+   "b": "SIA Rigas Graudu Terminals",
+   "verdict": "match",
+   "nature": "nordic-baltic-diacritics"
+  },
+  {
+   "a": "UAB Klaipėdos Krovinių Linija",
+   "b": "Klaipedos Kroviniu Linija UAB",
+   "verdict": "match",
+   "nature": "nordic-baltic-diacritics"
+  },
+  {
+   "a": "Tallinna Vilja OÜ",
+   "b": "Tallinna Vilja OU",
+   "verdict": "match",
+   "nature": "nordic-baltic-diacritics"
+  },
+  {
+   "a": "Põhjaranniku Logistika OÜ",
+   "b": "Pohjaranniku Logistika osaühing",
+   "verdict": "match",
+   "nature": "nordic-legal-form-expanded"
+  },
+  {
+   "a": "Nordström & Lindqvist AB (publ)",
+   "b": "Nordstrom och Lindqvist AB",
+   "verdict": "match",
+   "nature": "nordic-publ-and-conjunction"
+  },
+  {
+   "a": "Havskraft Holding AB (publ)",
+   "b": "Havskraft Holding AB",
+   "verdict": "match",
+   "nature": "nordic-publ-and-conjunction"
+  },
+  {
+   "a": "Kornlagerhuset i Norden AB",
+   "b": "Kornlager Huset i Norden AB",
+   "verdict": "match",
+   "nature": "nordic-compound-split"
+  },
+  {
+   "a": "Stålvalsverket Norrby AB",
+   "b": "Stal Valsverket Norrby AB",
+   "verdict": "match",
+   "nature": "nordic-compound-split"
+  },
+  {
+   "a": "Lindbergs Spedition AB",
+   "b": "Lindberg Spedition AB",
+   "verdict": "match",
+   "nature": "nordic-genitive-ending"
+  },
+  {
+   "a": "Andersen & Søn Transport ApS",
+   "b": "Andersen og Soen Transport ApS",
+   "verdict": "match",
+   "nature": "nordic-diacritics-transcribed"
+  },
+  {
+   "a": "Pedersen Havnetjenester A/S",
+   "b": "Pedersen Havnetjenester Aktieselskab",
+   "verdict": "match",
+   "nature": "nordic-legal-form-expanded"
+  },
+  {
+   "a": "Oy Suomen Viljaterminaali Ab",
+   "b": "Suomen Viljaterminaali Oy",
+   "verdict": "match",
+   "nature": "nordic-bilingual-form"
+  },
+  {
+   "a": "Satamapalvelu Kotka Oy",
+   "b": "Hamntjänst Kotka Ab",
+   "verdict": "match",
+   "nature": "nordic-bilingual-name"
+  },
+  {
+   "a": "Kotkan Ahtaus Oy",
+   "b": "Kotkan Ahtaus Oy, Haminan sivuliike",
+   "verdict": "match",
+   "nature": "nordic-branch"
+  },
+  {
+   "a": "UAB Baltijos Grūdų Prekyba",
+   "b": "Baltijos Grudu Prekyba, UAB",
+   "verdict": "match",
+   "nature": "nordic-baltic-diacritics"
+  },
+  {
+   "a": "AS Tallinna Laevaagentuur",
+   "b": "Tallinna Laevaagentuur AS",
+   "verdict": "match",
+   "nature": "nordic-legal-form-position"
+  },
+  {
+   "a": "SIA Ventspils Kokmateriāli",
+   "b": "Ventspils Kokmateriali SIA",
+   "verdict": "match",
+   "nature": "nordic-legal-form-position"
+  },
+  {
+   "a": "Lõunaranna Kaubandus OÜ",
+   "b": "Lounaranna Kaubandus Osauhing",
+   "verdict": "match",
+   "nature": "nordic-legal-form-expanded"
+  },
+  {
+   "a": "Hjelmsäter Maskin AB",
+   "b": "HJELMSAETER MASKIN AKTIEBOLAG",
+   "verdict": "match",
+   "nature": "nordic-diacritics-transcribed"
+  },
+  {
+   "a": "Terästorni Oy",
+   "b": "Terastorni Oy",
+   "verdict": "match",
+   "nature": "nordic-diacritics-dropped"
+  },
+  {
+   "a": "Mäkelä & Hyvönen Kuljetus Oy",
+   "b": "Makela ja Hyvonen Kuljetus Oy",
+   "verdict": "match",
+   "nature": "nordic-diacritics-dropped"
+  },
+  {
+   "a": "Fiskebäcks Rederi AB",
+   "b": "Fiskebaecks Rederi AB",
+   "verdict": "match",
+   "nature": "nordic-diacritics-transcribed"
+  },
+  {
+   "a": "Østergaard Kornkompagni A/S",
+   "b": "Ostergaard Kornkompagni A/S",
+   "verdict": "match",
+   "nature": "nordic-diacritics-dropped"
+  },
+  {
+   "a": "UAB Žalgirio Logistika",
+   "b": "UAB Zalgirio Logistika",
+   "verdict": "match",
+   "nature": "nordic-baltic-diacritics"
+  },
+  {
+   "a": "UAB Šiaurės Krantas",
+   "b": "UAB Siaures Krantas",
+   "verdict": "match",
+   "nature": "nordic-baltic-diacritics"
+  },
+  {
+   "a": "SIA Kurzemes Metāls",
+   "b": "Kurzemes Metals, SIA",
+   "verdict": "match",
+   "nature": "nordic-baltic-diacritics"
+  },
+  {
+   "a": "Oy Jääkarhu Logistics Ab",
+   "b": "Jaakarhu Logistics Oy",
+   "verdict": "match",
+   "nature": "nordic-bilingual-form"
+  },
+  {
+   "a": "Sjöfartsbolaget Kronholm AB",
+   "b": "Sjofartsbolaget Kronholm Aktiebolag",
+   "verdict": "match",
+   "nature": "nordic-legal-form-expanded"
+  },
+  {
+   "a": "Göteborgs Spannmålsexport AB",
+   "b": "Goteborgs Spannmals Export AB",
+   "verdict": "match",
+   "nature": "nordic-compound-split"
+  },
+  {
+   "a": "Porin Viljasatama Oy",
+   "b": "Pori Viljasatama Oy",
+   "verdict": "match",
+   "nature": "nordic-genitive-ending"
+  },
+  {
+   "a": "Kristiansen Fragt ApS",
+   "b": "Kristiansen Fragt Anpartsselskab",
+   "verdict": "match",
+   "nature": "nordic-legal-form-expanded"
+  },
+  {
+   "a": "Viljo Heikkisen Kuljetus Oy",
+   "b": "Viljo Heikkinen Kuljetus Oy",
+   "verdict": "match",
+   "nature": "nordic-genitive-ending"
+  },
+  {
+   "a": "Pohjanlahden Rahti Oy",
+   "b": "Pohjanmaan Rahti Oy",
+   "verdict": "different",
+   "nature": "nordic-near-place-name"
+  },
+  {
+   "a": "Söderholm Shipping Ab",
+   "b": "Söderholm Shipping AS",
+   "verdict": "different",
+   "nature": "nordic-other-country-form"
+  },
+  {
+   "a": "Andersen Fragt ApS",
+   "b": "Andersson Frakt AB",
+   "verdict": "different",
+   "nature": "nordic-sen-son"
+  },
+  {
+   "a": "Kristiansen Bunkring ApS",
+   "b": "Kristiansson Bunkring ApS",
+   "verdict": "different",
+   "nature": "nordic-sen-son"
+  },
+  {
+   "a": "Nielsen Kornhandel A/S",
+   "b": "Nilsson Kornhandel A/S",
+   "verdict": "different",
+   "nature": "nordic-sen-son"
+  },
+  {
+   "a": "Lindbergs Spedition AB",
+   "b": "Lindholms Spedition AB",
+   "verdict": "different",
+   "nature": "nordic-near-surname"
+  },
+  {
+   "a": "Tallinna Vilja OÜ",
+   "b": "Tartu Vilja OÜ",
+   "verdict": "different",
+   "nature": "nordic-near-place-name"
+  },
+  {
+   "a": "SIA Rīgas Graudu Termināls",
+   "b": "SIA Rīgas Graudu Tranzīts",
+   "verdict": "different",
+   "nature": "nordic-activity-word"
+  },
+  {
+   "a": "UAB Klaipėdos Krovinių Linija",
+   "b": "UAB Klaipėdos Krovinių Terminalas",
+   "verdict": "different",
+   "nature": "nordic-activity-word"
+  },
+  {
+   "a": "Nordström & Lindqvist AB",
+   "b": "Nordström & Lindgren AB",
+   "verdict": "different",
+   "nature": "nordic-near-surname"
+  },
+  {
+   "a": "Havskraft Holding AB (publ)",
+   "b": "Havskraft Shipping AB",
+   "verdict": "different",
+   "nature": "nordic-group-sibling"
+  },
+  {
+   "a": "Kotkan Ahtaus Oy",
+   "b": "Haminan Ahtaus Oy",
+   "verdict": "different",
+   "nature": "nordic-near-place-name"
+  },
+  {
+   "a": "Satamapalvelu Kotka Oy",
+   "b": "Satamapalvelu Kokkola Oy",
+   "verdict": "different",
+   "nature": "nordic-near-place-name"
+  },
+  {
+   "a": "Järvenpään Teräskauppa Oy",
+   "b": "Järvenpään Teräsrakenne Oy",
+   "verdict": "different",
+   "nature": "nordic-activity-word"
+  },
+  {
+   "a": "Fiskebäcks Rederi AB",
+   "b": "Fiskebäcks Rederi Två AB",
+   "verdict": "different",
+   "nature": "nordic-numbered-entity"
+  },
+  {
+   "a": "Brøndby Kornhandel ApS",
+   "b": "Brøndbyvester Kornhandel ApS",
+   "verdict": "different",
+   "nature": "nordic-near-place-name"
+  },
+  {
+   "a": "Østergaard Kornkompagni A/S",
+   "b": "Vestergaard Kornkompagni A/S",
+   "verdict": "different",
+   "nature": "nordic-near-surname"
+  },
+  {
+   "a": "Mäkelä & Hyvönen Kuljetus Oy",
+   "b": "Mäkinen & Hyvönen Kuljetus Oy",
+   "verdict": "different",
+   "nature": "nordic-near-surname"
+  },
+  {
+   "a": "UAB Žalgirio Logistika",
+   "b": "UAB Žalvario Logistika",
+   "verdict": "different",
+   "nature": "nordic-baltic-near-word"
+  },
+  {
+   "a": "UAB Šiaurės Krantas",
+   "b": "UAB Šiaurės Kraštas",
+   "verdict": "different",
+   "nature": "nordic-baltic-near-word"
+  },
+  {
+   "a": "Pedersen Havnetjenester A/S",
+   "b": "Petersen Havnetjenester A/S",
+   "verdict": "different",
+   "nature": "nordic-near-surname"
+  },
+  {
+   "a": "Suomen Viljaterminaali Oy",
+   "b": "Suomen Öljyterminaali Oy",
+   "verdict": "different",
+   "nature": "nordic-activity-word"
+  },
+  {
+   "a": "Göteborgs Spannmålsexport AB",
+   "b": "Göteborgs Spannmålsimport AB",
+   "verdict": "different",
+   "nature": "nordic-activity-word"
+  },
+  {
+   "a": "Sjöfartsbolaget Kronholm AB",
+   "b": "Sjöfartsbolaget Kronhjelm AB",
+   "verdict": "different",
+   "nature": "nordic-near-surname"
+  },
+  {
+   "a": "AS Tallinna Laevaagentuur",
+   "b": "AS Tallinna Laevaremont",
+   "verdict": "different",
+   "nature": "nordic-activity-word"
+  },
+  {
+   "a": "SIA Ventspils Kokmateriāli",
+   "b": "SIA Ventspils Kokmateriālu Osta",
+   "verdict": "different",
+   "nature": "nordic-activity-word"
+  },
+  {
+   "a": "Terästorni Oy",
+   "b": "Teräspuomi Oy",
+   "verdict": "different",
+   "nature": "nordic-compound-part"
+  },
+  {
+   "a": "Hjelmsäter Maskin AB",
+   "b": "Hjelmsäter Maskin Oy",
+   "verdict": "different",
+   "nature": "nordic-other-country-form"
+  },
+  {
+   "a": "Kotkan Ahtaus Oy",
+   "b": "Kotkan Ahtaus Eesti OÜ",
+   "verdict": "different",
+   "nature": "nordic-foreign-subsidiary"
+  },
+  {
+   "a": "Stålhuset Nord AB",
+   "b": "Stålhuset Syd AB",
+   "verdict": "different",
+   "nature": "nordic-direction-word"
+  },
+  {
+   "a": "Nordvik Lastebil AS",
+   "b": "Norvik Lastebil AS",
+   "verdict": "different",
+   "nature": "nordic-near-place-name"
+  },
+  {
+   "a": "Lõunaranna Kaubandus OÜ",
+   "b": "Lääneranna Kaubandus OÜ",
+   "verdict": "different",
+   "nature": "nordic-direction-word"
+  },
+  {
+   "a": "SIA Kurzemes Metāls",
+   "b": "SIA Kurzemes Metālapstrāde",
+   "verdict": "different",
+   "nature": "nordic-activity-word"
+  },
+  {
+   "a": "Jääkarhu Logistics Oy",
+   "b": "Jääkotka Logistics Oy",
+   "verdict": "different",
+   "nature": "nordic-compound-part"
+  },
+  {
+   "a": "Söderholm Shipping Ab",
+   "b": "Söderberg Shipping Ab",
+   "verdict": "different",
+   "nature": "nordic-near-surname"
+  },
+  {
+   "a": "Fredriksen Skipsmegling AS",
+   "b": "Fredriksson Skeppsmäkleri AB",
+   "verdict": "different",
+   "nature": "nordic-sen-son"
+  },
+  {
+   "a": "Viljavarasto Hamina Oy",
+   "b": "Viljavarasto Hamina 2 Oy",
+   "verdict": "different",
+   "nature": "nordic-numbered-entity"
+  },
+  {
+   "a": "Karlsen Bunkring AS",
+   "b": "Karlsson Bunkring AS",
+   "verdict": "different",
+   "nature": "nordic-sen-son"
+  },
+  {
+   "a": "Rasmussen Kornsilo ApS",
+   "b": "Rasmusson Kornsilo ApS",
+   "verdict": "different",
+   "nature": "nordic-sen-son"
+  },
+  {
+   "a": "Porin Viljasatama Oy",
+   "b": "Porvoon Viljasatama Oy",
+   "verdict": "different",
+   "nature": "nordic-near-place-name"
+  },
+  {
+   "a": "Karadeniz Hububat Sanayi ve Ticaret A.Ş.",
+   "b": "Karadeniz Hububat San. ve Tic. A.S.",
+   "verdict": "match",
+   "nature": "turkish-abbreviated-form"
+  },
+  {
+   "a": "Yıldızoğlu Nakliyat Ltd. Şti.",
+   "b": "Yildizoglu Nakliyat Limited Sirketi",
+   "verdict": "match",
+   "nature": "turkish-form-expanded"
+  },
+  {
+   "a": "Özkırım Denizcilik ve Ticaret A.Ş.",
+   "b": "Ozkirim Denizcilik ve Ticaret Anonim Sirketi",
+   "verdict": "match",
+   "nature": "turkish-form-expanded"
+  },
+  {
+   "a": "Çağlayan Gıda San. Tic. Ltd. Şti.",
+   "b": "Caglayan Gida Sanayi Ticaret Limited Sirketi",
+   "verdict": "match",
+   "nature": "turkish-form-expanded"
+  },
+  {
+   "a": "Şenkaya İnşaat Taahhüt A.Ş.",
+   "b": "SENKAYA INSAAT TAAHHUT AS",
+   "verdict": "match",
+   "nature": "turkish-diacritics-dropped"
+  },
+  {
+   "a": "Güneyliler Dış Ticaret Ltd. Şti.",
+   "b": "Guneyliler Dis Ticaret Ltd Sti",
+   "verdict": "match",
+   "nature": "turkish-diacritics-dropped"
+  },
+  {
+   "a": "Samsun Liman Hizmetleri A.Ş.",
+   "b": "Samsun Liman Hizmetleri Anonim Şirketi",
+   "verdict": "match",
+   "nature": "turkish-form-expanded"
+  },
+  {
+   "a": "Göktürk Çelik Dış Ticaret A.Ş.",
+   "b": "Goektuerk Celik Dis Ticaret A.S.",
+   "verdict": "match",
+   "nature": "turkish-diacritics-transcribed"
+  },
+  {
+   "a": "Doğanbey Denizcilik A.Ş.",
+   "b": "Doganbey Denizcilik Joint Stock Company",
+   "verdict": "match",
+   "nature": "turkish-form-translated"
+  },
+  {
+   "a": "Tirebolu Çelik Ticaret Ltd. Şti.",
+   "b": "Tirebolu Steel Trading Ltd.",
+   "verdict": "match",
+   "nature": "turkish-name-translated"
+  },
+  {
+   "a": "Akyol Nakliyat ve Lojistik A.Ş. İstanbul Şubesi",
+   "b": "Akyol Nakliyat ve Lojistik A.Ş.",
+   "verdict": "match",
+   "nature": "turkish-branch"
+  },
+  {
+   "a": "Bafra Un Sanayi A.Ş.",
+   "b": "Bafra Un San. A.Ş.",
+   "verdict": "match",
+   "nature": "turkish-abbreviated-form"
+  },
+  {
+   "a": "Kıyıboyu Tarım Ürünleri İth. İhr. Ltd. Şti.",
+   "b": "Kiyiboyu Tarim Urunleri Ithalat Ihracat Limited Sirketi",
+   "verdict": "match",
+   "nature": "turkish-abbreviated-form"
+  },
+  {
+   "a": "Ünalan Metal San. ve Tic. Ltd. Şti.",
+   "b": "UNALAN METAL SAN VE TIC LTD STI",
+   "verdict": "match",
+   "nature": "turkish-diacritics-dropped"
+  },
+  {
+   "a": "Kılıçarslan Hububat Ticaret A.Ş.",
+   "b": "Kilicarslan Hububat Ticaret AS",
+   "verdict": "match",
+   "nature": "turkish-dotless-i"
+  },
+  {
+   "a": "İlkadım Denizcilik Ltd. Şti.",
+   "b": "ILKADIM DENIZCILIK LTD. STI.",
+   "verdict": "match",
+   "nature": "turkish-dotted-capital-i"
+  },
+  {
+   "a": "Gemlik Dökme Yük Taşımacılığı A.Ş.",
+   "b": "Gemlik Dokme Yuk Tasimaciligi A.S.",
+   "verdict": "match",
+   "nature": "turkish-diacritics-dropped"
+  },
+  {
+   "a": "Poyrazköy Gemi İşletmeciliği A.Ş.",
+   "b": "Poyrazkoy Gemi Isletmeciligi Anonim Sirketi",
+   "verdict": "match",
+   "nature": "turkish-form-expanded"
+  },
+  {
+   "a": "Tuncerler İnşaat Malzemeleri San. Tic. Ltd. Şti.",
+   "b": "Tuncerler Insaat Malz. San. Tic. Ltd. Sti.",
+   "verdict": "match",
+   "nature": "turkish-abbreviated-form"
+  },
+  {
+   "a": "Kuşadalı Nakliyat Ltd. Şti.",
+   "b": "Kushadali Nakliyat Ltd. Sti.",
+   "verdict": "match",
+   "nature": "turkish-diacritics-transcribed"
+  },
+  {
+   "a": "Sarıyer Liman Acenteliği Ltd. Şti.",
+   "b": "Sariyer Liman Acenteligi Limited Şirketi",
+   "verdict": "match",
+   "nature": "turkish-form-expanded"
+  },
+  {
+   "a": "Hopa Sınır Ticaret A.Ş.",
+   "b": "Hopa Sinir Ticaret A.Ş.",
+   "verdict": "match",
+   "nature": "turkish-dotless-i"
+  },
+  {
+   "a": "Karadeniz Hububat Sanayi ve Ticaret A.Ş.",
+   "b": "Karadeniz Hububat A.Ş.",
+   "verdict": "match",
+   "nature": "turkish-boilerplate-dropped"
+  },
+  {
+   "a": "Yavuzlar Deniz Taşımacılığı Ticaret A.Ş.",
+   "b": "Yavuzlar Deniz Tasimaciligi Tic. AS",
+   "verdict": "match",
+   "nature": "turkish-abbreviated-form"
+  },
+  {
+   "a": "Balcıoğlu Gıda Pazarlama Ltd. Şti.",
+   "b": "Balcioglu Gida Pazarlama Ltd. Sti.",
+   "verdict": "match",
+   "nature": "turkish-soft-g"
+  },
+  {
+   "a": "Ordu Fındık Gıda San. ve Tic. A.Ş.",
+   "b": "Ordu Findik Gida Sanayi ve Ticaret AS",
+   "verdict": "match",
+   "nature": "turkish-abbreviated-form"
+  },
+  {
+   "a": "Değirmendere Ambarcılık Ltd. Şti.",
+   "b": "DEGIRMENDERE AMBARCILIK LTD.STI.",
+   "verdict": "match",
+   "nature": "turkish-diacritics-dropped"
+  },
+  {
+   "a": "Çelikyol Nakliyat A.Ş.",
+   "b": "Chelikyol Nakliyat A.S.",
+   "verdict": "match",
+   "nature": "turkish-diacritics-transcribed"
+  },
+  {
+   "a": "Beyazkaya Lojistik ve Dış Ticaret Ltd. Şti.",
+   "b": "Beyazkaya Lojistik ve Dis Tic. Ltd. Sti.",
+   "verdict": "match",
+   "nature": "turkish-abbreviated-form"
+  },
+  {
+   "a": "Kaptanoğlu Gemicilik A.Ş.",
+   "b": "Kaptanoglu Shipping Inc.",
+   "verdict": "match",
+   "nature": "turkish-name-translated"
+  },
+  {
+   "a": "Aydınoğlu Nakliyat Ltd. Şti.",
+   "b": "Aydinoglu Nakliyat Ltd. Şti. Samsun Şubesi",
+   "verdict": "match",
+   "nature": "turkish-branch"
+  },
+  {
+   "a": "Sultanhisar Tarım Ürünleri A.Ş.",
+   "b": "Sultanhisar Tarim Urunleri Anonim Sirketi",
+   "verdict": "match",
+   "nature": "turkish-form-expanded"
+  },
+  {
+   "a": "Uğurlu Nakliyat Ltd. Şti.",
+   "b": "Ugurlu Nakliyat Ltd. Sti.",
+   "verdict": "match",
+   "nature": "turkish-soft-g"
+  },
+  {
+   "a": "Erdoğmuş Hurda Metal Dış Ticaret A.Ş.",
+   "b": "Erdogmus Hurda Metal Dis Tic. A.S.",
+   "verdict": "match",
+   "nature": "turkish-abbreviated-form"
+  },
+  {
+   "a": "Söğütlü Un ve Yem Sanayi A.Ş.",
+   "b": "Sogutlu Un ve Yem San. A.S.",
+   "verdict": "match",
+   "nature": "turkish-soft-g"
+  },
+  {
+   "a": "Işıkyolu Denizcilik Ltd. Şti.",
+   "b": "ISIKYOLU DENIZCILIK LTD STI",
+   "verdict": "match",
+   "nature": "turkish-dotless-i"
+  },
+  {
+   "a": "Gökçeli İnşaat ve Ticaret A.Ş.",
+   "b": "Goekceli Insaat ve Ticaret A.S.",
+   "verdict": "match",
+   "nature": "turkish-diacritics-transcribed"
+  },
+  {
+   "a": "Demirci ve Oğulları Nakliyat Ltd. Şti.",
+   "b": "Demirci & Ogullari Nakliyat Ltd. Sti.",
+   "verdict": "match",
+   "nature": "turkish-ve-ampersand"
+  },
+  {
+   "a": "Tekinalp Kömür Ticaret A.Ş.",
+   "b": "Tekinalp Coal Trading Inc.",
+   "verdict": "match",
+   "nature": "turkish-name-translated"
+  },
+  {
+   "a": "Denizkızı Balıkçılık Ltd. Şti.",
+   "b": "Denizkizi Balikcilik Ltd. Sti.",
+   "verdict": "match",
+   "nature": "turkish-dotless-i"
+  },
+  {
+   "a": "Karadeniz Hububat San. ve Tic. A.Ş.",
+   "b": "Akdeniz Hububat San. ve Tic. A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-near-place-name"
+  },
+  {
+   "a": "Yıldızoğlu Nakliyat Ltd. Şti.",
+   "b": "Yıldırımoğlu Nakliyat Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Özkırım Denizcilik A.Ş.",
+   "b": "Özkaram Denizcilik A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Çağlayan Gıda Ltd. Şti.",
+   "b": "Çağlar Gıda Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Şenkaya İnşaat A.Ş.",
+   "b": "Şenkaya Gıda A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-sector-word"
+  },
+  {
+   "a": "Güneyliler Dış Ticaret Ltd. Şti.",
+   "b": "Güneydoğulu Dış Ticaret Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-word"
+  },
+  {
+   "a": "Samsun Liman Hizmetleri A.Ş.",
+   "b": "Samsun Liman İşletmeleri A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-activity-word"
+  },
+  {
+   "a": "Doğanbey Denizcilik A.Ş.",
+   "b": "Doğanay Denizcilik A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Kılıç Nakliyat Ltd. Şti.",
+   "b": "Kılınç Nakliyat Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Uğurlu Nakliyat Ltd. Şti.",
+   "b": "Uğurlar Nakliyat Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Bafra Un Sanayi A.Ş.",
+   "b": "Bafra Yem Sanayi A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-sector-word"
+  },
+  {
+   "a": "Kıyıboyu Tarım Ürünleri Ltd. Şti.",
+   "b": "Kıyıkent Tarım Ürünleri Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-word"
+  },
+  {
+   "a": "Ünalan Metal San. ve Tic. Ltd. Şti.",
+   "b": "Ünaldı Metal San. ve Tic. Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Akyol Nakliyat ve Lojistik A.Ş.",
+   "b": "Akyol Nakliyat ve Lojistik GmbH",
+   "verdict": "different",
+   "nature": "turkish-foreign-subsidiary"
+  },
+  {
+   "a": "Tirebolu Çelik Ticaret Ltd. Şti.",
+   "b": "Tirebolu Çelik Ticaret SRL",
+   "verdict": "different",
+   "nature": "turkish-foreign-subsidiary"
+  },
+  {
+   "a": "Gemlik Dökme Yük Taşımacılığı A.Ş.",
+   "b": "Gemlik Sıvı Yük Taşımacılığı A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-activity-word"
+  },
+  {
+   "a": "Poyrazköy Gemi İşletmeciliği A.Ş.",
+   "b": "Poyrazköy Gemi İnşa A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-activity-word"
+  },
+  {
+   "a": "Tuncerler İnşaat Malzemeleri Ltd. Şti.",
+   "b": "Tunçkanlar İnşaat Malzemeleri Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Hopa Sınır Ticaret A.Ş.",
+   "b": "Hopa Sınai Ticaret A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-near-word"
+  },
+  {
+   "a": "Sarıyer Liman Acenteliği Ltd. Şti.",
+   "b": "Sarıyer Deniz Acenteliği Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-activity-word"
+  },
+  {
+   "a": "Kuşadalı Nakliyat Ltd. Şti.",
+   "b": "Kuşadası Nakliyat Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-place-name"
+  },
+  {
+   "a": "İlkadım Denizcilik Ltd. Şti.",
+   "b": "İlkada Denizcilik Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-word"
+  },
+  {
+   "a": "Yavuzlar Deniz Taşımacılığı A.Ş.",
+   "b": "Yavuzhan Deniz Taşımacılığı A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Balcıoğlu Gıda Pazarlama Ltd. Şti.",
+   "b": "Balcılar Gıda Pazarlama Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Demirkollar Hurda Metal A.Ş.",
+   "b": "Demirkaya Hurda Metal A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Göktürk Çelik Dış Ticaret A.Ş.",
+   "b": "Gökburç Çelik Dış Ticaret A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Ordu Fındık Gıda A.Ş.",
+   "b": "Ordu Fıstık Gıda A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-near-word"
+  },
+  {
+   "a": "Kaptanoğlu Gemicilik A.Ş.",
+   "b": "Kaptanlar Gemicilik A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Beyazkaya Lojistik Ltd. Şti.",
+   "b": "Karakaya Lojistik Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Sultanhisar Tarım Ürünleri A.Ş.",
+   "b": "Sultanhan Tarım Ürünleri A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-near-place-name"
+  },
+  {
+   "a": "Çelikyol Nakliyat A.Ş.",
+   "b": "Çelikyel Nakliyat A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-near-word"
+  },
+  {
+   "a": "Değirmendere Ambarcılık Ltd. Şti.",
+   "b": "Değirmendere Ambalaj Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-sector-word"
+  },
+  {
+   "a": "Tekinalp Kömür Ticaret A.Ş.",
+   "b": "Tekinalp Kömür Taşımacılık A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-activity-word"
+  },
+  {
+   "a": "Aydınoğlu Nakliyat Ltd. Şti.",
+   "b": "Aydınlıoğlu Nakliyat Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Söğütlü Un ve Yem Sanayi A.Ş.",
+   "b": "Söğütçü Un ve Yem Sanayi A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Işıkyolu Denizcilik Ltd. Şti.",
+   "b": "Işıkyurdu Denizcilik Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-word"
+  },
+  {
+   "a": "Denizkızı Balıkçılık Ltd. Şti.",
+   "b": "Denizkuşu Balıkçılık Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-near-word"
+  },
+  {
+   "a": "Erdoğmuş Hurda Metal Dış Ticaret A.Ş.",
+   "b": "Erdoğan Hurda Metal Dış Ticaret A.Ş.",
+   "verdict": "different",
+   "nature": "turkish-near-surname"
+  },
+  {
+   "a": "Demirci ve Oğulları Nakliyat Ltd. Şti.",
+   "b": "Demirci ve Kardeşleri Nakliyat Ltd. Şti.",
+   "verdict": "different",
+   "nature": "turkish-family-word"
+  },
+  {
+   "a": "Gökçeli İnşaat ve Ticaret A.Ş.",
+   "b": "Gökçeli İnşaat ve Ticaret EOOD",
+   "verdict": "different",
+   "nature": "turkish-foreign-subsidiary"
+  },
+  {
+   "a": "OOO Yuzhnyy Zernovoy Prichal",
+   "b": "Iuzhnyi Zernovoi Prichal LLC",
+   "verdict": "match",
+   "nature": "cyrillic-yu-iu-endings"
+  },
+  {
+   "a": "ООО «Южный зерновой причал»",
+   "b": "OOO Yuzhnyy Zernovoy Prichal",
+   "verdict": "match",
+   "nature": "cyrillic-original-script"
+  },
+  {
+   "a": "TOV Chornomorska Khlibna Kompaniia",
+   "b": "Chornomorska Hlibna Kompaniya LLC",
+   "verdict": "match",
+   "nature": "cyrillic-kh-h"
+  },
+  {
+   "a": "PAO Tsemzavod Mayachnyy",
+   "b": "PJSC Cemzavod Majachnyj",
+   "verdict": "match",
+   "nature": "cyrillic-iso9-ts-c"
+  },
+  {
+   "a": "OOO Shchedryy Kolos Dona",
+   "b": "OOO Schedry Kolos Dona",
+   "verdict": "match",
+   "nature": "cyrillic-shch-sch"
+  },
+  {
+   "a": "ZAO Zhuravlyovo Agro",
+   "b": "ZAO Žuravljovo Agro",
+   "verdict": "match",
+   "nature": "cyrillic-iso9-zh"
+  },
+  {
+   "a": "AT Pivdennyi Portovyi Zavod",
+   "b": "JSC Pivdennyy Portovyy Zavod",
+   "verdict": "match",
+   "nature": "cyrillic-form-translated"
+  },
+  {
+   "a": "ООО «Азовметаллторг»",
+   "b": "OOO Azovmetalltorg",
+   "verdict": "match",
+   "nature": "cyrillic-original-script"
+  },
+  {
+   "a": "ТОВ «Дніпровський зерновий елеватор»",
+   "b": "TOV Dniprovskyi Zernovyi Elevator",
+   "verdict": "match",
+   "nature": "cyrillic-original-script"
+  },
+  {
+   "a": "TOV Izmailskyi Richkovyi Prychal",
+   "b": "Izmailskiy Rechnoy Prichal LLC",
+   "verdict": "match",
+   "nature": "cyrillic-ukrainian-russian-form"
+  },
+  {
+   "a": "OOO Tsimlyanskiy Rechnoy Flot",
+   "b": "Cimljanskij Rečnoj Flot OOO",
+   "verdict": "match",
+   "nature": "cyrillic-iso9-ts-c"
+  },
+  {
+   "a": "PAO Kuban-Agroeksport",
+   "b": "PJSC Kuban Agroexport",
+   "verdict": "match",
+   "nature": "cyrillic-ks-x"
+  },
+  {
+   "a": "OOO Taganrogskiy Metallotsentr",
+   "b": "Taganrogsky Metallocentr LLC",
+   "verdict": "match",
+   "nature": "cyrillic-iy-y-endings"
+  },
+  {
+   "a": "AO Rostovskiy Portovyy Elevator",
+   "b": "JSC Rostovsky Portovy Elevator",
+   "verdict": "match",
+   "nature": "cyrillic-form-translated"
+  },
+  {
+   "a": "OOO Torgovyy Dom Yevdokimov",
+   "b": "OOO Torgovyi Dom Evdokimov",
+   "verdict": "match",
+   "nature": "cyrillic-ye-e"
+  },
+  {
+   "a": "TOV Mykolaivskyi Kombikormovyi Zavod",
+   "b": "Nikolaevskiy Kombikormovyy Zavod LLC",
+   "verdict": "match",
+   "nature": "cyrillic-ukrainian-russian-form"
+  },
+  {
+   "a": "OOO Khimtrans-Yug",
+   "b": "OOO Himtrans-Jug",
+   "verdict": "match",
+   "nature": "cyrillic-kh-h"
+  },
+  {
+   "a": "OOO Kamen'-Portservis",
+   "b": "OOO Kamen Portservis",
+   "verdict": "match",
+   "nature": "cyrillic-soft-sign"
+  },
+  {
+   "a": "Obshchestvo s Ogranichennoy Otvetstvennostyu Donantratsit-Trans",
+   "b": "OOO Donantratsit-Trans",
+   "verdict": "match",
+   "nature": "cyrillic-form-expanded"
+  },
+  {
+   "a": "Tovarystvo z Obmezhenoiu Vidpovidalnistiu Prychornomorskyi Terminal",
+   "b": "TOV Prychornomorskyi Terminal",
+   "verdict": "match",
+   "nature": "cyrillic-form-expanded"
+  },
+  {
+   "a": "OOO Yuzhtranzitservis",
+   "b": "OOO Juzhtranzitservis",
+   "verdict": "match",
+   "nature": "cyrillic-yu-iu-endings"
+  },
+  {
+   "a": "OOO Tsentrsnab-Don",
+   "b": "OOO Centrsnab-Don",
+   "verdict": "match",
+   "nature": "cyrillic-iso9-ts-c"
+  },
+  {
+   "a": "TOV Kharkivskyi Metalotorh",
+   "b": "Kharkivskyy Metalotorh LLC",
+   "verdict": "match",
+   "nature": "cyrillic-iy-y-endings"
+  },
+  {
+   "a": "OOO Temryukskiy Morskoy Terminal",
+   "b": "Temriukskii Morskoi Terminal LLC",
+   "verdict": "match",
+   "nature": "cyrillic-yu-iu-endings"
+  },
+  {
+   "a": "ООО «Таман-Агротранс»",
+   "b": "Taman-Agrotrans LLC",
+   "verdict": "match",
+   "nature": "cyrillic-original-script"
+  },
+  {
+   "a": "OOO Stalprokat-Yug",
+   "b": "Stalprokat-Iug OOO",
+   "verdict": "match",
+   "nature": "cyrillic-yu-iu-endings"
+  },
+  {
+   "a": "TOV Zaporizkyi Metalozbut",
+   "b": "TOV Zaporiz'kyj Metalozbut",
+   "verdict": "match",
+   "nature": "cyrillic-soft-sign"
+  },
+  {
+   "a": "PAO Priazovskiy Kombinat Zhelezobetona",
+   "b": "PJSC Priazovsky Kombinat Zhelezobetona",
+   "verdict": "match",
+   "nature": "cyrillic-form-translated"
+  },
+  {
+   "a": "OOO Salskiy Elevator",
+   "b": "OOO Sal'skiy Elevator",
+   "verdict": "match",
+   "nature": "cyrillic-soft-sign"
+  },
+  {
+   "a": "OOO Don-Zernoprodukt",
+   "b": "LLC Don Zernoprodukt",
+   "verdict": "match",
+   "nature": "cyrillic-form-translated"
+  },
+  {
+   "a": "ZAO Shchekinskiy Metallosklad",
+   "b": "ZAO Ščekinskij Metallosklad",
+   "verdict": "match",
+   "nature": "cyrillic-shch-sch"
+  },
+  {
+   "a": "OOO Novotitarovskiy Elevator",
+   "b": "OOO Novotitarovskii Elevator",
+   "verdict": "match",
+   "nature": "cyrillic-iy-y-endings"
+  },
+  {
+   "a": "TOV Reniiskyi Richkovyi Terminal",
+   "b": "TOV Reniyskyy Richkovyy Terminal",
+   "verdict": "match",
+   "nature": "cyrillic-iy-y-endings"
+  },
+  {
+   "a": "OOO Kubanskaya Zhatva",
+   "b": "OOO Kubanskaja Žatva",
+   "verdict": "match",
+   "nature": "cyrillic-iso9-zh"
+  },
+  {
+   "a": "OOO Primorsko-Akhtarskiy Rybzavod",
+   "b": "Primorsko-Ahtarskij Rybzavod OOO",
+   "verdict": "match",
+   "nature": "cyrillic-kh-h"
+  },
+  {
+   "a": "OOO Azovzernotrans",
+   "b": "Azovzernotrans Limited Liability Company",
+   "verdict": "match",
+   "nature": "cyrillic-form-translated"
+  },
+  {
+   "a": "TOV Zhytomyrskyi Lisotorh",
+   "b": "TOV Zhytomyrskyi Lisotorh, Odeska filiia",
+   "verdict": "match",
+   "nature": "cyrillic-branch"
+  },
+  {
+   "a": "OOO Yeyskiy Portovyy Elevator",
+   "b": "OOO Eiskii Portovyi Elevator",
+   "verdict": "match",
+   "nature": "cyrillic-ye-e"
+  },
+  {
+   "a": "ООО «Щедрый колос Дона»",
+   "b": "OOO Shchedryy Kolos Dona",
+   "verdict": "match",
+   "nature": "cyrillic-original-script"
+  },
+  {
+   "a": "PAO Tuapsinskiy Bunkerovshchik",
+   "b": "PJSC Tuapsinsky Bunkerovschik",
+   "verdict": "match",
+   "nature": "cyrillic-shch-sch"
+  },
+  {
+   "a": "OOO Yuzhnyy Zernovoy Prichal",
+   "b": "OOO Yuzhnyy Neftyanoy Prichal",
+   "verdict": "different",
+   "nature": "cyrillic-activity-word"
+  },
+  {
+   "a": "TOV Chornomorska Khlibna Kompaniia",
+   "b": "TOV Chornomorska Rybna Kompaniia",
+   "verdict": "different",
+   "nature": "cyrillic-activity-word"
+  },
+  {
+   "a": "OOO Shchedryy Kolos Dona",
+   "b": "OOO Shchedraya Niva Dona",
+   "verdict": "different",
+   "nature": "cyrillic-near-word"
+  },
+  {
+   "a": "ZAO Zhuravlyovo Agro",
+   "b": "ZAO Zhuravlino Agro",
+   "verdict": "different",
+   "nature": "cyrillic-near-place-name"
+  },
+  {
+   "a": "OOO Azovmetalltorg",
+   "b": "OOO Azovmetallsnab",
+   "verdict": "different",
+   "nature": "cyrillic-compound-part"
+  },
+  {
+   "a": "OOO Tsimlyanskiy Rechnoy Flot",
+   "b": "OOO Tsimlyanskiy Rybnyy Flot",
+   "verdict": "different",
+   "nature": "cyrillic-near-word"
+  },
+  {
+   "a": "PAO Kuban-Agroeksport",
+   "b": "PAO Kuban-Agroimport",
+   "verdict": "different",
+   "nature": "cyrillic-compound-part"
+  },
+  {
+   "a": "OOO Taganrogskiy Metallotsentr",
+   "b": "OOO Taganrogskiy Metallokontsern",
+   "verdict": "different",
+   "nature": "cyrillic-compound-part"
+  },
+  {
+   "a": "AO Rostovskiy Portovyy Elevator",
+   "b": "AO Rostovskiy Rechnoy Elevator",
+   "verdict": "different",
+   "nature": "cyrillic-activity-word"
+  },
+  {
+   "a": "OOO Torgovyy Dom Yevdokimov",
+   "b": "OOO Torgovyy Dom Yefimov",
+   "verdict": "different",
+   "nature": "cyrillic-near-surname"
+  },
+  {
+   "a": "OOO Khimtrans-Yug",
+   "b": "OOO Khimtrans-Sever",
+   "verdict": "different",
+   "nature": "cyrillic-direction-word"
+  },
+  {
+   "a": "OOO Tsentrsnab-Don",
+   "b": "OOO Tsentrsnab-Kuban",
+   "verdict": "different",
+   "nature": "cyrillic-region-word"
+  },
+  {
+   "a": "TOV Izmailskyi Richkovyi Prychal",
+   "b": "TOV Reniiskyi Richkovyi Prychal",
+   "verdict": "different",
+   "nature": "cyrillic-near-place-name"
+  },
+  {
+   "a": "OOO Belogorye-Trans",
+   "b": "OOO Belozerye-Trans",
+   "verdict": "different",
+   "nature": "cyrillic-near-place-name"
+  },
+  {
+   "a": "OOO Kamen-Portservis",
+   "b": "OOO Kamysh-Portservis",
+   "verdict": "different",
+   "nature": "cyrillic-near-word"
+  },
+  {
+   "a": "OOO Rostov-Zerno",
+   "b": "OOO Rostok-Zerno",
+   "verdict": "different",
+   "nature": "cyrillic-near-word"
+  },
+  {
+   "a": "OOO Novotitarovskiy Elevator",
+   "b": "OOO Novotroitskiy Elevator",
+   "verdict": "different",
+   "nature": "cyrillic-near-place-name"
+  },
+  {
+   "a": "OOO Primorsko-Akhtarskiy Rybzavod",
+   "b": "OOO Primorsko-Akhtarskiy Kombikormzavod",
+   "verdict": "different",
+   "nature": "cyrillic-activity-word"
+  },
+  {
+   "a": "TOV Chornomorska Khlibna Kompaniia",
+   "b": "Chornomorska Khlibna Kompaniia SRL",
+   "verdict": "different",
+   "nature": "cyrillic-foreign-subsidiary"
+  },
+  {
+   "a": "OOO Yuzhtranzitservis",
+   "b": "OOO Yuzhtransservis",
+   "verdict": "different",
+   "nature": "cyrillic-compound-part"
+  },
+  {
+   "a": "OOO Kubanskaya Zhatva",
+   "b": "OOO Kurganskaya Zhatva",
+   "verdict": "different",
+   "nature": "cyrillic-near-place-name"
+  },
+  {
+   "a": "OOO Stalprokat-Yug",
+   "b": "OOO Stalprofil-Yug",
+   "verdict": "different",
+   "nature": "cyrillic-compound-part"
+  },
+  {
+   "a": "TOV Zaporizkyi Metalozbut",
+   "b": "TOV Zaporizkyi Metalobaza",
+   "verdict": "different",
+   "nature": "cyrillic-compound-part"
+  },
+  {
+   "a": "OOO Temryukskiy Morskoy Terminal",
+   "b": "OOO Temryukskiy Portovyy Terminal",
+   "verdict": "different",
+   "nature": "cyrillic-activity-word"
+  },
+  {
+   "a": "OOO Taman-Agrotrans",
+   "b": "OOO Taman-Avtotrans",
+   "verdict": "different",
+   "nature": "cyrillic-compound-part"
+  },
+  {
+   "a": "OOO Don-Zernoprodukt",
+   "b": "OOO Don-Zernoproekt",
+   "verdict": "different",
+   "nature": "cyrillic-compound-part"
+  },
+  {
+   "a": "OOO Salskiy Elevator",
+   "b": "OOO Salskiy Elevatorstroy",
+   "verdict": "different",
+   "nature": "cyrillic-compound-part"
+  },
+  {
+   "a": "ООО «Азовзернотранс»",
+   "b": "OOO Azovzernoterminal",
+   "verdict": "different",
+   "nature": "cyrillic-original-script-near"
+  },
+  {
+   "a": "PAO Priazovskiy Kombinat Zhelezobetona",
+   "b": "PAO Priazovskiy Zavod Zhelezobetona",
+   "verdict": "different",
+   "nature": "cyrillic-activity-word"
+  },
+  {
+   "a": "TOV Kharkivskyi Metalotorh",
+   "b": "TOV Khersonskyi Metalotorh",
+   "verdict": "different",
+   "nature": "cyrillic-near-place-name"
+  },
+  {
+   "a": "ZAO Shchekinskiy Metallosklad",
+   "b": "ZAO Shchuchinskiy Metallosklad",
+   "verdict": "different",
+   "nature": "cyrillic-near-place-name"
+  },
+  {
+   "a": "TOV Mykolaivskyi Kombikormovyi Zavod",
+   "b": "TOV Mykolaivskyi Kombikormovyi Zavod No. 2",
+   "verdict": "different",
+   "nature": "cyrillic-numbered-entity"
+  },
+  {
+   "a": "OOO Yeyskiy Portovyy Elevator",
+   "b": "OOO Yeyskiy Portovyy Kholodilnik",
+   "verdict": "different",
+   "nature": "cyrillic-activity-word"
+  },
+  {
+   "a": "PAO Tuapsinskiy Bunkerovshchik",
+   "b": "PAO Tuapsinskiy Buksirovshchik",
+   "verdict": "different",
+   "nature": "cyrillic-near-word"
+  },
+  {
+   "a": "ООО «Таман-Агротранс»",
+   "b": "ООО «Тамань-Агросервис»",
+   "verdict": "different",
+   "nature": "cyrillic-original-script-near"
+  },
+  {
+   "a": "AT Pivdennyi Portovyi Zavod",
+   "b": "AT Pivnichnyi Portovyi Zavod",
+   "verdict": "different",
+   "nature": "cyrillic-direction-word"
+  },
+  {
+   "a": "TOV Prychornomorskyi Terminal",
+   "b": "TOV Pryazovskyi Terminal",
+   "verdict": "different",
+   "nature": "cyrillic-near-place-name"
+  },
+  {
+   "a": "OOO Donantratsit-Trans",
+   "b": "OOO Donantratsit-Snab",
+   "verdict": "different",
+   "nature": "cyrillic-compound-part"
+  },
+  {
+   "a": "TOV Zhytomyrskyi Lisotorh",
+   "b": "TOV Zhytomyrskyi Lisokombinat",
+   "verdict": "different",
+   "nature": "cyrillic-compound-part"
+  },
+  {
+   "a": "PAO Tsemzavod Mayachnyy",
+   "b": "PAO Tsemzavod Mayskiy",
+   "verdict": "different",
+   "nature": "cyrillic-near-word"
+  },
+  {
+   "a": "MV KAPITAN ZAVYALOV",
+   "b": "M/V Kapitan Zavyalov",
+   "verdict": "match",
+   "nature": "vessel-prefix-variant"
+  },
+  {
+   "a": "KAPITAN ZAVYALOV",
+   "b": "KAPITAN ZAVJALOV",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "КАПИТАН ЗАВЬЯЛОВ",
+   "b": "KAPITAN ZAV'YALOV",
+   "verdict": "match",
+   "nature": "vessel-cyrillic-original"
+  },
+  {
+   "a": "T/H NIZHNEDONSK-1408",
+   "b": "NIZHNEDONSK 1408",
+   "verdict": "match",
+   "nature": "vessel-teplokhod-prefix"
+  },
+  {
+   "a": "T/KH AZOVSKIY RUBEZH 7",
+   "b": "Azovskiy Rubezh-7",
+   "verdict": "match",
+   "nature": "vessel-teplokhod-prefix"
+  },
+  {
+   "a": "ALTAIR STAR (ex-MEKHANIK KHARITONOV)",
+   "b": "MEKHANIK KHARITONOV",
+   "verdict": "match",
+   "nature": "vessel-former-name"
+  },
+  {
+   "a": "MEKHANIK KHARITONOV",
+   "b": "MEHANIK HARITONOV",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "MV AKDENİZ ŞAFAK",
+   "b": "M/V AKDENIZ SAFAK",
+   "verdict": "match",
+   "nature": "vessel-turkish-diacritics"
+  },
+  {
+   "a": "ŞEHİT KAPTAN ÖZER",
+   "b": "SEHIT KAPTAN OZER",
+   "verdict": "match",
+   "nature": "vessel-turkish-diacritics"
+  },
+  {
+   "a": "CAPT. SEMENYUK",
+   "b": "KAPITAN SEMENYUK",
+   "verdict": "match",
+   "nature": "vessel-rank-translated"
+  },
+  {
+   "a": "AKADEMIK PETRYAKOV",
+   "b": "AKAD. PETRYAKOV",
+   "verdict": "match",
+   "nature": "vessel-rank-abbreviated"
+  },
+  {
+   "a": "SEYIT REIS (Panama)",
+   "b": "SEYIT REIS",
+   "verdict": "match",
+   "nature": "vessel-flag-residue"
+  },
+  {
+   "a": "NIKOLAY ORLOVSKIY, port of registry Taganrog",
+   "b": "NIKOLAY ORLOVSKIY",
+   "verdict": "match",
+   "nature": "vessel-port-residue"
+  },
+  {
+   "a": "PRIAZOVYE-1204",
+   "b": "PRIAZOVYE 1204",
+   "verdict": "match",
+   "nature": "vessel-series-number"
+  },
+  {
+   "a": "DENIZ YOLCUSU 2",
+   "b": "DENIZ YOLCUSU II",
+   "verdict": "match",
+   "nature": "vessel-numeral-roman"
+  },
+  {
+   "a": "MV KARA BURUN ex ZOLOTAYA KOSA",
+   "b": "ZOLOTAYA KOSA",
+   "verdict": "match",
+   "nature": "vessel-former-name"
+  },
+  {
+   "a": "KERCHENSKIY PROLIV-3",
+   "b": "KERCHENSKY PROLIV 3",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "VOLNA DONA-2208",
+   "b": "Volna Dona 2208",
+   "verdict": "match",
+   "nature": "vessel-series-number"
+  },
+  {
+   "a": "M/V YILDIZ KAPTAN",
+   "b": "MV YILDIZ KAPTAN (Comoros flag)",
+   "verdict": "match",
+   "nature": "vessel-flag-residue"
+  },
+  {
+   "a": "MT ÇAMLIBEL",
+   "b": "M/T CAMLIBEL",
+   "verdict": "match",
+   "nature": "vessel-turkish-diacritics"
+  },
+  {
+   "a": "GENERAL KHOTINTSEV",
+   "b": "GENERAL HOTINCEV",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "ZHURAVUSHKA DONSKAYA",
+   "b": "ŽURAVUŠKA DONSKAJA",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "ЖУРАВУШКА ДОНСКАЯ",
+   "b": "ZHURAVUSHKA DONSKAYA",
+   "verdict": "match",
+   "nature": "vessel-cyrillic-original"
+  },
+  {
+   "a": "barge PRIDONYE 41",
+   "b": "PRIDONYE-41 (barge)",
+   "verdict": "match",
+   "nature": "vessel-type-residue"
+  },
+  {
+   "a": "KAPITAN GUSEYNOV (ex-MARMARA GULU)",
+   "b": "MARMARA GÜLÜ",
+   "verdict": "match",
+   "nature": "vessel-former-name"
+  },
+  {
+   "a": "DENIZ KARTALI",
+   "b": "M/V DENİZ KARTALI",
+   "verdict": "match",
+   "nature": "vessel-prefix-variant"
+  },
+  {
+   "a": "STEPNOY VETER 17",
+   "b": "STEPNOI VETER 17",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "KAPITAN YUSHKEVICH",
+   "b": "KAPITAN IUSHKEVICH",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "MATROS TSYBULSKIY",
+   "b": "MATROS CYBULSKIJ",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "T/H SHKIPER KOVALCHUK",
+   "b": "SKIPPER KOVALCHUK",
+   "verdict": "match",
+   "nature": "vessel-rank-translated"
+  },
+  {
+   "a": "NORD AMBER (ex-PRIAZOVYE-1207)",
+   "b": "PRIAZOVYE-1207",
+   "verdict": "match",
+   "nature": "vessel-former-name"
+  },
+  {
+   "a": "KARADENİZ ŞAHİNİ",
+   "b": "KARADENIZ SAHINI",
+   "verdict": "match",
+   "nature": "vessel-turkish-diacritics"
+  },
+  {
+   "a": "M/V SAMSUN YILDIZI",
+   "b": "SAMSUN YILDIZI, Samsun",
+   "verdict": "match",
+   "nature": "vessel-port-residue"
+  },
+  {
+   "a": "ILYA TOKAREV",
+   "b": "IL'YA TOKAREV",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "GEROY TRUDA MAKSIMOV",
+   "b": "GEROI TRUDA MAKSIMOV",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "ALEKSANDR ZHEREBTSOV",
+   "b": "ALEXANDER ZHEREBTSOV",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "RUSLAN TKACHYOV",
+   "b": "RUSLAN TKACHEV",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "TUG KORSAK 12",
+   "b": "tug KORSAK-12",
+   "verdict": "match",
+   "nature": "vessel-series-number"
+  },
+  {
+   "a": "MV ARDA NUR",
+   "b": "ARDA NUR (Moldova flag)",
+   "verdict": "match",
+   "nature": "vessel-flag-residue"
+  },
+  {
+   "a": "T/H VOLNA DONA-2208",
+   "b": "VOLNA DONA 2208, flag Russia, port Rostov-on-Don",
+   "verdict": "match",
+   "nature": "vessel-port-residue"
+  },
+  {
+   "a": "NIZHNEDONSK-1408",
+   "b": "NIZHNEDONSK-1403",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "AZOVSKIY RUBEZH 7",
+   "b": "AZOVSKIY RUBEZH 17",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "KAPITAN ZAVYALOV",
+   "b": "KAPITAN ZAVARZIN",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "MEKHANIK KHARITONOV",
+   "b": "MEKHANIK KHARLAMOV",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "DENIZ YOLCUSU 1",
+   "b": "DENIZ YOLCUSU 2",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "MV KARADENİZ ŞAHİNİ",
+   "b": "Karadeniz Şahini Denizcilik Ltd. Şti.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "PRIAZOVYE-1204",
+   "b": "Priazovye Shipmanagement LLC",
+   "verdict": "different",
+   "nature": "vessel-vs-manager"
+  },
+  {
+   "a": "TUG KORSAK 12",
+   "b": "BARGE KORSAK 12",
+   "verdict": "different",
+   "nature": "vessel-tug-vs-barge"
+  },
+  {
+   "a": "YILDIZ KAPTAN",
+   "b": "YILDIZ KAPTANLAR",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "SEHIT KAPTAN OZER",
+   "b": "SEHIT KAPTAN OZEN",
+   "verdict": "different",
+   "nature": "vessel-one-letter"
+  },
+  {
+   "a": "AKADEMIK PETRYAKOV",
+   "b": "AKADEMIK PETROVSKIY",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "KERCHENSKIY PROLIV-3",
+   "b": "KERCHENSKIY PROLIV-8",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "VOLNA DONA-2208",
+   "b": "VOLNA DONA-2280",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "SEYIT REIS",
+   "b": "SEYIT REIS II",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "KAPITAN SEMENYUK",
+   "b": "KAPITAN SEMENOV",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "M/V SAMSUN YILDIZI",
+   "b": "Samsun Yıldızı Gemi İşletmeciliği A.Ş.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "ZHURAVUSHKA DONSKAYA",
+   "b": "ZHURAVUSHKA KUBANSKAYA",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "MT ÇAMLIBEL",
+   "b": "MT ÇAMLIDERE",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "GENERAL KHOTINTSEV",
+   "b": "GENERAL KHOTIMSKIY",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "STEPNOY VETER 17",
+   "b": "STEPNOY VETER 7",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "KAPITAN YUSHKEVICH",
+   "b": "KAPITAN YURKEVICH",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "MATROS TSYBULSKIY",
+   "b": "MATROS TSYBULKIN",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "SHKIPER KOVALCHUK",
+   "b": "SHKIPER KOVALENKO",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "NORD AMBER",
+   "b": "NORD AMBERG",
+   "verdict": "different",
+   "nature": "vessel-one-letter"
+  },
+  {
+   "a": "KARADENIZ SAHINI",
+   "b": "KARADENIZ SAHINLERI",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "ILYA TOKAREV",
+   "b": "ILYA TOKMAKOV",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "GEROY TRUDA MAKSIMOV",
+   "b": "GEROY TRUDA MAKAROV",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "ALEKSANDR ZHEREBTSOV",
+   "b": "ALEKSEY ZHEREBTSOV",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "RUSLAN TKACHYOV",
+   "b": "RUSLANA TKACHYOVA",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "barge PRIDONYE 41",
+   "b": "barge PRIDONYE 14",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "ARDA NUR",
+   "b": "ARDA NURU",
+   "verdict": "different",
+   "nature": "vessel-one-letter"
+  },
+  {
+   "a": "DENIZ KARTALI",
+   "b": "DENIZ KARTALLARI",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "MV DENİZ KARTALI",
+   "b": "Deniz Kartalı Denizcilik A.Ş.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "ALTAIR STAR",
+   "b": "ALTAIR STARS",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "MARMARA GÜLÜ",
+   "b": "MARMARA GÜLLERİ",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "KAPITAN GUSEYNOV",
+   "b": "Kapitan Guseynov Shipping Ltd",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "PRIAZOVYE-1207",
+   "b": "PRIAZOVYE-1204",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "TUG ATAMAN 5",
+   "b": "BARGE ATAMAN 5",
+   "verdict": "different",
+   "nature": "vessel-tug-vs-barge"
+  },
+  {
+   "a": "ZOLOTAYA KOSA",
+   "b": "ZOLOTAYA ROSA",
+   "verdict": "different",
+   "nature": "vessel-one-letter"
+  },
+  {
+   "a": "YILDIZ KAPTAN",
+   "b": "Yıldız Kaptan Gemi Acenteliği Ltd. Şti.",
+   "verdict": "different",
+   "nature": "vessel-vs-agent"
+  },
+  {
+   "a": "SAMSUN TAHIL DEPOLAMA VE DIS TICAR ET ANONIM SIRKETI",
+   "b": "Samsun Tahıl Depolama ve Dış Ticaret A.Ş.",
+   "verdict": "match",
+   "nature": "residue-swift-line-cut"
+  },
+  {
+   "a": "POHJOISRANNIKON VILJAKAUPPA OY HAMIN ANTIE 12 49400 HAMINA FI",
+   "b": "Pohjoisrannikon Viljakauppa Oy",
+   "verdict": "match",
+   "nature": "residue-address-glued"
+  },
+  {
+   "a": "/NAME/KUZEYRUZGAR LOJISTIK VE DIS TIC ARET LTD STI",
+   "b": "Kuzeyrüzgar Lojistik ve Dış Ticaret Ltd. Şti.",
+   "verdict": "match",
+   "nature": "residue-swift-line-cut"
+  },
+  {
+   "a": "BENEFICIARY: Sarıkaya Hububat Ltd. Şti.",
+   "b": "Sarikaya Hububat Ltd Sti",
+   "verdict": "match",
+   "nature": "residue-party-label"
+  },
+  {
+   "a": "ORDERING CUSTOMER: KALLIOSAARI TRADING OY",
+   "b": "Kalliosaari Trading Oy",
+   "verdict": "match",
+   "nature": "residue-party-label"
+  },
+  {
+   "a": "hi pls check laaksonen viljakuljetus oy thx",
+   "b": "Laaksonen Viljakuljetus Oy",
+   "verdict": "match",
+   "nature": "residue-chat-typing"
+  },
+  {
+   "a": "0ZKAYA NAKL1YAT LTD. ST1.",
+   "b": "Özkaya Nakliyat Ltd. Şti.",
+   "verdict": "match",
+   "nature": "residue-ocr-stamp"
+  },
+  {
+   "a": "TARNMELAN RAHTI OY",
+   "b": "Tammelan Rahti Oy",
+   "verdict": "match",
+   "nature": "residue-ocr-stamp"
+  },
+  {
+   "a": "Dnistrovska Agrotorhivlia LLC 14 Portova str Odesa 65026 Ukraine",
+   "b": "Dnistrovska Agrotorhivlia LLC",
+   "verdict": "match",
+   "nature": "residue-address-glued"
+  },
+  {
+   "a": "MESSRS. BALTIC TIMBERLINE OU",
+   "b": "Baltic Timberline OÜ",
+   "verdict": "match",
+   "nature": "residue-party-label"
+  },
+  {
+   "a": "NORDMARK + SKOGBERG AB",
+   "b": "Nordmark & Skogberg AB",
+   "verdict": "match",
+   "nature": "residue-swift-charset"
+  },
+  {
+   "a": "REF FT2231-0915 /BNF/ KAYALAR UN SANAYI AS",
+   "b": "Kayalar Un Sanayi A.Ş.",
+   "verdict": "match",
+   "nature": "residue-bank-reference"
+  },
+  {
+   "a": "CONSIGNEE: TOV ZERNOVA HAVAN, MYKOLAIV",
+   "b": "TOV Zernova Havan",
+   "verdict": "match",
+   "nature": "residue-party-label"
+  },
+  {
+   "a": "NOTIFY PARTY - Marinero Ship Agency SRL Constanta Romania",
+   "b": "Marinero Ship Agency SRL",
+   "verdict": "match",
+   "nature": "residue-address-glued"
+  },
+  {
+   "a": "VESSEL: MV KARA MARTI / IMO N/A",
+   "b": "KARA MARTI",
+   "verdict": "match",
+   "nature": "residue-vessel-field"
+  },
+  {
+   "a": "PER MV TAMAN ZARYA VOY 14",
+   "b": "TAMAN ZARYA",
+   "verdict": "match",
+   "nature": "residue-vessel-field"
+  },
+  {
+   "a": "LAIVANVARUSTAMO REPOLA OYVAASANKATU 3",
+   "b": "Laivanvarustamo Repola Oy",
+   "verdict": "match",
+   "nature": "residue-address-glued"
+  },
+  {
+   "a": "KYLMAKONTTI PALVELUT OY",
+   "b": "Kylmäkontti Palvelut Oy",
+   "verdict": "match",
+   "nature": "residue-uppercase-export"
+  },
+  {
+   "a": "SIA DAUGAVAS KRASTA LOGISTIKA RIGA LV-1045",
+   "b": "SIA Daugavas Krasta Loģistika",
+   "verdict": "match",
+   "nature": "residue-address-glued"
+  },
+  {
+   "a": "uab vetrunges kroviniu ekspedijavimas",
+   "b": "UAB Vėtrungės Krovinių Ekspedijavimas",
+   "verdict": "match",
+   "nature": "residue-chat-typing"
+  },
+  {
+   "a": "PAYEE: ANADOLUKAVAGI HUBUBAT SAN.TIC.A.S. ISTANBUL/TURKEY",
+   "b": "Anadolukavağı Hububat San. ve Tic. A.Ş.",
+   "verdict": "match",
+   "nature": "residue-party-label"
+  },
+  {
+   "a": "1/POLTAVSKA ZERNOVA KOMPANIIA TOV 2/VUL. SHKILNA 7 3/UA/POLTAVA",
+   "b": "TOV Poltavska Zernova Kompaniia",
+   "verdict": "match",
+   "nature": "residue-swift-structured"
+  },
+  {
+   "a": "OOO KALINOVYY PRlCHAL",
+   "b": "OOO Kalinovyy Prichal",
+   "verdict": "match",
+   "nature": "residue-ocr-stamp"
+  },
+  {
+   "a": "TOKATLIGIL DENIZCILIK A.S. (THE SELLER)",
+   "b": "Tokatlıgil Denizcilik A.Ş.",
+   "verdict": "match",
+   "nature": "residue-party-label"
+  },
+  {
+   "a": "ATTN MR. KORHONEN / MERIVIRTA OY",
+   "b": "Merivirta Oy",
+   "verdict": "match",
+   "nature": "residue-attention-line"
+  },
+  {
+   "a": "KAARNATAIVAS OY, Y-TUNNUS 1234567-8",
+   "b": "Kaarnataivas Oy",
+   "verdict": "match",
+   "nature": "residue-registration-number"
+  },
+  {
+   "a": "can u check odessa grainlink tov asap",
+   "b": "TOV Odesa Grainlink",
+   "verdict": "match",
+   "nature": "residue-chat-typing"
+  },
+  {
+   "a": "SHIPPER: SINOPLU SU ÜRÜNLERİ LTD. ŞTİ.",
+   "b": "Sinoplu Su Urunleri Ltd. Sti.",
+   "verdict": "match",
+   "nature": "residue-party-label"
+  },
+  {
+   "a": "LIMANTEPE GEMI KIRAL AMA VE TICARET A.S.",
+   "b": "Limantepe Gemi Kiralama ve Ticaret A.Ş.",
+   "verdict": "match",
+   "nature": "residue-swift-line-cut"
+  },
+  {
+   "a": "LLC KOLKHURI TVIRTI, POTI, GEORGIA",
+   "b": "Kolkhuri Tvirti LLC",
+   "verdict": "match",
+   "nature": "residue-address-glued"
+  },
+  {
+   "a": "SJÖGRIND LOGISTIK AB (PUBL) GOTEBORG SE",
+   "b": "Sjögrind Logistik AB",
+   "verdict": "match",
+   "nature": "residue-address-glued"
+  },
+  {
+   "a": "Valkeasaari Shpiping Oy",
+   "b": "Valkeasaari Shipping Oy",
+   "verdict": "match",
+   "nature": "residue-typo"
+  },
+  {
+   "a": "KARADAGLI NAKLIYAT LTD STI (TR)",
+   "b": "Karadağlı Nakliyat Ltd. Şti.",
+   "verdict": "match",
+   "nature": "residue-country-code"
+  },
+  {
+   "a": "Dunarea Verde Grain Logistics S.R.L. / Constanta Port Gate 7",
+   "b": "Dunarea Verde Grain Logistics SRL",
+   "verdict": "match",
+   "nature": "residue-address-glued"
+  },
+  {
+   "a": "PETROVSKAYA HLEBNAYA BAZA OOO M.P.",
+   "b": "OOO Petrovskaya Khlebnaya Baza",
+   "verdict": "match",
+   "nature": "residue-ocr-stamp"
+  },
+  {
+   "a": "For and on behalf of AKSOYLAR CELIK DIS TICARET A.S.",
+   "b": "Aksoylar Çelik Dış Ticaret A.Ş.",
+   "verdict": "match",
+   "nature": "residue-signature-line"
+  },
+  {
+   "a": "TO THE ORDER OF KUMSALLAR HUBUBAT A.S.",
+   "b": "Kumsallar Hububat A.Ş.",
+   "verdict": "match",
+   "nature": "residue-party-label"
+  },
+  {
+   "a": "59:/ACC 0042771 KIRMIZIGUL GIDA LTD STI",
+   "b": "Kırmızıgül Gıda Ltd. Şti.",
+   "verdict": "match",
+   "nature": "residue-bank-reference"
+  },
+  {
+   "a": "B/L: SHIPPED ON BOARD M/V SARI KAYA",
+   "b": "SARI KAYA",
+   "verdict": "match",
+   "nature": "residue-vessel-field"
+  },
+  {
+   "a": "M/V ÖZLEM ANA - OWNERS ACCOUNT",
+   "b": "OZLEM ANA",
+   "verdict": "match",
+   "nature": "residue-vessel-field"
+  },
+  {
+   "a": "SAMSUN TAHIL DEPOLAMA VE DIS TICAR ET ANONIM SIRKETI",
+   "b": "Samsun Tahıl Taşımacılık ve Dış Ticaret A.Ş.",
+   "verdict": "different",
+   "nature": "residue-swift-near-name"
+  },
+  {
+   "a": "POHJOISRANNIKON VILJAKAUPPA OY HAMINANTIE 12",
+   "b": "Pohjoisrannikon Viljavarasto Oy",
+   "verdict": "different",
+   "nature": "residue-address-near-name"
+  },
+  {
+   "a": "BENEFICIARY: Sarıkaya Hububat Ltd. Şti.",
+   "b": "Sarıyaka Hububat Ltd. Şti.",
+   "verdict": "different",
+   "nature": "residue-label-near-name"
+  },
+  {
+   "a": "ORDERING CUSTOMER: KALLIOSAARI TRADING OY",
+   "b": "Kalliosalmi Trading Oy",
+   "verdict": "different",
+   "nature": "residue-label-near-name"
+  },
+  {
+   "a": "pls check laaksonen viljakuljetus",
+   "b": "Laaksonen Viljakauppa Oy",
+   "verdict": "different",
+   "nature": "residue-chat-near-name"
+  },
+  {
+   "a": "0ZKAYA NAKL1YAT LTD. ST1.",
+   "b": "Özkaya Nakış Ltd. Şti.",
+   "verdict": "different",
+   "nature": "residue-ocr-near-name"
+  },
+  {
+   "a": "TARNMELAN RAHTI OY",
+   "b": "Tampereen Rahti Oy",
+   "verdict": "different",
+   "nature": "residue-ocr-near-name"
+  },
+  {
+   "a": "Dnistrovska Agrotorhivlia LLC 14 Portova str Odesa",
+   "b": "Dnistrovska Agrotekhnika LLC",
+   "verdict": "different",
+   "nature": "residue-address-near-name"
+  },
+  {
+   "a": "MESSRS. BALTIC TIMBERLINE OU",
+   "b": "Baltic Timberland OÜ",
+   "verdict": "different",
+   "nature": "residue-label-near-name"
+  },
+  {
+   "a": "NORDMARK + SKOGBERG AB",
+   "b": "Nordmark & Skogby AB",
+   "verdict": "different",
+   "nature": "residue-swift-near-name"
+  },
+  {
+   "a": "REF FT2231-0915 /BNF/ KAYALAR UN SANAYI AS",
+   "b": "Kayalar Yem Sanayi A.Ş.",
+   "verdict": "different",
+   "nature": "residue-reference-near-name"
+  },
+  {
+   "a": "CONSIGNEE: TOV ZERNOVA HAVAN, MYKOLAIV",
+   "b": "TOV Zernova Hvylia",
+   "verdict": "different",
+   "nature": "residue-label-near-name"
+  },
+  {
+   "a": "NOTIFY PARTY - Marinero Ship Agency SRL Constanta Romania",
+   "b": "Marinero Ship Agency Ltd, Varna Bulgaria",
+   "verdict": "different",
+   "nature": "residue-other-country-entity"
+  },
+  {
+   "a": "VESSEL: MV KARA MARTI / IMO N/A",
+   "b": "KARA MARTILAR",
+   "verdict": "different",
+   "nature": "residue-vessel-plural"
+  },
+  {
+   "a": "PER MV TAMAN ZARYA VOY 14",
+   "b": "TAMAN ZARYA 2",
+   "verdict": "different",
+   "nature": "residue-vessel-numbered"
+  },
+  {
+   "a": "LAIVANVARUSTAMO REPOLA OYVAASANKATU 3",
+   "b": "Laivanvarustamo Rapola Oy",
+   "verdict": "different",
+   "nature": "residue-address-near-name"
+  },
+  {
+   "a": "KYLMAKONTTI PALVELUT OY",
+   "b": "Kylmäkuljetus Palvelut Oy",
+   "verdict": "different",
+   "nature": "residue-uppercase-near-name"
+  },
+  {
+   "a": "SIA DAUGAVAS KRASTA LOGISTIKA RIGA LV-1045",
+   "b": "SIA Gaujas Krasta Loģistika",
+   "verdict": "different",
+   "nature": "residue-address-near-name"
+  },
+  {
+   "a": "PAYEE: ANADOLUKAVAGI HUBUBAT SAN.TIC.A.S. ISTANBUL/TURKEY",
+   "b": "Anadoluhisarı Hububat San. ve Tic. A.Ş.",
+   "verdict": "different",
+   "nature": "residue-label-near-name"
+  },
+  {
+   "a": "1/POLTAVSKA ZERNOVA KOMPANIIA TOV 2/VUL. SHKILNA 7 3/UA/POLTAVA",
+   "b": "TOV Poltavska Zernova Asotsiatsiia",
+   "verdict": "different",
+   "nature": "residue-swift-near-name"
+  },
+  {
+   "a": "OOO KALINOVYY PRlCHAL",
+   "b": "OOO Kalinovyy Pereval",
+   "verdict": "different",
+   "nature": "residue-ocr-near-name"
+  },
+  {
+   "a": "TOKATLIGIL DENIZCILIK A.S. (THE SELLER)",
+   "b": "Tokatlıoğlu Denizcilik A.Ş.",
+   "verdict": "different",
+   "nature": "residue-label-near-name"
+  },
+  {
+   "a": "ATTN MR. KORHONEN / MERIVIRTA OY",
+   "b": "Merivarsi Oy",
+   "verdict": "different",
+   "nature": "residue-attention-near-name"
+  },
+  {
+   "a": "KAARNATAIVAS OY, Y-TUNNUS 1234567-8",
+   "b": "Kaarnatalo Oy",
+   "verdict": "different",
+   "nature": "residue-registration-near-name"
+  },
+  {
+   "a": "can u check odessa grainlink tov asap",
+   "b": "TOV Odesa Grainline",
+   "verdict": "different",
+   "nature": "residue-chat-near-name"
+  },
+  {
+   "a": "SHIPPER: SINOPLU SU ÜRÜNLERİ LTD. ŞTİ.",
+   "b": "Sinoplu Su Yolları Ltd. Şti.",
+   "verdict": "different",
+   "nature": "residue-label-near-name"
+  },
+  {
+   "a": "LIMANTEPE GEMI KIRAL AMA VE TICARET A.S.",
+   "b": "Limantepe Gemi Kurtarma ve Ticaret A.Ş.",
+   "verdict": "different",
+   "nature": "residue-swift-near-name"
+  },
+  {
+   "a": "LLC KOLKHURI TVIRTI, POTI, GEORGIA",
+   "b": "Imeruli Tvirti LLC",
+   "verdict": "different",
+   "nature": "residue-address-near-name"
+  },
+  {
+   "a": "SJÖGRIND LOGISTIK AB (PUBL) GOTEBORG SE",
+   "b": "Sjögrind Logistik Oy",
+   "verdict": "different",
+   "nature": "residue-other-country-entity"
+  },
+  {
+   "a": "Valkeasaari Shpiping Oy",
+   "b": "Vallisaari Shipping Oy",
+   "verdict": "different",
+   "nature": "residue-typo-near-name"
+  },
+  {
+   "a": "KARADAGLI NAKLIYAT LTD STI (TR)",
+   "b": "Karadağlı Nakliyat SRL (RO)",
+   "verdict": "different",
+   "nature": "residue-other-country-entity"
+  },
+  {
+   "a": "Dunarea Verde Grain Logistics S.R.L. / Constanta Port Gate 7",
+   "b": "Dunarea Verde Grain Terminal S.R.L.",
+   "verdict": "different",
+   "nature": "residue-address-near-name"
+  },
+  {
+   "a": "PETROVSKAYA HLEBNAYA BAZA OOO M.P.",
+   "b": "OOO Petrovskaya Neftebaza",
+   "verdict": "different",
+   "nature": "residue-ocr-near-name"
+  },
+  {
+   "a": "For and on behalf of AKSOYLAR CELIK DIS TICARET A.S.",
+   "b": "Aksaylar Çelik Dış Ticaret A.Ş.",
+   "verdict": "different",
+   "nature": "residue-signature-near-name"
+  },
+  {
+   "a": "TO THE ORDER OF KUMSALLAR HUBUBAT A.S.",
+   "b": "Kumsallı Hububat A.Ş.",
+   "verdict": "different",
+   "nature": "residue-label-near-name"
+  },
+  {
+   "a": "59:/ACC 0042771 KIRMIZIGUL GIDA LTD STI",
+   "b": "Kırmızıgöl Gıda Ltd. Şti.",
+   "verdict": "different",
+   "nature": "residue-reference-near-name"
+  },
+  {
+   "a": "B/L: SHIPPED ON BOARD M/V SARI KAYA",
+   "b": "SARI KAYALAR",
+   "verdict": "different",
+   "nature": "residue-vessel-plural"
+  },
+  {
+   "a": "M/V ÖZLEM ANA - OWNERS ACCOUNT",
+   "b": "Özlem Ana Denizcilik A.Ş.",
+   "verdict": "different",
+   "nature": "residue-vessel-vs-owner"
+  },
+  {
+   "a": "uab vetrunges kroviniu ekspedijavimas",
+   "b": "UAB Vėtrungės Krovinių Terminalas",
+   "verdict": "different",
+   "nature": "residue-chat-near-name"
+  },
+  {
+   "a": "/NAME/KUZEYRUZGAR LOJISTIK VE DIS TIC ARET LTD STI",
+   "b": "Güneyrüzgar Lojistik ve Dış Ticaret Ltd. Şti.",
+   "verdict": "different",
+   "nature": "residue-swift-near-name"
+  }
+ ]
+}
