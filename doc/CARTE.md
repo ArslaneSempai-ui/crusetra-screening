@@ -15,6 +15,9 @@ Lire ceci avant d'ouvrir un fichier ; ouvrir ensuite le fichier en ciblant (gre
 | `src/entites.ts` | la façade (`export *` des modules), `scoreNoms`, `palierEntite`, la mesure sur les jeux, les seuils | presque jamais |
 | `src/cribler.ts` | l'index sans perte : toute nouvelle façon de retrouver un mot (pli, clé, sentinelle) doit y être rangée, sinon le témoin exhaustif rougit | dès qu'un pli ou une clé naît |
 
+`doc/LIMITES.md` : le registre des limites connues (paire, jeu, score, raison), que `rates-du-jeu` lit pour marquer
+les paires « limite connue » ; une voie ne les rouvre pas (VOIE.md, règle 11).
+
 Les tests : `src/entites.test.ts` (le matcher), `src/cribler.test.ts` (l'index). Une règle gardée a son test, souvent
 avec la paire qui l'a motivée. Une voie écrit ses tests dans un fichier à elle (`src/tour<N>-<voie>.test.ts`) pour
 que deux voies ne se rencontrent pas dans le même fichier à la fusion.
@@ -31,6 +34,22 @@ que deux voies ne se rencontrent pas dans le même fichier à la fusion.
 - `npm run temoin-index -- --exhaustif` : l'index contre la comparaison exhaustive, zéro écart exigé quand on
   touche à la préparation, aux jetons, au squelette, à `simMot`, au memo, aux variantes ou à l'index. Une fois par
   voie, à la fin ; sans `--exhaustif` il ne mesure que le temps.
+- La mesure et le témoin exhaustif tournent sur des fils (`src/mesure-parallele.ts`, node:worker_threads) : le fil
+  principal répartit les paires (ou les requêtes du témoin) sur `os.availableParallelism() - 1` fils, au moins un,
+  une paire sur N à chaque fil ; chaque fil charge les mêmes modules, LIT les fréquences du cache (jamais ne le
+  reconstruit : le fil principal l'a construit avant, en appelant `frequencesDesListes()`), note sa part et renvoie
+  ses scores ; le fil principal assemble la même table et imprime la même sortie, au chiffre de temps près (la ligne
+  `temps` dit aussi le nombre de fils et leur démarrage : modules chargés et cache lu, 85 ms et 13 ms mesurés le 28/09).
+  Le témoin : chaque fil du témoin porte un index complet des cinq listes (12 s, 0,9 Go de RSS mesurés le 28/09), le
+  nombre de fils est borné par le quart de la mémoire de la machine, et le fil principal prend une part avec l'index
+  qu'il a déjà ; l'index lui-même et le criblage rapide restent sur un fil, pour que `ms/nom` veuille dire quelque chose.
+  `MESURE_SEQUENTIELLE=1` garde le chemin d'un seul fil : la référence ; `MESURE_FILS=N` force le nombre de fils.
+  La preuve : `node src/mesure-entites.ts --detail` avec et sans la variable, `diff` des deux sorties sans les lignes
+  `temps` vide, et vide aussi contre la sortie d'avant les fils ; `npm run comparer` de l'une contre l'autre : rien
+  d'apparu, rien de perdu ; le témoin avec et sans la variable : mêmes lignes, `écarts 0`. Le test :
+  `src/mesure-parallele.test.ts`, soixante paires (`src/fixtures/paires-parallele.json`) où fils et fil unique doivent
+  donner le même score à chaque paire. Avant les fils, sur cette machine : la mesure détaillée 3,1 s (le cache des
+  fréquences avait déjà retiré la minute des listes), le témoin exhaustif 576 s (6,1 s par nom, 90 noms).
 - Le jeu aveugle n'est jamais lu ni mesuré en détail : `npm run verdict`, une fois, par la session Juge
   (`verification/JUGE.md`) ; le registre est `verification/VERDICTS.md`.
 - La machine : une mesure prend une minute, une suite complète cinq, un témoin quatre. Deux voies et un témoin
@@ -50,6 +69,12 @@ que deux voies ne se rencontrent pas dans le même fichier à la fusion.
 - `npm run rates-du-jeu -- <N> [--mesure <fichier>]` : au début du tour suivant, ce que le jeu N ne passe pas
   encore (RATÉ, FAUSSE-F, possible), groupé par la nature de l'auteur, une ligne par paire et les trois totaux : le
   brief des voies s'écrit dessus. Sans `--mesure` il relance la mesure détaillée dans un fichier temporaire (une minute).
+  Une paire de `doc/LIMITES.md` sort avec « (limite connue: raison) » en queue, et le total les compte.
+- `npm run paire -- "a" "b"` : le diagnostic d'une paire, ce que le chef réécrivait en script jetable : le score, la
+  paire de lectures qui l'a donné et son plafond, puis pour chaque côté les variantes typées, les lectures, les mots
+  préparés (poids, squelette), les marques posées, et si `marquesEnConflit` tire ; texte plat, un fait par ligne.
+  `npm run paire -- --limites` rejoue les paires de `doc/LIMITES.md` et nomme les scores qui ont bougé
+  (`--corriger` réécrit la colonne) : à lancer à la fin du tour, avant de commettre.
 - `node scripts/doublons.mjs [--corriger] <fichier.ts>...` : à la fusion des voies, les clés en double d'un
   `Object.entries({ ... })` (TS1117, ce qu'une fusion en union laisse) : fichier, clé, les deux lignes ; `--corriger`
   retire la seconde. Sort en 1 tant qu'il en reste.

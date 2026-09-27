@@ -42,3 +42,11 @@ Une voie reçoit une liste de paires (vraies paires ratées, pièges qui passent
 10. Commentaires en français, dans la voix du fichier : dire pourquoi, nommer la famille de paires, jamais de
    cadratin (U+2014). TypeScript en mode strip : `import type` pour un type, pas de propriété de paramètre,
    pas d'enum. Des `Map`, jamais des objets littéraux indexés par les mots d'un utilisateur.
+
+## Les limites connues
+
+11. Une paire que `npm run rates-du-jeu` marque « limite connue » (le registre est `doc/LIMITES.md`) ne se rouvre
+   pas : la voie la laisse dans ses ratés sans y toucher, sauf si le sujet de la voie est exactement le mécanisme
+   que la raison nomme. Une voie qui la ferme quand même le dit sous « règles gardées », avec la ligne du registre
+   à retirer ; une voie qui découvre une limite nouvelle l'ajoute au registre (le score par `npm run paire`, la
+   raison en une phrase) au lieu de la noter dans son compte rendu.
