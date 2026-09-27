@@ -1,9 +1,9 @@
 {
   "version": 1,
   "genre": "cascade-screening/counterparty-screening",
-  "emisLe": "2026-09-27T20:39:06.976Z",
+  "emisLe": "2026-09-27T21:22:56.616Z",
   "client": "Example Forwarding Inc. (invented)",
-  "commit": "1e61179",
+  "commit": "0800413",
   "fichier": {
     "nom": "contreparties-exemple.csv",
     "sha256": "fab131564c82ea6c859845e4cf53207059d66e0acb75d1603c5d12974f6cbf89",
@@ -168,79 +168,86 @@
           "sha256": "715eeb73edfca96169a12fb59f598f0d4e7b0906df1b26a2cb96b915d9993021",
           "match": 200,
           "different": 200
+        },
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "authored on 2026-09-29 by a separate agent (an Abidjan customs broker and São Paulo trading bank brief, organised by document: francophone West African registries and invoices, Brazilian and Argentine registry and bank documents, Atlantic shipping, letters of credit and SWIFT in French and Portuguese, chat and OCR; explicit verdict conventions, one letter changed in a company name being the same name misspelt except in a vessel name; Sonnet, written in five parts) that never saw the matcher nor any other pair set, as blind test set #15 (sha256 f44d2a17…, after fifteen em dashes inside names were replaced by hyphens blind); every name invented; no client data, no list data; overlap with the fifteen earlier training sets: 0 pairs, 0 names; 22 pairs are accent variants of one pair with concordant verdicts. Judged once by the judge session on method v17 (entites.ts fa808a1c…, cribler.ts a91bf0c8…, ecritures.ts bdd60326…): strong 0.81 found 171/200 [80-90 %] with 8/200 false alerts [2-8 %]; possible 0.80 found 188/200 [90-97 %] with 35/200 [13-23 %]. Studied afterwards and promoted to training set 16 on 2026-09-29, so it no longer measures anything held out.",
+          "sha256": "ca8a8cd074509bb8f579b8eaa10d27d483216413d85d56b9b00dc1177a874001",
+          "match": 200,
+          "different": 200
         }
       ],
       "fort": {
         "rappel": {
-          "succes": 2391,
-          "n": 2570,
-          "taux": 0.9303501945525292,
-          "bas": 0.9198525086335223,
-          "haut": 0.9395632378521979
+          "succes": 2585,
+          "n": 2770,
+          "taux": 0.9332129963898917,
+          "bas": 0.9233029029213751,
+          "haut": 0.9419231431513351
         },
         "fauxPositifs": {
-          "succes": 58,
-          "n": 2570,
-          "taux": 0.022568093385214007,
-          "bas": 0.017498669593361018,
-          "haut": 0.029062703880437833
+          "succes": 64,
+          "n": 2770,
+          "taux": 0.023104693140794223,
+          "bas": 0.018135289651563635,
+          "haut": 0.02939503796339462
         }
       },
       "possible": {
         "rappel": {
-          "succes": 2547,
-          "n": 2570,
-          "taux": 0.9910505836575876,
-          "bas": 0.9866061780644112,
-          "haut": 0.9940291492999457
+          "succes": 2746,
+          "n": 2770,
+          "taux": 0.9913357400722022,
+          "bas": 0.9871397988191724,
+          "haut": 0.994170741768293
         },
         "fauxPositifs": {
-          "succes": 601,
-          "n": 2570,
-          "taux": 0.233852140077821,
-          "bas": 0.21789175590010745,
-          "haut": 0.2506070048627927
+          "succes": 636,
+          "n": 2770,
+          "taux": 0.2296028880866426,
+          "bas": 0.2143212020845085,
+          "haut": 0.24563354082510824
         }
       }
     },
     "verdict": {
       "jeu": {
         "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
-        "provenance": "blind test set #15, authored on 2026-09-29 by a separate agent (an Abidjan customs broker and São Paulo trading bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data Fifteen em dashes inside names were replaced by hyphens before the verdict, blind (a character substitution the normalisation makes neutral); no pair was read.",
-        "sha256": "f44d2a17cb28c92e5f4fb6ebd03bb9a5df189d9b1e0e49aae5461f37682eafaf",
+        "provenance": "blind test set #16, authored on 2026-09-29 by a separate agent (a Piraeus ship agent and Almaty grain-trading bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
+        "sha256": "482552a9b95968b44a2965ea82812f16388f0554e4ec76aff981400f96cc8fc1",
         "match": 200,
         "different": 200
       },
       "fort": {
         "rappel": {
-          "succes": 171,
+          "succes": 93,
           "n": 200,
-          "taux": 0.855,
-          "bas": 0.7995121871510563,
-          "haut": 0.8971071486469359
+          "taux": 0.465,
+          "bas": 0.39718443070423204,
+          "haut": 0.5341347897100506
         },
         "fauxPositifs": {
-          "succes": 8,
+          "succes": 12,
           "n": 200,
-          "taux": 0.04,
-          "bas": 0.02040538715065641,
-          "haut": 0.07693293829419882
+          "taux": 0.06,
+          "bas": 0.0346518499012715,
+          "haut": 0.10193263530685089
         }
       },
       "possible": {
         "rappel": {
-          "succes": 188,
+          "succes": 132,
           "n": 200,
-          "taux": 0.94,
-          "bas": 0.8980673646931491,
-          "haut": 0.9653481500987285
+          "taux": 0.66,
+          "bas": 0.5918836703220929,
+          "haut": 0.7220856077840445
         },
         "fauxPositifs": {
-          "succes": 35,
+          "succes": 38,
           "n": 200,
-          "taux": 0.175,
-          "bas": 0.12860441174608936,
-          "haut": 0.23364549210081922
+          "taux": 0.19,
+          "bas": 0.14167093792456506,
+          "haut": 0.250013585744794
         }
       }
     }
@@ -758,5 +765,5 @@
     "At most 5 candidates are shown per name, highest score first; the count of the others is given.",
     "The rates quoted first come from 200 matching pairs and 200 hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties."
   ],
-  "empreinte": "9a0ee1f59d6b8929"
+  "empreinte": "9749ef7fca0e403e"
 }
