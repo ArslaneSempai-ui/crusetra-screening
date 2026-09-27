@@ -997,3 +997,42 @@ test("tour 6, registres : la succursale derrière une virgule n'est pas une adre
   assert.ok(s6("Meyer Landmaschinen Handelsgesellschaft mbH, Zweigniederlassung Bremen", "Meyer Landmaschinen Handelsgesellschaft mbH, Hauptsitz Hannover") < 0.81);
   assert.ok(variantes("Meyer Landmaschinen Handelsgesellschaft mbH, Hannover").includes("Meyer Landmaschinen Handelsgesellschaft mbH"), "l'adresse derrière la forme s'ôte toujours");
 });
+
+test("tour 7, voie locale : registres du Panama, du Mexique et du Japon, étiquettes SWIFT, formes épelées", () => {
+  const porte = (brut: string, attendu: string) => assert.ok(variantes(brut).includes(attendu), `${brut} → ${variantes(brut).join(" | ")}`);
+  porte("Naviera Golfo de San Miguel, S.A. — Folio 155874 (S) Registro Público de Panamá", "Naviera Golfo de San Miguel, S.A.");
+  porte("Grupo Logístico Ancla del Caribe, S.A. — Ficha 887123, Documento 2456789", "Grupo Logístico Ancla del Caribe, S.A.");
+  porte("Registro Público de Panamá, Tomo 1245, Folio 332, Asiento 1 — Inversiones Marítimas Bahía Honda, S.A.", "Inversiones Marítimas Bahía Honda, S.A.");
+  porte("B/M ESMERALDA DEL DARIEN — MATRICULA PMA-45678-B", "B/M ESMERALDA DEL DARIEN");
+  porte("Pescados y Mariscos del Golfo Ltda. — NIT 900.123.456-7", "Pescados y Mariscos del Golfo Ltda.");
+  porte("SOC. ANON. TALLERES NAVALES DE VACAMONTE (RUC 1234567-1-654321 DV 45)", "SOC. ANON. TALLERES NAVALES DE VACAMONTE");
+  porte("AGROINDUSTRIAS VALLE DE MEXICALI SAPI DE CV / RFC: AVM040917QX2", "AGROINDUSTRIAS VALLE DE MEXICALI SAPI DE CV");
+  porte("COMERCIALIZADORA TEXTIL DEL NORTE SA DE CV RFC CTN950812K73", "COMERCIALIZADORA TEXTIL DEL NORTE SA DE CV");
+  porte("SERVICOS DE REBOCADORES COSTA VERDE LTDA CNPJ 98.765.432/0001-10 SANTOS SP", "SERVICOS DE REBOCADORES COSTA VERDE LTDA");
+  porte("MARIA DEL ROSARIO ANZALDUA GARCIA / CURP AAGR790315MNLNRS08", "MARIA DEL ROSARIO ANZALDUA GARCIA");
+  porte("CIA MARITIMA DEL GOLFO DE PANAMA S A / CTA 0012 3456 7890", "CIA MARITIMA DEL GOLFO DE PANAMA S A");
+  porte("OGATA UNYU K.K. (TEL 03-5555-0100)", "OGATA UNYU K.K.");
+  porte("Corporate Number 8011001077453 — Kurihara Kaiun Kabushiki Kaisha", "Kurihara Kaiun Kabushiki Kaisha");
+  porte("Kimura Sōko Kabushiki Kaisha 〒105-0022 東京都港区海岸1-2-3", "Kimura Sōko Kabushiki Kaisha");
+  porte("MV SIRENA DE TABOGA IMO N/A CALL SIGN HP1234 FLAG PANAMA", "MV SIRENA DE TABOGA");
+  porte("Yoshinaga Kaiun K.K. as agents only", "Yoshinaga Kaiun K.K.");
+  porte("TAKASE BOEKI CO LTD JP", "TAKASE BOEKI CO LTD");
+  porte("MV NORTHERN LAGOON EXPRESS – POL BELIZE CITY – POD PROGRESO", "MV NORTHERN LAGOON EXPRESS");
+  porte("MT BAHIA DE CHARCO AZUL / VOY 2611 / LOADPORT BALBOA", "MT BAHIA DE CHARCO AZUL");
+  porte("APPLICANT: KANEDA SANGYO KK / 3-1-1 MARUNOUCHI CHIYODA-KU", "KANEDA SANGYO KK");
+  porte("CHARTERERS: ARIMURA SHOJI CO LTD", "ARIMURA SHOJI CO LTD");
+  porte("50: IMPORTADORA Y EXPORTADORA DOS OCEANOS SA DE CV", "IMPORTADORA Y EXPORTADORA DOS OCEANOS SA DE CV");
+  porte(":59:/PA12BNPA00001234567890 IMPORTADORA MEDINA Y CASTELLANOS SA DE CV", "IMPORTADORA MEDINA Y CASTELLANOS SA DE CV");
+  porte("70: /RFB/INV 4471 PAGO A ELECTRONICA INDUSTRIAL MONTERREY SA DE CV", "ELECTRONICA INDUSTRIAL MONTERREY SA DE CV");
+  porte("/BENEFICIARY/ PESQUERA DEL ARCHIPIELAGO SA/PANAMA", "PESQUERA DEL ARCHIPIELAGO SA");
+  assert.ok(variantes("*** COMPANIA DE SEGUROS MARITIMOS ISTMENOS S.A. *** PANAMA, REP. DE PANAMA").some((x) => /^COMPANIA DE SEGUROS MARITIMOS ISTMENOS( S\.A\.?)?$/.test(x)),
+    "les astérisques et l'adresse s'en vont, le nom reste (avec ou sans sa forme)");
+  porte("JOSE ANTONIO ESQUIVEL BENAVIDES RFC EEBJ800220A1 PERSONA FISICA CON ACTIVIDAD EMPRESARIAL", "JOSE ANTONIO ESQUIVEL BENAVIDES");
+  /* les gardes : un numéro de registre entier, un matricule à tirets, une barre sans espace */
+  porte("Botha Handel en Vervoer (Pty) Ltd (Reg. No. 2014/117230/07)", "Botha Handel en Vervoer (Pty) Ltd");
+  assert.deepEqual(variantes("Barge BRV-12"), ["Barge BRV-12"]);
+  /* les formes épelées avec des espaces, et « Soc. Anon. » */
+  assert.equal(preparerEntite("Soluciones Logísticas Peñafiel S A S"), preparerEntite("Soluciones Logísticas Peñafiel, S.A.S."));
+  assert.equal(preparerEntite("Transportadora Pena Blanca S de R L"), preparerEntite("Transportadora Pena Blanca, S. de R.L."));
+  assert.equal(analyserEntite("SOC. ANON. TALLERES NAVALES DE VACAMONTE").familles.join(), analyserEntite("Talleres Navales de Vacamonte, S.A.").familles.join());
+});

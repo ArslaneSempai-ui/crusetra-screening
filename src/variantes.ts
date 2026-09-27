@@ -36,12 +36,18 @@ const ANNONCES_CAPTUREE = new RegExp(`(${ANNONCES.source})`, ANNONCES.flags);
  *  derrière une étiquette : sans lui, « Owner » ou « Agent » sont des mots du nom. Mesuré le 27/09
  *  sur le jeu 8 : quatorze vrais noms tenus à 0,80 par ces seuls résidus. */
 const PREFIXES: readonly RegExp[] = [
-  /^\s*(?:applicant|beneficiary|consignee|shipper|notify(?:\s+party)?|(?:towing|ocean|feeder|mother|export|carrying|performing|delivery)\s+vessel|vessel(?:\s*\/\s*voy(?:age)?)?|carrier|drawee|drawer|accountee|buyer|seller|exporter|importer|charterer|owners?|issuing\s+bank|advising\s+bank|supplier|customer|payee|payer|remitter|ordering\s+customer|account\s+party|principal|agent|counterparty|debtor|creditor|insured|assured|manufacturer|producer|receiver|forwarder)\s*[:\-\u2013]\s*/iu,
+  /^\s*(?:applicant|beneficiary|consignee|shipper|notify(?:\s+party)?|(?:towing|ocean|feeder|mother|export|carrying|performing|delivery)\s+vessel|vessel(?:\s*\/\s*voy(?:age)?)?|carrier|charterers?|drawee|drawer|accountee|buyer|seller|exporter|importer|charterer|owners?|issuing\s+bank|advising\s+bank|supplier|customer|payee|payer|remitter|ordering\s+customer|account\s+party|principal|agent|counterparty|debtor|creditor|insured|assured|manufacturer|producer|receiver|forwarder)\s*[:\-\u2013]\s*/iu,
   /^\s*(?:by\s+order\s+of|on\s+behalf\s+of|for\s+(?:the\s+)?account\s+of|to\s+the\s+order\s+of|in\s+favou?r\s+of)\s*:?\s*/iu,
   /* « SHIPPED ON BOARD MV RONG YUAN TAI 16 AT FANGCHENG » : la mention d'embarquement devant le navire */
   /^\s*(?:shipped\s+on\s+board|laden\s+on\s+board|loaded\s+on\s+board|on\s+board|per\s+(?:vessel|m\/?v|m\/?t))\s*:?\s*/iu,
   /* l'étiquette d'un champ SWIFT collée au nom : « :50:BALOGUN VENTURES », « :59A:… » (jeu 10) */
-  /^\s*:\d{2}[a-z]?:\s*/iu,
+  /^\s*:?\d{2}[a-z]?:\s*(?:\/[a-z0-9]{6,34}\s+)?/iu,
+  /* les étiquettes entre barres et le détail d'un paiement (jeu 11) : « /BENEFICIARY/ », « /RFB/INV 4471 PAGO A » */
+  /^\s*\/(?:beneficiary|benef|applicant|ordering\s+customer|by\s+order\s+of|acc|acct)\/\s*/iu,
+  /^\s*(?:\/rfb\/|\/inv\/)?\s*(?:inv(?:oice)?\s*\d+\s*)?(?:pago\s+a|payment\s+(?:to|for)|paiement\s+[aà])\s+/iu,
+  /* une citation de registre devant le nom : « Registro Público de Panamá, Tomo 1245, Folio 332, Asiento 1 — »,
+     « Corporate Number 8011001077453 — » */
+  /^\s*(?:registro\s+p[uú]blico\b[^—–]*|corporate\s+number\s+\d+\s*)[—–-]\s*/iu,
   /^\s*att(?:n|ention)?\.?\s*:?\s+[^,]{1,40},\s*/iu,
   /^\s*(?:our|your|yr|their)?\s*ref(?:erence)?\.?\s*(?:no\.?|#)?\s*:?\s*[a-z0-9][a-z0-9\-/.]{2,}\s+/iu,
   /^\s*(?:l\/c|lc|dc|b\/l|bl|inv(?:oice)?|p\/?o|contract|order)\s*(?:no\.?|#)\s*:?\s*[a-z0-9][a-z0-9\-/.]{2,}\s+/iu,
@@ -55,6 +61,22 @@ const ANNOTATIONS: readonly RegExp[] = [
      successeur de « Negev Drip Systems Ltd » (Israël, Royaume-Uni ; jeux 5 à 7) */
   /* ce qui suit le nom d'un navire sur un connaissement : « , Port of Loading: Antwerp », « POD Piraeus » */
   /[\s,]+(?:port\s+of\s+(?:loading|discharge|destination|delivery|call|registry)|loading\s+port|discharge\s+port)\s*:?\s*[\p{L} .'-]{2,30}\s*$/iu,
+  /* les registres du Panama, du Mexique, de la Colombie, du Brésil et du Japon derrière le nom (jeu 11) : après un
+     tiret, une barre ou entre parenthèses, « Folio », « Ficha », « Tomo », « Matrícula », « NIT », « RUC », « RFC »,
+     « CURP », « CNPJ », « CUIT », un téléphone, un compte (« CTA »), « IMO N/A CALL SIGN … FLAG … », l'adresse
+     japonaise après son 〒, « as agents only », « persona física con actividad empresarial », le code pays
+     derrière la forme (« CO LTD JP »), et « POL … POD … » séparés par des tirets */
+  /* la barre et le tiret simple sont des SÉPARATEURS, entourés d'espaces : « 2014/117230/07 » et « PMA-45678-B » restent entiers */
+  /(?:\s*[—–]\s*|\s+-\s+)(?:folio|ficha|tomo|asiento|matr[ií]cula|nit|ruc|rfc|curp|cnpj|cuit|nif|tel|t[eé]l[eé]phone|cta|cuenta|corporate\s+number)\b.*$/iu,
+  /\s+\/\s*(?:folio|ficha|matr[ií]cula|nit|ruc|rfc|curp|cnpj|cuit|nif|tel|cta|cuenta|voy(?:age)?|loadport|pol|pod|\d)[^\n]*$/iu,
+  /\s+(?:rfc|curp|cnpj|nit|ruc|cuit|nif)\s*:?\s*[a-z0-9][a-z0-9.\/-]{5,}\b.*$/iu,
+  /\s*\(\s*(?:ruc|rfc|nit|cnpj|cuit|tel|t[eé]l|fax|imo)\b[^)]*\)/giu,
+  /\s+imo\s*(?:n\/a|\d{7})\b.*$/iu,
+  /\s+as\s+agents?\s+only\s*$/iu,
+  /\s+〒?\s*\d{3}-\d{4}\s+[\u3000-\u9fff].*$/u,
+  /\s+persona\s+(?:f[ií]sica|moral)\b.*$/iu,
+  /(?<=\b(?:ltd|limited|inc|llc|gmbh|kk|sa|plc|bv|nv|ag)\.?)\s+(?:jp|us|uk|de|fr|cn|kr|sg|hk|pa|mx|br|tr|ru|ua|nl|be|it|es|pt|ch|at|dk|se|no|fi)\s*$/iu,
+  /\s*[—–-]\s*pol\s+[\p{L} .'-]{2,30}\s*[—–-]\s*pod\s+[\p{L} .'-]{2,30}\s*$/iu,
   /* ce qu'un message de banque colle derrière le nom (jeu 10) : « REF LC0193045 », « A/C 331276 »,
      « -BENEF », « -ACCT BENEF » ; et derrière un navire, son indicatif « CS:5NCT7 » et son
      immatriculation de pêche « (GHA-1893) » ; derrière une société, son numéro de registre
@@ -181,6 +203,8 @@ export function variantes(brut: string): string[] {
 }
 export function variantesTypees(brut: string): VarianteTypee[] {
   const vues = new Map<string, VarianteTypee>();
+  /* les astérisques d'un message de banque (« *** COMPANIA … *** PANAMA », jeu 11) ne sont que du décor */
+  brut = brut.replace(/\*+/g, " ").replace(/\s{2,}/g, " ").trim();
   /* « (Amharic: ተስፋዬ በቀለ ንግድ) » : l'étiquette de langue s'efface, la parenthèse native reste (jeu 10) */
   brut = brut.replace(/\(\s*(?:amharic|arabic|chinese|japanese|korean|thai|hebrew|russian|greek|hindi|tamil|persian|farsi|urdu|bengali|in\s+\p{L}+)\s*:\s*/giu, "(");
   /* une adresse collée à la forme sans espace, champ 59 : « Company Limited45 Marina Road » (jeu 10) */
@@ -285,7 +309,7 @@ export function variantesTypees(brut: string): VarianteTypee[] {
          et aucune forme : « de C.V. » n'est pas une adresse, « of Canada Ltd. » non plus */
       const adresse = motsQueue.some((m) => PAYS_MOTS.has(m) || PAVILLONS.has(m) || REGIONS.has(m) || PORTS_ET_QUARTIERS.has(m) || /^\d+[a-z]?$/.test(m)
         || /^(?:room|rm|unit|bldg|building|floor|fl|suite|ste|street|st|road|rd|avenue|ave|zone|area|district|city|port|tower|plaza|plot|block)$/.test(m));
-      if (queue.length > 0 && adresse && /^[\p{L}\d .'-]{2,40}$/u.test(queue) && !new RegExp(FORME_EN_LIGNE.source, "iu").test(queue)
+      if (queue.length > 0 && adresse && /^[\p{L}\d .,'-]{2,60}$/u.test(queue) && !new RegExp(FORME_EN_LIGNE.source, "iu").test(queue)
         && p.slice(0, dernier.index).trim().split(/\s+/).length >= 1) {
         poser(p.slice(0, fin).trim(), ancien, mentionDe(p.slice(0, fin)));
       }

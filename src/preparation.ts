@@ -92,7 +92,7 @@ const PHRASES = [
   /* et la forme allemande écrite avec son préfixe de commerce (« Handelsgesellschaft mbH » est une GmbH, voie registres) */
   " handelsgesellschaft mbh co kg ", " gesellschaft mbh co kg ",
   " societe anonyme ", " societe a responsabilite limitee ", " societe par actions simplifiee ",
-  " sociedad anonima cerrada ", " sociedad anonima ", " sociedad limitada ",
+  " sociedad anonima cerrada ", " sociedad anonima ", " soc anon ", " sociedad limitada ",
   " sociedad de responsabilidad limitada ",
   " sociedad anonima promotora de inversion de capital variable ", " sociedad anonima promotora de inversion ",
   " sociedad anonima unipersonal ", " sociedad anonima de capital variable ",
@@ -796,7 +796,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "pjsc", "ojsc", "cjsc", "prat", "pat", "ae", "joint stock company", "public joint stock company", "closed joint stock company",
     "open joint stock company", "aktsionernoe obshchestvo", "publichnoe aktsionernoe obshchestvo",
     "zakrytoe aktsionernoe obshchestvo", "otkrytoe aktsionernoe obshchestvo", "aktiengesellschaft", "societe anonyme",
-    "societe par actions simplifiee", "sociedad anonima", "sociedad anonima cerrada", "sociedade anonima",
+    "societe par actions simplifiee", "sociedad anonima", "soc anon", "sociedad anonima cerrada", "sociedade anonima",
     "societa per azioni", "naamloze vennootschap", "anonim sirketi", "spolka akcyjna", "cong ty co phan", "sa de cv", "de cv"]);
   poser(["part"], ["llp", "lp", "kg", "ohg", "snc", "vof", "limited liability partnership", "kommanditgesellschaft", "spolka jawna",
     /* les sociétés de personnes allemandes dont une société de capitaux est l'associée : une autre personne que celle-ci */
@@ -1008,7 +1008,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     .filter((j) => j !== "" && !FORMES.has(j)));
   /* Lettres et chiffres collés se séparent : « No18 » → « No 18 », « LANQIAOFENG16 » →
      « LANQIAOFENG 16 » ; le numéro d'un navire devient un jeton que la règle des numéros lit. */
-  const brut = jetons(jetons(normaliser(soude)).map(ocr).join(" ")
+  /* une forme ÉPELÉE avec des espaces (« S A S », « S de R L », « S A de C V », jeu 11) : les lettres seules qui se
+     suivent se soudent, comme le font déjà les points (« S.A.S. ») ; « J P Morgan » devient « JP Morgan », rien de plus */
+  const brut = jetons(jetons(normaliser(soude).replace(/\b\p{L}(?: \p{L})+\b/gu, (m) => m.replace(/ /g, ""))).map(ocr).join(" ")
     .replace(/(\p{L})(\d)/gu, "$1 $2").replace(/(\d)(\p{L})/gu, "$1 $2")).map(digrammeOptique).map(motDuMetierPerdu);
   const joints = brut;
   /* « No. », « Nr. », « Number » devant un numéro ne sont que le mot « numéro ». */
