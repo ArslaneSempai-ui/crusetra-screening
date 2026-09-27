@@ -4,12 +4,12 @@ import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import {
   preparerEntite, analyserEntite, preparerNom, scorePrepares, scoreBrut, scoreNoms, variantes, squelette, voyelles, abrege,
-  motsDistincts, lemme, variationVocalique, lettrePerdue, PERDU, fauteDeFrappe, composesDistincts,
+  motsDistincts, lemme, variationVocalique, voyelleEpenthetique, squeletteLongue, lettrePerdue, PERDU, fauteDeFrappe, composesDistincts,
   tronque, estCoupe, apport, simMinimale, choisirSeuils, marquesEnConflit, frequencesDe, mesurerJeux, qualificatifSoude,
   poidsDuMot, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, FAUSSES_ALERTES_MAX_FORT, SEUIL_POSSIBLE,
 } from "./entites.ts";
 import { validerPaires, type TableDUnPalier } from "./measure.ts";
-import { hangulEnLatin, pinyinDe, cleAbjad, romaniser, CHEMIN_PINYIN } from "./ecritures.ts";
+import { hangulEnLatin, pinyinDe, cleAbjad, cleAbjadSansTa, romaniser, CHEMIN_PINYIN } from "./ecritures.ts";
 
 const f = FREQUENCES_UNIFORMES;
 const score = (a: string, b: string) => scoreNoms(f, a, b);
@@ -447,6 +447,73 @@ test("les écritures natives : hangul, sinogrammes, arabe et persan, hébreu, ve
   assert.equal(score("MT بحر الذهب ٢", "MT Bahr Al Dhahab 3"), 0, "un chiffre arabe oriental est un numéro, et deux numéros différents tranchent");
   /* le thaï n'est pas lu : dit ici, pas découvert par la mesure */
   assert.ok(score("บริษัท พระจันทร์เงิน อุตสาหกรรม จำกัด", "Phrachan Ngoen Industry Co., Ltd.") < 0.8);
+});
+
+test("l'arabe et le persan natifs : les formes et leurs sigles, les mots du commerce sous ل, لل et ال, la filiation", () => {
+  /* les sigles pointés du Golfe sont des formes, avec leur famille ; le commerce se traduit sous sa préposition */
+  assert.equal(preparerEntite("روابي الساحل لتجارة خردة المعادن ذ.م.م"), "rwabi al sahl trading scrap metals");
+  assert.equal(preparerEntite("زهرة الواحة للبتروكيماويات م.م.ح"), "zahra al waha petrochemicals");
+  assert.deepEqual(analyserEntite("سيلفر ديون للخدمات اللوجستية ش.م.ح").familles, ["fz"], "ش.م.ح est une FZCO");
+  assert.equal(preparerEntite("الإطارات"), preparerEntite("الاطارات"), "l'alif avec ou sans hamza");
+  assert.equal(preparerEntite("ليوا للتجارة"), "lywa trading", "le ل d'un nom propre n'est pas la préposition");
+  assert.equal(preparerEntite("مؤسسة سعيد بن حمد للتجارة"), "said bin hmd trading", "بن est bin, مؤسسة la forme, ع une voyelle");
+  /* les lettres faibles : consonne à côté d'un alif ou devant l'autre lettre faible */
+  assert.equal(romaniser("روابي").texte, "rwabi");
+  assert.equal(romaniser("کاوه").texte, "kawh");
+  assert.equal(romaniser("نجوم").texte, "njum", "و entre deux consonnes reste une voyelle");
+  /* la clé arabe : ج est une consonne, و sa propre lettre */
+  for (const [a, b] of [["nujoom", "njum"], ["rawabi", "rwabi"], ["kaveh", "kawh"], ["fajr", "fjr"], ["suwaidi", "swidi"]]) {
+    assert.equal(cleAbjad(a, false), cleAbjad(b, false), `${a} / ${b}`);
+    assert.ok(cleAbjad(a, false).length >= 3, `${a} : trois consonnes au moins`);
+  }
+  assert.equal(cleAbjadSansTa("zahrat"), cleAbjad("zahra", false), "la ta marbuta en annexion");
+  assert.equal(cleAbjadSansTa("bayt"), undefined);
+  for (const [a, b] of [
+    ["Rawabi Al Sahel Scrap Metal Trading L.L.C.", "روابي الساحل لتجارة خردة المعادن ذ.م.م"],
+    ["Nujoom Al Fajr Tyres Trading L.L.C.", "نجوم الفجر لتجارة الإطارات ش.ذ.م.م"],
+    ["Qasr Al Yasmin Perfumes Trading L.L.C.", "قصر الياسمين لتجارة العطور ذ.م.م"],
+    ["Dar Al Noor General Trading L.L.C.", "دار النور للتجارة العامة ذ.م.م"],
+    ["Rimal Al Dhahab Sugar Trading L.L.C.", "رمال الذهب لتجارة السكر ذ.م.م"],
+    ["Zahrat Al Waha Petrochem FZE", "زهرة الواحة للبتروكيماويات م.م.ح"],
+    ["Saeed Bin Hamad Trading Est.", "مؤسسة سعيد بن حمد للتجارة"],
+    ["Sepid Kaveh Kish Trading", "بازرگانی سپید کاوه کیش"],
+  ]) assert.ok(score(a, b) >= 0.81, `${a} / ${b} : ${score(a, b)}`);
+  assert.ok(score("Rawabi Al Sahel Tyres Trading L.L.C.", "روابي الساحل لتجارة خردة المعادن ذ.م.م") < 0.81, "un autre commerce est une autre société");
+  assert.ok(score("Nujoom Al Bahr Tyres Trading L.L.C.", "نجوم الفجر لتجارة الإطارات ش.ذ.م.م") < 0.81, "d'autres consonnes sont un autre mot");
+});
+
+test("l'arabe et le persan romanisés : tejarat et tijarat, li devant le commerce, al qabidha, les graphies, la forme entre parenthèses", () => {
+  assert.equal(preparerEntite("Sherkat-e Tejarat-e Golestan Nakhl (Sahami Khass)"), "trading golestan nakhl");
+  assert.equal(preparerEntite("Golestan Nakhl Trading Co. (Private Joint Stock)"), "golestan nakhl trading", "la forme entre parenthèses n'est pas une filiale");
+  /* la locution « al aruz » rend « rice » sans son article (voie locale du tour 5) */
+  assert.equal(preparerEntite("Sunbulat Al Khair Li Tijarat Al Aruz L.L.C."), "sunbulat al khair trading rice");
+  assert.equal(preparerEntite("Li Ning Trading Co."), "li ning trading", "li devant un autre mot est un nom");
+  assert.equal(preparerEntite("Mahtaab Sepehr Bazarghani Company"), "mahtaab sepehr trading", "gh pour g dans un mot du commerce");
+  assert.equal(preparerEntite("Sharikat Rawasi Al Najd Al Qabidha"), "rawasi al najd al holding");
+  for (const [a, b] of [
+    ["Mahtab Sepehr Bazargani Co.", "Mahtaab Sepehr Bazarghani Company"],
+    ["Rawasi Al Najd Holding Company", "Sharikat Rawasi Al Najd Al Qabidha"],
+    ["Sunbulat Al Khair Rice Trading L.L.C.", "Sunbulat Al Khair Li Tijarat Al Aruz L.L.C."],
+    ["Sepid Kaveh Tejarat Kish", "Sepid Kaveh Tijarat-e Kish"],
+    ["Pesteh Kavir Kerman Trading Co.", "Peste Kavir Kerman Tejarat Co."],
+    ["Sherkat-e Tejarat-e Golestan Nakhl (Sahami Khass)", "Golestan Nakhl Trading Co. (Private Joint Stock)"],
+  ]) assert.ok(score(a, b) >= 0.81, `${a} / ${b} : ${score(a, b)}`);
+  assert.ok(score("Sherkat-e Tejarat-e Golestan Nakhl (Sahami Khass)", "Sherkat-e Tejarat-e Golestan Nakhl-e Jonoub (Sahami Khass)") < 0.81, "un mot rare de plus");
+});
+
+test("les voyelles de l'arabe romanisé : a et i sont deux lettres, e va avec l'une et l'autre ; la voyelle d'appui ; ee est i", () => {
+  assert.equal(variationVocalique(squelette("rashid"), squelette("rashad")), false, "رشيد, رشاد : une voyelle longue écrite");
+  assert.equal(variationVocalique(squelette("khaled"), squelette("khalid")), true);
+  assert.equal(variationVocalique(squelette("mohammed"), squelette("mohammad")), true);
+  assert.ok(score("Ahmed Rashid Al Suwaidi General Trading L.L.C.", "ahmed rashad al suwaidi general trading llc") < 0.81, "mesuré à 0,923 quand a et i se confondaient");
+  assert.equal(voyelleEpenthetique(squelette("bahr"), squelette("bahar")), true);
+  assert.equal(voyelleEpenthetique(squelette("nasr"), squelette("naser")), true);
+  assert.equal(voyelleEpenthetique(squelette("amr"), squelette("amir")), false, "trois lettres, et i");
+  assert.equal(voyelleEpenthetique(squelette("saad"), squelette("said")), false, "la voyelle n'est pas entre deux consonnes");
+  assert.equal(voyelleEpenthetique(squelette("nasr"), squelette("nasir")), false, "نصر, ناصر");
+  assert.equal(squeletteLongue("naseem"), squelette("nasim"));
+  assert.ok(score("M.V. NASEEM AL BAHAR 3", "NASIM AL BAHR 3") >= 0.81, "mesuré à 0,666 avant");
+  assert.ok(score("Greenholt Agro Traders", "Grainholt Agro Traders") < 0.81, "ee n'est i que sous une marque de langue : mesuré à 0,915 quand le squelette pliait ee partout");
 });
 
 test("la table du pinyin : une lecture par code de U+4E00 à U+9FFF, son empreinte, l'inconnu traverse", () => {

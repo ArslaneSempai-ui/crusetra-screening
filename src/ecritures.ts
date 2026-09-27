@@ -49,18 +49,36 @@ const GENERIQUES_HANGUL: ReadonlyMap<string, string> = new Map(Object.entries({
 
 /** Le persan écrit ک et ی là où l'arabe écrit ك et ي : une seule lettre pour les deux, dans
  *  les clés des tables comme dans les noms (mesuré le 27/09 : « شرکت » écrit avec ک ne rencontrait
- *  pas le nom unifié, et restait un mot rare sans répondant). */
+ *  pas le nom unifié, et restait un mot rare sans répondant). L'alif porte ou non sa hamza
+ *  (أ, إ, آ, ٱ) selon la frappe : un seul alif, la lecture est la même (« الإطارات », « الاطارات »). */
 function unifierLettres(s: string): string {
-  return s.replace(/ک/g, "ك").replace(/ی/g, "ي").replace(/ۀ/g, "ه");
+  return s.replace(/ک/g, "ك").replace(/ی/g, "ي").replace(/ۀ/g, "ه").replace(/[أإآٱ]/g, "ا");
 }
 
 /** Arabe et persan : la forme (شركة, شرکت, ذ.م.م.), les qualificatifs du commerce (للتجارة,
  *  بازرگانی), la conjonction. Les clés persanes s'écrivent avec ک et ی, unifiés comme le nom. */
 const GENERIQUES_ARABES: ReadonlyMap<string, string> = new Map(Object.entries({
-  /* formes */ "شركة": "sharikat", "الشركة": "sharikat", "شرکت": "sherkat", "مؤسسة": "muassasat", "المؤسسة": "muassasat",
-  "ذمم": "llc", "شذمم": "llc", "سهامی": "sahami", "خاص": "khas", "عام": "amm", "محدود": "limited", "المحدودة": "limited",
+  /* formes ; les sigles du Golfe s'écrivent pointés (ذ.م.م., ش.م.ح.) et `unifier` les soude */
+  "شركة": "sharikat", "الشركة": "sharikat", "شرکت": "sherkat", "مؤسسة": "muassasat", "المؤسسة": "muassasat",
+  "ذمم": "llc", "شذمم": "llc", "شمح": "fzco", "ممح": "fze", "شمع": "pjsc", "ششو": "spc", "سهامی": "sahami", "خاص": "khas",
+  "عام": "amm", "محدود": "limited", "المحدودة": "limited", "قابضة": "holdings",
+  /* les particules de filiation, comme le côté latin les écrit : « مؤسسة سعيد بن حمد » est
+     « Saeed Bin Hamad Est. » (jeu 9 : lues lettre à lettre, « bn » ne rencontrait pas « bin ») */
+  "بن": "bin", "ابن": "ibn", "بنت": "bint", "ابو": "abu", "ام": "umm",
   /* le commerce */ "للتجارة": "trading", "التجارة": "trading", "تجارة": "trading", "تجارية": "trading", "التجارية": "trading",
-  "بازرگانی": "trading", "تجاری": "trading", "تجارت": "trade",
+  "بازرگانی": "trading", "تجاری": "trading", "تجارت": "trading", "العامة": "general", "عامة": "general",
+  /* les marchandises et les métiers que le nom anglais TRADUIT (jeu 9 : « لتجارة خردة المعادن » est
+     « Scrap Metal Trading », « لتجارة الإطارات » « Tyres Trading »). Pas les mots qu'il translittère :
+     « الذهب » reste Al Dhahab dans « Rimal Al Dhahab », « النور » Al Noor, « الفجر » Al Fajr */
+  "خردة": "scrap", "المعادن": "metals", "معادن": "metals", "الإطارات": "tyres", "إطارات": "tyres", "العطور": "perfumes",
+  "عطور": "perfumes", "السكر": "sugar", "سكر": "sugar", "الأرز": "rice", "الرز": "rice", "أرز": "rice", "الخدمات": "services",
+  "البتروكيماويات": "petrochemicals", "بتروكيماويات": "petrochemicals", "المواد": "materials",
+  "مواد": "materials", "الغذائية": "food", "غذائية": "food", "الأغذية": "food", "أغذية": "food", "البناء": "building",
+  "بناء": "building", "الملابس": "garments", "ملابس": "garments", "الإلكترونيات": "electronics", "إلكترونيات": "electronics",
+  "السيارات": "automotive", "سيارات": "automotive", "قطع الغيار": "spare parts", "قطع غيار": "spare parts",
+  "الطاقة": "energy", "طاقة": "energy", "النفط": "oil", "نفط": "oil", "الأسماك": "fish", "أسماك": "fish",
+  /* le persan : ses métiers, et Kish, l'île franche que les noms portent */
+  "پخش": "distribution", "کیش": "kish",
   /* l'industrie et la production */ "الصناعية": "industrial", "صناعية": "industrial", "للصناعة": "industry", "الصناعة": "industry",
   "صنعتی": "industrial", "صنایع": "industries", "صنعت": "industry", "تولیدی": "production", "تولید": "production",
   /* la mer */ "الملاحة": "shipping", "للملاحة": "shipping", "الملاحية": "shipping", "للشحن": "shipping", "الشحن": "shipping",
@@ -195,12 +213,16 @@ function hanzi(nom: string, natifs: Map<string, string>): string {
 /* ─────────────────────────── les abjads ─────────────────────────── */
 
 /** Arabe et persan : translittération consonantique (ALA-LC simplifiée, sans diacritiques
- *  latins), le ʿayn et la hamza tombent. Les lettres persanes s'ajoutent (پ چ ژ گ) ; ک et ی
- *  persans sont unifiés à ك et ي avant la lecture. */
+ *  latins), la hamza tombe. Le ʿayn se lit « a » : la romanisation l'écrit par une voyelle ou
+ *  une apostrophe, jamais par une consonne (« سعيد » [name removed] ; « علي » Ali ; « سعد » Saad),
+ *  et la clé consonantique (`cleAbjad`) retire ce « a » comme elle retire les voyelles (jeu 9,
+ *  27/09 : lu vide, « سعيد » rendait « sid », que « Saeed » ne rencontrait pas : « مؤسسة سعيد بن حمد
+ *  للتجارة » à 0,472 face à « Saeed Bin Hamad Trading Est. »). Les lettres persanes
+ *  s'ajoutent (پ چ ژ گ) ; ک et ی persans sont unifiés à ك et ي avant la lecture. */
 const ARABE: ReadonlyMap<string, string> = new Map(Object.entries({
   "ا": "a", "أ": "a", "إ": "a", "آ": "a", "ٱ": "a", "ء": "", "ؤ": "w", "ئ": "y", "ب": "b", "ت": "t", "ث": "th", "ج": "j",
   "ح": "h", "خ": "kh", "د": "d", "ذ": "dh", "ر": "r", "ز": "z", "س": "s", "ش": "sh", "ص": "s", "ض": "d", "ط": "t", "ظ": "z",
-  "ع": "", "غ": "gh", "ف": "f", "ق": "q", "ك": "k", "ل": "l", "م": "m", "ن": "n", "ه": "h", "ة": "a", "و": "w", "ي": "y",
+  "ع": "a", "غ": "gh", "ف": "f", "ق": "q", "ك": "k", "ل": "l", "م": "m", "ن": "n", "ه": "h", "ة": "a", "و": "w", "ي": "y",
   "ى": "a", "پ": "p", "چ": "ch", "ژ": "zh", "گ": "g", "ڤ": "v", "ھ": "h", "ە": "h", "ۀ": "h",
 }));
 /** Hébreu : consonnes seules, les finales avec leur forme ordinaire ; א et ע tombent. */
@@ -225,9 +247,12 @@ function unifier(nom: string): string {
 /**
  * Un mot d'un abjad, lettre à lettre. Les lettres faibles و et ي (ו et י en hébreu) sont une
  * consonne en tête de mot ou doublées, une voyelle longue ailleurs (« نجوم » : nujum, « אורות » :
- * orot) ; le ה final hébreu est une voyelle et tombe. Un « h » qui suivrait une lettre avec
- * laquelle il formerait un digramme (d + ه, k + ה) est séparé par un a (« dahb », jamais
- * « dhb » qui se lirait ذ), pour que la lecture des consonnes ne se trompe pas de lettre.
+ * orot) ; en arabe, elles sont aussi une consonne à côté d'un alif ou devant l'autre lettre
+ * faible, parce que deux voyelles longues ne se suivent pas (« روابي » rawabi, « کاوه » kaveh,
+ * « سويدي » suwaidi ; jeu 9, 27/09 : lues voyelles, « ruabi » et « kauh » perdaient la consonne
+ * que le côté latin écrit). Le ה final hébreu est une voyelle et tombe. Un « h » qui suivrait
+ * une lettre avec laquelle il formerait un digramme (d + ه, k + ה) est séparé par un a (« dahb »,
+ * jamais « dhb » qui se lirait ذ), pour que la lecture des consonnes ne se trompe pas de lettre.
  */
 function motAbjad(mot: string, table: ReadonlyMap<string, string>, hebreu: boolean): string {
   const lettres = [...mot];
@@ -239,7 +264,9 @@ function motAbjad(mot: string, table: ReadonlyMap<string, string>, hebreu: boole
     const faible = hebreu ? (c === "ו" ? "o" : c === "י" ? "i" : "") : (c === "و" ? "u" : c === "ي" ? "i" : "");
     if (faible !== "") {
       const enTete = i === 0, doublee = lettres[i + 1] === c || lettres[i - 1] === c;
-      if (!enTete && !doublee) l = faible;
+      const consonneArabe = !hebreu && (lettres[i + 1] === "ا" || lettres[i - 1] === "ا"
+        || (c === "و" && lettres[i + 1] === "ي") || (c === "ي" && lettres[i + 1] === "و"));
+      if (!enTete && !doublee && !consonneArabe) l = faible;
       else if (doublee && lettres[i - 1] === c) l = faible;
     }
     if (hebreu && c === "ה" && i === lettres.length - 1 && i > 0) l = "";
@@ -250,10 +277,38 @@ function motAbjad(mot: string, table: ReadonlyMap<string, string>, hebreu: boole
 }
 
 const CLES_ARABES = alternative(GENERIQUES_ARABES);
+
+/**
+ * Le mot générique qu'un mot arabe porte SOUS sa préposition et son article. « لتجارة »
+ * (li-tijarat, « pour le commerce ») et « للتجارة » (lil-tijara, li + al) sont le mot تجارة ;
+ * « المعادن » (al-ma'adin) est معادن. La table ne liste pas chaque mot sous chacun de ses
+ * habits : le ل, le لل (qui vaut ل + ال, l'alif élidé) et le ال s'ôtent avant la lecture, et
+ * seul un mot que la table connaît confirme la lecture. Un nom propre n'y passe pas : « ليوا »
+ * (Liwa) et « لبنان » (Lubnan) commencent par un ل qui leur appartient, et ils restent entiers.
+ * Jeu 9, 27/09 : « لتجارة » restait « ltjara », un mot rare sans répondant, dans quatre noms.
+ */
+function generiqueArabe(mot: string): string | undefined {
+  const direct = GENERIQUES_ARABES.get(mot);
+  if (direct !== undefined) return direct;
+  const nus: string[] = [];
+  if (mot.startsWith("لل")) nus.push("ال" + mot.slice(2), mot.slice(2));
+  else if (mot.startsWith("ل")) nus.push(mot.slice(1));
+  if (mot.startsWith("ال")) nus.push(mot.slice(2));
+  for (const nu of nus) {
+    if (nu.length < 2) continue;
+    const g = GENERIQUES_ARABES.get(nu);
+    if (g !== undefined) return g;
+  }
+  return undefined;
+}
+
 function arabe(nom: string): string {
   return unifier(nom)
+    /* les clés de plusieurs mots d'abord (« حمل و نقل », « قطع الغيار ») : un mot seul les couperait */
     .replace(new RegExp(`(?<![\\p{L}])(?:${CLES_ARABES.source})(?![\\p{L}])`, "gu"), (m) => ` ${GENERIQUES_ARABES.get(m) ?? m} `)
     .replace(/[\u0600-\u06ff]+/gu, (mot) => {
+      const generique = generiqueArabe(mot);
+      if (generique !== undefined) return ` ${generique} `;
       /* l'article ال et le لل (« pour le ») en tête d'un mot d'au moins deux autres lettres
          deviennent un mot : « الذهب » se lit « al dhahab » comme le côté latin l'écrit */
       if (mot.length > 3 && mot.startsWith("ال")) return `al ${motAbjad(mot.slice(2), ARABE, false)}`;
@@ -272,18 +327,31 @@ function hebreu(nom: string): string {
 /**
  * LA CLÉ CONSONANTIQUE d'un mot latin, pour le comparer à un mot venu d'un abjad : les
  * consonnes seules, ramenées aux classes que le squelette connaît (sh et ch, kh et h, q et k,
- * b et p, d et t, y et j ; v, w et b, comme le hindi et l'hébreu), voyelles retirées, lettres
- * doublées repliées APRÈS le retrait des voyelles (« Sepiddasht » et « spiddsht » : sptXt).
- * En hébreu, ח s'écrit ch, kh ou h, et n'est pas ש (sh) : ch rejoint h avant les digrammes
- * (« Shachar » et « shchr » : Xhr ; replier sh sur h aussi laissait une clé de deux lettres).
+ * b et p, d et t), voyelles retirées, lettres doublées repliées APRÈS le retrait des voyelles
+ * (« Sepiddasht » et « spiddsht » : sptXt).
+ * En hébreu, ב s'écrit b ou v et ו v ou w : v, w et b sont une lettre ; y et j (י) une voyelle ;
+ * ח s'écrit ch, kh ou h, et n'est pas ש (sh) : ch rejoint h avant les digrammes (« Shachar » et
+ * « shchr » : Xhr ; replier sh sur h aussi laissait une clé de deux lettres).
+ * En arabe et en persan, و est sa propre lettre (w, ou v en persan : « Kaveh », « Kavir »),
+ * pas ب ; et ج (j, dj à la française) est une consonne que ي (y, une voyelle) n'est pas. Jeu 9,
+ * 27/09 : j replié sur i, « Nujoom » et « njum » n'avaient plus que deux consonnes (nm), sous
+ * la longueur qui vaut le crédit ; w replié sur b, « Rawabi » et « rwabi » de même (rp).
  */
 export function cleAbjad(mot: string, hebreu: boolean): string {
-  let m = mot.replace(/[vw]/g, "b");
-  if (hebreu) m = m.replace(/(?<!s)ch/g, "h");
+  let m = hebreu ? mot.replace(/[vw]/g, "b").replace(/(?<!s)ch/g, "h") : mot.replace(/v/g, "w").replace(/dj/g, "j");
   m = m.replace(/(tsch|sch|tch|ch|sh)/g, "X").replace(/kh/g, "h").replace(/zh/g, "j").replace(/(th|dh)/g, "t").replace(/ph/g, "f")
     .replace(/gh/g, "k").replace(/ck/g, "k").replace(/(ts|tz|z)/g, "s").replace(/c(?=[ei])/g, "s").replace(/[cq]/g, "k")
-    .replace(/g/g, "k").replace(/b/g, "p").replace(/d/g, "t").replace(/[yj]/g, "i");
+    .replace(/g/g, "k").replace(/b/g, "p").replace(/d/g, "t").replace(hebreu ? /[yj]/g : /y/g, "i");
   return m.replace(/[aeiou]/g, "").replace(/(.)\1+/g, "$1");
+}
+
+/** La clé d'un mot latin dont la finale « -at » ou « -et » peut être une ta marbuta (ة) lue en
+ *  annexion : « Zahrat Al Waha » (زهرة الواحة, la fleur de l'oasis), que le côté abjad lit
+ *  « zahra », la ة rendue « a ». La même clé, sans ce t ; undefined quand la finale n'est pas
+ *  celle-là. Jeu 9, 27/09 : « Zahrat Al Waha Petrochem FZE » et « زهرة الواحة للبتروكيماويات م.م.ح »
+ *  restaient plafonnés au possible (0,800), « zahrat » un mot court à une lettre de « zahra ». */
+export function cleAbjadSansTa(mot: string): string | undefined {
+  return mot.length >= 4 && /[ae]t$/.test(mot) ? cleAbjad(mot.slice(0, -1), false) : undefined;
 }
 
 /** L'abjad dans lequel un nom est écrit, s'il l'est. */

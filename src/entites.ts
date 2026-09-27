@@ -26,7 +26,7 @@ import type { Matcher, PalierId } from "./matcher.ts";
 import { distanceOsa } from "./matchers/damerau.ts";
 import { preparer } from "./matchers/preparer.ts";
 import { translitterer } from "./matchers/translitteration.ts";
-import { romaniser, cleAbjad, abjadDe, estJaponais, type Abjad } from "./ecritures.ts";
+import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad } from "./ecritures.ts";
 
 /* ─────────────────────────── la préparation ─────────────────────────── */
 
@@ -71,7 +71,11 @@ const PHRASES = [
   " publichnoe aktsionernoe obshchestvo ", " zakrytoe aktsionernoe obshchestvo ",
   " otkrytoe aktsionernoe obshchestvo ", " aktsionernoe obshchestvo ",
   " public joint stock company ", " closed joint stock company ", " open joint stock company ",
-  " private joint stock company ", " sherkat sahami khas ", " sherkate sahami khas ", " sahami khas ", " sahami khass ", " sahami amm ",
+  " private joint stock company ",
+  /* la même forme entre parenthèses, sans le mot company : « Golestan Nakhl Trading Co. (Private Joint
+     Stock) » ; lue comme une filiale, elle plafonnait la paire au possible (jeu 9, 27/09 : 0,800) */
+  " private joint stock ", " public joint stock ", " closed joint stock ", " open joint stock ",
+  " sherkat sahami khas ", " sherkate sahami khas ", " sahami khas ", " sahami khass ", " sahami amm ",
   " public company limited ", " designated activity company ", " perseroan terbatas ",
   " usaha dagang ", " commanditaire vennootschap ", " perseroan komanditer ", " sole proprietor company ", " sole proprietorship company ",
   " joint stock company ", " limited liability company ", " limited liability partnership ",
@@ -158,6 +162,35 @@ const LOCUTIONS: readonly [string, string][] = [
  * industry, technology, precision…), jamais le nom propre : traduits, ils pèsent peu (ils
  * sont partout dans les listes) et le nom propre décide, comme il doit.
  */
+/** Le persan et l'arabe romanisés, à part : « li » ne s'y lit préposition que devant l'un de ces
+ *  mots, et le repli des graphies (`pliGenerique`) ne cherche que parmi eux. Tejarat (تجارت) et
+ *  tijara (تجارة) sont « trading » : le nom anglais d'une société de commerce le dit ainsi, jamais
+ *  « trade » (jeu 9, 27/09 : « Pesteh Kavir Kerman Trading Co. » et « Peste Kavir Kerman Tejarat Co. » à
+ *  0,770, « trade » orphelin face à « trading »). */
+const TRADUCTIONS_ARABES: ReadonlyMap<string, string> = new Map(Object.entries({
+  bazargani: "trading", tejarat: "trading", tejarati: "trading", tijarat: "trading", sanati: "industrial",
+  tolid: "production", tolidi: "production", tijara: "trading", tijarah: "trading", tijariya: "trading",
+  tijariyah: "trading", sinaiya: "industrial", sinaiyah: "industrial", lil: "",
+  muqawalat: "contracting", mukawalat: "contracting", muassasat: "", moassasat: "", muassasa: "", moassasa: "",
+  liltijara: "trading", liltijarah: "trading", liltijariya: "trading", liltijarat: "trading", litijara: "trading",
+  litijarah: "trading", litijarat: "trading", lilmuqawalat: "contracting", lilsinaa: "industry",
+  lilsinaah: "industry", handasiya: "engineering", handasiyah: "engineering", alhandasiya: "al engineering",
+  /* la holding (القابضة), les services (الخدمات), le riz (الأرز) : les mots que le nom anglais traduit
+     (« Sharikat Rawasi Al Najd Al Qabidha » est « Rawasi Al Najd Holding Company », jeu 9) */
+  qabidha: "holding", qabida: "holding", qabidah: "holding", khadamat: "services", khidmat: "services", aruz: "rice",
+}));
+/** Les graphies d'une romanisation persane ou arabe que la table ne liste pas une à une : gh pour
+ *  g (« Bazarghani »), une voyelle longue doublée (« Tejaarat », « Bazaargani »). Le repli ne touche
+ *  que la CLÉ cherchée, parmi les mots persans et arabes : un nom propre reste tel quel. */
+function pliGenerique(j: string): string {
+  return j.replace(/gh/g, "g").replace(/aa/g, "a").replace(/ee/g, "i").replace(/oo/g, "u");
+}
+function traduction(j: string): string | undefined {
+  const t = TRADUCTIONS.get(j);
+  if (t !== undefined) return t;
+  const p = pliGenerique(j);
+  return p === j ? undefined : TRADUCTIONS_ARABES.get(p);
+}
 const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   /* chinois (pinyin) */ maoyi: "trading", jinchukou: "import export", keji: "technology", dianzi: "electronics",
   gongye: "industry", shiye: "industrial", zhizao: "manufacturing", jituan: "group", guoji: "international",
@@ -173,12 +206,7 @@ const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   /* coréen */ sanop: "industry", sanup: "industry", muyeok: "trading", muyok: "trading", jeongmil: "precision",
   jungmil: "precision", jeonja: "electronics", junja: "electronics", hwahak: "chemical", mulryu: "logistics",
   haeun: "shipping", gaebal: "development", tongsang: "trading",
-  /* persan et arabe */ bazargani: "trading", tejarat: "trade", tejarati: "trading", sanati: "industrial",
-  tolid: "production", tolidi: "production", tijara: "trading", tijarah: "trading", tijariya: "trading",
-  tijariyah: "trading", sinaiya: "industrial", sinaiyah: "industrial", lil: "",
-  muqawalat: "contracting", mukawalat: "contracting", muassasat: "", moassasat: "", muassasa: "", moassasa: "",
-  liltijara: "trading", liltijarah: "trading", liltijariya: "trading", lilmuqawalat: "contracting", lilsinaa: "industry",
-  lilsinaah: "industry", handasiya: "engineering", handasiyah: "engineering", alhandasiya: "al engineering",
+  /* persan et arabe : voir TRADUCTIONS_ARABES */ ...Object.fromEntries(TRADUCTIONS_ARABES),
   /* « fils » et « frères » dans les langues du commerce */
   sinovi: "sons", synowie: "sons", sohne: "sons", soehne: "sons", hijos: "sons", fils: "sons", figli: "sons",
   filhos: "sons", zonen: "sons", sonner: "sons", oglu: "sons", ogullari: "sons",
@@ -449,7 +477,8 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   /* le TOO kazakh (товарищество с ограниченной ответственностью) se traduit LLP, LLC ou Ltd */
   poser(["ltd", "llc", "part"], ["too", "tovarishchestvo s ogranichennoi otvetstvennostyu", "tovarishchestvo s ogranichennoy otvetstvennostyu"]);
   poser(["ltd", "corp"], ["pt", "perseroan terbatas", "tbk", "ud", "usaha dagang", "commanditaire vennootschap", "perseroan komanditer", "pcl", "public company limited", "teoranta", "teo", "dac", "designated activity company"]);
-  poser(["corp"], ["private joint stock company", "sherkat sahami khas", "sherkate sahami khas", "sahami khas", "sahami amm",
+  poser(["corp"], ["private joint stock company", "private joint stock", "public joint stock", "closed joint stock", "open joint stock",
+    "sherkat sahami khas", "sherkate sahami khas", "sahami khas", "sahami amm",
     "sociedad anonima promotora de inversion de capital variable", "sociedad anonima promotora de inversion",
     "sociedad anonima unipersonal", "sociedad anonima de capital variable"]);
   poser(["part"], ["scea", "gaec", "earl"]);
@@ -631,7 +660,7 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
     .flatMap((m) => {
       let dedans = ` ${jetons(normaliser(plier(m[1]!))).join(" ")} `;
       for (const [de, vers] of LOCUTIONS) dedans = dedans.split(de).join(vers);
-      return dedans.trim().split(/ +/).flatMap((j) => (ABREVIATIONS.get(j) ?? TRADUCTIONS.get(j) ?? j).split(" "));
+      return dedans.trim().split(/ +/).flatMap((j) => (ABREVIATIONS.get(j) ?? traduction(j) ?? j).split(" "));
     })
     .filter((j) => j !== "" && !FORMES.has(j)));
   /* Lettres et chiffres collés se séparent : « No18 » → « No 18 », « LANQIAOFENG16 » →
@@ -675,7 +704,12 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
     for (const k of FAMILLES_DES_FORMES.get(p.trim()) ?? []) familles.add(k);
     texte = texte.split(p).join(" ");
   }
-  const mots = texte.trim().split(/ +/).flatMap((j) => (j === "i" ? j : (ABREVIATIONS.get(j) ?? TRADUCTIONS.get(j) ?? j)).split(" "));
+  const separes = texte.trim().split(/ +/);
+  const mots = separes.flatMap((j, i) => (j === "i" ? j
+    /* « li » (ل, « pour ») devant un mot du commerce arabe est la préposition, comme « lil » :
+       « Li Tijarat Al Aruz » est « Rice Trading » (jeu 9) ; devant tout autre mot c'est un nom (« Li Ning ») */
+    : j === "li" && TRADUCTIONS_ARABES.has(separes[i + 1] ?? "") ? ""
+    : (ABREVIATIONS.get(j) ?? traduction(j) ?? j)).split(" "));
   /* « IP Tavrizyan A.G. » : l'entrepreneur individuel russe (ИП), ukrainien (ФОП, ЧП),
      kazakh (ИП) porte un NOM DE PERSONNE et ses initiales ; « A.G. » n'y est pas une
      Aktiengesellschaft. Après ce sigle, les mots courts restent des mots. */
@@ -948,6 +982,18 @@ export function squelette(mot: string): string {
     .replace(/(.)\1+/g, "$1");
 }
 
+/**
+ * Le squelette d'un mot, sa voyelle longue ī écrite ee lue i (« Naseem » : nasim, comme « Nasim »).
+ * En arabe, en persan, en hindi romanisés, ee et i sont la même voyelle, comme oo et u que le
+ * squelette plie partout ; en anglais, ee est une autre voyelle (« Greenholt », « Grainholt » :
+ * mesuré le 27/09 sur le jeu 4, 0,915 quand le squelette pliait ee partout, une fausse alerte forte).
+ * D'où ce squelette à part, sous les marques arabe et indienne seulement (voir `scorePrepares`),
+ * et jamais entre deux mots anglais.
+ */
+export function squeletteLongue(mot: string): string {
+  return squelette(mot.replace(/ee/g, "i"));
+}
+
 /** Les orthographes britanniques que les règles générales ne ramènent pas à l'américaine. */
 const BRITANNIQUE: ReadonlyMap<string, string> = new Map(Object.entries({
   aluminium: "aluminum", sulphur: "sulfur", tyre: "tire", tyres: "tires", grey: "gray", mould: "mold",
@@ -995,16 +1041,37 @@ export function variationVocalique(sqA: string, sqB: string): boolean {
   if (sqA.length !== sqB.length || sqA === sqB) return false;
   /* une voyelle ; deux à partir de sept lettres (« mohamed », « muhamad ») */
   const tolere = sqA.length >= 7 ? 2 : 1;
-  /* seules les paires qu'une romanisation confond : a, e, i entre elles ; o et u entre eux.
-     a et u ne se confondent pas (« Jinyang », « Jinyoung » sont deux noms, mesuré le 27/09) */
-  const classe = (c: string) => ("aei".includes(c) ? "a" : "ou".includes(c) ? "o" : "");
+  /* seules les paires qu'une romanisation confond : o et u entre eux ; e avec a, e avec i (la
+     voyelle brève, que l'arabe n'écrit pas, se romanise e ou a, e ou i : Khaled, Khalid ; Mohammed,
+     Mohammad). Mais PAS a avec i directement : là c'est une voyelle longue, que l'arabe écrit, ا
+     contre ي (« Rashid » رشيد et « Rashad » رشاد, Hamid et Hamad, Jamil et Jamal, Karim et Karam :
+     deux noms chacun ; jeu 9, 27/09 : Rashid et Rashad à 0,923, une fausse alerte forte). a et u ne
+     se confondent pas non plus (« Jinyang », « Jinyoung » sont deux noms, mesuré le 27/09) */
+  const confondues = (x: string, y: string) =>
+    (x === "e" && "ai".includes(y)) || (y === "e" && "ai".includes(x)) || ("ou".includes(x) && "ou".includes(y));
   let ecarts = 0;
   for (let i = 0; i < sqA.length; i++) {
     if (sqA[i] === sqB[i]) continue;
-    const ca = classe(sqA[i]!), cb = classe(sqB[i]!);
-    if (ca === "" || ca !== cb || ++ecarts > tolere) return false;
+    if (!confondues(sqA[i]!, sqB[i]!) || ++ecarts > tolere) return false;
   }
   return ecarts >= 1;
+}
+
+/**
+ * Deux squelettes dont le plus long n'a qu'une voyelle de plus, a ou e, écrite entre ses deux
+ * dernières lettres, deux consonnes (« bahr », « bahar » ; « nasr », « naser » ; « fahd », « fahad » ;
+ * « badr », « bader ») : la voyelle d'appui que les parlers arabes glissent dans un groupe final de
+ * consonnes, et que la romanisation écrit ou n'écrit pas. Quatre lettres au moins au mot court, et
+ * jamais i, o, u : « Amr » et « Amir » sont deux noms (عمرو, أمير), « Nasr » et « Nasir » aussi (نصر,
+ * ناصر) ; « Saad » et « Said » (سعد, سعيد) n'ont pas la voyelle entre deux consonnes. Crédité sous la
+ * marque arabe seulement (jeu 9, 27/09 : « Naseem Al Bahar » et « Nasim Al Bahr » restaient à 0,666).
+ */
+export function voyelleEpenthetique(sqA: string, sqB: string): boolean {
+  const [court, long] = sqA.length < sqB.length ? [sqA, sqB] : [sqB, sqA];
+  if (long.length !== court.length + 1 || court.length < 4) return false;
+  const n = long.length, consonne = (c: string) => !"aeiou".includes(c);
+  if (!"ae".includes(long[n - 2]!) || !consonne(long[n - 3]!) || !consonne(long[n - 1]!)) return false;
+  return long.slice(0, n - 2) + long[n - 1] === court;
 }
 
 /** Un nom préparé UNE fois : ses mots, leurs poids, leurs clés, ses numéros, son bloc. */
@@ -1231,6 +1298,8 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
      moderne s'écrivent avec le même squelette, et c'est le squelette qui fait foi (« Tjahaja Soerya Kentjana »,
      « Cahaya Surya Kencana », jeu 9) */
   const indonesien = ["ID", "MY"].some((k) => A.marques.pays.includes(k) || B.marques.pays.includes(k));
+  /* la voyelle d'appui d'un groupe final de consonnes (« Bahr », « Bahar ») n'est que de l'arabe */
+  const arabe = A.marques.arabe || B.marques.arabe;
   const japonais = A.marques.japonais || B.marques.japonais, coreen = A.marques.coreen || B.marques.coreen;
   const hebreuOuGrec = A.marques.hebreuOuGrec || B.marques.hebreuOuGrec, indien = A.marques.indien || B.marques.indien;
   const hispanique = A.marques.hispanique || B.marques.hispanique;
@@ -1258,7 +1327,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
         const nx = X.marques.natifs.get(x) ?? "", ny = Y.marques.natifs.get(y) ?? "";
         /* la clé porte tout ce qui décide : les deux mots, leurs marques d'abréviation, et
            leur position de dernier mot (la troncature ne vaut que pour lui) */
-        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${chinois ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
+        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
         /* le cache code l'équivalence de romanisation en ajoutant 2 à la valeur (elle est dans [0, 1]) */
         const enCache = memo?.get(cle);
         let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
@@ -1272,6 +1341,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           equivalent = !autreSyllabe && x !== y && !tousDeuxAnglais(x, y) && (
             (romanisation && (X.replis[i] === Y.replis[j] || variationVocalique(X.squelettes[i]!, Y.squelettes[j]!)
               || voyelleSautee(X.squelettes[i]!, Y.squelettes[j]!)))
+            || (arabe && voyelleEpenthetique(X.squelettes[i]!, Y.squelettes[j]!))
             /* et « oe » y était « u » (« Soerya », « Surya ») : o et u ne font qu'une classe sous cette marque */
             || (indonesien && X.squelettes[i]!.replace(/o/g, "u") === Y.squelettes[j]!.replace(/o/g, "u"))
             || (japonais && pliJaponais(x) === pliJaponais(y))
@@ -1281,15 +1351,27 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
             || ((indien || hispanique) && pliIndien(x) === pliIndien(y))
             || (hebreuOuGrec && (X.squelettes[i]!.replace(/X/g, "h") === Y.squelettes[j]!.replace(/X/g, "h") || pliIndien(x) === pliIndien(y))));
           if (equivalent) v = Math.max(v, CREDIT_ROMANISATION);
+          /* la voyelle d'appui (« Bahr », « Bahar ») ne change pas le mot arabe, quand une voyelle
+             substituée peut en faire un autre : son crédit est au-dessus (CREDIT_APPUI) */
+          if (arabe && x !== y && !tousDeuxAnglais(x, y) && voyelleEpenthetique(X.squelettes[i]!, Y.squelettes[j]!)) v = Math.max(v, CREDIT_APPUI);
           /* les mêmes consonnes qu'un mot venu d'un abjad : ce côté n'a jamais eu de voyelles à
              comparer, c'est l'égalité de squelette de son écriture (« بحر » bhr et « Bahr »,
              « הנגב » hngb et « HaNegev »). Mesuré le 27/09 sur les paires des jeux 6 et 8 : au
              crédit de 0,85, « بحر الذهب » restait à 0,744, « سپیددشت » à 0,787 et « שחר הגליל » à
              0,700, sous le possible, chaque mot du nom propre n'apportant que 0,7 */
           if (abjad !== "" && x !== y && !tousDeuxAnglais(x, y)) {
-            const kx = cleAbjad(x, abjad === "hebreu");
-            if (kx.length >= 3 && kx === cleAbjad(y, abjad === "hebreu")) { equivalent = true; v = Math.max(v, CREDIT_ABJAD); }
+            const kx = cleAbjad(x, abjad === "hebreu"), ky = cleAbjad(y, abjad === "hebreu");
+            /* et la ta marbuta (ة), « -at » en annexion d'un côté, « -a » de l'autre (« Zahrat », « zahra ») */
+            const memes = (kx.length >= 3 && kx === ky) || (abjad === "arabe"
+              && ((ky.length >= 3 && cleAbjadSansTa(x) === ky) || (kx.length >= 3 && cleAbjadSansTa(y) === kx)));
+            if (memes) { equivalent = true; v = Math.max(v, CREDIT_ABJAD); }
           }
+          /* la voyelle longue ī écrite ee ou i : le même mot au squelette près (« Naseem », « Nasim » ;
+             « Waleed », « Walid »), sous les marques arabe et indienne, et il vaut un squelette égal
+             (0,95), pas une variation (jeu 9, 27/09 : « Naseem Al Bahar » et « Nasim Al Bahr », deux mots
+             au crédit de 0,85, restaient à 0,715) */
+          if (v < 0.95 && (arabe || indien) && x !== y && !tousDeuxAnglais(x, y) && (x.includes("ee") || y.includes("ee"))
+            && squeletteLongue(x) === squeletteLongue(y)) { equivalent = true; v = 0.95; }
           /* dans un export tout en majuscules, un mot court qu'aucun dictionnaire ne connaît et
              qui commence un mot long de l'autre nom est une abréviation sans point (« HVY IND ») */
           if (v < 0.9 && ((X.marques.majuscules && x.length >= 2 && x.length <= 9 && y.length >= x.length + 3 && y.length >= 6 && y.startsWith(x) && !lemme(x))
@@ -1805,6 +1887,12 @@ export function voyelleSautee(a: string, b: string): boolean {
   }
   return false;
 }
+/** Ce que vaut la voyelle d'appui d'un groupe final de consonnes (`voyelleEpenthetique` : « Bahr »,
+ *  « Bahar ») : entre la variation d'une voyelle (0,85 : une voyelle substituée peut faire un autre
+ *  mot, Hamad et Hamid) et le squelette égal (0,95), parce qu'elle ne change pas le mot arabe, بحر
+ *  dans les deux graphies. À 0,85, « Naseem Al Bahar 3 » et « Nasim Al Bahr 3 » restaient à 0,808
+ *  (jeu 9, 27/09) : deux mots au crédit de romanisation ne font pas un nom fort. */
+export const CREDIT_APPUI = 0.9;
 /** Ce que vaut l'égalité des consonnes face à un mot écrit dans un abjad : autant qu'un
  *  squelette égal (0,95), parce que ce côté-là n'a pas de voyelles à mettre en défaut. */
 export const CREDIT_ABJAD = 0.95;
