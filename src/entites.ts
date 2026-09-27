@@ -41,6 +41,9 @@ const FORMES = new Set([
   "establishment", "establishments", "societe", "ste", "borisat", "sherkat", "sherkate", "sharikat", "sharika",
   "shirkat", "shirka", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio", "scea", "gaec", "earl", "dac",
   "pcl", "teoranta", "teo", "cuideachta", "sapi", "sau",
+  /* Europe ; « mbH » est le « GmbH » d'une « Gesellschaft mbH » ou « Handelsgesellschaft mbH » ; « KGaA », « GbR »,
+     « SCE » sont des sociétés de personnes et de coopérateurs ; « Lda » la Limitada portugaise, angolaise, mozambicaine */
+  "mbh", "kgaa", "gbr", "sce", "lda",
   /* Europe */ "gmbh", "kg", "ohg", "ug", "ag", "se", "sa", "sas", "sasu", "sarl", "eurl", "snc",
   "sprl", "bvba", "srl", "spa", "sl", "slu", "sau", "bv", "nv", "vof", "oy", "oyj", "ab", "as",
   "asa", "aps", "kft", "zrt", "nyrt", "sro", "doo", "ad", "eood", "ood",
@@ -85,6 +88,14 @@ const PHRASES = [
   " with limited liability ", " sole proprietorship ",
   " free zone establishment ", " free zone company ", " free zone limited liability company ",
   " gesellschaft mit beschrankter haftung ", " aktiengesellschaft ", " kommanditgesellschaft ",
+  /* LA GMBH & CO. KG : la société en commandite dont la GmbH est l'associée commanditée est une AUTRE
+     personne morale que cette GmbH (« Vogel Kunststofftechnik GmbH » et « … GmbH & Co. KG », jeu 10, 27/09 :
+     1,000, le « & Co. KG » fondu dans les formes et la famille « llc » partagée). Lue en bloc, avant les
+     mots isolés, elle porte la seule famille des sociétés de personnes ; « & » est déjà une espace ici, et
+     « und », « and » s'écrivent encore */
+  " gmbh co kg ", " gmbh und co kg ", " gmbh and co kg ", " mbh co kg ", " mbh und co kg ", " mbh and co kg ",
+  " ag co kg ", " ag und co kg ", " se co kg ", " se und co kg ", " gmbh co ohg ", " mbh co ohg ", " gmbh co kgaa ",
+  " gmbh co ", " mbh co ", " co kg ", " co ohg ", " und co kg ", " and co kg ",
   " societe anonyme ", " societe a responsabilite limitee ", " societe par actions simplifiee ",
   " sociedad anonima cerrada ", " sociedad anonima ", " sociedad limitada ",
   " sociedad de responsabilidad limitada ",
@@ -276,8 +287,80 @@ const FILIATION_F: ReadonlySet<string> = new Set(["bint", "binti", "ibnat"]);
 /** Les mots qui font d'un nom la succursale d'un autre : la même personne morale (« X - Penang Branch »
  *  est X), mais pas la filiale « X (Penang) Sdn. Bhd. » ; d'un seul côté, le nom tel qu'écrit se range au
  *  possible, et sa variante sans la mention rejoint X (jeu 9). */
-const SUCCURSALES: ReadonlySet<string> = new Set(["branch", "succursale", "sucursal", "filiale", "filial", "zweigniederlassung",
-  "niederlassung", "sucursales"]);
+const SUCCURSALES: ReadonlySet<string> = new Set(["branch", "branches", "succursale", "sucursale", "sucursal", "filiale", "filial", "filiaal",
+  "zweigniederlassung", "niederlassung", "zweigstelle", "sucursales"]);
+/** Les mots du SIÈGE, dans les langues des registres, tels qu'un document les écrit derrière une virgule ou un
+ *  tiret (« , Head Office », « , Hauptsitz », « , Hoofdkantoor », « , Siège social », « , Sede central ») ; et ceux
+ *  d'un bureau ou d'une agence, qui ne sont une succursale que derrière une virgule ou un tiret (« Office »
+ *  seul est un mot du nom : « Office National des Ports »). Une même source pour l'annotation qui les ôte et
+ *  pour la mention qu'elle laisse (voir `mentionDeSuccursale`). */
+const MOTS_DE_SIEGE = "head\\s*office|headquarters?|hq|hauptsitz|hauptverwaltung|zentrale|hoofdkantoor|hoofdzetel|si[e\u00e8]ge(?:\\s+social)?|sede\\s+(?:central|social|legale|principal)|casa\\s+matriz|hovedkontor|huvudkontor|registered\\s+office|main\\s+office|central\\s+office|principal\\s+office";
+const MOTS_DE_BUREAU = "representative\\s+office|liaison\\s+office|branch\\s+office|agence|agencia|agenzia|kantoor|office|bureau|oficina|ufficio";
+const SIEGE = new RegExp(`(?<![\\p{L}])(?:${MOTS_DE_SIEGE})(?![\\p{L}])`, "iu");
+const BUREAU = new RegExp(`(?<![\\p{L}])(?:${[...SUCCURSALES].join("|")}|${MOTS_DE_BUREAU})(?![\\p{L}])`, "iu");
+/** Les mots vides d'une mention de succursale : ce qui reste est le lieu. */
+const VIDES_DE_MENTION: ReadonlySet<string> = new Set(["of", "the", "de", "di", "du", "des", "del", "della", "la", "le", "les", "van", "der",
+  "den", "het", "and", "in", "at", "a", "en"]);
+
+/** LE NUMÉRO DE REGISTRE qu'une douane ou une facture ajoute au nom déposé : le RC et le BN du CAC nigérian
+ *  (« (RC 884213) »), le « Reg. No. 2014/117230/07 » du CIPC sud-africain, le HRB et le HRA d'un Amtsgericht
+ *  (« (HRB 22045, AG Leipzig) »), le KvK néerlandais, le CIN, l'UEN, l'ACN, le CNPJ ; entre parenthèses, ou
+ *  derrière la forme. Lus comme des jetons, ils faisaient un NUMÉRO d'un seul côté et la paire plafonnait au
+ *  possible (jeu 10, 27/09 : dix paires) ; ôtés sans mémoire, deux dépôts du même nom sous deux numéros se
+ *  confondaient (jeu 10 : cinq paires à 1,000). Le numéro est donc une propriété de toutes les variantes du
+ *  nom (`VarianteTypee.registre`) : deux numéros différents, deux dépôts, le possible au plus. */
+const REGISTRES: readonly RegExp[] = [
+  /\(\s*(?:rc|bn|cac|cipc|hrb|hra|kvk|crn|cin|uen|acn|abn|brn|cnpj|cuit|ruc|nit|siren|siret)\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*[a-z]?\d[\d/.\-]{2,}[^()]*\)/giu,
+  /\(\s*reg(?:istration|istered)?\.?\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*[a-z]?\d[\d/.\-]{2,}[^()]*\)/giu,
+  /(?<=\b(?:ltd|limited|plc|inc|llc|gmbh|bhd|bv|nv)\.?)[\s,]+(?:rc|bn|hrb|hra|kvk|reg(?:istration)?\.?\s*(?:no\.?|nr\.?|number)?)\s*[:.]?\s*[a-z]?\d[\d/.\-]{3,}\s*$/giu,
+];
+/** Les numéros de registre d'un nom brut, chiffres seuls, triés ; « » sans numéro. */
+export function numeroDeRegistre(brut: string): string {
+  const nums = new Set<string>();
+  for (const r of REGISTRES) for (const m of brut.matchAll(r)) {
+    const n = /\d[\d/.\-]*/.exec(m[0])?.[0].replace(/\D/g, "");
+    if (n) nums.add(n);
+  }
+  return [...nums].sort().join(" ");
+}
+
+/**
+ * CE QUE NOMME une mention de succursale : « siege » pour le siège (« Hauptsitz », « Head Office »,
+ * « Hoofdkantoor », « Nairobi Head Office »), le LIEU de la succursale quand une virgule, un tiret ou une
+ * forme juridique le délimite (« , Speicherstadt Branch » : « speicherstadt » ; « - Penang Branch » :
+ * « penang » ; « Limited Sabon Gari Branch » : « sabon gari » ; « , Havengebied Kantoor » : « havengebied »),
+ * « branch » quand le nom dit la succursale sans dire laquelle, et « » sans mention. Deux mentions qui ne
+ * nomment pas la même chose sont deux établissements d'une même personne morale, et pas le même
+ * compte, la même caisse, la même immatriculation locale : le siège n'est pas la succursale de la
+ * Speicherstadt, celle de Cotonou n'est pas celle de Lomé (jeu 10, 27/09 : dix paires à 1,000 dont la
+ * variante sans mention rejoignait l'autre). Une mention d'un seul côté, elle, reste la même personne
+ * morale (« X - Penang Branch » est X, jeu 9). Une adresse (« Office 12 ») ne nomme rien.
+ */
+export function mentionDeSuccursale(brut: string): string {
+  /* le numéro de registre s'ôte d'abord : « Zweigniederlassung Leipzig (HRB 22045, AG Leipzig) » nomme Leipzig */
+  brut = REGISTRES.reduce((t, r) => t.replace(r, ""), brut);
+  const lieu = (segment: string): string => {
+    const mots = jetons(normaliser(plier(segment)));
+    if (mots.some((m) => /^\d+$/.test(m))) return "";
+    const reste = mots.filter((m) => !SUCCURSALES.has(m) && !VIDES_DE_MENTION.has(m) && !BUREAU.test(m));
+    return reste.length > 0 && reste.length <= 3 ? reste.join(" ") : "branch";
+  };
+  const segments = brut.split(/\s*,\s*|\s+[-\u2013]\s+/u);
+  for (const s of segments.slice(1)) {
+    if (SIEGE.test(s)) return "siege";
+    if (BUREAU.test(s)) { const l = lieu(s); if (l !== "") return l; }
+  }
+  const tete = segments[0] ?? "";
+  if (SIEGE.test(tete) && !/(?<![\p{L}])(?:hq|zentrale)(?![\p{L}])/iu.test(tete)) return "siege";
+  const mots = jetons(normaliser(plier(tete)));
+  const i = mots.findIndex((m) => SUCCURSALES.has(m));
+  if (i < 0) return "";
+  /* sans virgule, le lieu suit la forme juridique : « Kano Merchant Bank Limited Sabon Gari Branch » */
+  let j = -1;
+  for (let k = 0; k < i; k++) if (FORMES.has(mots[k]!)) j = k;
+  const place = j >= 0 ? mots.slice(j + 1, i).filter((m) => !VIDES_DE_MENTION.has(m)) : [];
+  return place.length > 0 && place.length <= 3 ? place.join(" ") : "branch";
+}
 
 /** Les abréviations d'usage, ramenées au mot entier ; les mots de liaison disparaissent
  *  (« & », « and », « et », « ve », « und », « y », « e », « for », « of », « the »). */
@@ -292,11 +375,13 @@ const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   gle: "generale", gal: "general", fres: "freres", entreprises: "enterprises", entreprise: "enterprise", les: "",
   td: "trading house", nlle: "nouvelle", nouv: "nouvelle",
   hnos: "brothers", gebr: "brothers", hk: "hongkong",
+  /* « Nig. Ltd », le suffixe du registre nigérian (CAC) : « Okafor Integrated Resources Nig. Ltd » (jeu 10) */
+  nig: "nigeria",
   /* les abréviations d'un crédit documentaire et d'un registre (jeu 9) : « Gen Trdg », « Grp Hldgs », « JV », « PKS » */
   jv: "joint venture", grp: "group", hldgs: "holdings", hldg: "holding", gen: "general", trdg: "trading", trdng: "trading",
   bldg: "building", mfrs: "manufacturers", pks: "palm oil mill", bnt: "bint",
-  /* le registre nigérian et les affrètements (jeu 10) : « Nig. Ltd », « Shipmgmt » */
-  nig: "nigeria", shipmgmt: "ship management",
+  /* les affrètements (jeu 10) : « Shipmgmt » ; « Nig. » est plus haut, avec la voie formes */
+  shipmgmt: "ship management",
   /* les prénoms et civilités malais : « Mohd » est Mohamad ; Haji, Dato', Datuk, Encik, Puan ne désignent personne */
   mohd: "mohamad", muhd: "muhammad", haji: "", hajjah: "", hj: "", hjh: "", dato: "", datuk: "", datin: "", encik: "", puan: "", tuan: "",
   /* les nombres écrits en lettres deviennent des chiffres : « Nine Willows » est « 9 Willows » */
@@ -517,7 +602,11 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   const t = new Map<string, string[]>();
   const poser = (pays: string[], formes: string[]) => { for (const f of formes) t.set(f, [...(t.get(f) ?? []), ...pays]); };
   poser(["DE", "AT", "CH"], ["gmbh", "ag", "gesellschaft mit beschrankter haftung", "aktiengesellschaft"]);
-  poser(["DE", "AT"], ["kg", "ohg", "kommanditgesellschaft"]);
+  poser(["DE", "AT"], ["kg", "ohg", "kommanditgesellschaft", "gmbh co kg", "gmbh und co kg", "gmbh and co kg", "mbh co kg", "mbh und co kg",
+    "mbh and co kg", "ag co kg", "ag und co kg", "se co kg", "se und co kg", "gmbh co ohg", "mbh co ohg", "gmbh co kgaa", "gmbh co", "mbh co",
+    "co kg", "co ohg", "und co kg", "and co kg", "kgaa"]);
+  poser(["DE", "AT", "CH"], ["mbh"]); poser(["DE"], ["gbr"]);
+  poser(["PT", "AO", "MZ", "CV"], ["lda"]);
   poser(["DE"], ["ug"]);
   poser(["FR"], ["sasu", "eurl", "societe par actions simplifiee", "etablissements", "ets", "scea", "gaec", "earl"]);
   poser(["IE"], ["dac", "designated activity company", "teoranta", "teo", "cuideachta"]);
@@ -627,7 +716,13 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "zakrytoe aktsionernoe obshchestvo", "otkrytoe aktsionernoe obshchestvo", "aktiengesellschaft", "societe anonyme",
     "societe par actions simplifiee", "sociedad anonima", "sociedad anonima cerrada", "sociedade anonima",
     "societa per azioni", "naamloze vennootschap", "anonim sirketi", "spolka akcyjna", "cong ty co phan", "sa de cv", "de cv"]);
-  poser(["part"], ["llp", "lp", "kg", "ohg", "snc", "vof", "limited liability partnership", "kommanditgesellschaft", "spolka jawna"]);
+  poser(["part"], ["llp", "lp", "kg", "ohg", "snc", "vof", "limited liability partnership", "kommanditgesellschaft", "spolka jawna",
+    /* les sociétés de personnes allemandes dont une société de capitaux est l'associée : une autre personne que celle-ci */
+    "gmbh co kg", "gmbh und co kg", "gmbh and co kg", "mbh co kg", "mbh und co kg", "mbh and co kg", "ag co kg", "ag und co kg",
+    "se co kg", "se und co kg", "gmbh co ohg", "mbh co ohg", "gmbh co kgaa", "gmbh co", "mbh co", "co kg", "co ohg", "und co kg",
+    "and co kg", "kgaa", "gbr", "sce"]);
+  poser(["llc"], ["mbh"]);
+  poser(["ltd", "llc"], ["lda"]);
   poser(["est"], ["est", "establishment", "establishments", "sole proprietorship"]);
   return t;
 })();
@@ -692,12 +787,12 @@ export type Marques = { pays: readonly string[]; familles: readonly string[]; na
   majuscules: boolean;
   /** la filiation écrite (« m » bin, ibn ; « f » bint, binti) : deux filiations sont deux personnes */
   filiation: string;
-  /** le nom porte « branch », « succursale » : la mention d'un seul côté range la paire au possible */
-  succursale: boolean;
+  /** le nom porte « branch », « succursale », « head office » : ce que la mention NOMME (voir
+   *  `mentionDeSuccursale`), « » sans mention ; d'un seul côté, ou deux mentions différentes, la paire se
+   *  range au possible */
+  succursale: string;
   /** le type que le préfixe de navire déclare (« tug », « barge ») : deux types sont deux navires */
   typeNavire: string;
-  /** le numéro de registre écrit entre parenthèses : deux numéros différents sont deux dépôts */
-  registre: string;
   /** la marque d'un CLAVARDAGE : tout en minuscules, ou en casse mixte sans le moindre point, virgule
    *  ni parenthèse (« Kim Send Hardware & Building Materials Pre Ltd ») ; celui qui tape ne ponctue pas
    *  et son téléphone corrige ses mots (voir `scorePrepares`). Un export en majuscules n'en est pas un,
@@ -775,13 +870,12 @@ export function preparerEntite(nom: string, lecture: Lecture = "mandarin"): stri
 
 /** La préparation, avec ce qu'elle a retiré (les pays des formes juridiques, un préfixe de
  *  navire, une forme de société) et les mots que leur auteur a ABRÉGÉS d'un point. */
-const REGISTRE = /\(\s*(?:rc|reg\.?(?:\s*no\.?)?|registration\s*(?:no\.?)?|hrb|hra|kvk|cipc|cac|eori|company\s*no\.?|co\.?\s*reg\.?\s*no\.?|crn|tin|vat|nif|nit|cnpj|cuit|rfc|siret|siren|folio)\s*:?\s*([a-z0-9][a-z0-9\/\-. ]*?)(?:,\s*amtsgericht\s+[\p{L} .-]+)?\s*\)/iu;
 export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { texte: string; abreges: ReadonlySet<string>; parentheses: ReadonlySet<string>; civilites: ReadonlySet<string> } & Marques {
   /* L'apostrophe DANS un mot le soude (« O'Brien », « Ch'iao ») : en faire une frontière
      de mot fabriquerait des jetons d'une ou deux lettres qui ne désignent rien. « F.lli »
      (fratelli) et « LPG/C » (LPG carrier) ont une ponctuation qui porte le sens : lus avant. */
   const rom = romaniser(nom, lecture);
-  let soude = plierLatin(rom.texte)
+  const soude = plierLatin(rom.texte)
     /* un « ? » dans une forme juridique ou à sa fin (« LT? », « L?D », « Ltd? ») : la lettre perdue
        ou le point mal lu d'une forme, complétée AVANT que le « ? » final ne parte en ponctuation
        (mesuré le 27/09 sur le jeu 9 : « (PVT) LT? » laissait un mot « lt » orphelin, 0,800) */
@@ -818,12 +912,6 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      groupe, distincte ; si l'autre nom n'a rien qui y réponde, on ne parle pas de la même
      (voir `scorePrepares`). Les mêmes tables que le nom entier, pour retrouver ces mots
      tels que la préparation les laisse. */
-  /* LE NUMÉRO DE REGISTRE entre parenthèses (« (RC 884213) », « (Reg. No. 2014/117230/07) », « (HRB 33871,
-     Amtsgericht Köln) », « (KvK 05234871) ») : une MARQUE, pas un résidu. Le même nom sous deux numéros est
-     deux dépôts (jeu 10, 27/09 : cinq paires) ; le nom sans numéro face au nom numéroté est le même (le nom
-     commercial et le registre). Présent des deux côtés et différent, conflit ; d'un seul côté, rien. */
-  let registre = "";
-  soude = soude.replace(REGISTRE, (_, num: string) => { registre = num.replace(/[^0-9a-z]/gi, "").toLowerCase(); return " "; });
   const parentheses = new Set([...soude.matchAll(/\(([^()]+)\)/g)]
     .flatMap((m) => {
       let dedans = ` ${jetons(normaliser(plier(m[1]!))).join(" ")} `;
@@ -959,12 +1047,12 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const hispanique = ["MX", "ES", "BR", "PE", "CO", "CL", "AR", "PT", "UY", "BO"].some((k) => pays.has(k)) || tousLesMots.some((j) => MARQUEURS_HISPANIQUES.has(j));
   const majuscules = !/\p{Ll}/u.test(nom) && /\p{Lu}/u.test(nom) && t.length >= 2;
   const filiation = tousLesMots.some((j) => FILIATION_M.has(j)) ? "m" : tousLesMots.some((j) => FILIATION_F.has(j)) ? "f" : "";
-  const succursale = tousLesMots.some((j) => SUCCURSALES.has(j));
+  const succursale = mentionDeSuccursale(soude);
   const chat = t.length >= 2 && !majuscules && (!/\p{Lu}/u.test(nom) || !/[.,()]/.test(nom));
   return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites,
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
     hebreuOuGrec, indien, hispanique, tamoul, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture === "cantonais", priveInconnu,
-    natifs: rom.natifs, filiation, succursale, typeNavire, registre };
+    natifs: rom.natifs, filiation, succursale, typeNavire };
 }
 
 /** Les jetons d'un nom brut : préparation d'entité, puis le pipeline commun des paliers
@@ -1051,13 +1139,52 @@ function calculerRacines(m: string): string[] {
   if (m.endsWith("ogue")) r.push(m.slice(0, -4) + "og");
   return r;
 }
-/** Le PLURIEL ANGLAIS d'un mot du dictionnaire est le même mot : « Metals » et « Metal », « Industries »
+/** Les MOTS DU COMMERCE dont le pluriel ne change pas la société : les cibles anglaises de TRADUCTIONS
+ *  (« metal », « industry », « supply »), et les qualificatifs qu'un registre écrit au pluriel ou non
+ *  (« Enterprises », « Holdings », « Products », « Solutions »). Hors de cette liste, un pluriel est un
+ *  autre nom : « Bonny Egret » et « Bonny Egrets » sont deux navires, « Provisions Store » et
+ *  « Provisions Stores » deux boutiques, « Yusuf Provisions Shop » et « … Shops » aussi (jeu 10, 27/09 :
+ *  six fausses alertes fortes du pluriel ouvert à tout le dictionnaire au tour cinq). */
+const GENERIQUES_AU_PLURIEL: ReadonlySet<string> = new Set([
+  ...[...TRADUCTIONS.values()].flatMap((v) => v.split(" ")).filter((m) => m.length >= 3),
+  "industries", "supplies", "services", "products", "systems", "solutions", "enterprises", "holdings", "investments",
+  "resources", "textiles", "foods", "exports", "imports", "traders", "merchants", "metals", "chemicals", "materials",
+  "logistics", "technologies", "machines", "industry", "supply", "service", "product", "system", "solution", "enterprise",
+  "investment", "resource", "food", "trader", "merchant", "machine",
+  /* les noms d'agent du commerce, qu'un registre met au pluriel ou non (« Contractors », « Engineers ») */
+  "engineer", "engineers", "contractor", "contractors", "consultant", "consultants", "builder", "builders", "developer", "developers",
+  "distributor", "distributors", "supplier", "suppliers", "exporter", "exporters", "importer", "importers", "manufacturer",
+  "manufacturers", "producer", "producers", "associate", "associates", "partner", "partners", "agent", "agents", "broker", "brokers",
+  "dealer", "dealers", "grower", "growers", "planter", "planters", "miller", "millers", "printer", "printers", "packer", "packers",
+  "farmer", "farmers", "forwarder", "forwarders", "shipper", "shippers", "carrier", "carriers", "operator", "operators",
+  "wholesaler", "wholesalers", "retailer", "retailers", "refiner", "refiners", "tanner", "tanners", "weaver", "weavers",
+  /* les marchandises et les métiers, ce qu'une société vend ou fait : au pluriel ou non, c'est la même
+     (« Valve Co. », « Valves Co. » ; « Fuel Supply », « Fuels Supply » ; « Malting », « Maltings »). Jamais
+     l'enseigne elle-même : « Store », « Shop », « Boutique » au pluriel sont une autre boutique */
+  "valve", "valves", "fuel", "fuels", "provision", "provisions", "venture", "ventures", "malting", "maltings", "part", "parts",
+  "spare", "spares", "motor", "motors", "pump", "pumps", "pipe", "pipes", "cable", "cables", "wire", "wires", "paint", "paints",
+  "coating", "coatings", "fertilizer", "fertilizers", "seed", "seeds", "grain", "grains", "feed", "feeds", "mineral", "minerals",
+  "ore", "ores", "log", "logs", "board", "boards", "panel", "panels", "brick", "bricks", "tile", "tiles", "polymer", "polymers",
+  "resin", "resins", "paper", "papers", "fabric", "fabrics", "shoe", "shoes", "bag", "bags", "tool", "equipment", "equipments",
+  "instrument", "instruments", "device", "devices", "component", "components", "accessory", "accessories", "commodity",
+  "commodities", "beverage", "beverages", "drink", "drinks", "fruit", "fruits", "vegetable", "vegetables", "nut", "nuts", "spice",
+  "spices", "cosmetic", "cosmetics", "pharmaceutical", "pharmaceuticals", "medicine", "medicines", "drug", "drugs", "vehicle",
+  "vehicles", "truck", "trucks", "tyre", "tire", "tires", "battery", "batteries", "lubricant", "lubricants", "solvent", "solvents",
+  "dye", "dyes", "pigment", "pigments", "ceramic", "ceramics", "mill", "mills", "farm", "farms", "estate", "estates", "plantation",
+  "plantations", "fishery", "mine", "mines", "quarry", "quarries", "foundry", "foundries", "workshop", "workshops", "warehouse",
+  "warehouses", "depot", "depots", "terminal", "terminals", "work", "tanker", "tankers", "trawler", "trawlers", "cargo", "cargoes",
+]);
+/** Le PLURIEL ANGLAIS d'un mot du commerce est le même mot : « Metals » et « Metal », « Industries »
  *  et « Industry », « Supplies » et « Supply » (jeu 9, 27/09 : 廢金屬 traduit « metal » face à « Recycling
  *  Metals » restait à 0,833, une lettre de différence sur six, et le nom sous le niveau fort). Le seul
- *  pluriel, jamais -ing ni -er : « Trading » et « Traders » restent deux mots (voir `racines`). */
+ *  pluriel, jamais -ing ni -er : « Trading » et « Traders » restent deux mots (voir `racines`) ; et seulement
+ *  un mot du commerce (GENERIQUES_AU_PLURIEL) : le pluriel d'un mot distinctif est un autre nom. */
 export function pluriel(long: string, court: string): boolean {
-  return long !== court && DICTIONNAIRE.has(court)
-    && (long === court + "s" || long === court + "es" || (court.endsWith("y") && long === court.slice(0, -1) + "ies"));
+  return DICTIONNAIRE.has(court) && (GENERIQUES_AU_PLURIEL.has(court) || GENERIQUES_AU_PLURIEL.has(long)) && formePlurielle(long, court);
+}
+/** La FORME d'un pluriel anglais, sans regarder le dictionnaire : -s, -es, -y en -ies. */
+export function formePlurielle(long: string, court: string): boolean {
+  return long !== court && (long === court + "s" || long === court + "es" || (court.endsWith("y") && long === court.slice(0, -1) + "ies"));
 }
 /** Le lemme d'un mot s'il est anglais : sa première racine au dictionnaire ; sinon undefined. */
 const CACHE_LEMMES = new Map<string, string | undefined>();
@@ -1308,7 +1435,7 @@ export type NomPrepare = {
 
 const SANS_MARQUES: Marques = { pays: [], familles: [], designations: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
   coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, tamoul: false, prive: false, majuscules: false, chat: false, abjad: "", cantonais: false,
-  priveInconnu: false, natifs: new Map(), filiation: "", succursale: false, typeNavire: "", registre: "" };
+  priveInconnu: false, natifs: new Map(), filiation: "", succursale: "", typeNavire: "" };
 
 export function preparerNom(f: Frequences, nom: string, lecture: Lecture = "mandarin"): NomPrepare {
   const a = analyserEntite(nom, lecture);
@@ -1352,12 +1479,20 @@ export function depuisJetons(f: Frequences, J: readonly string[], marques: Marqu
  * « Barlow »). Le squelette, lui, ramène déjà Q et K, W et V, Kh et H à la même initiale :
  * « Qadir » et « Kadir » ne paient rien.
  */
-export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesLibres = true): number {
+export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesLibres = true, pluriels = true): number {
   if (a === b) return 1;
   /* la lettre perdue d'un encodage (« seʔora » pour Señora) tient lieu d'une lettre, et d'une
      seule : le mot vaut l'égalité quand tout le reste est égal, lettre pour lettre */
   if ((porteUnJalon(a) || porteUnJalon(b)) && lettrePerdue(a, b)) return 1;
-  if (pluriel(a, b) || pluriel(b, a)) return 0.95;
+  /* le pluriel d'un mot du dictionnaire : le même mot quand c'est un mot du commerce (« Metals », « Metal »),
+     un AUTRE NOM sinon (« Egret », « Egrets » ; « Store », « Stores » ; « Pearl », « Pearls »), comme deux mots
+     anglais distincts, et non une lettre de différence (jeu 10, 27/09 : 0,836 pour « Bonny Egret » face à
+     « Bonny Egrets » par la seule distance). Dans un nom de navire (`pluriels` faux), tout pluriel est une
+     autre coque : « Nembe Fortune » et « Nembe Fortunes » */
+  if (formePlurielle(a, b) || formePlurielle(b, a)) {
+    const court = a.length < b.length ? a : b;
+    if (DICTIONNAIRE.has(court)) return pluriels && (pluriel(a, b) || pluriel(b, a)) ? 0.95 : 0.5;
+  }
   if (abrege(a, b) || abrege(b, a)) return 0.9;
   if (motsDistincts(a, b, voyellesLibres) || composesDistincts(a, b, voyellesLibres)) return 0.5;
   if (initialeLueOptiquement(a, b)) return 0.95;
@@ -1425,6 +1560,10 @@ export function initialeLueOptiquement(a: string, b: string): boolean {
 export function fauteDeFrappe(a: string, b: string): boolean {
   if (a.length < 6 || b.length < 6) return false;
   if (lemme(a) !== undefined || lemme(b) !== undefined) return false;
+  /* un « s » final en plus n'est pas le geste d'une faute : c'est le pluriel ou le possessif d'un nom de
+     famille, l'enseigne d'une autre boutique (« Njoroge », « Njoroges » ; jeu 10, 27/09 : 0,917, la
+     lettre tombée levant le plafond du mot ambigu) */
+  if (formePlurielle(a, b) || formePlurielle(b, a)) return false;
   return gesteDeFrappe(a, b);
 }
 /** Le GESTE d'une faute de frappe, sans regarder la longueur ni le dictionnaire : deux lettres qui se
@@ -1464,6 +1603,10 @@ export function abrege(court: string, long: string): boolean {
  *  partir de quatre lettres, et seulement pour le dernier mot. */
 export function tronque(dernier: string, long: string): boolean {
   if (long.length <= dernier.length || !long.startsWith(dernier)) return false;
+  /* un mot du dictionnaire suivi de son seul pluriel n'est pas un début coupé, c'est le pluriel, et c'est
+     `pluriel` qui en décide : « Egret » n'est pas « Egrets » tronqué (jeu 10, 27/09 : quatre navires et deux
+     boutiques au pluriel passaient par cette porte une fois le pluriel restreint aux mots du commerce) */
+  if (DICTIONNAIRE.has(dernier) && /^(?:s|es)$/.test(long.slice(dernier.length))) return false;
   /* trois lettres suffisent quand le mot entier est long (« Pro » pour « Prosperity ») */
   return dernier.length >= 4 || (dernier.length === 3 && long.length >= 7);
 }
@@ -1520,6 +1663,14 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
      de l'autre (« Agro ») : la holding face à la société qui exploite (voir QUALIFICATIFS_SOUDES) */
   let qualificatifSoudeVu = false;
   const orphelinsMots: [string[], string[]] = [[], []];
+  /* LE NOM COMMERCIAL FACE AU NOM DÉPOSÉ : un côté sans aucune forme juridique (le nom tel qu'un WhatsApp,
+     une facture ou un manifeste l'écrit), l'autre avec sa forme, et rien de plus qu'un mot de pays et des
+     qualificatifs de registre (« Adeyemi Agro Commodities » face à « Adeyemi Agro Commodities Nigeria
+     Limited », « Okafor Integrated Resources » face à « … Nig. Ltd ») : la douane ajoute le suffixe déposé,
+     c'est la même société, et le mot de pays n'y fait pas une filiale (jeu 10, 27/09 : quinze paires à
+     0,800). Quand les DEUX côtés portent une forme, « X Nigeria Ltd » face à « X Ltd » reste la filiale */
+  const sansFormeA = !A.marques.societe && A.marques.familles.length === 0, sansFormeB = !B.marques.societe && B.marques.familles.length === 0;
+  const nomCommercial: 0 | 1 | undefined = sansFormeA !== sansFormeB ? (sansFormeA ? 0 : 1) : undefined;
   /* la variation de voyelle et le repli ne sont crédités que là où une romanisation les
      produit : l'arabe et le persan (a, e, i ; o, u), le japonais (ō, ū : o, ou, oo, u). En
      allemand, en espagnol, en vietnamien, en chinois, une voyelle de plus ou de moins est un
@@ -1546,6 +1697,10 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   /* l'un des deux noms vient d'un clavardage : une lettre de différence avec un mot que le
      dictionnaire connaît y est une faute ou le correcteur d'un téléphone (voir plus bas) */
   const chat = A.marques.chat || B.marques.chat;
+  /* un navire d'un côté ou de l'autre : le pluriel d'un mot n'y est jamais le même mot (voir `simMot`) */
+  const navire = A.marques.navire || B.marques.navire;
+  /* aucune forme juridique d'aucun côté : deux noms tapés, pas copiés d'un registre (voir le pluriel d'un clavardage) */
+  const sansForme = !A.marques.societe && !B.marques.societe;
   /* là où une romanisation écrit les voyelles librement, deux mots anglais qui n'en diffèrent que
      par une ne sont pas deux mots (Amir, Emir ; Lung, Long en Wade-Giles et en pinyin, mesuré le
      27/09 sur le jeu 4) ; sans aucune marque de langue, si (Marlin, Merlin ; voir `motsDistincts`).
@@ -1567,13 +1722,13 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
         const nx = X.marques.natifs.get(x) ?? "", ny = Y.marques.natifs.get(y) ?? "";
         /* la clé porte tout ce qui décide : les deux mots, leurs marques d'abréviation, et
            leur position de dernier mot (la troncature ne vaut que pour lui) */
-        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
+        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}${navire ? 1 : 0}${sansForme ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
         /* le cache code l'équivalence de romanisation en ajoutant 2 à la valeur (elle est dans [0, 1]) */
         const enCache = memo?.get(cle);
         let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
         let equivalent = enCache !== undefined && enCache >= 2;
         if (v === undefined) {
-          v = simMot(x, y, X.squelettes[i]!, Y.squelettes[j]!, voyellesLibres);
+          v = simMot(x, y, X.squelettes[i]!, Y.squelettes[j]!, voyellesLibres, !navire);
           const pliC = cantonais && x !== y && !tousDeuxAnglais(x, y) && pliCantonais(x) === pliCantonais(y);
           const autreSyllabe = chinois && x !== y && !pliC && !initialesChinoisesCompatibles(x, y);
           if (autreSyllabe) v = Math.min(v, 0.5);
@@ -1642,6 +1797,13 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           if (v < 0.9 && chat && !chinois && !coreen && !japonais && x.length >= 4 && y.length >= 4 && x[0] === y[0]
             && !(estSyllabeIsolee(x) && estSyllabeIsolee(y))
             && (lemme(x) === undefined) !== (lemme(y) === undefined) && distanceOsa(x, y) === 1) v = 0.9;
+          /* LE PLURIEL D'UN CLAVARDAGE : sous la marque chat, sans forme juridique d'aucun côté, un mot du
+             dictionnaire et son pluriel sont un mot, le correcteur du téléphone ôtant ou ajoutant le s
+             (« Chukwuemeka Stores », « Chukwuemeka Store », jeu 10). Dès qu'un côté porte une forme, le
+             pluriel est l'orthographe déposée au registre, et « Provisions Store » n'est pas « Provisions
+             Stores Limited » (jeu 10, 27/09, deux boutiques) ; un navire non plus (voir `simMot`) */
+          if (v <= 0.5 && chat && sansForme && !navire && (formePlurielle(x, y) || formePlurielle(y, x))
+            && DICTIONNAIRE.has(x.length < y.length ? x : y)) v = 0.9;
           if (v < 0.9 && X.abreges[i] && x.length < y.length && (y.startsWith(x) || abrege(x, y))) v = 0.9;
           if (v < 0.9 && Y.abreges[j] && y.length < x.length && (x.startsWith(y) || abrege(y, x))) v = 0.9;
           if (v < 0.9 && dernierX && tronque(x, y)) v = 0.9;
@@ -1698,6 +1860,11 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
     if (plafond < options.auMoins) return 0;
   }
   const cB = cote(B, A, 1);
+  if (nomCommercial !== undefined) {
+    const depose = nomCommercial === 0 ? 1 : 0;
+    if ([A, B][nomCommercial]!.mots.length >= 2 && orphelinsMots[nomCommercial]!.length === 0 && orphelinsMots[depose].length > 0
+      && orphelinsMots[depose].every((w) => PAYS_MOTS.has(w) || QUALIFICATIFS_DE_REGISTRE.has(w))) orphelinRare = false;
+  }
   let s = (cA + cB) / (A.total + B.total);
   /* UN MOT ORPHELIN DE CHAQUE CÔTÉ (« Logistics » contre « Engineering », « Nigeria » contre
      « Ghana ») : les deux noms ont chacun ce que l'autre n'a pas, c'est la signature d'une
@@ -1762,6 +1929,16 @@ export const BLOC_MIN = 0.8;
  *  « Rakhmatullin Agro LLC » à 0,907, la holding face à la société qui exploite). */
 const QUALIFICATIFS_SOUDES: ReadonlySet<string> = new Set(["holding", "holdings", "group", "invest", "trade", "export", "import", "industries"]);
 
+/** Les QUALIFICATIFS qu'un registre ajoute au nom commercial en le déposant, avec le mot de pays et la forme :
+ *  « Balogun Global Ventures » est déposé « Balogun Global Ventures Enterprises Limited », « Chukwu Petroleum
+ *  Services » « … Services Integrated Limited », « Nwosu Farm Produce » « … Produce & Sons Limited » (jeu 10).
+ *  Ils ne disent rien de plus que le nom commercial ; ce sont eux, et le pays, qu'un nom commercial sans
+ *  forme a le droit de ne pas porter (voir `scorePrepares`). */
+const QUALIFICATIFS_DE_REGISTRE: ReadonlySet<string> = new Set(["enterprise", "enterprises", "integrated", "venture", "ventures",
+  "global", "international", "general", "sons", "brothers", "limited", "company", "co"]);
+/* ni « Holdings » ni « Group » : la holding est une autre société que celle qui exploite (« Chelyabinsk Metal
+   Works » face à « Chelyabinsk Metal Works Holdings JSC », jeu 7 ; voir aussi QUALIFICATIFS_SOUDES) */
+
 /** `colle` est-il `radical` suivi d'un qualificatif de groupe soudé, face à un nom (`autres`,
  *  les mots de l'autre côté) qui porte le radical nu et nulle part le qualificatif ? Trois
  *  lettres de radical au moins ; et « Agro Holding » en deux mots face à « Agroholding » n'est
@@ -1793,9 +1970,17 @@ export function marquesEnConflit(a: Marques, b: Marques): boolean {
      d'un seul côté (« X - Penang Branch » face à « X (Penang) ») : le possible, jamais le fort (jeu 9) */
   if (a.filiation && b.filiation && a.filiation !== b.filiation) return true;
   if (a.typeNavire && b.typeNavire && a.typeNavire !== b.typeNavire) return true;
-  if (a.succursale !== b.succursale) return true;
-  if (a.registre && b.registre && a.registre !== b.registre) return true;
+  if (!succursalesCompatibles(a.succursale, b.succursale)) return true;
   return (a.navire && b.societe) || (b.navire && a.societe);
+}
+
+/** Deux mentions de succursale nomment-elles la même chose ? La même, oui ; une mention d'un seul côté,
+ *  non ; le siège face à une succursale, non ; deux lieux différents, non ; une succursale dont le nom ne dit
+ *  pas le lieu (« branch ») reste compatible avec un lieu, pas avec le siège (voir `mentionDeSuccursale`). */
+export function succursalesCompatibles(a: string, b: string): boolean {
+  if (a === b) return true;
+  if (a === "" || b === "" || a === "siege" || b === "siege") return false;
+  return a === "branch" || b === "branch";
 }
 
 /**
@@ -1832,6 +2017,13 @@ export function sembleCoupe(court: string, long: string): boolean {
      « Kerrindale Express 3 » un « Kerrindale Express 30 » (mesuré le 27/09 sur le jeu 5) */
   const suite = l.slice(c.length);
   if (/^(?:\s*)(?:\d+|[ivx]+)(?![\p{L}])/u.test(suite)) return false;
+  /* la coupe ne tombe pas DANS une forme juridique qui en commence une autre, ni dans le pluriel d'un
+     mot du dictionnaire : « … d'Import-Export SA » (34 caractères) n'est pas « … SARL » coupé, ce sont deux
+     sociétés ; « Patience Provisions Store » (25) n'est pas « … Stores Limited » coupé (jeu 10, 27/09 :
+     deux fausses alertes à 1,000 par cette seule porte) */
+  const dernierMot = c.split(" ").at(-1) ?? "";
+  const reste = /^\p{L}+/u.exec(suite)?.[0] ?? "";
+  if (reste !== "" && ((FORMES.has(dernierMot) && FORMES.has(dernierMot + reste)) || (DICTIONNAIRE.has(dernierMot) && /^(?:s|es)$/.test(reste)))) return false;
   /* à 35 (le champ SWIFT), la coupe peut tomber sur une limite de mot ; aux autres largeurs,
      plus rares, on exige qu'elle tombe au milieu d'un mot (« Thornbury Chemical Corporation »
      en trente n'est pas « … Corporation of Canada » coupé) */
@@ -1844,8 +2036,17 @@ export function sembleCoupe(court: string, long: string): boolean {
 export function scoreBrut(f: Frequences, a: string, A: NomPrepare, b: string, B: NomPrepare, options: OptionsScore = {}): number {
   let s = scorePrepares(A, B, options);
   const ta = a.trim(), tb = b.trim();
-  if (sembleCoupe(ta, tb)) s = Math.max(s, scorePrepares(A, preparerNom(f, tb.slice(0, ta.length), B.marques.cantonais ? "cantonais" : "mandarin"), options));
-  if (sembleCoupe(tb, ta)) s = Math.max(s, scorePrepares(preparerNom(f, ta.slice(0, tb.length), A.marques.cantonais ? "cantonais" : "mandarin"), B, options));
+  /* le nom coupé à la longueur de l'autre est CE nom, tronqué : la coupe emporte avec les derniers mots la
+     mention de succursale qu'ils portaient, et le nom coupé la garde (jeu 10, 27/09 : « …, Maputo Branch »
+     coupé à 34 lettres rejoignait « …, Durban Branch » à 1,000, sans plus rien dire de sa succursale). Ses
+     formes, elles, se lisent sur le texte coupé, tel que le champ le montre : « FOSHAN JINYUAN CERAMIC SA »
+     est « … Sanitary Ware Co., Ltd. » coupé à 25, et son « SA » n'est pas une forme en conflit avec Ltd */
+  const coupeDe = (brut: string, entier: NomPrepare, L: number): NomPrepare => {
+    const c = preparerNom(f, brut.slice(0, L), entier.marques.cantonais ? "cantonais" : "mandarin");
+    return { ...c, marques: { ...c.marques, succursale: entier.marques.succursale } };
+  };
+  if (sembleCoupe(ta, tb)) s = Math.max(s, scorePrepares(A, coupeDe(tb, B, ta.length), options));
+  if (sembleCoupe(tb, ta)) s = Math.max(s, scorePrepares(coupeDe(ta, A, tb.length), B, options));
   return s;
 }
 
@@ -1863,6 +2064,9 @@ export function scoreBrut(f: Frequences, a: string, A: NomPrepare, b: string, B:
  * aucune. Un « (Shanghai) » n'est PAS retiré : c'est souvent une filiale, pas une annotation.
  */
 const ANNONCES = /[\s,;]*(?:\b(?:a[./]?\s?k[./]?\s?a\.?|f[./]?\s?k[./]?\s?a\.?|formerly(?:\s+known\s+as|\s+called)?|also\s+known\s+as|previously\s+(?:known\s+as|called)|now\s+trading\s+as|d[./]?\s?b[./]?\s?a\.?|doing\s+business\s+as|t\/a|trading\s+as|now\s+known\s+as|n\.?k\.?a\.?|antes|anciennement|vormals|ehemals|voorheen|anteriormente|dawniej)(?=[\s:,])|(?<=\p{L}[\s,]*)\bex[-.\s]+(?=\p{L}))\s*:?\s*/giu;
+/** La même annonce, capturée : `split` rend alors les parties ET l'annonce qui les sépare, pour savoir
+ *  laquelle est le nom actuel (voir `variantesTypees`). */
+const ANNONCES_CAPTUREE = new RegExp(`(${ANNONCES.source})`, ANNONCES.flags);
 /** Ce qu'un document met DEVANT le nom : l'étiquette du champ (« SHIPPER: », « NOTIFY PARTY - »,
  *  « VESSEL: MV … », « by order of »), la personne à qui s'adresse le pli (« Attn. Mr. Sørensen, »),
  *  une référence bancaire (« OUR REF 71-33920-LC », « L/C No. 4412 »), un numéro de coque devant
@@ -1901,10 +2105,14 @@ const ANNOTATIONS: readonly RegExp[] = [
      Polymers (mesuré le 27/09 : quatre fausses alertes fortes d'un coup) */
   /[\s,]+\b(?:pol|pod)\s*:\s*[\p{L} .'-]{2,30}\s*$/iu,
   /\s*[-–,;(]\s*[\p{L}. ]{2,25}\bflag(?:ged)?\)?\s*$/iu,
-  /* « Kenanga Pacific Sdn. Bhd. - Penang Branch » : la succursale après un tiret ; « Succursale de Genève », « Sucursal Lima » */
-  /\s+[-\u2013]\s+[^,]*\b(?:branch|succursale|sucursal|filiale|zweigniederlassung|representative\s+office|liaison\s+office)\b.*$/iu,
-  /,\s*[^,]*\bbranch\b.*$/iu,
+  /* « Kenanga Pacific Sdn. Bhd. - Penang Branch » : la succursale après un tiret ; « Succursale de Genève », « Sucursal Lima » ;
+     et le siège ou le bureau derrière une virgule ou un tiret (« , Head Office », « , Hauptsitz », « , Havengebied Kantoor ») :
+     ce qu'ils nommaient, la variante le garde en mention (voir `mentionDeSuccursale`) */
+  new RegExp(`\\s+[-\\u2013]\\s+[^,]*(?<![\\p{L}])(?:${[...SUCCURSALES].join("|")}|${MOTS_DE_SIEGE}|${MOTS_DE_BUREAU})(?![\\p{L}])(?!\\s*\\d).*$`, "iu"),
+  new RegExp(`,\\s*[^,]*(?<![\\p{L}])(?:${[...SUCCURSALES].join("|")}|${MOTS_DE_SIEGE}|${MOTS_DE_BUREAU})(?![\\p{L}])(?!\\s*\\d).*$`, "iu"),
   /\s+branch$/iu,
+  /* le siège écrit sans virgule en fin de nom : « X Limited Head Office » */
+  /\s+(?:head\s*office|headquarters?|hauptsitz|hoofdkantoor|hoofdzetel|si[e\u00e8]ge\s+social)$/iu,
   /* la cargaison derrière le nom d'un expéditeur ou d'un navire : « - CPO IN BULK », « - 500 MT RICE IN BAGS » */
   /\s+[-\u2013]\s+[\p{L}\d ]{2,40}?\bin\s+(?:bulk|bags|drums|containers?|cartons|jumbo\s+bags)\s*$/iu,
   /\s+[-\u2013]\s+(?:cpo|cpko|pko|ffb|rbd\s+palm\s+\w+|crude\s+palm\s+oil|palm\s+kernel\s+oil)\b.*$/iu,
@@ -1937,6 +2145,9 @@ const ANNOTATIONS: readonly RegExp[] = [
   /* un code pavillon à trois lettres entre parenthèses en fin de nom : (MHL), (PAN), (LBR).
      Deux lettres ((UK), (HK)) restent : c'est le plus souvent une filiale. */
   /\s*\([A-Z]{3}\)\s*$/u,
+  /* le numéro de registre, entre parenthèses ou derrière la forme (voir REGISTRES) : ôté du texte, gardé en
+     propriété de la variante (`registre`) */
+  ...REGISTRES.map((r) => new RegExp(r.source, "iu")),
 ];
 /** Les pays et régions du monde qu'une société met dans son nom pour dire sa filiale. */
 const PAYS_MOTS: ReadonlySet<string> = new Set(["uk", "usa", "us", "america", "american", "americas", "china", "chinese", "india", "indian",
@@ -1975,15 +2186,32 @@ const PORTS_ET_QUARTIERS: ReadonlySet<string> = new Set(["bandar", "kota", "jebe
   "lagos", "apapa", "tema", "abidjan", "mombasa", "durban", "santos", "houston", "newark", "savannah", "vancouver"]);
 const FORME_EN_LIGNE = /\b(?:co\.?,?\s*ltd\.?|co(?=\.)|limited|ltd\.?|inc\.?|llc|l\.l\.c\.|corp\.?|corporation|gmbh|s\.?a\.?|b\.?v\.?|n\.?v\.?|pte\.?\s*ltd\.?|pvt\.?\s*ltd\.?|sdn\.?\s*bhd\.?|s\.?p\.?a\.?|s\.?r\.?l\.?|a\.?s\.?|plc|kk|k\.k\.|jsc|ooo|fze|fzco|est\.?)\b/giu;
 
+/** Une variante d'un nom brut, et ce qu'elle est. `ancien` : un nom que le document annonce comme un
+ *  AUTRE nom du même (« ex », « f/k/a », « formerly », « a.k.a. », « t/a ») ; un ancien nom d'un seul côté
+ *  reste la même coque (« MV Warri Osprey » face à « MV Apapa Falcon (ex Warri Osprey) »), mais un ancien
+ *  nom retrouvé des DEUX côtés sous deux noms actuels différents est une coque vendue et renommée, ou
+ *  deux coques qui ont porté ce nom : le possible, jamais le fort (jeu 10, 27/09 : cinq paires de navires à
+ *  1,000 par leur seul ancien nom). `mention` : ce que nommait la mention de succursale que la variante a
+ *  perdue (voir `mentionDeSuccursale`), « » sinon. */
+export type VarianteTypee = { texte: string; ancien: boolean; mention: string;
+  /** les numéros de registre du nom brut (voir `numeroDeRegistre`), portés par toutes ses variantes */
+  registre: string };
+/** Les variantes d'un nom brut, textes seuls (voir `variantesTypees`). */
 export function variantes(brut: string): string[] {
-  const vues = new Set<string>([brut.trim()]);
+  return variantesTypees(brut).map((v) => v.texte);
+}
+export function variantesTypees(brut: string): VarianteTypee[] {
+  const vues = new Map<string, VarianteTypee>();
   /* « (Amharic: ተስፋዬ በቀለ ንግድ) » : l'étiquette de langue s'efface, la parenthèse native reste (jeu 10) */
   brut = brut.replace(/\(\s*(?:amharic|arabic|chinese|japanese|korean|thai|hebrew|russian|greek|hindi|tamil|persian|farsi|urdu|bengali|in\s+\p{L}+)\s*:\s*/giu, "(");
   /* une adresse collée à la forme sans espace, champ 59 : « Company Limited45 Marina Road » (jeu 10) */
   brut = brut.replace(/\b(limited|ltd|plc|inc|llc|corp|gmbh|bv|nv|sa|sarl|lda|ltda|pty|bhd)\.?(?=\d)/giu, "$1 ");
+  const registre = numeroDeRegistre(brut);
+  const poser = (texte: string, ancien: boolean, mention: string) => { if (!vues.has(texte)) vues.set(texte, { texte, ancien, mention, registre }); };
+  poser(brut.trim(), false, "");
   /* le registre écrit la personne nom d'abord : « Okeke, Chidi Building Materials » (jeu 10) */
   const inverse = /^([\p{Lu}][\p{L}'-]+),\s+([\p{Lu}][\p{L}'-]+)\s+(\p{L}.*)$/u.exec(brut.trim());
-  if (inverse) vues.add(`${inverse[2]} ${inverse[1]} ${inverse[3]}`);
+  if (inverse) poser(`${inverse[2]} ${inverse[1]} ${inverse[3]}`, false, "");
   /* la forme native entre parenthèses, ou l'inverse : « BAKU OIL EXPORT (Бакинский …) »,
      « 青岛海鑫国际物流有限公司 (Qingdao Haixin International Logistics Co., Ltd.) », « Katz Miriam (כץ מרים) » :
      deux écritures du même nom, chacune une variante, aucune filiale */
@@ -1991,27 +2219,44 @@ export function variantes(brut: string): string[] {
   const nonLatin = /[\u0370-\u03ff\u0400-\u04ff\u0530-\u058f\u0590-\u05ff\u0600-\u06ff\u0900-\u0dff\u0e00-\u0eff\u1000-\u10ff\u1100-\u11ff\u1200-\u137f\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/u;
   const paren = /^(.*?)\s*\(([^()]+)\)\s*$/u.exec(brut.trim());
   if (paren && paren[1]!.trim() && paren[2]!.trim() && (nonLatin.test(paren[1]!) !== nonLatin.test(paren[2]!))) {
-    vues.add(paren[1]!.trim());
-    vues.add(paren[2]!.trim());
+    poser(paren[1]!.trim(), false, "");
+    poser(paren[2]!.trim(), false, "");
   }
   /* les suffixes SWIFT à la barre oblique (« LUCENT CORRIDOR/V.088W/HK », « …CO LTD/NANNING/CN ») :
      retirés un à un tant qu'il reste deux mots devant */
   let sansBarres = brut.trim();
-  /* mais « A/S », « K/S », « S/A » sont des formes (une lettre, la barre, une lettre) : pas un suffixe SWIFT */
-  while (/\/[^\s/]{1,20}$/.test(sansBarres) && !/(?:^|\s)\p{L}\/\p{L}$/u.test(sansBarres)
-    && sansBarres.replace(/\/[^\s/]{1,20}$/, "").trim().split(/\s+/).length >= 2) {
-    sansBarres = sansBarres.replace(/\/[^\s/]{1,20}$/, "").trim();
+  /* mais « A/S », « K/S », « S/A » sont des formes (une lettre, la barre, une lettre) : pas un suffixe SWIFT ;
+     et un suffixe SWIFT ne porte jamais de parenthèse : « (Reg. No. 2014/117230/07) » est un numéro de
+     registre, que l'annotation ôte entier (jeu 10, 27/09 : la barre mangeait « /07) » puis « /117230 ») */
+  while (/\/[^\s/()]{1,20}$/.test(sansBarres) && !/(?:^|\s)\p{L}\/\p{L}$/u.test(sansBarres)
+    && sansBarres.replace(/\/[^\s/()]{1,20}$/, "").trim().split(/\s+/).length >= 2) {
+    sansBarres = sansBarres.replace(/\/[^\s/()]{1,20}$/, "").trim();
   }
   if (sansBarres !== brut.trim()) brut = sansBarres;
   /* un nom annoncé entre parenthèses : « LUNARIS DAWN (EX-SELVANA) » */
   const sansParentheseAnnoncee = brut.replace(
     /\(\s*(?:ex[-.\s]+|f\/?k\/?a\.?\s*|formerly\s+(?:known\s+as\s+)?|previously\s+(?:known\s+as\s+)?|also\s+known\s+as\s+|a\.?k\.?a\.?\s*|(?:antes|anciennement|anc\.|vormals|ehem\.|ehemals|voorheen|anteriormente|dawniej)\s+)([^()]*)\)/giu, (_, x: string) => ` | ${x} `);
-  const parties = sansParentheseAnnoncee.split("|").flatMap((p) => p.split(ANNONCES))
-    .map((p) => p.trim()).filter((p) => p.length > 0);
-  for (let p of parties) {
+  /* chaque partie et ce qu'elle est : le nom ACTUEL est la première partie du premier bloc, sauf quand
+     l'annonce qui la suit dit « now known as », « now trading as », « n.k.a. » (alors c'est la seconde) ;
+     toute autre partie, et tout nom annoncé entre parenthèses, est un ancien nom ou un autre nom */
+  const parties: { texte: string; ancien: boolean }[] = [];
+  sansParentheseAnnoncee.split("|").forEach((bloc, k) => {
+    const morceaux = bloc.split(ANNONCES_CAPTUREE);
+    const actuel = k > 0 ? -1 : /\bnow\b|\bn\.?k\.?a/iu.test(morceaux[1] ?? "") ? 2 : 0;
+    for (let i = 0; i < morceaux.length; i += 2) {
+      const texte = (morceaux[i] ?? "").trim();
+      if (texte.length > 0) parties.push({ texte, ancien: i !== actuel });
+    }
+  });
+  for (const partie of parties) {
+    let p = partie.texte;
+    const ancien = partie.ancien;
     let avant: string;
     /* les préfixes de champ ne s'ôtent que s'il reste un nom derrière (deux lettres au moins) */
     do { avant = p; for (const r of PREFIXES) { const q = p.replace(r, "").trim(); if (/\p{L}{2}/u.test(q)) p = q; } } while (p !== avant);
+    /* ce que nomme la mention de succursale du nom tel qu'écrit : la variante qui l'a perdue le garde */
+    const mention = mentionDeSuccursale(p);
+    const mentionDe = (x: string) => (mention !== "" && mentionDeSuccursale(x) === "" ? mention : "");
     /* une annotation ôtée au milieu du nom (« (Est. 1887) Ltd ») laisse deux espaces : une seule */
     do { avant = p; for (const r of ANNOTATIONS) p = p.replace(r, "").replace(/\s{2,}/g, " ").trim(); } while (p !== avant);
     /* « MV RONG YUAN TAI 16 AT FANGCHENG » : derrière un navire préfixé, « at » et un lieu sont le port d'embarquement */
@@ -2041,10 +2286,10 @@ export function variantes(brut: string): string[] {
     /* un pays entre parenthèses en fin de nom de navire : « OCEAN LARKSPUR (PANAMA) » ; pour une
        société, la même parenthèse serait une filiale, mais aucune forme ne la suit ici */
     p = p.replace(/\s*\(\s*([\p{L} ]{3,30})\s*\)\s*$/u, (m, pays: string) => (PAVILLONS.has(normaliser(pays)) ? "" : m)).trim();
-    if (p.length > 0 && /\p{L}/u.test(p)) vues.add(p);
+    if (p.length > 0 && /\p{L}/u.test(p)) poser(p, ancien, mentionDe(p));
     /* le suffixe coréen des navires, 호 (« 세월호 », « 파이오니어호 ») : le nom sans lui est une lecture
        de plus, jamais la seule (« 금호 », Kumho, garde son 호, qui est son nom) */
-    if (/[\uac00-\ud7a3]{2,}호$/u.test(p)) vues.add(p.replace(/호$/u, "").trim());
+    if (/[\uac00-\ud7a3]{2,}호$/u.test(p)) poser(p.replace(/호$/u, "").trim(), ancien, mentionDe(p));
     /* une adresse sans virgule derrière la forme juridique, dans un export : ce qui suit la
        dernière forme, quand ce sont des mots et non une autre forme, s'ôte */
     let dernier: RegExpExecArray | null = null;
@@ -2059,33 +2304,47 @@ export function variantes(brut: string): string[] {
         || /^(?:room|rm|unit|bldg|building|floor|fl|suite|ste|street|st|road|rd|avenue|ave|zone|area|district|city|port|tower|plaza|plot|block)$/.test(m));
       if (queue.length > 0 && adresse && /^[\p{L}\d .'-]{2,40}$/u.test(queue) && !new RegExp(FORME_EN_LIGNE.source, "iu").test(queue)
         && p.slice(0, dernier.index).trim().split(/\s+/).length >= 1) {
-        vues.add(p.slice(0, fin).trim());
+        poser(p.slice(0, fin).trim(), ancien, mentionDe(p.slice(0, fin)));
       }
     }
     /* un pavillon nu en fin de nom de navire : « MERIDIAN GLORY LIBERIA » */
     const mots = p.split(/\s+/);
-    if (mots.length >= 3 && PAVILLONS.has(normaliser(mots[mots.length - 1]!))) vues.add(mots.slice(0, -1).join(" "));
-    if (mots.length >= 4 && PAVILLONS.has(normaliser(mots.slice(-2).join(" ")))) vues.add(mots.slice(0, -2).join(" "));
+    if (mots.length >= 3 && PAVILLONS.has(normaliser(mots[mots.length - 1]!))) poser(mots.slice(0, -1).join(" "), ancien, mentionDe(p));
+    if (mots.length >= 4 && PAVILLONS.has(normaliser(mots.slice(-2).join(" ")))) poser(mots.slice(0, -2).join(" "), ancien, mentionDe(p));
   }
-  return [...vues];
+  return [...vues.values()];
 }
 
 /** Une variante et la lecture qu'on en fait : un nom en sinogrammes se lit en mandarin ET en
  *  cantonais (voir ecritures.ts) ; un nom latin n'a qu'une lecture, sauf celles que lui donnent
  *  les sinogrammes qu'il porte (`substitutions`). C'est ici que l'index et le score prennent
  *  leurs lectures : tout ce qui s'ajoute ici est vu des deux. */
-export type LectureDe = { texte: string; lecture: Lecture };
+export type LectureDe = { texte: string; lecture: Lecture; ancien: boolean; mention: string; registre: string };
 export function lecturesDe(brut: string): LectureDe[] {
   const vues = new Map<string, LectureDe>();
   const poser = (l: LectureDe) => { const k = `${l.lecture}|${l.texte}`; if (!vues.has(k)) vues.set(k, l); };
-  for (const v of variantes(brut)) {
-    poser({ texte: v, lecture: "mandarin" });
-    if (/[\u4e00-\u9fff]/u.test(v) && !estJaponais(v)) {
-      poser({ texte: v, lecture: "cantonais" });
-      for (const s of substitutions(v)) poser(s);
+  for (const v of variantesTypees(brut)) {
+    const { ancien, mention, registre } = v;
+    poser({ texte: v.texte, lecture: "mandarin", ancien, mention, registre });
+    if (/[\u4e00-\u9fff]/u.test(v.texte) && !estJaponais(v.texte)) {
+      poser({ texte: v.texte, lecture: "cantonais", ancien, mention, registre });
+      for (const s of substitutions(v.texte)) poser({ ...s, ancien, mention, registre });
     }
   }
   return [...vues.values()];
+}
+
+/** Le PLAFOND que deux lectures imposent à leur score : un ancien nom des deux côtés, ou deux mentions de
+ *  succursale qui ne nomment pas la même chose (voir `VarianteTypee`), rangent la paire au possible ; sinon 1.
+ *  Le score d'entité et le criblage (cribler.ts) l'appliquent tous deux, pour que l'index et le témoin
+ *  exhaustif voient la même chose. */
+export function plafondDesLectures(a: LectureDe, b: LectureDe): number {
+  if (a.ancien && b.ancien) return FACTEUR_CONTENANCE;
+  if (a.mention !== "" && b.mention !== "" && !succursalesCompatibles(a.mention, b.mention)) return FACTEUR_CONTENANCE;
+  /* deux numéros de registre différents : deux dépôts du même nom (« (RC 884213) », « (RC 918532) »), ou la
+     succursale allemande et son siège, chacun à son Amtsgericht ; un numéro d'un seul côté ne dit rien */
+  if (a.registre !== "" && b.registre !== "" && a.registre !== b.registre) return FACTEUR_CONTENANCE;
+  return 1;
 }
 
 /**
@@ -2101,11 +2360,11 @@ export function lecturesDe(brut: string): LectureDe[] {
  * (Shenzhen) Co., Ltd. » restait à 0,305 face au premier, la lecture des caractères ne faisant
  * qu'un jeton de plus, en double du mot qu'elle écrit.
  */
-function substitutions(v: string): LectureDe[] {
+function substitutions(v: string): { texte: string; lecture: Lecture }[] {
   const suites = v.match(/[\u4e00-\u9fff]+/gu) ?? [];
   const latin = v.replace(/\(\s*[\u4e00-\u9fff]+\s*\)|[\u4e00-\u9fff]+/gu, " ").replace(/\s{2,}/g, " ").trim();
   if (suites.length === 0 || !/\p{L}{2}/u.test(latin)) return [];
-  const sorties: LectureDe[] = [{ texte: latin, lecture: "mandarin" }];
+  const sorties: { texte: string; lecture: Lecture }[] = [{ texte: latin, lecture: "mandarin" }];
   const mots = latin.split(" ");
   const cles = mots.map((m) => jetons(normaliser(m)).join(""));
   const majuscule = (s: string) => s[0]!.toUpperCase() + s.slice(1);
@@ -2142,7 +2401,9 @@ export function scoreNoms(f: Frequences, a: string, b: string): number {
   let meilleur = 0;
   for (const la of lecturesDe(a)) {
     const A = preparerNom(f, la.texte, la.lecture);
-    for (const lb of lecturesDe(b)) meilleur = Math.max(meilleur, scoreBrut(f, la.texte, A, lb.texte, preparerNom(f, lb.texte, lb.lecture)));
+    for (const lb of lecturesDe(b)) {
+      meilleur = Math.max(meilleur, Math.min(plafondDesLectures(la, lb), scoreBrut(f, la.texte, A, lb.texte, preparerNom(f, lb.texte, lb.lecture))));
+    }
   }
   return meilleur;
 }
