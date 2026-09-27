@@ -38,6 +38,7 @@ import {
   compose, membres, gerondif,
   variationVocalique, voyelleEpenthetique, squeletteLongue, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
   CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pliJaponais, pliCoreen, CREDIT_KANA, pluriel, CHEMIN_VERDICT, RAPPEL_MIN,
+  pliSlave, CREDIT_CYRILLIQUE,
   BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare, type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme, pliEnye,
 } from "./entites.ts";
 import { cleAbjad, cleAbjadSansTa, type Abjad } from "./ecritures.ts";
@@ -170,7 +171,9 @@ type MotIndexe = { mot: string; sq: string; repli: string; abregeVu: boolean; no
   /** une chaîne listée lue en cantonais porte ce mot */
   cantonaisVu: boolean;
   /** une chaîne listée marquée japonaise, coréenne, porte ce mot (voir `pliJaponais`, `pliCoreen`) */
-  japonaisVu: boolean; coreenVu: boolean };
+  japonaisVu: boolean; coreenVu: boolean;
+  /** une chaîne listée marquée slave porte ce mot (voir `pliSlave`) */
+  slaveVu: boolean };
 
 /**
  * L'INDEX, ET POURQUOI IL NE PERD RIEN.
@@ -233,6 +236,12 @@ export class Index {
   private readonly parPliJaponaisNatif = new Map<string, MotIndexe[]>();
   private readonly parPliCoreen = new Map<string, MotIndexe[]>();
   private readonly parPliCoreenNatif = new Map<string, MotIndexe[]>();
+  /** le pli des romanisations du cyrillique (`pliSlave`, CREDIT_CYRILLIQUE), dans les deux sens de la marque comme le
+   *  japonais ; et le même pli par initiale et longueur, pour la voyelle d'appui de la forme anglaise (« Aleksandr »,
+   *  « Alexander » : une lettre d'écart sur la clé, que le squelette ne rapproche pas, x et ks) */
+  private readonly parPliSlave = new Map<string, MotIndexe[]>();
+  private readonly parPliSlaveNatif = new Map<string, MotIndexe[]>();
+  private readonly parPliSlaveInitialeLongueur = new Map<string, MotIndexe[]>();
   /** les chaînes qui portent un bigramme, par bigramme ET longueur de bloc (« an20 ») : la
    *  borne de longueur du bloc se lit dans la clé, sans parcourir les autres longueurs */
   private readonly bigrammes = new Map<string, number[]>();
@@ -286,7 +295,10 @@ export class Index {
           let m = this.vocabulaire.get(mot);
           if (!m) {
             m = { mot, sq: nom.squelettes[i]!, repli: nom.replis[i]!, abregeVu: nom.abreges[i]!, noms: [k], abjadVu: "", cantonaisVu: false,
-              japonaisVu: false, coreenVu: false };
+              japonaisVu: false, coreenVu: false, slaveVu: false };
+            const ps = pliSlave(mot);
+            ranger(this.parPliSlave, ps, m);
+            ranger(this.parPliSlaveInitialeLongueur, (ps[0] ?? "") + ps.length, m);
             ranger(this.parPliCantonais, pliCantonais(mot), m);
             ranger(this.parPliJaponais, pliJaponais(mot), m);
             ranger(this.parPliCoreen, pliCoreen(mot), m);
@@ -323,6 +335,7 @@ export class Index {
           if (nom.marques.cantonais && !m.cantonaisVu) { m.cantonaisVu = true; ranger(this.parPliCantonaisNatif, pliCantonais(mot), m); }
           if (nom.marques.japonais && !m.japonaisVu) { m.japonaisVu = true; ranger(this.parPliJaponaisNatif, pliJaponais(mot), m); }
           if (nom.marques.coreen && !m.coreenVu) { m.coreenVu = true; ranger(this.parPliCoreenNatif, pliCoreen(mot), m); }
+          if (nom.marques.slave && !m.slaveVu) { m.slaveVu = true; ranger(this.parPliSlaveNatif, pliSlave(mot), m); }
         });
         for (const [table, longueurs, bloc] of [[this.bigrammes, this.parLongueurBloc, nom.bloc],
           [this.bigrammesSq, this.parLongueurBlocSq, nom.blocSq]] as const) {
@@ -357,8 +370,8 @@ export class Index {
 
   /** Les chaînes listées dont un mot est assez proche de `mot` (mêmes règles que le score). */
   private nomsParMot(mot: string, sq: string, repli: string, dernier: boolean, coupe: boolean, abreviation: boolean, abjad: Abjad, cantonais: boolean,
-    japonais: boolean, coreen: boolean): number[] {
-    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}|${abjad}|${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}`;
+    japonais: boolean, coreen: boolean, slave: boolean): number[] {
+    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}|${abjad}|${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${slave ? 1 : 0}`;
     const deja = this.cacheMots.get(cle);
     if (deja) return deja;
     const t = simMinimale(this.seuil);
@@ -406,6 +419,17 @@ export class Index {
     /* les mêmes kana (CREDIT_KANA) : un nom marqué japonais face à tous les mots, un nom sans marque face aux mots
        que des chaînes marquées portent */
     if (t <= CREDIT_KANA) for (const m of (japonais ? this.parPliJaponais : this.parPliJaponaisNatif).get(pliJaponais(mot)) ?? []) retenus.add(m);
+    /* la même suite cyrillique (CREDIT_CYRILLIQUE), dans les deux sens de la marque ; et, au crédit d'une romanisation, la
+       voyelle d'appui sur la clé du pli (« aleksandr », « aleksander ») : la marque se vérifie au score */
+    const ps = pliSlave(mot);
+    if (t <= CREDIT_CYRILLIQUE) for (const m of (slave ? this.parPliSlave : this.parPliSlaveNatif).get(ps) ?? []) retenus.add(m);
+    if (t <= 0.9) {
+      for (const L of [ps.length - 1, ps.length + 1]) {
+        for (const m of this.parPliSlaveInitialeLongueur.get((ps[0] ?? "") + L) ?? []) {
+          if ((slave || m.slaveVu) && voyelleEpenthetique(ps, pliSlave(m.mot)) && !tousDeuxAnglais(mot, m.mot)) retenus.add(m);
+        }
+      }
+    }
     if (t <= 0.9) {
       for (const m of this.parRepli.get(repli) ?? []) retenus.add(m);
       /* le pli coréen (CREDIT_ROMANISATION), dans les deux sens de la marque, comme le cantonais */
@@ -506,7 +530,7 @@ export class Index {
     const coupe = estCoupe(brut);
     q.mots.forEach((m, i) => {
       for (const k of this.nomsParMot(m, q.squelettes[i]!, q.replis[i]!, i === q.mots.length - 1, coupe, q.abreges[i]!, q.marques.abjad, q.marques.cantonais,
-        q.marques.japonais, q.marques.coreen)) retenus.add(k);
+        q.marques.japonais, q.marques.coreen, q.marques.slave)) retenus.add(k);
       /* une civilité que la requête soude au mot suivant (« sripelangi »), ou qu'elle écrit à part
          quand une chaîne listée la soude : mêmes règles que le score, qui vérifie que l'autre côté
          l'a écrite ; ici on retient large */

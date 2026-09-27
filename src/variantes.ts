@@ -98,6 +98,10 @@ const ANNOTATIONS: readonly RegExp[] = [
      Polymers (mesuré le 27/09 : quatre fausses alertes fortes d'un coup) */
   /[\s,]+\b(?:pol|pod)\s*:\s*[\p{L} .'-]{2,30}\s*$/iu,
   /\s*[-–,;(]\s*[\p{L}. ]{2,25}\bflag(?:ged)?\)?\s*$/iu,
+  /* les champs d'un registre de navires derrière une virgule, étiquette puis valeur, jusqu'à trois de suite : « , flag
+     Russia, port Rostov-on-Don », « , home port Astrakhan », « , port of registry Taganrog » (jeu 12, 28/09 : « T/H VOLNA
+     DONA-2208 » face à « VOLNA DONA 2208, flag Russia, port Rostov-on-Don » à 0,599, cinq mots rares sans répondant) */
+  /(?:,\s*(?:flag(?:ged)?|pavillon|bandera|(?:home\s*)?port(?:\s+of\s+registry)?|registry|homeport)\s*:?\s*[\p{L} .'-]{2,30}){1,3}\s*$/iu,
   /* « Kenanga Pacific Sdn. Bhd. - Penang Branch » : la succursale après un tiret ; « Succursale de Genève », « Sucursal Lima » ;
      et le siège ou le bureau derrière une virgule ou un tiret (« , Head Office », « , Hauptsitz », « , Havengebied Kantoor ») :
      ce qu'ils nommaient, la variante le garde en mention (voir `mentionDeSuccursale`) */
