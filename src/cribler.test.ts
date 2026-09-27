@@ -34,7 +34,10 @@ function perturbations(n: number): Contrepartie[] {
 
 test("l'index ne perd rien : mêmes candidats, mêmes scores que la comparaison exhaustive", () => {
   const index = new Index(f, entrees, seuils.possible);
-  const requetes: Contrepartie[] = [...paires.map((x, i) => ({ ligne: i + 2, nom: x.a })), ...perturbations(180)];
+  /* toutes les paires font dix minutes (3 720 requêtes contre 3 540 noms, mesuré le 28/09) : la suite prend une
+     paire sur douze, déterministe ; TEMOIN_COMPLET=1 les prend toutes (le chef, une fois par tour, à la fusion) */
+  const pas = process.env.TEMOIN_COMPLET ? 1 : 12;
+  const requetes: Contrepartie[] = [...paires.filter((_, i) => i % pas === 0).map((x, i) => ({ ligne: i + 2, nom: x.a })), ...perturbations(180)];
   let trouves = 0;
   for (const c of requetes) {
     const rapide = cribler(c, index, seuils), exhaustif = cribler(c, index, seuils, true);

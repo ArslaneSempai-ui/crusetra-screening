@@ -13,6 +13,7 @@ import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { lireManifeste, lireListe, SOURCES, type EntreeListe } from "./listes.ts";
 import { frequencesDe, mesurerJeux, choisirSeuils, CHEMINS_APPRENTISSAGE } from "./entites.ts";
 import { Index, cribler, lireContreparties, type Contrepartie } from "./cribler.ts";
+import { frequencesDesListes } from "./frequences.ts";
 
 function principal(): void {
   refuserDrapeauxInconnus(["--exhaustif", "--noms"]);
@@ -21,7 +22,7 @@ function principal(): void {
   if (!m) { console.error("no listes-manifest.json: run `npm run listes -- --fetch` first."); process.exit(2); }
   const entrees: EntreeListe[] = SOURCES.filter((s) => m.listes.some((l) => l.source === s.source && l.disponible))
     .flatMap((s) => lireListe(s.source));
-  const f = frequencesDe(entrees.map((e) => [e.nom, ...e.alias]));
+  const f = frequencesDesListes();   /* le cache des fréquences (src/frequences.ts) : les mêmes poids, sans relire les listes */
   const r = choisirSeuils(mesurerJeux(f, CHEMINS_APPRENTISSAGE.map((u) => readFileSync(u, "utf8"))).table);
   const seuils = { fort: r.fort.seuil, possible: r.possible.seuil };
   let t = Date.now();

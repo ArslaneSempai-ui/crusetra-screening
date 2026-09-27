@@ -10,7 +10,8 @@
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { mesurerJeux, frequencesDe, CHEMIN_VERDICT, FREQUENCES_UNIFORMES } from "./entites.ts";
-import { lireListe, lireManifeste, SOURCES } from "./listes.ts";
+import { frequencesDesListes } from "./frequences.ts";
+import { lireManifeste } from "./listes.ts";
 
 const version = (process.argv.find((a) => a.startsWith("--version=")) ?? "--version=?").slice("--version=".length);
 const ici = new URL(".", import.meta.url);
@@ -31,8 +32,7 @@ console.log(`jeu ${createHash("sha256").update(brut).digest("hex").slice(0, 8)} 
 console.log(`méthode ${version} · entites ${empreinte("entites.ts")} · cribler ${empreinte("cribler.ts")} · ecritures ${empreinte("ecritures.ts")}`);
 
 const m0 = lireManifeste();
-const dispo = m0 ? SOURCES.filter((s) => m0.listes.some((l) => l.source === s.source && l.disponible)) : [];
-const f = m0 ? frequencesDe(dispo.flatMap((s) => lireListe(s.source)).map((e) => [e.nom, ...e.alias])) : FREQUENCES_UNIFORMES;
+const f = frequencesDesListes();
 const m = mesurerJeux(f, [brut]);
 const M = m.jeux[0]!.match, D = m.jeux[0]!.different;
 const wilson = (k: number, n: number) => { const z = 1.96, p = k / n, d = 1 + z * z / n; const c = (p + z * z / (2 * n)) / d, h = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d; return `[${Math.round((c - h) * 100)}-${Math.round((c + h) * 100)} %]`; };

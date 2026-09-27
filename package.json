@@ -21,7 +21,8 @@
     "cribler": "node src/cribler.ts",
     "mesure-entites": "node src/mesure-entites.ts",
     "temoin-index": "node src/temoin-index.ts",
-    "verdict": "node src/verdict.ts"
+    "verdict": "node src/verdict.ts",
+    "comparer": "node src/comparer-mesures.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "4.2.0"
