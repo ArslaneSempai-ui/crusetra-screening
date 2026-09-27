@@ -19,6 +19,8 @@ export const GENERIQUES_NORDIQUES: ReadonlyMap<string, string> = new Map(Object.
   terminaali: "terminal", kauppa: "trading", logistiikka: "logistics", rahti: "freight", varustamo: "shipping", huolinta: "forwarding",
   /* suédois */ hamn: "port", tjanst: "services", tjanster: "services", spannmal: "grain", frakt: "freight",
   /* danois et norvégien */ havn: "port", havne: "port", tjeneste: "services", tjenester: "services", fragt: "freight",
+  fisk: "fish", fiske: "fish", fiskeri: "fisheries", eksport: "export", nordisk: "nordic", nordiske: "nordic",
+  norsk: "norwegian", norske: "norwegian", dansk: "danish", danske: "danish", svensk: "swedish", svenska: "swedish", suomen: "finnish",
   /* les queues que les trois langues empruntent telles quelles */ export: "export", import: "import", transport: "transport",
   terminal: "terminal", service: "services", handel: "trading", logistik: "logistics", spedition: "forwarding", rederi: "shipping",
 }));
