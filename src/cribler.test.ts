@@ -174,3 +174,20 @@ test("tour 5 : l'index retrouve à lui seul le 1 lu optiquement, la civilité so
     assert.notEqual(rapide.statut, "no-match", nom);
   }
 });
+
+test("tour 5 : un nom thaï cherche ses mots par la clé consonantique, dans les deux sens", () => {
+  /* « รุ่งโรจน์ » se lit rungrot, « Rungroj » s'écrit avec un j : à une lettre près sur sept, sous
+     la similarité que le seuil exige d'un mot (simMinimale), et seule la clé consonantique (mode
+     thaï) les rapproche ; l'index doit la connaître dans les deux sens, nom thaï listé ou demandé */
+  const liste: EntreeListe[] = [
+    { source: "OFAC", id: "1", nom: "MV Rungroj", alias: [], type: "vessel" },
+    { source: "OFAC", id: "2", nom: "เรือ รุ่งโรจน์", alias: [], type: "vessel" },
+  ];
+  const ix = new Index(frequencesDe(liste.map((x) => [x.nom])), liste, seuils.possible);
+  for (const nom of ["เรือ รุ่งโรจน์", "MV Rungroj"]) {
+    const rapide = cribler({ ligne: 2, nom }, ix, seuils), exhaustif = cribler({ ligne: 2, nom }, ix, seuils, true);
+    assert.deepEqual(rapide, exhaustif, nom);
+    assert.equal(rapide.statut, "strong", nom);
+    assert.equal(rapide.candidats.length, 2, `${nom} : la chaîne thaïe et la latine`);
+  }
+});
