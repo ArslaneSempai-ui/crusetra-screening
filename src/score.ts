@@ -28,6 +28,8 @@ import { DICTIONNAIRE } from "./mots.ts";
 import { pluriel } from "./mots.ts";
 import { gerondif } from "./mots.ts";
 import { motsDistincts } from "./mots.ts";
+import { motsHispaniquesDistincts } from "./mots.ts";
+import { pliEnye } from "./mots.ts";
 import { composesDistincts } from "./mots.ts";
 import { lemme } from "./mots.ts";
 import { tousDeuxAnglais } from "./mots.ts";
@@ -147,7 +149,7 @@ export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesL
   }
   if (gerondif(a, b) || gerondif(b, a)) return 0.95;
   if (abrege(a, b) || abrege(b, a)) return 0.9;
-  if (motsDistincts(a, b, voyellesLibres) || composesDistincts(a, b, voyellesLibres)) return 0.5;
+  if (motsDistincts(a, b, voyellesLibres) || composesDistincts(a, b, voyellesLibres) || motsHispaniquesDistincts(a, b)) return 0.5;
   if (initialeLueOptiquement(a, b)) return 0.95;
   if (sqA === sqB) return 0.95;
   /* la longueur seule tranche : deux mots dont les longueurs diffèrent de moitié ne se
@@ -407,6 +409,8 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
             /* v, w, b : hindi, hébreu, espagnol, portugais ; sous leur contexte, au crédit et non au
                squelette, pour que Fabre reste distinct de Favre */
             || ((indien || hispanique) && pliIndien(x) === pliIndien(y))
+            /* et la ñ écrite ny (« Nunyez », « Nuñez ») sous la marque hispanique (voir `pliEnye`) */
+            || (hispanique && pliEnye(x) === pliEnye(y))
             /* le tamoul et son sanskrit (Lakshmi, லட்சுமி latchumi), sa sonorité non écrite */
             || (tamoul && pliTamoul(x) === pliTamoul(y))
             || (hebreuOuGrec && (X.squelettes[i]!.replace(/X/g, "h") === Y.squelettes[j]!.replace(/X/g, "h") || pliIndien(x) === pliIndien(y))));
@@ -469,9 +473,11 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
              ambigus (Phuong, Phong) ; l'initiale reste l'initiale (Qadir, Nadir) ; et deux syllabes isolées
              sont deux syllabes, marque chinoise ou pas (Heng, Hong : mesuré le 27/09 sur le jeu 9, « Chin
              Heng Trading » et « Chin Hong Trading » montaient à 0,919 sur la variante sans leurs
-             sinogrammes). Mesuré sur les neuf jeux : aucun piège ne monte */
+             sinogrammes). Mesuré sur les neuf jeux : aucun piège ne monte. Ni deux mots espagnols ou
+             portugais du vocabulaire des raisons sociales (Faro, Foro ; Manzana, Manzano : le dictionnaire
+             anglais n'en connaît qu'un, voir `motsHispaniquesDistincts`) */
           if (v < 0.9 && chat && !chinois && !coreen && !japonais && x.length >= 4 && y.length >= 4 && x[0] === y[0]
-            && !(estSyllabeIsolee(x) && estSyllabeIsolee(y))
+            && !(estSyllabeIsolee(x) && estSyllabeIsolee(y)) && !motsHispaniquesDistincts(x, y)
             && (lemme(x) === undefined) !== (lemme(y) === undefined) && distanceOsa(x, y) === 1) v = 0.9;
           /* LE PLURIEL D'UN CLAVARDAGE : sous la marque chat, sans forme juridique d'aucun côté, un mot du
              dictionnaire et son pluriel sont un mot, le correcteur du téléphone ôtant ou ajoutant le s

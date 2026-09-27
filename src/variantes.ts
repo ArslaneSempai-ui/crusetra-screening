@@ -19,6 +19,7 @@ import { MOTS_DE_BUREAU } from "./preparation.ts";
 import { REGISTRES } from "./preparation.ts";
 import { numeroDeRegistre } from "./preparation.ts";
 import { mentionDeSuccursale } from "./preparation.ts";
+import { nommeUneSociete } from "./preparation.ts";
 import { FORMES } from "./preparation.ts";
 import { REGIONS } from "./preparation.ts";
 import { FACTEUR_CONTENANCE } from "./score.ts";
@@ -305,6 +306,17 @@ export function variantesTypees(brut: string): VarianteTypee[] {
        société, la même parenthèse serait une filiale, mais aucune forme ne la suit ici */
     p = p.replace(/\s*\(\s*([\p{L} ]{3,30})\s*\)\s*$/u, (m, pays: string) => (PAVILLONS.has(normaliser(pays)) ? "" : m)).trim();
     if (p.length > 0 && /\p{L}/u.test(p)) poser(p, ancien, mentionDe(p));
+    /* L'ENSEIGNE ET SON PROPRIÉTAIRE : « Marisquería El Puerto (Pescados Anzures, S. de R.L.) ». Une parenthèse en
+       fin de nom qui porte une forme juridique ET un nom devant elle est la personne morale derrière le nom
+       commercial : un second nom, pas une filiale (« (Shanghai) », que le score plafonne) ni une forme entre
+       parenthèses (« (Private Joint Stock) », que la préparation ôte). L'enseigne seule et le propriétaire seul
+       sont deux variantes de plus, le nom tel qu'écrit reste (jeu 11, 27/09 : 0,800 face au propriétaire seul,
+       « marisqueria » et « puerto » deux mots rares sans répondant, la parenthèse lue comme une filiale) */
+    const proprietaire = /^(.*?\p{L}.*?)\s*\(([^()]*\p{L}[^()]*)\)$/u.exec(p);
+    if (proprietaire && nommeUneSociete(proprietaire[2]!)) {
+      poser(proprietaire[1]!.trim(), ancien, mentionDe(proprietaire[1]!));
+      poser(proprietaire[2]!.trim(), ancien, mentionDe(proprietaire[2]!));
+    }
     /* le suffixe coréen des navires, 호 (« 세월호 », « 파이오니어호 ») : le nom sans lui est une lecture
        de plus, jamais la seule (« 금호 », Kumho, garde son 호, qui est son nom) */
     if (/[\uac00-\ud7a3]{2,}호$/u.test(p)) poser(p.replace(/호$/u, "").trim(), ancien, mentionDe(p));
