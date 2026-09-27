@@ -56,3 +56,30 @@ export function lireArabizi(nom: string, marqueurArabe: boolean): { texte: strin
   });
   return { texte, lu };
 }
+
+/**
+ * LE VOLAPUK des clavardages et des champs SWIFT russes et kazakhs : le clavier latin écrit le cyrillique avec ce qui lui
+ * ressemble, le 6 et le w pour ш, le 4 pour ч, le u pour у (« 6ygys », « Wygys » : Шығыс ; « guru4 » : гуруч, jeu 17,
+ * tour 13 : 0,540 et 0,714, le chiffre lu par la lecture optique ou coupant le mot). Le 6 est un chiffre de l'arabizi
+ * aussi (le ط) : le 6 et le 4 ne se lisent en volapuk que sous une PRÉSOMPTION SLAVE (le cyrillique, une forme de la CEI,
+ * un mot du commerce russe ou d'Asie centrale : voir `Marques.slave`), après l'arabizi et avant `ocr`, qui lirait le 4
+ * comme un a (« Font4nelli »). Le w se lit au score (`clesSlaves`, mots.ts). Un mot de volapuk est un mot de lettres :
+ * trois lettres au moins, jamais deux chiffres de suite, jamais un autre chiffre que 6 ou 4 ; un 6 ou un 4 EN FIN de mot
+ * n'est une lettre que dans un nom écrit en minuscules (« guru4 »), parce qu'en capitales c'est le numéro d'une coque
+ * collé à son nom (« VOLGONEFT4 »), que la règle des numéros doit voir.
+ */
+const VOLAPUK: ReadonlyMap<string, string> = new Map([["6", "sh"], ["4", "ch"]]);
+export function lireVolapuk(nom: string, presomptionSlave: boolean): { texte: string; lu: boolean } {
+  if (!presomptionSlave || !/[46]/.test(nom)) return { texte: nom, lu: false };
+  const minuscules = /\p{Ll}/u.test(nom) && !/\p{Lu}/u.test(nom);
+  let lu = false;
+  const texte = nom.replace(/[\p{L}\p{N}]+/gu, (m) => {
+    const lettres = m.match(/\p{L}/gu)?.length ?? 0;
+    if (!/[46]/.test(m) || /[0-35789]/.test(m) || /\d\d/.test(m) || lettres < 3) return m;
+    if (/\d$/.test(m) && !(minuscules && lettres >= 4)) return m;
+    const maj = /\p{Lu}/u.test(m) && !/\p{Ll}/u.test(m);
+    lu = true;
+    return m.replace(/[46]/g, (c) => (maj ? VOLAPUK.get(c)!.toUpperCase() : VOLAPUK.get(c)!));
+  });
+  return { texte, lu };
+}
