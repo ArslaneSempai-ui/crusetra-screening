@@ -172,7 +172,42 @@ const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   filhos: "sons", zonen: "sons", sonner: "sons", oglu: "sons", ogullari: "sons",
   freres: "brothers", fratelli: "brothers", irmaos: "brothers", brueder: "brothers", bruder: "brothers",
   bracia: "brothers", hermanos: "brothers", gebruder: "brothers", ikhwan: "brothers",
+  /* les mots génériques des langues européennes du commerce, ramenés au lemme anglais que
+     les listes écrivent (jeu 8, 27/09 : « Kardeşler Nakliyat » contre « Brothers Transport »,
+     « Spedizioni » contre « Forwarding », « Zakłady Chemiczne » contre « Chemical Works »).
+     « maritime » n'y est pas : c'est aussi un mot anglais, et « X Maritime » et « X Shipping »
+     sont deux sociétés d'un même groupe */
+  /* turc */ kardesler: "brothers", nakliyat: "transport", tasimacilik: "transport", ticaret: "trading", sanayi: "industry",
+  denizcilik: "shipping", gida: "food", tekstil: "textile", insaat: "construction", lojistik: "logistics", ihracat: "export",
+  ithalat: "import", madencilik: "mining", enerji: "energy", kimya: "chemical", yatirim: "investment", tarim: "agriculture",
+  /* italien */ spedizioni: "forwarding", trasporti: "transport", navigazione: "navigation", commercio: "trading",
+  commerciale: "commercial", industriale: "industrial", industrie: "industries", costruzioni: "construction",
+  /* espagnol et portugais */ comercio: "trading", comercial: "commercial", naviera: "shipping", transportes: "transport",
+  industrias: "industries", sucesores: "successors", navegacao: "navigation", navegacion: "navigation", construcciones: "construction",
+  alimentos: "food", alimentacion: "food", pesquera: "fishing", agricola: "agricultural", agropecuaria: "agricultural",
+  /* allemand et néerlandais */ handel: "trading", handels: "trading", handelsgesellschaft: "trading", spedition: "forwarding",
+  schifffahrt: "shipping", schiffahrt: "shipping", reederei: "shipping", werke: "works", werk: "works", bau: "construction",
+  scheepvaart: "shipping", rederij: "shipping", expeditie: "forwarding", scheepsreparatie: "ship repair",
+  /* polonais et tchèque */ zaklady: "works", zaklad: "works", chemiczne: "chemical", handlowy: "trading", handlowa: "trading",
+  handlowe: "trading", przemysl: "industry", przemyslowe: "industrial", budowlane: "construction", transportowe: "transport",
+  spedycja: "forwarding", logistyka: "logistics", zegluga: "shipping", stavebni: "construction", obchodni: "trading",
+  /* grec translittéré (« Ναυτιλιακή Εταιρεία » est « Shipping Company ») */ naftiliaki: "shipping", naftiki: "shipping",
+  etaireia: "", etairia: "", emporiki: "trading", viomichaniki: "industrial", viomichania: "industry", techniki: "technical",
+  kataskevastiki: "construction", metaforiki: "transport", touristiki: "tourism",
+  /* scandinave */ rederi: "shipping", brodre: "brothers", broder: "brothers", handelsbolag: "trading",
 }));
+
+/** Les PARTICULES des langues du commerce : articles et prépositions qui lient les mots d'un nom
+ *  sans rien désigner. Elles ne disparaissent pas (« de la Rúa » les porte), mais leur poids est
+ *  le plancher : les listes sont surtout anglaises, « del » y est rare, et l'IDF en faisait un mot
+ *  rare orphelin quand un côté l'omettait (« Compañía Naviera del Golfo » contre « Compañía
+ *  Naviera Golfo », mesuré le 27/09 : plafonné à 0,80 pour une particule sautée). */
+const PARTICULES: ReadonlySet<string> = new Set(["de", "del", "des", "du", "della", "delle", "dei", "degli", "dello", "di", "da",
+  "do", "das", "la", "le", "les", "el", "los", "las", "al", "van", "der", "den", "von", "zu", "zum", "zur", "ten", "ter",
+  "het", "fur", "na"]);
+/* PAS « dos » (« Flores de Rionegro Dos » est le deuxième d'une série), ni « bin », « bint », « ibn »
+   (« Bint Al Nakhuda » et « Ibn Al Nakhuda » sont deux navires) : mesuré le 27/09, trois fausses
+   alertes fortes en les comptant pour des particules */
 
 /** Les abréviations d'usage, ramenées au mot entier ; les mots de liaison disparaissent
  *  (« & », « and », « et », « ve », « und », « y », « e », « for », « of », « the »). */
@@ -305,8 +340,10 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["RU", "BY", "KZ", "UZ", "UA", "KG", "TJ", "AM", "AZ", "GE"], ["ooo", "oao", "zao", "pao", "ao", "jsc", "pjsc", "ojsc", "cjsc", "too",
     "obshchestvo s ogranichennoi otvetstvennostyu", "obshchestvo s ogranichennoy otvetstvennostyu",
     "tovarishchestvo s ogranichennoi otvetstvennostyu", "publichnoe aktsionernoe obshchestvo",
-    "zakrytoe aktsionernoe obshchestvo", "otkrytoe aktsionernoe obshchestvo", "aktsionernoe obshchestvo",
-    "public joint stock company", "closed joint stock company", "open joint stock company", "joint stock company"]);
+    "zakrytoe aktsionernoe obshchestvo", "otkrytoe aktsionernoe obshchestvo", "aktsionernoe obshchestvo"]);
+  /* « joint stock company » écrit en anglais n'a PAS de pays : la Pologne (« Spółka Akcyjna »), le
+     Vietnam, le Golfe, la Bulgarie le traduisent ainsi ; le lier à la CEI faisait un conflit de pays
+     entre « Sokołowiec Chemical Works Spółka Akcyjna » et « … Joint-Stock Company » (27/09) */
   poser(["TR"], ["sti", "anonim sirketi", "limited sirketi", "sirketi"]);
   poser(["TR", "NO", "DK", "EE"], ["as"]);
   poser(["NO"], ["asa"]); poser(["DK"], ["aps"]);
@@ -552,7 +589,10 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
     if (entrepreneur && i > 0 && j.length <= 3) return true;
     /* une forme de fin en tête reste un mot (« Ag. Prokopis », « As-Salam »), sauf écrite
        avec son point d'abréviation : « Est. Nasser Al-Dhufairi » est un établissement */
-    if (i === 0 && FORMES_FINALES.has(j) && mots.length > 1 && !(j === "est" && abreges.has(j))) return true;
+    /* et « S.A. des Filatures de Montrouge », « S.p.A. di Navigazione », « N.V. van der Meulen » : la forme
+       abrégée en tête, suivie d'une particule, est la forme (le français et l'italien la placent devant) */
+    if (i === 0 && FORMES_FINALES.has(j) && mots.length > 1 && !(j === "est" && abreges.has(j))
+      && !(PARTICULES.has(mots[1] ?? "") && mots.length > 2)) return true;
     societe = true;
     for (const k of PAYS_DES_FORMES.get(j) ?? []) pays.add(k);
     for (const k of FAMILLES_DES_FORMES.get(j) ?? []) familles.add(k);
@@ -837,7 +877,7 @@ export function depuisJetons(f: Frequences, J: readonly string[], marques: Marqu
      règle des numéros le lisait « 1 » et rendait 0 face à « Shun Yi Fa No. 232 »). */
   const num = (j: string, i: number) => /^\d+$/.test(j) ? String(Number(j)) : i === J.length - 1 ? numero(j) : undefined;
   const mots = J.filter((j, i) => !num(j, i));
-  const poids = mots.map((m) => poidsDuMot(f, m));
+  const poids = mots.map((m) => (PARTICULES.has(m) ? 1 : poidsDuMot(f, m)));
   return {
     mots, poids, total: poids.reduce((s, p) => s + p, 0), poidsMax: poidsDuMot(f, "\u0000"),
     squelettes: mots.map(squelette),
@@ -1016,8 +1056,10 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
          n'est pas « Limited » */
       if (m < 0.8 && (X.poids[i]! >= SEUIL_RARE * X.poidsMax || PAYS_MOTS.has(X.mots[i]!)) && !(i <= 1 && REGIONS.has(X.mots[i]!))) orphelinRare = true;
       /* un mot équivalent par sa romanisation n'est pas ambigu */
+      /* ni une particule : « del » aligné sur « de » n'est pas un mot court ambigu, c'est une
+         particule sautée (« Compañía Naviera del Golfo » contre « … Naviera Golfo », 27/09) */
       if (m > 0.5 && m < 0.9 && !equivalentM && meilleurY >= 0 && X.mots[i]!.length <= 8 && Y.mots[meilleurY]!.length <= 8
-        && !lemme(X.mots[i]!) && !lemme(Y.mots[meilleurY]!)) motAmbigu = true;
+        && !lemme(X.mots[i]!) && !lemme(Y.mots[meilleurY]!) && !PARTICULES.has(X.mots[i]!) && !PARTICULES.has(Y.mots[meilleurY]!)) motAmbigu = true;
       if (m >= 0.9 && X.poids[i]! >= 0.5 * X.poidsMax) rareCouvert[cote] = true;
       if (X.parentheses[i]) { parenthese[cote] = true; if (m >= 0.8) parentheseReconnue[cote] = true; }
       s += X.poids[i]! * apport(m);
@@ -1166,15 +1208,38 @@ export function scoreBrut(f: Frequences, a: string, A: NomPrepare, b: string, B:
  * Le nom tel qu'écrit reste toujours une variante : on ajoute des lectures, on n'en retire
  * aucune. Un « (Shanghai) » n'est PAS retiré : c'est souvent une filiale, pas une annotation.
  */
-const ANNONCES = /[\s,;]*(?:\b(?:a[./]?\s?k[./]?\s?a\.?|f[./]?\s?k[./]?\s?a\.?|formerly(?:\s+known\s+as)?|d[./]?\s?b[./]?\s?a\.?|doing\s+business\s+as|t\/a|trading\s+as|now\s+known\s+as|n\.?k\.?a\.?)(?=[\s:,])|(?<=\p{L}[\s,]*)\bex[-.\s]+(?=\p{L}))\s*:?\s*/giu;
+const ANNONCES = /[\s,;]*(?:\b(?:a[./]?\s?k[./]?\s?a\.?|f[./]?\s?k[./]?\s?a\.?|formerly(?:\s+known\s+as|\s+called)?|also\s+known\s+as|previously\s+(?:known\s+as|called)|now\s+trading\s+as|d[./]?\s?b[./]?\s?a\.?|doing\s+business\s+as|t\/a|trading\s+as|now\s+known\s+as|n\.?k\.?a\.?|antes|anciennement|vormals|ehemals|voorheen|anteriormente|dawniej)(?=[\s:,])|(?<=\p{L}[\s,]*)\bex[-.\s]+(?=\p{L}))\s*:?\s*/giu;
+/** Ce qu'un document met DEVANT le nom : l'étiquette du champ (« SHIPPER: », « NOTIFY PARTY - »,
+ *  « VESSEL: MV … », « by order of »), la personne à qui s'adresse le pli (« Attn. Mr. Sørensen, »),
+ *  une référence bancaire (« OUR REF 71-33920-LC », « L/C No. 4412 »), un numéro de coque devant
+ *  un nom de navire (« Hull No. 2287 Halbrook Reliance »). Le deux-points ou le tiret est exigé
+ *  derrière une étiquette : sans lui, « Owner » ou « Agent » sont des mots du nom. Mesuré le 27/09
+ *  sur le jeu 8 : quatorze vrais noms tenus à 0,80 par ces seuls résidus. */
+const PREFIXES: readonly RegExp[] = [
+  /^\s*(?:applicant|beneficiary|consignee|shipper|notify(?:\s+party)?|vessel|carrier|drawee|drawer|accountee|buyer|seller|exporter|importer|charterer|owners?|issuing\s+bank|advising\s+bank|supplier|customer|payee|payer|remitter|ordering\s+customer|account\s+party|principal|agent|counterparty|debtor|creditor|insured|assured|manufacturer|producer|receiver|forwarder)\s*[:\-\u2013]\s*/iu,
+  /^\s*(?:by\s+order\s+of|on\s+behalf\s+of|for\s+(?:the\s+)?account\s+of|to\s+the\s+order\s+of|in\s+favou?r\s+of)\s*:?\s*/iu,
+  /^\s*att(?:n|ention)?\.?\s*:?\s+[^,]{1,40},\s*/iu,
+  /^\s*(?:our|your|yr|their)?\s*ref(?:erence)?\.?\s*(?:no\.?|#)?\s*:?\s*[a-z0-9][a-z0-9\-/.]{2,}\s+/iu,
+  /^\s*(?:l\/c|lc|dc|b\/l|bl|inv(?:oice)?|p\/?o|contract|order)\s*(?:no\.?|#)\s*:?\s*[a-z0-9][a-z0-9\-/.]{2,}\s+/iu,
+  /^\s*(?:n\/b\s+)?hull\s*(?:no\.?\s*)?[a-z]?-?\d+\s+(?=\p{L}{3,})/iu,
+];
 const ANNOTATIONS: readonly RegExp[] = [
-  /\([^()]*\b(?:flag|liquidation|administration|receivership|bankrupt\w*|dissolved|struck\s+off|carrier|tanker|vessel|bulk|container|branch)\b[^()]*\)/giu,
+  /\([^()]*\b(?:flag|liquidation|liquidaci[oó]n|liquidazione|liquida[çc][aã]o|liquidatie|likvidation|konkurs|faillite|fallimento|insolven\w*|administration|receivership|receivers?|bankrupt\w*|dissolved|struck\s+off|under\s+arrest|arrested|detained|carrier|tanker|vessel|bulk|container|branch|office|built|blt|established|founded|est(?:d)?\.?\s*(?:in\s+)?\d{4}|since\s+\d{4}|(?:h\/n|hull\s*(?:no\.?)?)\s*[a-z]?-?\d+)\b[^()]*\)/giu,
+  /* une année entre parenthèses, seule ou datée : « (Est. 1887) Ltd », « (built 2015, Panama) », « (1994) » */
+  /\(\s*(?:est(?:d|ablished)?\.?|founded|since|built|blt|constructed|delivered)\s*(?:in\s+)?(?:1[89]|20)\d{2}\s*(?:,\s*[\p{L} .'-]{2,30})?\)/giu,
+  /* mais une année SEULE entre parenthèses reste : « Negev Drip Systems (2014) Ltd » est la société
+     successeur de « Negev Drip Systems Ltd » (Israël, Royaume-Uni ; jeux 5 à 7) */
+  /* ce qui suit le nom d'un navire sur un connaissement : « , Port of Loading: Antwerp », « POD Piraeus » */
+  /[\s,]+(?:port\s+of\s+(?:loading|discharge|destination|delivery|call|registry)|loading\s+port|discharge\s+port)\s*:?\s*[\p{L} .'-]{2,30}\s*$/iu,
+  /* les sigles POL et POD exigent leurs deux-points : sans eux, « pol » avalait Polska, Polyfab,
+     Polymers (mesuré le 27/09 : quatre fausses alertes fortes d'un coup) */
+  /[\s,]+\b(?:pol|pod)\s*:\s*[\p{L} .'-]{2,30}\s*$/iu,
   /\s*[-–,;(]\s*[\p{L}. ]{2,25}\bflag(?:ged)?\)?\s*$/iu,
   /,\s*[^,]*\bbranch\b.*$/iu,
   /\s+branch$/iu,
   /[\s,]+p\.?\s*o\.?\s*box\b.*$/iu,
   /\s+(?:in|under)\s+(?:liquidation|administration|receivership)$/iu,
-  /\(\s*(?:in\s+)?(?:lay-?up|laid\s+up|for\s+scrap|scrapped|arrested|detained|under\s+arrest|idle)\s*\)$/iu,
+  /\(\s*(?:in\s+)?(?:lay-?up|laid\s+up|for\s+scrap|scrapped|arrested|detained|under\s+arrest|idle)(?:\s*,\s*[\p{L} .'-]{2,30})?\s*\)$/iu,
   /\s+c\/o\s+.*$/iu,
   /* une ville et son État entre parenthèses : « (Beaumont, TX) » ; un numéro de voyage : « VOY 0931 » ;
      la liquidation dans les langues du commerce ; « , flag: Marshall Islands » */
@@ -1190,7 +1255,7 @@ const ANNOTATIONS: readonly RegExp[] = [
   /* un numéro de coque après un NOM : « Atlantic Pioneer, Hull No. 482 » ; mais « NEWBUILDING HULL
      NO. H2217 » n'a que son numéro pour nom, il le garde */
   /(?<=\p{L}{3,}\s+(?:\p{L}+\s+)*)[\s,]+(?:n\/b\s+)?hull\s*(?:no\.?\s*)?[a-z]?-?\d+\s*$/iu,
-  /[\s,]+voy(?:age)?\.?\s*\d{1,5}[a-z]?\s*$/iu,
+  /[\s,/]+voy(?:age)?\.?\s*(?:no\.?\s*)?\d{1,5}[a-z]?\s*$/iu,
   /\s+(?:room|rm|unit|bldg|building|floor|fl|suite|ste|office|off|plot|shop)\.?\s*\d+[a-z]?\s*$/iu,
   /\s+(?:in\s+)?lay-?up\s*$/iu,
   /* les partenaires d'une société de personnes italienne : « S.n.c. di Perrone Luigi & C. » */
@@ -1243,18 +1308,23 @@ export function variantes(brut: string): string[] {
   /* les suffixes SWIFT à la barre oblique (« LUCENT CORRIDOR/V.088W/HK », « …CO LTD/NANNING/CN ») :
      retirés un à un tant qu'il reste deux mots devant */
   let sansBarres = brut.trim();
-  while (/\/[^\s/]{1,20}$/.test(sansBarres) && sansBarres.replace(/\/[^\s/]{1,20}$/, "").trim().split(/\s+/).length >= 2) {
+  /* mais « A/S », « K/S », « S/A » sont des formes (une lettre, la barre, une lettre) : pas un suffixe SWIFT */
+  while (/\/[^\s/]{1,20}$/.test(sansBarres) && !/(?:^|\s)\p{L}\/\p{L}$/u.test(sansBarres)
+    && sansBarres.replace(/\/[^\s/]{1,20}$/, "").trim().split(/\s+/).length >= 2) {
     sansBarres = sansBarres.replace(/\/[^\s/]{1,20}$/, "").trim();
   }
   if (sansBarres !== brut.trim()) brut = sansBarres;
   /* un nom annoncé entre parenthèses : « LUNARIS DAWN (EX-SELVANA) » */
   const sansParentheseAnnoncee = brut.replace(
-    /\(\s*(?:ex[-.\s]+|f\/?k\/?a\.?\s*|formerly\s+(?:known\s+as\s+)?|a\.?k\.?a\.?\s*)([^()]*)\)/giu, (_, x: string) => ` | ${x} `);
+    /\(\s*(?:ex[-.\s]+|f\/?k\/?a\.?\s*|formerly\s+(?:known\s+as\s+)?|previously\s+(?:known\s+as\s+)?|also\s+known\s+as\s+|a\.?k\.?a\.?\s*|(?:antes|anciennement|anc\.|vormals|ehem\.|ehemals|voorheen|anteriormente|dawniej)\s+)([^()]*)\)/giu, (_, x: string) => ` | ${x} `);
   const parties = sansParentheseAnnoncee.split("|").flatMap((p) => p.split(ANNONCES))
     .map((p) => p.trim()).filter((p) => p.length > 0);
   for (let p of parties) {
     let avant: string;
-    do { avant = p; for (const r of ANNOTATIONS) p = p.replace(r, "").trim(); } while (p !== avant);
+    /* les préfixes de champ ne s'ôtent que s'il reste un nom derrière (deux lettres au moins) */
+    do { avant = p; for (const r of PREFIXES) { const q = p.replace(r, "").trim(); if (/\p{L}{2}/u.test(q)) p = q; } } while (p !== avant);
+    /* une annotation ôtée au milieu du nom (« (Est. 1887) Ltd ») laisse deux espaces : une seule */
+    do { avant = p; for (const r of ANNOTATIONS) p = p.replace(r, "").replace(/\s{2,}/g, " ").trim(); } while (p !== avant);
     /* une adresse derrière la forme juridique : « … FZE, Jebel Ali Free Zone, Dubai »,
        « … B.V., ROTTERDAM » ; ou, derrière un nom de navire, son port d'immatriculation en un
        ou deux mots : « SIROCCO MARINER, MONROVIA » ; ou une adresse reconnaissable à ses mots
