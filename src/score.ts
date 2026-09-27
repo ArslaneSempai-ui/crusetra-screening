@@ -56,9 +56,10 @@ import { radicalSlave } from "./mots.ts";
 import { pliVoyellesCoreennes } from "./mots.ts";
 import { CREDIT_APPUI } from "./mots.ts";
 import { CREDIT_ABJAD } from "./mots.ts";
-import { squeletteLongue } from "./mots.ts";
+import { squeletteLongue, pliAi } from "./mots.ts";
 import { squeletteArabe, voyelleSauteeArabe, articleReduit } from "./mots.ts";
 import { estSyllabeIsolee } from "./mots.ts";
+import { homophoneCorrige } from "./mots.ts";
 import { PAYS_MOTS } from "./variantes.ts";
 import { REGIONS } from "./preparation.ts";
 import { plier } from "./preparation.ts";
@@ -599,6 +600,10 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
              au crédit de 0,85, restaient à 0,715) */
           if (v < 0.95 && (arabe || indien) && x !== y && !anglais && (x.includes("ee") || y.includes("ee"))
             && squeletteLongue(x) === squeletteLongue(y)) { equivalent = true; v = 0.95; }
+          /* et la diphtongue ai du sous-continent lue e (« Qureshi », « Quraishi » ; « Shaikh », « Shekh ») : la même voyelle en ourdou
+             et en hindi, sous les mêmes marques, le même squelette égal (voir `pliAi`) */
+          if (v < 0.95 && (arabe || indien) && x !== y && !anglais && (pliAi(x) !== x || pliAi(y) !== y)
+            && squeletteLongue(pliAi(x)) === squeletteLongue(pliAi(y))) { equivalent = true; v = 0.95; }
           /* et sous la marque arabe, o et u sont une lettre, le پ persan un ف (voir `squeletteArabe`) : « Nour », « Noor » ; « Kohsar »,
              « Koohsar » ; « Sepid », « Sefid » ; un squelette égal (0,95), pas la variation d'une voyelle (jeu 13, 28/09) */
           /* les plis des conventions latines (ou et w, aw et o, ei et ai, le c dur, la finale -eh) ne valent qu'entre deux mots latins :
@@ -672,6 +677,10 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           if (v < 0.9 && chat && !chinois && !coreen && !japonais && x.length >= 4 && y.length >= 4 && x[0] === y[0]
             && !(estSyllabeIsolee(x) && estSyllabeIsolee(y)) && !motsHispaniquesDistincts(x, y)
             && (lemme(x) === undefined) !== (lemme(y) === undefined) && distanceOsa(x, y) === 1) v = 0.9;
+          /* L'HOMOPHONE D'UN CLAVARDAGE : sous la marque chat, le mot du commerce que l'autre nom attendait, écrit par le correcteur d'un
+             téléphone en un mot anglais qui s'entend pareil (« Steal » pour Steel, « Hardwear » pour Hardware) : le crédit de la faute
+             d'un clavardage, jamais entre deux mots qui ne sont pas du commerce (« Cypress », « Cyprus » : voir `homophoneCorrige`) */
+          if (v < 0.9 && chat && !chinois && !coreen && !japonais && (homophoneCorrige(x, y) || homophoneCorrige(y, x))) v = 0.9;
           /* LE PLURIEL D'UN CLAVARDAGE : sous la marque chat, sans forme juridique d'aucun côté, un mot du
              dictionnaire et son pluriel sont un mot, le correcteur du téléphone ôtant ou ajoutant le s
              (« Chukwuemeka Stores », « Chukwuemeka Store », jeu 10). Dès qu'un côté porte une forme, le

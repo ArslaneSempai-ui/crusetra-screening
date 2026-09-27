@@ -20,6 +20,7 @@ import { pliJaponais } from "./mots.ts";
 import { pliSlave, clesSlaves } from "./mots.ts";
 import { traductionNordique, estFinnois, GENITIFS_FINNOIS } from "./nordique.ts";
 import { GRAPHIES_INDIENNES } from "./indien.ts";
+import { TRADUCTIONS_SWAHILIES } from "./swahili.ts";
 import { estVietnamien, LOCUTIONS_VIETNAMIENNES } from "./vietnamien.ts";
 import { lireArabizi } from "./arabizi.ts";
 import { lemme } from "./mots.ts";
@@ -390,6 +391,16 @@ export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   aruz: "rice", sukkar: "sugar", sukar: "sugar", hadid: "steel", mawad: "materials", khadamat: "services", khidmat: "services",
   naql: "transport", shahn: "shipping", aghdhiya: "food", malabis: "garments", utoor: "perfumes", otoor: "perfumes",
   itarat: "tyres", khurda: "scrap", maadin: "metals", qabidha: "holding", qabida: "holding",
+  /* swahili : voir TRADUCTIONS_SWAHILIES (swahili.ts), une table du monde des mots de métier sous leurs classes nominales */
+  ...Object.fromEntries(TRADUCTIONS_SWAHILIES),
+  /* ourdou et hindi (jeu 15, tour 11 : « Bismillah Karkhana-e-Sabun » est « Bismillah Soap Factory », 0,322, deux mots rares
+     orphelins de chaque côté) : l'usine (کارخانہ), le savon, l'étoffe, le fer, le marché, le magasin, l'industrie et le commerce en
+     sanskrit (udyog, vyapar) et en persan (sanat). L'izafat « -e- » que le tiret coupe est déjà un mot de liaison (voir
+     ABREVIATIONS), et l'ordre du complément (le nom, puis ce qu'il fait) est celui que l'alignement des mots ignore. « Mills »
+     s'écrit tel quel des deux côtés et ne se traduit pas ; « tijarat » est plus haut, avec l'arabe */
+  karkhana: "factory", karkhane: "factory", sabun: "soap", kapra: "cloth", kapda: "cloth", loha: "iron", mandi: "market",
+  bhandar: "store", bhandaar: "store", udyog: "industry", udhyog: "industry", vyapar: "trading", vyapaar: "trading", vyaapar: "trading",
+  sanat: "industry", sanaat: "industry", sahakari: "cooperative",
 }));
 
 /* construit ici, à côté de TRADUCTIONS, pour qu'aucun module chargé avant la préparation ne le lise trop tôt (découpage du 28/09) */
@@ -399,8 +410,12 @@ export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
  *  autre nom : « Bonny Egret » et « Bonny Egrets » sont deux navires, « Provisions Store » et
  *  « Provisions Stores » deux boutiques, « Yusuf Provisions Shop » et « … Shops » aussi (jeu 10, 27/09 :
  *  six fausses alertes fortes du pluriel ouvert à tout le dictionnaire au tour cinq). */
+/** Les ENSEIGNES que TRADUCTIONS rend (« duka » : shop, « bhandar » : store) et qui ne passent pas pour autant dans les génériques au
+ *  pluriel : « Shop » et « Shops », « Store » et « Stores » restent deux boutiques (jeu 10, ci-dessous), quelle que soit la langue qui
+ *  les a écrites (tour 11) */
+const ENSEIGNES: ReadonlySet<string> = new Set(["shop", "shops", "store", "stores", "boutique", "boutiques"]);
 export const GENERIQUES_AU_PLURIEL: ReadonlySet<string> = new Set([
-  ...[...TRADUCTIONS.values()].flatMap((v) => v.split(" ")).filter((m) => m.length >= 3),
+  ...[...TRADUCTIONS.values()].flatMap((v) => v.split(" ")).filter((m) => m.length >= 3 && !ENSEIGNES.has(m)),
   "industries", "supplies", "services", "products", "systems", "solutions", "enterprises", "holdings", "investments",
   "resources", "textiles", "foods", "exports", "imports", "traders", "merchants", "metals", "chemicals", "materials",
   "logistics", "technologies", "machines", "industry", "supply", "service", "product", "system", "solution", "enterprise",
@@ -427,6 +442,8 @@ export const GENERIQUES_AU_PLURIEL: ReadonlySet<string> = new Set([
   "dye", "dyes", "pigment", "pigments", "ceramic", "ceramics", "mill", "mills", "farm", "farms", "estate", "estates", "plantation",
   "plantations", "fishery", "mine", "mines", "quarry", "quarries", "foundry", "foundries", "workshop", "workshops", "warehouse",
   "warehouses", "depot", "depots", "terminal", "terminals", "work", "tanker", "tankers", "trawler", "trawlers", "cargo", "cargoes",
+  /* la quincaillerie, l'enseigne de toute l'Afrique de l'Est et du sous-continent (« Shamji Hardware », « Otieno Hardware ») */
+  "hardware",
 ]);
 
 /** Les PARTICULES des langues du commerce : articles et prépositions qui lient les mots d'un nom
@@ -624,8 +641,10 @@ const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   tic: "ticaret", ith: "ithalat", ihr: "ihracat", nak: "nakliyat", muh: "muhendislik", turz: "turizm", teks: "tekstil",
   /* PAS « san » (San Miguel), « ins » (Ins. Co.), « paz » (La Paz), « tas », « mad » : des mots d'ailleurs */
   och: "", og: "", ja: "", publ: "",
-  /* les prénoms et civilités malais : « Mohd » est Mohamad ; Haji, Dato', Datuk, Encik, Puan ne désignent personne */
-  mohd: "mohamad", muhd: "muhammad", haji: "", hajjah: "", hj: "", hjh: "", dato: "", datuk: "", datin: "", encik: "", puan: "", tuan: "",
+  /* les abréviations de Muhammad : « Mohd » et « Muhd » en Malaisie, « Md. » au Bangladesh et au Pakistan (jeu 15, tour 11 : « Md. Ilyas
+     & Brothers » face à « Muhammad Ilyas & Bros. » à 0,635, « md » mot rare orphelin) ; toutes rendues « muhammad », que le squelette
+     arabe rejoint à Mohamed et Mohammed ; Haji, Dato', Datuk, Encik, Puan ne désignent personne */
+  mohd: "muhammad", muhd: "muhammad", haji: "", hajjah: "", hj: "", hjh: "", dato: "", datuk: "", datin: "", encik: "", puan: "", tuan: "",
   /* les nombres écrits en lettres deviennent des chiffres : « Nine Willows » est « 9 Willows » */
   zero: "0", one: "1", two: "2", three: "3", four: "4", five: "5", six: "6", seven: "7", eight: "8",
   nine: "9", ten: "10", eleven: "11", twelve: "12",
@@ -1134,20 +1153,26 @@ export type Marques = { pays: readonly string[]; familles: readonly string[]; na
    *  caractères différents sont des homophones (« 新海 », « 鑫海 »), pas le même mot */
   natifs: ReadonlyMap<string, string> };
 
-const MARQUEURS_ARABES = new Set(["ahmad", "ibrahim", "abdullah", "mohamad", "hadj", "moulay", "dar", "hussain", "fatima", "mustafa", "mohammad", "bayt", "wld",
-  "abou", "yousef", "yousuf", "abdel", "shaikh", "ebrahim", "hossein", "mahmud", "mohamed", "hajj", "cheikh",
-  "youcef", "fatma", "yusof", "beit", "sharikat", "hassan", "yusef", "tijariya",
+const MARQUEURS_ARABES = new Set(["hussein", "beit", "ould", "fatima", "wuld", "wld", "abdullah", "tijara", "khaled", "yousuf", "abdal", "al", "muassasa",
+  "sheikh", "moustapha", "sharikat", "bazargani", "wa", "bin", "bint", "ibn", "brahim", "nakhoda", "buksh",
+  "ghulam", "quresh", "sanati", "abdel", "abu", "sharika", "lil", "mohamad",
   /* la filiation et les titres du Maghreb et du Sahel (« Ould », « Sidi », « Moulay », « Hadj », « Cheikh »), sous la graphie
      française et l'anglaise (tour 10, jeu 14 : « Mohamed Lamine Ould Brahim Transit » sans aucun marqueur) */
-  "abdal", "moassasat", "abdallah", "mahmood", "yossef", "ibn", "tijarah", "abdul", "ahmed", "mostefa", "muassasa",
+  "ahmed", "hadj", "hasan", "mahmoud", "hossein", "tijarah", "youcef", "bux", "mhamed", "muhamad", "ibrahim",
   /* les prénoms arabes les plus portés, sous les graphies française (Maghreb, Levant), anglaise (Golfe) et malaise : le nom
      d'un négociant marocain ou libanais n'a souvent ni article ni forme (« Youssef Chaouki Négoce », « Hosseini Kashani »), et
      le prénom est la seule trace de la langue. Une table du monde : les dix prénoms, pas ceux du jeu. Ni Omar, ni Ali, ni Said
-     (Amérique latine, Italie, l'anglais « PERSON-0073 ») */
-  "muassasat", "PERSON-0073", "muhammad", "ul", "bazargani", "sherkat", "khaled", "mhamed", "sharika", "muhamad",
-  "muhammed", "lil", "abdellah", "wuld", "abd", "hocine", "youssef", "husain", "abu", "mostafa", "sheikh",
-  "bin", "sidi", "el", "ould", "tejarat", "wa", "hussein", "bani", "sanati", "khalid",
-  "moustapha", "brahim", "bint", "yusuf", "hasan", "tijara", "umm", "mohammed", "haj", "al", "shirkat"]);
+     (Amérique latine, Italie, l'anglais « said ») */
+  "hussain", "husain", "nakhuda", "abdul", "yusef", "fatma", "tejarat", "mahmud", "mahmood", "youssef",
+  "mohamed", "gulam", "mohammed", "muassasat", "ebrahim", "moassasat", "haj", "ul", "hassan", "muhammed", "yusof",
+  "abdallah", "mustafa", "abd", "bakhsh", "el", "yusuf", "mostafa", "quraish", "baksh", "umm",
+  "shaikh", "mostefa", "tijariya", "muhammad", "kureishi", "yossef", "bayt", "abdellah", "hocine", "yousef", "mohammad",
+  /* les noms du Pakistan et de la côte swahilie, que l'ourdou et le kutchi romanisent à leur façon : le serviteur (غلام : « Ghulam »,
+     « Gulam »), le don (بخش : « Bakhsh », « Bux », voir GRAPHIES_INDIENNES), le capitaine de boutre (ناخدا : « Nakhoda », « Nakhuda »),
+     la tribu de Quraych (« Qureshi », « Quraishi », « Kureishi ») : un boutre ou une tannerie de Karachi n'a souvent ni article ni
+     forme, et ces mots sont la seule trace de la langue (jeu 15, tour 11 : « MV Nakhoda Salim » face à « M.V. Nakhuda Saleem » à
+     0,716, o et u, ee et i refusés sans marque). Une table du monde : les mots, pas ceux du jeu */
+  "sidi", "qureshi", "sherkat", "khalid", "moulay", "ahmad", "dar", "quraishi", "bani", "abou", "shirkat", "hajj", "cheikh"]);
 /** Le persan sans article : ses mots d'affaires et ses lieux. */
 const MARQUEURS_PERSANS = new Set(["sanat", "sanaat", "sanati", "sanaye", "sanayeh", "tolid", "tolidi", "farayand", "sahami", "khas",
   "amm", "tejarat", "tejarati", "bazargani", "pishro", "sherkat", "sherkate", "iran", "irani", "tehran", "tabriz", "isfahan", "esfahan",
@@ -1678,7 +1703,11 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* un nom écrit en tamoul est indien : le crédit v, w, b vaut pour lui (வ s'écrit v ou w) */
   const tamoul = TAMOUL.test(nom);
   /* et un nom écrit en devanagari (hindi, marathi, népalais) l'est aussi : ee et i, v et w s'y replient (jeu 13) */
-  const indien = tamoul || DEVANAGARI.test(nom) || tousLesMots.some((j) => MARQUEURS_INDIENS.has(j));
+  /* et le suffixe -jee de l'orthographe du Raj (« Shamjee », « Banerjee », « Mukherjee » : l'honorifique -ji du Gujarat et du Kutch,
+     le -ji des patronymes bengalis, écrits avec le ee anglais) sur un mot que le dictionnaire ignore : la seule trace de l'Inde
+     dans « Shamjee Hardware Ltd » (jeu 15, tour 11 : face à « Shamji Hardware Ltd » à 0,794, ee et i deux voyelles sans marque) */
+  const indien = tamoul || DEVANAGARI.test(nom) || tousLesMots.some((j) => MARQUEURS_INDIENS.has(j))
+    || t.some((j) => j.length >= 5 && j.endsWith("jee") && lemme(j) === undefined);
   /* un nom thaï : l'écriture, un marqueur, ou le ph devant r ou l d'un mot que le dictionnaire ignore (voir `Marques.thai`) */
   const thai = THAI.test(nom) || tousLesMots.some((j) => MARQUEURS_THAIS.has(j)) || t.some((j) => j.length >= 5 && /ph[rl]/.test(j) && lemme(j) === undefined);
   const hispanique = ["MX", "ES", "BR", "PE", "CO", "CL", "AR", "PT", "UY", "BO"].some((k) => pays.has(k)) || tousLesMots.some((j) => MARQUEURS_HISPANIQUES.has(j));

@@ -105,6 +105,54 @@ function calculerRacines(m: string): string[] {
 export function pluriel(long: string, court: string): boolean {
   return DICTIONNAIRE.has(court) && (GENERIQUES_AU_PLURIEL.has(court) || GENERIQUES_AU_PLURIEL.has(long)) && formePlurielle(long, court);
 }
+/**
+ * LA CLÉ PHONÉTIQUE ANGLAISE d'un mot : ce que deux graphies anglaises font entendre de pareil (« Steal », « Steel » ; « Hardwear »,
+ * « Hardware » ; « Wright », « Rite »). LE SON, PAS LES LETTRES : les voyelles y restent, en classes de son (ee, ea, ie : E ; ai, ay,
+ * ei, ey : A ; oa, ow : O ; oo, ew, ue : U ; au, aw : W ; oi, oy : Y ; igh : I ; le e muet final qui allonge la voyelle d'avant,
+ * « ware » : wAr ; et devant r, E et A ne font qu'une classe, « wear » et « ware », « bear » et « bare »), les consonnes se
+ * réduisent à la Metaphone (lettres muettes de tête, x, ph, gh, ck, c dur et c doux, q, sh, ch, -tion, th, dg, le w, le y et le h
+ * qui ne précèdent pas une voyelle), et les doubles se fondent. Une clé qui effaçait les voyelles rendait « Grain » et « Green »,
+ * « Resins » et « Raisins », « Exports » et « Experts » identiques : trois fausses alertes fortes (mesuré le 30/09, tour 11) ; celle-ci
+ * les garde distincts, parce qu'ils ne s'entendent pas pareil. Elle ne sert QU'À L'HOMOPHONE D'UN CLAVARDAGE (voir `homophoneCorrige`).
+ */
+export function clePhonetique(mot: string): string {
+  let s = mot.toLowerCase().replace(/[^a-z]/g, "");
+  if (s.length === 0) return "";
+  s = s.replace(/^(kn|gn|pn|wr)/, (x) => x[1]!).replace(/^x/, "s").replace(/^wh/, "w").replace(/igh/g, "I")
+    /* le e muet final allonge la voyelle simple qui précède la dernière consonne (« ware », « rite », « more ») */
+    .replace(/([aeiou])([^aeiou])e$/, (_, v: string, c: string) => v.toUpperCase() + c)
+    .replace(/(ee|ea|ie)/g, "E").replace(/(ai|ay|ei|ey)/g, "A").replace(/(oa|ow)/g, "O").replace(/(oo|ew|ue)/g, "U")
+    .replace(/(au|aw)/g, "W").replace(/(oi|oy)/g, "Y")
+    /* devant r, les classes de e et de a se confondent (wear, ware ; bear, bare ; fair, fare), jamais celles de o et de u (Parts, Ports) */
+    .replace(/[eEaA](?=r)/g, "R")
+    .replace(/x/g, "ks").replace(/mb$/, "m").replace(/(?<=[aeiouEAOUWYIR])gh(?=t|$)/g, "").replace(/gh/g, "g").replace(/ph/g, "f")
+    .replace(/ck/g, "k").replace(/sch/g, "sk").replace(/(tio|sio|tia|cia)/g, "X").replace(/(sh|ch)/g, "X").replace(/th/g, "0")
+    .replace(/dg/g, "j").replace(/c(?=[eiyEI])/g, "s").replace(/c/g, "k").replace(/q/g, "k").replace(/g(?=[eiyEI])/g, "j")
+    .replace(/z/g, "s").replace(/v/g, "f").replace(/[wyh](?![aeiouEAOUWYIR])/g, "");
+  return s.replace(/(.)\1+/g, "$1");
+}
+/** Deux mots du dictionnaire soudés (« hard » + « wear »), quatre lettres au moins chacun : ce que le dictionnaire ne connaît pas d'un bloc. */
+function composeAnglais(mot: string): boolean {
+  for (let k = 4; k <= mot.length - 4; k++) if (DICTIONNAIRE.has(mot.slice(0, k)) && DICTIONNAIRE.has(mot.slice(k))) return true;
+  return false;
+}
+/**
+ * L'HOMOPHONE D'UN CLAVARDAGE : le mot du commerce que l'autre nom attendait, écrit par le correcteur d'un téléphone en un mot
+ * anglais qui s'entend pareil (« Steal » pour Steel, « Hardwear » pour Hardware : jeu 15, tour 11, « Karachi Steal Pipes » à 0,626,
+ * « Otieno Hardwear Ltd » à 0,457, deux mots distincts pour le dictionnaire). `generique` est un MOT DU COMMERCE
+ * (GENERIQUES_AU_PLURIEL : ce qu'une société vend ou fait), `autre` le mot mis à sa place : un mot du dictionnaire, ou deux soudés
+ * (`composeAnglais`), qui n'est pas lui-même un mot du commerce, et dont la clé phonétique est la même. Deux mots du commerce restent
+ * deux mots (« Supplies », « Suppliers » : deux clés, de toute façon) ; deux mots qui n'en sont pas aussi : « Cypress » et « Cyprus »
+ * s'entendent pareil, et l'auteur du jeu 13 les tient pour deux maisons, l'arbre et l'île. La substitution nue entre deux mots du
+ * dictionnaire a été mesurée et refusée au tour 10 (voir `motAutocorrige`) : ici le mot corrigé n'est reconnu que parce que l'autre
+ * est le mot du métier que la phrase attendait. Sous la marque chat seulement (voir `scorePrepares`).
+ */
+export function homophoneCorrige(generique: string, autre: string): boolean {
+  if (generique === autre || generique.length < 4 || autre.length < 4) return false;
+  if (!GENERIQUES_AU_PLURIEL.has(generique) || GENERIQUES_AU_PLURIEL.has(autre)) return false;
+  if (lemme(autre) === undefined && !composeAnglais(autre)) return false;
+  return clePhonetique(generique) === clePhonetique(autre);
+}
 /** Le PLURIEL TURC d'un mot (-lar, -ler) est un autre nom, comme le pluriel anglais hors des génériques du commerce :
  *  « Kaptan » et « Kaptanlar », « Martı » et « Martılar » sont deux navires (jeu 12, 27/09 : 0,895 et 0,894, le crédit
  *  d'abréviation par le début lisant le mot court comme le début du long). Un radical d'au moins quatre lettres
@@ -302,6 +350,14 @@ export function squelette(mot: string): string {
  */
 export function squeletteLongue(mot: string): string {
   return squelette(mot.replace(/ee/g, "i"));
+}
+/** La diphtongue ai du sous-continent lue e : l'ourdou et le hindi prononcent ai [ɛː], et le romanisent ai ou ei (l'étymologie arabe
+ *  ou sanskrite : قریشی Quraishi, Kureishi ; شیخ Shaikh, Sheikh) ou e (le son : Qureshi, Shekh) ; ei et ai sont déjà une lettre au
+ *  squelette arabe. Lu sur le squelette aux voyelles longues (`squeletteLongue`), sous les marques arabe et indienne seulement, comme
+ *  ee et i, et jamais entre deux mots anglais (jeu 15, tour 11 : « Qureshi Leather Works » face à « Quraishi Leather Works » à 0,746,
+ *  un mot rare à la seule distance). Un mot que le pli ne change pas n'a rien à y chercher. */
+export function pliAi(mot: string): string {
+  return mot.replace(/[ae]i/g, "e");
 }
 
 /**
