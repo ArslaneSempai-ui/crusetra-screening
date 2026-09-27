@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import {
   preparerEntite, analyserEntite, preparerNom, scorePrepares, scoreBrut, scoreNoms, variantes, squelette, voyelles, abrege,
   motsDistincts, lemme, variationVocalique,
-  tronque, estCoupe, apport, simMinimale, choisirSeuils, marquesEnConflit, frequencesDe, mesurerJeux,
+  tronque, estCoupe, apport, simMinimale, choisirSeuils, marquesEnConflit, frequencesDe, mesurerJeux, qualificatifSoude,
   poidsDuMot, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, FAUSSES_ALERTES_MAX_FORT, SEUIL_POSSIBLE,
 } from "./entites.ts";
 import { validerPaires, type TableDUnPalier } from "./measure.ts";
@@ -319,4 +319,29 @@ test("tour 4 : particules au plancher, forme en tête, « joint stock company »
   assert.ok(score("Ναυτιλιακή Εταιρεία Αργυρόπετρα Α.Ε.", "Argyropetra Shipping Company S.A.") >= 0.81);
   /* « maritime » n'est pas traduit : deux sociétés d'un groupe */
   assert.ok(score("Beaurivage Maritime Ltd", "Beaurivage Shipping Ltd") < 1);
+});
+
+test("le qualificatif de groupe soudé : « Agroholding » face à « Agro » est possible, jamais fort ; en deux mots, c'est une soudure", () => {
+  const s = score("Rakhmatullin Agroholding LLC", "Rakhmatullin Agro LLC");
+  assert.ok(s < 0.81 && s >= 0.8 - 1e-9, `la holding face à l'exploitante, mesurée à 0,907 avant la règle ; ici ${s}`);
+  assert.ok(score("Rakhmatullin Agro Holding LLC", "Rakhmatullin Agroholding LLC") >= 0.81, "les deux mots portent le qualificatif : une soudure, pas une holding");
+  assert.equal(qualificatifSoude("agroholding", "agro", ["rakhmatullin", "agro"]), true);
+  assert.equal(qualificatifSoude("agroholding", "agro", ["agro", "holding"]), false, "le qualificatif écrit à part");
+  assert.equal(qualificatifSoude("agroholdings", "agro", ["agro", "holding"]), false, "au singulier ou au pluriel");
+  assert.equal(qualificatifSoude("uktrade", "uk", ["uk"]), false, "trois lettres de radical au moins");
+  assert.equal(qualificatifSoude("agrotech", "agro", ["agro"]), false, "« tech » n'est pas un qualificatif de groupe");
+});
+
+test("les désignations : Corp. contre Inc. est possible, jamais fort ; Corp. et Corporation, Inc. et Incorporated restent une", () => {
+  for (const [a, b] of [["Harlowe Grain Corporation", "Harlowe Grain Inc."], ["Southport Fabricators Corp.", "Southport Fabricators Inc."]]) {
+    const s = score(a!, b!);
+    assert.ok(s < 0.81 && s >= 0.8 - 1e-9, `${a} / ${b} : deux dépôts, mesurés à 1,000 avant la règle ; ici ${s}`);
+  }
+  assert.equal(score("Veltra Industrial Corp", "Veltra Industrial Corporation"), 1);
+  assert.equal(score("Quillmont Hydraulics, Inc.", "Quillmont Hydraulics Incorporated"), 1);
+  const m = (n: string) => analyserEntite(n);
+  assert.equal(marquesEnConflit(m("Harlowe Grain Corporation"), m("Harlowe Grain Inc.")), true);
+  assert.equal(marquesEnConflit(m("Sarnova Petrochem JSC"), m("Joint Stock Company Sarnova Petrochem")), false, "une traduction n'est pas une désignation");
+  assert.deepEqual(m("Harlowe Grain Inc.").designations, ["inc"]);
+  assert.deepEqual(m("Harlowe Grain Ltd").designations, [], "Ltd n'est pas une désignation : les familles la séparent déjà de Corp. et d'Inc.");
 });
