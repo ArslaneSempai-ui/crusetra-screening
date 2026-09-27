@@ -1,9 +1,9 @@
 {
   "version": 1,
   "genre": "cascade-screening/counterparty-screening",
-  "emisLe": "2026-09-27T21:22:56.616Z",
+  "emisLe": "2026-09-27T22:40:41.184Z",
   "client": "Example Forwarding Inc. (invented)",
-  "commit": "0800413",
+  "commit": "3bbc999",
   "fichier": {
     "nom": "contreparties-exemple.csv",
     "sha256": "fab131564c82ea6c859845e4cf53207059d66e0acb75d1603c5d12974f6cbf89",
@@ -175,79 +175,93 @@
           "sha256": "ca8a8cd074509bb8f579b8eaa10d27d483216413d85d56b9b00dc1177a874001",
           "match": 200,
           "different": 200
+        },
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "authored on 2026-09-29 by a separate agent (a Piraeus ship agent and Almaty grain-trading bank brief, organised by document: Greek and Cypriot registries and invoices, Central Asian registry and bank documents, Black Sea and Mediterranean shipping, letters of credit and SWIFT, chat and OCR and greeklish; explicit verdict conventions, one letter changed in a company name being the same name misspelt except in a vessel name; Opus, written in five parts) that never saw the matcher nor any other pair set, as blind test set #16 (sha256 482552a9…); every name invented; no client data, no list data; overlap with the sixteen earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v18 (entites.ts 8dd86269…, cribler.ts a91bf0c8…, ecritures.ts bdd60326…): strong 0.81 found 93/200 [40-53 %] with 12/200 false alerts [3-10 %]; possible 0.80 found 132/200 [59-72 %] with 38/200 [14-25 %]. Studied afterwards and promoted to training set 17 on 2026-09-29, so it no longer measures anything held out.",
+          "sha256": "bc68957b36ed997f1ca209c14b52dce5ed8b4e53d19c59702e8b4eab45e42cdf",
+          "match": 200,
+          "different": 200
+        },
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "blind test set #17, authored on 2026-09-29 by a separate agent (a Trieste freight forwarder and Belgrade bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the seventeen earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v19 (entites.ts 42bd47ca…, cribler.ts 66aac8b8…, ecritures.ts bdd60326…): strong 0.81 found 169/200 [79-89 %] with 28/200 false alerts [10-19 %]; possible 0.80 found 181/200 [86-94 %] with 48/200 [19-30 %]. Studied afterwards and promoted to training set 18 on 2026-09-28, so it no longer measures anything held out.",
+          "sha256": "38342ea22b90750508419e4b4e93a034b2fc1bfb355d7afcfa4e851edf3924c4",
+          "match": 200,
+          "different": 200
         }
       ],
       "fort": {
         "rappel": {
-          "succes": 2585,
-          "n": 2770,
-          "taux": 0.9332129963898917,
-          "bas": 0.9233029029213751,
-          "haut": 0.9419231431513351
+          "succes": 2936,
+          "n": 3170,
+          "taux": 0.9261829652996846,
+          "bas": 0.91655567029948,
+          "haut": 0.9347785613773624
         },
         "fauxPositifs": {
-          "succes": 64,
-          "n": 2770,
-          "taux": 0.023104693140794223,
-          "bas": 0.018135289651563635,
-          "haut": 0.02939503796339462
+          "succes": 100,
+          "n": 3170,
+          "taux": 0.031545741324921134,
+          "bas": 0.026005400431355893,
+          "haut": 0.0382201110119373
         }
       },
       "possible": {
         "rappel": {
-          "succes": 2746,
-          "n": 2770,
-          "taux": 0.9913357400722022,
-          "bas": 0.9871397988191724,
-          "haut": 0.994170741768293
+          "succes": 3122,
+          "n": 3170,
+          "taux": 0.9848580441640379,
+          "bas": 0.9799822778872543,
+          "haut": 0.9885600715482058
         },
         "fauxPositifs": {
-          "succes": 636,
-          "n": 2770,
-          "taux": 0.2296028880866426,
-          "bas": 0.2143212020845085,
-          "haut": 0.24563354082510824
+          "succes": 726,
+          "n": 3170,
+          "taux": 0.22902208201892746,
+          "bas": 0.21472721051438307,
+          "haut": 0.24397293381544113
         }
       }
     },
     "verdict": {
       "jeu": {
         "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
-        "provenance": "blind test set #16, authored on 2026-09-29 by a separate agent (a Piraeus ship agent and Almaty grain-trading bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
-        "sha256": "482552a9b95968b44a2965ea82812f16388f0554e4ec76aff981400f96cc8fc1",
+        "provenance": "blind test set #17, authored on 2026-09-29 by a separate agent (a Trieste freight forwarder and Belgrade bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
+        "sha256": "405f0cdf4d35d193a1a8b940b2c43f68c07a44d833e417302bb96d9725cffb56",
         "match": 200,
         "different": 200
       },
       "fort": {
         "rappel": {
-          "succes": 93,
+          "succes": 169,
           "n": 200,
-          "taux": 0.465,
-          "bas": 0.39718443070423204,
-          "haut": 0.5341347897100506
+          "taux": 0.845,
+          "bas": 0.7883919410627441,
+          "haut": 0.8886043148536146
         },
         "fauxPositifs": {
-          "succes": 12,
+          "succes": 28,
           "n": 200,
-          "taux": 0.06,
-          "bas": 0.0346518499012715,
-          "haut": 0.10193263530685089
+          "taux": 0.14,
+          "bas": 0.09866918625271481,
+          "haut": 0.19489993800847627
         }
       },
       "possible": {
         "rappel": {
-          "succes": 132,
+          "succes": 181,
           "n": 200,
-          "taux": 0.66,
-          "bas": 0.5918836703220929,
-          "haut": 0.7220856077840445
+          "taux": 0.905,
+          "bas": 0.8563973488560237,
+          "haut": 0.9383373863501365
         },
         "fauxPositifs": {
-          "succes": 38,
+          "succes": 48,
           "n": 200,
-          "taux": 0.19,
-          "bas": 0.14167093792456506,
-          "haut": 0.250013585744794
+          "taux": 0.24,
+          "bas": 0.1860652685202468,
+          "haut": 0.3037346545572801
         }
       }
     }
@@ -765,5 +779,5 @@
     "At most 5 candidates are shown per name, highest score first; the count of the others is given.",
     "The rates quoted first come from 200 matching pairs and 200 hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties."
   ],
-  "empreinte": "9749ef7fca0e403e"
+  "empreinte": "9605432c8918db52"
 }
