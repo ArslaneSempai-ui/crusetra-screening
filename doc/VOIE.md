@@ -27,13 +27,18 @@ Une voie reçoit une liste de paires (vraies paires ratées, pièges qui passent
 
 ## Le rendu
 
-7. `git add -N` des fichiers nouveaux, puis `git diff > <bac>/<nom>.diff`.
-8. Le compte rendu, structuré : référence et résultat (les deux lignes de la mesure, telles quelles), gagnés et
+7. Avant d'écrire le diff, la voie ramène `main` dans son worktree : `git merge --no-edit main` (main bouge
+   pendant qu'elle travaille : la voie locale du chef y commet). Un conflit se résout par l'union des deux côtés ;
+   puis `node scripts/doublons.mjs --corriger` sur les fichiers qu'elle a touchés (l'union laisse des clés en
+   double), `npx tsc --noEmit` et son fichier de tests à nouveau, et un dernier `npm run comparer -- <référence>`.
+   Le compte rendu dit que main a bougé, si c'est le cas.
+8. `git add -N` des fichiers nouveaux, puis `git diff > <bac>/<nom>.diff`.
+9. Le compte rendu, structuré : référence et résultat (les deux lignes de la mesure, telles quelles), gagnés et
    perdus (« a | b (jeu) »), règles gardées (une phrase chacune : le mécanisme et où il vit), abandonnées (avec
    la raison mesurée), limites (ce qui reste hors de portée et pourquoi). Aucun chiffre qui n'ait été mesuré.
 
 ## Le style
 
-9. Commentaires en français, dans la voix du fichier : dire pourquoi, nommer la famille de paires, jamais de
+10. Commentaires en français, dans la voix du fichier : dire pourquoi, nommer la famille de paires, jamais de
    cadratin (U+2014). TypeScript en mode strip : `import type` pour un type, pas de propriété de paramètre,
    pas d'enum. Des `Map`, jamais des objets littéraux indexés par les mots d'un utilisateur.
