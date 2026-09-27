@@ -3,13 +3,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import {
-  preparerEntite, analyserEntite, preparerNom, scorePrepares, scoreBrut, scoreNoms, variantes, squelette, voyelles, abrege,
-  motsDistincts, lemme, variationVocalique, voyelleEpenthetique, squeletteLongue, lettrePerdue, PERDU, fauteDeFrappe, composesDistincts,
+  preparerEntite, analyserEntite, preparerNom, scorePrepares, scoreBrut, scoreNoms, variantes, squelette, voyelles, abrege, motsDistincts, lemme,
+  variationVocalique, voyelleEpenthetique, squeletteLongue, lettrePerdue, PERDU, fauteDeFrappe, composesDistincts, simMot, pluriel,
   tronque, estCoupe, apport, simMinimale, choisirSeuils, marquesEnConflit, frequencesDe, mesurerJeux, qualificatifSoude,
-  poidsDuMot, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, FAUSSES_ALERTES_MAX_FORT, SEUIL_POSSIBLE,
+  poidsDuMot, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, FAUSSES_ALERTES_MAX_FORT, SEUIL_POSSIBLE, lecturesDe, pliCantonais,
 } from "./entites.ts";
 import { validerPaires, type TableDUnPalier } from "./measure.ts";
-import { hangulEnLatin, pinyinDe, cleAbjad, cleAbjadSansTa, romaniser, CHEMIN_PINYIN } from "./ecritures.ts";
+import { hangulEnLatin, pinyinDe, cleAbjad, cleAbjadSansTa, romaniser, CHEMIN_PINYIN, CHEMIN_JYUTPING, jyutpingDe, hongkong } from "./ecritures.ts";
 
 const f = FREQUENCES_UNIFORMES;
 const score = (a: string, b: string) => scoreNoms(f, a, b);
@@ -489,7 +489,7 @@ test("l'arabe et le persan romanisés : tejarat et tijarat, li devant le commerc
   assert.equal(preparerEntite("Sunbulat Al Khair Li Tijarat Al Aruz L.L.C."), "sunbulat al khair trading rice");
   assert.equal(preparerEntite("Li Ning Trading Co."), "li ning trading", "li devant un autre mot est un nom");
   assert.equal(preparerEntite("Mahtaab Sepehr Bazarghani Company"), "mahtaab sepehr trading", "gh pour g dans un mot du commerce");
-  assert.equal(preparerEntite("Sharikat Rawasi Al Najd Al Qabidha"), "rawasi al najd al holding");
+  assert.equal(preparerEntite("Sharikat Rawasi Al Najd Al Qabidha"), "rawasi al najd holding");
   for (const [a, b] of [
     ["Mahtab Sepehr Bazargani Co.", "Mahtaab Sepehr Bazarghani Company"],
     ["Rawasi Al Najd Holding Company", "Sharikat Rawasi Al Najd Al Qabidha"],
@@ -571,4 +571,60 @@ test("tour 5, voie locale : connaissements d'Asie du Sud-Est, zones franches, fi
   assert.ok(score("Kenanga Pacific Sdn. Bhd. - Penang Branch", "Kenanga Pacific (Penang) Sdn. Bhd.") < 0.81);
   /* la vieille orthographe indonésienne */
   assert.ok(score("PT Tjahaja Soerya Kentjana (Surabaya)", "PT Cahaya Surya Kencana Surabaya") >= 0.81);
+});
+
+test("la table du jyutping : une lecture cantonaise par code, son empreinte, la graphie de Hong Kong", () => {
+  const octets = readFileSync(CHEMIN_JYUTPING);
+  assert.equal(createHash("sha256").update(octets).digest("hex"), "a7fb1c74b9144e04e146557de91bd3a353d386c5f6af60496b5393ae6a16d3d1",
+    "la table est celle tirée du champ kCantonese d'Unihan (Unicode 18.0.0), voir ecritures.ts");
+  assert.equal(octets.toString("utf8").split("\n").length, 20993, "20 992 lignes et la fin de fichier");
+  assert.equal(jyutpingDe("永"), "wing");
+  assert.equal(jyutpingDe("A"), "", "hors table, pas de lecture cantonaise");
+  assert.equal(hongkong("zoeng"), "cheung"); assert.equal(hongkong("gam"), "kam"); assert.equal(hongkong("jyun"), "yuen"); assert.equal(hongkong("lyun"), "luen"); assert.equal(hongkong("bou"), "po");
+});
+
+test("un nom en sinogrammes se lit aussi en cantonais : Hong Kong écrit Wing Shing, pas Yongcheng", () => {
+  assert.equal(preparerEntite("永成集團控股有限公司"), "yongcheng group holdings");
+  assert.equal(preparerEntite("永成集團控股有限公司", "cantonais"), "wing sing group holdings");
+  assert.deepEqual([...romaniser("永成集團控股有限公司", "cantonais").natifs], [["wing", "永"], ["sing", "成"]], "chaque syllabe garde son caractère");
+  assert.equal(preparerEntite("永成贸易(深圳)有限公司", "cantonais"), "wing sing trading shenzhen", "le lieu entre parenthèses reste en mandarin");
+  assert.ok(lecturesDe("永成集團控股有限公司").some((l) => l.lecture === "cantonais"));
+  for (const [a, b] of [["shing", "sing"], ["kam", "gam"], ["luen", "lyun"], ["cheung", "tseung"], ["soon", "shun"], ["heng", "hing"],
+    ["lee", "lei"], ["leong", "lung"], ["man", "maan"], ["yuen", "jyun"]]) assert.equal(pliCantonais(a!), pliCantonais(b!), `${a} / ${b}`);
+  assert.notEqual(pliCantonais("shing"), pliCantonais("hing"), "sh n'est pas h");
+  assert.ok(score("Wing Shing Group Holdings Limited", "永成集團控股有限公司") >= 0.81, "mesuré à 0,800 par le seul bloc des squelettes en mandarin");
+  assert.ok(score("Kam Sing Electrical (M) Sdn. Bhd.", "金成电器(马)有限公司") >= 0.81, "有限公司 écrit en caractères vaut aussi Sdn. Bhd., et (马) est (M)");
+  assert.ok(score("永成貿易有限公司", "詠成貿易有限公司") < 0.81, "homophones en cantonais comme en mandarin : deux sociétés");
+  assert.ok(score("源成糖业贸易私人有限公司", "源盛糖业贸易私人有限公司") < 0.81, "le mandarin de l'un ne se compare pas au cantonais de l'autre : mesuré à 0,857 par le bloc");
+});
+
+test("un nom latin qui porte ses sinogrammes : leurs lectures sont d'autres graphies de ses mots", () => {
+  const l = lecturesDe("Yongcheng Trading (Shenzhen) Co Ltd 永成");
+  assert.ok(l.some((x) => x.texte === "Wing Sing Trading (Shenzhen) Co Ltd" && x.lecture === "cantonais"), l.map((x) => x.texte).join(" | "));
+  assert.ok(l.some((x) => x.texte === "Yongcheng Trading (Shenzhen) Co Ltd" && x.lecture === "mandarin"));
+  assert.ok(lecturesDe("Wing Fung Provision Trading Pte Ltd (荣丰)").some((x) => x.texte === "Rongfeng Provision Trading Pte Ltd"));
+  assert.ok(score("Wing Shing Trading (Shenzhen) Co., Ltd.", "Yongcheng Trading (Shenzhen) Co Ltd 永成") >= 0.81, "mesuré à 0,305 avant");
+  assert.ok(score("Soon Heng Hardware (Kuching) Sdn. Bhd.", "Shun Hing Hardware (Kuching) Sdn Bhd 顺兴五金") >= 0.81, "mesuré à 0,510 avant");
+});
+
+test("le commerce de Singapour et de Malaisie en chinois, le teochew en tête, le coréen : 자원 et le 호 des navires", () => {
+  assert.equal(preparerEntite("协和电器供应私人有限公司"), "xiehe electrical supplies");
+  const m = analyserEntite("协和电器供应私人有限公司");
+  assert.ok(m.prive && m.pays.includes("SG") && m.pays.includes("MY"), "私人有限公司 est Pte. Ltd. ou Sdn. Bhd.");
+  const h = analyserEntite("金成电器(马)有限公司");
+  assert.ok(h.priveInconnu && h.pays.includes("MY") && h.pays.includes("CN"), "有限公司 écrit en caractères ne dit ni le pays ni le statut");
+  assert.ok(!analyserEntite("Jinsheng Dianqi Youxian Gongsi").priveInconnu, "romanisée, la forme reste continentale");
+  assert.equal(preparerEntite("Teo Heng Seafood Trading Pte. Ltd."), "teo heng seafood trading", "« Teo » en tête n'est pas la forme irlandaise");
+  assert.equal(preparerEntite("주식회사 청솔자원"), "cheongsol resources");
+  assert.ok(score("Cheongsol Resources Co., Ltd.", "주식회사 청솔자원") >= 0.81, "mesuré à 0,191 avant");
+  assert.ok(variantes("해솔 파이오니어호").includes("해솔 파이오니어"));
+  assert.deepEqual(variantes("금호타이어"), ["금호타이어"], "un 호 qui n'est pas final n'est pas le suffixe d'un navire");
+});
+
+test("le pluriel anglais d'un mot du dictionnaire est le même mot ; 廢金屬回收 est le recyclage des métaux", () => {
+  assert.ok(pluriel("metals", "metal") && pluriel("industries", "industry") && pluriel("supplies", "supply"));
+  assert.ok(!pluriel("traders", "trading") && !pluriel("trading", "trade") && !pluriel("metal", "metals"), "le seul pluriel, dans un seul sens");
+  assert.equal(simMot("metals", "metal", squelette("metals"), squelette("metal")), 0.95);
+  assert.equal(preparerEntite("聯成廢金屬回收有限公司", "cantonais"), "luen sing metal recycling");
+  assert.ok(score("Luen Shing Recycling Metals Limited", "聯成廢金屬回收有限公司") >= 0.81, "mesuré à 0,138 avant, 0,729 avec « scrap metal » et le pluriel à 0,833");
 });

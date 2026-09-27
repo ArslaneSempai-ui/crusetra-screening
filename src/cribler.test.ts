@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { Index, cribler, lireContreparties, imoValide, lireImo, comparer, versCsv, type Contrepartie, type Criblage } from "./cribler.ts";
 import { empreinteDuReleve } from "./empreinte.ts";
-import { frequencesDe, CHEMINS_APPRENTISSAGE } from "./entites.ts";
+import { frequencesDe, preparerNom, CHEMINS_APPRENTISSAGE } from "./entites.ts";
 import type { EntreeListe } from "./listes.ts";
 
 /* Une « liste » fabriquée avec les noms des jeux d'apprentissage : le témoin tourne sur
@@ -61,6 +61,23 @@ test("le numéro OMI : chiffre de contrôle, lecture tolérante, et il tranche",
   const ecarte = cribler({ ligne: 3, nom: "MV Ocean Pearl", imo: "9234567" }, ix, seuils);
   assert.equal(ecarte.statut, "no-match");
   assert.deepEqual(ecarte.ecartesParImo, [{ nomListe: "OCEAN PEARL", imo: "9187629" }], "écarté, mais nommé : écarté n'est pas caché");
+});
+
+test("l'index retrouve à lui seul le pluriel anglais et la lecture cantonaise d'un nom en sinogrammes", () => {
+  const e: EntreeListe[] = [
+    { source: "OFAC", id: "1", nom: "Luen Shing Recycling Metals Limited", alias: [], type: "entity" },
+    { source: "OFAC", id: "2", nom: "永成集團控股有限公司", alias: [], type: "entity" },
+  ];
+  const fx = frequencesDe(e.map((x) => [x.nom]));
+  const ix = new Index(fx, e, 0.74);
+  for (const [nom, k] of [["Metal Recycling", 0], ["Wing Shing Group Holdings Limited", 1]] as const) {
+    assert.ok(ix.candidats(preparerNom(fx, nom), nom).includes(k), `${nom} doit retrouver « ${e[k]!.nom} »`);
+  }
+  for (const nom of ["Luen Shing Metal Recycling Ltd", "Wing Shing Group Holdings Limited", "聯成廢金屬回收有限公司"]) {
+    const rapide = cribler({ ligne: 2, nom }, ix, seuils), exhaustif = cribler({ ligne: 2, nom }, ix, seuils, true);
+    assert.deepEqual(rapide, exhaustif, nom);
+    assert.notEqual(rapide.statut, "no-match", nom);
+  }
 });
 
 test("regroupement, alias faible, et niveau fort ou possible", () => {

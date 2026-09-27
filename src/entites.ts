@@ -26,7 +26,7 @@ import type { Matcher, PalierId } from "./matcher.ts";
 import { distanceOsa } from "./matchers/damerau.ts";
 import { preparer } from "./matchers/preparer.ts";
 import { translitterer } from "./matchers/translitteration.ts";
-import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad } from "./ecritures.ts";
+import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, type Lecture } from "./ecritures.ts";
 
 /* ─────────────────────────── la préparation ─────────────────────────── */
 
@@ -60,7 +60,9 @@ const FORMES = new Set([
  *  (« Ag. Prokopis » est « Agios », « As-Salam » un article arabe). Les formes russes, elles,
  *  se placent devant (« OOO Kamaflot ») et restent retirées partout. */
 const FORMES_FINALES = new Set(["ag", "se", "sa", "as", "ad", "ab", "sl", "kg", "nv", "bv", "oy",
-  "spa", "srl", "sas", "snc", "sac", "sti", "est", "kk", "cv", "ae", "epe", "ike"]);
+  "spa", "srl", "sas", "snc", "sac", "sti", "est", "kk", "cv", "ae", "epe", "ike",
+  /* « Teo. » (Teoranta) ferme un nom irlandais ; en tête, « Teo » est une syllabe teochew (« Teo Heng », jeu 9) */
+  "teo"]);
 /** Les formes écrites en plusieurs mots, retirées AVANT les mots isolés (sinon « liability »
  *  resterait seul au milieu du nom). Les translittérations russes sont parmi les mots les
  *  plus fréquents des listes : « obshchestvo » figure dans 1 361 entrées sur 33 393
@@ -95,7 +97,7 @@ const PHRASES = [
   " anonim sirketi ", " limited sirketi ", " sirketi ",
   " sendirian berhad ", " sendirian ",
   " kabushiki kaisha ", " kabushikigaisha ", " godo kaisha ", " yugen kaisha ",
-  " chusik hoesa ", " jusik hoesa ", " gufen youxian gongsi ", " youxian gongsi ", " youxian zeren gongsi ",
+  " chusik hoesa ", " jusik hoesa ", " gufen youxian gongsi ", " siren youxian gongsi ", " youxian gongsi ", " youxian zeren gongsi ",
   " cong ty tnhh ", " cong ty co phan ", " cong ty ",
   " spolka z ograniczona odpowiedzialnoscia ", " spolka akcyjna ", " spolka jawna ",
   " borisat chamkat ", " borisat jamkat ",
@@ -438,6 +440,8 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["JP"], ["kk", "kabushiki kaisha", "kabushikigaisha", "godo kaisha", "yugen kaisha"]);
   poser(["KR"], ["chusik hoesa", "jusik hoesa", "jusikhoesa", "chusikhoesa", "yuhanhoesa"]);
   poser(["CN", "HK", "TW"], ["youxian gongsi", "gufen youxian gongsi", "youxian zeren gongsi"]);
+  /* 私人有限公司 : la société privée de Singapour (Pte. Ltd.) et de Malaisie (Sdn. Bhd.), en chinois */
+  poser(["SG", "MY"], ["siren youxian gongsi"]);
   poser(["US", "CA", "PH"], ["inc", "incorporated", "pllc"]);
   poser(["CA"], ["ltee"]); poser(["SE"], ["aktiebolag"]); poser(["DK"], ["aktieselskab"]); poser(["NO"], ["aksjeselskap"]); poser(["FI"], ["osakeyhtio"]);
   poser(["UK", "IE", "NG", "LK", "ZA"], ["plc", "public limited company"]);
@@ -470,7 +474,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   const t = new Map<string, string[]>();
   const poser = (familles: string[], formes: string[]) => { for (const f of formes) t.set(f, [...(t.get(f) ?? []), ...familles]); };
   poser(["ltd"], ["ltd", "limited", "ltee", "pvt", "pte", "pty", "sdn", "sendirian", "sendirian berhad", "private limited",
-    "proprietary limited", "youxian gongsi", "youxian zeren gongsi", "borisat chamkat", "borisat jamkat", "chamkat", "jamkat"]);
+    "proprietary limited", "youxian gongsi", "youxian zeren gongsi", "siren youxian gongsi", "borisat chamkat", "borisat jamkat", "chamkat", "jamkat"]);
   poser(["ltd", "corp"], ["bhd", "berhad", "kk", "kabushiki kaisha", "kabushikigaisha", "jusikhoesa", "chusikhoesa",
     "chusik hoesa", "jusik hoesa", "gufen youxian gongsi", "oy", "ab", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio"]);
   poser(["ltd", "llc"], ["ooo", "tov", "ltda", "limitada", "sociedade limitada", "eireli", "tnhh", "cong ty tnhh", "sti", "limited sirketi", "yuhanhoesa"]);
@@ -521,7 +525,10 @@ const REGIONS: ReadonlySet<string> = new Set([
 ]);
 
 const QUALIFICATIFS_PRIVES = new Set(["pty", "pte", "pvt", "sdn", "sendirian"]);
-const PHRASES_PRIVEES = new Set(["private limited", "proprietary limited", "sendirian berhad"]);
+const PHRASES_PRIVEES = new Set(["private limited", "proprietary limited", "sendirian berhad", "siren youxian gongsi"]);
+/** Les formes chinoises qui, ÉCRITES EN CARACTÈRES, ne disent ni le pays ni le statut privé (voir `analyserEntite`). */
+const FORMES_CHINOISES = new Set(["youxian gongsi", "youxian zeren gongsi"]);
+const PAYS_DU_CHINOIS_ECRIT = ["CN", "HK", "TW", "MO", "SG", "MY"];
 
 /** Dans le registre nord-américain, une société par actions se désigne « Inc. » ou « Corp. »,
  *  et la désignation fait partie du nom déposé : « Harlowe Grain Corporation » et « Harlowe
@@ -560,6 +567,13 @@ export type Marques = { pays: readonly string[]; familles: readonly string[]; na
   /** le nom est écrit dans un abjad (arabe et persan, hébreu) : ses mots n'ont pas de voyelles,
    *  et se comparent aux consonnes de l'autre côté (voir `cleAbjad`) */
   abjad: Abjad;
+  /** le nom est lu en cantonais (la seconde lecture d'un nom en sinogrammes, ou une lecture
+   *  cantonaise substituée aux mots d'un nom latin) : ses syllabes se replient sur la graphie de
+   *  Hong Kong (`pliCantonais`) */
+  cantonais: boolean;
+  /** la forme est écrite en chinois (有限公司) : elle ne dit pas si la société est privée
+   *  (Pte. Ltd., Sdn. Bhd.) ou non, et ne se met pas en conflit là-dessus */
+  priveInconnu: boolean;
   /** pour un jeton lu dans des sinogrammes, les caractères lus : deux lectures égales de
    *  caractères différents sont des homophones (« 新海 », « 鑫海 »), pas le même mot */
   natifs: ReadonlyMap<string, string> };
@@ -614,17 +628,17 @@ const MARQUEURS_CHINOIS = new Set(["youxian", "gongsi", "gufen", "zeren", "maoyi
  * que la ponctuation ne décide de rien. Jamais vide : un nom fait tout entier de formes
  * juridiques (« Company Limited ») se rend normalisé plutôt que de disparaître.
  */
-export function preparerEntite(nom: string): string {
-  return analyserEntite(nom).texte;
+export function preparerEntite(nom: string, lecture: Lecture = "mandarin"): string {
+  return analyserEntite(nom, lecture).texte;
 }
 
 /** La préparation, avec ce qu'elle a retiré (les pays des formes juridiques, un préfixe de
  *  navire, une forme de société) et les mots que leur auteur a ABRÉGÉS d'un point. */
-export function analyserEntite(nom: string): { texte: string; abreges: ReadonlySet<string>; parentheses: ReadonlySet<string> } & Marques {
+export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { texte: string; abreges: ReadonlySet<string>; parentheses: ReadonlySet<string> } & Marques {
   /* L'apostrophe DANS un mot le soude (« O'Brien », « Ch'iao ») : en faire une frontière
      de mot fabriquerait des jetons d'une ou deux lettres qui ne désignent rien. « F.lli »
      (fratelli) et « LPG/C » (LPG carrier) ont une ponctuation qui porte le sens : lus avant. */
-  const rom = romaniser(nom);
+  const rom = romaniser(nom, lecture);
   const soude = plierLatin(rom.texte)
     /* la lettre qu'un encodage a PERDUE : un « ? » dans un mot ou en tête (« SE?ORA » pour
        Señora, « ?ugowski » pour Ługowski) devient la lettre-jalon PERDU, que la normalisation
@@ -692,6 +706,8 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
   const designations = new Set<string>();
   let societe = false;
   let privePhrase = false;
+  let priveInconnu = false;
+  const ecritEnSinogrammes = /[\u4e00-\u9fff]/u.test(nom) && !estJaponais(nom);
   /* « Co., Ltd. », les deux mots ensemble, est la forme des sociétés d'Asie de l'Est et du
      Sud-Est (有限公司, 株式会社, 주식회사, TNHH) : une « Sdn. Bhd. » ou une « GmbH » du même nom
      est une autre société (mesuré le 27/09 sur le jeu 5) */
@@ -702,6 +718,15 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
     if (PHRASES_PRIVEES.has(p.trim())) privePhrase = true;
     for (const k of PAYS_DES_FORMES.get(p.trim()) ?? []) pays.add(k);
     for (const k of FAMILLES_DES_FORMES.get(p.trim()) ?? []) familles.add(k);
+    /* 有限公司 ÉCRIT EN CARACTÈRES est la forme de toute société à responsabilité limitée de langue
+       chinoise : de Chine, de Hong Kong, de Taïwan, de Macao, mais aussi de Singapour (Pte. Ltd.)
+       et de Malaisie (Sdn. Bhd.), et elle ne dit pas si la société est privée. Romanisée
+       (« Youxian Gongsi »), elle reste continentale. Jeu 9, 27/09 : « 金成电器(马)有限公司 » face
+       à « Kam Sing Electrical (M) Sdn. Bhd. » se mettait en conflit de pays et de statut. */
+    if (ecritEnSinogrammes && FORMES_CHINOISES.has(p.trim())) {
+      for (const k of PAYS_DU_CHINOIS_ECRIT) pays.add(k);
+      priveInconnu = true;
+    }
     texte = texte.split(p).join(" ");
   }
   const separes = texte.trim().split(/ +/);
@@ -753,7 +778,7 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
   /* un nom écrit en kana ou avec une forme japonaise, en sinogrammes, en hangul, est de cette
      langue avant tout marqueur : ses jetons viennent de `romaniser` (ecritures.ts) */
   const japonais = estJaponais(nom) || tousLesMots.some((j) => MARQUEURS_JAPONAIS.has(j));
-  const chinois = pays.has("CN") || REGIONS.has(t[0] ?? "") || (/[\u4e00-\u9fff]/u.test(nom) && !estJaponais(nom))
+  const chinois = pays.has("CN") || REGIONS.has(t[0] ?? "") || ecritEnSinogrammes || lecture === "cantonais"
     || tousLesMots.some((j) => MARQUEURS_CHINOIS.has(j));
   const coreen = /[\uac00-\ud7a3]/u.test(nom) || tousLesMots.some((j) => MARQUEURS_COREENS.has(j));
   const hebreuOuGrec = /[\u0370-\u03ff\u0590-\u05ff]/.test(nom)
@@ -766,7 +791,8 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
   const succursale = tousLesMots.some((j) => SUCCURSALES.has(j));
   return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses,
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
-    hebreuOuGrec, indien, hispanique, prive, majuscules, abjad: abjadDe(nom), natifs: rom.natifs, filiation, succursale, typeNavire };
+    hebreuOuGrec, indien, hispanique, prive, majuscules, abjad: abjadDe(nom), cantonais: lecture === "cantonais", priveInconnu,
+    natifs: rom.natifs, filiation, succursale, typeNavire };
 }
 
 /** Les jetons d'un nom brut : préparation d'entité, puis le pipeline commun des paliers
@@ -852,6 +878,14 @@ function calculerRacines(m: string): string[] {
   if (m.endsWith("our")) r.push(m.slice(0, -3) + "or");
   if (m.endsWith("ogue")) r.push(m.slice(0, -4) + "og");
   return r;
+}
+/** Le PLURIEL ANGLAIS d'un mot du dictionnaire est le même mot : « Metals » et « Metal », « Industries »
+ *  et « Industry », « Supplies » et « Supply » (jeu 9, 27/09 : 廢金屬 traduit « metal » face à « Recycling
+ *  Metals » restait à 0,833, une lettre de différence sur six, et le nom sous le niveau fort). Le seul
+ *  pluriel, jamais -ing ni -er : « Trading » et « Traders » restent deux mots (voir `racines`). */
+export function pluriel(long: string, court: string): boolean {
+  return long !== court && DICTIONNAIRE.has(court)
+    && (long === court + "s" || long === court + "es" || (court.endsWith("y") && long === court.slice(0, -1) + "ies"));
 }
 /** Le lemme d'un mot s'il est anglais : sa première racine au dictionnaire ; sinon undefined. */
 const CACHE_LEMMES = new Map<string, string | undefined>();
@@ -1092,11 +1126,11 @@ export type NomPrepare = {
 };
 
 const SANS_MARQUES: Marques = { pays: [], familles: [], designations: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
-  coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, prive: false, majuscules: false, abjad: "", natifs: new Map(),
-  filiation: "", succursale: false, typeNavire: "" };
+  coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, prive: false, majuscules: false, abjad: "", cantonais: false,
+  priveInconnu: false, natifs: new Map(), filiation: "", succursale: false, typeNavire: "" };
 
-export function preparerNom(f: Frequences, nom: string): NomPrepare {
-  const a = analyserEntite(nom);
+export function preparerNom(f: Frequences, nom: string, lecture: Lecture = "mandarin"): NomPrepare {
+  const a = analyserEntite(nom, lecture);
   const { texte: _t, abreges, parentheses, ...marques } = a;
   return depuisJetons(f, jetons(preparer(a.texte)), marques, abreges, parentheses);
 }
@@ -1141,6 +1175,7 @@ export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesL
   /* la lettre perdue d'un encodage (« seʔora » pour Señora) tient lieu d'une lettre, et d'une
      seule : le mot vaut l'égalité quand tout le reste est égal, lettre pour lettre */
   if ((a.includes(PERDU) || b.includes(PERDU)) && lettrePerdue(a, b)) return 1;
+  if (pluriel(a, b) || pluriel(b, a)) return 0.95;
   if (abrege(a, b) || abrege(b, a)) return 0.9;
   if (motsDistincts(a, b, voyellesLibres) || composesDistincts(a, b, voyellesLibres)) return 0.5;
   if (initialeLueOptiquement(a, b)) return 0.95;
@@ -1272,6 +1307,10 @@ export type OptionsScore = { auMoins?: number; memo?: Map<string, number> };
 
 export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScore = {}): number {
   if (A.numeros && B.numeros && A.numeros !== B.numeros) return 0;
+  /* deux noms lus dans des sinogrammes se comparent sous la MÊME lecture : le mandarin de l'un
+     face au cantonais de l'autre ne dit rien (jeu 9, 27/09 : 源成 en mandarin, yuancheng, face à
+     源盛 en cantonais, yuen sing, passait à 0,857 par le bloc, hors de la garde des homophones) */
+  if (A.marques.natifs.size > 0 && B.marques.natifs.size > 0 && A.marques.cantonais !== B.marques.cantonais) return 0;
   if (A.mots.length === 0 || B.mots.length === 0) {
     return A.mots.length === B.mots.length && A.numeros === B.numeros && A.numeros !== "" ? 1 : 0;
   }
@@ -1306,6 +1345,11 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   /* en pinyin, l'initiale est un phonème : Jin n'est pas Yin, Chang n'est pas Shang ; seules les
      paires d'aspiration du Wade-Giles se confondent (k, g ; t, d ; p, b ; ts, z, c ; ch, zh, j, q ; hs, x) */
   const chinois = A.marques.chinois || B.marques.chinois;
+  /* une lecture cantonaise d'un côté : les syllabes se replient sur la graphie de Hong Kong (Shing,
+     Sing ; Kam, Gam ; Luen, Lyun ; Cheung, Tseung) et l'équivalence vaut CREDIT_ROMANISATION, comme
+     celle du coréen (jeu 9, 27/09 : « Wing Shing Group Holdings » contre 永成集團控股, à 0,800 par le
+     seul bloc des squelettes quand 永成 ne se lisait qu'en mandarin) */
+  const cantonais = A.marques.cantonais || B.marques.cantonais;
   /* là où une romanisation écrit les voyelles librement, deux mots anglais qui n'en diffèrent que
      par une ne sont pas deux mots (Amir, Emir ; Lung, Long en Wade-Giles et en pinyin, mesuré le
      27/09 sur le jeu 4) ; sans aucune marque de langue, si (Marlin, Merlin ; voir `motsDistincts`).
@@ -1327,19 +1371,20 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
         const nx = X.marques.natifs.get(x) ?? "", ny = Y.marques.natifs.get(y) ?? "";
         /* la clé porte tout ce qui décide : les deux mots, leurs marques d'abréviation, et
            leur position de dernier mot (la troncature ne vaut que pour lui) */
-        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
+        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
         /* le cache code l'équivalence de romanisation en ajoutant 2 à la valeur (elle est dans [0, 1]) */
         const enCache = memo?.get(cle);
         let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
         let equivalent = enCache !== undefined && enCache >= 2;
         if (v === undefined) {
           v = simMot(x, y, X.squelettes[i]!, Y.squelettes[j]!, voyellesLibres);
-          const autreSyllabe = chinois && x !== y && !initialesChinoisesCompatibles(x, y);
+          const pliC = cantonais && x !== y && !tousDeuxAnglais(x, y) && pliCantonais(x) === pliCantonais(y);
+          const autreSyllabe = chinois && x !== y && !pliC && !initialesChinoisesCompatibles(x, y);
           if (autreSyllabe) v = Math.min(v, 0.5);
           /* une équivalence de romanisation, dans le contexte de la langue : elle vaut au moins
              CREDIT_ROMANISATION, et elle lève l'ambiguïté du mot court (voir plus bas) */
-          equivalent = !autreSyllabe && x !== y && !tousDeuxAnglais(x, y) && (
-            (romanisation && (X.replis[i] === Y.replis[j] || variationVocalique(X.squelettes[i]!, Y.squelettes[j]!)
+          equivalent = !autreSyllabe && x !== y && !tousDeuxAnglais(x, y) && (pliC
+            || (romanisation && (X.replis[i] === Y.replis[j] || variationVocalique(X.squelettes[i]!, Y.squelettes[j]!)
               || voyelleSautee(X.squelettes[i]!, Y.squelettes[j]!)))
             || (arabe && voyelleEpenthetique(X.squelettes[i]!, Y.squelettes[j]!))
             /* et « oe » y était « u » (« Soerya », « Surya ») : o et u ne font qu'une classe sous cette marque */
@@ -1515,7 +1560,8 @@ export function marquesEnConflit(a: Marques, b: Marques): boolean {
   if (a.pays.length && b.pays.length && !a.pays.some((p) => b.pays.includes(p))) return true;
   /* « X Pty Ltd » ou « X Sdn Bhd » face à « X Ltd » nu : la société privée et une autre
      société du même nom (la cotée, l'étrangère), quand les deux portent une forme */
-  if (a.prive !== b.prive && a.familles.length && b.familles.length) return true;
+  /* (sauf quand la forme d'un côté est écrite en chinois, 有限公司, qui ne dit pas le statut : voir `priveInconnu`) */
+  if (a.prive !== b.prive && a.familles.length && b.familles.length && !a.priveInconnu && !b.priveInconnu) return true;
   if (a.familles.length && b.familles.length && !a.familles.some((p) => b.familles.includes(p))) return true;
   /* « X Corp. » face à « X Inc. » : deux désignations d'un même registre, deux dépôts (voir DESIGNATIONS) */
   if (a.designations.length && b.designations.length && !a.designations.some((d) => b.designations.includes(d))) return true;
@@ -1573,8 +1619,8 @@ export function sembleCoupe(court: string, long: string): boolean {
 export function scoreBrut(f: Frequences, a: string, A: NomPrepare, b: string, B: NomPrepare, options: OptionsScore = {}): number {
   let s = scorePrepares(A, B, options);
   const ta = a.trim(), tb = b.trim();
-  if (sembleCoupe(ta, tb)) s = Math.max(s, scorePrepares(A, preparerNom(f, tb.slice(0, ta.length)), options));
-  if (sembleCoupe(tb, ta)) s = Math.max(s, scorePrepares(preparerNom(f, ta.slice(0, tb.length)), B, options));
+  if (sembleCoupe(ta, tb)) s = Math.max(s, scorePrepares(A, preparerNom(f, tb.slice(0, ta.length), B.marques.cantonais ? "cantonais" : "mandarin"), options));
+  if (sembleCoupe(tb, ta)) s = Math.max(s, scorePrepares(preparerNom(f, ta.slice(0, tb.length), A.marques.cantonais ? "cantonais" : "mandarin"), B, options));
   return s;
 }
 
@@ -1753,6 +1799,9 @@ export function variantes(brut: string): string[] {
        société, la même parenthèse serait une filiale, mais aucune forme ne la suit ici */
     p = p.replace(/\s*\(\s*([\p{L} ]{3,30})\s*\)\s*$/u, (m, pays: string) => (PAVILLONS.has(normaliser(pays)) ? "" : m)).trim();
     if (p.length > 0 && /\p{L}/u.test(p)) vues.add(p);
+    /* le suffixe coréen des navires, 호 (« 세월호 », « 파이오니어호 ») : le nom sans lui est une lecture
+       de plus, jamais la seule (« 금호 », Kumho, garde son 호, qui est son nom) */
+    if (/[\uac00-\ud7a3]{2,}호$/u.test(p)) vues.add(p.replace(/호$/u, "").trim());
     /* une adresse sans virgule derrière la forme juridique, dans un export : ce qui suit la
        dernière forme, quand ce sont des mots et non une autre forme, s'ôte */
     let dernier: RegExpExecArray | null = null;
@@ -1778,12 +1827,79 @@ export function variantes(brut: string): string[] {
   return [...vues];
 }
 
-/** Le score de deux noms BRUTS : le meilleur sur toutes leurs variantes. */
+/** Une variante et la lecture qu'on en fait : un nom en sinogrammes se lit en mandarin ET en
+ *  cantonais (voir ecritures.ts) ; un nom latin n'a qu'une lecture, sauf celles que lui donnent
+ *  les sinogrammes qu'il porte (`substitutions`). C'est ici que l'index et le score prennent
+ *  leurs lectures : tout ce qui s'ajoute ici est vu des deux. */
+export type LectureDe = { texte: string; lecture: Lecture };
+export function lecturesDe(brut: string): LectureDe[] {
+  const vues = new Map<string, LectureDe>();
+  const poser = (l: LectureDe) => { const k = `${l.lecture}|${l.texte}`; if (!vues.has(k)) vues.set(k, l); };
+  for (const v of variantes(brut)) {
+    poser({ texte: v, lecture: "mandarin" });
+    if (/[\u4e00-\u9fff]/u.test(v) && !estJaponais(v)) {
+      poser({ texte: v, lecture: "cantonais" });
+      for (const s of substitutions(v)) poser(s);
+    }
+  }
+  return [...vues.values()];
+}
+
+/**
+ * UN NOM LATIN QUI PORTE SES SINOGRAMMES, en queue ou entre parenthèses (« Yongcheng Trading
+ * (Shenzhen) Co Ltd 永成 », « Wing Fung Provision Trading Pte Ltd (荣丰) », « Zhang Xing Seafood
+ * Trading Pte Ltd 张兴海产 ») : les caractères sont l'écriture native des mots distinctifs du nom,
+ * et leurs lectures en sont d'autres graphies. Quand la lecture mandarine des caractères (soudée)
+ * est une suite de mots latins du nom, la lecture cantonaise se substitue à ces mots (« Wing Sing
+ * Trading (Shenzhen) Co Ltd », lue en cantonais) ; quand c'est la lecture cantonaise qui les
+ * retrouve (au pli près), la mandarine se substitue (« Rongfeng Provision Trading Pte Ltd »), et
+ * le nom latin tel quel est une lecture cantonaise (« Shun Hing » face à « Soon Heng »). Le nom
+ * latin sans ses caractères est une lecture de plus. Jeu 9, 27/09 : « Wing Shing Trading
+ * (Shenzhen) Co., Ltd. » restait à 0,305 face au premier, la lecture des caractères ne faisant
+ * qu'un jeton de plus, en double du mot qu'elle écrit.
+ */
+function substitutions(v: string): LectureDe[] {
+  const suites = v.match(/[\u4e00-\u9fff]+/gu) ?? [];
+  const latin = v.replace(/\(\s*[\u4e00-\u9fff]+\s*\)|[\u4e00-\u9fff]+/gu, " ").replace(/\s{2,}/g, " ").trim();
+  if (suites.length === 0 || !/\p{L}{2}/u.test(latin)) return [];
+  const sorties: LectureDe[] = [{ texte: latin, lecture: "mandarin" }];
+  const mots = latin.split(" ");
+  const cles = mots.map((m) => jetons(normaliser(m)).join(""));
+  const majuscule = (s: string) => s[0]!.toUpperCase() + s.slice(1);
+  const remplacer = (de: number, a: number, par: readonly string[]) => [...mots.slice(0, de), ...par.map(majuscule), ...mots.slice(a + 1)].join(" ");
+  for (const suite of suites) {
+    /* les mots du commerce des caractères (海产, 有限公司) ne se substituent à rien : seuls les
+       jetons qui gardent leurs caractères (`natifs`) sont le nom propre */
+    const rm = romaniser(suite, "mandarin"), rc = romaniser(suite, "cantonais");
+    const propresM = rm.texte.trim().split(/ +/).filter((j) => rm.natifs.has(j));
+    const propresC = rc.texte.trim().split(/ +/).filter((j) => rc.natifs.has(j));
+    if (propresM.length === 0 || propresC.length === 0) continue;
+    const mandarin = propresM.join("");
+    /* la lecture mandarine, soudée, retrouvée dans une suite de mots latins (« Yongcheng », « Zhang Xing ») */
+    for (let i = 0; i < cles.length; i++) {
+      let colle = "";
+      for (let k = i; k < cles.length && colle.length < mandarin.length; k++) {
+        colle += cles[k]!;
+        if (colle === mandarin) { sorties.push({ texte: remplacer(i, k, propresC), lecture: "cantonais" }); break; }
+      }
+    }
+    /* la lecture cantonaise, syllabe par syllabe, retrouvée au pli près (« Wing Fung », « Man Lee ») */
+    for (let i = 0; i + propresC.length <= cles.length; i++) {
+      if (propresC.every((s, t) => cles[i + t] !== "" && pliCantonais(cles[i + t]!) === pliCantonais(s))) {
+        sorties.push({ texte: remplacer(i, i + propresC.length - 1, [mandarin]), lecture: "mandarin" });
+        sorties.push({ texte: latin, lecture: "cantonais" });
+      }
+    }
+  }
+  return sorties;
+}
+
+/** Le score de deux noms BRUTS : le meilleur sur toutes leurs variantes, sous toutes leurs lectures. */
 export function scoreNoms(f: Frequences, a: string, b: string): number {
   let meilleur = 0;
-  for (const va of variantes(a)) {
-    const A = preparerNom(f, va);
-    for (const vb of variantes(b)) meilleur = Math.max(meilleur, scoreBrut(f, va, A, vb, preparerNom(f, vb)));
+  for (const la of lecturesDe(a)) {
+    const A = preparerNom(f, la.texte, la.lecture);
+    for (const lb of lecturesDe(b)) meilleur = Math.max(meilleur, scoreBrut(f, la.texte, A, lb.texte, preparerNom(f, lb.texte, lb.lecture)));
   }
   return meilleur;
 }
@@ -1861,6 +1977,18 @@ export function pliIndien(m: string): string {
 export function pliCoreen(m: string): string {
   return m.replace(/eo/g, "o").replace(/eu/g, "u").replace(/ae/g, "e").replace(/oo|ou|u/g, "o").replace(/y(?=[aeiou])/g, "")
     .replace(/g/g, "k").replace(/d/g, "t").replace(/b/g, "p").replace(/j/g, "ch").replace(/r/g, "l").replace(/(.)\1+/g, "$1");
+}
+
+/** Le cantonais en jyutping, en graphie du gouvernement de Hong Kong et dans les graphies d'usage de
+ *  Singapour et de Malaisie : les paires d'aspiration (g, k ; b, p ; d, t), s et sh, ch, ts, z et c, j et
+ *  y ; les voyelles que ces graphies écrivent librement (aa, a ; oe, eu, eo, ue, oo, u ; ei, ee, ay, i ;
+ *  ung, ong ; eng, ing : la Seng Heng Bank de Macao est 誠興, sing hing) ; un h final après voyelle
+ *  (Wah, Poh). Une seule clé, comparée sous la marque `cantonais` seulement. */
+export function pliCantonais(m: string): string {
+  return m.replace(/^ts/, "ch").replace(/^[zc](?!h)/, "ch").replace(/^sh/, "s").replace(/^j/, "y").replace(/^gw/, "kw")
+    .replace(/^g/, "k").replace(/^b/, "p").replace(/^d/, "t")
+    .replace(/aa/g, "a").replace(/oe|eo|eu|ue|oo/g, "u").replace(/(?<=[a-z])yu/g, "u").replace(/ei|ee|ay/g, "i")
+    .replace(/ung/g, "ong").replace(/eng/g, "ing").replace(/(?<=[aeiou])h$/, "").replace(/(.)\1+/g, "$1");
 }
 
 const PAIRES_ASPIRATION: readonly [string, string][] = [["k", "g"], ["t", "d"], ["p", "b"], ["c", "z"], ["c", "j"], ["z", "j"],
