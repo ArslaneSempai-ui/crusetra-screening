@@ -22,7 +22,12 @@
     "mesure-entites": "node src/mesure-entites.ts",
     "temoin-index": "node src/temoin-index.ts",
     "verdict": "node src/verdict.ts",
-    "comparer": "node src/comparer-mesures.ts"
+    "comparer": "node src/comparer-mesures.ts",
+    "valider-jeu": "node src/valider-jeu.ts",
+    "promouvoir": "node src/promouvoir.ts",
+    "rates-du-jeu": "node src/rates-du-jeu.ts",
+    "doublons": "node scripts/doublons.mjs",
+    "exemple": "zsh scripts/exemple.sh"
   },
   "dependencies": {
     "@huggingface/transformers": "4.2.0"

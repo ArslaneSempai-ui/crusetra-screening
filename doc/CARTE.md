@@ -36,6 +36,27 @@ que deux voies ne se rencontrent pas dans le même fichier à la fusion.
 - La machine : une mesure prend une minute, une suite complète cinq, un témoin quatre. Deux voies et un témoin
   en même temps multiplient tout par dix. Une voie ne lance ni la suite complète ni le témoin avant d'avoir fini.
 
+## Les outils d'un tour (le chef les lance, dans cet ordre)
+
+- `npm run valider-jeu -- <jeu.json> [--copier]` : le jeu aveugle reçu de son auteur, AVANT le juge : une ligne
+  JSON (comptes, recouvrement avec TOUS les jeux d'apprentissage, identiques à la casse près, quasi-doublons,
+  cadratins, empreinte), et un refus en une ligne si 400/200/200 ne tient pas, si une clé ou un champ manque, si
+  un nom est déjà vu, si un cadratin traîne ; `--copier` le range dans `~/Documents/jeux-aveugles/jeuN-aveugle.json`
+  (cadratins des noms remplacés, provenance qui le dit, jamais par-dessus un fichier). Jamais une paire à l'écran.
+- `npm run promouvoir -- <N>` : après le verdict et son étude, le jeu aveugle N devient `src/paires-entites-<N+1>.json` :
+  la ligne du juge lue dans `verification/VERDICTS.md` et écrite dans la provenance, la ligne ajoutée à
+  `CHEMINS_APPRENTISSAGE`, les figures refaites ; refuse si la cible existe, si la ligne du juge manque ou parle
+  d'une autre empreinte, si le recouvrement n'est pas nul.
+- `npm run rates-du-jeu -- <N> [--mesure <fichier>]` : au début du tour suivant, ce que le jeu N ne passe pas
+  encore (RATÉ, FAUSSE-F, possible), groupé par la nature de l'auteur, une ligne par paire et les trois totaux : le
+  brief des voies s'écrit dessus. Sans `--mesure` il relance la mesure détaillée dans un fichier temporaire (une minute).
+- `node scripts/doublons.mjs [--corriger] <fichier.ts>...` : à la fusion des voies, les clés en double d'un
+  `Object.entries({ ... })` (TS1117, ce qu'une fusion en union laisse) : fichier, clé, les deux lignes ; `--corriger`
+  retire la seconde. Sort en 1 tant qu'il en reste.
+- `zsh scripts/exemple.sh <round> <commit>` : à la fin du tour, le matcher commis : le criblage d'exemple rejoué, la
+  fixture de `cascade-licencie` rafraîchie, testée et commise là-bas, puis ici les figures, le relevé et le README
+  commis par `commettre.sh`. Une ligne par étape, arrêt à la première qui échoue.
+
 ## Ce qui a déjà été payé (ne pas refaire)
 
 - Le squelette fond des classes de consonnes, pas tout : sh et h séparés (Shing, Hing), zh reste j, le q arabe
