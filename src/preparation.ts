@@ -119,6 +119,7 @@ const PHRASES = [
   " fz llc ", " free zone limited liability company ",
   " joint stock company ", " limited liability company ", " limited liability partnership ",
   " private limited ", " private ltd ", " pvt limited ", " public limited company ", " proprietary limited ",
+  " korlatolt felelossegu tarsasag ", " zartkoruen mukodo reszvenytarsasag ", " nyilvanosan mukodo reszvenytarsasag ", " beteti tarsasag ",
   " with limited liability ", " sole proprietorship ",
   " free zone establishment ", " free zone company ",
   " gesellschaft mit beschrankter haftung ", " aktiengesellschaft ", " kommanditgesellschaft ",
@@ -352,7 +353,13 @@ export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   agrokhim: "agrochem", neftekhim: "petrochem", khimprom: "chemical", khimreaktiv: "chemical", khimvolokno: "chemical",
   denizcilik: "shipping", gida: "food", tekstil: "textile", insaat: "construction", lojistik: "logistics", ihracat: "export",
   ithalat: "import", madencilik: "mining", enerji: "energy", kimya: "chemical", yatirim: "investment", tarim: "agriculture",
-  /* italien */ spedizioni: "forwarding", trasporti: "transport", navigazione: "navigation", commercio: "trading",
+  /* le Nord-Est italien et l'Adriatique slovène et croate (jeu 18) : les noms bilingues d'une même société de Trieste ou de Koper */
+  plovba: "navigation", brodarstvo: "shipping", spedicija: "forwarding", speditsiya: "forwarding", avtoprevoznistvo: "road transport",
+  autotrasporti: "road transport", autotrasporto: "road transport", prevoz: "transport", prijevoz: "transport", prevozi: "transport",
+  kereskedelmi: "trading", kereskedes: "trading", obalna: "coastal", obalni: "coastal", costiera: "coastal",
+  costiero: "coastal", jadranska: "adriatic", jadranski: "adriatic", jadransko: "adriatic", adriatica: "adriatic", adriatico: "adriatic",
+  kraska: "karst", kraski: "karst", carso: "karst", szallitmanyozas: "forwarding", szallitas: "transport", fuvarozas: "haulage",
+  /* italien */ spedizioni: "forwarding", spedizione: "forwarding", trasporti: "transport", navigazione: "navigation", commercio: "trading",
   commerciale: "commercial", industriale: "industrial", industrie: "industries", costruzioni: "construction",
   /* espagnol et portugais */ comercio: "trading", comercial: "commercial", naviera: "shipping", transportes: "transport",
   industrias: "industries", sucesores: "successors", navegacao: "navigation", navegacion: "navigation", construcciones: "construction",
@@ -541,12 +548,12 @@ const VIDES_DE_MENTION: ReadonlySet<string> = new Set(["of", "the", "de", "di", 
  *  confondaient (jeu 10 : cinq paires à 1,000). Le numéro est donc une propriété de toutes les variantes du
  *  nom (`VarianteTypee.registre`) : deux numéros différents, deux dépôts, le possible au plus. */
 export const REGISTRES: readonly RegExp[] = [
-  /\(\s*(?:rc|bn|cac|cipc|hrb|hra|kvk|kbo|bce|ondernemingsnummer|ondernemingsnr|crn|cin|uen|acn|abn|brn|cnpj|cuit|ruc|nit|siren|siret)\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*(?:[a-z]{1,2}\s?)?\d[\d/.\-]{2,}[^()]*\)/giu,
+  /\(\s*(?:rc|bn|cac|cipc|hrb|hra|kvk|kbo|bce|ondernemingsnummer|ondernemingsnr|crn|cin|uen|acn|abn|brn|cnpj|cuit|ruc|nit|siren|siret|mb|pib|oib|jib|embs|edb|mati[cč]ni\s+broj|mati[cč]na\s+[sš]tevilka|eik|bulstat)\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*(?:[a-z]{1,2}\s?)?\d[\d/.\-]{2,}[^()]*\)/giu,
   /\(\s*reg(?:istration|istered)?\.?\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*[a-z]?\d[\d/.\-]{2,}[^()]*\)/giu,
   /* le RCCM de l'OHADA (« /RCCM ML BKO 2015 M 1234 », « (RCCM CI-ABJ-2015-B-1234) », jeu 16) : derrière une barre, une
      virgule ou une parenthèse, jusqu'à la fin */
   /\s*[\/(,;]\s*rccm\b\s*:?\s*[a-z0-9 .\-\/]{4,}\)?\s*$/giu,
-  /(?<=\b(?:ltd|limited|plc|inc|llc|gmbh|bhd|bv|nv)\.?)[\s,]+(?:rc|bn|hrb|hra|kvk|kbo|bce|reg(?:istration)?\.?\s*(?:no\.?|nr\.?|number)?)\s*[:.]?\s*[a-z]?\d[\d/.\-]{3,}\s*$/giu,
+  /(?<=\b(?:ltd|limited|plc|inc|llc|gmbh|bhd|bv|nv|doo|d\.o\.o\.|dd|d\.d\.|ad|ood|eood|kft|srl|s\.r\.l\.|spa)\.?)[\s,]+(?:rc|bn|hrb|hra|kvk|kbo|bce|mb|pib|oib|jib|embs|mati[cč]ni\s+broj|reg(?:istration)?\.?\s*(?:no\.?|nr\.?|number)?)\s*[:.]?\s*[a-z]?\d[\d/.\-]{3,}\s*$/giu,
   /* le numéro de société japonais (法人番号, treize chiffres), entre parenthèses ou en tête, suivi d'un tiret ou d'un deux-points
      (« Corporate Number 8011001077453 », puis le nom, jeu 11 : un numéro d'un seul côté, 0,800) */
   /(?:\(\s*)?(?:法人番号|corporate\s+number|hojin\s+bango)\s*:?\s*\d{13}(?:\s*\)|\s*[-\u2013\u2014:])?/giu,
@@ -672,6 +679,8 @@ const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   ent: "enterprises", rd: "road", soc: "society", md: "muhammad", trdrs: "traders", prts: "parts",
   /* le grec des documents maritimes en anglais (jeu 17) : « Blk Shpg », « Shp Svcs » */
   blk: "bulk", shpg: "shipping", shp: "ship", lnc: "inc",
+  /* l'italien des transitaires (jeu 18) */
+  sped: "spedizioni", trasp: "trasporti", spediz: "spedizioni",
   coop: "cooperative", "co-op": "cooperative", hrdware: "hardware", hdware: "hardware",
   /* « Nig. Ltd », le suffixe du registre nigérian (CAC) : « Okafor Integrated Resources Nig. Ltd » (jeu 10) */
   nig: "nigeria",
@@ -930,6 +939,8 @@ const PREFIXES_NAVIRE = new Set(["mv", "mt", "ms", "my", "sy", "ss", "mts", "fv"
   /* le Rhin et la Meuse (jeu 14) : TMS (Tankmotorschiff), GMS (Gütermotorschiff), MSV, la duwbak (barge poussée), le duwboot
      (pousseur) et le sleepboot (remorqueur), écrits devant le nom ou entre parenthèses derrière */
   "tms", "gms", "msv", "duwbak", "duwboot", "sleepboot", "nm",
+  /* le Danube et l'Adriatique (jeu 18) : teglenica (barge), tegljač et remorker (remorqueur), potiskivač (pousseur) */
+  "teglenica", "tegljac", "potiskivac", "remorker",
   /* l'Asie du Sud-Est (jeu 9) : BG et TK (barge, tongkang), TB (tug boat), KM (kapal motor), LCT, SPOB */
   "bg", "tk", "km", "kmp", "klm", "lct", "spob", "mtug", "mfv",
   "tanker", "vessel", "roro", "ferry", "dredger", "trawler",
@@ -947,7 +958,7 @@ const PREFIXES_NAVIRE = new Set(["mv", "mt", "ms", "my", "sy", "ss", "mts", "fv"
  *  « Barcaza » est la barge, « Remolcador » et « Rebocador » le remorqueur (jeu 11 : « Tug Poderoso » face à
  *  « Barge Poderoso », deux coques ; face à « R/M Poderoso », la même). */
 const TYPES_NAVIRE: ReadonlyMap<string, string> = new Map([["tug", "tug"], ["tb", "tug"], ["tugboat", "tug"], ["mtug", "tug"],
-  ["duwbak", "barge"], ["duwboot", "tug"], ["sleepboot", "tug"],
+  ["duwbak", "barge"], ["duwboot", "tug"], ["sleepboot", "tug"], ["teglenica", "barge"], ["tegljac", "tug"], ["potiskivac", "tug"], ["remorker", "tug"],
   ["barge", "barge"], ["bg", "barge"], ["tk", "barge"], ["barcaza", "barge"], ["remolcador", "tug"], ["rebocador", "tug"]]);
 const PHRASES_NAVIRE = [" motor vessel ", " motor tanker ", " motor ship ", " motor yacht ",
   " sailing yacht ", " steam ship ", " lpg carrier ", " lng carrier ", " lpg tanker ", " fishing vessel ",
@@ -1055,7 +1066,7 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "special maritime enterprise", "anonymi etaireia", "anonimi etairia", "anonymos etaireia", "anonimos etairia"]);
   /* « SIA » est la société lettone (sabiedrība ar ierobežotu atbildību) autant que le « & Cie » grec (ΣΙΑ) */
   poser(["GR", "CY", "LV"], ["sia"]);
-  poser(["FI"], ["oy", "oyj"]); poser(["SE"], ["ab"]); poser(["HU"], ["kft", "zrt", "nyrt"]);
+  poser(["FI"], ["oy", "oyj"]); poser(["SE"], ["ab"]); poser(["HU"], ["kft", "zrt", "nyrt", "korlatolt felelossegu tarsasag", "zartkoruen mukodo reszvenytarsasag", "nyilvanosan mukodo reszvenytarsasag", "beteti tarsasag", "bt"]);
   poser(["CZ", "SK"], ["sro"]); poser(["RS", "HR", "BA", "SI", "ME", "MK"], ["doo"]);
   poser(["BG", "RS", "MK"], ["ad"]); poser(["BG"], ["eood", "ood"]);
   return t;
@@ -1079,7 +1090,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["ltd", "corp"], ["bhd", "berhad", "kk", "kabushiki kaisha", "kabushikigaisha", "kabushiki gaisha", "jusikhoesa", "chusikhoesa",
     "chusik hoesa", "jusik hoesa", "gufen youxian gongsi", "oy", "ab", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio"]);
   /* et la Yūgen Kaisha (有限会社), que l'anglais rend « Co., Ltd. » ou « Y.K. » */
-  poser(["ltd", "llc"], ["ooo", "tov", "ltda", "lda", "limitada", "sociedade limitada", "eireli", "osauhing", "anpartsselskab",
+  poser(["ltd", "llc"], ["korlatolt felelossegu tarsasag", "ooo", "tov", "ltda", "lda", "limitada", "sociedade limitada", "eireli", "osauhing", "anpartsselskab",
     "sabiedriba ar ierobezotu atbildibu", "uzdaroji akcine bendrove", "ou", "sia", "uab", "aps", "tnhh", "cong ty tnhh", "sti", "limited sirketi",
     "yuhanhoesa", "yugen kaisha", "yugen gaisha", "yk", "empresa individual de responsabilidade limitada",
     "tovarystvo z obmezhenoiu vidpovidalnistiu", "tovarystvo z obmezhenoyu vidpovidalnistyu"]);
@@ -1093,7 +1104,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "zhoopkerchiligi chektelgen koom", "obshchestvo s ogranichennoi otvetstvennostiu"]);
   poser(["corp"], ["aq", "azh", "aksiyadorlik jamiyati", "aktsionerlik kogam", "aksionerlik qogam"]);
   poser(["ltd", "corp"], ["pt", "perseroan terbatas", "tbk", "ud", "usaha dagang", "commanditaire vennootschap", "perseroan komanditer", "pcl", "public company limited", "teoranta", "teo", "dac", "designated activity company"]);
-  poser(["corp"], ["private joint stock company", "private joint stock", "public joint stock", "closed joint stock", "open joint stock",
+  poser(["corp"], ["zartkoruen mukodo reszvenytarsasag", "nyilvanosan mukodo reszvenytarsasag", "private joint stock company", "private joint stock", "public joint stock", "closed joint stock", "open joint stock",
     "sherkat sahami khas", "sherkate sahami khas", "sahami khas", "sahami amm",
     "sociedad anonima promotora de inversion de capital variable", "sociedad anonima promotora de inversion",
     "sociedad anonima unipersonal", "sociedad anonima de capital variable"]);
@@ -1176,6 +1187,8 @@ const DESIGNATIONS: ReadonlyMap<string, string> = new Map([
      quatorze jeux). « FZ » seul ne dit pas laquelle : aucune désignation. La forme en toutes lettres porte la
      désignation de son sigle */
   ["fze", "fze"], ["free zone establishment", "fze"], ["fzco", "fzco"], ["fzc", "fzco"], ["free zone company", "fzco"],
+  /* la Bulgarie (jeu 18) : l'OOD à plusieurs associés et l'EOOD à un seul, l'AD et l'EAD ; la Croatie : le d.o.o. et le j.d.o.o. */
+  ["ood", "ood"], ["eood", "eood"], ["ead", "ead"], ["jdoo", "jdoo"],
   ["fzllc", "fzllc"], ["fz llc", "fzllc"], ["free zone limited liability company", "fzllc"],
   ["dmcc", "dmcc"], ["jafza", "jafza"], ["dafza", "dafza"], ["difc", "difc"], ["dso", "dso"], ["dwc", "dwc"], ["rakez", "rakez"], ["kizad", "kizad"],
   /* Bahreïn : la S.P.C. (un seul associé) et la W.L.L. (plusieurs) sont deux immatriculations d'une même famille
@@ -1353,7 +1366,7 @@ const NUMERAUX_DAI: ReadonlyMap<string, string> = new Map(Object.entries({
  *  lettres (obshchestvo, tovarystvo), les grades qu'un navire porte en tête (kapitan, shkiper, matros, botsman).
  *  PAS les mots que l'anglais écrit pareil (terminal, port, elevator, agro, dom) : ils marqueraient la moitié
  *  des listes, et le pli des romanisations s'ouvrirait sur des noms anglais. */
-const MARQUEURS_SLAVES = new Set(["torgovyy", "torgovyi", "torgovy", "torgovyj", "torgovaya", "torgovaia", "torgovaja", "torgovlya",
+const MARQUEURS_SLAVES = new Set(["targovia", "targoviya", "trgoviya", "turgoviya", "khimikali", "himikali", "torgovyy", "torgovyi", "torgovy", "torgovyj", "torgovaya", "torgovaia", "torgovaja", "torgovlya",
   "zavod", "zavoda", "kompaniya", "kompaniia", "kompanija", "kompania", "morskoy", "morskoi", "morskoj", "morskaya", "morskaia",
   "morskaja", "morska", "morske", "rechnoy", "rechnoi", "rechnoj", "recnoj", "recnoi", "richkovyi", "richkovyy", "richkova",
   "flot", "flota", "sklad", "stroy", "stroi", "stroj", "sudokhodnaya", "sudokhodstvo", "promyshlennost", "promyshlennaya",
@@ -1382,6 +1395,8 @@ const TEPLOKHOD = /(?<![\p{L}])t\/(?:kh|h)(?![\p{L}])/iu;
  *  marque slave (voir `traduction`). « Kompaniia » et « Kompanija » sont le « Kompaniya » que LOCUTIONS ôte déjà.
  *  Les grades : « Kapitan Semenyuk » et « Capt. Semenyuk » sont un navire (jeu 12, 28/09 : 0,494). */
 const TRADUCTIONS_SLAVES: ReadonlyMap<string, string> = new Map(Object.entries({
+  /* bulgare (jeu 18) */ khimikali: "chemicals", himikali: "chemicals", targoviya: "trading", targovia: "trading", trgoviya: "trading", turgoviya: "trading",
+  transport: "transport", logistika: "logistics", spedizia: "forwarding",
   morskoy: "marine", morskaya: "marine", rechnoy: "river", rechnaya: "river", richkovyi: "river", richkova: "river",
   kompaniya: "", flot: "fleet", sklad: "warehouse", stroy: "construction", torgovyy: "trading", torgovaya: "trading",
   kapitan: "captain", shkiper: "skipper", matros: "seaman", botsman: "boatswain", bosun: "boatswain",
@@ -1454,6 +1469,10 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      (fratelli) et « LPG/C » (LPG carrier) ont une ponctuation qui porte le sens : lus avant. */
   /* et le Wade-Giles, que son apostrophe d'aspiration signe, se récrit en pinyin AVANT que cette apostrophe et le tiret
      ne partent (« Chen-ch'iao » : Zhenqiao, jeu 13 ; voir wadegiles.ts) */
+  /* le đ serbo-croate s'écrit dj sans son trait (« Đorđević », « Djordjevic », jeu 18) : lu avant toute romanisation, qui en ferait un d ;
+     sous un autre signe serbo-croate seulement (ć, č, š, ž, une forme d.o.o., d.d., a.d.), jamais le đ vietnamien (« Nam Định », perdu
+     à la mesure du 29/09 quand le pli valait partout) */
+  if (/[Đđ]/.test(nom) && /[ćčšžĆČŠŽ]|\bd\.?o\.?o\.?(?![\p{L}])|\bd\.?d\.?(?![\p{L}])|\ba\.?d\.?(?![\p{L}])/iu.test(nom) && !/[ơưăạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹƠƯĂẠ]/.test(nom)) nom = nom.replace(/Đ/g, "Dj").replace(/đ/g, "dj");
   const rom = romaniser(wadeGiles(nom), lecture);
   /* le T/H ou T/KH du teplokhod devant un navire russe (voir TEPLOKHOD) : le M/V des documents russes, rendu tel quel
      avant la soudure des sigles (« T/H » y deviendrait « th », un mot ; « T/KH » deux mots), et une marque slave */
@@ -1498,6 +1517,11 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
        sans barre dans les registres panaméens (« MN RÍO CHAGRES ») : il est dans PREFIXES_NAVIRE comme MV (mesuré le
        27/09 : « M/N ESTRELLA DEL CARIBE » à 0,800 face à « MV Estrella del Caribe », « mn » mot rare sans répondant) */
     .replace(/(?<![\p{L}\d])(?:B\/M|N\/M)(?![\p{L}])/giu, "MV").replace(/(?<![\p{L}\d])R\/M(?![\p{L}])/giu, "TUG")
+    /* le đ serbo-croate s'écrit dj sans son trait (« Đorđević », « Djordjevic », jeu 18) ; la normalisation en ferait un d */
+    .replace(/Đ/g, "Dj").replace(/đ/g, "dj")
+    /* le ъ bulgare est une voyelle (« Търговия » : Targovia), que la translittération russe laisserait tomber : sous une forme
+       bulgare (ООД, ЕООД, АД, ЕАД) il se lit а (jeu 18) */
+    .replace(/[ъЪ]/g, (m) => (/(?<![\p{L}])(?:ООД|ЕООД|АД|ЕАД)(?![\p{L}])/u.test(nom) ? (m === "ъ" ? "а" : "А") : m))
     /* « Patel Hardware (K) Ltd », « Msasani Fisheries (T) Ltd », « Nakasero Pharma (U) Ltd » : la lettre du pays dans les registres
        d'Afrique de l'Est, devant la forme (jeu 15) ; écrite en toutes lettres, elle rejoint « Kenya Ltd » et « Kenya Limited » */
     .replace(/\(\s*K\s*\)(?=\s*(?:ltd|limited)\b)/giu, "(Kenya)").replace(/\(\s*T\s*\)(?=\s*(?:ltd|limited)\b)/giu, "(Tanzania)")
