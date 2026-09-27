@@ -16,6 +16,7 @@ import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, 
 /* une déclaration de fonction : elle traverse le cycle mots.ts → preparation.ts, et n'est appelée qu'à la première demande */
 import { pliJaponais } from "./mots.ts";
 import { pliSlave } from "./mots.ts";
+import { traductionNordique, estFinnois, GENITIFS_FINNOIS } from "./nordique.ts";
 import { lemme } from "./mots.ts";
 import { porteUnJalon } from "./score.ts";
 import { lettrePerdue } from "./score.ts";
@@ -50,6 +51,8 @@ export const FORMES = new Set([
   /* Amérique latine ; « Lda » au Portugal, en Angola, au Mozambique (jeu 10) */ "ltda", "lda", "eireli", "cv", "sapi", "sac", "saa",
   /* Russie et CEI */ "ooo", "oao", "zao", "pao", "ao", "jsc", "pjsc", "ojsc", "cjsc", "too",
   /* Ukraine, Grèce, Vietnam, Thaïlande */ "prat", "pat", "tov", "ae", "epe", "ike", "oe", "ee", "sia", "tnhh", "chamkat", "jamkat",
+  /* Estonie (OÜ, écrit « OU » dans un export sans trémas : en queue seulement, voir le filtre), Lituanie (UAB) ; la SIA lettone
+     est déjà là sous la grecque */ "ou", "uab",
   /* désignations russes */ "npp", "npo", "npk", "npf", "pkf",
   /* Indonésie, en tête seulement (voir le filtre) */ "pt", "ud",
   /* Turquie */ "sti",
@@ -243,6 +246,10 @@ function traductionsJaponaisesPliees(): ReadonlyMap<string, string> {
 function traduction(j: string, japonais = false, slave = false): string | undefined {
   const t = TRADUCTIONS.get(j);
   if (t !== undefined) return t;
+  /* un générique finnois, suédois, danois ou norvégien, seul ou composé de deux (« satamapalvelu », « hamntjänst » : port
+     services), les deux raisons sociales d'une société finlandaise (voir nordique.ts) */
+  const n = traductionNordique(j);
+  if (n !== undefined) return n;
   const p = pliGenerique(j);
   const a = p === j ? undefined : TRADUCTIONS_ARABES.get(p);
   if (a !== undefined) return a;
@@ -817,7 +824,7 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
      entre « Sokołowiec Chemical Works Spółka Akcyjna » et « … Joint-Stock Company » (27/09) */
   poser(["TR"], ["sti", "anonim sirketi", "limited sirketi", "sirketi"]);
   poser(["TR", "NO", "DK", "EE"], ["as"]);
-  poser(["NO"], ["asa"]); poser(["DK"], ["aps"]);
+  poser(["NO"], ["asa"]); poser(["DK"], ["aps"]); poser(["EE"], ["ou"]); poser(["LT"], ["uab"]);
   poser(["AE"], ["dmcc", "jafza", "dafza", "difc", "dso", "dwc", "rakez", "kizad"]);
   poser(["AE", "SA", "QA", "BH", "KW", "OM"], ["fze", "fzco", "fzc", "fzllc", "fz", "wll", "spc", "sole proprietor company", "sole proprietorship company", "est",
     "sole proprietor company", "sole proprietorship company",
@@ -847,7 +854,9 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["RU", "BY", "KZ", "UA"], ["npp", "npo", "npk", "npf", "pkf", "nauchno proizvodstvennoe predpriyatie",
     "nauchno proizvodstvennoe obedinenie", "nauchno proizvodstvennyi kompleks", "nauchno proizvodstvennaya firma",
     "proizvodstvenno kommercheskaya firma", "proizvodstvennoe obedinenie"]);
-  poser(["GR", "CY"], ["ae", "epe", "ike", "oe", "ee", "sia"]);
+  poser(["GR", "CY"], ["ae", "epe", "ike", "oe", "ee"]);
+  /* « SIA » est la société lettone (sabiedrība ar ierobežotu atbildību) autant que le « & Cie » grec (ΣΙΑ) */
+  poser(["GR", "CY", "LV"], ["sia"]);
   poser(["FI"], ["oy", "oyj"]); poser(["SE"], ["ab"]); poser(["HU"], ["kft", "zrt", "nyrt"]);
   poser(["CZ", "SK"], ["sro"]); poser(["RS", "HR", "BA", "SI", "ME", "MK"], ["doo"]);
   poser(["BG", "RS", "MK"], ["ad"]); poser(["BG"], ["eood", "ood"]);
@@ -1311,6 +1320,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
        Portovyi Zavod » face à « JSC Pivdennyy Portovyy Zavod » à 0,788, « at » mot rare orphelin) ; ailleurs,
        c'est l'anglais « at » ou l'article arabe assimilé (voir ARTICLES_ASSIMILES, lu avant) */
     if (j === "at" && i === 0 && slave && mots.length > 1) { societe = true; pays.add("UA"); familles.add("corp"); return false; }
+    /* « OÜ » (osaühing) s'écrit « OU » sans son tréma : une forme en QUEUE seulement ; ailleurs « ou » est un mot (le
+       « ou » français, le nom chinois Ou) */
+    if (j === "ou" && i !== mots.length - 1) return true;
     if (!FORMES.has(j)) return true;
     if (entrepreneur && i > 0 && j.length <= 3) return true;
     /* une forme de fin en tête reste un mot (« Ag. Prokopis », « As-Salam »), sauf écrite
@@ -1367,6 +1379,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* le sigle du pays en queue d'un nom d'usage ouest-africain (« Bois Tropicaux CI ») dit le pays que l'adjectif
      de nationalité du nom déposé écrit en tête (« Société Ivoirienne des Bois Tropicaux ») : voir PAYS_ADJECTIFS */
   if (t.length >= 2) { const s = SIGLES_PAYS.get(t[t.length - 1]!); if (s !== undefined) t[t.length - 1] = s; }
+  /* le génitif finnois d'un port ou d'une ville (« Porin », « Turun », « Helsingin ») ramené au nominatif, sous un nom
+     finnois seulement : la forme Oy, ou un générique finnois parmi les mots (voir GENITIFS_FINNOIS) */
+  if (pays.has("FI") || separes.some(estFinnois)) t = t.map((j) => GENITIFS_FINNOIS.get(j) ?? j);
   /* les marqueurs se lisent AVANT la traduction (« tongsang », « shoji » deviennent « trading ») et
      avant le retrait des civilités (« Shree ») */
   const tousLesMots = [...articles, ...mots];

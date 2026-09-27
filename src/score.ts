@@ -26,6 +26,7 @@ import { POINTS_CARDINAUX } from "./preparation.ts";
 import { formePlurielle } from "./mots.ts";
 import { DICTIONNAIRE } from "./mots.ts";
 import { pluriel, plurielTurc } from "./mots.ts";
+import { PAYS_NORDIQUES, GENERIQUES_NORDIQUES, patronymesDistincts, raisonsBilingues } from "./nordique.ts";
 import { gerondif } from "./mots.ts";
 import { motsDistincts } from "./mots.ts";
 import { motsHispaniquesDistincts } from "./mots.ts";
@@ -152,12 +153,10 @@ export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesL
     const court = a.length < b.length ? a : b;
     if (DICTIONNAIRE.has(court)) return pluriels && (pluriel(a, b) || pluriel(b, a)) ? 0.95 : 0.5;
   }
-  /* le pluriel turc d'un nom de navire est une autre coque, comme le pluriel anglais : « M/V Sari Kaya » n'est pas
-     « Sari Kayalar » (jeu 12, 0,899 par le dernier mot lu comme coupé) ; hors navire, la distance en décide */
-  if (!pluriels && (plurielTurc(a, b) || plurielTurc(b, a))) return 0.5;
   if (gerondif(a, b) || gerondif(b, a)) return 0.95;
   if (abrege(a, b) || abrege(b, a)) return 0.9;
   if (motsDistincts(a, b, voyellesLibres) || composesDistincts(a, b, voyellesLibres) || motsHispaniquesDistincts(a, b)) return 0.5;
+  if (composesAQueuesDistinctes(a, b, voyellesLibres)) return 0.5;
   if (initialeLueOptiquement(a, b)) return 0.95;
   if (sqA === sqB) return 0.95;
   /* la longueur seule tranche : deux mots dont les longueurs diffèrent de moitié ne se
@@ -165,9 +164,25 @@ export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesL
   const L = Math.max(a.length, b.length), Ls = Math.max(sqA.length, sqB.length);
   const ecrit = Math.abs(a.length - b.length) * 2 > L ? 0
     : Math.max(0, 1 - (distanceOsa(a, b) + (a[0] === b[0] ? 0 : 1)) / L);
-  const romanise = Math.abs(sqA.length - sqB.length) * 2 > Ls ? 0
+  /* et la consonne substituée au squelette ne se lit que quand l'écrit n'a pas la même longueur des deux côtés : un digramme
+     contre une lettre (« sh » contre « r »). À longueur égale, l'écrit compte déjà la substitution pour une lettre, et ce qui
+     reste au squelette est un pli qu'il ne connaît pas encore (« Werchnjaja » pour Verkhnyaya, « Phuedphol » pour Phuetphon,
+     « Pasifik » pour Pacific : trois vrais noms perdus quand la règle valait à toute longueur, mesuré le 27/09) */
+  const romanise = Math.abs(sqA.length - sqB.length) * 2 > Ls || (a.length !== b.length && consonneSubstituee(sqA, sqB)) ? 0
     : Math.max(0, Math.min(0.95, 1 - (distanceOsa(sqA, sqB) + (sqA[0] === sqB[0] ? 0 : 1)) / Ls));
   return Math.max(ecrit, romanise);
+}
+
+/** Les deux squelettes, de même longueur, ne diffèrent qu'en UNE place, et c'est une consonne des deux côtés : « iuXkeviX »
+ *  et « iurkeviX » (Yushkevich, Yurkevich). Le squelette a déjà fondu toutes les classes qu'une romanisation confond ;
+ *  une consonne d'une autre classe à la place d'une autre n'en est pas une, et la distance des squelettes ne la crédite
+ *  pas : l'écrit seul en juge (jeu 12, 27/09 : 0,864 pour deux capitaines, le sh compté pour une lettre sur huit quand
+ *  l'écrit en comptait deux sur dix). Une voyelle, une lettre de plus ou de moins restent au squelette. */
+export function consonneSubstituee(sqA: string, sqB: string): boolean {
+  if (sqA.length !== sqB.length || sqA === sqB) return false;
+  let k = -1;
+  for (let i = 0; i < sqA.length; i++) if (sqA[i] !== sqB[i]) { if (k >= 0) return false; k = i; }
+  return k >= 0 && !/[aeiou]/.test(sqA[k]!) && !/[aeiou]/.test(sqB[k]!);
 }
 
 /** La lettre-jalon d'une lettre PERDUE à l'encodage (« SE?ORA », « ?ugowski ») : le coup de glotte
@@ -229,6 +244,15 @@ export function fauteDeFrappe(a: string, b: string): boolean {
   if (formePlurielle(a, b) || formePlurielle(b, a)) return false;
   return gesteDeFrappe(a, b);
 }
+/** Une lettre TOMBÉE (ou ajoutée) qui n'est ni un doublement ni une transposition : « Norvik » pour Nordvik, « Nilsen »
+ *  pour Nielsen. Sous la marque nordique, ce geste-là ne lève pas le plafond du mot court (voir `scorePrepares`). */
+export function lettreTombee(a: string, b: string): boolean {
+  if (Math.abs(a.length - b.length) !== 1) return false;
+  const [court, long] = a.length < b.length ? [a, b] : [b, a];
+  const k = [...long].findIndex((c, i) => c !== court[i]);
+  if (long.slice(0, k) + long.slice(k + 1) !== court) return false;
+  return long[k] !== long[k - 1] && long[k] !== long[k + 1];
+}
 /** Le GESTE d'une faute de frappe, sans regarder la longueur ni le dictionnaire : deux lettres qui se
  *  suivent inversées, ou une lettre tombée ou doublée, jamais sur l'initiale. */
 export function gesteDeFrappe(a: string, b: string): boolean {
@@ -266,6 +290,10 @@ export function abrege(court: string, long: string): boolean {
  *  partir de quatre lettres, et seulement pour le dernier mot. */
 export function tronque(dernier: string, long: string): boolean {
   if (long.length <= dernier.length || !long.startsWith(dernier)) return false;
+  /* un champ ou un usage qui n'épargne qu'UNE lettre n'a rien coupé : « Amber » n'est pas « Amberg » commencé (jeu 12,
+     27/09 : 0,890, deux navires), « Store » n'est pas « Stored » ; une lettre de plus est une faute ou un autre mot, et
+     leurs règles en jugent. Les vraies coupes de champ épargnent au moins deux lettres ou passent par `sembleCoupe` */
+  if (long.length < dernier.length + 2) return false;
   /* un mot du dictionnaire suivi de son seul pluriel n'est pas un début coupé, c'est le pluriel, et c'est
      `pluriel` qui en décide : « Egret » n'est pas « Egrets » tronqué (jeu 10, 27/09 : quatre navires et deux
      boutiques au pluriel passaient par cette porte une fois le pluriel restreint aux mots du commerce) */
@@ -281,6 +309,13 @@ export function tronque(dernier: string, long: string): boolean {
  */
 export function apport(sim: number): number {
   return sim >= 1 ? 1 : Math.max(0, (sim - 0.5) / 0.5);
+}
+/** Un mot du dictionnaire et ce mot suivi d'UNE lettre que le dictionnaire ne connaît plus, hors le s du pluriel :
+ *  « amber » et « amberg », « park » et « parke ». Le pluriel a sa règle (`pluriel`), la faute d'un clavardage la sienne. */
+export function lettreAjoutee(a: string, b: string): boolean {
+  const [court, long] = a.length < b.length ? [a, b] : [b, a];
+  if (long.length !== court.length + 1 || !long.startsWith(court) || long.endsWith("s")) return false;
+  return lemme(court) !== undefined && lemme(long) === undefined;
 }
 
 /**
@@ -370,6 +405,11 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
      radical d'un adjectif de lieu se compare seul (`radicalSlave`), et la queue d'un composé fait une autre société
      (`queueDeComposeSlave`) */
   const slave = A.marques.slave || B.marques.slave;
+  /* une forme nordique (Oy, Ab, AS, A/S, ApS, AB, OÜ, SIA, UAB) d'un côté ou de l'autre : deux patronymes en -sen ou -son y
+     sont deux familles, un mot qui en commence un autre y est un membre de composé et non une abréviation, et une lettre de
+     moins y fait un autre lieu ou une autre famille (voir nordique.ts). « AS » est aussi la Turquie : la marque y est posée
+     à tort, mais ces trois règles ne parlent que de patronymes et de composés que le turc n'écrit pas */
+  const nordique = [...A.marques.pays, ...B.marques.pays].some((k) => PAYS_NORDIQUES.has(k));
   /* aucune forme juridique d'aucun côté : deux noms tapés, pas copiés d'un registre (voir le pluriel d'un clavardage) */
   const sansForme = !A.marques.societe && !B.marques.societe;
   /* là où une romanisation écrit les voyelles librement, deux mots anglais qui n'en diffèrent que
@@ -394,7 +434,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
         const nx = X.marques.natifs.get(x) ?? "", ny = Y.marques.natifs.get(y) ?? "";
         /* la clé porte tout ce qui décide : les deux mots, leurs marques d'abréviation, et
            leur position de dernier mot (la troncature ne vaut que pour lui) */
-        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}${navire ? 1 : 0}${sansForme ? 1 : 0}${germanique ? 1 : 0}${slave ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
+        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}${navire ? 1 : 0}${sansForme ? 1 : 0}${germanique ? 1 : 0}${slave ? 1 : 0}${abjad}${nx}${ny}${nordique ? 1 : 0}` : "";
         /* le cache code l'équivalence de romanisation en ajoutant 2 à la valeur (elle est dans [0, 1]) */
         const enCache = memo?.get(cle);
         let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
@@ -478,10 +518,19 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
              et QUALIFICATIFS_SOUDES) ; la paire se range au possible */
           const composeSlave = slave && (queueDeComposeSlave(x, y) || queueDeComposeSlave(y, x));
           const etablissement = (japonais && (suffixeEtablissement(x, y) || suffixeEtablissement(y, x))) || composeSlave;
+          /* LE PLURIEL TURC (« Kaptan », « Kaptanlar » ; « Martı », « Martılar ») est un autre nom, et aucun crédit de début
+             de mot ne le relit : ni l'abréviation sans point, ni l'abréviation d'usage, ni le dernier mot coupé (voir `plurielTurc`) */
+          const turc = plurielTurc(x, y) || plurielTurc(y, x);
+          if (turc) { v = Math.min(v, 0.5); equivalent = false; }
+          /* DEUX PATRONYMES NORDIQUES DIFFÉRENTS (« Rasmussen », « Rasmusson » ; « Pedersen », « Petersen ») sont deux familles
+             sous la marque nordique (voir `patronymesDistincts`) */
+          if (nordique && patronymesDistincts(x, y)) { v = Math.min(v, 0.5); equivalent = false; }
+          const autreNom = etablissement || turc;
           /* dans un export tout en majuscules, un mot court qu'aucun dictionnaire ne connaît et
              qui commence un mot long de l'autre nom est une abréviation sans point (« HVY IND ») */
-          if (v < 0.9 && !etablissement && ((X.marques.majuscules && x.length >= 2 && x.length <= 9 && y.length >= x.length + 3 && y.length >= 6 && y.startsWith(x) && !lemme(x) && !(navire && plurielTurc(y, x)))
-            || (Y.marques.majuscules && y.length >= 2 && y.length <= 9 && x.length >= y.length + 3 && x.length >= 6 && x.startsWith(y) && !lemme(y) && !(navire && plurielTurc(x, y))))) v = 0.9;
+          /* jamais sous la marque navire : une syllabe qui en commence une autre y est un autre navire (« KARA MARTI », « KARA MARTILAR », jeu 12) */
+          if (v < 0.9 && !autreNom && !navire && ((X.marques.majuscules && x.length >= 2 && x.length <= 9 && y.length >= x.length + 3 && y.length >= 6 && y.startsWith(x) && !lemme(x))
+            || (Y.marques.majuscules && y.length >= 2 && y.length <= 9 && x.length >= y.length + 3 && x.length >= 6 && x.startsWith(y) && !lemme(y)))) v = 0.9;
           /* un mot abrégé d'un point correspond au mot entier qu'il commence, ou dont il garde
              les lettres dans l'ordre depuis l'initiale (« Petrochem. », « Dist. », « Capt. ») ;
              dans les DEUX sens, sinon le côté entier ne rendait qu'un demi-crédit */
@@ -490,9 +539,11 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
              ni majuscules (« Agri Supplies » pour Agricultural Supplies) : un crédit partiel, celui
              d'une romanisation, pas celui d'un mot égal. Hors des noms chinois, coréens et japonais,
              où une syllabe qui en commence une autre est un autre mot (Hua, Huaxin) */
-          if (v < CREDIT_ROMANISATION && !chinois && !coreen && !japonais && !composeSlave
-            && ((x.length >= 4 && y.length >= x.length + 3 && y.startsWith(x) && !lemme(x))
-              || (y.length >= 4 && x.length >= y.length + 3 && x.startsWith(y) && !lemme(y)))) v = CREDIT_ROMANISATION;
+          /* et sous la marque nordique, seulement si ce qui suit est un générique du commerce : « Spannmåls » commence
+             « Spannmålsexport », « Brøndby » ne commence pas « Brøndbyvester », c'est un autre lieu (voir `queueGenerique`) */
+          if (v < CREDIT_ROMANISATION && !chinois && !coreen && !japonais && !navire && !autreNom
+            && ((x.length >= 4 && y.length >= x.length + 3 && y.startsWith(x) && !lemme(x) && (!nordique || queueGenerique(y, x)))
+              || (y.length >= 4 && x.length >= y.length + 3 && x.startsWith(y) && !lemme(y) && (!nordique || queueGenerique(x, y))))) v = CREDIT_ROMANISATION;
           /* LES COMPOSÉS allemands et néerlandais : le nom déterminé ferme le mot (« Stahlrohr » est un Rohr,
              « Textilmaschinen » des machines textiles, « Metaalhandel » le commerce du métal), et le nom d'usage
              garde l'un des deux membres (« Rheinstahl Rohr », « Hoffmann Textil », « De Groot Machines », jeu 10).
@@ -520,10 +571,10 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
              Stores Limited » (jeu 10, 27/09, deux boutiques) ; un navire non plus (voir `simMot`) */
           if (v <= 0.5 && chat && sansForme && !navire && (formePlurielle(x, y) || formePlurielle(y, x))
             && DICTIONNAIRE.has(x.length < y.length ? x : y)) v = 0.9;
-          if (v < 0.9 && !etablissement && X.abreges[i] && x.length < y.length && (y.startsWith(x) || abrege(x, y))) v = 0.9;
-          if (v < 0.9 && !etablissement && Y.abreges[j] && y.length < x.length && (x.startsWith(y) || abrege(y, x))) v = 0.9;
-          if (v < 0.9 && !etablissement && dernierX && tronque(x, y) && !(navire && plurielTurc(y, x))) v = 0.9;
-          if (v < 0.9 && !etablissement && dernierY && tronque(y, x) && !(navire && plurielTurc(x, y))) v = 0.9;
+          if (v < 0.9 && !autreNom && X.abreges[i] && x.length < y.length && (y.startsWith(x) || abrege(x, y))) v = 0.9;
+          if (v < 0.9 && !autreNom && Y.abreges[j] && y.length < x.length && (x.startsWith(y) || abrege(y, x))) v = 0.9;
+          if (v < 0.9 && !autreNom && dernierX && tronque(x, y)) v = 0.9;
+          if (v < 0.9 && !autreNom && dernierY && tronque(y, x)) v = 0.9;
           /* deux lectures de sinogrammes différents sont des homophones (« 新海 », « 鑫海 » : xinhai
              tous deux), et un homophone est un autre mot */
           if (nx !== "" && ny !== "" && nx !== ny) v = Math.min(v, 0.5);
@@ -571,13 +622,21 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
          et la signature d'une faute de frappe (`fauteDeFrappe` : deux lettres inversées, une lettre
          tombée) lève le plafond, hors du chinois et du coréen, où une lettre de plus ou de moins est
          une autre syllabe (Xin, Xing) */
+      /* ni, sous la marque nordique, la seule lettre tombée : elle y est un morphème, un autre lieu ou une autre famille
+         (« Nordvik », « Norvik » ; « Nielsen », « Nilsen » : jeu 12, 27/09, 0,857), et le plafond tient ; deux lettres inversées
+         (« Nordhvan » pour Nordhavn, un vrai nom du même jeu perdu quand toute la signature se fermait) ou une lettre doublée
+         restent la faute d'un clavier (voir `lettreTombee`) */
       /* et sous la marque japonaise, jusqu'à dix lettres : deux mots romanisés que `pliJaponais` n'égale pas et qui
          diffèrent d'une syllabe sont deux mots (« Shirakaba », « Shirakawa » : le bouleau et la rivière ; jeu 11,
          28/09 : 0,889, une fausse alerte forte hors de portée du plafond à huit lettres) */
+      /* et un mot que le dictionnaire connaît, augmenté d'UNE lettre finale qu'il ne connaît plus (« Amber », « Amberg » : jeu 12,
+         27/09, 0,890 puis 0,817 sans la coupe), est ambigu comme deux mots inconnus : aucun suffixe anglais ne tient en une
+         lettre hors le s du pluriel, qui a sa règle ; c'est un autre mot (la ville d'Amberg) autant qu'une faute (voir `lettreAjoutee`) */
       const ambiguJusqua = japonais ? 10 : 8;
+      const inconnus = (!lemme(X.mots[i]!) && !lemme(Y.mots[meilleurY >= 0 ? meilleurY : 0]!)) || (meilleurY >= 0 && lettreAjoutee(X.mots[i]!, Y.mots[meilleurY]!));
       if (m > 0.5 && m < 0.9 && !equivalentM && meilleurY >= 0 && X.mots[i]!.length <= ambiguJusqua && Y.mots[meilleurY]!.length <= ambiguJusqua
-        && !lemme(X.mots[i]!) && !lemme(Y.mots[meilleurY]!) && !PARTICULES.has(X.mots[i]!) && !PARTICULES.has(Y.mots[meilleurY]!)
-        && (chinois || coreen || !fauteDeFrappe(X.mots[i]!, Y.mots[meilleurY]!))) motAmbigu = true;
+        && inconnus && !PARTICULES.has(X.mots[i]!) && !PARTICULES.has(Y.mots[meilleurY]!)
+        && (chinois || coreen || (nordique && lettreTombee(X.mots[i]!, Y.mots[meilleurY]!)) || !fauteDeFrappe(X.mots[i]!, Y.mots[meilleurY]!))) motAmbigu = true;
       if (m >= 0.9 && X.poids[i]! >= 0.5 * X.poidsMax) rareCouvert[cote] = true;
       if (X.parentheses[i]) { parenthese[cote] = true; if (m >= 0.8) parentheseReconnue[cote] = true; }
       if (Y.mots.some((y) => qualificatifSoude(X.mots[i]!, y, Y.mots))) qualificatifSoudeVu = true;
@@ -614,19 +673,33 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
      contre « Ingredients Limited », mesuré le 27/09) */
   const ecart = Math.abs(A.bloc.length - B.bloc.length);
   const motEnPlus = ecart > 0 && (A.bloc.length > B.bloc.length ? orphelinsMots[0] : orphelinsMots[1]).some((w) => w.length === ecart);
-  if (A.mots.length !== B.mots.length && !motEnPlus) {
-    /* la première lettre compte double ici aussi (mesuré le 27/09 : « Eliron Logistics »
-       contre « Oboronlogistics » passait à 0,80 sans elle). Sous BLOC_MIN, le bloc ne compte
-       pas : deux chaînes qui diffèrent d'un cinquième ne sont pas les mêmes mots autrement
-       coupés, et c'est cette borne qui permet à l'index de ne comparer que les blocs proches */
-    /* une soudure ou une coupure de mots ne change pas les lettres : deux blocs qui diffèrent de
-       plus de deux caractères en longueur ont un MOT de plus d'un côté, pas une espace (mesuré le
-       27/09 : « …Thanh Dat » et « …Thanh Dat Phat » passaient à 0,824 par le bloc) */
-    const similitude = (a: string, b: string) => {
-      const L = Math.max(a.length, b.length);
-      if (Math.abs(a.length - b.length) > 2) return 0;
-      return 1 - (distanceOsa(a, b) + (a[0] === b[0] ? 0 : 1)) / L;
-    };
+  /* la première lettre compte double ici aussi (mesuré le 27/09 : « Eliron Logistics »
+     contre « Oboronlogistics » passait à 0,80 sans elle). Sous BLOC_MIN, le bloc ne compte
+     pas : deux chaînes qui diffèrent d'un cinquième ne sont pas les mêmes mots autrement
+     coupés, et c'est cette borne qui permet à l'index de ne comparer que les blocs proches */
+  /* une soudure ou une coupure de mots ne change pas les lettres : deux blocs qui diffèrent de
+     plus de deux caractères en longueur ont un MOT de plus d'un côté, pas une espace (mesuré le
+     27/09 : « …Thanh Dat » et « …Thanh Dat Phat » passaient à 0,824 par le bloc) */
+  const similitude = (a: string, b: string) => {
+    const L = Math.max(a.length, b.length);
+    if (Math.abs(a.length - b.length) > 2) return 0;
+    return 1 - (distanceOsa(a, b) + (a[0] === b[0] ? 0 : 1)) / L;
+  };
+  /* et une recoupure déplace des espaces, pas des lettres : les mots restés sans répondant d'un côté, collés, doivent être
+     ceux de l'autre côté collés, à la tolérance du bloc près. « Petro Link » reste « Petrolink », « Spannmåls Export »
+     « Spannmålsexport » ; « Gemi Kiral Ama » (une ligne SWIFT coupée dans Kiralama) n'est pas « Gemi Kurtarma » (jeu 12,
+     27/09 : 0,857 par le bloc, quatre éditions d'un mot diluées dans vingt-huit lettres) */
+  /* Sous les marques qui regroupent des syllabes ou romanisent (chinois, cantonais, japonais, coréen, arabe, hébreu, indien,
+     tamoul, indonésien et malais, un côté lu dans des sinogrammes, une forme de Singapour où les noms hokkien et teochew
+     s'écrivent en syllabes), le bloc garde son droit : « Kuang Yu » est « Guangyu », « Soon Heng » est « Shun Hing »,
+     « Tek Leong » est « Delong » (treize vrais noms perdus quand la règle valait partout, mesuré le 27/09 sur les jeux 3, 5,
+     7 et 9). Ailleurs, les lettres sont des lettres */
+  const syllabes = voyellesLibres || cantonais || japonais || tamoul || indonesien || A.marques.natifs.size > 0 || B.marques.natifs.size > 0
+    || A.marques.pays.includes("SG") || B.marques.pays.includes("SG");
+  const oA = orphelinsMots[0].join(""), oB = orphelinsMots[1].join("");
+  const memesLettres = syllabes || oA === "" || oB === ""
+    || similitude(oA, oB) >= BLOC_MIN || similitude(orphelinsMots[0].map(squelette).join(""), orphelinsMots[1].map(squelette).join("")) >= BLOC_MIN;
+  if (A.mots.length !== B.mots.length && !motEnPlus && memesLettres) {
     const meilleur = Math.max(similitude(A.bloc, B.bloc), Math.min(0.95, similitude(A.blocSq, B.blocSq)));
     if (meilleur >= BLOC_MIN) s = Math.max(s, meilleur);
   }
@@ -647,7 +720,12 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
      soudé : la méthode a une raison précise de douter, et le candidat se range au niveau
      POSSIBLE, quelle que soit la ressemblance des mots ; il n'est pas effacé (un groupe ouvre
      des homonymes ailleurs) */
-  return A.numeros === B.numeros && !marquesEnConflit(A.marques, B.marques) && !filiale && !qualificatifSoudeVu
+  /* les deux raisons sociales d'une société finlandaise (un générique finnois d'un côté, le suédois de l'autre : voir
+     `raisonsBilingues`) : Oy et Ab y nomment la même société, et le seul conflit de pays ne plafonne pas ; les autres conflits
+     (familles, désignations, succursales) gardent leur mot */
+  const conflit = raisonsBilingues(A.sources, B.sources)
+    ? marquesEnConflit({ ...A.marques, pays: [] }, { ...B.marques, pays: [] }) : marquesEnConflit(A.marques, B.marques);
+  return A.numeros === B.numeros && !conflit && !filiale && !qualificatifSoudeVu
     ? s : Math.min(s, FACTEUR_CONTENANCE);
 }
 
@@ -699,6 +777,33 @@ export function compose(long: string, court: string): boolean {
     const reste = long.startsWith(c) ? long.slice(c.length) : long.endsWith(c) ? long.slice(0, long.length - c.length) : "";
     if (reste === "") continue;
     if (GENERIQUES_COMPOSES.has(reste) || (reste.length >= 4 && !lemme(court))) return true;
+  }
+  return false;
+}
+/** La QUEUE d'un composé nordique est un générique : « handel » de Kornhandel, « export » de Spannmålsexport, avec ou sans
+ *  le s de liaison suédois ; « vester » de Brøndbyvester n'en est pas un, c'est un autre lieu (jeu 12, 27/09 : 0,850 par le
+ *  crédit d'abréviation d'usage). Sous la marque nordique, le crédit du mot qui en commence un autre l'exige. */
+export function queueGenerique(long: string, court: string): boolean {
+  const q = long.slice(court.length), sansLiant = q.startsWith("s") ? q.slice(1) : q;
+  return GENERIQUES_COMPOSES.has(q) || GENERIQUES_NORDIQUES.has(q) || GENERIQUES_COMPOSES.has(sansLiant) || GENERIQUES_NORDIQUES.has(sansLiant);
+}
+/** Deux COMPOSÉS À QUEUES DISTINCTES : la même tête (quatre lettres au moins) et deux queues d'au moins quatre lettres qui
+ *  sont deux génériques différents (« Spannmålsexport », « Spannmålsimport » : export et import) ou deux mots anglais distincts
+ *  (« Timberline », « Timberland » : line et land, que `composesDistincts` ne voyait pas parce que le dictionnaire connaît
+ *  Timberland d'un bloc). La règle des composés dit qu'un composé est le même nom que son membre ; elle ne dit jamais que
+ *  deux composés à queues différentes le sont (jeu 12, 27/09 : 0,867 et 0,842, deux fausses alertes fortes par la seule
+ *  distance, les mots dépassant les huit lettres du plafond d'ambiguïté). Le geste d'une faute de frappe entre les deux
+ *  queues reste une faute (« Silverline », « Silverlien » : voir `composesDistincts`). */
+export function composesAQueuesDistinctes(a: string, b: string, voyellesLibres = true): boolean {
+  if (a === b || a.length < 8 || b.length < 8 || a.slice(0, 4) !== b.slice(0, 4)) return false;
+  const generique = (q: string) => GENERIQUES_COMPOSES.has(q) || GENERIQUES_NORDIQUES.has(q);
+  for (let k = 4; k <= Math.min(a.length, b.length) - 4; k++) {
+    if (a[k - 1] !== b[k - 1]) return false;
+    const qa = a.slice(k), qb = b.slice(k);
+    /* deux queues égales ne disent rien (« Tekhnoexport », « Technoexport » : la tête diffère, pas la queue) ; le geste
+       d'une faute entre les deux queues reste une faute */
+    if (qa === qb || gesteDeFrappe(qa, qb)) continue;
+    if ((generique(qa) && generique(qb)) || motsDistincts(qa, qb, voyellesLibres)) return true;
   }
   return false;
 }
