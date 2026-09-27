@@ -19,6 +19,8 @@ a verdict set is ever listed by any tool before it becomes training.
 | | | | | possible 0.80 | 179/200 [84-93 %] | 71/200 [29-42 %] |
 | 2026-09-27 17h | v10 b05e1be0 / 7f564556 | set #8 197c7ead (Singapore trade-finance KYC brief by counterparty type, Opus; overlap with the eight training sets: 0 pairs, 1 name), becomes paires-entites-9.json | 200 + 200 | strong 0.81 | 110/200 [48-62 %] | 3/200 [1-4 %] |
 | | | | | possible 0.80 | 129/200 [58-71 %] | 48/200 [19-30 %] |
+| 2026-09-27 21h | v11 77bac960 / ccee90bc / ecritures 4348bc88 | set #9 47ec8944 (Hamburg customs broker and Lagos trade-finance brief by document, Sonnet; overlap with the nine training sets: 0 pairs, 0 names; 11 pairs identical but for case, 6 match and 5 different), becomes paires-entites-10.json | 200 + 200 | strong 0.81 | 104/200 [45-59 %] | 39/200 [15-26 %] |
+| | | | | possible 0.80 | 163/200 [76-86 %] | 78/200 [33-46 %] |
 
 v6 on set #3 at other thresholds: 0.70 found 182 with 52 false; 0.75 found 181 with 37; 0.85 found 162
 with 19; 0.90 found 153 with 11.
@@ -45,3 +47,15 @@ v10 on set #8 at other thresholds: 0.70 found 140 with 72 false; 0.75 found 136 
 Gulf and South Asian houses, chat typing, native scripts): its rates are not comparable with the earlier rows, only
 with later methods judged on sets of the same brief. v10 on the eight training sets: strong 1098/1170 with 6/1170
 false alerts (v9: 1047 with 14).
+
+v11 on set #9 at other thresholds: 0.70 found 176 with 94 false; 0.75 found 164 with 86; 0.85 found 104 with 40;
+0.90 found 102 with 36. The strong false-alert rate (19.5 %) is far above the 5 % the strong level promises on the
+training population (6 of 1,370). Read by nature tag only, never by pair: 5 of the 39 are strings identical but for
+case that the author judges distinct entities (a bank branch and its headquarters), 5 are consolidator branches
+under another registration, 5 are a vessel's former name colliding with another vessel, 5 are glued words forming
+another name: 22 of the 39 differ by at most two words. Those are alerts an analyst wants shown, and no string
+method separates them; the set counts them against the method. The remainder is ours: one-letter near-strings
+in non-English names (5), GmbH against KG (2), SARL against SA (1), autocorrect and homophones (5). Of the 96
+misses at strong, 30 are legal forms written out in full by the German, Dutch and African registries, 10 are
+registry numbers against trading names, and the rest are customs and SWIFT residues: a known list for round six.
+v11 on the nine training sets: strong 1284/1370 with 6/1370 false alerts (v10: 1208 with 9).
