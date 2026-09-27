@@ -35,6 +35,7 @@ import { commitCourant } from "./your-alerts.ts";
 import type { Cellule } from "./measure.ts";
 import {
   frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD, sembleCoupe,
+  compose, membres, gerondif,
   variationVocalique, voyelleEpenthetique, squeletteLongue, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
   CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pluriel, CHEMIN_VERDICT, RAPPEL_MIN, BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare,
   type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme,
@@ -213,6 +214,9 @@ export class Index {
   private readonly parCleAbjadNatif = new Map<string, MotIndexe[]>();
   /** le pli cantonais (`pliCantonais`) de chaque mot : c'est là qu'un nom lu en cantonais cherche ses mots */
   private readonly parPliCantonais = new Map<string, MotIndexe[]>();
+  /** les quatre dernières lettres de chaque mot : c'est là qu'un mot cherche les composés qui FINISSENT par lui
+   *  (« rohr » retrouve « stahlrohr » ; voir `compose`), l'initiale n'étant pas la sienne */
+  private readonly parFinale = new Map<string, MotIndexe[]>();
   /** le même pli, pour les seuls mots que des chaînes lues en cantonais portent : c'est là qu'un
    *  nom latin cherche les leurs (voir `cantonais` dans scorePrepares) */
   private readonly parPliCantonaisNatif = new Map<string, MotIndexe[]>();
@@ -274,6 +278,7 @@ export class Index {
             ranger(this.parInitialeLongueur, mot[0]! + mot.length, m);
             ranger(this.parSqInitialeLongueur, (m.sq[0] ?? "") + m.sq.length, m);
             ranger(this.parInitiale, mot[0]!, m);
+            if (mot.length >= 4) ranger(this.parFinale, mot.slice(-4), m);
             ranger(this.parSq, m.sq, m);
             /* la voyelle longue écrite ee (« naseem ») : rangé aussi sous son squelette lu i (voir squeletteLongue) */
             if (mot.includes("ee")) ranger(this.parSq, squeletteLongue(mot), m);
@@ -389,6 +394,9 @@ export class Index {
       for (const m of this.parInitiale.get(mot[0]!) ?? []) {
         const autre = m.mot;
         if (abrege(mot, autre) || abrege(autre, mot) || pluriel(mot, autre) || pluriel(autre, mot)
+          /* le gérondif anglais (0,95 : « trading », « trade ») et le composé qui COMMENCE par le mot demandé
+             (CREDIT_ROMANISATION : « metaal », « metaalhandel ») partagent l'initiale */
+          || gerondif(mot, autre) || gerondif(autre, mot) || compose(autre, mot)
           || ((dernier || coupe && dernier) && tronque(mot, autre)) || tronque(autre, mot)
           || (abreviation && autre.length > mot.length && autre.startsWith(mot))
           || (m.abregeVu && mot.length > autre.length && mot.startsWith(autre))
@@ -396,6 +404,19 @@ export class Index {
       }
       for (const m of this.parSqInitialeLongueur.get((sq[0] ?? "") + sq.length) ?? []) {
         if (variationVocalique(sq, m.sq) && !tousDeuxAnglais(mot, m.mot)) retenus.add(m);
+      }
+      /* les composés allemands et néerlandais, dans l'autre sens et dans l'autre ordre (voir `compose`) : le mot
+         listé qui FINIT par le mot demandé se trouve sous ses quatre dernières lettres ; et le mot demandé qui
+         est lui-même un composé cherche ses membres listés par égalité, en tête et en queue, avec ou sans le s
+         du pluriel. La marque allemande ou néerlandaise se vérifie au score */
+      for (const c of membres(mot)) if (c.length >= 4) for (const m of this.parFinale.get(c.slice(-4)) ?? []) if (compose(m.mot, mot)) retenus.add(m);
+      for (let L = 4; L <= mot.length - 3; L++) {
+        for (const sfx of ["", "s", "es"]) {
+          for (const autre of [mot.slice(0, L) + sfx, mot.slice(-L) + sfx]) {
+            const m = this.vocabulaire.get(autre);
+            if (m && compose(mot, autre)) retenus.add(m);
+          }
+        }
       }
       /* la voyelle d'appui d'un groupe final (« bahr », « bahar ») : une lettre d'écart au squelette,
          même initiale */

@@ -38,7 +38,7 @@ const FORMES = new Set([
   /* anglophones */ "llc", "pllc", "ltd", "limited", "ltee", "inc", "incorporated", "corp", "corporation",
   "co", "company", "plc", "llp", "lp", "pvt", "pte", "pty",
   /* le mot « société » */ "compania", "companhia", "compagnie", "cia", "cie", "etablissements", "ets",
-  "establishment", "establishments", "societe", "ste", "borisat", "sherkat", "sherkate", "sharikat", "sharika",
+  "establishment", "establishments", "societe", "ste", "sociedad", "sociedade", "borisat", "sherkat", "sherkate", "sharikat", "sharika",
   "shirkat", "shirka", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio", "scea", "gaec", "earl", "dac",
   "pcl", "teoranta", "teo", "cuideachta", "sapi", "sau",
   /* Europe ; « mbH » est le « GmbH » d'une « Gesellschaft mbH » ou « Handelsgesellschaft mbH » ; « KGaA », « GbR »,
@@ -47,7 +47,7 @@ const FORMES = new Set([
   /* Europe */ "gmbh", "kg", "ohg", "ug", "ag", "se", "sa", "sas", "sasu", "sarl", "eurl", "snc",
   "sprl", "bvba", "srl", "spa", "sl", "slu", "sau", "bv", "nv", "vof", "oy", "oyj", "ab", "as",
   "asa", "aps", "kft", "zrt", "nyrt", "sro", "doo", "ad", "eood", "ood",
-  /* Amérique latine */ "ltda", "eireli", "cv", "sapi", "sac", "saa",
+  /* Amérique latine ; « Lda » au Portugal, en Angola, au Mozambique (jeu 10) */ "ltda", "lda", "eireli", "cv", "sapi", "sac", "saa",
   /* Russie et CEI */ "ooo", "oao", "zao", "pao", "ao", "jsc", "pjsc", "ojsc", "cjsc", "too",
   /* Ukraine, Grèce, Vietnam, Thaïlande */ "prat", "pat", "tov", "ae", "epe", "ike", "oe", "ee", "sia", "tnhh", "chamkat", "jamkat",
   /* désignations russes */ "npp", "npo", "npk", "npf", "pkf",
@@ -96,6 +96,8 @@ const PHRASES = [
   " gmbh co kg ", " gmbh und co kg ", " gmbh and co kg ", " mbh co kg ", " mbh und co kg ", " mbh and co kg ",
   " ag co kg ", " ag und co kg ", " se co kg ", " se und co kg ", " gmbh co ohg ", " mbh co ohg ", " gmbh co kgaa ",
   " gmbh co ", " mbh co ", " co kg ", " co ohg ", " und co kg ", " and co kg ",
+  /* et la forme allemande écrite avec son préfixe de commerce (« Handelsgesellschaft mbH » est une GmbH, voie registres) */
+  " handelsgesellschaft mbh co kg ", " gesellschaft mbh co kg ",
   " societe anonyme ", " societe a responsabilite limitee ", " societe par actions simplifiee ",
   " sociedad anonima cerrada ", " sociedad anonima ", " sociedad limitada ",
   " sociedad de responsabilidad limitada ",
@@ -242,9 +244,25 @@ const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   /* espagnol et portugais */ comercio: "trading", comercial: "commercial", naviera: "shipping", transportes: "transport",
   industrias: "industries", sucesores: "successors", navegacao: "navigation", navegacion: "navigation", construcciones: "construction",
   alimentos: "food", alimentacion: "food", pesquera: "fishing", agricola: "agricultural", agropecuaria: "agricultural",
+  /* les noms d'activité des registres lusophones et hispanophones (« Exportação de Café de Huambo », « Comércio e
+     Importação Ferreira », jeu 10) : la table n'avait que l'adjectif (« exportadora ») */
+  exportacao: "export", importacao: "import", exportacoes: "export", importacoes: "import", exportacion: "export",
+  importacion: "import", exportaciones: "export", importaciones: "import",
   /* allemand et néerlandais */ handel: "trading", handels: "trading", handelsgesellschaft: "trading", spedition: "forwarding",
   schifffahrt: "shipping", schiffahrt: "shipping", reederei: "shipping", werke: "works", werk: "works", bau: "construction",
   scheepvaart: "shipping", rederij: "shipping", expeditie: "forwarding", scheepsreparatie: "ship repair",
+  /* les registres néerlandais et allemand (jeu 10) : la société de commerce en un mot, et l'adjectif face au
+     radical que le nom d'usage garde (« Chemische » et « Chemie », « Agrarische » et « Agro ») */
+  handelsmaatschappij: "trading", handelsgroep: "trading", handelsonderneming: "trading",
+  chemische: "chemical", chemisch: "chemical", chemie: "chemical", agrarische: "agro", agrarisch: "agro", overslag: "transshipment",
+  /* afrikaans (jeu 10 : « Voedsel Verwerking » est « Food Processing », « Boerdery » est « Farming ») ; « Eiendoms
+     Beperk » et son sigle « (Edms) Bpk » sont la forme « (Pty) Ltd ». « Bou » seul n'y est pas : c'est aussi l'arabe
+     maghrébin « Bou » (Abu), et il ne se traduit que sous une forme sud-africaine (voir `analyserEntite`) */
+  voedsel: "food", verwerking: "processing", konstruksie: "construction", vervoer: "transport", boerdery: "farming",
+  boumateriaal: "building materials", maatskappy: "company", beperk: "ltd", eiendoms: "pty", edms: "pty", bpk: "ltd",
+  vervaardiging: "manufacturing", ingenieurs: "engineering", myn: "mining", landbou: "agriculture", visserye: "fisheries",
+  hout: "timber", staal: "steel", chemies: "chemical", dienste: "services", beleggings: "investments", groep: "group",
+  nywerhede: "industries", produkte: "products", handelaars: "traders", vervoerdienste: "transport services",
   /* polonais et tchèque */ zaklady: "works", zaklad: "works", chemiczne: "chemical", handlowy: "trading", handlowa: "trading",
   handlowe: "trading", przemysl: "industry", przemyslowe: "industrial", budowlane: "construction", transportowe: "transport",
   spedycja: "forwarding", logistyka: "logistics", zegluga: "shipping", stavebni: "construction", obchodni: "trading",
@@ -362,6 +380,37 @@ export function mentionDeSuccursale(brut: string): string {
   return place.length > 0 && place.length <= 3 ? place.join(" ") : "branch";
 }
 
+/** Les ADJECTIFS RÉGIONAUX que le Handelsregister et la KvK écrivent devant un nom (« Rheinische Rheinstahl
+ *  Stahlrohr », « Overijsselse Visser Agrarische Handelsmaatschappij ») : une décoration du registre, que le nom
+ *  d'usage omet toujours (« Rheinstahl Rohr », « Visser Agro »). Comme une particule, l'adjectif pèse le plancher
+ *  quand l'autre nom n'en porte aucun ; deux noms qui en portent chacun un autre sont deux sociétés (« Rheinische
+ *  Industrietechnik » et « Westfälische Industrietechnik », jeu 10), et l'adjectif garde alors son poids
+ *  (voir `regionsAuPlancher`). La famille des suffixes (-ische, -sche, -se) se reconnaît sur le radical d'un
+ *  Land allemand ou d'une province néerlandaise ; les formes en -er des villes s'énumèrent. */
+const REGIONS_DE_REGISTRE: ReadonlySet<string> = new Set([
+  "rheinische", "westfalische", "bayerische", "niedersachsische", "sachsische", "hessische", "badische", "schwabische",
+  "hanseatische", "norddeutsche", "suddeutsche", "ostdeutsche", "westdeutsche", "mitteldeutsche", "nordrhein",
+  "thuringer", "berliner", "hamburger", "bremer", "munchner", "kolner", "frankfurter", "stuttgarter", "dusseldorfer",
+  "nurnberger", "leipziger", "dresdner", "hannoversche", "oldenburger",
+  "overijsselse", "brabantse", "zeeuwse", "gelderse", "hollandse",
+  "friese", "groningse", "limburgse", "utrechtse", "drentse", "flevolandse", "twentse", "amsterdamse", "rotterdamse", "haagse",
+]);
+const RACINES_REGIONALES: ReadonlySet<string> = new Set(["rhein", "westfal", "bayer", "niedersachs", "sachs", "hess", "bad", "schwab",
+  "hanseat", "norddeutsch", "suddeutsch", "ostdeutsch", "westdeutsch", "mitteldeutsch", "thuring", "pfalz", "saarland", "brandenburg",
+  "mecklenburg", "holstein", "schleswig", "frank", "ostfries", "oldenburg", "hannover", "markisch", "lausitz", "allgau",
+  "overijssel", "brabant", "zeeuw", "gelder", "holland", "groning", "limburg", "utrecht", "drent", "flevoland", "twent",
+  "amsterdam", "rotterdam", "haag", "veluw", "betuw", "achterhoek"]);
+const SUFFIXES_REGIONAUX: readonly string[] = ["ische", "ischer", "ischen", "isches", "sche", "scher", "schen", "sches", "se"];
+/** Le point cardinal soudé à l'adjectif (« Noord-Brabantse », « Zuid-Hollandse ») : la normalisation le sépare. */
+const POINTS_CARDINAUX: ReadonlySet<string> = new Set(["noord", "zuid", "oost", "west", "nord", "sud", "ost"]);
+export function regionDeRegistre(m: string): boolean {
+  if (REGIONS_DE_REGISTRE.has(m)) return true;
+  for (const s of SUFFIXES_REGIONAUX) {
+    if (m.length - s.length >= 3 && m.endsWith(s) && RACINES_REGIONALES.has(m.slice(0, -s.length))) return true;
+  }
+  return false;
+}
+
 /** Les abréviations d'usage, ramenées au mot entier ; les mots de liaison disparaissent
  *  (« & », « and », « et », « ve », « und », « y », « e », « for », « of », « the »). */
 /* Des Map, jamais des objets littéraux : un nom listé contient « constructor » ou
@@ -389,6 +438,8 @@ const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   nine: "9", ten: "10", eleven: "11", twelve: "12",
   /* mots de liaison, ézafé persan, titres de civilité indiens (« Shree », « M/s. ») */
   and: "", et: "", ve: "", und: "", y: "", e: "", i: "", ye: "", kai: "", for: "", of: "", the: "",
+  /* « en », le « et » néerlandais et afrikaans (« Expeditie en Overslag », « Bou en Konstruksie », jeu 10) */
+  en: "",
 }));
 /** Les CIVILITÉS indiennes d'une maison de commerce (« Shree », « Shri », « Sri », « Smt. ») : retirées
  *  comme un mot de liaison, mais RETENUES, parce qu'un clavardage les soude au mot qui suit
@@ -604,7 +655,7 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["DE", "AT", "CH"], ["gmbh", "ag", "gesellschaft mit beschrankter haftung", "aktiengesellschaft"]);
   poser(["DE", "AT"], ["kg", "ohg", "kommanditgesellschaft", "gmbh co kg", "gmbh und co kg", "gmbh and co kg", "mbh co kg", "mbh und co kg",
     "mbh and co kg", "ag co kg", "ag und co kg", "se co kg", "se und co kg", "gmbh co ohg", "mbh co ohg", "gmbh co kgaa", "gmbh co", "mbh co",
-    "co kg", "co ohg", "und co kg", "and co kg", "kgaa"]);
+    "co kg", "co ohg", "und co kg", "and co kg", "kgaa", "gesellschaft mbh co kg", "handelsgesellschaft mbh co kg"]);
   poser(["DE", "AT", "CH"], ["mbh"]); poser(["DE"], ["gbr"]);
   poser(["PT", "AO", "MZ", "CV"], ["lda"]);
   poser(["DE"], ["ug"]);
@@ -628,6 +679,7 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["CZ", "SK"], ["spol s ro", "spol sro"]);
   poser(["PE"], ["sac", "saa", "sociedad anonima cerrada"]);
   poser(["BR", "CO", "CL", "PT"], ["ltda", "limitada", "sociedade limitada"]);
+  poser(["PT", "AO", "MZ", "CV"], ["lda"]);
   poser(["BR"], ["eireli"]);
   poser(["RU", "BY", "KZ", "UZ", "UA", "KG", "TJ", "AM", "AZ", "GE"], ["ooo", "oao", "zao", "pao", "ao", "jsc", "pjsc", "ojsc", "cjsc", "too",
     "obshchestvo s ogranichennoi otvetstvennostyu", "obshchestvo s ogranichennoy otvetstvennostyu",
@@ -689,7 +741,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "proprietary limited", "youxian gongsi", "youxian zeren gongsi", "siren youxian gongsi", "borisat chamkat", "borisat jamkat", "chamkat", "jamkat"]);
   poser(["ltd", "corp"], ["bhd", "berhad", "kk", "kabushiki kaisha", "kabushikigaisha", "jusikhoesa", "chusikhoesa",
     "chusik hoesa", "jusik hoesa", "gufen youxian gongsi", "oy", "ab", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio"]);
-  poser(["ltd", "llc"], ["ooo", "tov", "ltda", "limitada", "sociedade limitada", "eireli", "tnhh", "cong ty tnhh", "sti", "limited sirketi", "yuhanhoesa"]);
+  poser(["ltd", "llc"], ["ooo", "tov", "ltda", "lda", "limitada", "sociedade limitada", "eireli", "tnhh", "cong ty tnhh", "sti", "limited sirketi", "yuhanhoesa"]);
   /* le TOO kazakh (товарищество с ограниченной ответственностью) se traduit LLP, LLC ou Ltd */
   poser(["ltd", "llc", "part"], ["too", "tovarishchestvo s ogranichennoi otvetstvennostyu", "tovarishchestvo s ogranichennoy otvetstvennostyu"]);
   poser(["ltd", "corp"], ["pt", "perseroan terbatas", "tbk", "ud", "usaha dagang", "commanditaire vennootschap", "perseroan komanditer", "pcl", "public company limited", "teoranta", "teo", "dac", "designated activity company"]);
@@ -698,7 +750,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "sociedad anonima promotora de inversion de capital variable", "sociedad anonima promotora de inversion",
     "sociedad anonima unipersonal", "sociedad anonima de capital variable"]);
   poser(["part"], ["scea", "gaec", "earl"]);
-  poser(["llc"], ["llc", "pllc", "gmbh", "ug", "sarl", "eurl", "sprl", "bvba", "srl", "sl", "slu", "bv", "aps", "kft", "sro",
+  poser(["llc"], ["llc", "pllc", "gmbh", "mbh", "gesellschaft mbh", "handelsgesellschaft mbh", "ug", "sarl", "eurl", "sprl", "bvba", "srl", "sl", "slu", "bv", "aps", "kft", "sro",
     "doo", "eood", "ood", "epe", "ike", "wll", "spc", "mmc", "s de rl", "s de rl de cv",
     "limited liability company", "obshchestvo s ogranichennoi otvetstvennostyu", "obshchestvo s ogranichennoy otvetstvennostyu",
     "gesellschaft mit beschrankter haftung",
@@ -720,7 +772,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     /* les sociétés de personnes allemandes dont une société de capitaux est l'associée : une autre personne que celle-ci */
     "gmbh co kg", "gmbh und co kg", "gmbh and co kg", "mbh co kg", "mbh und co kg", "mbh and co kg", "ag co kg", "ag und co kg",
     "se co kg", "se und co kg", "gmbh co ohg", "mbh co ohg", "gmbh co kgaa", "gmbh co", "mbh co", "co kg", "co ohg", "und co kg",
-    "and co kg", "kgaa", "gbr", "sce"]);
+    "and co kg", "kgaa", "gbr", "sce", "gesellschaft mbh co kg", "handelsgesellschaft mbh co kg"]);
   poser(["llc"], ["mbh"]);
   poser(["ltd", "llc"], ["lda"]);
   poser(["est"], ["est", "establishment", "establishments", "sole proprietorship"]);
@@ -870,7 +922,8 @@ export function preparerEntite(nom: string, lecture: Lecture = "mandarin"): stri
 
 /** La préparation, avec ce qu'elle a retiré (les pays des formes juridiques, un préfixe de
  *  navire, une forme de société) et les mots que leur auteur a ABRÉGÉS d'un point. */
-export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { texte: string; abreges: ReadonlySet<string>; parentheses: ReadonlySet<string>; civilites: ReadonlySet<string> } & Marques {
+const REGISTRE = /\(\s*(?:rc|reg\.?(?:\s*no\.?)?|registration\s*(?:no\.?)?|hrb|hra|kvk|cipc|cac|eori|company\s*no\.?|co\.?\s*reg\.?\s*no\.?|crn|tin|vat|nif|nit|cnpj|cuit|rfc|siret|siren|folio)\s*:?\s*([a-z0-9][a-z0-9\/\-. ]*?)(?:,\s*amtsgericht\s+[\p{L} .-]+)?\s*\)/iu;
+export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { texte: string; abreges: ReadonlySet<string>; parentheses: ReadonlySet<string>; civilites: ReadonlySet<string>; traduits: ReadonlySet<string> } & Marques {
   /* L'apostrophe DANS un mot le soude (« O'Brien », « Ch'iao ») : en faire une frontière
      de mot fabriquerait des jetons d'une ou deux lettres qui ne désignent rien. « F.lli »
      (fratelli) et « LPG/C » (LPG carrier) ont une ponctuation qui porte le sens : lus avant. */
@@ -898,6 +951,10 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     /* « (P) Ltd. » et « (Pvt.) Ltd. », la société privée indienne : une forme, pas une filiale */
     .replace(/\(\s*P(?:vt)?\.?\s*\)\s*(?=Ltd|Limited)/gi, "Pvt ")
     .replace(/\b(LPG|LNG)\s*\/\s*C\b/gi, "$1C")
+    /* l'élision française et italienne (« d'Import-Export », « l'Industrie », « Côte d'Ivoire ») : la préposition ou
+       l'article tombe et le mot reste entier (jeu 10, 27/09 : « dimport » face à « import », 0,728). La minuscule d
+       seulement : « D'Angelo », « D'Souza » sont des noms, soudés comme « O'Brien » */
+    .replace(/(?<!\p{L})(?:d|l|L)['’ʼ`](?=\p{L})/gu, "")
     .replace(/(\p{L})['’ʼ`](\p{L})/gu, "$1$2")
     /* Les lettres séparées par un point ou une barre forment UN sigle (« S.A. », « F.Z.E. »,
        « M/V », « A.K. ») : on les soude ici, sur le texte, parce qu'après la normalisation une
@@ -973,13 +1030,27 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   }
   const civilites = new Set<string>();
   const separes = texte.trim().split(/ +/);
+  /* les mots que les tables ont TRADUITS (« Comercial », « Exportação », « Handelsmaatschappij ») : des mots
+     du métier par construction, qu'un nom d'usage omet sans être une autre société (voir `scorePrepares`) */
+  const traduits = new Set<string>();
+  const sudAfricain = separes.some((j) => j === "pty" || j === "edms" || j === "eiendoms" || j === "bpk" || j === "beperk" || j === "maatskappy");
   const motsBruts = separes.flatMap((j, i) => {
     if (j === "i") return [j];
     if (CIVILITES.has(j)) { civilites.add(j); return []; }
     /* « li » (ل, « pour ») devant un mot du commerce arabe est la préposition, comme « lil » :
        « Li Tijarat Al Aruz » est « Rice Trading » (jeu 9) ; devant tout autre mot c'est un nom (« Li Ning ») */
     if (j === "li" && TRADUCTIONS_ARABES.has(separes[i + 1] ?? "")) return [];
-    return (ABREVIATIONS.get(j) ?? traduction(j) ?? j).split(" ");
+    /* « Bou » (« Bou en Konstruksie ») n'est l'afrikaans « building » que sous une forme sud-africaine :
+       ailleurs c'est l'arabe maghrébin « Abu » (« Bou Regreg ») */
+    if (j === "bou" && sudAfricain) { traduits.add("building"); return ["building"]; }
+    const a = ABREVIATIONS.get(j);
+    if (a !== undefined) return a.split(" ");
+    const p = PAYS_ADJECTIFS.get(j);
+    if (p !== undefined) return [p];
+    const t = traduction(j);
+    if (t === undefined) return [j];
+    for (const m of t.split(" ")) if (m !== "") traduits.add(m);
+    return t.split(" ");
   });
   /* LE QUALIFICATIF PRIVÉ ABÎMÉ : « Pre Ltd » pour Pte Ltd, le correcteur d'un téléphone ayant fait un
      mot du sigle (jeu 9, 27/09 : « Kim Send Hardware & Building Materials Pre Ltd », « pre » mot rare
@@ -1028,6 +1099,13 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      27/09 sur le jeu 9 : « mulji devshi n sons gen trading » à 0,689, « n » mot rare sans répondant) */
   const initialeN = /(?<![\p{L}.])n\.(?!\p{L})/iu.test(soude);
   t = t.filter((j, i) => j !== "n" || i === 0 || i === t.length - 1 || initialeN);
+  /* « d » ou « l » seul devant un mot est l'élision dont un système a ôté l'apostrophe (« Societe Malienne d
+     Import-Export ») ; écrit avec son point (« L. Dupont »), c'est une initiale, qui reste */
+  const initialeDL = /(?<![\p{L}.])[dl]\.(?!\p{L})/iu.test(soude);
+  t = t.filter((j, i) => (j !== "d" && j !== "l") || i === t.length - 1 || initialeDL);
+  /* le sigle du pays en queue d'un nom d'usage ouest-africain (« Bois Tropicaux CI ») dit le pays que l'adjectif
+     de nationalité du nom déposé écrit en tête (« Société Ivoirienne des Bois Tropicaux ») : voir PAYS_ADJECTIFS */
+  if (t.length >= 2) { const s = SIGLES_PAYS.get(t[t.length - 1]!); if (s !== undefined) t[t.length - 1] = s; }
   /* les marqueurs se lisent AVANT la traduction (« tongsang », « shoji » deviennent « trading ») et
      avant le retrait des civilités (« Shree ») */
   const tousLesMots = [...articles, ...mots];
@@ -1049,7 +1127,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const filiation = tousLesMots.some((j) => FILIATION_M.has(j)) ? "m" : tousLesMots.some((j) => FILIATION_F.has(j)) ? "f" : "";
   const succursale = mentionDeSuccursale(soude);
   const chat = t.length >= 2 && !majuscules && (!/\p{Lu}/u.test(nom) || !/[.,()]/.test(nom));
-  return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites,
+  return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites, traduits,
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
     hebreuOuGrec, indien, hispanique, tamoul, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture === "cantonais", priveInconnu,
     natifs: rom.natifs, filiation, succursale, typeNavire };
@@ -1185,6 +1263,15 @@ export function pluriel(long: string, court: string): boolean {
 /** La FORME d'un pluriel anglais, sans regarder le dictionnaire : -s, -es, -y en -ies. */
 export function formePlurielle(long: string, court: string): boolean {
   return long !== court && (long === court + "s" || long === court + "es" || (court.endsWith("y") && long === court.slice(0, -1) + "ies"));
+}
+/** Le GÉRONDIF ANGLAIS d'un mot du dictionnaire est le même mot du métier : « Trading » et « Trade », « Shipping »
+ *  et « Ship », « Farming » et « Farm » (jeu 10, 27/09 : « Handel en Vervoer » traduit « trading transport » face à
+ *  « Trade and Transport » restait à 0,403). Les deux mots au dictionnaire, jamais un nom propre ; -ing seul,
+ *  avec le e final tombé ou la consonne doublée ; jamais -er ni -ers (« Traders » reste un autre mot). */
+export function gerondif(long: string, court: string): boolean {
+  if (long === court || court.length < 3 || !long.endsWith("ing") || !DICTIONNAIRE.has(court) || !DICTIONNAIRE.has(long)) return false;
+  const c = court[court.length - 1]!;
+  return long === court + "ing" || (c === "e" && long === court.slice(0, -1) + "ing") || long === court + c + "ing";
 }
 /** Le lemme d'un mot s'il est anglais : sa première racine au dictionnaire ; sinon undefined. */
 const CACHE_LEMMES = new Map<string, string | undefined>();
@@ -1423,6 +1510,12 @@ export type NomPrepare = {
   abreges: readonly boolean[];
   /** les mots écrits entre parenthèses (« (Shanghai) ») */
   parentheses: readonly boolean[];
+  /** les mots que les tables ont traduits (« Comercial » devenu « commercial ») : des mots du métier, jamais
+   *  des orphelins rares (voir `scorePrepares`) */
+  traduits: readonly boolean[];
+  /** les adjectifs régionaux d'un registre (« Rheinische », « Noord-Brabantse » avec son point cardinal) :
+   *  au plancher quand l'autre nom n'en porte aucun (voir REGIONS_DE_REGISTRE et `regionsAuPlancher`) */
+  decor: readonly boolean[];
   numeros: string; bloc: string;
   /** les civilités que la préparation a ôtées (« sri », « shree ») : un clavardage les soude au mot
    *  qui suit, et le score ne le lit que si l'autre nom les a écrites (voir CIVILITES) */
@@ -1439,12 +1532,13 @@ const SANS_MARQUES: Marques = { pays: [], familles: [], designations: [], navire
 
 export function preparerNom(f: Frequences, nom: string, lecture: Lecture = "mandarin"): NomPrepare {
   const a = analyserEntite(nom, lecture);
-  const { texte: _t, abreges, parentheses, civilites, ...marques } = a;
-  return depuisJetons(f, jetons(preparer(a.texte)), marques, abreges, parentheses, civilites);
+  const { texte: _t, abreges, parentheses, civilites, traduits, ...marques } = a;
+  return depuisJetons(f, jetons(preparer(a.texte)), marques, abreges, parentheses, civilites, traduits);
 }
 
 export function depuisJetons(f: Frequences, J: readonly string[], marques: Marques = SANS_MARQUES,
-  abreges: ReadonlySet<string> = new Set(), parentheses: ReadonlySet<string> = new Set(), civilites: ReadonlySet<string> = new Set()): NomPrepare {
+  abreges: ReadonlySet<string> = new Set(), parentheses: ReadonlySet<string> = new Set(), civilites: ReadonlySet<string> = new Set(),
+  traduits: ReadonlySet<string> = new Set()): NomPrepare {
   /* Un chiffre romain n'est un NUMÉRO qu'en fin de nom (« Karina II », « Star I ») : au milieu,
      « I » est un mot (« Shun I Fa », le « yi » chinois en Wade-Giles, mesuré le 27/09 : la
      règle des numéros le lisait « 1 » et rendait 0 face à « Shun Yi Fa No. 232 »). */
@@ -1457,6 +1551,8 @@ export function depuisJetons(f: Frequences, J: readonly string[], marques: Marqu
     replis: mots.map((m) => voyelles(squelette(m))),
     abreges: mots.map((m) => abreges.has(m)),
     parentheses: mots.map((m) => parentheses.has(m)),
+    traduits: mots.map((m) => traduits.has(m)),
+    decor: mots.map((m, i) => regionDeRegistre(m) || (POINTS_CARDINAUX.has(m) && regionDeRegistre(mots[i + 1] ?? ""))),
     numeros: J.map(num).filter(Boolean).sort().join(" "),
     bloc: mots.join(""), blocSq: mots.map(squelette).join(""),
     civilites: [...civilites],
@@ -1493,6 +1589,7 @@ export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesL
     const court = a.length < b.length ? a : b;
     if (DICTIONNAIRE.has(court)) return pluriels && (pluriel(a, b) || pluriel(b, a)) ? 0.95 : 0.5;
   }
+  if (gerondif(a, b) || gerondif(b, a)) return 0.95;
   if (abrege(a, b) || abrege(b, a)) return 0.9;
   if (motsDistincts(a, b, voyellesLibres) || composesDistincts(a, b, voyellesLibres)) return 0.5;
   if (initialeLueOptiquement(a, b)) return 0.95;
@@ -1649,6 +1746,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   if (A.mots.length === 0 || B.mots.length === 0) {
     return A.mots.length === B.mots.length && A.numeros === B.numeros && A.numeros !== "" ? 1 : 0;
   }
+  [A, B] = [regionsAuPlancher(A, B), regionsAuPlancher(B, A)];
   const orphelins = [false, false];
   const rareCouvert = [false, false];
   const parenthese = [false, false], parentheseReconnue = [false, false];
@@ -1680,6 +1778,9 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
      moderne s'écrivent avec le même squelette, et c'est le squelette qui fait foi (« Tjahaja Soerya Kentjana »,
      « Cahaya Surya Kencana », jeu 9) */
   const indonesien = ["ID", "MY"].some((k) => A.marques.pays.includes(k) || B.marques.pays.includes(k));
+  /* l'allemand et le néerlandais (GmbH, mbH, AG, KG, B.V., N.V. ; Autriche, Suisse, Belgique) : là où les noms
+     composent leurs mots, et où le nom d'usage garde un membre du composé (voir `compose`) */
+  const germanique = ["DE", "AT", "CH", "NL", "BE"].some((k) => A.marques.pays.includes(k) || B.marques.pays.includes(k));
   /* la voyelle d'appui d'un groupe final de consonnes (« Bahr », « Bahar ») n'est que de l'arabe */
   const arabe = A.marques.arabe || B.marques.arabe;
   const japonais = A.marques.japonais || B.marques.japonais, coreen = A.marques.coreen || B.marques.coreen;
@@ -1712,6 +1813,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   const memo = options.memo;
   const cote = (X: NomPrepare, Y: NomPrepare, cote: 0 | 1) => {
     let s = 0;
+    const descripteurX = descripteur(X);
     for (let i = 0; i < X.mots.length; i++) {
       let m = 0, meilleurY = -1, equivalentM = false;
       const dernierX = i === X.mots.length - 1;
@@ -1722,7 +1824,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
         const nx = X.marques.natifs.get(x) ?? "", ny = Y.marques.natifs.get(y) ?? "";
         /* la clé porte tout ce qui décide : les deux mots, leurs marques d'abréviation, et
            leur position de dernier mot (la troncature ne vaut que pour lui) */
-        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}${navire ? 1 : 0}${sansForme ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
+        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}${navire ? 1 : 0}${sansForme ? 1 : 0}${germanique ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
         /* le cache code l'équivalence de romanisation en ajoutant 2 à la valeur (elle est dans [0, 1]) */
         const enCache = memo?.get(cle);
         let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
@@ -1785,6 +1887,12 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           if (v < CREDIT_ROMANISATION && !chinois && !coreen && !japonais
             && ((x.length >= 4 && y.length >= x.length + 3 && y.startsWith(x) && !lemme(x))
               || (y.length >= 4 && x.length >= y.length + 3 && x.startsWith(y) && !lemme(y)))) v = CREDIT_ROMANISATION;
+          /* LES COMPOSÉS allemands et néerlandais : le nom déterminé ferme le mot (« Stahlrohr » est un Rohr,
+             « Textilmaschinen » des machines textiles, « Metaalhandel » le commerce du métal), et le nom d'usage
+             garde l'un des deux membres (« Rheinstahl Rohr », « Hoffmann Textil », « De Groot Machines », jeu 10).
+             Sous la marque, un mot qui commence ou finit par un mot de l'autre nom vaut le crédit d'une
+             romanisation, dans les deux sens (voir `compose`) */
+          if (v < CREDIT_ROMANISATION && germanique && (compose(x, y) || compose(y, x))) v = CREDIT_ROMANISATION;
           /* LA FAUTE D'UN CLAVARDAGE : sous la marque chat, un mot que le dictionnaire connaît face à un
              mot qu'il ne connaît pas, à UNE lettre près hors l'initiale (substituée, tombée, doublée,
              inversée), est la faute d'un pouce ou le correcteur d'un téléphone qui a fait un mot anglais
@@ -1834,7 +1942,13 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
          trop : la province se dit ou s'omet pour la même société chinoise */
       /* un mot de pays ou de région du monde est distinctif quel que soit son poids : « UK Limited »
          n'est pas « Limited » */
-      if (m < 0.8 && (X.poids[i]! >= SEUIL_RARE * X.poidsMax || PAYS_MOTS.has(X.mots[i]!)) && !(i <= 1 && REGIONS.has(X.mots[i]!))) orphelinRare = true;
+      /* ni un mot que les tables ont traduit quand il OUVRE le nom : dans l'ordre roman, les mots d'activité
+         précèdent le nom propre (« Comercial Pereira e Filhos », « Exportação de Café de Huambo »), et le nom
+         d'usage les omet (jeu 10 : plafonnés à 0,800 par l'IDF du mot traduit). En queue, le même mot traduit
+         dit une société sœur (« Северный Янтарь Логистик », jeu 8), et plafonne comme tout orphelin rare ;
+         ni l'adjectif régional d'un registre au plancher (voir `regionsAuPlancher`) */
+      if (m < 0.8 && (X.poids[i]! >= SEUIL_RARE * X.poidsMax || PAYS_MOTS.has(X.mots[i]!)) && !(i <= 1 && REGIONS.has(X.mots[i]!))
+        && !(X.traduits[i] && i < descripteurX) && !X.decor[i]) orphelinRare = true;
       /* un mot équivalent par sa romanisation n'est pas ambigu */
       /* ni une particule : « del » aligné sur « de » n'est pas un mot court ambigu, c'est une
          particule sautée (« Compañía Naviera del Golfo » contre « … Naviera Golfo », 27/09) ;
@@ -1938,6 +2052,49 @@ const QUALIFICATIFS_DE_REGISTRE: ReadonlySet<string> = new Set(["enterprise", "e
   "global", "international", "general", "sons", "brothers", "limited", "company", "co"]);
 /* ni « Holdings » ni « Group » : la holding est une autre société que celle qui exploite (« Chelyabinsk Metal
    Works » face à « Chelyabinsk Metal Works Holdings JSC », jeu 7 ; voir aussi QUALIFICATIFS_SOUDES) */
+/** Les membres génériques d'un composé allemand ou néerlandais : ce qui reste quand le nom d'usage a gardé
+ *  l'autre membre (« Stahl » de Stahlrohr, « maschinen » de Textilmaschinen, « handel » de Metaalhandel). */
+const GENERIQUES_COMPOSES: ReadonlySet<string> = new Set(["handel", "handels", "technik", "techniek", "maschinen", "maschine", "machines",
+  "machine", "gesellschaft", "groep", "gruppe", "werk", "werke", "bau", "industrie", "stahl", "staal", "metall", "metaal", "chemie",
+  "chemische", "agro", "expeditie", "overslag", "fabrik", "fabriek", "anlagen", "systeme", "service", "transport", "logistik",
+  "logistiek", "vertrieb", "vertriebs", "produktion", "produkte", "materiaal", "materialen", "handelsgroep", "import", "export"]);
+/** Les formes sous lesquelles `court` peut être un membre d'un composé : lui-même, et sans son pluriel
+ *  (« machines » dans « Machinehandel »). L'index cherche sous les mêmes (voir cribler.ts). */
+export function membres(court: string): string[] {
+  const m = [court];
+  if (court.endsWith("es")) m.push(court.slice(0, -2));
+  if (court.endsWith("s")) m.push(court.slice(0, -1));
+  return m;
+}
+/** `long` est-il un COMPOSÉ dont `court` (quatre lettres au moins, son pluriel ôté) est le premier ou le
+ *  dernier membre ? Le reste est un générique connu, ou un membre d'au moins quatre lettres quand `court`
+ *  n'est pas un mot anglais (« Logic » ne commence pas « Logistics » : voir l'abréviation d'usage). Ne vaut
+ *  que sous la marque allemande ou néerlandaise (voir `scorePrepares`). */
+export function compose(long: string, court: string): boolean {
+  for (const c of membres(court)) {
+    if (c.length < 4 || long.length < c.length + 3) continue;
+    const reste = long.startsWith(c) ? long.slice(c.length) : long.endsWith(c) ? long.slice(0, long.length - c.length) : "";
+    if (reste === "") continue;
+    if (GENERIQUES_COMPOSES.has(reste) || (reste.length >= 4 && !lemme(court))) return true;
+  }
+  return false;
+}
+/** La longueur du DESCRIPTEUR qui ouvre un nom : la suite des mots traduits, des particules et des adjectifs
+ *  régionaux avant le premier mot que les tables ne connaissent pas (« Comércio e Importação Ferreira » : deux ;
+ *  « Ferreira Comércio » : zéro). */
+export function descripteur(X: NomPrepare): number {
+  let n = 0;
+  while (n < X.mots.length && (X.traduits[n] || X.decor[n] || PARTICULES.has(X.mots[n]!))) n++;
+  return n;
+}
+/** `X` avec ses adjectifs régionaux au plancher, si `Y` n'en porte aucun ; sinon `X` tel quel, sans la
+ *  marque de décor (deux noms qui portent chacun un adjectif régional se distinguent par lui). */
+function regionsAuPlancher(X: NomPrepare, Y: NomPrepare): NomPrepare {
+  if (!X.decor.some(Boolean)) return X;
+  if (Y.decor.some(Boolean)) return { ...X, decor: X.decor.map(() => false) };
+  const poids = X.poids.map((p, i) => (X.decor[i] ? 1 : p));
+  return { ...X, poids, total: poids.reduce((s, p) => s + p, 0) };
+}
 
 /** `colle` est-il `radical` suivi d'un qualificatif de groupe soudé, face à un nom (`autres`,
  *  les mots de l'autre côté) qui porte le radical nu et nulle part le qualificatif ? Trois
@@ -2158,7 +2315,24 @@ const PAYS_MOTS: ReadonlySet<string> = new Set(["uk", "usa", "us", "america", "a
   "ukraine", "kazakhstan", "uae", "emirates", "qatar", "oman", "kuwait", "bahrain", "saudi", "arabia", "iran", "iraq", "israel",
   "pakistan", "bangladesh", "lanka", "nepal", "taiwan", "hongkong", "macau", "argentina", "chile", "peru", "colombia", "venezuela",
   "europe", "europa", "european", "asia", "asian", "africa", "african", "pacific", "atlantic", "nordic", "baltic", "benelux", "iberia",
-  "latam", "apac", "emea", "gulf", "middle", "east", "west", "north", "south", "overseas", "global", "worldwide"]);
+  "latam", "apac", "emea", "gulf", "middle", "east", "west", "north", "south", "overseas", "global", "worldwide",
+  /* les pays que les adjectifs de nationalité des registres francophones d'Afrique disent (voir PAYS_ADJECTIFS) */
+  "ivoire", "burkina", "mali", "senegal", "cameroun", "gabon", "togo", "benin", "niger", "guinee", "tunisie", "maroc", "algerie", "congo"]);
+/** Les ADJECTIFS DE NATIONALITÉ des registres francophones d'Afrique (« Société Ivoirienne des Bois Tropicaux »,
+ *  « Société Burkinabè de Céréales ») : le nom d'usage les remplace par le pays ou son sigle (« Céréales Burkina »,
+ *  « Bois Tropicaux CI », jeu 10). L'adjectif devient le mot du pays ; le sigle en queue du nom aussi (SIGLES_PAYS).
+ *  Ces mots de pays sont dans PAYS_MOTS : d'un seul côté, ils disent une filiale. */
+const PAYS_ADJECTIFS: ReadonlyMap<string, string> = new Map(Object.entries({
+  ivoirien: "ivoire", ivoirienne: "ivoire", malien: "mali", malienne: "mali", burkinabe: "burkina", senegalais: "senegal",
+  senegalaise: "senegal", camerounais: "cameroun", camerounaise: "cameroun", gabonais: "gabon", gabonaise: "gabon",
+  togolais: "togo", togolaise: "togo", beninois: "benin", beninoise: "benin", nigerien: "niger", nigerienne: "niger",
+  guineen: "guinee", guineenne: "guinee", tunisien: "tunisie", tunisienne: "tunisie", marocain: "maroc", marocaine: "maroc",
+  algerien: "algerie", algerienne: "algerie", congolais: "congo", congolaise: "congo", ghaneen: "ghana", ghaneenne: "ghana",
+  kenyan: "kenya", kenyane: "kenya",
+}));
+/** Le sigle du pays en QUEUE d'un nom d'usage (« Bois Tropicaux CI ») ; en tête, « C.I. » est la Comercializadora
+ *  Internacional colombienne et reste un mot. */
+const SIGLES_PAYS: ReadonlyMap<string, string> = new Map([["ci", "ivoire"], ["bf", "burkina"], ["sn", "senegal"], ["cm", "cameroun"]]);
 
 /** Les pavillons de complaisance et registres de navires, en anglais, tels que la normalisation
  *  les laisse. PAS les pays où une société ouvre des filiales (Singapore, Hong Kong, China, UK,
@@ -2276,10 +2450,14 @@ export function variantesTypees(brut: string): VarianteTypee[] {
       const motsQueue = jetons(normaliser(queue.replace(/(?<!\p{L})\p{L}(?:[./]\s?\p{L}(?!\p{L}))+\.?/gu, (m) => m.replace(/[./\s]/g, ""))));
       const queueEstForme = motsQueue.length > 0 && motsQueue.every((m) => FORMES.has(m) || m === "de" || m === "z" || m === "oo");
       const queuePorteUneForme = motsQueue.some((m) => FORMES.has(m));
+      /* « …mbH, Zweigniederlassung Bremen » : la succursale derrière la virgule n'est pas une adresse, c'est la marque
+         que le score doit voir (jeu 10 : la succursale et son siège, jugés différents, mesurés à 1,000 le 27/09
+         quand « mbH » devenu une forme faisait ôter la queue) */
+      const queueSuccursale = motsQueue.some((m) => SUCCURSALES.has(m));
       /* derrière une forme : l'adresse s'ôte ; sans forme devant, un ou deux mots sans forme
          derrière la virgule sont un port ou une ville (« SIROCCO MARINER, MONROVIA »), mais
          « Marks, Spencer Ltd » garde Spencer : la forme est dans la queue */
-      if (queue.length > 0 && !queueEstForme && (FORMES.has(dernier)
+      if (queue.length > 0 && !queueEstForme && !queueSuccursale && (FORMES.has(dernier)
         || (!queuePorteUneForme && /^[\p{L} .'-]{2,30}$/u.test(queue) && motsQueue.length <= 2 && !p.includes("&")
           && tete.trim().split(/\s+/).length >= 2))) p = tete.trim();
     }
