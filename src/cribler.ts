@@ -34,7 +34,7 @@ import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
 import { commitCourant } from "./your-alerts.ts";
 import type { Cellule } from "./measure.ts";
 import {
-  frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD, sembleCoupe,
+  frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, abregeAllemand, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD, sembleCoupe,
   compose, membres, gerondif, PARTICULES,
   variationVocalique, voyelleEpenthetique, squeletteLongue, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
   CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pliJaponais, pliCoreen, CREDIT_KANA, pluriel, CHEMIN_VERDICT, RAPPEL_MIN,
@@ -340,6 +340,9 @@ export class Index {
             /* et sous son squelette arabe (o et u fondus, p lu f : voir squeletteArabe), quand il diffère */
             const sa = squeletteArabe(mot);
             if (sa !== m.sq) ranger(this.parSq, sa, m);
+            /* et sous le squelette arabe d'un mot natif (o et u, p et f seulement), quand il diffère des deux autres */
+            const saNatif = squeletteArabe(mot, true, false);
+            if (saNatif !== m.sq && saNatif !== sa) ranger(this.parSq, saNatif, m);
             ranger(this.parRepli, m.repli, m);
             if (porteUnJalon(mot)) ranger(this.parLongueurPerdu, String(mot.length), m);
             for (const mode of ["arabe", "hebreu", "thai"] as const) {
@@ -457,7 +460,7 @@ export class Index {
        aussi rangés : les deux sens de squeletteLongue */
     if (t <= 0.95 && mot.includes("ee")) for (const m of this.parSq.get(squeletteLongue(mot)) ?? []) retenus.add(m);
     /* et sous son squelette arabe (voir squeletteArabe), où les mots listés dont il diffère sont aussi rangés */
-    if (t <= 0.95) for (const m of this.parSq.get(squeletteArabe(mot)) ?? []) retenus.add(m);
+    if (t <= 0.95) for (const k of new Set([squeletteArabe(mot), squeletteArabe(mot, true, false)])) for (const m of this.parSq.get(k) ?? []) retenus.add(m);
     /* les mêmes consonnes (CREDIT_ABJAD) : un nom écrit dans un abjad face à tous les mots, un nom
        latin face aux mots que des chaînes écrites dans un abjad portent */
     if (t <= CREDIT_ABJAD) {
@@ -511,6 +514,9 @@ export class Index {
       for (const m of this.parInitiale.get(mot[0]!) ?? []) {
         const autre = m.mot;
         if (abrege(mot, autre) || abrege(autre, mot) || pluriel(mot, autre) || pluriel(autre, mot)
+          /* l'abréviation allemande d'un mot écrit avec son point (0,9 sous la marque germanique, que le score vérifie :
+             « Sueddt. », Süddeutsche ; voir `abregeAllemand`) */
+          || ((abreviation || m.abregeVu) && (abregeAllemand(mot, autre) || abregeAllemand(autre, mot)))
           /* le gérondif anglais (0,95 : « trading », « trade ») et le composé qui COMMENCE par le mot demandé
              (CREDIT_ROMANISATION : « metaal », « metaalhandel ») partagent l'initiale */
           || gerondif(mot, autre) || gerondif(autre, mot) || compose(autre, mot)
@@ -520,8 +526,24 @@ export class Index {
           || (coupe && dernier && autre.startsWith(mot))) retenus.add(m);
       }
       for (const m of this.parSqInitialeLongueur.get((sq[0] ?? "") + sq.length) ?? []) {
-        if (variationVocalique(sq, m.sq) && !anglais(m)) retenus.add(m);
+        /* le schwa (e, u) de la marque arabe se retient large : la marque se vérifie au score */
+        if (variationVocalique(sq, m.sq, true) && !anglais(m)) retenus.add(m);
       }
+      /* la voyelle sautée sous le squelette arabe (voir voyelleSauteeArabe), dans les deux sens : le mot demandé moins une voyelle
+         intérieure ou initiale, et le mot demandé plus une voyelle, cherchés parmi les squelettes arabes rangés dans parSq ; la
+         marque se vérifie au score */
+      const sa = squeletteArabe(mot);
+      if (sa.length >= 5) for (let i = 0; i <= sa.length - 2; i++) {
+        if ("aeiou".includes(sa[i]!)) for (const m of this.parSq.get(sa.slice(0, i) + sa.slice(i + 1)) ?? []) retenus.add(m);
+      }
+      if (sa.length >= 4) for (let i = 0; i <= sa.length - 1; i++) {
+        for (const v of "aeiou") for (const m of this.parSq.get(sa.slice(0, i) + v + sa.slice(i)) ?? []) retenus.add(m);
+      }
+      /* l'article maghrébin réduit à son l (voir articleReduit), dans les deux sens : le mot demandé en l cherche le nom nu sous le
+         squelette arabe de son reste, le mot demandé nu cherche le mot en l sous le squelette arabe de « l » et lui ; la marque se
+         vérifie au score */
+      if (mot.length >= 5 && /^l[aeiouh]/.test(mot)) for (const m of this.parSq.get(squeletteArabe(mot.slice(1))) ?? []) retenus.add(m);
+      if (mot.length >= 4) for (const k of [squeletteArabe("l" + mot), "l" + sa]) for (const m of this.parSq.get(k) ?? []) retenus.add(m);
       /* la ñ écrite ny (CREDIT_ROMANISATION sous la marque hispanique, qui se vérifie au score) : les mots listés en ny
          sous leur pli, et, pour un mot demandé en ny, le mot listé en n par égalité (voir `pliEnye`) */
       for (const m of this.parPliEnye.get(pliEnye(mot)) ?? []) retenus.add(m);

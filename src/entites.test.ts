@@ -548,7 +548,7 @@ test("tour 5, voie locale : connaissements d'Asie du Sud-Est, zones franches, fi
   assert.ok(score("BARGE THONG CHAROEN 9", "TUG THONG CHAROEN 9") < 0.81);
   /* les formes : zones franches (deux zones, deux dépôts), UD et CV indonésiens, SPC en toutes lettres */
   assert.ok(score("Silver Dune Logistics FZCO", "Silver Dune Logistics DMCC") < 0.81);
-  assert.equal(score("Silver Dune Logistics FZE", "Silver Dune Logistics FZCO"), 1, "deux formes d'une même zone");
+  assert.ok(score("Silver Dune Logistics FZE", "Silver Dune Logistics FZCO") < 0.81, "deux immatriculations d'une même zone (jeu 14, tour 10 ; le tour 9 les tenait pour une)");
   assert.ok(score("UD Besi Tua Sumber Rejeki", "Usaha Dagang Besi Tua Sumber Rejeki") >= 0.81);
   assert.ok(score("CV Cahaya Bintang Timur Jaya", "Commanditaire Vennootschap Cahaya Bintang Timur Jaya") >= 0.81);
   assert.ok(score("Wadi Sahtan Trading & Contracting SPC", "WADI SAHTAN TRADING & CONTRACTING SOLE PROPRIETOR COMPANY") >= 0.81);

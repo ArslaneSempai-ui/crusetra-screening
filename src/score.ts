@@ -19,7 +19,7 @@ import type { Frequences } from "./mots.ts";
 import { analyserEntite } from "./preparation.ts";
 import { numero } from "./mots.ts";
 import { PARTICULES } from "./preparation.ts";
-import { poidsDuMot } from "./mots.ts";
+import { poidsDuMot, pliUmlaut } from "./mots.ts";
 import { squelette } from "./mots.ts";
 import { voyelles } from "./mots.ts";
 import { regionDeRegistre } from "./preparation.ts";
@@ -57,7 +57,7 @@ import { pliVoyellesCoreennes } from "./mots.ts";
 import { CREDIT_APPUI } from "./mots.ts";
 import { CREDIT_ABJAD } from "./mots.ts";
 import { squeletteLongue } from "./mots.ts";
-import { squeletteArabe } from "./mots.ts";
+import { squeletteArabe, voyelleSauteeArabe, articleReduit } from "./mots.ts";
 import { estSyllabeIsolee } from "./mots.ts";
 import { PAYS_MOTS } from "./variantes.ts";
 import { REGIONS } from "./preparation.ts";
@@ -166,7 +166,10 @@ export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesL
   if (gerondif(a, b) || gerondif(b, a)) return 0.95;
   if (abrege(a, b) || abrege(b, a)) return 0.9;
   if (motsDistincts(a, b, voyellesLibres) || composesDistincts(a, b, voyellesLibres) || motsHispaniquesDistincts(a, b)) return 0.5;
-  if (composesAQueuesDistinctes(a, b, voyellesLibres)) return 0.5;
+  /* sauf quand les deux squelettes sont égaux : g et k en finale, une lettre doublée sont les classes d'une graphie, pas deux
+     queues (« Kleinhekking », « Kleinhekkink », jeu 14 : 0,450, « king » et « kink » lus comme Timberline et Timberland dans un
+     patronyme néerlandais) */
+  if (sqA !== sqB && composesAQueuesDistinctes(a, b, voyellesLibres)) return 0.5;
   if (initialeLueOptiquement(a, b)) return 0.95;
   if (sqA === sqB) return 0.95;
   /* la longueur seule tranche : deux mots dont les longueurs diffèrent de moitié ne se
@@ -293,6 +296,20 @@ export function abrege(court: string, long: string): boolean {
   let i = 0;
   for (const c of long) if (c === court[i]) i++;
   return i === court.length;
+}
+
+/** `court`, écrit avec son point, abrège-t-il `long` À L'ALLEMANDE ? L'abréviation allemande garde des syllabes
+ *  entières (« Süddt. » pour Süddeutsche, « Masch. » pour Maschinen) : l'initiale et les lettres dans l'ordre, voyelles
+ *  comprises, ce que `abrege` refuse ; et l'umlaut s'y écrit souvent ue, oe, ae (« Sueddt. » face à « Süddeutsche »,
+ *  jeu 5, tour 10 : 0,600, le mot resté orphelin), plié des deux côtés (voir `pliUmlaut`). Quatre lettres au moins et
+ *  un mot d'au moins trois de plus. Ne vaut que sous la marque germanique et pour un mot écrit avec son point
+ *  (voir `scorePrepares`), et l'index le retient sous la même condition (voir cribler.ts). */
+export function abregeAllemand(court: string, long: string): boolean {
+  const c = pliUmlaut(court), l = pliUmlaut(long);
+  if (c.length < 4 || l.length < c.length + 3 || c[0] !== l[0]) return false;
+  let i = 0;
+  for (const ch of l) if (ch === c[i]) i++;
+  return i === c.length;
 }
 
 /** Le dernier mot d'un nom coupé par un champ de longueur fixe (35 caractères dans un
@@ -455,6 +472,8 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   /* un côté écrit dans un abjad (arabe et persan, hébreu) n'a pas de voyelles : ses mots se
      comparent aux consonnes du côté latin (`cleAbjad`), et l'égalité vaut un squelette égal */
   const abjad = A.marques.abjad || B.marques.abjad;
+  /* aucun côté natif : les deux noms sont des romanisations d'usage, et les conventions latines de l'arabe (française, anglaise) s'y plient */
+  const latin = abjad === "";
   /* LE STYLE D'UN NOM QUI TRONQUE (« Tema Consol & Log Ltd », « West Coast Chart & Brok Ltd », jeu 10, tour 9 : 0,531 et 0,612) :
      un connaissement qui abrège un mot par son début en abrège d'autres, et « Consol », « Chart » y sont Consolidators et
      Chartering bien que le dictionnaire les connaisse. Le signal, par côté : un mot absent de l'autre nom qui COMMENCE un mot
@@ -464,6 +483,8 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   const styleTronque = (X: NomPrepare, Y: NomPrepare) => X.mots.some((x, i) => !Y.mots.includes(x)
     && Y.mots.some((y) => (i === X.mots.length - 1 && tronque(x, y)) || (x.length >= 4 && y.length >= x.length + 3 && y.startsWith(x) && !lemme(x))));
   const tronqueur: readonly [boolean, boolean] = [styleTronque(A, B), styleTronque(B, A)];
+  /* le mot qu'un téléphone a corrigé (voir `motAutocorrige`) : sous la marque chat, hors des noms chinois, coréens et japonais */
+  const autocorrige = chat && !chinois && !coreen && !japonais ? motAutocorrige(A, B) : undefined;
   const memo = options.memo;
   const cote = (X: NomPrepare, Y: NomPrepare, cote: 0 | 1) => {
     const styleX = tronqueur[cote], styleY = tronqueur[1 - cote]!;
@@ -510,9 +531,12 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           /* une équivalence de romanisation, dans le contexte de la langue : elle vaut au moins
              CREDIT_ROMANISATION, et elle lève l'ambiguïté du mot court (voir plus bas) */
           equivalent = !autreSyllabe && x !== y && !anglais && (pliC
-            || (romanisation && (X.replis[i] === Y.replis[j] || variationVocalique(X.squelettes[i]!, Y.squelettes[j]!)
+            /* sous la marque arabe, e se confond aussi avec u (le schwa de la graphie française : « Youssef », « Yusuf ») */
+            || (romanisation && (X.replis[i] === Y.replis[j] || variationVocalique(X.squelettes[i]!, Y.squelettes[j]!, arabe)
               || voyelleSautee(X.squelettes[i]!, Y.squelettes[j]!)))
             || (arabe && voyelleEpenthetique(X.squelettes[i]!, Y.squelettes[j]!))
+            /* et la voyelle sautée sur le squelette arabe, en tête de mot aussi (« Brahim », « Ibrahim » ; « Mheiri », « Muhairi ») */
+            || (arabe && latin && voyelleSauteeArabe(squeletteArabe(x), squeletteArabe(y)))
             /* et « oe » y était « u » (« Soerya », « Surya ») : o et u ne font qu'une classe sous cette marque */
             || (indonesien && X.squelettes[i]!.replace(/o/g, "u") === Y.squelettes[j]!.replace(/o/g, "u"))
             || pliJ || pliS || appuiSlave || pliT
@@ -551,6 +575,10 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           /* la voyelle d'appui (« Bahr », « Bahar ») ne change pas le mot arabe, quand une voyelle
              substituée peut en faire un autre : son crédit est au-dessus (CREDIT_APPUI) */
           if (arabe && x !== y && !anglais && voyelleEpenthetique(X.squelettes[i]!, Y.squelettes[j]!)) v = Math.max(v, CREDIT_APPUI);
+          /* et la voyelle brève sautée sous le squelette arabe (« Mheiri », « Muhairi » ; « Brahim », « Ibrahim ») ne le change pas
+             davantage : le même crédit, au-dessus de la variation d'une voyelle (jeu 14, 29/09 : « Tariq Al Muhairi Contracting »
+             face à « Tarek El Mheiri Contracting » restait à 0,795 avec deux mots au crédit de romanisation) */
+          if (arabe && latin && x !== y && !anglais && voyelleSauteeArabe(squeletteArabe(x), squeletteArabe(y))) v = Math.max(v, CREDIT_APPUI);
           /* les mêmes consonnes qu'un mot venu d'un abjad : ce côté n'a jamais eu de voyelles à
              comparer, c'est l'égalité de squelette de son écriture (« بحر » bhr et « Bahr »,
              « הנגב » hngb et « HaNegev »). Mesuré le 27/09 sur les paires des jeux 6 et 8 : au
@@ -573,7 +601,12 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
             && squeletteLongue(x) === squeletteLongue(y)) { equivalent = true; v = 0.95; }
           /* et sous la marque arabe, o et u sont une lettre, le پ persan un ف (voir `squeletteArabe`) : « Nour », « Noor » ; « Kohsar »,
              « Koohsar » ; « Sepid », « Sefid » ; un squelette égal (0,95), pas la variation d'une voyelle (jeu 13, 28/09) */
-          if (v < 0.95 && arabe && x !== y && !anglais && squeletteArabe(x) === squeletteArabe(y)) { equivalent = true; v = 0.95; }
+          /* les plis des conventions latines (ou et w, aw et o, ei et ai, le c dur, la finale -eh) ne valent qu'entre deux mots latins :
+             un côté lu dans une écriture native a sa clé de consonnes (voir `latin`) */
+          if (v < 0.95 && arabe && x !== y && !anglais && squeletteArabe(x, true, latin) === squeletteArabe(y, true, latin)) { equivalent = true; v = 0.95; }
+          /* et l'article maghrébin réduit à son l et collé (« Lamine », « al-Amin » ou « Amine ») : le même squelette arabe derrière
+             le l, un squelette égal (voir `articleReduit`) */
+          if (v < 0.95 && arabe && latin && !anglais && (articleReduit(x, y) || articleReduit(y, x))) { equivalent = true; v = 0.95; }
           /* sous la marque japonaise, le mot augmenté d'un suffixe d'établissement (« Tekkō », « Tekkōsho ») est une autre
              raison sociale : ni abréviation sans point, ni mot coupé, ni mot abrégé (voir `suffixeEtablissement`) */
           /* et sous la marque slave, le mot augmenté d'une queue de composé (« Elevator », « Elevatorstroy » ; « Agro »,
@@ -648,6 +681,9 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
             && DICTIONNAIRE.has(x.length < y.length ? x : y)) v = 0.9;
           if (v < 0.9 && !autreNom && X.abreges[i] && x.length < y.length && (y.startsWith(x) || abrege(x, y))) v = 0.9;
           if (v < 0.9 && !autreNom && Y.abreges[j] && y.length < x.length && (x.startsWith(y) || abrege(y, x))) v = 0.9;
+          /* l'abréviation ALLEMANDE, syllabique, l'umlaut écrit ue (« Sueddt. » pour Süddeutsche : voir `abregeAllemand`) */
+          if (v < 0.9 && !autreNom && germanique && X.abreges[i] && x.length < y.length && abregeAllemand(x, y)) v = 0.9;
+          if (v < 0.9 && !autreNom && germanique && Y.abreges[j] && y.length < x.length && abregeAllemand(y, x)) v = 0.9;
           if (v < 0.9 && !autreNom && dernierX && tronque(x, y)) v = 0.9;
           if (v < 0.9 && !autreNom && dernierY && tronque(y, x)) v = 0.9;
           /* deux lectures de sinogrammes différents sont des homophones (« 新海 », « 鑫海 » : xinhai
@@ -655,6 +691,8 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           if (nx !== "" && ny !== "" && nx !== ny) v = Math.min(v, 0.5);
           memo?.set(cle, equivalent ? v + 2 : v);
         }
+        /* le mot corrigé par un téléphone (voir `motAutocorrige`) : hors du cache des mots, dont la clé ne porte pas le reste du nom */
+        if (v < 0.9 && autocorrige !== undefined && ((x === autocorrige[0] && y === autocorrige[1]) || (x === autocorrige[1] && y === autocorrige[0]))) { v = 0.9; equivalent = false; }
         /* DEUX MOTS DE MÉTIER JAPONAIS DIFFÉRENTS traduits au même mot anglais, ou à deux mots voisins (« Bōeki » et
            « Shōji », trading tous deux ; « Kōgyō » et « Sangyō », industry ; « Tekkō » et « Tekkōsho », steel et
            steelworks) : au registre japonais ce sont deux raisons sociales, et l'auteur des jeux les compte ainsi
@@ -692,6 +730,18 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           const i0 = sigleDe(Y.mots[j]!, X.mots, Y.mots);
           if (i0 >= 0 && i >= i0 && i < i0 + Y.mots[j]!.length) { m = 0.9; meilleurY = j; equivalentM = false; break; }
         }
+      }
+      /* LE COMPOSÉ ET SON MEMBRE TRADUIT : « Holz-Handel » se prépare « holz trading » (le tiret coupe, la table traduit
+         handel) quand « Holzhandel » reste un mot, que `compose` rapproche de « holz » seul ; « trading » restait orphelin
+         (jeu 4, tour 10 : 0,680). Sous la marque germanique, un mot traduit dont la SOURCE ferme ou ouvre un composé de
+         l'autre nom, l'autre membre du composé étant le voisin de ce mot-ci, est porté par ce composé, au crédit d'une
+         romanisation. Hors du cache des mots, dont la clé ne porte pas les voisins */
+      if (m < CREDIT_ROMANISATION && germanique && X.traduits[i] && X.sources[i] !== "") {
+        const src = X.sources[i]!;
+        const voisins = [X.mots[i - 1], X.mots[i + 1]].filter((w): w is string => w !== undefined && w.length >= 4);
+        const k = Y.mots.findIndex((w) => w.length >= src.length + 4
+          && ((w.endsWith(src) && voisins.includes(w.slice(0, -src.length))) || (w.startsWith(src) && voisins.includes(w.slice(src.length)))));
+        if (k >= 0) { m = CREDIT_ROMANISATION; meilleurY = k; equivalentM = false; }
       }
       if (m < 0.8) { orphelins[cote] = true; orphelinsMots[cote].push(X.mots[i]!); }
       /* un mot géographique en tête (« Fujian Quanzhou Xingtai Shoes ») n'est pas un mot en
@@ -761,7 +811,9 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
      répondant : ce n'est pas une soudure, c'est un mot en plus (« Ingredients UK Limited »
      contre « Ingredients Limited », mesuré le 27/09) */
   const ecart = Math.abs(A.bloc.length - B.bloc.length);
-  const motEnPlus = ecart > 0 && (A.bloc.length > B.bloc.length ? orphelinsMots[0] : orphelinsMots[1]).some((w) => w.length === ecart);
+  /* une particule sautée n'est pas un mot en plus : « khalfan muhannadi autoparts » face à « Khalfan Al Muhannadi Auto Parts »
+     (jeu 14, 29/09 : 0,542, le bloc fermé par « al », deux lettres, l'écart exact des deux blocs) */
+  const motEnPlus = ecart > 0 && (A.bloc.length > B.bloc.length ? orphelinsMots[0] : orphelinsMots[1]).some((w) => w.length === ecart && !PARTICULES.has(w));
   /* la première lettre compte double ici aussi (mesuré le 27/09 : « Eliron Logistics »
      contre « Oboronlogistics » passait à 0,80 sans elle). Sous BLOC_MIN, le bloc ne compte
      pas : deux chaînes qui diffèrent d'un cinquième ne sont pas les mêmes mots autrement
@@ -899,6 +951,28 @@ export function composesAQueuesDistinctes(a: string, b: string, voyellesLibres =
     if ((generique(qa) && generique(qb)) || motsDistincts(qa, qb, voyellesLibres)) return true;
   }
   return false;
+}
+/** LE MOT QU'UN TÉLÉPHONE A CORRIGÉ : les deux noms n'ont qu'un mot chacun que l'autre n'a pas, et ces deux mots sont deux mots
+ *  du dictionnaire de même longueur qui ne diffèrent que par deux lettres inversées, le geste d'une faute de frappe (« Mian »,
+ *  « Main » : jeu 14, « Mian Tufail Cutlery Works » à 0,796), quand un nom propre commun aux deux noms, que le dictionnaire
+ *  ignore, ancre la paire (Tufail). Le dictionnaire dit que deux mots anglais à une lettre près sont deux mots (Marlin, Merlin :
+ *  voir `motsDistincts`) ; deux lettres inversées dans un mot long sont déjà une faute entre deux mots du dictionnaire (voir
+ *  `composesDistincts`), et ici c'est le reste du nom qui tient les deux mots ensemble. PAS LA SUBSTITUTION D'UNE LETTRE, même
+ *  sous cette ancre : mesurée le 28/09 sur les quatorze jeux, elle gagnait sept vrais noms du jeu 14 (« Harrington Miming »,
+ *  « Ibrahim Spare Parts », « Nkechi General Store », « Radcliffe Agri Experts », « Burj Al Rival »...) et levait six fausses
+ *  alertes fortes de la même forme exacte dans les jeux plus anciens (« Cardow Paints », « Cardow Prints » ; « Pellmoor Timber
+ *  Exports », « Pellmoor Timber Experts » ; « Kavrelli Wine », « Kavrelli Wire »...) : les jeux se contredisent sur cette forme,
+ *  aucun mécanisme ne les sépare. Une lettre de plus ou de moins reste un autre mot (« Supplies », « Suppliers »). L'ancre
+ *  n'est ni un numéro, ni un pays, ni une région, ni une syllabe isolée. Renvoie les deux mots dans l'ordre (A, B). */
+export function motAutocorrige(A: NomPrepare, B: NomPrepare): readonly [string, string] | undefined {
+  const seulsA = A.mots.filter((w) => !B.mots.includes(w)), seulsB = B.mots.filter((w) => !A.mots.includes(w));
+  if (seulsA.length !== 1 || seulsB.length !== 1) return undefined;
+  const x = seulsA[0]!, y = seulsB[0]!;
+  if (x.length < 4 || x.length !== y.length || !gesteDeFrappe(x, y)) return undefined;
+  if (lemme(x) === undefined || lemme(y) === undefined) return undefined;
+  const ancre = A.mots.some((w) => w !== x && w.length >= 4 && B.mots.includes(w) && lemme(w) === undefined && !/\d/.test(w)
+    && !PARTICULES.has(w) && !PAYS_MOTS.has(w) && !REGIONS.has(w) && !estSyllabeIsolee(w));
+  return ancre ? [x, y] : undefined;
 }
 /** La longueur du DESCRIPTEUR qui ouvre un nom : la suite des mots traduits, des particules et des adjectifs
  *  régionaux avant le premier mot que les tables ne connaissent pas (« Comércio e Importação Ferreira » : deux ;
