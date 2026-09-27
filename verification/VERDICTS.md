@@ -21,6 +21,8 @@ a verdict set is ever listed by any tool before it becomes training.
 | | | | | possible 0.80 | 129/200 [58-71 %] | 48/200 [19-30 %] |
 | 2026-09-27 21h | v11 77bac960 / ccee90bc / ecritures 4348bc88 | set #9 47ec8944 (Hamburg customs broker and Lagos trade-finance brief by document, Sonnet; overlap with the nine training sets: 0 pairs, 0 names; 11 pairs identical but for case, 6 match and 5 different), becomes paires-entites-10.json | 200 + 200 | strong 0.81 | 104/200 [45-59 %] | 39/200 [15-26 %] |
 | | | | | possible 0.80 | 163/200 [76-86 %] | 78/200 [33-46 %] |
+| 2026-09-28 | v12 dc363c55 / 949b2356 / ecritures 4348bc88 | set #10 985eb7c1 (Tokyo, Panama and Mexico brief by error source, explicit conventions, seventh model; overlap with the ten training sets: 0 pairs, 0 names; 0 pairs identical but for case), becomes paires-entites-11.json | 200 + 200 | strong 0.81 | 128/200 [57-70 %] | 6/200 [1-6 %] |
+| | | | | possible 0.80 | 179/200 [84-93 %] | 45/200 [17-29 %] |
 
 v6 on set #3 at other thresholds: 0.70 found 182 with 52 false; 0.75 found 181 with 37; 0.85 found 162
 with 19; 0.90 found 153 with 11.
