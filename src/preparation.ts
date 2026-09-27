@@ -494,7 +494,9 @@ export const SUCCURSALES: ReadonlySet<string> = new Set(["branch", "subesi", "su
  *  seul est un mot du nom : « Office National des Ports »). Une même source pour l'annotation qui les ôte et
  *  pour la mention qu'elle laisse (voir `mentionDeSuccursale`). */
 export const MOTS_DE_SIEGE = "head\\s*office|headquarters?|hq|hauptsitz|hauptverwaltung|zentrale|hoofdkantoor|hoofdzetel|si[e\u00e8]ge(?:\\s+social)?|sede\\s+(?:central|social|legale|principal)|casa\\s+matriz|hovedkontor|huvudkontor|registered\\s+office|main\\s+office|central\\s+office|principal\\s+office";
-export const MOTS_DE_BUREAU = "representative\\s+office|liaison\\s+office|branch\\s+office|agence|agencia|agenzia|kantoor|office|bureau|oficina|ufficio";
+export const MOTS_DE_BUREAU = "representative\\s+office|liaison\\s+office|branch\\s+office|agence|ag[e\\u00ea]ncia|agenzia|kantoor|office|bureau|oficina|ufficio"
+  /* jeu 16 : le dépôt, l'entrepôt, le point de vente et le bureau d'une société, en portugais, espagnol et français */
+  + "|dep[o\\u00f3]sito|entrep[o\\u00f4]t|armaz[e\\u00e9]m|almac[e\\u00e9]n|point\\s+de\\s+vente|punto\\s+de\\s+venta|ponto\\s+de\\s+venda|escrit[o\\u00f3]rio|delega[c\\u00e7][a\\u00e3i][o\\u00f3]n?|loja|magasin|tienda";
 const SIEGE = new RegExp(`(?<![\\p{L}])(?:${MOTS_DE_SIEGE})(?![\\p{L}])`, "iu");
 const BUREAU = new RegExp(`(?<![\\p{L}])(?:${[...SUCCURSALES].join("|")}|${MOTS_DE_BUREAU})(?![\\p{L}])`, "iu");
 /** Les mots vides d'une mention de succursale : ce qui reste est le lieu. */
@@ -512,6 +514,9 @@ const VIDES_DE_MENTION: ReadonlySet<string> = new Set(["of", "the", "de", "di", 
 export const REGISTRES: readonly RegExp[] = [
   /\(\s*(?:rc|bn|cac|cipc|hrb|hra|kvk|kbo|bce|ondernemingsnummer|ondernemingsnr|crn|cin|uen|acn|abn|brn|cnpj|cuit|ruc|nit|siren|siret)\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*(?:[a-z]{1,2}\s?)?\d[\d/.\-]{2,}[^()]*\)/giu,
   /\(\s*reg(?:istration|istered)?\.?\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*[a-z]?\d[\d/.\-]{2,}[^()]*\)/giu,
+  /* le RCCM de l'OHADA (« /RCCM ML BKO 2015 M 1234 », « (RCCM CI-ABJ-2015-B-1234) », jeu 16) : derrière une barre, une
+     virgule ou une parenthèse, jusqu'à la fin */
+  /\s*[\/(,;]\s*rccm\b\s*:?\s*[a-z0-9 .\-\/]{4,}\)?\s*$/giu,
   /(?<=\b(?:ltd|limited|plc|inc|llc|gmbh|bhd|bv|nv)\.?)[\s,]+(?:rc|bn|hrb|hra|kvk|kbo|bce|reg(?:istration)?\.?\s*(?:no\.?|nr\.?|number)?)\s*[:.]?\s*[a-z]?\d[\d/.\-]{3,}\s*$/giu,
   /* le numéro de société japonais (法人番号, treize chiffres), entre parenthèses ou en tête, suivi d'un tiret ou d'un deux-points
      (« Corporate Number 8011001077453 », puis le nom, jeu 11 : un numéro d'un seul côté, 0,800) */
@@ -811,6 +816,13 @@ function grec(nom: string): string {
  * d'office, « kemunlng » face à « kemuning » restait un mot ambigu plafonné au possible (mesuré le
  * 27/09 sur le jeu 9 : « MT C0RAL KEMUN1NG » à 0,800, « JAT1 LESTAR1 NU5ANTARA » à 0,727).
  */
+/** « lvoirienne », « lmport » (jeu 16) : un l initial devant une consonne, dans un mot de cinq lettres au moins que rien ne
+ *  connaît, est la capitale I lue par l'optique, quelle que soit la casse du nom ; « ll » (Lloyd), « ly » (Lynx), les formes
+ *  (LNG, LLC) et le « lv » du pinyin tapé au clavier devant une consonne ou un e (Lvbang, lve : le ü, perdu à la mesure du
+ *  29/09) n'y touchent pas ; « lvoirienne », le v devant une autre voyelle, n'est pas du pinyin. */
+function lInitialLuPourI(j: string): string {
+  return /^l(?:[bcdfghjkmnpqrstwxz]|v(?=[aiouy]))\p{L}{3,}$/u.test(j) && lemme(j) === undefined && !FORMES.has(j) ? `i${j.slice(1)}` : j;
+}
 function ocr(j: string): string {
   if (j === "000") return "ooo";
   if (!/\d/.test(j) || !/\p{L}/u.test(j)) return j;
@@ -820,6 +832,8 @@ function ocr(j: string): string {
   if (/^\p{L}{4,}[105]$/u.test(j)) return enLettres(j);
   /* « A1i » (jeu 15) : un 1 entre deux lettres d'un mot de trois, un nom court mal lu, jamais un numéro */
   if (/^\p{L}1\p{L}$/u.test(j)) return enLettres(j);
+  /* « Font4nelli » (jeu 16) : un 4 seul entre deux suites de lettres est un a mal lu */
+  if (/^\p{L}{3,}4\p{L}{3,}$/u.test(j)) return j.replace("4", "a");
   /* « AUT0 » (trois lettres) et « ELECTR0NIC5 » (des chiffres au milieu ET à la fin) : quand le mot
      corrigé est un mot du dictionnaire, c'est une lecture fautive, pas un numéro (jeu 10, 27/09) */
   const commeUnMot = j.replace(/0/g, "o").replace(/1/g, "i").replace(/5/g, "s").replace(/8/g, "b");
@@ -862,7 +876,7 @@ function capitalesLuesOptiquement(nom: string): string {
 const PREFIXES_NAVIRE = new Set(["mv", "mt", "ms", "my", "sy", "ss", "mts", "fv", "rv", "tb", "lpgc", "lngc", "tug", "barge", "tugboat",
   /* le Rhin et la Meuse (jeu 14) : TMS (Tankmotorschiff), GMS (Gütermotorschiff), MSV, la duwbak (barge poussée), le duwboot
      (pousseur) et le sleepboot (remorqueur), écrits devant le nom ou entre parenthèses derrière */
-  "tms", "gms", "msv", "duwbak", "duwboot", "sleepboot",
+  "tms", "gms", "msv", "duwbak", "duwboot", "sleepboot", "nm",
   /* l'Asie du Sud-Est (jeu 9) : BG et TK (barge, tongkang), TB (tug boat), KM (kapal motor), LCT, SPOB */
   "bg", "tk", "km", "kmp", "klm", "lct", "spob", "mtug", "mfv",
   "tanker", "vessel", "roro", "ferry", "dredger", "trawler",
@@ -1386,6 +1400,10 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
        l'article tombe et le mot reste entier (jeu 10, 27/09 : « dimport » face à « import », 0,728). La minuscule d
        seulement : « D'Angelo », « D'Souza » sont des noms, soudés comme « O'Brien » */
     .replace(/(?<!\p{L})(?:d|l|L)['’ʼ`](?=\p{L})/gu, "")
+    /* l'élision sans son apostrophe (« dImport Export », le correcteur d'un téléphone, jeu 16) : la minuscule d ou l collée à
+       une capitale ; et, dans un nom tout en capitales, « D IMPORT » où l'apostrophe est devenue une espace */
+    .replace(/(?<!\p{L})[dl](?=\p{Lu}\p{Ll}{2})/gu, "")
+    .replace(/(?<!\p{L})[DL] (?=[A-Z\u00c0-\u00dc]{3,}(?![a-z]))/gu, (m) => (/\p{Ll}/u.test(nom) ? m : ""))
     .replace(/(\p{L})['’ʼ`](\p{L})/gu, "$1$2")
     /* Les lettres séparées par un point ou une barre forment UN sigle (« S.A. », « F.Z.E. »,
        « M/V », « A.K. ») : on les soude ici, sur le texte, parce qu'après la normalisation une
@@ -1440,7 +1458,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* une forme ÉPELÉE avec des espaces (« S A S », « S de R L », « S A de C V », jeu 11) : les lettres seules qui se
      suivent se soudent, comme le font déjà les points (« S.A.S. ») ; « J P Morgan » devient « JP Morgan », rien de plus */
   const brut = jetons(jetons(normaliser(soude).replace(/\b\p{L}(?: \p{L})+\b/gu, (m) => m.replace(/ /g, ""))).map(ocr).join(" ")
-    .replace(/(\p{L})(\d)/gu, "$1 $2").replace(/(\d)(\p{L})/gu, "$1 $2")).map(digrammeOptique).map(motDuMetierPerdu);
+    .replace(/(\p{L})(\d)/gu, "$1 $2").replace(/(\d)(\p{L})/gu, "$1 $2")).map(digrammeOptique).map(lInitialLuPourI).map(motDuMetierPerdu);
   const joints = brut;
   /* « No. », « Nr. », « Number » devant un numéro ne sont que le mot « numéro ». */
   const sansNo = joints.filter((j, i) => !(/^(no|nr|num|number)$/.test(j) && /^\d+$/.test(joints[i + 1] ?? "")));
@@ -1583,7 +1601,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     });
     const p = PAYS_ADJECTIFS.get(j);
     if (p !== undefined) return [p];
-    const t = traduction(j, japonaisPresume, slave);
+    let t = traduction(j, japonaisPresume, slave);
+    /* « Comercioo de Graos » (jeu 16) : la lettre doublée d'un mot de métier que les tables connaissent sans elle */
+    if (t === undefined && /(\p{L})\1/u.test(j) && lemme(j) === undefined) { const d = j.replace(/(\p{L})\1/gu, "$1"); t = d === j ? undefined : traduction(d, japonaisPresume, slave); }
     if (t === undefined) return [j];
     for (const m of t.split(" ")) if (m !== "") { traduits.add(m); if (!sources.has(m)) sources.set(m, j); }
     return t.split(" ");

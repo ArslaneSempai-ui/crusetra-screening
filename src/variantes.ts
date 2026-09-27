@@ -65,6 +65,8 @@ const PREFIXES: readonly RegExp[] = [
      et la citation du registre pakistanais (« SECP Reg. 0012345 ») */
   /^\s*(?:jazzcash|easypaisa|m-?pesa|mpesa|tigo\s*pesa|airtel\s*money|mtn\s*momo|momo|paybill|till)\s*(?:acct|account|a\/c|no\.?|number|#)?\.?\s*:?\s*(?:\d{4,}\s*)?[:\-]?\s*/iu,
   /^\s*(?:secp|cac|brela|ursb|kra|fbr)\s+reg(?:istration|\.)?\s*(?:no\.?|#)?\s*:?\s*[a-z0-9\-/]{3,}\s+/iu,
+  /* « CPTE NO 4455 ETS OUATTARA » (jeu 16) : le numéro de compte devant le nom, en français, espagnol, portugais, anglais */
+  /^\s*(?:cpte|compte|cta|cuenta|conta|a\/c|acct|account)\.?\s*(?:no\.?|n[°º]|nr\.?|#)?\s*:?\s*[a-z0-9\-/]{3,}\s+/iu,
 ];
 const ANNOTATIONS: readonly RegExp[] = [
   /\([^()]*\b(?:flag|liquidation|liquidaci[oó]n|liquidazione|liquida[çc][aã]o|liquidatie|likvidation|konkurs|faillite|fallimento|insolven\w*|administration|receivership|receivers?|bankrupt\w*|dissolved|struck\s+off|under\s+arrest|arrested|detained|carrier|tanker|vessel|bulk|container|branch|office|built|blt|established|founded|est(?:d)?\.?\s*(?:in\s+)?\d{4}|since\s+\d{4}|(?:h\/n|hull\s*(?:no\.?)?)\s*[a-z]{0,3}-?\d+)\b[^()]*\)/giu,
@@ -111,11 +113,15 @@ const ANNOTATIONS: readonly RegExp[] = [
   /\s*\(?\s*ENI\s*:?\s*\d{8}\s*\)?\s*$/iu,
   /* jeu 15 : le CNIC pakistanais, le PIN kényan, le TIN et le NTN entre parenthèses derrière le nom */
   /\s*\(\s*(?:cnic|kra\s*pin|pin|tin|ntn|gstin|cin)\s*:?\s*[a-z0-9\-]{6,20}\s*\)\s*$/iu,
+  /* « Curtume Bianchi Ltda - ME » (jeu 16) : la taille d'entreprise brésilienne (ME, EPP, MEI) derrière la forme */
+  /(?<=\b(?:ltda|eireli|s\.?a\.?|me)\.?)\s*[-\u2013(]\s*(?:me|epp|mei)\s*\)?\s*$/iu,
   /\s+t\.?\s?a\.?\s?v\.?\s+.*$/iu,
   /* « Kenanga Pacific Sdn. Bhd. - Penang Branch » : la succursale après un tiret ; « Succursale de Genève », « Sucursal Lima » ;
      et le siège ou le bureau derrière une virgule ou un tiret (« , Head Office », « , Hauptsitz », « , Havengebied Kantoor ») :
      ce qu'ils nommaient, la variante le garde en mention (voir `mentionDeSuccursale`) */
   new RegExp(`\\s+[-\\u2013]\\s+[^,]*(?<![\\p{L}])(?:${[...SUCCURSALES].join("|")}|${MOTS_DE_SIEGE}|${MOTS_DE_BUREAU})(?![\\p{L}])(?!\\s*\\d).*$`, "iu"),
+  /* la même mention entre parenthèses (« (Bureau de Douala) », « (Succursale de Sikasso) », jeu 16) */
+  new RegExp(`\\s*\\((?:${[...SUCCURSALES].join("|")}|${MOTS_DE_SIEGE}|${MOTS_DE_BUREAU})\\s+(?:de\\s+la|de|du|des|da|do|of|di|van|von|in|en|a|\\u00e0)\\s+[^()]{2,30}\\)\\s*$`, "iu"),
   new RegExp(`,\\s*[^,]*(?<![\\p{L}])(?:${[...SUCCURSALES].join("|")}|${MOTS_DE_SIEGE}|${MOTS_DE_BUREAU})(?![\\p{L}])(?!\\s*\\d).*$`, "iu"),
   /\s+branch$/iu,
   /* le siège écrit sans virgule en fin de nom : « X Limited Head Office » */
@@ -225,6 +231,10 @@ const PORTS_ET_QUARTIERS: ReadonlySet<string> = new Set(["bandar", "kota", "jebe
   /* l'océan Indien et l'Afrique de l'Est (jeu 15) */
   "mombasa", "kilindini", "dar es salaam", "zanzibar", "tanga", "mtwara", "kampala", "kisumu", "lamu", "malindi", "karachi", "gwadar",
   "port qasim", "muscat", "salalah", "aden", "djibouti", "berbera", "mogadishu", "kismayo", "beira", "nacala", "durban", "maputo",
+  /* l'Afrique de l'Ouest francophone et l'Atlantique sud (jeu 16) */
+  "abidjan", "port bouet", "bouet", "vridi", "treichville", "cocody", "dakar", "bamako", "ouagadougou", "douala", "lome", "cotonou",
+  "conakry", "san pedro", "santos", "paranagua", "rio grande", "itajai", "vitoria", "salvador", "recife", "fortaleza", "manaus",
+  "buenos aires", "rosario", "bahia blanca", "montevideo", "valparaiso", "callao", "guayaquil", "cartagena", "barranquilla",
   "riga", "hamina", "kotka", "helsinki", "turku", "tallinn", "klaipeda", "constanta", "poti", "batumi", "goteborg", "gothenburg", "stockholm",
   "oslo", "copenhagen", "aarhus", "gdansk", "gdynia", "varna", "burgas", "odesa", "odessa", "mykolaiv", "kherson", "izmail", "samsun",
   "trabzon", "novorossiysk", "rostov", "taganrog", "izmir",
@@ -280,6 +290,37 @@ export function decollerLesQueues(s: string): string {
   }
   return queues.length ? [tete, ...queues].join(" ") : s;
 }
+/** Les formes qu'une casse mêlée écrit sans les coller à rien : jamais coupées (« mbH » coupé en « mb H » perdait le conflit GmbH
+ *  contre & Co. KG, mesuré le 29/09). */
+const FORMES_A_CASSE: ReadonlySet<string> = new Set(["gmbh", "mbh", "kgaa", "gesmbh", "ggmbh", "ohg", "ekg", "sprl", "bvba", "cvba", "scrl", "sagl", "plc"]);
+/** Les mots de rue que l'adresse d'un export colle au nom, et les codes d'État ou de province qui suivent une ville. */
+const RUES = ["AVENIDA", "STRASSE", "STREET", "ROUTE", "CALLE", "ROAD", "RUA", "RUE"];
+const CODES_ETATS: ReadonlySet<string> = new Set(["SP", "RJ", "PR", "SC", "RS", "MG", "BA", "PE", "CE", "ES", "GO", "PA", "AM", "MT", "MS",
+  "WA", "NSW", "QLD", "VIC", "SA", "TAS", "NT", "ACT", "ON", "QC", "BC", "AB"]);
+/** Un nom en capitales dont le dernier mot porte une ville, un port ou une rue collés : « FRERESABIDJAN » rend « FRERES », « SCHMIDTRUA15 »
+ *  rend « SCHMIDT », « TANAKASANTOS SP » rend « TANAKA » ; quatre lettres de nom au moins devant, la ville cinq au moins. */
+export function decollerLAdresse(s: string): string {
+  const rue = new RegExp(`^(.*?\\p{L}{4,}?)(?:${RUES.join("|")})(?:\\s*\\d.*|\\s+(?:DE|DA|DO|DOS|DAS|DES|DU|DEL|DE\\s+LA)\\s+.*|\\s*)$`, "u");
+  const m = rue.exec(s);
+  if (m) return m[1]!.trim();
+  const mots = s.split(/\s+/);
+  /* « FILSPORT BOUET » : le port en deux mots, son premier collé au nom */
+  if (mots.length >= 2 && PORTS_ET_QUARTIERS.has(mots[mots.length - 1]!.toLowerCase()) && /\p{L}{4,}(?:PORT|PORTO|PUERTO)$/u.test(mots[mots.length - 2]!)) {
+    return [...mots.slice(0, -2), mots[mots.length - 2]!.replace(/(?:PORT|PORTO|PUERTO)$/u, "")].join(" ");
+  }
+  for (let i = mots.length - 1; i >= 0 && i >= mots.length - 2; i--) {
+    const j = mots[i]!;
+    for (const v of PORTS_ET_QUARTIERS) {
+      const V = v.toUpperCase().replace(/ /g, "");
+      if (V.length >= 5 && j.endsWith(V) && j.length - V.length >= 4) {
+        const tete = [...mots.slice(0, i), j.slice(0, -V.length)];
+        const reste = mots.slice(i + 1);
+        if (reste.length === 0 || (reste.length === 1 && CODES_ETATS.has(reste[0]!))) return tete.join(" ");
+      }
+    }
+  }
+  return s;
+}
 /** Les variantes d'un nom brut, textes seuls (voir `variantesTypees`). */
 export function variantes(brut: string): string[] {
   return variantesTypees(brut).map((v) => v.texte);
@@ -311,6 +352,18 @@ export function variantesTypees(brut: string): VarianteTypee[] {
     if (/\p{Ll}\p{Lu}/u.test(seul)) poser(seul.replace(/(\p{Ll})(\p{Lu})/gu, "$1 $2").replace(/(\p{Lu}+)(\p{Lu}\p{Ll})/gu, "$1 $2"), false, "");
     else if (!/\p{Ll}/u.test(seul)) { const d = decollerLesQueues(seul); if (d !== seul) poser(d, false, ""); }
   }
+  /* plusieurs jetons dont l'un colle deux mots par sa casse (« EtsAbouKhalil etFils », jeu 16) : chaque jeton de huit lettres,
+     ou qui commence par une minuscule, se coupe à ses majuscules intérieures ; « GmbH », « KGaA », « McDonald » restent entiers */
+  if (/\s/.test(seul) && /\p{Ll}\p{Lu}/u.test(seul)) {
+    const coupe = seul.split(/\s+/).map((j) => (/\p{Ll}\p{Lu}/u.test(j) && (j.length >= 8 || (/^\p{Ll}/u.test(j) && j.length >= 5)) && !FORMES_A_CASSE.has(j.toLowerCase()) ? j.replace(/(\p{Ll})(\p{Lu})/gu, "$1 $2") : j)).join(" ");
+    if (coupe !== seul) poser(coupe, false, "");
+  }
+  /* un nom tout en capitales où une ville, un port ou une rue est collé au dernier mot (« ETS KONE ET FRERESABIDJAN »,
+     « FRIGORIFICO WERNER SCHMIDTRUA15 », « IMPORTADORA TANAKASANTOS SP », jeu 16) : l'adresse tombe, le nom reste */
+  if (!/\p{Ll}/u.test(seul) && /\p{Lu}{8,}/u.test(seul)) { const d = decollerLAdresse(seul); if (d !== seul) poser(d, false, ""); }
+  /* le D' d'un nom tout en capitales est l'élision autant que le nom (« ESPOIR D'ABIDJAN », « D'ANGELO », jeu 16) : la variante
+     sans lui s'ajoute, le nom tel qu'écrit reste */
+  if (!/\p{Ll}/u.test(seul) && /(?<!\p{L})D['’](?=\p{L})/u.test(seul)) poser(seul.replace(/(?<!\p{L})D['’](?=\p{L})/gu, ""), false, "");
   if (tampon !== undefined) poser(tampon, false, "");
   /* le registre écrit la personne nom d'abord : « Okeke, Chidi Building Materials » (jeu 10) */
   const inverse = /^([\p{Lu}][\p{L}'-]+),\s+([\p{Lu}][\p{L}'-]+)\s+(\p{L}.*)$/u.exec(brut.trim());
