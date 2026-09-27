@@ -31,6 +31,8 @@ a verdict set is ever listed by any tool before it becomes training.
 | | | | | possible 0.80 | 155/200 [71-83 %] | 59/200 [24-36 %] |
 | 2026-09-28 | v16 ebbd2990 / 6ad910de / ecritures bdd60326 | set #14 ee673be7 (Mombasa freight forwarder and Karachi bank brief by document: East African registries, Pakistani documents, Indian Ocean vessels, SWIFT fields, chat/OCR; corrected conventions unchanged; overlap with the fourteen training sets: 0 pairs, 0 names; 0 pairs identical but for case), becomes paires-entites-15.json | 200 + 200 | strong 0.81 | 141/200 [64-76 %] | 2/200 [0-4 %] |
 | | | | | possible 0.80 | 173/200 [81-91 %] | 23/200 [8-17 %] |
+| 2026-09-28 | v17 fa808a1c / a91bf0c8 / ecritures bdd60326 | set #15 f44d2a17 (Abidjan customs broker and São Paulo bank brief by document: francophone West African registries, Brazilian and Argentine documents, Atlantic vessels, SWIFT fields in French and Portuguese, chat/OCR; Sonnet, written in five parts; corrected conventions unchanged; fifteen em-dashes in names replaced by hyphens blind, 22 pairs are accent variants of one pair with concordant verdicts; overlap with the fifteen training sets: 0 pairs, 0 names; 8 pairs identical but for case), becomes paires-entites-16.json | 200 + 200 | strong 0.81 | 171/200 [80-90 %] | 8/200 [2-8 %] |
+| | | | | possible 0.80 | 188/200 [90-97 %] | 35/200 [13-23 %] |
 
 v6 on set #3 at other thresholds: 0.70 found 182 with 52 false; 0.75 found 181 with 37; 0.85 found 162
 with 19; 0.90 found 153 with 11.
