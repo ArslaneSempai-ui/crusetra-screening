@@ -1,0 +1,727 @@
+{
+ "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+ "provenance": "authored on 2026-09-27 by a separate agent that never saw the matcher, as a held-out set; every name invented; no client data, no list data. It judged method v2 once, its misses were then studied, and from that moment it is a TRAINING set: its rates are not quoted as held-out.",
+ "avertissement": "Authored pairs measure the method on the kinds of variation they name. They are not a sample of any client's counterparties.",
+ "paires": [
+  {
+   "a": "Brenholt Precision Castings Limited",
+   "b": "Brenholt Precision Castings Ltd.",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "OOO Dravetsky Les",
+   "b": "Dravetsky Les LLC",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "PJSC Tavrensk Grain Terminal",
+   "b": "Tavrensk Grain Terminal Public Joint Stock Company",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Qirvani Industrial Supplies FZE",
+   "b": "Qirvani Industrial Supplies Free Zone Establishment",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Lindqvar Hydraulik GmbH",
+   "b": "Lindqvar Hydraulik Gesellschaft mit beschränkter Haftung",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Minera Coltabra S.A.",
+   "b": "Minera Coltabra Sociedad Anónima",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Shenlai Ruogang Valve Co., Ltd.",
+   "b": "Shenlai Ruogang Valve Company Limited",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Kelubi Serantau Timber Sdn. Bhd.",
+   "b": "Kelubi Serantau Timber Sendirian Berhad",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Harrowvane International Freight Services",
+   "b": "Harrowvane Intl Freight Svcs",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Delancourt Brothers Manufacturing Co.",
+   "b": "Delancourt Bros. Mfg. Co.",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Fendrake & Mollory Logistics",
+   "b": "Fendrake and Mollory Logistics",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Vassendra Property Management Associates",
+   "b": "Vassendra Property Mgmt. Assoc.",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Tollandine Engineering Corporation",
+   "b": "Tollandine Engg. Corp.",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Saint Crevan Mercantile Company",
+   "b": "St. Crevan Mercantile Co.",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Seaward-Lynne Ship Chandlers",
+   "b": "Seaward Lynne Ship Chandlers",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "Ironmarsh Holdings",
+   "b": "Iron Marsh Holdings",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "A.R.T. Venmalai Exports",
+   "b": "ART Venmalai Exports",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "Nor-Castell Petroleum A/S",
+   "b": "NorCastell Petroleum A/S",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "Pellaw & Grane Co.",
+   "b": "Pellaw&Grane Co",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "Quenmoor Agricultural Machinery Trading LLC",
+   "b": "Quenmoor Agricultral Machinery Trading LLC",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "Kalvrenidis Shipping Enterprises",
+   "b": "Kalvrendis Shipping Enterprises",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "Morrowdene Textile Mills Pvt. Ltd.",
+   "b": "Morrowdene Textille Mills Pvt. Ltd.",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "Estrellano Fishing Cooperative",
+   "b": "Estrellano Fsihing Cooperative",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "Hallbrecht Chemical Logistics",
+   "b": "Halbrecht Chemcial Logistics",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "Zhelvinsky Sudoremontny Zavod",
+   "b": "Jelvinskiy Sudoremontnyi Zavod",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Kholmogrant-Stroy OOO",
+   "b": "Holmogrant-Stroi OOO",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Verkhnyaya Strelka Agro",
+   "b": "Werchnjaja Strelka Agro",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Qasr Al Ghazalat General Trading",
+   "b": "Kasr El Ghazalat General Trading",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Al Hudayriya Marine Services",
+   "b": "Al-Hudairiyah Marine Services",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Nakhlestan Khorshid Trading Company",
+   "b": "Nakhlistan Khurshid Trading Company",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Qiaoshan Hengmu Textile Co., Ltd.",
+   "b": "Ch'iao-shan Heng-mu Textile Co., Ltd.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Zhenqiao Hardware Co., Ltd.",
+   "b": "Chen-ch'iao Hardware Co., Ltd.",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Orvessane Marine & Offshore Services Ltd",
+   "b": "Orvessane Offshore & Marine Services Ltd",
+   "verdict": "match",
+   "nature": "word-order"
+  },
+  {
+   "a": "Al Sabkhawi Trading & Contracting Co.",
+   "b": "Al Sabkhawi Contracting & Trading Co.",
+   "verdict": "match",
+   "nature": "word-order"
+  },
+  {
+   "a": "Dalgrave Steel and Wire Products",
+   "b": "Dalgrave Wire and Steel Products",
+   "verdict": "match",
+   "nature": "word-order"
+  },
+  {
+   "a": "Société Fromagère de Vaulmérac",
+   "b": "Societe Fromagere de Vaulmerac",
+   "verdict": "match",
+   "nature": "diacritics"
+  },
+  {
+   "a": "Kırağıtepe Tekstil Sanayi A.Ş.",
+   "b": "Kiragitepe Tekstil Sanayi A.S.",
+   "verdict": "match",
+   "nature": "diacritics"
+  },
+  {
+   "a": "Przetwórnia Rybna Skałowiec",
+   "b": "Przetwornia Rybna Skalowiec",
+   "verdict": "match",
+   "nature": "diacritics"
+  },
+  {
+   "a": "Varkessian-Holm Heavy Lift Engineering and Marine Services Limited",
+   "b": "Varkessian-Holm Heavy Lift Engineer",
+   "verdict": "match",
+   "nature": "truncation"
+  },
+  {
+   "a": "Wendelhorst-Krameth Agrarhandel und Saatgutvertrieb GmbH",
+   "b": "Wendelhorst-Krameth Agrarhandel und",
+   "verdict": "match",
+   "nature": "truncation"
+  },
+  {
+   "a": "Ardcallan Offshore Drilling and Well Services Company W.L.L.",
+   "b": "Ardcallan Offshore Drilling",
+   "verdict": "match",
+   "nature": "truncation"
+  },
+  {
+   "a": "Morvenna Shipping",
+   "b": "Morvenna Shipping Company",
+   "verdict": "match",
+   "nature": "extra-generic-word"
+  },
+  {
+   "a": "The Grantholme Trading Company",
+   "b": "Grantholme Trading Company",
+   "verdict": "match",
+   "nature": "extra-generic-word"
+  },
+  {
+   "a": "Brathwick Steel",
+   "b": "Brathwick Steel Company",
+   "verdict": "match",
+   "nature": "extra-generic-word"
+  },
+  {
+   "a": "Tulverin Oil Company",
+   "b": "Tulverin Oil",
+   "verdict": "match",
+   "nature": "extra-generic-word"
+  },
+  {
+   "a": "MV Solenne Harbour",
+   "b": "Solenne Harbour",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "M/T Ardrevan Pearl",
+   "b": "MT Ardrevan Pearl",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "SS Maltrevor Queen",
+   "b": "Maltrevor Queen",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "M.V. Pelgarra Glory",
+   "b": "M/V PELGARRA GLORY",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "M/T Corrasine",
+   "b": "Corrasine",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "Lanjiang Yuan 6",
+   "b": "Lanjiangyuan 6",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "Nor-Vessa Explorer",
+   "b": "Norvessa Explorer",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "Kaltrena Voyager",
+   "b": "Kaltrena Voyagr",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "Bellatrine Horizon",
+   "b": "Belatrine Horizonn",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "Kapitan Drelyakhin",
+   "b": "Kapitan Dreliakhin",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Nujoom Al Rimalah",
+   "b": "Nojoum Al Rimala",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Delnavaz Roud",
+   "b": "Delnavaz Rud",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Brønnvåg Kystlys",
+   "b": "Bronnvag Kystlys",
+   "verdict": "match",
+   "nature": "diacritics"
+  },
+  {
+   "a": "Saint Aubrelle",
+   "b": "St. Aubrelle",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Kelvara Spirit II",
+   "b": "Kelvara Spirit 2",
+   "verdict": "match",
+   "nature": "numeral-format"
+  },
+  {
+   "a": "Northfell Copper Mining Ltd",
+   "b": "Southfell Copper Mining Ltd",
+   "verdict": "different",
+   "nature": "sibling-name"
+  },
+  {
+   "a": "Red Tamarisk Logistics FZE",
+   "b": "White Tamarisk Logistics FZE",
+   "verdict": "different",
+   "nature": "sibling-name"
+  },
+  {
+   "a": "Eastbrandle Tanker Management Ltd",
+   "b": "Westbrandle Tanker Management Ltd",
+   "verdict": "different",
+   "nature": "sibling-name"
+  },
+  {
+   "a": "Tessendra Coastal Freight Ltd",
+   "b": "Tessendra Inland Freight Ltd",
+   "verdict": "different",
+   "nature": "sibling-name"
+  },
+  {
+   "a": "Brelvin Upstream Ltd",
+   "b": "Brelvin Downstream Ltd",
+   "verdict": "different",
+   "nature": "sibling-name"
+  },
+  {
+   "a": "Upper Kaltori Hydro Power Company",
+   "b": "Lower Kaltori Hydro Power Company",
+   "verdict": "different",
+   "nature": "sibling-name"
+  },
+  {
+   "a": "Talvent Energy One Ltd",
+   "b": "Talvent Energy Two Ltd",
+   "verdict": "different",
+   "nature": "sibling-name"
+  },
+  {
+   "a": "New Dravallen Cement Company",
+   "b": "Old Dravallen Cement Company",
+   "verdict": "different",
+   "nature": "sibling-name"
+  },
+  {
+   "a": "Tervalo Shipping (Singapore) Pte. Ltd.",
+   "b": "Tervalo Shipping (Hong Kong) Limited",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Kastrelia Holdings AG",
+   "b": "Kastrelia Logistics GmbH",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Velmora Petrochemicals FZE",
+   "b": "Velmora Petrochemicals India Private Limited",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Quillamar Foods Holdings plc",
+   "b": "Quillamar Foods Distribution Ltd",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Ostravex Mining (Kazakhstan) LLP",
+   "b": "Ostravex Mining (Mongolia) LLC",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Hanvelle Bank Europe S.A.",
+   "b": "Hanvelle Bank Asia Limited",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Grellvane Marine Holdings Ltd",
+   "b": "Grellvane Marine Ship Management Ltd",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Sorvanto Chemicals Nigeria Limited",
+   "b": "Sorvanto Chemicals Ghana Limited",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Wexmoor Engineering GmbH",
+   "b": "Wexmoor Engineering Inc.",
+   "verdict": "different",
+   "nature": "different-jurisdiction"
+  },
+  {
+   "a": "Ferrisand Trading Pty Ltd",
+   "b": "Ferrisand Trading Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "different-jurisdiction"
+  },
+  {
+   "a": "Brevardi Global Shipping International",
+   "b": "Tamsford Global Shipping International",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "Kinvarrow General Trading LLC",
+   "b": "Moselund General Trading LLC",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "Ferrandine International Trading Company",
+   "b": "Solvanek International Trading Company",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "Aldervaine Marine Services & Supply",
+   "b": "Varnholm Marine Services & Supply",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "United Qalvaris Petroleum Products Trading",
+   "b": "United Zomarik Petroleum Products Trading",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "Asia Pacific Kelloran Logistics",
+   "b": "Asia Pacific Durnevo Logistics",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "Premier Braskett Industrial Holdings",
+   "b": "Premier Wyndlow Industrial Holdings",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "Ashcorran Mining Supplies Ltd",
+   "b": "Ashcorran Dining Supplies Ltd",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Halvern Rail Services Ltd",
+   "b": "Halvern Mail Services Ltd",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Pellmoor Timber Exports Ltd",
+   "b": "Pellmoor Timber Experts Ltd",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Northgrave Paint Co.",
+   "b": "Northgrave Plant Co.",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Kavrelli Wine Imports",
+   "b": "Kavrelli Wire Imports",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Dunmarrow Cotton Traders",
+   "b": "Dunmarrow Carton Traders",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Rosmerel Tile Works",
+   "b": "Rosmerel Tire Works",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Zephrine Pharmaceuticals Ltd",
+   "b": "Zephrine Yacht Charters Ltd",
+   "verdict": "different",
+   "nature": "same-distinctive-word-different-business"
+  },
+  {
+   "a": "Obrenco Steel Trading LLC",
+   "b": "Obrenco Dental Clinic LLC",
+   "verdict": "different",
+   "nature": "same-distinctive-word-different-business"
+  },
+  {
+   "a": "Travenna Cement Industries",
+   "b": "Travenna Fashion House",
+   "verdict": "different",
+   "nature": "same-distinctive-word-different-business"
+  },
+  {
+   "a": "Quorvanta Aviation Services",
+   "b": "Quorvanta Poultry Farms",
+   "verdict": "different",
+   "nature": "same-distinctive-word-different-business"
+  },
+  {
+   "a": "Brakmund Software Solutions",
+   "b": "Brakmund Scrap Metal Recycling",
+   "verdict": "different",
+   "nature": "same-distinctive-word-different-business"
+  },
+  {
+   "a": "Tarquell Insurance Brokers",
+   "b": "Tarquell Fisheries",
+   "verdict": "different",
+   "nature": "same-distinctive-word-different-business"
+  },
+  {
+   "a": "Ivenstone Hotels & Resorts",
+   "b": "Ivenstone Mining Equipment",
+   "verdict": "different",
+   "nature": "same-distinctive-word-different-business"
+  },
+  {
+   "a": "Lorvessa Textiles",
+   "b": "Lorvessa Shipping",
+   "verdict": "different",
+   "nature": "same-distinctive-word-different-business"
+  },
+  {
+   "a": "Marrowby Flour Mills Ltd",
+   "b": "Marrowby Flower Farms Ltd",
+   "verdict": "different",
+   "nature": "homophone-different-entity"
+  },
+  {
+   "a": "Kellivar Mussel Farms Ltd",
+   "b": "Kellivar Muscle Fitness Ltd",
+   "verdict": "different",
+   "nature": "homophone-different-entity"
+  },
+  {
+   "a": "Carrowvale Brake Components Ltd",
+   "b": "Carrowvale Break Holidays Ltd",
+   "verdict": "different",
+   "nature": "homophone-different-entity"
+  },
+  {
+   "a": "Brisbourne Stationery Supplies Ltd",
+   "b": "Brisbourne Stationary Engines Ltd",
+   "verdict": "different",
+   "nature": "homophone-different-entity"
+  },
+  {
+   "a": "Keelmont Quay Services Ltd",
+   "b": "Keelmont Key Cutting Services Ltd",
+   "verdict": "different",
+   "nature": "homophone-different-entity"
+  },
+  {
+   "a": "Istrenna Venture II",
+   "b": "Istrenna Venture III",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "Aldmoor Trader 3",
+   "b": "Aldmoor Trader 5",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "Jin Qiaoyun 26",
+   "b": "Jin Qiaoyun 62",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "Brevanka Carrier 1",
+   "b": "Brevanka Carrier 11",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "Silver Kestrelle IV",
+   "b": "Silver Kestrelle VI",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "Tarnwick Bulker 4",
+   "b": "Tarnwick Bulker 7",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "M/V Ostrella Bay 5",
+   "b": "M/V Ostrella Bay 8",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "Kerrindale Express 30",
+   "b": "Kerrindale Express 3",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "Nordwen Pioneer",
+   "b": "Nordwen Explorer",
+   "verdict": "different",
+   "nature": "sibling-name"
+  },
+  {
+   "a": "Cape Tamsorra",
+   "b": "Cape Ysoldine",
+   "verdict": "different",
+   "nature": "sibling-name"
+  },
+  {
+   "a": "Valdris Swift",
+   "b": "Valdris Falcon",
+   "verdict": "different",
+   "nature": "sibling-name"
+  },
+  {
+   "a": "Glenmorran Maiden",
+   "b": "Glenmorran Warrior",
+   "verdict": "different",
+   "nature": "sibling-name"
+  },
+  {
+   "a": "Tavrin Ocean Star",
+   "b": "Solberra Ocean Star",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "Grand Mervayne Trader",
+   "b": "Grand Oskarell Trader",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "MV Orlessa Dawn",
+   "b": "Orlessa Dawn Shipping Ltd",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  }
+ ]
+}

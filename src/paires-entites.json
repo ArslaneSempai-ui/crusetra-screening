@@ -1,0 +1,727 @@
+{
+ "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+ "provenance": "authored by this repository on 2026-09-27, every name invented; no client data, no list data. Written before any tier was scored on it.",
+ "avertissement": "Authored pairs measure the method on the kinds of variation they name (legal form, transliteration, typo, vessel prefix; sister vessels, subsidiaries, near names). They are not a sample of any client's counterparties, and a rate here is a rate on this set.",
+ "paires": [
+  {
+   "a": "Blue Harbor Logistics LLC",
+   "b": "Blue Harbor Logistics",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Orion Maritime Ltd",
+   "b": "Orion Maritime Limited",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Kestrel Trading Co., Ltd.",
+   "b": "Kestrel Trading Company Limited",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Veltra Industrial Corp",
+   "b": "Veltra Industrial Corporation",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Norhavn Shipping AS",
+   "b": "Norhavn Shipping",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Gulf Meridian FZE",
+   "b": "Gulf Meridian F.Z.E.",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Tarsis Handels GmbH",
+   "b": "Tarsis Handels",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Brenmoor Holdings PLC",
+   "b": "Brenmoor Holdings",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Sarnova Petrochem JSC",
+   "b": "Joint Stock Company Sarnova Petrochem",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "Limited Liability Company Vostrakom",
+   "b": "Vostrakom LLC",
+   "verdict": "match",
+   "nature": "legal-form"
+  },
+  {
+   "a": "OOO Kamaflot",
+   "b": "Kamaflot OOO",
+   "verdict": "match",
+   "nature": "legal-form-position"
+  },
+  {
+   "a": "Kamyshin Trans AO",
+   "b": "AO Kamyshin Trans",
+   "verdict": "match",
+   "nature": "legal-form-position"
+  },
+  {
+   "a": "Petrovask, OOO",
+   "b": "OOO Petrovask",
+   "verdict": "match",
+   "nature": "legal-form-position"
+  },
+  {
+   "a": "Trading House Nordal",
+   "b": "Nordal Trading House",
+   "verdict": "match",
+   "nature": "token-order"
+  },
+  {
+   "a": "Shipping Company Aldera",
+   "b": "Aldera Shipping Company",
+   "verdict": "match",
+   "nature": "token-order"
+  },
+  {
+   "a": "Group Zemtek",
+   "b": "Zemtek Group",
+   "verdict": "match",
+   "nature": "token-order"
+  },
+  {
+   "a": "Al-Noor Shipping",
+   "b": "Al Noor Shipping",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "PetroLink Energy",
+   "b": "Petro Link Energy",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "Sea-Bridge Marine",
+   "b": "Seabridge Marine",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "A.K. Rostam Trading",
+   "b": "AK Rostam Trading",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "Tri-Star Freight",
+   "b": "Tristar Freight",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "Hai Xin Logistics",
+   "b": "Haixin Logistics",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "Da Long Shipping",
+   "b": "Dalong Shipping",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "Euro-Asia Cargo",
+   "b": "EuroAsia Cargo",
+   "verdict": "match",
+   "nature": "punctuation-spacing"
+  },
+  {
+   "a": "Meridian International Trading",
+   "b": "Meridian Intl Trading",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Harlow Brothers Shipping",
+   "b": "Harlow Bros Shipping",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Castell & Sons Freight",
+   "b": "Castell and Sons Freight",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Northern Pacific Mfg",
+   "b": "Northern Pacific Manufacturing",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Oceanic Shipping Mgmt",
+   "b": "Oceanic Shipping Management",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Arcadia Intl. Corp",
+   "b": "Arcadia International Corporation",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Pinecrest Tech & Trade",
+   "b": "Pinecrest Tech and Trade",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Samarkand Int'l Freight",
+   "b": "Samarkand International Freight",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Sovtransflot",
+   "b": "Sowtransflot",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Khimtekhnika",
+   "b": "Chimtechnika",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Volgaprom",
+   "b": "Wolgaprom",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Tekhnoexport Yug",
+   "b": "Technoexport Yug",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Yuzhny Terminal",
+   "b": "Iuzhnyi Terminal",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Shahrzad Kish Trading",
+   "b": "Shahrazad Kish Trading",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Mohammadi Shipping",
+   "b": "Mohamadi Shipping",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Qadir Brothers Trading",
+   "b": "Kadir Brothers Trading",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Hosseini Petrochemical",
+   "b": "Hoseini Petrochemical",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Xin Yuan Da",
+   "b": "Hsin Yuan Ta",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "Brightwater Commodities",
+   "b": "Brightwatter Commodities",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "Silverline Tankers",
+   "b": "Silverlien Tankers",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "Marmara Bulk Carriers",
+   "b": "Marmara Bulk Carrier",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "Caspian Fuel Supply",
+   "b": "Caspian Fuels Supply",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "Redcliff Metals",
+   "b": "Redclif Metals",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "Aegean Star Navigation",
+   "b": "Aegaen Star Navigation",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "Thornbury Chemicals",
+   "b": "Thornbury Chemicls",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "Levant Grain Traders",
+   "b": "Levant Grain Trader",
+   "verdict": "match",
+   "nature": "typo"
+  },
+  {
+   "a": "MV Ocean Pearl",
+   "b": "Ocean Pearl",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "M/T Sea Falcon",
+   "b": "Sea Falcon",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "M.V. Northern Light",
+   "b": "Northern Light",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "MT Karina",
+   "b": "Karina",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "SS Andromeda Spirit",
+   "b": "Andromeda Spirit",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "M/V Golden Crane",
+   "b": "Golden Crane",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "Société Maritime Côtière",
+   "b": "Societe Maritime Cotiere",
+   "verdict": "match",
+   "nature": "diacritics"
+  },
+  {
+   "a": "Dış Ticaret Lojistik",
+   "b": "Dis Ticaret Lojistik",
+   "verdict": "match",
+   "nature": "diacritics"
+  },
+  {
+   "a": "Nordström Frakt",
+   "b": "Nordstrom Frakt",
+   "verdict": "match",
+   "nature": "diacritics"
+  },
+  {
+   "a": "Łódź Transport",
+   "b": "Lodz Transport",
+   "verdict": "match",
+   "nature": "diacritics"
+  },
+  {
+   "a": "Orion Maritime Ltd",
+   "b": "Orion Marine Ltd",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Golden Star Shipping",
+   "b": "Golden Sun Shipping",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Nova Trade FZE",
+   "b": "Nova Tech FZE",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Delta Marine Services",
+   "b": "Delta Marine Supplies",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Atlas Logistics",
+   "b": "Atlas Logic Systems",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Pacific Rim Trading",
+   "b": "Pacific Ridge Trading",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Silverline Tankers",
+   "b": "Silverline Tailors",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Caspian Fuel Supply",
+   "b": "Caspian Food Supply",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Redcliff Metals",
+   "b": "Redcliff Motors",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Aegean Star Navigation",
+   "b": "Aegean Sea Navigation",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Brightwater Commodities",
+   "b": "Brightwater Communities",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Marmara Bulk Carriers",
+   "b": "Marmara Bulk Cement",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Levant Grain Traders",
+   "b": "Levant Green Traders",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Thornbury Chemicals",
+   "b": "Thornbury Ceramics",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Kestrel Trading",
+   "b": "Kestrel Training",
+   "verdict": "different",
+   "nature": "sibling"
+  },
+  {
+   "a": "Meridian Holdings Dubai",
+   "b": "Meridian Holdings Singapore",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Norhavn Shipping Asia",
+   "b": "Norhavn Shipping Europe",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Veltra Industrial Kazakhstan",
+   "b": "Veltra Industrial Turkey",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Gulf Meridian Energy",
+   "b": "Gulf Meridian Finance",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Tarsis Handels Hamburg",
+   "b": "Tarsis Handels Bremen",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Sarnova Petrochem Trading",
+   "b": "Sarnova Petrochem Engineering",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Blue Harbor Logistics Texas",
+   "b": "Blue Harbor Logistics Florida",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Aldera Shipping North",
+   "b": "Aldera Shipping South",
+   "verdict": "different",
+   "nature": "group-subsidiary"
+  },
+  {
+   "a": "Star I",
+   "b": "Star II",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "Hong Da 1",
+   "b": "Hong Da 8",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "Ocean Pearl",
+   "b": "Ocean Pearl II",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "Sea Falcon 3",
+   "b": "Sea Falcon 5",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "Karina I",
+   "b": "Karina IV",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "Northern Light 7",
+   "b": "Northern Light 17",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "Golden Crane 2",
+   "b": "Golden Crane 12",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "Andromeda Spirit",
+   "b": "Andromeda Spirit II",
+   "verdict": "different",
+   "nature": "sister-vessel"
+  },
+  {
+   "a": "International Trading Company",
+   "b": "International Transport Company",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "Global Shipping Services",
+   "b": "Global Shipping Solutions",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "United Oil Supply",
+   "b": "United Oil Services",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "Eastern Marine Agency",
+   "b": "Western Marine Agency",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "National Petroleum Trading",
+   "b": "National Plastics Trading",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "First Gulf Logistics",
+   "b": "First Gold Logistics",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "Royal Cargo Line",
+   "b": "Royal Care Line",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "Asia Pacific Freight",
+   "b": "Asia Pacific Fruit",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "Sun Energy Holdings",
+   "b": "Sun Enterprise Holdings",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "Continental Grain Export",
+   "b": "Continental Glass Export",
+   "verdict": "different",
+   "nature": "generic-words"
+  },
+  {
+   "a": "Vostrakom Telecom",
+   "b": "Vostrakom Stroy",
+   "verdict": "different",
+   "nature": "same-distinctive-word"
+  },
+  {
+   "a": "Kamaflot",
+   "b": "Kamaplast",
+   "verdict": "different",
+   "nature": "same-distinctive-word"
+  },
+  {
+   "a": "Petrovask",
+   "b": "Petrovax",
+   "verdict": "different",
+   "nature": "same-distinctive-word"
+  },
+  {
+   "a": "Nordal Fisheries",
+   "b": "Nordal Finance",
+   "verdict": "different",
+   "nature": "same-distinctive-word"
+  },
+  {
+   "a": "Zemtek Mining",
+   "b": "Zemtek Media",
+   "verdict": "different",
+   "nature": "same-distinctive-word"
+  },
+  {
+   "a": "Sovtransflot",
+   "b": "Sovtransavto",
+   "verdict": "different",
+   "nature": "same-distinctive-word"
+  },
+  {
+   "a": "Khimtekhnika",
+   "b": "Khimtekstil",
+   "verdict": "different",
+   "nature": "same-distinctive-word"
+  },
+  {
+   "a": "Volgaprom",
+   "b": "Volgaport",
+   "verdict": "different",
+   "nature": "same-distinctive-word"
+  },
+  {
+   "a": "Tekhnoexport Yug",
+   "b": "Tekhnoexport Sever",
+   "verdict": "different",
+   "nature": "same-distinctive-word"
+  },
+  {
+   "a": "Shahrzad Kish Trading",
+   "b": "Shahrzad Qeshm Trading",
+   "verdict": "different",
+   "nature": "same-distinctive-word"
+  },
+  {
+   "a": "Hai Xin Logistics",
+   "b": "Hai Xing Logistics",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Da Long Shipping",
+   "b": "Da Tong Shipping",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Tri-Star Freight",
+   "b": "Five-Star Freight",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Euro-Asia Cargo",
+   "b": "Euro-Africa Cargo",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Mohammadi Shipping",
+   "b": "Mohammadpur Shipping",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Qadir Brothers Trading",
+   "b": "Nadir Brothers Trading",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Hosseini Petrochemical",
+   "b": "Husseini Pharmaceutical",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Castell & Sons Freight",
+   "b": "Cantell & Sons Freight",
+   "verdict": "different",
+   "nature": "near-string"
+  },
+  {
+   "a": "Harlow Bros Shipping",
+   "b": "Barlow Bros Shipping",
+   "verdict": "different",
+   "nature": "near-string"
+  }
+ ]
+}

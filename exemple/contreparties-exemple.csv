@@ -1,0 +1,31 @@
+ref,name,type,country
+C-001,Harbor Point Logistics LLC,entity,US
+C-002,Midwest Grain Export Co.,entity,US
+C-003,Coastal Reefer Lines Inc,entity,US
+C-004,Tidewater Customs Brokerage,entity,US
+C-005,Lone Star Machinery Parts,entity,US
+C-006,Northgate Textiles Ltd,entity,GB
+C-007,Rotterdam Bulk Agency B.V.,entity,NL
+C-008,Hanseatic Coffee Trading GmbH,entity,DE
+C-009,Santos Citrus Exportadora,entity,BR
+C-010,"Busan Auto Parts Co., Ltd.",entity,KR
+C-011,"Shenzhen Brightway Electronics Co., Ltd.",entity,CN
+C-012,Istanbul Marble Export A.S.,entity,TR
+C-013,Dubai Horizon General Trading LLC,entity,AE
+C-014,Vancouver Timber Products,entity,CA
+C-015,Golden Gate Freight Solutions,entity,US
+C-016,Atlantic Seafood Imports,entity,US
+C-017,Kaohsiung Steel Fittings,entity,TW
+C-018,Davar Shipping Co. Limited,entity,AE
+C-019,Proton Petrochemical Shipping Ltd,entity,MT
+C-020,Behineh Trading Co,entity,IR
+C-021,Gazprom Telecom LLC,entity,RU
+C-022,IKCO Trading GmbH,entity,DE
+C-023,Eliron Logistics Oy,entity,FI
+C-024,Kong Fat Electronic Trading Ltd,entity,HK
+V-001,MV Marshal Zhukov,vessel,
+V-002,M/V Thae Pyong San,vessel,
+V-003,Tong Hung 1,vessel,
+V-004,Tong Hung 3,vessel,
+V-005,Coastal Spirit,vessel,
+V-006,Northern Dawn,vessel,

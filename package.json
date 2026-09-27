@@ -17,7 +17,10 @@
     "poids": "node src/poids.ts",
     "sceller": "node src/sceller.ts",
     "verify": "node src/verifier-rapport.mjs",
-    "licences": "node src/licences.ts"
+    "licences": "node src/licences.ts",
+    "cribler": "node src/cribler.ts",
+    "mesure-entites": "node src/mesure-entites.ts",
+    "temoin-index": "node src/temoin-index.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "4.2.0"

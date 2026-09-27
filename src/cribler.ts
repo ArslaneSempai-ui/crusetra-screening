@@ -1,0 +1,718 @@
+/**
+ * CRIBLER UNE LISTE DE CONTREPARTIES contre les listes publiques, et sceller la réponse.
+ *
+ *   npm run cribler -- --names=<csv> [--client=<name>]
+ *
+ * Le fichier porte une colonne `name` (obligatoire) et, s'il le veut, `ref` (son propre
+ * identifiant), `imo` (le numéro OMI d'un navire), `type` et `country`. Chaque nom est
+ * comparé à chaque nom ET alias de chaque liste disponible sur cette machine. Rien ne sort
+ * de la machine : les listes sont descendues avant (`npm run listes -- --fetch`), et cette
+ * commande ne touche pas le réseau.
+ *
+ * ─── LES SEUILS NE SONT PAS DES RÉGLAGES, CE SONT DES MESURES ───
+ *
+ * À chaque criblage, le score d'entité est mesuré sur les jeux d'apprentissage, et les deux
+ * seuils (fort, possible) sont ceux que `choisirSeuils` désigne. Le jeu de VERDICT, écrit par
+ * une autre main et jamais utilisé pour choisir, est mesuré aux mêmes seuils : ce sont SES
+ * taux que le rapport cite en premier. Les poids des mots viennent des listes criblées, dont
+ * le relevé porte les empreintes : un lecteur peut refaire chaque calcul.
+ *
+ * ─── CE QUE CE RELEVÉ N'EST PAS ───
+ *
+ * Un candidat n'est pas une correspondance établie : c'est un nom à relire par le
+ * responsable conformité du client, qui confirme ou écarte. Le relevé le dit dans ses
+ * réserves, à chaque fois, parce qu'un rapport de criblage cité sans cette phrase devient
+ * une accusation.
+ */
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { basename } from "node:path";
+import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
+import { lireTable } from "./csv.ts";
+import { lireManifeste, lireListe, SOURCES, type EntreeListe } from "./listes.ts";
+import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
+import { commitCourant } from "./your-alerts.ts";
+import type { Cellule } from "./measure.ts";
+import {
+  frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, tronque, simMinimale, palierEntite, estCoupe,
+  sembleCoupe, variationVocalique, tousDeuxAnglais, mesurerJeux, choisirSeuils, lireJeu, CHEMINS_APPRENTISSAGE,
+  CHEMIN_VERDICT, RAPPEL_MIN, BLOC_MIN, LONGUEUR_CHAMP,
+  type Frequences, type NomPrepare, type Reglage, type JeuMesure,
+} from "./entites.ts";
+
+/** Au plus autant de candidats montrés par nom ; le compte des autres est donné. */
+export const CANDIDATS_MONTRES = 5;
+
+export type Contrepartie = { ligne: number; nom: string; ref?: string; imo?: string; type?: string; pays?: string };
+
+export type Candidat = {
+  source: EntreeListe["source"]; liste?: string;
+  /** les identifiants de la liste : plusieurs quand la même liste porte le même nom deux
+   *  fois (deux adresses d'une même société), regroupés pour ne pas doubler l'alerte */
+  ids: string[];
+  nomListe: string;
+  /** l'alias qui a porté le score, s'il n'est pas le nom principal */
+  alias?: string;
+  /** vrai si cet alias est classé « weak » par l'OFAC : trop générique pour désigner seul */
+  aliasFaible?: boolean;
+  type: EntreeListe["type"];
+  imo?: string;
+  score: number;
+  /** « imo » : trouvé par le numéro OMI, pas par le nom */
+  par: "name" | "imo";
+};
+
+export type Statut = "strong" | "possible" | "no-match";
+
+export type Resultat = Contrepartie & {
+  statut: Statut;
+  candidats: Candidat[];
+  /** candidats au-dessus du seuil possible au-delà des CANDIDATS_MONTRES affichés */
+  autres: number;
+  /** navires listés au nom voisin, écartés parce que leur numéro OMI diffère de celui fourni */
+  ecartesParImo: { nomListe: string; imo: string }[];
+  /** l'IMO fourni ne passe pas son chiffre de contrôle : utilisé tel quel, et signalé */
+  imoInvalide?: boolean;
+};
+
+type MesureCitee = { rappel: Cellule; fauxPositifs: Cellule };
+
+export type Criblage = {
+  version: 1;
+  genre: "cascade-screening/counterparty-screening";
+  emisLe: string;
+  client?: string;
+  commit?: string;
+  fichier: { nom: string; sha256: string; lignes: number };
+  listes: { source: string; titre: string; url: string; telechargeLe: string; sha256: string; entrees: number }[];
+  nonCriblees: { source: string; titre: string; raison: string }[];
+  methode: {
+    palier: string; description: string;
+    poids: string;
+    seuils: { fort: number; possible: number };
+    rappelMin: number; tientLePlancher: boolean;
+    apprentissage: { jeux: JeuMesure[]; fort: MesureCitee; possible: MesureCitee };
+    verdict: { jeu: JeuMesure; fort: MesureCitee; possible: MesureCitee } | null;
+  };
+  totaux: { lignes: number; forts: number; possibles: number; sansCorrespondance: number };
+  /** présent quand un relevé précédent a été fourni (--previous) : ce qui a CHANGÉ */
+  changements?: Changements;
+  resultats: Resultat[];
+  reserves: string[];
+  empreinte?: string;
+};
+
+/* ─────────────────────────── le numéro OMI ─────────────────────────── */
+
+/** Le chiffre de contrôle OMI : les six premiers chiffres pondérés de 7 à 2, somme modulo 10. */
+export function imoValide(imo: string): boolean {
+  if (!/^\d{7}$/.test(imo)) return false;
+  let s = 0;
+  for (let i = 0; i < 6; i++) s += Number(imo[i]) * (7 - i);
+  return s % 10 === Number(imo[6]);
+}
+
+/** « IMO 9187629 », « imo9187629 », « 9187629 » → « 9187629 » ; autre chose → undefined. */
+export function lireImo(brut: string): string | undefined {
+  const m = /^(?:imo\s*)?(\d{7})$/i.exec(brut.trim());
+  return m?.[1];
+}
+
+/* ─────────────────────────── le fichier du client ─────────────────────────── */
+
+export function lireContreparties(texte: string): { lignes: Contrepartie[]; avertissements: string[] } {
+  const t = lireTable(texte);
+  const noms = t.noms.map((n) => n.trim().toLowerCase());
+  const i = (col: string) => noms.indexOf(col);
+  if (i("name") === -1) {
+    throw new Error(`the file has no "name" column (found: ${t.noms.join(", ") || "nothing"}).\n`
+      + `  One column is required, "name"; "ref", "imo", "type" and "country" are optional.\n`
+      + `  Nothing was screened.`);
+  }
+  const avertissements: string[] = [];
+  if (t.ecartees.length) avertissements.push(`${t.ecartees.length} line(s) had more cells than the header and were set aside (first: line ${t.ecartees[0]!.ligne}).`);
+  const lignes: Contrepartie[] = [];
+  let vides = 0;
+  const imosIllisibles: number[] = [];
+  t.lignes.forEach((l, k) => {
+    const nom = (l[i("name")] ?? "").trim();
+    if (!nom) { vides++; return; }
+    const opt = (col: string) => { const v = i(col) === -1 ? "" : (l[i(col)] ?? "").trim(); return v || undefined; };
+    const ref = opt("ref"), type = opt("type"), pays = opt("country"), imoBrut = opt("imo");
+    const imo = imoBrut ? lireImo(imoBrut) : undefined;
+    if (imoBrut && !imo) imosIllisibles.push(t.numeros[k]!);
+    lignes.push({ ligne: t.numeros[k]!, nom, ...(ref ? { ref } : {}), ...(imo ? { imo } : {}),
+      ...(type ? { type } : {}), ...(pays ? { pays } : {}) });
+  });
+  if (vides) avertissements.push(`${vides} line(s) had an empty name and were skipped.`);
+  if (imosIllisibles.length) avertissements.push(`${imosIllisibles.length} IMO value(s) are not seven digits and were ignored (first: line ${imosIllisibles[0]}); those names are screened by name only.`);
+  if (lignes.length === 0) throw new Error(`the file has a "name" column but no name in it. Nothing was screened.`);
+  return { lignes, avertissements };
+}
+
+/* ─────────────────────────── l'index ─────────────────────────── */
+
+type NomIndexe = { brut: string; nom: NomPrepare; entree: EntreeListe; alias?: string; faible: boolean;
+  /** les bigrammes des deux blocs, codés et triés : le compte des bigrammes partagés se fait
+   *  par fusion de deux tableaux triés, sans recalcul (mesuré : 35 % du temps avant) */
+  bg: Uint32Array; bgSq: Uint32Array };
+
+/** Un mot du vocabulaire des listes : sa forme, ses clés, et les chaînes qui le portent. */
+type MotIndexe = { mot: string; sq: string; repli: string; abregeVu: boolean; noms: number[] };
+
+/**
+ * L'INDEX, ET POURQUOI IL NE PERD RIEN.
+ *
+ * Comparer chaque nom du client à chacune des ~94 000 chaînes listées (noms, alias, variantes)
+ * prend deux secondes par nom ; une liste de 5 000 contreparties prendrait trois heures.
+ * L'index ne compare un nom qu'aux chaînes qui PEUVENT atteindre le seuil, sans approximation :
+ *
+ *  - le score d'alignement est une moyenne pondérée des apports des mots ; il n'atteint le
+ *    seuil que si au moins un mot du client a, avec un mot de la chaîne listée, une similarité
+ *    d'au moins `simMinimale(seuil)`. Ce mot se cherche dans le vocabulaire des listes, rangé
+ *    par initiale et longueur (la distance d'édition borne l'écart de longueur, et la première
+ *    lettre compte double, donc au-dessus de 0,9 l'initiale est la même), et par égalité de
+ *    squelette et de repli ; les règles à 0,9 (abréviation, mot tronqué, abrégé d'un point)
+ *    partagent toutes l'initiale, et se cherchent dans le seau de cette initiale ;
+ *  - le bloc (mots collés) ne compte qu'à partir de BLOC_MIN ; deux chaînes à distance
+ *    d'édition k partagent au moins L − 1 − 3k bigrammes (le lemme des q-grammes, compté large
+ *    pour les transpositions). Les bigrammes des deux blocs (brut et squelette) sont indexés,
+ *    et seules les chaînes qui en partagent assez sont comparées ;
+ *  - la contenance vaut au plus FACTEUR_CONTENANCE fois la couverture : elle passe par un mot
+ *    rare retrouvé, donc par le vocabulaire ;
+ *  - les noms coupés à 35 caractères ne se comparent qu'à ce dont ils sont le début (à deux
+ *    caractères près, `sembleCoupe`).
+ *
+ * Le témoin `cribler.test.ts` (liste synthétique) et `temoin-index.ts --exhaustif` (les vraies
+ * listes) comparent l'index à la comparaison exhaustive : mêmes candidats, mêmes scores.
+ */
+export class Index {
+  readonly noms: NomIndexe[] = [];
+  private readonly vocabulaire = new Map<string, MotIndexe>();
+  private readonly parInitialeLongueur = new Map<string, MotIndexe[]>();
+  private readonly parSqInitialeLongueur = new Map<string, MotIndexe[]>();
+  private readonly parInitiale = new Map<string, MotIndexe[]>();
+  private readonly parSq = new Map<string, MotIndexe[]>();
+  private readonly parRepli = new Map<string, MotIndexe[]>();
+  /** les chaînes qui portent un bigramme, par bigramme ET longueur de bloc (« an20 ») : la
+   *  borne de longueur du bloc se lit dans la clé, sans parcourir les autres longueurs */
+  private readonly bigrammes = new Map<string, number[]>();
+  private readonly bigrammesSq = new Map<string, number[]>();
+  private readonly parLongueurBloc = new Map<number, number[]>();
+  private readonly parLongueurBlocSq = new Map<number, number[]>();
+  private readonly codes = new Map<string, number>();
+  private readonly sansMots: number[] = [];
+  /** les chaînes listées qui ont elles-mêmes la longueur d'un champ coupé */
+  private readonly coupes: number[] = [];
+  private readonly parImo = new Map<string, number[]>();
+  private readonly cacheMots = new Map<string, number[]>();
+  /** les paires de mots déjà comparées, pour toutes les requêtes : les mots d'un fichier client
+   *  se répètent (« trading », « international »), et ceux des listes aussi */
+  readonly memo = new Map<string, number>();
+
+  readonly f: Frequences;
+  readonly seuil: number;
+
+  /* Pas de propriété de paramètre (`readonly f` dans la signature) : Node lit ce fichier en
+     retirant les types, et ce raccourci n'est pas un type, c'est du code qu'il refuse. */
+  constructor(f: Frequences, entrees: readonly EntreeListe[], seuil: number) {
+    this.f = f;
+    this.seuil = seuil;
+    const ranger = (table: Map<string, MotIndexe[]>, cle: string, m: MotIndexe) => {
+      const l = table.get(cle);
+      if (l) l.push(m); else table.set(cle, [m]);
+    };
+    for (const e of entrees) {
+      const faibles = new Set(e.aliasFaibles ?? []);
+      let premier = -1;
+      /* chaque nom et chaque alias, avec leurs variantes (« ex- », annotations) : une variante
+         est indexée comme un alias, et le relevé la montre comme la chaîne qui a porté le score */
+      const chaines = [[e.nom, undefined], ...e.alias.map((a) => [a, a] as const)] as const;
+      const lectures = chaines.flatMap(([t, a]) => variantes(t).map((v) => [v, v === e.nom ? undefined : v, a] as const));
+      for (const [texte, alias, origine] of lectures) {
+        const prepare = preparerNom(f, texte);
+        /* la liste DIT qu'il s'agit d'un navire : même marque qu'un préfixe « M/V », et même
+           conflit face à une forme de société (« Davar Shipping Co. Limited » contre le navire
+           « DORE », alias « DAVAR », mesuré le 27/09 sur l'exemple) */
+        const nom = e.type === "vessel" ? { ...prepare, marques: { ...prepare.marques, navire: true } } : prepare;
+        if (nom.mots.length === 0 && nom.numeros === "") continue;
+        const k = this.noms.length;
+        if (premier === -1) premier = k;
+        this.noms.push({ brut: texte, nom, entree: e, ...(alias ? { alias } : {}), faible: origine ? faibles.has(origine) : false,
+          bg: this.coder(nom.bloc), bgSq: this.coder(nom.blocSq) });
+        if (estCoupe(texte)) this.coupes.push(k);
+        if (nom.mots.length === 0) { this.sansMots.push(k); continue; }
+        nom.mots.forEach((mot, i) => {
+          let m = this.vocabulaire.get(mot);
+          if (m) { if (m.noms[m.noms.length - 1] !== k) m.noms.push(k); if (nom.abreges[i]) m.abregeVu = true; return; }
+          m = { mot, sq: nom.squelettes[i]!, repli: nom.replis[i]!, abregeVu: nom.abreges[i]!, noms: [k] };
+          this.vocabulaire.set(mot, m);
+          ranger(this.parInitialeLongueur, mot[0]! + mot.length, m);
+          ranger(this.parSqInitialeLongueur, (m.sq[0] ?? "") + m.sq.length, m);
+          ranger(this.parInitiale, mot[0]!, m);
+          ranger(this.parSq, m.sq, m);
+          ranger(this.parRepli, m.repli, m);
+        });
+        for (const [table, longueurs, bloc] of [[this.bigrammes, this.parLongueurBloc, nom.bloc],
+          [this.bigrammesSq, this.parLongueurBlocSq, nom.blocSq]] as const) {
+          const l = longueurs.get(bloc.length);
+          if (l) l.push(k); else longueurs.set(bloc.length, [k]);
+          for (const g of compterBigrammes(bloc).keys()) {
+            const cle = g + bloc.length;
+            const p = table.get(cle);
+            if (p) p.push(k); else table.set(cle, [k]);
+          }
+        }
+      }
+      /* le numéro OMI désigne l'ENTRÉE : on l'accroche à sa première chaîne indexée */
+      if (e.imo && premier !== -1) {
+        const l = this.parImo.get(e.imo);
+        if (l) l.push(premier); else this.parImo.set(e.imo, [premier]);
+      }
+    }
+  }
+
+  /** Les bigrammes d'un bloc, codés (un entier par bigramme distinct vu) et triés. */
+  coder(bloc: string): Uint32Array {
+    const t = new Uint32Array(Math.max(0, bloc.length - 1));
+    for (let i = 0; i + 1 < bloc.length; i++) {
+      const g = bloc.slice(i, i + 2);
+      let c = this.codes.get(g);
+      if (c === undefined) { c = this.codes.size + 1; this.codes.set(g, c); }
+      t[i] = c;
+    }
+    return t.sort();
+  }
+
+  /** Les chaînes listées dont un mot est assez proche de `mot` (mêmes règles que le score). */
+  private nomsParMot(mot: string, sq: string, repli: string, dernier: boolean, coupe: boolean, abreviation: boolean): number[] {
+    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}`;
+    const deja = this.cacheMots.get(cle);
+    if (deja) return deja;
+    const t = simMinimale(this.seuil);
+    const retenus = new Set<MotIndexe>();
+    const exact = this.vocabulaire.get(mot);
+    if (exact) retenus.add(exact);
+    if (t <= 0.95) for (const m of this.parSq.get(sq) ?? []) retenus.add(m);
+    if (t <= 0.9) {
+      for (const m of this.parRepli.get(repli) ?? []) retenus.add(m);
+      /* les règles à 0,9 partagent l'initiale : abréviation dans un sens ou l'autre, mot
+         tronqué, mot abrégé d'un point, dernier mot d'un nom coupé ; et la variation d'une
+         voyelle, qui garde longueur et initiale du squelette */
+      for (const m of this.parInitiale.get(mot[0]!) ?? []) {
+        const autre = m.mot;
+        if (abrege(mot, autre) || abrege(autre, mot)
+          || ((dernier || coupe && dernier) && tronque(mot, autre)) || tronque(autre, mot)
+          || (abreviation && autre.length > mot.length && autre.startsWith(mot))
+          || (m.abregeVu && mot.length > autre.length && mot.startsWith(autre))
+          || (coupe && dernier && autre.startsWith(mot))) retenus.add(m);
+      }
+      for (const m of this.parSqInitialeLongueur.get((sq[0] ?? "") + sq.length) ?? []) {
+        if (variationVocalique(sq, m.sq) && !tousDeuxAnglais(mot, m.mot)) retenus.add(m);
+      }
+    }
+    /* la distance d'édition, sur le mot et sur son squelette : l'écart de longueur est borné
+       par (1 − t) × la plus grande longueur, et l'initiale est la même tant que
+       (1 − t) × longueur < 2 (au-delà, toutes les initiales sont regardées) */
+    const balayer = (table: Map<string, MotIndexe[]>, forme: string) => {
+      const L0 = forme.length;
+      for (let L = Math.max(1, Math.floor(L0 - (1 - t) * L0)); L <= Math.ceil(L0 + (1 - t) * L); L++) {
+        const Lmax = Math.max(L, L0);
+        if (Math.abs(L - L0) > (1 - t) * Lmax) continue;
+        /* aucune édition permise à cette longueur : seule l'égalité passe, et elle est déjà
+           prise (au-dessus de 0,9, c'est le cas de tout mot de moins de onze lettres) */
+        if ((1 - t) * Lmax < 1) continue;
+        const initiales = (1 - t) * Lmax >= 2 ? [...INITIALES] : [forme[0] ?? ""];
+        for (const c of initiales) {
+          for (const m of table.get(c + L) ?? []) {
+            if (retenus.has(m)) continue;
+            if (simMot(mot, m.mot, sq, m.sq) >= t) retenus.add(m);
+          }
+        }
+      }
+    };
+    balayer(this.parInitialeLongueur, mot);
+    balayer(this.parSqInitialeLongueur, sq);
+    const noms = new Set<number>();
+    for (const m of retenus) for (const k of m.noms) noms.add(k);
+    const l = [...noms];
+    this.cacheMots.set(cle, l);
+    return l;
+  }
+
+  /** Toutes les chaînes listées qui peuvent atteindre le seuil face à `q`. */
+  candidats(q: NomPrepare, brut: string): number[] {
+    if (q.mots.length === 0) return this.sansMots;
+    const retenus = new Set<number>();
+    /* une chaîne listée coupée à 35 ne se compare qu'à un nom du client PLUS long dont elle
+       semble le début */
+    if (brut.trim().length > LONGUEUR_CHAMP) {
+      for (const k of this.coupes) if (sembleCoupe(this.noms[k]!.brut, brut)) retenus.add(k);
+    }
+    const coupe = estCoupe(brut);
+    q.mots.forEach((m, i) => {
+      for (const k of this.nomsParMot(m, q.squelettes[i]!, q.replis[i]!, i === q.mots.length - 1, coupe, q.abreges[i]!)) retenus.add(k);
+    });
+    /* le bloc, sur le bloc brut puis sur celui des squelettes. Pour chaque longueur de bloc
+       listé dans la bande, le lemme dit combien de bigrammes doivent être partagés ; par le
+       principe des tiroirs, une chaîne qui en partage autant porte au moins un des
+       (|Q| − besoin + 1) bigrammes de la requête qu'on choisit, et on choisit les plus rares.
+       Le compte exact se vérifie ensuite sur ces seules chaînes. */
+    const borne = 1 - Math.max(this.seuil, BLOC_MIN);
+    for (const [table, longueurs, bloc, lireBloc] of [
+      [this.bigrammes, this.parLongueurBloc, q.bloc, (n: NomIndexe) => n.bg],
+      [this.bigrammesSq, this.parLongueurBlocSq, q.blocSq, (n: NomIndexe) => n.bgSq],
+    ] as const) {
+      const len = bloc.length;
+      const Q = compterBigrammes(bloc);
+      const codesQ = this.coder(bloc);
+      const jetonsQ = len - 1;
+      const verifier = (k: number, besoin: number) => {
+        if (retenus.has(k)) return;
+        const n = this.noms[k]!;
+        if (n.nom.mots.length === q.mots.length) return;
+        if (partages(codesQ, lireBloc(n)) >= besoin) retenus.add(k);
+      };
+      for (let L = Math.max(1, Math.ceil(len * (1 - borne))); L <= Math.floor(len / (1 - borne)); L++) {
+        const Lmax = Math.max(L, len);
+        if (Math.abs(L - len) > borne * Lmax) continue;
+        const besoin = Lmax - 1 - 3 * Math.floor(borne * Lmax + 1e-9);
+        if (besoin <= 0 || jetonsQ <= 0) {
+          for (const k of longueurs.get(L) ?? []) verifier(k, Math.max(0, besoin));
+          continue;
+        }
+        const aChoisir = jetonsQ - besoin + 1;
+        if (aChoisir <= 0) continue;
+        const rares = [...Q.entries()].map(([g, n]) => ({ g, n, p: table.get(g + L) ?? [] }))
+          .sort((a, b) => a.p.length - b.p.length);
+        let pris = 0;
+        for (const { n, p } of rares) {
+          if (pris >= aChoisir) break;
+          pris += n;
+          for (const k of p) verifier(k, besoin);
+        }
+      }
+    }
+    return [...retenus];
+  }
+
+  parNumeroImo(imo: string): number[] {
+    return this.parImo.get(imo) ?? [];
+  }
+}
+
+const INITIALES = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+/** Le nombre de bigrammes communs à deux tableaux triés de codes, multiplicité comprise. */
+function partages(a: Uint32Array, b: Uint32Array): number {
+  let i = 0, j = 0, n = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) { n++; i++; j++; }
+    else if (a[i]! < b[j]!) i++;
+    else j++;
+  }
+  return n;
+}
+
+function compterBigrammes(s: string): Map<string, number> {
+  const m = new Map<string, number>();
+  for (let i = 0; i + 1 < s.length; i++) {
+    const g = s.slice(i, i + 2);
+    m.set(g, (m.get(g) ?? 0) + 1);
+  }
+  return m;
+}
+
+/* ─────────────────────────── le criblage d'un nom ─────────────────────────── */
+
+/** Une contrepartie contre l'index. Le meilleur score PAR ENTRÉE (un alias et le nom
+ *  principal d'une même entrée ne font pas deux candidats), puis les entrées homonymes d'une
+ *  même liste regroupées, trié, coupé à CANDIDATS_MONTRES. `exhaustif` compare à tout : c'est
+ *  le témoin de l'index, pas un mode d'usage. */
+export function cribler(c: Contrepartie, index: Index, seuils: { fort: number; possible: number }, exhaustif = false): Resultat {
+  const lectures = variantes(c.nom).map((v) => ({ brut: v, nom: preparerNom(index.f, v) }));
+  if (index.memo.size > 500_000) index.memo.clear();
+  const options = { auMoins: seuils.possible, memo: index.memo };
+  const meilleurs = new Map<string, Candidat>();
+  const garder = (cle: string, cand: Candidat) => {
+    const deja = meilleurs.get(cle);
+    if (!deja || prefere(cand, deja)) meilleurs.set(cle, cand);
+  };
+  const ks = exhaustif ? index.noms.map((_, k) => k)
+    : [...new Set(lectures.flatMap((l) => index.candidats(l.nom, l.brut)))];
+  for (const k of ks) {
+    const n = index.noms[k]!;
+    let s = 0;
+    for (const l of lectures) s = Math.max(s, scoreBrut(index.f, l.brut, l.nom, n.brut, n.nom, options));
+    if (s < seuils.possible) continue;
+    garder(`${n.entree.source}:${n.entree.id}`, candidat(n, Math.round(s * 1000) / 1000, "name"));
+  }
+  if (c.imo) {
+    for (const k of index.parNumeroImo(c.imo)) {
+      const n = index.noms[k]!;
+      garder(`${n.entree.source}:${n.entree.id}`, { ...candidat(n, 1, "imo"), nomListe: n.entree.nom });
+    }
+  }
+  /* L'IMO fourni tranche : un navire listé au nom voisin mais au numéro différent n'est pas
+     ce navire. Il est écarté, et nommé dans le relevé : écarté n'est pas caché. */
+  const ecartesParImo: Resultat["ecartesParImo"] = [];
+  if (c.imo) {
+    for (const [cle, cand] of meilleurs) {
+      if (cand.par === "name" && cand.imo && cand.imo !== c.imo) {
+        ecartesParImo.push({ nomListe: cand.nomListe, imo: cand.imo });
+        meilleurs.delete(cle);
+      }
+    }
+  }
+  const regroupes = new Map<string, Candidat>();
+  for (const cand of meilleurs.values()) {
+    const cle = `${cand.source}|${cand.liste ?? ""}|${cand.nomListe.toLowerCase()}|${cand.imo ?? ""}`;
+    const d = regroupes.get(cle);
+    if (!d) { regroupes.set(cle, { ...cand, ids: [...cand.ids] }); continue; }
+    d.ids.push(...cand.ids);
+    if (prefere(cand, d)) { d.score = cand.score; d.par = cand.par;
+      if (cand.alias) d.alias = cand.alias; else delete d.alias;
+      if (cand.aliasFaible) d.aliasFaible = true; else delete d.aliasFaible; }
+  }
+  const tous = [...regroupes.values()].map((x) => ({ ...x, ids: [...new Set(x.ids)].sort() }))
+    .sort((a, b) => b.score - a.score || a.nomListe.localeCompare(b.nomListe)
+      || a.source.localeCompare(b.source) || a.ids[0]!.localeCompare(b.ids[0]!));
+  const statut: Statut = tous.length === 0 ? "no-match" : tous[0]!.score >= seuils.fort ? "strong" : "possible";
+  return { ...c, statut, candidats: tous.slice(0, CANDIDATS_MONTRES), autres: Math.max(0, tous.length - CANDIDATS_MONTRES),
+    ecartesParImo, ...(c.imo && !imoValide(c.imo) ? { imoInvalide: true } : {}) };
+}
+
+/**
+ * Entre deux chaînes d'une même entrée, laquelle a porté le score ? Le plus haut score ; à
+ * égalité, l'OMI avant le nom, le nom principal avant un alias, un alias ordinaire avant un
+ * alias faible, puis l'ordre alphabétique. Sans cet ordre total, le résultat dépendrait de
+ * l'ordre de parcours, et l'index et la comparaison exhaustive désigneraient deux chaînes
+ * différentes pour la même entrée (mesuré : « CHONMYONG SHIPPING CO »).
+ */
+function prefere(a: Candidat, b: Candidat): boolean {
+  if (a.score !== b.score) return a.score > b.score;
+  if (a.par !== b.par) return a.par === "imo";
+  if (!a.alias !== !b.alias) return !a.alias;
+  if (!a.aliasFaible !== !b.aliasFaible) return !a.aliasFaible;
+  return (a.alias ?? "") < (b.alias ?? "");
+}
+
+function candidat(n: NomIndexe, score: number, par: Candidat["par"]): Candidat {
+  return {
+    source: n.entree.source, ...(n.entree.programme ? { liste: n.entree.programme } : {}),
+    ids: [n.entree.id], nomListe: n.entree.nom,
+    ...(n.alias && par === "name" ? { alias: n.alias } : {}),
+    ...(n.faible && par === "name" ? { aliasFaible: true } : {}),
+    type: n.entree.type, ...(n.entree.imo ? { imo: n.entree.imo } : {}), score, par,
+  };
+}
+
+/* ─────────────────────────── ce qui a changé depuis le relevé précédent ─────────────────────────── */
+
+/**
+ * LE RE-CRIBLAGE NE MONTRE QUE CE QUI A CHANGÉ. Les listes bougent chaque semaine ; un
+ * abonné ne relit pas cinq cents noms chaque lundi, il relit ce qui est NOUVEAU. Une
+ * contrepartie se reconnaît d'un relevé à l'autre par sa référence (`ref`), à défaut par son
+ * nom ; un candidat, par sa liste et ses identifiants.
+ */
+export type Changements = {
+  precedent: { emisLe: string; empreinte: string; fichier: string };
+  listesMisesAJour: { source: string; avant: string; apres: string }[];
+  nouveauxCandidats: { ref?: string; nom: string; statut: Statut; candidat: Candidat }[];
+  candidatsDisparus: { ref?: string; nom: string; candidat: Candidat }[];
+  contrepartiesAjoutees: { ref?: string; nom: string }[];
+  contrepartiesRetirees: { ref?: string; nom: string }[];
+};
+
+const cleContrepartie = (r: { ref?: string; nom: string }) => (r.ref ? `ref:${r.ref}` : `nom:${r.nom.trim().toLowerCase()}`);
+const cleCandidat = (c: Candidat) => `${c.source}|${[...c.ids].sort().join(",")}`;
+
+export function comparer(avant: Criblage, apres: Omit<Criblage, "reserves" | "empreinte">): Changements {
+  if (!scelleIntact(avant as unknown as Record<string, unknown>)) {
+    throw new Error(`the previous record's seal does not match its content: it was edited after screening.
+`
+      + `  A comparison against an edited record would report changes that never happened. Nothing was screened.`);
+  }
+  const av = new Map(avant.resultats.map((r) => [cleContrepartie(r), r]));
+  const ap = new Map(apres.resultats.map((r) => [cleContrepartie(r), r]));
+  const ch: Changements = {
+    precedent: { emisLe: avant.emisLe, empreinte: avant.empreinte!, fichier: avant.fichier.nom },
+    listesMisesAJour: apres.listes.flatMap((l) => {
+      const p = avant.listes.find((x) => x.source === l.source);
+      return p && p.sha256 !== l.sha256 ? [{ source: l.source, avant: p.telechargeLe.slice(0, 10), apres: l.telechargeLe.slice(0, 10) }] : [];
+    }),
+    nouveauxCandidats: [], candidatsDisparus: [], contrepartiesAjoutees: [], contrepartiesRetirees: [],
+  };
+  for (const [k, r] of ap) {
+    const p = av.get(k);
+    if (!p) { ch.contrepartiesAjoutees.push({ ...(r.ref ? { ref: r.ref } : {}), nom: r.nom }); continue; }
+    const avantCles = new Set(p.candidats.map(cleCandidat));
+    for (const c of r.candidats) if (!avantCles.has(cleCandidat(c))) ch.nouveauxCandidats.push({ ...(r.ref ? { ref: r.ref } : {}), nom: r.nom, statut: r.statut, candidat: c });
+    const apresCles = new Set(r.candidats.map(cleCandidat));
+    for (const c of p.candidats) if (!apresCles.has(cleCandidat(c))) ch.candidatsDisparus.push({ ...(r.ref ? { ref: r.ref } : {}), nom: r.nom, candidat: c });
+  }
+  for (const [k, p] of av) if (!ap.has(k)) ch.contrepartiesRetirees.push({ ...(p.ref ? { ref: p.ref } : {}), nom: p.nom });
+  return ch;
+}
+
+/* ─────────────────────────── l'export tableur ─────────────────────────── */
+
+/** Une ligne par candidat (une seule pour un nom sans candidat), pour le système du client.
+ *  Les cellules qui commencent par = + - @ sont préfixées d'une apostrophe : un tableur les
+ *  exécuterait comme des formules (l'injection de formule dans un export CSV). */
+export function versCsv(c: Criblage): string {
+  const cell = (v: string | number | undefined) => {
+    let t = v === undefined ? "" : String(v);
+    if (/^[=+\-@\t\r]/.test(t)) t = `'${t}`;
+    return /[",\n\r]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+  };
+  const lignes = [["ref", "name", "imo", "level", "listed_name", "list_source", "list", "list_ids", "via_alias", "weak_alias", "listed_imo", "score", "matched_on"].join(",")];
+  for (const r of c.resultats) {
+    const base = [r.ref, r.nom, r.imo, r.statut];
+    if (r.candidats.length === 0) { lignes.push([...base, "", "", "", "", "", "", "", "", ""].map(cell).join(",")); continue; }
+    for (const k of r.candidats) {
+      lignes.push([...base, k.nomListe, k.source, k.liste, k.ids.join(" "), k.alias, k.aliasFaible ? "yes" : "", k.imo,
+        k.score.toFixed(3), k.par].map(cell).join(","));
+    }
+  }
+  return lignes.join("\n") + "\n";
+}
+
+/* ─────────────────────────── le relevé ─────────────────────────── */
+
+const pct = (x: number) => `${Math.round(x * 100)} %`;
+
+export function reserves(c: Omit<Criblage, "reserves" | "empreinte">): string[] {
+  const dates = [...new Set(c.listes.map((l) => l.telechargeLe.slice(0, 10)))].sort();
+  const m = c.methode;
+  const r = [
+    "A candidate is not a finding. Each one is for your compliance officer to confirm or clear; this report does not decide, and it is not legal advice.",
+    `The lists are those downloaded on ${dates.join(", ")}. A name added to a list after that date is not in this report.`,
+    "Names and IMO numbers only are compared. Dates of birth, addresses and other identifiers on the lists are not.",
+    "Ownership is not screened. Under OFAC's 50 Percent Rule, an entity owned 50 % or more, directly or indirectly, by one or more blocked persons is itself blocked even when it appears on no list; no name screening can see that.",
+    "The type and country columns are carried into the report, not used to filter: a counterparty listed under another type or country is still shown.",
+    `At most ${CANDIDATS_MONTRES} candidates are shown per name, highest score first; the count of the others is given.`,
+    m.verdict
+      ? `The rates quoted first come from ${m.verdict.jeu.match} matching pairs and ${m.verdict.jeu.different} hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties.`
+      : "No held-out verdict set was available on this machine: the only rates quoted are those of the training sets, on which the thresholds were chosen, and they flatter the method.",
+  ];
+  for (const n of c.nonCriblees) r.push(`${n.titre} was NOT screened: ${n.raison}`);
+  if (!m.tientLePlancher) r.push(`Even the possible level does not hold a recall lower bound of ${pct(m.rappelMin)} on the training sets.`);
+  if (m.seuils.fort === m.seuils.possible) r.push(`On the training sets the two levels meet at ${m.seuils.fort.toFixed(2)}: every candidate is a strong one.`);
+  if (c.resultats.some((x) => x.imoInvalide)) r.push("Some IMO numbers you supplied fail their check digit; they were used as given, and are marked.");
+  return r;
+}
+
+const citer = (t: Record<string, { rappel: Cellule; fauxPositifs: Cellule }>, seuil: number): MesureCitee => {
+  const c = t[seuil.toFixed(2)]!;
+  return { rappel: c.rappel, fauxPositifs: c.fauxPositifs };
+};
+
+export function executer(
+  fichier: string, client: string | undefined, maintenant: Date = new Date(), precedent?: string,
+): { criblage: Criblage; cheminJson: string; avertissements: string[] } {
+  const texte = readFileSync(fichier, "utf8");
+  const { lignes, avertissements } = lireContreparties(texte);
+
+  const m = lireManifeste();
+  if (!m) throw new Error(`no listes-manifest.json: run \`npm run listes -- --fetch\` first. Nothing was screened.`);
+  const listes: Criblage["listes"] = [];
+  const nonCriblees: Criblage["nonCriblees"] = [];
+  const entrees: EntreeListe[] = [];
+  for (const s of SOURCES) {
+    const l = m.listes.find((x) => x.source === s.source);
+    if (!l) { nonCriblees.push({ source: s.source, titre: s.titre, raison: "absent from the manifest; run `npm run listes -- --fetch`." }); continue; }
+    if (!l.disponible) { nonCriblees.push({ source: s.source, titre: s.titre, raison: `${l.erreur}. ${l.issue}` }); continue; }
+    /* lireListe refuse un fichier qui ne correspond plus à son empreinte : on ne crible
+       pas contre une liste qui n'est pas celle que le relevé va nommer. */
+    entrees.push(...lireListe(s.source));
+    listes.push({ source: s.source, titre: s.titre, url: s.url, telechargeLe: l.telechargeLe, sha256: l.sha256, entrees: l.entrees });
+  }
+  if (listes.length === 0) throw new Error(`no list is available on this machine. Nothing was screened.\n  → npm run listes -- --fetch`);
+
+  const f = frequencesDe(entrees.map((e) => [e.nom, ...e.alias]));
+  const bruts = CHEMINS_APPRENTISSAGE.map((u) => {
+    const b = lireJeu(u);
+    if (b === null) throw new Error(`the training set ${u.pathname} is missing: the thresholds cannot be measured. Nothing was screened.`);
+    return b;
+  });
+  const apprentissage = mesurerJeux(f, bruts);
+  const reglage: Reglage = choisirSeuils(apprentissage.table);
+  const seuils = { fort: reglage.fort.seuil, possible: reglage.possible.seuil };
+  const brutVerdict = lireJeu(CHEMIN_VERDICT);
+  const verdict = brutVerdict === null ? null : mesurerJeux(f, [brutVerdict]);
+
+  const index = new Index(f, entrees, seuils.possible);
+  const resultats = lignes.map((c) => cribler(c, index, seuils));
+  const forts = resultats.filter((x) => x.statut === "strong").length;
+  const possibles = resultats.filter((x) => x.statut === "possible").length;
+  const commit = commitCourant();
+  const p = palierEntite(f);
+
+  const base: Omit<Criblage, "reserves" | "empreinte"> = {
+    version: 1, genre: "cascade-screening/counterparty-screening",
+    emisLe: maintenant.toISOString(), ...(client ? { client } : {}), ...(commit ? commit : {}),
+    fichier: { nom: basename(fichier), sha256: createHash("sha256").update(texte).digest("hex"), lignes: lignes.length },
+    listes, nonCriblees,
+    methode: {
+      palier: p.id, description: p.description,
+      poids: `word weights are the smoothed inverse document frequency over the ${f.entrees.toLocaleString("en-GB")} entries of the screened lists`,
+      seuils, rappelMin: RAPPEL_MIN, tientLePlancher: reglage.tientLePlancher,
+      apprentissage: { jeux: apprentissage.jeux, fort: citer(apprentissage.table, seuils.fort), possible: citer(apprentissage.table, seuils.possible) },
+      verdict: verdict ? { jeu: verdict.jeux[0]!, fort: citer(verdict.table, seuils.fort), possible: citer(verdict.table, seuils.possible) } : null,
+    },
+    totaux: { lignes: lignes.length, forts, possibles, sansCorrespondance: lignes.length - forts - possibles },
+    resultats,
+  };
+  if (precedent) base.changements = comparer(JSON.parse(readFileSync(precedent, "utf8")) as Criblage, base);
+  const criblage: Criblage = { ...base, reserves: reserves(base) };
+  criblage.empreinte = empreinteDuReleve(criblage);
+  const cheminJson = fichier.replace(/\.csv$/i, "") + ".screening.json";
+  return { criblage, cheminJson, avertissements };
+}
+
+/* ─────────────────────────── la commande ─────────────────────────── */
+
+const intervalle = (c: Cellule) => `${pct(c.taux)} [${Math.round(c.bas * 100)}-${Math.round(c.haut * 100)}]`;
+
+function principal(): void {
+  refuserDrapeauxInconnus(["--names", "--client", "--previous"]);
+  const arg = (nom: string) => process.argv.find((a) => a.startsWith(`--${nom}=`))?.split("=").slice(1).join("=");
+  const fichier = arg("names");
+  if (!fichier) {
+    console.error(`Usage: npm run cribler -- --names=<counterparties.csv> [--client=<name>] [--previous=<last.screening.json>]\n\n`
+      + `  The file needs a "name" column; "ref", "imo", "type" and "country" are optional.`);
+    process.exit(2);
+  }
+  if (!existsSync(fichier)) { console.error(`\n${fichier}: no such file. Nothing was screened.\n`); process.exit(2); }
+  const debut = Date.now();
+  const precedent = arg("previous");
+  if (precedent && !existsSync(precedent)) { console.error(`\n${precedent}: no such file. Nothing was screened.\n`); process.exit(2); }
+  /* le relevé précédent est lu AVANT que le nouveau ne soit écrit : relancer sur le même
+     fichier écrase l'ancien relevé, et c'est souvent lui qu'on passe en --previous */
+  const { criblage: c, cheminJson, avertissements } = executer(fichier, arg("client"), new Date(), precedent);
+  writeFileSync(cheminJson, JSON.stringify(c, null, 2) + "\n");
+  const cheminCsv = cheminJson.replace(/\.json$/, ".csv");
+  writeFileSync(cheminCsv, versCsv(c));
+  for (const a of avertissements) console.log(`  ⚠ ${a}`);
+  console.log(`\n${c.totaux.lignes} name(s) screened against ${c.listes.map((l) => `${l.source} (${l.entrees.toLocaleString("en-GB")})`).join(", ")}`);
+  for (const n of c.nonCriblees) console.log(`  NOT screened: ${n.source}: ${n.raison}`);
+  const m = c.methode;
+  console.log(`Thresholds: strong ${m.seuils.fort.toFixed(2)}, possible ${m.seuils.possible.toFixed(2)} (chosen on the training sets)`);
+  if (m.verdict) {
+    console.log(`Held-out verdict set at strong: recall ${intervalle(m.verdict.fort.rappel)}, false alerts on hard negatives ${intervalle(m.verdict.fort.fauxPositifs)}`);
+    if (m.seuils.possible !== m.seuils.fort) console.log(`Held-out verdict set at possible: recall ${intervalle(m.verdict.possible.rappel)}, false alerts ${intervalle(m.verdict.possible.fauxPositifs)}`);
+  } else console.log(`No held-out verdict set on this machine: training rates only (they flatter the method).`);
+  console.log(`${c.totaux.forts} strong, ${c.totaux.possibles} possible, ${c.totaux.sansCorrespondance} with no candidate · ${((Date.now() - debut) / 1000).toFixed(1)} s`);
+  if (c.changements) {
+    const ch = c.changements;
+    console.log(`Since ${ch.precedent.emisLe.slice(0, 10)}: ${ch.nouveauxCandidats.length} new candidate(s), ${ch.candidatsDisparus.length} gone, `
+      + `${ch.contrepartiesAjoutees.length} counterparty(ies) added, ${ch.contrepartiesRetirees.length} removed; lists updated: ${ch.listesMisesAJour.map((l) => l.source).join(", ") || "none"}`);
+  }
+  console.log(`Sealed record: ${cheminJson} (seal ${c.empreinte}) · spreadsheet: ${cheminCsv}\n`);
+}
+
+if (isMain(import.meta)) {
+  try { principal(); }
+  catch (e) { console.error(`\n${e instanceof Error ? e.message : String(e)}\n`); process.exit(1); }
+}

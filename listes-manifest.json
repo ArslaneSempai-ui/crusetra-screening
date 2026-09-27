@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "genereLe": "2026-09-05T15:27:43.631Z",
+  "genereLe": "2026-09-26T22:24:34.451Z",
   "listes": [
     {
       "source": "OFAC",
@@ -8,10 +8,32 @@
       "url": "https://sanctionslistservice.ofac.treas.gov/api/publicationpreview/exports/sdn.xml",
       "format": "ofac-sdn-xml",
       "disponible": true,
-      "telechargeLe": "2026-09-05T15:27:31.502Z",
-      "sha256": "a6fe1073e4cc3a9ea9b827f63f5ab56b80933603a8af791b21d7cacbf99da598",
-      "octets": 28978335,
-      "entrees": 19329
+      "telechargeLe": "2026-09-26T22:24:12.777Z",
+      "sha256": "d533a38ee0a8dc1dca61574cda864d1740ec6785f1ae93f00e678fdf01654227",
+      "octets": 29089607,
+      "entrees": 19391
+    },
+    {
+      "source": "OFAC-CONS",
+      "titre": "OFAC Consolidated Sanctions List (the non-SDN lists)",
+      "url": "https://sanctionslistservice.ofac.treas.gov/api/publicationpreview/exports/consolidated.xml",
+      "format": "ofac-sdn-xml",
+      "disponible": true,
+      "telechargeLe": "2026-09-26T22:24:20.128Z",
+      "sha256": "a9a394cfa9457ed166728cc89c7b3aa373ad457bc908b1cef71ae2e10b147c4f",
+      "octets": 1062957,
+      "entrees": 481
+    },
+    {
+      "source": "CSL",
+      "titre": "US Consolidated Screening List: its Commerce and State lists (trade.gov)",
+      "url": "https://data.trade.gov/downloadable_consolidated_screening_list/v1/consolidated.csv",
+      "format": "trade-csl-csv",
+      "disponible": true,
+      "telechargeLe": "2026-09-26T22:24:21.178Z",
+      "sha256": "3bcdfb738dccf96a55a9fd1c0c205f0c212284ca031f81c115747fae510996ea",
+      "octets": 16781202,
+      "entrees": 6269
     },
     {
       "source": "UN",
@@ -19,8 +41,8 @@
       "url": "https://scsanctions.un.org/resources/xml/en/consolidated.xml",
       "format": "un-consolidated-xml",
       "disponible": true,
-      "telechargeLe": "2026-09-05T15:27:39.647Z",
-      "sha256": "145f41246b4824b15196d6a6aa9ac2070cb86666b07f92f048a659e3e4301105",
+      "telechargeLe": "2026-09-26T22:24:27.115Z",
+      "sha256": "8bd12c56c7acc2b7a3736d916b592c5382f7fe75191450e06aad799095fb2f68",
       "octets": 2176957,
       "entrees": 1011
     },
@@ -29,10 +51,11 @@
       "titre": "EU consolidated financial sanctions list (FSF, XML v1.1)",
       "url": "https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content?token=dG9rZW4tMjAxNw",
       "format": "eu-fsf-xml-1.1",
-      "disponible": false,
-      "verifieLe": "2026-09-05T15:27:43.308Z",
-      "erreur": "HTTP 500",
-      "issue": "the programmatic download needs a personal EU Login token (token=[username]); set CASCADE_EU_TOKEN and run --fetch again. The generic public token returned this error on every file endpoint while the RSS still answered."
+      "disponible": true,
+      "telechargeLe": "2026-09-26T22:24:31.044Z",
+      "sha256": "cd59eccb0278d33181c1d87814236109287c9ea5925502f00acfd2e0fd7fe440",
+      "octets": 25791425,
+      "entrees": 6241
     }
   ]
 }
