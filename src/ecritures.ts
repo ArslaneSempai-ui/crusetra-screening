@@ -38,14 +38,18 @@
  * qui remplacerait l'inconnu par du vide ferait converger deux noms différents.
  */
 import { readFileSync } from "node:fs";
+import { DEVANAGARI, GENERIQUES_DEVANAGARI, devanagariEnLatin } from "./devanagari.ts";
+import { hokkienDe } from "./hokkien.ts";
+import { FORMES_KANJI, MOTS_KANJI, KANJI } from "./kanji.ts";
 
 /** L'écriture dont un mot se compare sur ses consonnes : les deux abjads, et le thaï (voir
  *  `cleAbjad`), dont la lecture écrit des voyelles que le côté latin n'écrit pas pareil. */
 export type Abjad = "" | "arabe" | "hebreu" | "thai";
 export type Romanise = { texte: string; natifs: Map<string, string> };
-/** La lecture d'un nom en sinogrammes : le mandarin (pinyin, le nom propre soudé) ou le cantonais
- *  (jyutping en graphie de Hong Kong, syllabe par syllabe). Un nom latin se lit pareil sous les deux. */
-export type Lecture = "mandarin" | "cantonais";
+/** La lecture d'un nom en sinogrammes : le mandarin (pinyin, le nom propre soudé), le cantonais
+ *  (jyutping en graphie de Hong Kong, syllabe par syllabe), ou le hokkien et le teochew de Singapour et de Malaisie
+ *  (hokkien.ts, syllabe par syllabe aussi : « 金福隆 » Kim Hock Leong). Un nom latin se lit pareil sous les trois. */
+export type Lecture = "mandarin" | "cantonais" | "hokkien";
 
 /* ─────────────────────────── les mots du commerce, par écriture ─────────────────────────── */
 
@@ -61,6 +65,20 @@ const GENERIQUES_HANGUL: ReadonlyMap<string, string> = new Map(Object.entries({
   "에너지": "energy", "그룹": "group", "국제": "international", "조선": "shipbuilding", "철강": "steel", "섬유": "textile",
   "자동차": "automotive", "엔지니어링": "engineering", "홀딩스": "holdings", "인터내셔널": "international", "마린": "marine",
   "서플라이": "supply", "시스템": "systems", "코리아": "korea", "자원": "resources",
+  /* les mots anglais écrits en hangul, tels que les navires et les sociétés coréennes les portent (jeu 13 : « 해솔 파이오니어호 »
+     est « MT HAESOL PIONEER », 0,583 lu paionieo) : la transcription coréenne d'un mot anglais ne se replie sur aucune
+     règle (파이오니어 : pa-i-o-ni-eo), il faut le mot. Deux syllabes au moins par clé, jamais une seule */
+  "파이오니어": "pioneer", "스타": "star", "오션": "ocean", "글로벌": "global", "퍼시픽": "pacific", "아시아": "asia",
+  "익스프레스": "express", "캐리어": "carrier", "프론티어": "frontier", "하모니": "harmony", "빅토리": "victory", "챌린저": "challenger",
+  "네비게이터": "navigator", "파워": "power", "로지스틱스": "logistics", "쉬핑": "shipping", "라인": "line", "탱커": "tanker",
+  "트레이딩": "trading", "인더스트리": "industry", "테크놀로지": "technology", "서비스": "services", "센터": "center",
+  "컴퍼니": "company", "코퍼레이션": "corporation", "스틸": "steel", "케미칼": "chemical", "오토": "auto", "모터스": "motors",
+  "일렉트로닉스": "electronics", "푸드": "food", "파트너스": "partners", "리더": "leader", "드림": "dream", "블루": "blue",
+  "골든": "golden", "실버": "silver", "다이아몬드": "diamond", "크리스탈": "crystal", "이글": "eagle", "타이거": "tiger",
+  "드래곤": "dragon", "피닉스": "phoenix", "유니버설": "universal", "그린": "green", "브릿지": "bridge", "하버": "harbor",
+  "아일랜드": "island", "오리엔트": "orient", "이스턴": "eastern", "웨스턴": "western", "노던": "northern", "서던": "southern",
+  "프라임": "prime", "로얄": "royal", "프린스": "prince", "스피릿": "spirit", "호프": "hope", "에이스": "ace", "제니스": "zenith",
+  "갤럭시": "galaxy", "머스크": "maersk", "에버그린": "evergreen", "글로리": "glory", "포춘": "fortune", "럭키": "lucky", "타이어": "tire",
 }));
 
 /** Le persan écrit ک et ی là où l'arabe écrit ك et ي : une seule lettre pour les deux, dans
@@ -283,14 +301,27 @@ function hanzi(nom: string, natifs: Map<string, string>, lecture: Lecture): stri
      chaque syllabe gardant son caractère ; un caractère sans lecture cantonaise (169 codes du
      bloc) garde sa lecture mandarine plutôt que de traverser en sinogramme, cette lecture
      n'étant qu'une seconde chance. Ce qui est entre parenthèses est un lieu (深圳), que Hong
-     Kong même nomme en mandarin : il se lit comme dans l'autre lecture. */
-  const cantonais = (suite: string) => [...suite].map((c) => {
-    const j = jyutpingDe(c);
-    const l = j === "" ? pinyinDe(c) : hongkong(j);
+     Kong même nomme en mandarin : il se lit comme dans l'autre lecture. En hokkien de même,
+     dans la graphie des registres de Singapour (« 金福隆 » : kim hock leong, jeu 13), un caractère
+     hors de la table (hokkien.ts) gardant sa lecture mandarine. */
+  const syllabique = (suite: string) => [...suite].map((c) => {
+    const j = lecture === "cantonais" ? jyutpingDe(c) : hokkienDe(c);
+    const l = j === "" ? pinyinDe(c) : lecture === "cantonais" ? hongkong(j) : j;
     if (/^[a-z]+$/.test(l)) natifs.set(l, c);
     return ` ${l} `;
   }).join("");
-  return generiques.replace(/\([^()]*\)/gu, (p) => p.replace(SINOGRAMMES, mandarin)).replace(SINOGRAMMES, cantonais);
+  return generiques.replace(/\([^()]*\)/gu, (p) => p.replace(SINOGRAMMES, mandarin)).replace(SINOGRAMMES, syllabique);
+}
+
+/* ─────────────────────────── le japonais ─────────────────────────── */
+
+/** Un nom japonais en kanji (voir kanji.ts) : la forme, puis les mots faits (métiers en lecture sino-japonaise, lieux),
+ *  puis chaque kanji sous sa lecture de nom propre, soudés par suite (« 株式会社霜月水産 » : kabushiki kaisha shimotsuki
+ *  suisan, jeu 13). Un kanji hors table reste lui-même dans son mot. Les kana restent tels quels. */
+const CLES_FORMES_KANJI = alternative(FORMES_KANJI), CLES_MOTS_KANJI = alternative(MOTS_KANJI);
+function japonais(nom: string): string {
+  return nom.replace(CLES_FORMES_KANJI, (m) => ` ${FORMES_KANJI.get(m) ?? m} `).replace(CLES_MOTS_KANJI, (m) => ` ${MOTS_KANJI.get(m) ?? m} `)
+    .replace(SINOGRAMMES, (suite) => ` ${[...suite].map((c) => KANJI.get(c) ?? c).join("")} `);
 }
 
 /* ─────────────────────────── le thaï ─────────────────────────── */
@@ -585,6 +616,18 @@ function tamoul(nom: string): string {
     .replace(/[஀-௿]+/gu, tamoulEnLatin);
 }
 
+/* ─────────────────────────── la devanagari ─────────────────────────── */
+
+/** Le hindi et ses voisins en devanagari (voir devanagari.ts) : les mots du commerce d'abord, mot entier, puis chaque mot
+ *  lettre à lettre, le schwa tombé comme les registres l'écrivent (« गुप्ता अनिल कुमार » : gupta anil kumar, jeu 13). Le
+ *  danda (।) est une ponctuation, les chiffres devanagari des chiffres. */
+const CLES_DEVANAGARI = alternative(GENERIQUES_DEVANAGARI);
+function devanagari(nom: string): string {
+  return nom.normalize("NFD").replace(/[०-९]/gu, (c) => String(c.codePointAt(0)! - 0x0966)).replace(/[।॥]/gu, " ")
+    .replace(new RegExp(`(?<![\\u0900-\\u097f])(?:${CLES_DEVANAGARI.source})(?![\\u0900-\\u097f])`, "gu"), (m) => ` ${GENERIQUES_DEVANAGARI.get(m) ?? m} `)
+    .replace(/[\u0900-\u097f]+/gu, devanagariEnLatin);
+}
+
 /* ─────────────────────────── les abjads ─────────────────────────── */
 
 /** Arabe et persan : translittération consonantique (ALA-LC simplifiée, sans diacritiques
@@ -734,6 +777,14 @@ export function cleAbjadSansTa(mot: string): string | undefined {
   return mot.length >= 4 && /[ae]t$/.test(mot) ? cleAbjad(mot.slice(0, -1), "arabe") : undefined;
 }
 
+/** La clé d'un mot latin dont le « v » est un ف : l'arabe n'a pas de v, et il écrit les mots anglais qu'il emprunte avec
+ *  un ف (« سيلفر » Silver, « سيفن » Seven, « فيكتوري » Victory), là où le persan écrit son v par و (« Kaveh » : la clé
+ *  ordinaire, v lu w). La même clé, v lu f ; undefined quand le mot n'a pas de v. Jeu 13, 27/09 : « Silver Dune Logistics
+ *  FZCO » restait à 0,450 face à « سيلفر ديون للخدمات اللوجستية ش.م.ح », slwr contre slfr. */
+export function cleAbjadVLuF(mot: string): string | undefined {
+  return mot.includes("v") ? cleAbjad(mot.replace(/v/g, "f"), "arabe") : undefined;
+}
+
 /** L'abjad dans lequel un nom est écrit, s'il l'est ; le thaï compte ici (voir `cleAbjad`). */
 export function abjadDe(nom: string): Abjad {
   return /[\u0600-\u06ff]/u.test(nom) ? "arabe" : /[\u0590-\u05ff]/u.test(nom) ? "hebreu" : /[\u0e00-\u0e7f]/u.test(nom) ? "thai" : "";
@@ -750,9 +801,11 @@ export function romaniser(nom: string, lecture: Lecture = "mandarin"): Romanise 
   let t = nom;
   if (/[\uac00-\ud7a3]/u.test(t)) t = hangul(t);
   if (/[\u4e00-\u9fff]/u.test(t) && !estJaponais(t)) t = hanzi(t, natifs, lecture);
+  else if (/[\u4e00-\u9fff]/u.test(t)) t = japonais(t);
   if (/[\u0590-\u05ff]/u.test(t)) t = hebreu(t);
   if (/[\u0600-\u06ff]/u.test(t)) t = arabe(t);
   if (/[\u0e00-\u0e7f]/u.test(t)) t = thai(t);
   if (/[\u0b80-\u0bff]/u.test(t)) t = tamoul(t);
+  if (DEVANAGARI.test(t)) t = devanagari(t);
   return { texte: t, natifs };
 }
