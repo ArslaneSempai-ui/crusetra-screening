@@ -29,6 +29,8 @@ a verdict set is ever listed by any tool before it becomes training.
 | | | | | possible 0.80 | 187/200 [89-96 %] | 72/200 [30-43 %] |
 | 2026-09-28 | v15 ea838aa2 / 292e9ddb / ecritures bdd60326 | set #13 79a6a291 (Rotterdam customs broker and Dubai free-zone bank brief by trap family: Benelux and Gulf forms, Arabic and Persian romanisations, Rhine barges and Gulf tankers, EDI/SWIFT residues, chat/OCR; corrected conventions: one letter changed in a company name is the same name misspelt, except in a vessel name; Opus; overlap with the thirteen training sets: 0 pairs, 0 names; 0 pairs identical but for case), becomes paires-entites-14.json | 200 + 200 | strong 0.81 | 120/200 [53-67 %] | 16/200 [5-13 %] |
 | | | | | possible 0.80 | 155/200 [71-83 %] | 59/200 [24-36 %] |
+| 2026-09-28 | v16 ebbd2990 / 6ad910de / ecritures bdd60326 | set #14 ee673be7 (Mombasa freight forwarder and Karachi bank brief by document: East African registries, Pakistani documents, Indian Ocean vessels, SWIFT fields, chat/OCR; corrected conventions unchanged; overlap with the fourteen training sets: 0 pairs, 0 names; 0 pairs identical but for case), becomes paires-entites-15.json | 200 + 200 | strong 0.81 | 141/200 [64-76 %] | 2/200 [0-4 %] |
+| | | | | possible 0.80 | 173/200 [81-91 %] | 23/200 [8-17 %] |
 
 v6 on set #3 at other thresholds: 0.70 found 182 with 52 false; 0.75 found 181 with 37; 0.85 found 162
 with 19; 0.90 found 153 with 11.
