@@ -5,7 +5,7 @@ import { createHash } from "node:crypto";
 import {
   preparerEntite, analyserEntite, preparerNom, scorePrepares, scoreBrut, scoreNoms, variantes, squelette, voyelles, abrege, motsDistincts, lemme,
   variationVocalique, voyelleEpenthetique, squeletteLongue, lettrePerdue, PERDU, fauteDeFrappe, composesDistincts, simMot, pluriel, LU_UN,
-  estSyllabeIsolee,
+  estSyllabeIsolee, compose, gerondif, regionDeRegistre, descripteur,
   tronque, estCoupe, apport, simMinimale, choisirSeuils, marquesEnConflit, frequencesDe, mesurerJeux, qualificatifSoude,
   poidsDuMot, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, FAUSSES_ALERTES_MAX_FORT, SEUIL_POSSIBLE, lecturesDe, pliCantonais, pliTamoul,
   variantesTypees, plafondDesLectures, mentionDeSuccursale, succursalesCompatibles, numeroDeRegistre, formePlurielle, sembleCoupe,
@@ -890,4 +890,110 @@ test("tour 6, formes : le nom commercial sans forme face au nom déposé avec so
     ["Krause Werkzeugmaschinen GmbH, Zweigniederlassung Leipzig (HRB 22045, AG Leipzig)", "Krause Werkzeugmaschinen GmbH (HRB 55620, AG Dresden)"]]) {
     assert.ok(score(a, b) < 0.81, `${a} / ${b} : ${score(a, b)}`);
   }
+});
+
+/* ─── tour 6, voie des registres : les noms déposés au Handelsregister, à la KvK, au registre lusophone,
+   ouest-africain et sud-africain, face à leurs noms d'usage ─── */
+
+/* des fréquences à l'image des listes : mille entrées, les mots du métier courants (sur les vraies listes,
+   « trading » est dans 826 entrées sur 33 393, « commercial » et « import » dans une centaine), les noms propres
+   absents. À poids uniformes, tout orphelin pèse le maximum et plafonne ; et sur une petite liste, le plancher
+   d'une particule ou d'un adjectif régional pèse encore trop face au maximum */
+const rep6 = (n: number, mot: string) => Array.from({ length: n }, (_, i) => [`Nom${i} ${mot}`]);
+const fr6 = frequencesDe([...rep6(300, "Trading"), ...rep6(200, "Group"), ...rep6(80, "Commercial"), ...rep6(80, "Import Export"),
+  ...rep6(60, "Logistics"), ...rep6(60, "Transport"), ...rep6(50, "Chemical"), ...rep6(15, "Machines"), ...rep6(15, "Sons"), ...rep6(140, "Alpha")]);
+const s6 = (a: string, b: string) => scoreNoms(fr6, a, b);
+
+test("tour 6, registres : les formes Lda, mbH, Sociedade ; « GmbH & Co. KG » n'est pas la GmbH du même nom", () => {
+  const p = analyserEntite("Comercial Pereira e Filhos, Lda");
+  assert.equal(p.texte, "commercial pereira sons");
+  assert.deepEqual(p.pays, ["AO", "CV", "MZ", "PT"]);
+  assert.equal(analyserEntite("Sociedade Agrícola de Malanje, Lda").texte, "agricultural de malanje");
+  const h = analyserEntite("Sächsische Krause Werkzeugmaschinen Handelsgesellschaft mbH");
+  /* « mbH » seul est la forme ; « Handelsgesellschaft » reste le mot « trading », des deux côtés, pour que
+     « Keller Handelsgesellschaft mbH » et « Keller Handelsgesellschaft GmbH » soient un (voie formes) */
+  assert.equal(h.texte, "sachsische krause werkzeugmaschinen trading", "« mbH » est la forme, « Handelsgesellschaft » un mot traduit");
+  assert.deepEqual(h.familles, ["llc"]);
+  assert.deepEqual(analyserEntite("Vogel Kunststofftechnik GmbH & Co. KG").familles, ["part"], "la commandite, pas sa commanditée");
+  for (const [a, b] of [["Vogel Kunststofftechnik GmbH", "Vogel Kunststofftechnik GmbH & Co. KG"],
+    ["Hoffmann Textilmaschinen Handelsgesellschaft mbH", "Hoffmann Textilmaschinen Handelsgesellschaft mbH & Co. KG"]]) {
+    const s = score(a!, b!);
+    assert.ok(s < 0.81 && s >= 0.8 - 1e-9, `la GmbH et la KG dont elle est l'associée (jeu 10), mesurées à 1,000 avant : ${s}`);
+  }
+  assert.ok(score("Reinholt Maschinenbau GmbH & Co. KG", "REINHOLT MASCHINENBAU GMBH CO KG") >= 0.81);
+  assert.ok(s6("Hoffmann Textil", "Westfälische Hoffmann Textilmaschinen Handelsgesellschaft mbH & Co. KG") >= 0.81, "sans forme d'un côté, aucun conflit ; mesuré à 0,717 avant");
+});
+
+test("tour 6, registres : l'adjectif régional pèse le plancher d'un seul côté, et distingue deux sociétés des deux côtés", () => {
+  assert.equal(regionDeRegistre("rheinische"), true);
+  assert.equal(regionDeRegistre("niedersachsische"), true, "par le suffixe sur le radical du Land");
+  assert.equal(regionDeRegistre("overijsselse"), true);
+  assert.equal(regionDeRegistre("bremer"), true);
+  assert.equal(regionDeRegistre("bayer"), false, "le radical seul est un nom");
+  assert.equal(regionDeRegistre("hessen"), false);
+  assert.ok(s6("Meyer Landmaschinen", "Niedersächsische Meyer Landmaschinen Handelsgesellschaft mbH") >= 0.81, "mesuré à 0,800 avant");
+  assert.ok(s6("De Groot Machines", "Noord-Brabantse De Groot Machinehandel B.V.") >= 0.81, "le point cardinal suit l'adjectif au plancher ; mesuré à 0,493 avant");
+  assert.ok(s6("Rheinische Industrietechnik GmbH", "Westfälische Industrietechnik GmbH") < 0.8, "deux adjectifs régionaux : deux sociétés (jeu 10)");
+});
+
+test("tour 6, registres : le composé allemand ou néerlandais, dans les deux sens, sous la marque seulement", () => {
+  assert.equal(compose("stahlrohr", "rohr"), true, "le nom déterminé ferme le mot");
+  assert.equal(compose("textilmaschinen", "textil"), true);
+  assert.equal(compose("machinehandel", "machines"), true, "le pluriel du membre s'ôte");
+  assert.equal(compose("logistics", "logic"), false, "un mot anglais ne commence pas un autre mot");
+  assert.equal(compose("stahlbau", "stahlhandel"), false);
+  assert.ok(s6("Jansen Metaal", "Gelderse Jansen Metaalhandel B.V.") >= 0.81, "mesuré à 0,720 avant");
+  assert.ok(s6("Rheinstahl Rohr GmbH", "Rheinstahl Stahlrohr GmbH") >= 0.81);
+  assert.ok(s6("Rheinstahl Rohr Ltd", "Rheinstahl Stahlrohr Ltd") < 0.81, "sans marque allemande ni néerlandaise, pas de composé");
+  assert.ok(s6("Kaltenbrunner Stahlhandel GmbH", "Kaltenbrunner Stahlbau GmbH") < 0.81, "deux composés du même membre : deux sociétés (jeu 10)");
+  assert.ok(s6("Smit Chemie", "Zeeuwse Smit Chemische Handelsgroep B.V.") >= 0.81, "l'adjectif et son radical traduits au même mot ; mesuré à 0,638 avant");
+});
+
+test("tour 6, registres : l'afrikaans se traduit sous la forme sud-africaine, « en » lie, le gérondif anglais est le même mot", () => {
+  assert.equal(gerondif("trading", "trade"), true);
+  assert.equal(gerondif("shipping", "ship"), true, "la consonne doublée");
+  assert.equal(gerondif("farming", "farm"), true);
+  assert.equal(gerondif("traders", "trade"), false, "jamais -er ni -ers");
+  assert.equal(gerondif("krausing", "kraus"), false, "les deux mots au dictionnaire");
+  assert.ok(score("Pretorius Voedsel Verwerking (Pty) Ltd", "Pretorius Food Processing (Pty) Ltd") >= 0.81, "mesuré à 0,332 avant");
+  assert.ok(score("Botha Handel en Vervoer (Pty) Ltd", "Botha Trade and Transport (Pty) Ltd") >= 0.81, "mesuré à 0,403 avant");
+  assert.ok(score("Venter Boumateriaal (Pty) Ltd", "Venter Building Materials (Pty) Ltd") >= 0.81);
+  assert.ok(score("Dlamini Bou en Konstruksie (Pty) Ltd", "Dlamini Building and Construction (Pty) Ltd") >= 0.81);
+  assert.equal(preparerEntite("Bou Regreg Trading"), "bou regreg trading", "sans forme sud-africaine, « Bou » est l'arabe Abu");
+  assert.equal(preparerEntite("Venter (Edms) Bpk").length > 0 && analyserEntite("Venter (Edms) Bpk").prive, true, "« (Edms) Bpk » est « (Pty) Ltd »");
+  assert.ok(score("Zuiderzee Pompen en Appendages B.V.", "Zuiderzee Pompen & Appendages B.V.") >= 0.81, "« en » est « & » (jeu 5, mesuré à 0,800 avant)");
+});
+
+test("tour 6, registres : l'élision française, l'adjectif de nationalité et le sigle du pays", () => {
+  assert.equal(preparerEntite("Société Malienne d'Import-Export SARL"), "mali import export");
+  assert.equal(preparerEntite("Societe Malienne d Import-Export SARL"), "mali import export", "l'apostrophe déjà ôtée par un système");
+  assert.equal(preparerEntite("O'Brien Shipping"), "obrien shipping", "l'apostrophe dans un nom soude");
+  assert.equal(preparerEntite("D'Angelo Trading"), "dangelo trading", "la majuscule D reste un nom");
+  assert.equal(preparerEntite("L. Dupont et Fils"), "l dupont sons", "l'initiale avec son point reste");
+  assert.ok(score("Société Malienne d'Import-Export SARL", "Import-Export Malienne") >= 0.81, "mesuré à 0,728 avant");
+  assert.ok(s6("Société Ivoirienne des Bois Tropicaux SA", "Bois Tropicaux CI") >= 0.81, "mesuré à 0,599 avant");
+  assert.equal(preparerEntite("C.I. Flores de Rionegro S.A.S."), "ci flores de rionegro", "en tête, C.I. est la Comercializadora Internacional");
+  assert.ok(s6("Société Ivoirienne de Négoce SARL", "Société Sénégalaise de Négoce SARL") < 0.81, "deux pays : deux sociétés");
+});
+
+test("tour 6, registres : le descripteur qui ouvre un nom roman s'omet ; en queue, le même mot est une société sœur", () => {
+  assert.equal(descripteur(preparerNom(fr6, "Comércio e Importação Ferreira, Lda")), 2);
+  assert.equal(descripteur(preparerNom(fr6, "Ferreira Comércio")), 0);
+  assert.ok(s6("Comercial Pereira e Filhos, Lda", "Pereira e Filhos") >= 0.81, "mesuré à 0,800 avant");
+  assert.ok(s6("Exportação de Café de Huambo, Lda", "Café Huambo") >= 0.81);
+  assert.ok(s6("Comércio e Importação Ferreira, Lda", "Ferreira Comércio") >= 0.81);
+  const s = s6("ООО «Северный Янтарь»", "ООО «Северный Янтарь Логистик»");
+  assert.ok(s < 0.81 && s >= 0.8 - 1e-9, `« Logistik » en queue, traduit, reste un orphelin rare (jeu 8) : ${s}`);
+});
+
+test("tour 6, registres : la succursale derrière une virgule n'est pas une adresse", () => {
+  const v = variantes("Meyer Landmaschinen Handelsgesellschaft mbH, Zweigniederlassung Bremen");
+  /* la variante sans la mention existe (c'est elle qui rejoint le nom nu), et la mention survit sur le nom tel qu'écrit */
+  assert.ok(v.includes("Meyer Landmaschinen Handelsgesellschaft mbH"), v.join(" | "));
+  assert.ok(analyserEntite("Meyer Landmaschinen Handelsgesellschaft mbH, Zweigniederlassung Bremen").succursale);
+  /* la convention des jeux 9 et 10 : la succursale est la même personne morale que le nom nu (fort) ; c'est face au
+     SIÈGE écrit, ou à une autre succursale, qu'elle se range au possible (voie formes) */
+  assert.ok(s6("Meyer Landmaschinen Handelsgesellschaft mbH, Zweigniederlassung Bremen", "Meyer Landmaschinen Handelsgesellschaft mbH") >= 0.81);
+  assert.ok(s6("Meyer Landmaschinen Handelsgesellschaft mbH, Zweigniederlassung Bremen", "Meyer Landmaschinen Handelsgesellschaft mbH, Hauptsitz Hannover") < 0.81);
+  assert.ok(variantes("Meyer Landmaschinen Handelsgesellschaft mbH, Hannover").includes("Meyer Landmaschinen Handelsgesellschaft mbH"), "l'adresse derrière la forme s'ôte toujours");
 });

@@ -207,3 +207,25 @@ test("tour 6 : l'index range au possible l'ancien nom des deux côtés, la succu
   assert.equal(statut("Adeyemi Agro Commodities Nigeria Limited (RC 884213)"), "possible", "deux dépôts");
   assert.equal(statut("Adeyemi Agro Commodities"), "strong", "le nom commercial sans forme");
 });
+
+test("tour 6, registres : l'index retrouve à lui seul le composé allemand dans les deux sens et le gérondif anglais", () => {
+  const e: EntreeListe[] = [
+    { source: "OFAC", id: "1", nom: "Rheinstahl Stahlrohr GmbH", alias: [], type: "entity" },
+    { source: "OFAC", id: "2", nom: "Jansen Metaal B.V.", alias: [], type: "entity" },
+    { source: "OFAC", id: "3", nom: "Botha Trade Beta", alias: [], type: "entity" },
+    { source: "OFAC", id: "4", nom: "De Groot Machines B.V.", alias: [], type: "entity" },
+  ];
+  const fx = frequencesDe(e.map((x) => [x.nom]));
+  const ix = new Index(fx, e, 0.74);
+  /* chaque requête ne partage avec sa chaîne listée que le mot que la règle nouvelle relie : le composé qui
+     finit par le mot demandé (« rohr »), celui qui commence par lui (« metaal »), le mot demandé lui-même
+     composé d'un mot listé au pluriel (« machines »), et le gérondif (« trading », « trade ») */
+  for (const [nom, k] of [["Rohr GmbH", 0], ["Metaalhandel B.V.", 1], ["Trading Alpha", 2], ["Machinehandel B.V.", 3]] as const) {
+    assert.ok(ix.candidats(preparerNom(fx, nom), nom).includes(k), `${nom} doit retrouver « ${e[k]!.nom} »`);
+  }
+  for (const nom of ["Rheinstahl Rohr GmbH", "Gelderse Jansen Metaalhandel B.V.", "Botha Trading Beta", "De Groot Machinehandel B.V."]) {
+    const rapide = cribler({ ligne: 2, nom }, ix, seuils), exhaustif = cribler({ ligne: 2, nom }, ix, seuils, true);
+    assert.deepEqual(rapide, exhaustif, nom);
+    assert.notEqual(rapide.statut, "no-match", nom);
+  }
+});
