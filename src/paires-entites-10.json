@@ -1,0 +1,2407 @@
+{
+ "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+ "provenance": "authored on 2026-09-27 by a separate agent (a Hamburg customs broker and Lagos trade-finance desk brief, organised by document: customs declarations, letters of credit, African and European registry extracts, bills of lading, invoices and chat; a sixth model) that never saw the matcher nor any other pair set, as blind test set #9 (sha256 47ec8944…); every name invented; no client data, no list data; overlap with the nine earlier training sets: 0 pairs, 0 names; 11 pairs identical but for case (6 match, 5 different). It judged method v11 once (entites.ts 77bac960…, cribler.ts ccee90bc…, ecritures.ts 4348bc88…): strong 0.81 found 104/200 [45-59 %] with 39/200 false alerts [15-26 %]; possible 0.80 found 163/200 [76-86 %] with 78/200 [33-46 %]. Studied afterwards and promoted to training set 10 on 2026-09-27, so it no longer measures anything held out.",
+ "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+ "paires": [
+  {
+   "a": "Bendel River Agro Processing Enterprises Limited",
+   "b": "BENDEL RIVER AGRO PROCESSING ENTERP",
+   "verdict": "match",
+   "nature": "customs-truncation-35"
+  },
+  {
+   "a": "Cross River Timber and Veneer Export Company Limited",
+   "b": "CROSS RIVER TIMBER AND VENEER EXPOR",
+   "verdict": "match",
+   "nature": "customs-truncation-35"
+  },
+  {
+   "a": "Kaduna Textile Manufacturing Industries Plc",
+   "b": "KADUNA TEXTILE MANUFACTURING INDUST",
+   "verdict": "match",
+   "nature": "customs-truncation-35"
+  },
+  {
+   "a": "Sokoto Hides and Skins Trading Enterprises Limited",
+   "b": "SOKOTO HIDES AND SKINS TRADING ENTE",
+   "verdict": "match",
+   "nature": "customs-truncation-35"
+  },
+  {
+   "a": "Ondo State Cocoa Processing and Export Ventures Limited",
+   "b": "ONDO STATE COCOA PROCESSING AND EXP",
+   "verdict": "match",
+   "nature": "customs-truncation-35"
+  },
+  {
+   "a": "Plateau Tin and Columbite Mining Enterprises Limited",
+   "b": "PLATEAU TIN AND COLUMBITE MINING ENTERPRISES LIMITED",
+   "verdict": "match",
+   "nature": "uppercase-export-form"
+  },
+  {
+   "a": "Benue Sesame Seed Export Enterprises Limited",
+   "b": "BENUE SESAME SEED EXPORT ENTERPRISES LIMITED",
+   "verdict": "match",
+   "nature": "uppercase-export-form"
+  },
+  {
+   "a": "Kwara Shea Butter Processing Ventures Limited",
+   "b": "KWARA SHEA BUTTER PROCESSING VENTURES LIMITED",
+   "verdict": "match",
+   "nature": "uppercase-export-form"
+  },
+  {
+   "a": "Rift Valley Horticultural Produce Exporters Limited",
+   "b": "RIFT VALLEY HORTICULTURAL PRODUCE EXPORTERS LIMITED",
+   "verdict": "match",
+   "nature": "uppercase-export-form"
+  },
+  {
+   "a": "Coast Cashew Processing and Export Enterprises Limited",
+   "b": "COAST CASHEW PROCESSING AND EXPORT ENTERPRISES LIMITED",
+   "verdict": "match",
+   "nature": "uppercase-export-form"
+  },
+  {
+   "a": "Niger Delta Growers Ltd",
+   "b": "Niger Delta Smallholder Growers and Marketing Cooperative Company Limited",
+   "verdict": "match",
+   "nature": "eori-full-name-expansion"
+  },
+  {
+   "a": "Kano Groundnut Traders",
+   "b": "Kano State Groundnut and Oilseed Traders Association Limited",
+   "verdict": "match",
+   "nature": "eori-full-name-expansion"
+  },
+  {
+   "a": "Warri Fish Exporters",
+   "b": "Warri Frozen Fish and Seafood Export Enterprises Limited",
+   "verdict": "match",
+   "nature": "eori-full-name-expansion"
+  },
+  {
+   "a": "Jos Tin Miners Co",
+   "b": "Jos Plateau Tin and Associated Minerals Mining Company Limited",
+   "verdict": "match",
+   "nature": "eori-full-name-expansion"
+  },
+  {
+   "a": "Aba Leather Works",
+   "b": "Aba Leather Tanning and Finished Goods Manufacturing Company Limited",
+   "verdict": "match",
+   "nature": "eori-full-name-expansion"
+  },
+  {
+   "a": "Meyer Landmaschinen",
+   "b": "Niedersächsische Meyer Landmaschinen Handelsgesellschaft mbH",
+   "verdict": "match",
+   "nature": "german-handelsregister-full-form"
+  },
+  {
+   "a": "Rheinstahl Rohr",
+   "b": "Rheinische Rheinstahl Stahlrohr Import-Export GmbH",
+   "verdict": "match",
+   "nature": "german-handelsregister-full-form"
+  },
+  {
+   "a": "Hoffmann Textil",
+   "b": "Westfälische Hoffmann Textilmaschinen Handelsgesellschaft mbH & Co. KG",
+   "verdict": "match",
+   "nature": "german-handelsregister-full-form"
+  },
+  {
+   "a": "Vogel Kunststoff",
+   "b": "Bayerische Vogel Kunststofftechnik Import-Export GmbH",
+   "verdict": "match",
+   "nature": "german-handelsregister-full-form"
+  },
+  {
+   "a": "Krause Werkzeug",
+   "b": "Sächsische Krause Werkzeugmaschinen Handelsgesellschaft mbH",
+   "verdict": "match",
+   "nature": "german-handelsregister-full-form"
+  },
+  {
+   "a": "De Groot Machines",
+   "b": "Noord-Brabantse De Groot Machinehandel B.V.",
+   "verdict": "match",
+   "nature": "dutch-kvk-full-form"
+  },
+  {
+   "a": "Bakker Expeditie",
+   "b": "Zuid-Hollandse Bakker Expeditie en Overslag B.V.",
+   "verdict": "match",
+   "nature": "dutch-kvk-full-form"
+  },
+  {
+   "a": "Visser Agro",
+   "b": "Overijsselse Visser Agrarische Handelsmaatschappij B.V.",
+   "verdict": "match",
+   "nature": "dutch-kvk-full-form"
+  },
+  {
+   "a": "Jansen Metaal",
+   "b": "Gelderse Jansen Metaalhandel B.V.",
+   "verdict": "match",
+   "nature": "dutch-kvk-full-form"
+  },
+  {
+   "a": "Smit Chemie",
+   "b": "Zeeuwse Smit Chemische Handelsgroep B.V.",
+   "verdict": "match",
+   "nature": "dutch-kvk-full-form"
+  },
+  {
+   "a": "Établissement Kouassi Frères",
+   "b": "Etablissement Kouassi Freres",
+   "verdict": "match",
+   "nature": "diacritic-dropped-customs"
+  },
+  {
+   "a": "Société Générale de Négoce Ivoirienne",
+   "b": "Societe Generale de Negoce Ivoirienne",
+   "verdict": "match",
+   "nature": "diacritic-dropped-customs"
+  },
+  {
+   "a": "Comércio e Importação Ferreira, Lda",
+   "b": "Comercio e Importacao Ferreira, Lda",
+   "verdict": "match",
+   "nature": "diacritic-dropped-customs"
+  },
+  {
+   "a": "Companhia Açucareira de Nampula, Lda",
+   "b": "Companhia Acucareira de Nampula, Lda",
+   "verdict": "match",
+   "nature": "diacritic-dropped-customs"
+  },
+  {
+   "a": "Établissements Diakité et Cie",
+   "b": "Etablissements Diakite et Cie",
+   "verdict": "match",
+   "nature": "diacritic-dropped-customs"
+  },
+  {
+   "a": "Adeyemi Agro Commodities",
+   "b": "Adeyemi Agro Commodities Nigeria Limited",
+   "verdict": "match",
+   "nature": "legal-suffix-added-customs"
+  },
+  {
+   "a": "Okafor Integrated Resources",
+   "b": "Okafor Integrated Resources Nig. Ltd",
+   "verdict": "match",
+   "nature": "legal-suffix-added-customs"
+  },
+  {
+   "a": "Balogun Global Ventures",
+   "b": "Balogun Global Ventures Enterprises Limited",
+   "verdict": "match",
+   "nature": "legal-suffix-added-customs"
+  },
+  {
+   "a": "Nwosu Farm Produce",
+   "b": "Nwosu Farm Produce & Sons Limited",
+   "verdict": "match",
+   "nature": "legal-suffix-added-customs"
+  },
+  {
+   "a": "Chukwu Petroleum Services",
+   "b": "Chukwu Petroleum Services Integrated Limited",
+   "verdict": "match",
+   "nature": "legal-suffix-added-customs"
+  },
+  {
+   "a": "Ibrahim Musa General Trading",
+   "b": "Musa, Ibrahim General Trading Enterprises",
+   "verdict": "match",
+   "nature": "registry-name-order-swap"
+  },
+  {
+   "a": "Danjuma Yakubu Agro Supplies",
+   "b": "Yakubu, Danjuma Agro Supplies Limited",
+   "verdict": "match",
+   "nature": "registry-name-order-swap"
+  },
+  {
+   "a": "Femi Alade Import Export",
+   "b": "Alade, Femi Import Export Company Limited",
+   "verdict": "match",
+   "nature": "registry-name-order-swap"
+  },
+  {
+   "a": "Chidi Okeke Building Materials",
+   "b": "Okeke, Chidi Building Materials Enterprises",
+   "verdict": "match",
+   "nature": "registry-name-order-swap"
+  },
+  {
+   "a": "Tunde Bello Auto Parts",
+   "b": "Bello, Tunde Auto Parts Limited",
+   "verdict": "match",
+   "nature": "registry-name-order-swap"
+  },
+  {
+   "a": "Northern Nigeria Grains and Cereal Processing Co Ltd",
+   "b": "Northern Nigeria Grains and Cereal Marketing Co Ltd",
+   "verdict": "different",
+   "nature": "truncation-collision-different"
+  },
+  {
+   "a": "South Western Region Cocoa and Coffee Export Trading Ltd",
+   "b": "South Western Region Cocoa and Coffee Export Logistics Ltd",
+   "verdict": "different",
+   "nature": "truncation-collision-different"
+  },
+  {
+   "a": "Federal Capital Territory Construction Materials Supply Co",
+   "b": "Federal Capital Territory Construction Machinery Supply Co",
+   "verdict": "different",
+   "nature": "truncation-collision-different"
+  },
+  {
+   "a": "Middle Belt Agricultural Produce Warehousing Enterprises",
+   "b": "Middle Belt Agricultural Produce Warehousing Ventures",
+   "verdict": "different",
+   "nature": "truncation-collision-different"
+  },
+  {
+   "a": "Upper Niger Basin Irrigation and Farm Equipment Supplies Co",
+   "b": "Upper Niger Basin Irrigation and Farm Equipment Rental Co",
+   "verdict": "different",
+   "nature": "truncation-collision-different"
+  },
+  {
+   "a": "Vogel Kunststofftechnik GmbH",
+   "b": "Vogel Kunststofftechnik GmbH & Co. KG",
+   "verdict": "different",
+   "nature": "gmbh-vs-kg-different-entity"
+  },
+  {
+   "a": "Hoffmann Textilmaschinen Handelsgesellschaft mbH",
+   "b": "Hoffmann Textilmaschinen Handelsgesellschaft mbH & Co. KG",
+   "verdict": "different",
+   "nature": "gmbh-vs-kg-different-entity"
+  },
+  {
+   "a": "Krause Werkzeugmaschinen GmbH",
+   "b": "Krause Werkzeugmaschinen Vertriebs GmbH & Co. KG",
+   "verdict": "different",
+   "nature": "gmbh-vs-kg-different-entity"
+  },
+  {
+   "a": "Fischer Baustoffe GmbH",
+   "b": "Fischer Baustoffe Logistik GmbH & Co. KG",
+   "verdict": "different",
+   "nature": "gmbh-vs-kg-different-entity"
+  },
+  {
+   "a": "Wagner Feinmechanik GmbH",
+   "b": "Wagner Feinmechanik Service GmbH & Co. KG",
+   "verdict": "different",
+   "nature": "gmbh-vs-kg-different-entity"
+  },
+  {
+   "a": "De Groot Machinehandel B.V.",
+   "b": "De Groot Machinehandel N.V.",
+   "verdict": "different",
+   "nature": "bv-vs-nv-different-entity"
+  },
+  {
+   "a": "Bakker Expeditie en Overslag B.V.",
+   "b": "Bakker Expeditie en Overslag N.V.",
+   "verdict": "different",
+   "nature": "bv-vs-nv-different-entity"
+  },
+  {
+   "a": "Visser Agrarische Handelsmaatschappij B.V.",
+   "b": "Visser Agrarische Handelsmaatschappij N.V.",
+   "verdict": "different",
+   "nature": "bv-vs-nv-different-entity"
+  },
+  {
+   "a": "Jansen Metaalhandel B.V.",
+   "b": "Jansen Metaalhandel N.V.",
+   "verdict": "different",
+   "nature": "bv-vs-nv-different-entity"
+  },
+  {
+   "a": "Smit Chemische Handelsgroep B.V.",
+   "b": "Smit Chemische Handelsgroep N.V.",
+   "verdict": "different",
+   "nature": "bv-vs-nv-different-entity"
+  },
+  {
+   "a": "Adeyemi Global Resources Nigeria Limited",
+   "b": "Adeyemi Global Resources Ghana Limited",
+   "verdict": "different",
+   "nature": "sibling-subsidiary-different-country"
+  },
+  {
+   "a": "Okonkwo Integrated Services Nig. Ltd",
+   "b": "Okonkwo Integrated Services Cameroon SARL",
+   "verdict": "different",
+   "nature": "sibling-subsidiary-different-country"
+  },
+  {
+   "a": "Balogun Ventures Lagos Limited",
+   "b": "Balogun Ventures Accra Limited",
+   "verdict": "different",
+   "nature": "sibling-subsidiary-different-country"
+  },
+  {
+   "a": "Chukwu Agro Exports Nigeria Ltd",
+   "b": "Chukwu Agro Exports Benin SARL",
+   "verdict": "different",
+   "nature": "sibling-subsidiary-different-country"
+  },
+  {
+   "a": "Musa Trading Kano Limited",
+   "b": "Musa Trading Niamey SARL",
+   "verdict": "different",
+   "nature": "sibling-subsidiary-different-country"
+  },
+  {
+   "a": "Bendel River Holdings Limited",
+   "b": "Bendel River Agro Processing Limited",
+   "verdict": "different",
+   "nature": "holding-vs-operating-customs"
+  },
+  {
+   "a": "Cross River Group Limited",
+   "b": "Cross River Timber Export Limited",
+   "verdict": "different",
+   "nature": "holding-vs-operating-customs"
+  },
+  {
+   "a": "Kaduna Industries Holdings Plc",
+   "b": "Kaduna Textile Manufacturing Limited",
+   "verdict": "different",
+   "nature": "holding-vs-operating-customs"
+  },
+  {
+   "a": "Sokoto Trading Group Limited",
+   "b": "Sokoto Hides and Skins Limited",
+   "verdict": "different",
+   "nature": "holding-vs-operating-customs"
+  },
+  {
+   "a": "Ondo Ventures Holdings Limited",
+   "b": "Ondo Cocoa Processing Limited",
+   "verdict": "different",
+   "nature": "holding-vs-operating-customs"
+  },
+  {
+   "a": "Plateau Minerals Trading Limited",
+   "b": "Plateau Minerals Logistics Limited",
+   "verdict": "different",
+   "nature": "one-qualifier-word-different"
+  },
+  {
+   "a": "Benue Produce Processing Limited",
+   "b": "Benue Produce Exports Limited",
+   "verdict": "different",
+   "nature": "one-qualifier-word-different"
+  },
+  {
+   "a": "Kwara Resources Ventures Limited",
+   "b": "Kwara Resources Enterprises Limited",
+   "verdict": "different",
+   "nature": "one-qualifier-word-different"
+  },
+  {
+   "a": "Rift Valley Growers Association",
+   "b": "Rift Valley Growers Cooperative",
+   "verdict": "different",
+   "nature": "one-qualifier-word-different"
+  },
+  {
+   "a": "Coast Traders Supply Limited",
+   "b": "Coast Traders Distribution Limited",
+   "verdict": "different",
+   "nature": "one-qualifier-word-different"
+  },
+  {
+   "a": "Adebayo Motors Limited",
+   "b": "Adebayo Textiles Limited",
+   "verdict": "different",
+   "nature": "family-surname-different-firm"
+  },
+  {
+   "a": "Okoro Fisheries Limited",
+   "b": "Okoro Construction Limited",
+   "verdict": "different",
+   "nature": "family-surname-different-firm"
+  },
+  {
+   "a": "Abubakar Transport Services Ltd",
+   "b": "Abubakar Pharmaceuticals Ltd",
+   "verdict": "different",
+   "nature": "family-surname-different-firm"
+  },
+  {
+   "a": "Nwachukwu Electricals Limited",
+   "b": "Nwachukwu Bakery Limited",
+   "verdict": "different",
+   "nature": "family-surname-different-firm"
+  },
+  {
+   "a": "Owusu Timber Limited",
+   "b": "Owusu Catering Services Limited",
+   "verdict": "different",
+   "nature": "family-surname-different-firm"
+  },
+  {
+   "a": "Kano Groundnut Traders Association",
+   "b": "Katsina Groundnut Traders Association",
+   "verdict": "different",
+   "nature": "unrelated-region-naming-pattern"
+  },
+  {
+   "a": "Enugu Coal and Minerals Limited",
+   "b": "Anambra Coal and Minerals Limited",
+   "verdict": "different",
+   "nature": "unrelated-region-naming-pattern"
+  },
+  {
+   "a": "Nyanza Sugar Growers Cooperative",
+   "b": "Kericho Sugar Growers Cooperative",
+   "verdict": "different",
+   "nature": "unrelated-region-naming-pattern"
+  },
+  {
+   "a": "Meru Miraa Traders Limited",
+   "b": "Machakos Miraa Traders Limited",
+   "verdict": "different",
+   "nature": "unrelated-region-naming-pattern"
+  },
+  {
+   "a": "Jigawa Rice Millers Limited",
+   "b": "Adamawa Rice Millers Limited",
+   "verdict": "different",
+   "nature": "unrelated-region-naming-pattern"
+  },
+  {
+   "a": "Bendel River Agro Processing Enterprises Limited Lagos Nigeria",
+   "b": "Bendel River Agro Processing Enterp\nrises Limited Lagos Nigeria",
+   "verdict": "match",
+   "nature": "swift-4x35-linebreak"
+  },
+  {
+   "a": "Cross River Timber and Veneer Export Company Limited Calabar",
+   "b": "Cross River Timber and Veneer Expor\nt Company Limited Calabar",
+   "verdict": "match",
+   "nature": "swift-4x35-linebreak"
+  },
+  {
+   "a": "Niedersächsische Meyer Landmaschinen Handelsgesellschaft mbH Hannover",
+   "b": "Niedersächsische Meyer Landmaschine\nn Handelsgesellschaft mbH Hannover",
+   "verdict": "match",
+   "nature": "swift-4x35-linebreak"
+  },
+  {
+   "a": "Zuid-Hollandse Bakker Expeditie en Overslag B.V. Rotterdam",
+   "b": "Zuid-Hollandse Bakker Expeditie en \nOverslag B.V. Rotterdam",
+   "verdict": "match",
+   "nature": "swift-4x35-linebreak"
+  },
+  {
+   "a": "Adeyemi Global Resources Nigeria Limited Apapa Lagos",
+   "b": "Adeyemi Global Resources Nigeria Li\nmited Apapa Lagos",
+   "verdict": "match",
+   "nature": "swift-4x35-linebreak"
+  },
+  {
+   "a": "Warri Frozen Fish and Seafood Export Enterprises Limited",
+   "b": "Warri Frozen Fish and Seafood Export Enterprises Limited45 Marine Road Warri",
+   "verdict": "match",
+   "nature": "field59-address-glued"
+  },
+  {
+   "a": "Jos Plateau Tin and Associated Minerals Mining Company Limited",
+   "b": "Jos Plateau Tin and Associated Minerals Mining Company LimitedPlot 12 Bauchi Road Jos",
+   "verdict": "match",
+   "nature": "field59-address-glued"
+  },
+  {
+   "a": "Aba Leather Tanning and Finished Goods Manufacturing Company Limited",
+   "b": "Aba Leather Tanning and Finished Goods Manufacturing Company LimitedArea 7 Aba Industrial Layout",
+   "verdict": "match",
+   "nature": "field59-address-glued"
+  },
+  {
+   "a": "Kano State Groundnut and Oilseed Traders Association Limited",
+   "b": "Kano State Groundnut and Oilseed Traders Association LimitedSabon Gari Market Kano",
+   "verdict": "match",
+   "nature": "field59-address-glued"
+  },
+  {
+   "a": "Niger Delta Smallholder Growers and Marketing Cooperative Company Limited",
+   "b": "Niger Delta Smallholder Growers and Marketing Cooperative Company LimitedYenagoa Bayelsa",
+   "verdict": "match",
+   "nature": "field59-address-glued"
+  },
+  {
+   "a": "Femi Alade Import Export Company Limited",
+   "b": ":50:FEMI ALADE IMPORT EXPORT COMPANY LIMITED",
+   "verdict": "match",
+   "nature": "field50-applicant-label-residue"
+  },
+  {
+   "a": "Chidi Okeke Building Materials Enterprises",
+   "b": "APPLICANT:CHIDI OKEKE BUILDING MATERIALS ENTERPRISES",
+   "verdict": "match",
+   "nature": "field50-applicant-label-residue"
+  },
+  {
+   "a": "Tunde Bello Auto Parts Limited",
+   "b": ":50:TUNDE BELLO AUTO PARTS LIMITED",
+   "verdict": "match",
+   "nature": "field50-applicant-label-residue"
+  },
+  {
+   "a": "Musa Trading Kano Limited",
+   "b": "APPLICANT:MUSA TRADING KANO LIMITED",
+   "verdict": "match",
+   "nature": "field50-applicant-label-residue"
+  },
+  {
+   "a": "Balogun Ventures Lagos Limited",
+   "b": ":50:BALOGUN VENTURES LAGOS LIMITED",
+   "verdict": "match",
+   "nature": "field50-applicant-label-residue"
+  },
+  {
+   "a": "Okonkwo Integrated Services Nig. Ltd",
+   "b": "OKONKWO INTEGRATED SERVICES NIG LTD /59",
+   "verdict": "match",
+   "nature": "field-label-residue"
+  },
+  {
+   "a": "Chukwu Agro Exports Nigeria Ltd",
+   "b": "C/O CHUKWU AGRO EXPORTS NIGERIA LTD",
+   "verdict": "match",
+   "nature": "field-label-residue"
+  },
+  {
+   "a": "Adeyemi Agro Commodities Nigeria Limited",
+   "b": "ADEYEMI AGRO COMMODITIES NIGERIA LIMITED-BENEF",
+   "verdict": "match",
+   "nature": "field-label-residue"
+  },
+  {
+   "a": "Bendel River Agro Processing Enterprises Limited",
+   "b": "BENDEL RIVER AGRO PROCESSING ENTERPRISES LTD//59",
+   "verdict": "match",
+   "nature": "field-label-residue"
+  },
+  {
+   "a": "Kaduna Textile Manufacturing Industries Plc",
+   "b": "KADUNA TEXTILE MANUFACTURING INDUSTRIES PLC-ACCT BENEF",
+   "verdict": "match",
+   "nature": "field-label-residue"
+  },
+  {
+   "a": "Cross River Timber and Veneer Export Company Limited",
+   "b": "Cross River Timber and Veneer Export Company Limited REF LC0042871",
+   "verdict": "match",
+   "nature": "bank-reference-appended"
+  },
+  {
+   "a": "Sokoto Hides and Skins Trading Enterprises Limited",
+   "b": "Sokoto Hides and Skins Trading Enterprises Limited A/C 0119284563",
+   "verdict": "match",
+   "nature": "bank-reference-appended"
+  },
+  {
+   "a": "Ondo State Cocoa Processing and Export Ventures Limited",
+   "b": "Ondo State Cocoa Processing and Export Ventures Limited REF 2024/LC/0087",
+   "verdict": "match",
+   "nature": "bank-reference-appended"
+  },
+  {
+   "a": "Plateau Tin and Columbite Mining Enterprises Limited",
+   "b": "Plateau Tin and Columbite Mining Enterprises Limited A/C 3312765490",
+   "verdict": "match",
+   "nature": "bank-reference-appended"
+  },
+  {
+   "a": "Benue Sesame Seed Export Enterprises Limited",
+   "b": "Benue Sesame Seed Export Enterprises Limited REF LC0193045",
+   "verdict": "match",
+   "nature": "bank-reference-appended"
+  },
+  {
+   "a": "Kwara Shea Butter Processing Ventures Limited",
+   "b": "Kwara Shea Butter Proces-\nsing Ventures Limited",
+   "verdict": "match",
+   "nature": "swift-linecut-midword"
+  },
+  {
+   "a": "Rift Valley Horticultural Produce Exporters Limited",
+   "b": "Rift Valley Horticul-\ntural Produce Exporters Limited",
+   "verdict": "match",
+   "nature": "swift-linecut-midword"
+  },
+  {
+   "a": "Coast Cashew Processing and Export Enterprises Limited",
+   "b": "Coast Cashew Process-\ning and Export Enterprises Limited",
+   "verdict": "match",
+   "nature": "swift-linecut-midword"
+  },
+  {
+   "a": "Baringo Livestock and Hides Export Company Limited",
+   "b": "Baringo Livestock and Hi-\ndes Export Company Limited",
+   "verdict": "match",
+   "nature": "swift-linecut-midword"
+  },
+  {
+   "a": "Meru Miraa and Produce Traders Limited",
+   "b": "Meru Miraa and Prod-\nuce Traders Limited",
+   "verdict": "match",
+   "nature": "swift-linecut-midword"
+  },
+  {
+   "a": "Danjuma Yakubu Agro Supplies Limited",
+   "b": "DANJUMA YAKUBU AGRO SUPPLIES LTD",
+   "verdict": "match",
+   "nature": "lc-abbreviation-expansion"
+  },
+  {
+   "a": "Yusuf Danjuma Trading Company Limited",
+   "b": "YUSUF DANJUMA TRADING CO LTD",
+   "verdict": "match",
+   "nature": "lc-abbreviation-expansion"
+  },
+  {
+   "a": "Warri Frozen Fish and Seafood Export Enterprises Limited",
+   "b": "WARRI FROZEN FISH AND SEAFOOD EXP ENT LTD",
+   "verdict": "match",
+   "nature": "lc-abbreviation-expansion"
+  },
+  {
+   "a": "Jos Plateau Tin and Associated Minerals Mining Company Limited",
+   "b": "JOS PLATEAU TIN AND ASSOC MINERALS MNG CO LTD",
+   "verdict": "match",
+   "nature": "lc-abbreviation-expansion"
+  },
+  {
+   "a": "Aba Leather Tanning and Finished Goods Manufacturing Company Limited",
+   "b": "ABA LEATHER TANNING AND FIN GOODS MFG CO LTD",
+   "verdict": "match",
+   "nature": "lc-abbreviation-expansion"
+  },
+  {
+   "a": "Établissement Bamba et Frères",
+   "b": "ETABLISSEMENT BAMBA ET FRERES",
+   "verdict": "match",
+   "nature": "diacritic-stripped-swift"
+  },
+  {
+   "a": "Société Générale de Négoce Sénégalaise",
+   "b": "SOCIETE GENERALE DE NEGOCE SENEGALAISE",
+   "verdict": "match",
+   "nature": "diacritic-stripped-swift"
+  },
+  {
+   "a": "Comércio e Importação Neves, Lda",
+   "b": "COMERCIO E IMPORTACAO NEVES, LDA",
+   "verdict": "match",
+   "nature": "diacritic-stripped-swift"
+  },
+  {
+   "a": "Companhia Açucareira de Beira, Lda",
+   "b": "COMPANHIA ACUCAREIRA DE BEIRA, LDA",
+   "verdict": "match",
+   "nature": "diacritic-stripped-swift"
+  },
+  {
+   "a": "Établissements Konaté et Cie",
+   "b": "ETABLISSEMENTS KONATE ET CIE",
+   "verdict": "match",
+   "nature": "diacritic-stripped-swift"
+  },
+  {
+   "a": "Cross River Timber and Veneer Export Company Limited",
+   "b": "Cross River Commercial Bank Plc",
+   "verdict": "different",
+   "nature": "beneficiary-vs-correspondent-bank"
+  },
+  {
+   "a": "Sokoto Hides and Skins Trading Enterprises Limited",
+   "b": "Sokoto Merchant Bank Limited",
+   "verdict": "different",
+   "nature": "beneficiary-vs-correspondent-bank"
+  },
+  {
+   "a": "Ondo State Cocoa Processing and Export Ventures Limited",
+   "b": "Ondo State Development Bank Plc",
+   "verdict": "different",
+   "nature": "beneficiary-vs-correspondent-bank"
+  },
+  {
+   "a": "Plateau Tin and Columbite Mining Enterprises Limited",
+   "b": "Plateau Trust Bank Limited",
+   "verdict": "different",
+   "nature": "beneficiary-vs-correspondent-bank"
+  },
+  {
+   "a": "Kaduna Textile Manufacturing Industries Plc",
+   "b": "Kaduna Union Bank Plc",
+   "verdict": "different",
+   "nature": "beneficiary-vs-correspondent-bank"
+  },
+  {
+   "a": "Femi Alade Import Export Company Limited",
+   "b": "Alade Freight Forwarders Limited",
+   "verdict": "different",
+   "nature": "applicant-vs-notify-party-different"
+  },
+  {
+   "a": "Chidi Okeke Building Materials Enterprises",
+   "b": "Okeke Clearing and Forwarding Agency",
+   "verdict": "different",
+   "nature": "applicant-vs-notify-party-different"
+  },
+  {
+   "a": "Musa Trading Kano Limited",
+   "b": "Musa Logistics and Haulage Limited",
+   "verdict": "different",
+   "nature": "applicant-vs-notify-party-different"
+  },
+  {
+   "a": "Balogun Ventures Lagos Limited",
+   "b": "Balogun Shipping Agency Limited",
+   "verdict": "different",
+   "nature": "applicant-vs-notify-party-different"
+  },
+  {
+   "a": "Tunde Bello Auto Parts Limited",
+   "b": "Bello Customs Brokerage Limited",
+   "verdict": "different",
+   "nature": "applicant-vs-notify-party-different"
+  },
+  {
+   "a": "West African Groundnut Processing and Export Company Ltd",
+   "b": "West African Groundnut Processing and Marketing Company Ltd",
+   "verdict": "different",
+   "nature": "beneficiary-truncation-collision"
+  },
+  {
+   "a": "Trans-Saharan Livestock and Hides Trading Enterprises Ltd",
+   "b": "Trans-Saharan Livestock and Hides Export Enterprises Ltd",
+   "verdict": "different",
+   "nature": "beneficiary-truncation-collision"
+  },
+  {
+   "a": "Lower Niger Basin Rice Milling and Distribution Company Ltd",
+   "b": "Lower Niger Basin Rice Milling and Storage Company Ltd",
+   "verdict": "different",
+   "nature": "beneficiary-truncation-collision"
+  },
+  {
+   "a": "Gulf of Guinea Fisheries and Cold Storage Enterprises Ltd",
+   "b": "Gulf of Guinea Fisheries and Cold Chain Enterprises Ltd",
+   "verdict": "different",
+   "nature": "beneficiary-truncation-collision"
+  },
+  {
+   "a": "Sahel Region Sesame and Shea Export Trading Company Ltd",
+   "b": "Sahel Region Sesame and Shea Export Marketing Company Ltd",
+   "verdict": "different",
+   "nature": "beneficiary-truncation-collision"
+  },
+  {
+   "a": "Adeyemi Global Resources Nigeria Limited",
+   "b": "Adeyemi Global Resources Trading Limited",
+   "verdict": "different",
+   "nature": "sister-company-different-lc"
+  },
+  {
+   "a": "Okonkwo Integrated Services Nig. Ltd",
+   "b": "Okonkwo Integrated Holdings Nig. Ltd",
+   "verdict": "different",
+   "nature": "sister-company-different-lc"
+  },
+  {
+   "a": "Chukwu Agro Exports Nigeria Ltd",
+   "b": "Chukwu Agro Investments Nigeria Ltd",
+   "verdict": "different",
+   "nature": "sister-company-different-lc"
+  },
+  {
+   "a": "Bendel River Agro Processing Enterprises Limited",
+   "b": "Bendel River Agro Marketing Enterprises Limited",
+   "verdict": "different",
+   "nature": "sister-company-different-lc"
+  },
+  {
+   "a": "Kano State Groundnut and Oilseed Traders Association Limited",
+   "b": "Kano State Groundnut and Oilseed Marketing Company Limited",
+   "verdict": "different",
+   "nature": "sister-company-different-lc"
+  },
+  {
+   "a": "Danjuma Yakubu Agro Supplies Limited (Applicant)",
+   "b": "Yakubu Danjuma Agro Exports Limited (Beneficiary)",
+   "verdict": "different",
+   "nature": "applicant-beneficiary-name-pattern-swap"
+  },
+  {
+   "a": "Yusuf Danjuma Trading Company Limited (Applicant)",
+   "b": "Danjuma Yusuf Export Company Limited (Beneficiary)",
+   "verdict": "different",
+   "nature": "applicant-beneficiary-name-pattern-swap"
+  },
+  {
+   "a": "Ibrahim Musa General Trading Enterprises (Applicant)",
+   "b": "Musa Ibrahim General Exports Enterprises (Beneficiary)",
+   "verdict": "different",
+   "nature": "applicant-beneficiary-name-pattern-swap"
+  },
+  {
+   "a": "Femi Alade Import Export Company Limited (Applicant)",
+   "b": "Alade Femi Export Import Company Limited (Beneficiary)",
+   "verdict": "different",
+   "nature": "applicant-beneficiary-name-pattern-swap"
+  },
+  {
+   "a": "Adebayo Timber Trading Limited (Applicant)",
+   "b": "Bello Adebayo Timber Exports Limited (Beneficiary)",
+   "verdict": "different",
+   "nature": "applicant-beneficiary-name-pattern-swap"
+  },
+  {
+   "a": "Lagos Commercial Bank Plc, Apapa Branch",
+   "b": "Lagos Commercial Bank Plc, Head Office",
+   "verdict": "different",
+   "nature": "bank-branch-vs-headquarters"
+  },
+  {
+   "a": "Hamburg Handelsbank AG, Speicherstadt Branch",
+   "b": "Hamburg Handelsbank AG, Hauptsitz",
+   "verdict": "different",
+   "nature": "bank-branch-vs-headquarters"
+  },
+  {
+   "a": "Rotterdam Trade Bank N.V., Havengebied Kantoor",
+   "b": "Rotterdam Trade Bank N.V., Hoofdkantoor",
+   "verdict": "different",
+   "nature": "bank-branch-vs-headquarters"
+  },
+  {
+   "a": "Kano Merchant Bank Limited, Sabon Gari Branch",
+   "b": "Kano Merchant Bank Limited, Head Office",
+   "verdict": "different",
+   "nature": "bank-branch-vs-headquarters"
+  },
+  {
+   "a": "Mombasa Coastal Bank Plc, Port Branch",
+   "b": "Mombasa Coastal Bank Plc, Nairobi Head Office",
+   "verdict": "different",
+   "nature": "bank-branch-vs-headquarters"
+  },
+  {
+   "a": "Warri Frozen Fish and Seafood Export Enterprises Limited",
+   "b": "Warri Freight and Forwarding Services Limited",
+   "verdict": "different",
+   "nature": "forwarder-vs-beneficiary-different"
+  },
+  {
+   "a": "Jos Plateau Tin and Associated Minerals Mining Company Limited",
+   "b": "Jos Plateau Clearing and Forwarding Agency Limited",
+   "verdict": "different",
+   "nature": "forwarder-vs-beneficiary-different"
+  },
+  {
+   "a": "Aba Leather Tanning and Finished Goods Manufacturing Company Limited",
+   "b": "Aba Leather Logistics and Forwarding Limited",
+   "verdict": "different",
+   "nature": "forwarder-vs-beneficiary-different"
+  },
+  {
+   "a": "Niger Delta Smallholder Growers and Marketing Cooperative Company Limited",
+   "b": "Niger Delta Freight Consolidators Limited",
+   "verdict": "different",
+   "nature": "forwarder-vs-beneficiary-different"
+  },
+  {
+   "a": "Cross River Timber and Veneer Export Company Limited",
+   "b": "Cross River Shipping and Forwarding Agency Limited",
+   "verdict": "different",
+   "nature": "forwarder-vs-beneficiary-different"
+  },
+  {
+   "a": "Adeyemi Global Resources West Africa Limited",
+   "b": "Adeyemi Global Resources East Africa Limited",
+   "verdict": "different",
+   "nature": "regional-qualifier-different-entity"
+  },
+  {
+   "a": "Chukwu Agro Exports Nigeria Ltd",
+   "b": "Chukwu Agro Exports Ghana Ltd",
+   "verdict": "different",
+   "nature": "regional-qualifier-different-entity"
+  },
+  {
+   "a": "Balogun Ventures Lagos Limited",
+   "b": "Balogun Ventures Port Harcourt Limited",
+   "verdict": "different",
+   "nature": "regional-qualifier-different-entity"
+  },
+  {
+   "a": "Musa Trading Kano Limited",
+   "b": "Musa Trading Kaduna Limited",
+   "verdict": "different",
+   "nature": "regional-qualifier-different-entity"
+  },
+  {
+   "a": "Okonkwo Integrated Services Nig. Ltd",
+   "b": "Okonkwo Integrated Services Intl. Ltd",
+   "verdict": "different",
+   "nature": "regional-qualifier-different-entity"
+  },
+  {
+   "a": "Adeyemi Agro Commodities Nigeria Limited (RC 884213)",
+   "b": "Adeyemi Agro Commodities",
+   "verdict": "match",
+   "nature": "cac-rc-number-vs-trading-name"
+  },
+  {
+   "a": "Okafor Integrated Resources Nig. Ltd (RC 762904)",
+   "b": "Okafor Integrated Resources",
+   "verdict": "match",
+   "nature": "cac-rc-number-vs-trading-name"
+  },
+  {
+   "a": "Balogun Global Ventures Enterprises Limited (RC 913087)",
+   "b": "Balogun Global Ventures",
+   "verdict": "match",
+   "nature": "cac-rc-number-vs-trading-name"
+  },
+  {
+   "a": "Nwosu Farm Produce & Sons Limited (RC 458821)",
+   "b": "Nwosu Farm Produce & Sons",
+   "verdict": "match",
+   "nature": "cac-rc-number-vs-trading-name"
+  },
+  {
+   "a": "Chukwu Petroleum Services Integrated Limited (RC 601347)",
+   "b": "Chukwu Petroleum Services",
+   "verdict": "match",
+   "nature": "cac-rc-number-vs-trading-name"
+  },
+  {
+   "a": "Van der Merwe Boerdery (Pty) Ltd (Reg. No. 2011/084562/07)",
+   "b": "Van der Merwe Boerdery",
+   "verdict": "match",
+   "nature": "cipc-reg-number-vs-trading-name"
+  },
+  {
+   "a": "Botha Handel en Vervoer (Pty) Ltd (Reg. No. 2014/117230/07)",
+   "b": "Botha Handel en Vervoer",
+   "verdict": "match",
+   "nature": "cipc-reg-number-vs-trading-name"
+  },
+  {
+   "a": "Nkosi Mining Resources (Pty) Ltd (Reg. No. 2009/052341/07)",
+   "b": "Nkosi Mining Resources",
+   "verdict": "match",
+   "nature": "cipc-reg-number-vs-trading-name"
+  },
+  {
+   "a": "Pretorius Agri Ventures (Pty) Ltd (Reg. No. 2016/203458/07)",
+   "b": "Pretorius Agri Ventures",
+   "verdict": "match",
+   "nature": "cipc-reg-number-vs-trading-name"
+  },
+  {
+   "a": "Naidoo Freight Logistics (Pty) Ltd (Reg. No. 2013/098765/07)",
+   "b": "Naidoo Freight Logistics",
+   "verdict": "match",
+   "nature": "cipc-reg-number-vs-trading-name"
+  },
+  {
+   "a": "Société Ivoirienne de Négoce et de Distribution SARL",
+   "b": "Négoce Ivoirienne",
+   "verdict": "match",
+   "nature": "sarl-full-form-french"
+  },
+  {
+   "a": "Société Malienne d'Import-Export SARL",
+   "b": "Import-Export Malienne",
+   "verdict": "match",
+   "nature": "sarl-full-form-french"
+  },
+  {
+   "a": "Société Sénégalaise de Commerce Général SA",
+   "b": "Commerce Général Sénégal",
+   "verdict": "match",
+   "nature": "sarl-full-form-french"
+  },
+  {
+   "a": "Société Burkinabè de Céréales et Oléagineux SARL",
+   "b": "Céréales Burkina",
+   "verdict": "match",
+   "nature": "sarl-full-form-french"
+  },
+  {
+   "a": "Société Ivoirienne des Bois Tropicaux SA",
+   "b": "Bois Tropicaux CI",
+   "verdict": "match",
+   "nature": "sarl-full-form-french"
+  },
+  {
+   "a": "Comércio e Importação Ferreira, Lda",
+   "b": "Ferreira Comércio",
+   "verdict": "match",
+   "nature": "lda-full-form-portuguese"
+  },
+  {
+   "a": "Companhia Açucareira de Nampula, Lda",
+   "b": "Açucareira Nampula",
+   "verdict": "match",
+   "nature": "lda-full-form-portuguese"
+  },
+  {
+   "a": "Exportação de Café de Huambo, Lda",
+   "b": "Café Huambo",
+   "verdict": "match",
+   "nature": "lda-full-form-portuguese"
+  },
+  {
+   "a": "Sociedade Agrícola de Malanje, Lda",
+   "b": "Agrícola Malanje",
+   "verdict": "match",
+   "nature": "lda-full-form-portuguese"
+  },
+  {
+   "a": "Comercial Pereira e Filhos, Lda",
+   "b": "Pereira e Filhos",
+   "verdict": "match",
+   "nature": "lda-full-form-portuguese"
+  },
+  {
+   "a": "Niedersächsische Meyer Landmaschinen Handelsgesellschaft mbH (HRB 45210, Amtsgericht Hannover)",
+   "b": "Meyer Landmaschinen",
+   "verdict": "match",
+   "nature": "handelsregister-full-form"
+  },
+  {
+   "a": "Rheinische Rheinstahl Stahlrohr Import-Export GmbH (HRB 33871, Amtsgericht Köln)",
+   "b": "Rheinstahl Rohr",
+   "verdict": "match",
+   "nature": "handelsregister-full-form"
+  },
+  {
+   "a": "Westfälische Hoffmann Textilmaschinen Handelsgesellschaft mbH & Co. KG (HRA 12045, Amtsgericht Bielefeld)",
+   "b": "Hoffmann Textil",
+   "verdict": "match",
+   "nature": "handelsregister-full-form"
+  },
+  {
+   "a": "Bayerische Vogel Kunststofftechnik Import-Export GmbH (HRB 98217, Amtsgericht München)",
+   "b": "Vogel Kunststoff",
+   "verdict": "match",
+   "nature": "handelsregister-full-form"
+  },
+  {
+   "a": "Sächsische Krause Werkzeugmaschinen Handelsgesellschaft mbH (HRB 55620, Amtsgericht Dresden)",
+   "b": "Krause Werkzeug",
+   "verdict": "match",
+   "nature": "handelsregister-full-form"
+  },
+  {
+   "a": "Noord-Brabantse De Groot Machinehandel B.V. (KvK 20456789)",
+   "b": "De Groot Machines",
+   "verdict": "match",
+   "nature": "kvk-full-form"
+  },
+  {
+   "a": "Zuid-Hollandse Bakker Expeditie en Overslag B.V. (KvK 24098765)",
+   "b": "Bakker Expeditie",
+   "verdict": "match",
+   "nature": "kvk-full-form"
+  },
+  {
+   "a": "Overijsselse Visser Agrarische Handelsmaatschappij B.V. (KvK 05234871)",
+   "b": "Visser Agro",
+   "verdict": "match",
+   "nature": "kvk-full-form"
+  },
+  {
+   "a": "Gelderse Jansen Metaalhandel B.V. (KvK 09871234)",
+   "b": "Jansen Metaal",
+   "verdict": "match",
+   "nature": "kvk-full-form"
+  },
+  {
+   "a": "Zeeuwse Smit Chemische Handelsgroep B.V. (KvK 22456098)",
+   "b": "Smit Chemie",
+   "verdict": "match",
+   "nature": "kvk-full-form"
+  },
+  {
+   "a": "Usafirishaji Bahari Kenya Limited",
+   "b": "Usafirishaji wa Bahari Kenya Limited",
+   "verdict": "match",
+   "nature": "local-language-spelling-variant"
+  },
+  {
+   "a": "Ilé-Iṣẹ́ Adewale Aṣọ",
+   "b": "Ile-Ise Adewale Aso",
+   "verdict": "match",
+   "nature": "local-language-spelling-variant"
+  },
+  {
+   "a": "Ụlọ Ọrụ Azụmahịa Chukwuma Limited",
+   "b": "Ulo Oru Azumahia Chukwuma Limited",
+   "verdict": "match",
+   "nature": "local-language-spelling-variant"
+  },
+  {
+   "a": "Kamfanin Kasuwanci na Ibrahim Limited",
+   "b": "Kamfanin Kasuwancin Ibrahim Limited",
+   "verdict": "match",
+   "nature": "local-language-spelling-variant"
+  },
+  {
+   "a": "Tesfaye Bekele Trading PLC (Amharic: ተስፋዬ በቀለ ንግድ)",
+   "b": "Tesfaye Bekele Trading PLC",
+   "verdict": "match",
+   "nature": "local-language-spelling-variant"
+  },
+  {
+   "a": "Van der Merwe Boerdery (Pty) Ltd",
+   "b": "Van der Merwe Farming (Pty) Ltd",
+   "verdict": "match",
+   "nature": "afrikaans-english-translation-form"
+  },
+  {
+   "a": "Botha Handel en Vervoer (Pty) Ltd",
+   "b": "Botha Trade and Transport (Pty) Ltd",
+   "verdict": "match",
+   "nature": "afrikaans-english-translation-form"
+  },
+  {
+   "a": "Pretorius Voedsel Verwerking (Pty) Ltd",
+   "b": "Pretorius Food Processing (Pty) Ltd",
+   "verdict": "match",
+   "nature": "afrikaans-english-translation-form"
+  },
+  {
+   "a": "Venter Boumateriaal (Pty) Ltd",
+   "b": "Venter Building Materials (Pty) Ltd",
+   "verdict": "match",
+   "nature": "afrikaans-english-translation-form"
+  },
+  {
+   "a": "Dlamini Bou en Konstruksie (Pty) Ltd",
+   "b": "Dlamini Building and Construction (Pty) Ltd",
+   "verdict": "match",
+   "nature": "afrikaans-english-translation-form"
+  },
+  {
+   "a": "Adeyemi Enterprises Nig. Ltd",
+   "b": "Adeyemi Enterprises Ghana Ltd",
+   "verdict": "different",
+   "nature": "jurisdiction-nigeria-vs-ghana"
+  },
+  {
+   "a": "Okonkwo Global Resources Nig. Ltd",
+   "b": "Okonkwo Global Resources Ghana Ltd",
+   "verdict": "different",
+   "nature": "jurisdiction-nigeria-vs-ghana"
+  },
+  {
+   "a": "Balogun Ventures Nig. Ltd",
+   "b": "Balogun Ventures Ghana Ltd",
+   "verdict": "different",
+   "nature": "jurisdiction-nigeria-vs-ghana"
+  },
+  {
+   "a": "Chukwu Integrated Services Nig. Ltd",
+   "b": "Chukwu Integrated Services Ghana Ltd",
+   "verdict": "different",
+   "nature": "jurisdiction-nigeria-vs-ghana"
+  },
+  {
+   "a": "Musa Trading Nig. Ltd",
+   "b": "Musa Trading Ghana Ltd",
+   "verdict": "different",
+   "nature": "jurisdiction-nigeria-vs-ghana"
+  },
+  {
+   "a": "Société Ivoirienne de Négoce SARL",
+   "b": "Société Ivoirienne de Négoce SA",
+   "verdict": "different",
+   "nature": "sarl-vs-sa-different-entity"
+  },
+  {
+   "a": "Société Malienne d'Import-Export SARL",
+   "b": "Société Malienne d'Import-Export SA",
+   "verdict": "different",
+   "nature": "sarl-vs-sa-different-entity"
+  },
+  {
+   "a": "Société Sénégalaise de Commerce Général SARL",
+   "b": "Société Sénégalaise de Commerce Général SA",
+   "verdict": "different",
+   "nature": "sarl-vs-sa-different-entity"
+  },
+  {
+   "a": "Société Burkinabè de Céréales SARL",
+   "b": "Société Burkinabè de Céréales SA",
+   "verdict": "different",
+   "nature": "sarl-vs-sa-different-entity"
+  },
+  {
+   "a": "Société Guinéenne de Bois Tropicaux SARL",
+   "b": "Société Guinéenne de Bois Tropicaux SA",
+   "verdict": "different",
+   "nature": "sarl-vs-sa-different-entity"
+  },
+  {
+   "a": "Comércio Ferreira, Lda (Luanda, Angola)",
+   "b": "Comércio Ferreira, Lda (Maputo, Moçambique)",
+   "verdict": "different",
+   "nature": "lda-angola-vs-mozambique-different"
+  },
+  {
+   "a": "Companhia Açucareira Santos, Lda (Angola)",
+   "b": "Companhia Açucareira Santos, Lda (Moçambique)",
+   "verdict": "different",
+   "nature": "lda-angola-vs-mozambique-different"
+  },
+  {
+   "a": "Sociedade Agrícola Pereira, Lda (Angola)",
+   "b": "Sociedade Agrícola Pereira, Lda (Moçambique)",
+   "verdict": "different",
+   "nature": "lda-angola-vs-mozambique-different"
+  },
+  {
+   "a": "Exportação Costa, Lda (Angola)",
+   "b": "Exportação Costa, Lda (Moçambique)",
+   "verdict": "different",
+   "nature": "lda-angola-vs-mozambique-different"
+  },
+  {
+   "a": "Comercial Silva e Filhos, Lda (Angola)",
+   "b": "Comercial Silva e Filhos, Lda (Moçambique)",
+   "verdict": "different",
+   "nature": "lda-angola-vs-mozambique-different"
+  },
+  {
+   "a": "Okoro Fisheries Nig. Ltd",
+   "b": "Okoro Construction Nig. Ltd",
+   "verdict": "different",
+   "nature": "family-name-different-business"
+  },
+  {
+   "a": "Adebayo Motors Nig. Ltd",
+   "b": "Adebayo Textiles Nig. Ltd",
+   "verdict": "different",
+   "nature": "family-name-different-business"
+  },
+  {
+   "a": "Mensah Timber Ghana Ltd",
+   "b": "Mensah Catering Ghana Ltd",
+   "verdict": "different",
+   "nature": "family-name-different-business"
+  },
+  {
+   "a": "Mwangi Transport Kenya Ltd",
+   "b": "Mwangi Bakery Kenya Ltd",
+   "verdict": "different",
+   "nature": "family-name-different-business"
+  },
+  {
+   "a": "Van der Merwe Boerdery (Pty) Ltd",
+   "b": "Van der Merwe Vervoer (Pty) Ltd",
+   "verdict": "different",
+   "nature": "family-name-different-business"
+  },
+  {
+   "a": "Adeyemi Global Resources Holdings Limited",
+   "b": "Adeyemi Global Resources Nigeria Limited",
+   "verdict": "different",
+   "nature": "holding-vs-operating-registry"
+  },
+  {
+   "a": "Okonkwo Group Limited",
+   "b": "Okonkwo Integrated Services Nig. Ltd",
+   "verdict": "different",
+   "nature": "holding-vs-operating-registry"
+  },
+  {
+   "a": "Balogun Holdings Plc",
+   "b": "Balogun Global Ventures Enterprises Limited",
+   "verdict": "different",
+   "nature": "holding-vs-operating-registry"
+  },
+  {
+   "a": "Chukwu Investments Limited",
+   "b": "Chukwu Petroleum Services Integrated Limited",
+   "verdict": "different",
+   "nature": "holding-vs-operating-registry"
+  },
+  {
+   "a": "Van der Merwe Groep (Pty) Ltd",
+   "b": "Van der Merwe Boerdery (Pty) Ltd",
+   "verdict": "different",
+   "nature": "holding-vs-operating-registry"
+  },
+  {
+   "a": "Adeyemi Agro Commodities Nigeria Limited (RC 884213)",
+   "b": "Adeyemi Agro Commodities Nigeria Limited (RC 918532)",
+   "verdict": "different",
+   "nature": "identical-name-different-rc-number"
+  },
+  {
+   "a": "Okafor Integrated Resources Nig. Ltd (RC 762904)",
+   "b": "Okafor Integrated Resources Nig. Ltd (RC 704829)",
+   "verdict": "different",
+   "nature": "identical-name-different-rc-number"
+  },
+  {
+   "a": "Balogun Global Ventures Enterprises Limited (RC 913087)",
+   "b": "Balogun Global Ventures Enterprises Limited (RC 130879)",
+   "verdict": "different",
+   "nature": "identical-name-different-rc-number"
+  },
+  {
+   "a": "Nwosu Farm Produce & Sons Limited (RC 458821)",
+   "b": "Nwosu Farm Produce & Sons Limited (RC 488521)",
+   "verdict": "different",
+   "nature": "identical-name-different-rc-number"
+  },
+  {
+   "a": "Chukwu Petroleum Services Integrated Limited (RC 601347)",
+   "b": "Chukwu Petroleum Services Integrated Limited (RC 601374)",
+   "verdict": "different",
+   "nature": "identical-name-different-rc-number"
+  },
+  {
+   "a": "Adeyemi Farmers Cooperative Ltd/Gte",
+   "b": "Adeyemi Farmers Trading Company Limited",
+   "verdict": "different",
+   "nature": "gte-vs-ltd-different-legal-nature"
+  },
+  {
+   "a": "Kano Growers Association Ltd/Gte",
+   "b": "Kano Growers Marketing Company Limited",
+   "verdict": "different",
+   "nature": "gte-vs-ltd-different-legal-nature"
+  },
+  {
+   "a": "Niger Delta Fishermen Union Ltd/Gte",
+   "b": "Niger Delta Fishermen Enterprises Limited",
+   "verdict": "different",
+   "nature": "gte-vs-ltd-different-legal-nature"
+  },
+  {
+   "a": "Plateau Miners Welfare Association Ltd/Gte",
+   "b": "Plateau Miners Trading Company Limited",
+   "verdict": "different",
+   "nature": "gte-vs-ltd-different-legal-nature"
+  },
+  {
+   "a": "Benue Farmers Multipurpose Cooperative Ltd/Gte",
+   "b": "Benue Farmers Produce Company Limited",
+   "verdict": "different",
+   "nature": "gte-vs-ltd-different-legal-nature"
+  },
+  {
+   "a": "Meyer Landmaschinen Handelsgesellschaft mbH, Zweigniederlassung Bremen (HRB 61234, AG Bremen)",
+   "b": "Meyer Landmaschinen Handelsgesellschaft mbH (HRB 45210, AG Hannover)",
+   "verdict": "different",
+   "nature": "handelsregister-branch-vs-headquarters"
+  },
+  {
+   "a": "Rheinstahl Stahlrohr GmbH, Zweigniederlassung Duisburg (HRB 71098, AG Duisburg)",
+   "b": "Rheinstahl Stahlrohr GmbH (HRB 33871, AG Köln)",
+   "verdict": "different",
+   "nature": "handelsregister-branch-vs-headquarters"
+  },
+  {
+   "a": "Hoffmann Textilmaschinen GmbH & Co. KG, Zweigniederlassung Münster (HRA 30456, AG Münster)",
+   "b": "Hoffmann Textilmaschinen GmbH & Co. KG (HRA 12045, AG Bielefeld)",
+   "verdict": "different",
+   "nature": "handelsregister-branch-vs-headquarters"
+  },
+  {
+   "a": "Vogel Kunststofftechnik GmbH, Zweigniederlassung Nürnberg (HRB 44210, AG Nürnberg)",
+   "b": "Vogel Kunststofftechnik GmbH (HRB 98217, AG München)",
+   "verdict": "different",
+   "nature": "handelsregister-branch-vs-headquarters"
+  },
+  {
+   "a": "Krause Werkzeugmaschinen GmbH, Zweigniederlassung Leipzig (HRB 22045, AG Leipzig)",
+   "b": "Krause Werkzeugmaschinen GmbH (HRB 55620, AG Dresden)",
+   "verdict": "different",
+   "nature": "handelsregister-branch-vs-headquarters"
+  },
+  {
+   "a": "MV Bonny Trader (ex Delta Fortune)",
+   "b": "MV Bonny Trader",
+   "verdict": "match",
+   "nature": "vessel-ex-name-rename"
+  },
+  {
+   "a": "MV Lagos Pearl (ex Atlantic Palm)",
+   "b": "MV Lagos Pearl",
+   "verdict": "match",
+   "nature": "vessel-ex-name-rename"
+  },
+  {
+   "a": "MV Tema Voyager (ex Gulf Cormorant)",
+   "b": "MV Tema Voyager",
+   "verdict": "match",
+   "nature": "vessel-ex-name-rename"
+  },
+  {
+   "a": "MV Mombasa Breeze (ex Savannah Runner)",
+   "b": "MV Mombasa Breeze",
+   "verdict": "match",
+   "nature": "vessel-ex-name-rename"
+  },
+  {
+   "a": "MV Durban Horizon (ex Calabar Wind)",
+   "b": "MV Durban Horizon",
+   "verdict": "match",
+   "nature": "vessel-ex-name-rename"
+  },
+  {
+   "a": "MV Niger Star",
+   "b": "Niger Star",
+   "verdict": "match",
+   "nature": "vessel-prefix-variant"
+  },
+  {
+   "a": "MT Douala Current",
+   "b": "Douala Current",
+   "verdict": "match",
+   "nature": "vessel-prefix-variant"
+  },
+  {
+   "a": "MV Warri Osprey",
+   "b": "Warri Osprey",
+   "verdict": "match",
+   "nature": "vessel-prefix-variant"
+  },
+  {
+   "a": "MT Apapa Falcon",
+   "b": "Apapa Falcon",
+   "verdict": "match",
+   "nature": "vessel-prefix-variant"
+  },
+  {
+   "a": "MV Onne Egret",
+   "b": "Onne Egret",
+   "verdict": "match",
+   "nature": "vessel-prefix-variant"
+  },
+  {
+   "a": "MV Bonny Trader",
+   "b": "MV BONNY TRADER V.24W",
+   "verdict": "match",
+   "nature": "voyage-code-residue"
+  },
+  {
+   "a": "MV Lagos Pearl",
+   "b": "MV LAGOS PEARL VOY 118N",
+   "verdict": "match",
+   "nature": "voyage-code-residue"
+  },
+  {
+   "a": "MV Tema Voyager",
+   "b": "MV TEMA VOYAGER V.07E",
+   "verdict": "match",
+   "nature": "voyage-code-residue"
+  },
+  {
+   "a": "MV Mombasa Breeze",
+   "b": "MV MOMBASA BREEZE VOY 233S",
+   "verdict": "match",
+   "nature": "voyage-code-residue"
+  },
+  {
+   "a": "MV Durban Horizon",
+   "b": "MV DURBAN HORIZON V.56W",
+   "verdict": "match",
+   "nature": "voyage-code-residue"
+  },
+  {
+   "a": "MV Niger Star",
+   "b": "MV NIGER STAR/LOS-HAM",
+   "verdict": "match",
+   "nature": "port-of-call-residue"
+  },
+  {
+   "a": "MT Douala Current",
+   "b": "MT DOUALA CURRENT/DLA-HAM",
+   "verdict": "match",
+   "nature": "port-of-call-residue"
+  },
+  {
+   "a": "MV Warri Osprey",
+   "b": "MV WARRI OSPREY/WAR-HAM",
+   "verdict": "match",
+   "nature": "port-of-call-residue"
+  },
+  {
+   "a": "MT Apapa Falcon",
+   "b": "MT APAPA FALCON/APP-HAM",
+   "verdict": "match",
+   "nature": "port-of-call-residue"
+  },
+  {
+   "a": "MV Onne Egret",
+   "b": "MV ONNE EGRET/ONN-HAM",
+   "verdict": "match",
+   "nature": "port-of-call-residue"
+  },
+  {
+   "a": "Bonny Freight Forwarders Ltd",
+   "b": "Bonny Freight Fwd Ltd",
+   "verdict": "match",
+   "nature": "notify-party-abbreviation"
+  },
+  {
+   "a": "Lagos Clearing and Forwarding Agency Limited",
+   "b": "Lagos C&F Agency Ltd",
+   "verdict": "match",
+   "nature": "notify-party-abbreviation"
+  },
+  {
+   "a": "Tema Consolidators and Logistics Limited",
+   "b": "Tema Consol & Log Ltd",
+   "verdict": "match",
+   "nature": "notify-party-abbreviation"
+  },
+  {
+   "a": "Mombasa Shipping and Forwarding Company Limited",
+   "b": "Mombasa Shpg & Fwdg Co Ltd",
+   "verdict": "match",
+   "nature": "notify-party-abbreviation"
+  },
+  {
+   "a": "Durban International Freight Services Limited",
+   "b": "Durban Intl Frt Svcs Ltd",
+   "verdict": "match",
+   "nature": "notify-party-abbreviation"
+  },
+  {
+   "a": "Tug Calabar Wind",
+   "b": "TUG CALABAR WIND CS:5NAB2",
+   "verdict": "match",
+   "nature": "tug-callsign-residue"
+  },
+  {
+   "a": "Tug Apapa Muscle",
+   "b": "TUG APAPA MUSCLE CS:5NCT7",
+   "verdict": "match",
+   "nature": "tug-callsign-residue"
+  },
+  {
+   "a": "Tug Onne Guardian",
+   "b": "TUG ONNE GUARDIAN CS:5NDX3",
+   "verdict": "match",
+   "nature": "tug-callsign-residue"
+  },
+  {
+   "a": "Tug Warri Sentinel",
+   "b": "TUG WARRI SENTINEL CS:5NFP9",
+   "verdict": "match",
+   "nature": "tug-callsign-residue"
+  },
+  {
+   "a": "Tug Bonny Defender",
+   "b": "TUG BONNY DEFENDER CS:5NGH4",
+   "verdict": "match",
+   "nature": "tug-callsign-residue"
+  },
+  {
+   "a": "FV Gulf Cormorant",
+   "b": "FV GULF CORMORANT (NGR-2247)",
+   "verdict": "match",
+   "nature": "fishing-vessel-flag-suffix"
+  },
+  {
+   "a": "FV Atlantic Egret",
+   "b": "FV ATLANTIC EGRET (GHA-1893)",
+   "verdict": "match",
+   "nature": "fishing-vessel-flag-suffix"
+  },
+  {
+   "a": "FV Savannah Osprey",
+   "b": "FV SAVANNAH OSPREY (KEN-0965)",
+   "verdict": "match",
+   "nature": "fishing-vessel-flag-suffix"
+  },
+  {
+   "a": "FV Coastal Falcon",
+   "b": "FV COASTAL FALCON (ZAF-3312)",
+   "verdict": "match",
+   "nature": "fishing-vessel-flag-suffix"
+  },
+  {
+   "a": "FV Delta Pelican",
+   "b": "FV DELTA PELICAN (CMR-0741)",
+   "verdict": "match",
+   "nature": "fishing-vessel-flag-suffix"
+  },
+  {
+   "a": "West Coast Chartering and Brokerage Limited",
+   "b": "West Coast Chart & Brok Ltd",
+   "verdict": "match",
+   "nature": "charterer-name-abbreviation"
+  },
+  {
+   "a": "Gulf of Guinea Time Charter Services Limited",
+   "b": "Gulf of Guinea T/C Svcs Ltd",
+   "verdict": "match",
+   "nature": "charterer-name-abbreviation"
+  },
+  {
+   "a": "Bight of Benin Ship Management Limited",
+   "b": "Bight of Benin Shipmgmt Ltd",
+   "verdict": "match",
+   "nature": "charterer-name-abbreviation"
+  },
+  {
+   "a": "Cape Route Vessel Operators Limited",
+   "b": "Cape Route Vsl Ops Ltd",
+   "verdict": "match",
+   "nature": "charterer-name-abbreviation"
+  },
+  {
+   "a": "Indian Ocean Bulk Chartering Limited",
+   "b": "Indian Ocean Bulk Chart Ltd",
+   "verdict": "match",
+   "nature": "charterer-name-abbreviation"
+  },
+  {
+   "a": "MV Bonny Trader",
+   "b": "MV Bonny Voyager",
+   "verdict": "different",
+   "nature": "sister-ship-different-hull"
+  },
+  {
+   "a": "MV Lagos Pearl",
+   "b": "MV Lagos Fortune",
+   "verdict": "different",
+   "nature": "sister-ship-different-hull"
+  },
+  {
+   "a": "MV Tema Star",
+   "b": "MV Tema Horizon",
+   "verdict": "different",
+   "nature": "sister-ship-different-hull"
+  },
+  {
+   "a": "MV Mombasa Breeze",
+   "b": "MV Mombasa Current",
+   "verdict": "different",
+   "nature": "sister-ship-different-hull"
+  },
+  {
+   "a": "MV Durban Osprey",
+   "b": "MV Durban Falcon",
+   "verdict": "different",
+   "nature": "sister-ship-different-hull"
+  },
+  {
+   "a": "MV Niger Star",
+   "b": "Niger Star Shipping Company Limited",
+   "verdict": "different",
+   "nature": "vessel-vs-owning-company"
+  },
+  {
+   "a": "MT Douala Current",
+   "b": "Douala Current Maritime Limited",
+   "verdict": "different",
+   "nature": "vessel-vs-owning-company"
+  },
+  {
+   "a": "MV Warri Osprey",
+   "b": "Warri Osprey Ship Owners Limited",
+   "verdict": "different",
+   "nature": "vessel-vs-owning-company"
+  },
+  {
+   "a": "MT Apapa Falcon",
+   "b": "Apapa Falcon Vessel Holdings Limited",
+   "verdict": "different",
+   "nature": "vessel-vs-owning-company"
+  },
+  {
+   "a": "MV Onne Egret",
+   "b": "Onne Egret Marine Limited",
+   "verdict": "different",
+   "nature": "vessel-vs-owning-company"
+  },
+  {
+   "a": "MV Bonny Trader",
+   "b": "Bonny Trader Ship Management Limited",
+   "verdict": "different",
+   "nature": "vessel-vs-manager-charterer"
+  },
+  {
+   "a": "MV Lagos Pearl",
+   "b": "Lagos Pearl Chartering Company Limited",
+   "verdict": "different",
+   "nature": "vessel-vs-manager-charterer"
+  },
+  {
+   "a": "MV Tema Voyager",
+   "b": "Tema Voyager Technical Management Limited",
+   "verdict": "different",
+   "nature": "vessel-vs-manager-charterer"
+  },
+  {
+   "a": "MV Mombasa Breeze",
+   "b": "Mombasa Breeze Crewing and Management Limited",
+   "verdict": "different",
+   "nature": "vessel-vs-manager-charterer"
+  },
+  {
+   "a": "MV Durban Horizon",
+   "b": "Durban Horizon Time Charterers Limited",
+   "verdict": "different",
+   "nature": "vessel-vs-manager-charterer"
+  },
+  {
+   "a": "Tug Calabar Wind",
+   "b": "Barge Calabar Wind II",
+   "verdict": "different",
+   "nature": "tug-vs-barge-different-vessel"
+  },
+  {
+   "a": "Tug Apapa Muscle",
+   "b": "Barge Apapa Muscle II",
+   "verdict": "different",
+   "nature": "tug-vs-barge-different-vessel"
+  },
+  {
+   "a": "Tug Onne Guardian",
+   "b": "Barge Onne Guardian II",
+   "verdict": "different",
+   "nature": "tug-vs-barge-different-vessel"
+  },
+  {
+   "a": "Tug Warri Sentinel",
+   "b": "Barge Warri Sentinel II",
+   "verdict": "different",
+   "nature": "tug-vs-barge-different-vessel"
+  },
+  {
+   "a": "Tug Bonny Defender",
+   "b": "Barge Bonny Defender II",
+   "verdict": "different",
+   "nature": "tug-vs-barge-different-vessel"
+  },
+  {
+   "a": "MV Kalabari Star",
+   "b": "MV Kalabari Stars",
+   "verdict": "different",
+   "nature": "near-string-one-letter-different"
+  },
+  {
+   "a": "MV Nembe Fortune",
+   "b": "MV Nembe Fortunes",
+   "verdict": "different",
+   "nature": "near-string-one-letter-different"
+  },
+  {
+   "a": "MT Forcados Wind",
+   "b": "MT Forcardos Wind",
+   "verdict": "different",
+   "nature": "near-string-one-letter-different"
+  },
+  {
+   "a": "MV Escravos Pearl",
+   "b": "MV Escravos Pearls",
+   "verdict": "different",
+   "nature": "near-string-one-letter-different"
+  },
+  {
+   "a": "MV Bonny Egret",
+   "b": "MV Bonny Egrets",
+   "verdict": "different",
+   "nature": "near-string-one-letter-different"
+  },
+  {
+   "a": "Bonny Freight Forwarders Ltd",
+   "b": "Bonny Agro Exports Limited",
+   "verdict": "different",
+   "nature": "forwarder-vs-shipper-different"
+  },
+  {
+   "a": "Lagos Clearing and Forwarding Agency Limited",
+   "b": "Lagos Agro Commodities Exporters Limited",
+   "verdict": "different",
+   "nature": "forwarder-vs-shipper-different"
+  },
+  {
+   "a": "Tema Consolidators and Logistics Limited",
+   "b": "Tema Cocoa Exporters Limited",
+   "verdict": "different",
+   "nature": "forwarder-vs-shipper-different"
+  },
+  {
+   "a": "Mombasa Shipping and Forwarding Company Limited",
+   "b": "Mombasa Coffee Exporters Limited",
+   "verdict": "different",
+   "nature": "forwarder-vs-shipper-different"
+  },
+  {
+   "a": "Durban International Freight Services Limited",
+   "b": "Durban Citrus Exporters Limited",
+   "verdict": "different",
+   "nature": "forwarder-vs-shipper-different"
+  },
+  {
+   "a": "West Coast Consolidators Limited, Lagos Branch",
+   "b": "West Coast Consolidators Limited, Tema Branch",
+   "verdict": "different",
+   "nature": "consolidator-branch-different-registration"
+  },
+  {
+   "a": "Gulf of Guinea Freight Services Limited, Douala Branch",
+   "b": "Gulf of Guinea Freight Services Limited, Apapa Branch",
+   "verdict": "different",
+   "nature": "consolidator-branch-different-registration"
+  },
+  {
+   "a": "East African Cargo Consolidators Limited, Mombasa Branch",
+   "b": "East African Cargo Consolidators Limited, Dar es Salaam Branch",
+   "verdict": "different",
+   "nature": "consolidator-branch-different-registration"
+  },
+  {
+   "a": "Southern Africa Forwarding Limited, Durban Branch",
+   "b": "Southern Africa Forwarding Limited, Maputo Branch",
+   "verdict": "different",
+   "nature": "consolidator-branch-different-registration"
+  },
+  {
+   "a": "Bight of Benin Logistics Limited, Cotonou Branch",
+   "b": "Bight of Benin Logistics Limited, Lome Branch",
+   "verdict": "different",
+   "nature": "consolidator-branch-different-registration"
+  },
+  {
+   "a": "MV Savannah Runner (ex Delta Fortune, 2009)",
+   "b": "MV Coastal Trader (ex Delta Fortune, 1997)",
+   "verdict": "different",
+   "nature": "ex-name-collision-different-vessel"
+  },
+  {
+   "a": "MV Gulf Cormorant (ex Atlantic Palm, 2015)",
+   "b": "MV Bight Wanderer (ex Atlantic Palm, 2001)",
+   "verdict": "different",
+   "nature": "ex-name-collision-different-vessel"
+  },
+  {
+   "a": "MV Calabar Wind (ex Niger Star, 2018)",
+   "b": "MV Escravos Current (ex Niger Star, 2003)",
+   "verdict": "different",
+   "nature": "ex-name-collision-different-vessel"
+  },
+  {
+   "a": "MV Apapa Falcon (ex Warri Osprey, 2020)",
+   "b": "MV Onne Pelican (ex Warri Osprey, 2006)",
+   "verdict": "different",
+   "nature": "ex-name-collision-different-vessel"
+  },
+  {
+   "a": "MV Durban Horizon (ex Bonny Trader, 2012)",
+   "b": "MV Tema Fortune (ex Bonny Trader, 1999)",
+   "verdict": "different",
+   "nature": "ex-name-collision-different-vessel"
+  },
+  {
+   "a": "Adaeze Fashion House",
+   "b": "AdaezeFashionHouse",
+   "verdict": "match",
+   "nature": "whatsapp-missing-spaces"
+  },
+  {
+   "a": "Kofi Electronics Shop",
+   "b": "KofiElectronicsShop",
+   "verdict": "match",
+   "nature": "whatsapp-missing-spaces"
+  },
+  {
+   "a": "Fatima Textiles Store",
+   "b": "FatimaTextilesStore",
+   "verdict": "match",
+   "nature": "whatsapp-missing-spaces"
+  },
+  {
+   "a": "Chinedu Phone Accessories",
+   "b": "ChineduPhoneAccessories",
+   "verdict": "match",
+   "nature": "whatsapp-missing-spaces"
+  },
+  {
+   "a": "Aisha Beauty Supplies",
+   "b": "AishaBeautySupplies",
+   "verdict": "match",
+   "nature": "whatsapp-missing-spaces"
+  },
+  {
+   "a": "Nkechi General Store",
+   "b": "Nkechi General Stone",
+   "verdict": "match",
+   "nature": "autocorrect-substitution"
+  },
+  {
+   "a": "Uzoma Wholesale Trading",
+   "b": "Uzoma Wholesome Trading",
+   "verdict": "match",
+   "nature": "autocorrect-substitution"
+  },
+  {
+   "a": "Ibrahim Spare Parts",
+   "b": "Ibrahim Spare Ports",
+   "verdict": "match",
+   "nature": "autocorrect-substitution"
+  },
+  {
+   "a": "Grace Provisions Store",
+   "b": "Grace Provisions Stored",
+   "verdict": "match",
+   "nature": "autocorrect-substitution"
+  },
+  {
+   "a": "Emeka Building Supplies",
+   "b": "Emeka Building Suppliers",
+   "verdict": "match",
+   "nature": "autocorrect-substitution"
+  },
+  {
+   "a": "Établissement Koné Frères",
+   "b": "Etablissement Kone Freres",
+   "verdict": "match",
+   "nature": "accent-dropped-french"
+  },
+  {
+   "a": "Société Diarra et Fils",
+   "b": "Societe Diarra et Fils",
+   "verdict": "match",
+   "nature": "accent-dropped-french"
+  },
+  {
+   "a": "Épicerie Traoré",
+   "b": "Epicerie Traore",
+   "verdict": "match",
+   "nature": "accent-dropped-french"
+  },
+  {
+   "a": "Boutique Camara Sœurs",
+   "b": "Boutique Camara Soeurs",
+   "verdict": "match",
+   "nature": "accent-dropped-french"
+  },
+  {
+   "a": "Négoce Général Bamako",
+   "b": "Negoce General Bamako",
+   "verdict": "match",
+   "nature": "accent-dropped-french"
+  },
+  {
+   "a": "Comércio São José",
+   "b": "Comercio Sao Jose",
+   "verdict": "match",
+   "nature": "accent-dropped-portuguese"
+  },
+  {
+   "a": "Mercearia Conceição",
+   "b": "Mercearia Conceicao",
+   "verdict": "match",
+   "nature": "accent-dropped-portuguese"
+  },
+  {
+   "a": "Armazém Nogueira",
+   "b": "Armazem Nogueira",
+   "verdict": "match",
+   "nature": "accent-dropped-portuguese"
+  },
+  {
+   "a": "Padaria São João",
+   "b": "Padaria Sao Joao",
+   "verdict": "match",
+   "nature": "accent-dropped-portuguese"
+  },
+  {
+   "a": "Comércio Irmãos Gonçalves",
+   "b": "Comercio Irmaos Goncalves",
+   "verdict": "match",
+   "nature": "accent-dropped-portuguese"
+  },
+  {
+   "a": "Chinedu Auto Parts Ltd",
+   "b": "CH1NEDU AUT0 PARTS LTD",
+   "verdict": "match",
+   "nature": "ocr-stamp-mangled"
+  },
+  {
+   "a": "Balogun General Stores",
+   "b": "BAL0GUN GENERAL ST0RES",
+   "verdict": "match",
+   "nature": "ocr-stamp-mangled"
+  },
+  {
+   "a": "Yusuf Provisions Shop",
+   "b": "YU5UF PR0VISI0NS SH0P",
+   "verdict": "match",
+   "nature": "ocr-stamp-mangled"
+  },
+  {
+   "a": "Mensah Trading Company",
+   "b": "MEN5AH TRADlNG C0MPANY",
+   "verdict": "match",
+   "nature": "ocr-stamp-mangled"
+  },
+  {
+   "a": "Osei Electronics Mart",
+   "b": "05EI ELECTR0NIC5 MART",
+   "verdict": "match",
+   "nature": "ocr-stamp-mangled"
+  },
+  {
+   "a": "Mohamed Bencherif Trading (Arabic: محمد بن الشريف للتجارة)",
+   "b": "Mohammed Ben Cherif Trading",
+   "verdict": "match",
+   "nature": "arabic-transliteration-variant"
+  },
+  {
+   "a": "Abdelkader Haddadi Import",
+   "b": "Abdel Kader Haddadi Import",
+   "verdict": "match",
+   "nature": "arabic-transliteration-variant"
+  },
+  {
+   "a": "Al-Amin General Store",
+   "b": "Alamin General Store",
+   "verdict": "match",
+   "nature": "arabic-transliteration-variant"
+  },
+  {
+   "a": "Youssef Ben Salah Textiles",
+   "b": "Yousef Bensalah Textiles",
+   "verdict": "match",
+   "nature": "arabic-transliteration-variant"
+  },
+  {
+   "a": "Khadija El-Fassi Boutique",
+   "b": "Khadija Elfassi Boutique",
+   "verdict": "match",
+   "nature": "arabic-transliteration-variant"
+  },
+  {
+   "a": "Adaeze Fashion House Limited",
+   "b": "Adaeze Fashion",
+   "verdict": "match",
+   "nature": "whatsapp-name-abbreviation"
+  },
+  {
+   "a": "Kofi Electronics Shop Enterprise",
+   "b": "Kofi Electronics",
+   "verdict": "match",
+   "nature": "whatsapp-name-abbreviation"
+  },
+  {
+   "a": "Fatima Textiles Store Limited",
+   "b": "Fatima Textiles",
+   "verdict": "match",
+   "nature": "whatsapp-name-abbreviation"
+  },
+  {
+   "a": "Chinedu Phone Accessories Nigeria Limited",
+   "b": "Chinedu Phones",
+   "verdict": "match",
+   "nature": "whatsapp-name-abbreviation"
+  },
+  {
+   "a": "Aisha Beauty Supplies Company",
+   "b": "Aisha Beauty",
+   "verdict": "match",
+   "nature": "whatsapp-name-abbreviation"
+  },
+  {
+   "a": "Ngozi Chukwuemeka Stores",
+   "b": "Ngozi Chukwuemeka Store",
+   "verdict": "match",
+   "nature": "phone-autocomplete-minor-drop"
+  },
+  {
+   "a": "Oluwaseun Adebanjo Ventures",
+   "b": "Oluwaseun Adebanjo Venture",
+   "verdict": "match",
+   "nature": "phone-autocomplete-minor-drop"
+  },
+  {
+   "a": "Chiamaka Nwankwo Provisions",
+   "b": "Chiamaka Nwankwo Provision",
+   "verdict": "match",
+   "nature": "phone-autocomplete-minor-drop"
+  },
+  {
+   "a": "Abubakar Suleiman Enterprises",
+   "b": "Abubakar Suleiman Enterprise",
+   "verdict": "match",
+   "nature": "phone-autocomplete-minor-drop"
+  },
+  {
+   "a": "Wanjiru Kamau Traders",
+   "b": "Wanjiru Kamau Trader",
+   "verdict": "match",
+   "nature": "phone-autocomplete-minor-drop"
+  },
+  {
+   "a": "Mohamed Bencherif Trading",
+   "b": "Mohamed Bencharif Trading",
+   "verdict": "different",
+   "nature": "transliteration-collision-different-family"
+  },
+  {
+   "a": "Abdelkader Haddadi Import",
+   "b": "Abdelkader Haddadou Import",
+   "verdict": "different",
+   "nature": "transliteration-collision-different-family"
+  },
+  {
+   "a": "Youssef Ben Salah Textiles",
+   "b": "Youssef Ben Salem Textiles",
+   "verdict": "different",
+   "nature": "transliteration-collision-different-family"
+  },
+  {
+   "a": "Khadija El-Fassi Boutique",
+   "b": "Khadija El-Fassy Boutique",
+   "verdict": "different",
+   "nature": "transliteration-collision-different-family"
+  },
+  {
+   "a": "Omar Belkacem Wholesale",
+   "b": "Omar Belkacemi Wholesale",
+   "verdict": "different",
+   "nature": "transliteration-collision-different-family"
+  },
+  {
+   "a": "Kelechi Wholesale Trading",
+   "b": "Kelechi Wholefoods Trading",
+   "verdict": "different",
+   "nature": "autocorrect-creates-different-entity"
+  },
+  {
+   "a": "Suleiman Spare Parts",
+   "b": "Suleiman Spa Parts",
+   "verdict": "different",
+   "nature": "autocorrect-creates-different-entity"
+  },
+  {
+   "a": "Patience Provisions Store",
+   "b": "Patience Provisions Stores Limited",
+   "verdict": "different",
+   "nature": "autocorrect-creates-different-entity"
+  },
+  {
+   "a": "Chibuzo Building Supplies",
+   "b": "Chibuzo Building Suppliers Limited",
+   "verdict": "different",
+   "nature": "autocorrect-creates-different-entity"
+  },
+  {
+   "a": "Blessing Textiles Store",
+   "b": "Blessing Textiles Stories",
+   "verdict": "different",
+   "nature": "autocorrect-creates-different-entity"
+  },
+  {
+   "a": "Chinedu Okafor Electronics",
+   "b": "Chinedu Okoro Electronics",
+   "verdict": "different",
+   "nature": "near-homophone-different-trader"
+  },
+  {
+   "a": "Balogun Adewale Stores",
+   "b": "Balogun Adewole Stores",
+   "verdict": "different",
+   "nature": "near-homophone-different-trader"
+  },
+  {
+   "a": "Mensah Kwabena Trading",
+   "b": "Mensah Kwabina Trading",
+   "verdict": "different",
+   "nature": "near-homophone-different-trader"
+  },
+  {
+   "a": "Kamau Njoroge Provisions",
+   "b": "Kamau Njoroges Provisions",
+   "verdict": "different",
+   "nature": "near-homophone-different-trader"
+  },
+  {
+   "a": "Yusuf Aliyu Textiles",
+   "b": "Yusuf Aliu Textiles",
+   "verdict": "different",
+   "nature": "near-homophone-different-trader"
+  },
+  {
+   "a": "BAL0GUN GENERAL ST0RES",
+   "b": "BAL0GUN GENERAL ST0NES",
+   "verdict": "different",
+   "nature": "ocr-confusion-different-entity"
+  },
+  {
+   "a": "MEN5AH TRADlNG C0MPANY",
+   "b": "MEN5AH TRADlNG C0MPANIES",
+   "verdict": "different",
+   "nature": "ocr-confusion-different-entity"
+  },
+  {
+   "a": "YU5UF PR0VISI0NS SH0P",
+   "b": "YU5UF PR0VISI0NS SH0PS",
+   "verdict": "different",
+   "nature": "ocr-confusion-different-entity"
+  },
+  {
+   "a": "CH1NEDU AUT0 PARTS LTD",
+   "b": "CH1NEDU AUT0 PARK5 LTD",
+   "verdict": "different",
+   "nature": "ocr-confusion-different-entity"
+  },
+  {
+   "a": "05EI ELECTR0NIC5 MART",
+   "b": "05EI ELECTR0NIC5 MARKET",
+   "verdict": "different",
+   "nature": "ocr-confusion-different-entity"
+  },
+  {
+   "a": "Chukwuemeka Okafor Senior Trading",
+   "b": "Chukwuemeka Okafor Junior Trading",
+   "verdict": "different",
+   "nature": "father-son-different-shop"
+  },
+  {
+   "a": "Ibrahim Musa Senior Enterprises",
+   "b": "Ibrahim Musa Junior Enterprises",
+   "verdict": "different",
+   "nature": "father-son-different-shop"
+  },
+  {
+   "a": "Kwame Mensah Senior Stores",
+   "b": "Kwame Mensah Junior Stores",
+   "verdict": "different",
+   "nature": "father-son-different-shop"
+  },
+  {
+   "a": "Mwangi Kamau Senior Provisions",
+   "b": "Mwangi Kamau Junior Provisions",
+   "verdict": "different",
+   "nature": "father-son-different-shop"
+  },
+  {
+   "a": "Adebayo Tunde Senior Ventures",
+   "b": "Adebayo Tunde Junior Ventures",
+   "verdict": "different",
+   "nature": "father-son-different-shop"
+  },
+  {
+   "a": "AdeBayoStores",
+   "b": "AdebayoStores",
+   "verdict": "different",
+   "nature": "missing-space-collision-different"
+  },
+  {
+   "a": "FemiOlaTraders",
+   "b": "FemiolaTraders",
+   "verdict": "different",
+   "nature": "missing-space-collision-different"
+  },
+  {
+   "a": "ChiOmaVentures",
+   "b": "ChiomaVentures",
+   "verdict": "different",
+   "nature": "missing-space-collision-different"
+  },
+  {
+   "a": "TundeOlaEnterprises",
+   "b": "TundeolaEnterprises",
+   "verdict": "different",
+   "nature": "missing-space-collision-different"
+  },
+  {
+   "a": "NgoziKaStores",
+   "b": "NgozikaStores",
+   "verdict": "different",
+   "nature": "missing-space-collision-different"
+  },
+  {
+   "a": "Order for Chidinma Okoye",
+   "b": "Order for Chidinma Okonkwo",
+   "verdict": "different",
+   "nature": "whatsapp-typo-different-recipient"
+  },
+  {
+   "a": "Payment to Uche Nwafor",
+   "b": "Payment to Uche Nwadike",
+   "verdict": "different",
+   "nature": "whatsapp-typo-different-recipient"
+  },
+  {
+   "a": "Delivery for Amaka Eze",
+   "b": "Delivery for Amaka Ezenwa",
+   "verdict": "different",
+   "nature": "whatsapp-typo-different-recipient"
+  },
+  {
+   "a": "Invoice for Segun Alabi",
+   "b": "Invoice for Segun Alade",
+   "verdict": "different",
+   "nature": "whatsapp-typo-different-recipient"
+  },
+  {
+   "a": "Order for Halima Sule",
+   "b": "Order for Halima Suleiman",
+   "verdict": "different",
+   "nature": "whatsapp-typo-different-recipient"
+  },
+  {
+   "a": "El Tayeb Trading (Khartoum)",
+   "b": "Ettayeb Négoce (Khartoum)",
+   "verdict": "different",
+   "nature": "transliteration-convention-different-entity"
+  },
+  {
+   "a": "Bouazza General Store",
+   "b": "Bouaza Négoce Général",
+   "verdict": "different",
+   "nature": "transliteration-convention-different-entity"
+  },
+  {
+   "a": "Cherkaoui Import Export",
+   "b": "Cherkawi Import-Export SARL",
+   "verdict": "different",
+   "nature": "transliteration-convention-different-entity"
+  },
+  {
+   "a": "Benabdallah Trading Co",
+   "b": "Ben Abdallah Négoce",
+   "verdict": "different",
+   "nature": "transliteration-convention-different-entity"
+  },
+  {
+   "a": "Al-Fassi Textiles",
+   "b": "Elfassi Textiles SARL",
+   "verdict": "different",
+   "nature": "transliteration-convention-different-entity"
+  }
+ ]
+}
