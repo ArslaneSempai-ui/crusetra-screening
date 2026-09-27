@@ -441,6 +441,17 @@ const REGIONS: ReadonlySet<string> = new Set([
 const QUALIFICATIFS_PRIVES = new Set(["pty", "pte", "pvt", "sdn", "sendirian"]);
 const PHRASES_PRIVEES = new Set(["private limited", "proprietary limited", "sendirian berhad"]);
 
+/** Dans le registre nord-américain, une société par actions se désigne « Inc. » ou « Corp. »,
+ *  et la désignation fait partie du nom déposé : « Harlowe Grain Corporation » et « Harlowe
+ *  Grain Inc. » sont deux sociétés (jeu 8, quatre paires jugées différentes ; les jeux 1 à 7
+ *  n'en jugent aucune dans l'autre sens). Les familles ne les séparent pas, toutes deux
+ *  « corp », et « Inc. » traduit aussi bien un K.K. ou une JSC : la désignation est plus fine
+ *  que la famille, et ne se lit que là où un registre la garde distincte. Les deux écritures
+ *  d'une même désignation (« Inc. », « Incorporated » ; « Corp. », « Corporation ») restent une. */
+const DESIGNATIONS: ReadonlyMap<string, string> = new Map([
+  ["inc", "inc"], ["incorporated", "inc"], ["corp", "corp"], ["corporation", "corp"],
+]);
+
 /** Ce que la préparation a retiré, et qui reste une information ; et la LANGUE que le nom
  *  laisse voir (l'article arabe, une forme japonaise, une province chinoise), qui décide où
  *  les variations de romanisation sont créditées. */
@@ -448,6 +459,9 @@ export type Marques = { pays: readonly string[]; familles: readonly string[]; na
   arabe: boolean; japonais: boolean; chinois: boolean; coreen: boolean; hebreuOuGrec: boolean; indien: boolean; hispanique: boolean;
   /** un qualificatif de société privée (Pty, Pte, Pvt, Sdn, (P)) : « X Pty Ltd » n'est pas « X Ltd » */
   prive: boolean;
+  /** les désignations écrites qu'un même registre garde distinctes dans une même famille
+   *  (« Inc. » et « Corp. », voir DESIGNATIONS) */
+  designations: readonly string[];
   /** le nom entier est en majuscules et compte plusieurs mots : un export de système, où les
    *  mots courts sont souvent abrégés sans point (« HVY IND ») */
   majuscules: boolean };
@@ -561,6 +575,7 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
   }
   const pays = new Set<string>();
   const familles = new Set<string>();
+  const designations = new Set<string>();
   let societe = false;
   let privePhrase = false;
   /* « Co., Ltd. », les deux mots ensemble, est la forme des sociétés d'Asie de l'Est et du
@@ -596,6 +611,8 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
     societe = true;
     for (const k of PAYS_DES_FORMES.get(j) ?? []) pays.add(k);
     for (const k of FAMILLES_DES_FORMES.get(j) ?? []) familles.add(k);
+    const d = DESIGNATIONS.get(j);
+    if (d !== undefined) designations.add(d);
     return false;
   });
   /* un sigle en tête fait des initiales des mots qui suivent (« IMZ Industrias Metalicas
@@ -622,7 +639,8 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
   const hispanique = ["MX", "ES", "BR", "PE", "CO", "CL", "AR", "PT", "UY", "BO"].some((k) => pays.has(k)) || tousLesMots.some((j) => MARQUEURS_HISPANIQUES.has(j));
   const majuscules = !/\p{Ll}/u.test(nom) && /\p{Lu}/u.test(nom) && t.length >= 2;
   return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses,
-    pays: [...pays].sort(), familles: [...familles].sort(), navire, societe, arabe, japonais, chinois, coreen, hebreuOuGrec, indien, hispanique, prive, majuscules };
+    pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
+    hebreuOuGrec, indien, hispanique, prive, majuscules };
 }
 
 /** Les jetons d'un nom brut : préparation d'entité, puis le pipeline commun des paliers
@@ -861,7 +879,7 @@ export type NomPrepare = {
   marques: Marques;
 };
 
-const SANS_MARQUES: Marques = { pays: [], familles: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
+const SANS_MARQUES: Marques = { pays: [], familles: [], designations: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
   coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, prive: false, majuscules: false };
 
 export function preparerNom(f: Frequences, nom: string): NomPrepare {
@@ -991,6 +1009,9 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
      « Meier », « Mayer ») : en chinois, en vietnamien, en allemand, c'est un autre mot autant
      qu'une faute. Les deux plafonnent au niveau POSSIBLE. */
   let orphelinRare = false, motAmbigu = false;
+  /* un qualificatif de groupe soudé à son radical d'un côté (« Agroholding »), le radical nu
+     de l'autre (« Agro ») : la holding face à la société qui exploite (voir QUALIFICATIFS_SOUDES) */
+  let qualificatifSoudeVu = false;
   const orphelinsMots: [string[], string[]] = [[], []];
   /* la variation de voyelle et le repli ne sont crédités que là où une romanisation les
      produit : l'arabe et le persan (a, e, i ; o, u), le japonais (ō, ū : o, ou, oo, u). En
@@ -1062,6 +1083,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
         && !lemme(X.mots[i]!) && !lemme(Y.mots[meilleurY]!) && !PARTICULES.has(X.mots[i]!) && !PARTICULES.has(Y.mots[meilleurY]!)) motAmbigu = true;
       if (m >= 0.9 && X.poids[i]! >= 0.5 * X.poidsMax) rareCouvert[cote] = true;
       if (X.parentheses[i]) { parenthese[cote] = true; if (m >= 0.8) parentheseReconnue[cote] = true; }
+      if (Y.mots.some((y) => qualificatifSoude(X.mots[i]!, y, Y.mots))) qualificatifSoudeVu = true;
       s += X.poids[i]! * apport(m);
     }
     return s;
@@ -1116,10 +1138,12 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   /* une parenthèse à laquelle l'autre nom ne répond par aucun mot : une filiale, pas une
      graphie ; comme un conflit de marques, elle abaisse (× 0,8) sans annuler */
   const filiale = (parenthese[0] && !parentheseReconnue[0]) || (parenthese[1] && !parentheseReconnue[1]);
-  /* un numéro d'un seul côté, des marques en conflit, une filiale : la méthode a une raison
-     précise de douter, et le candidat se range au niveau POSSIBLE, quelle que soit la
-     ressemblance des mots ; il n'est pas effacé (un groupe ouvre des homonymes ailleurs) */
-  return A.numeros === B.numeros && !marquesEnConflit(A.marques, B.marques) && !filiale ? s : Math.min(s, FACTEUR_CONTENANCE);
+  /* un numéro d'un seul côté, des marques en conflit, une filiale, un qualificatif de groupe
+     soudé : la méthode a une raison précise de douter, et le candidat se range au niveau
+     POSSIBLE, quelle que soit la ressemblance des mots ; il n'est pas effacé (un groupe ouvre
+     des homonymes ailleurs) */
+  return A.numeros === B.numeros && !marquesEnConflit(A.marques, B.marques) && !filiale && !qualificatifSoudeVu
+    ? s : Math.min(s, FACTEUR_CONTENANCE);
 }
 
 export const FACTEUR_CONTENANCE = 0.8;
@@ -1129,9 +1153,29 @@ export const SEUIL_RARE = 0.45;
 /** Le bloc (mots collés ou coupés) ne compte qu'à partir de cette similarité. */
 export const BLOC_MIN = 0.8;
 
+/** Les qualificatifs de groupe qu'un nom SOUDE à son radical : « Agroholding », « Agroinvest »,
+ *  « Uraltrade ». Écrit en un mot à part (« Dorreval Chemicals Holdings »), le qualificatif est
+ *  un mot rare sans répondant, et le plafond des orphelins range déjà la paire au niveau
+ *  possible ; soudé, il n'était plus un mot, et la règle du dernier mot coupé lisait le radical
+ *  nu comme un début tronqué (mesuré le 27/09 : « Rakhmatullin Agroholding LLC » contre
+ *  « Rakhmatullin Agro LLC » à 0,907, la holding face à la société qui exploite). */
+const QUALIFICATIFS_SOUDES: ReadonlySet<string> = new Set(["holding", "holdings", "group", "invest", "trade", "export", "import", "industries"]);
+
+/** `colle` est-il `radical` suivi d'un qualificatif de groupe soudé, face à un nom (`autres`,
+ *  les mots de l'autre côté) qui porte le radical nu et nulle part le qualificatif ? Trois
+ *  lettres de radical au moins ; et « Agro Holding » en deux mots face à « Agroholding » n'est
+ *  qu'une soudure, que le bloc lit. */
+export function qualificatifSoude(colle: string, radical: string, autres: readonly string[]): boolean {
+  if (radical.length < 3 || colle.length <= radical.length || !colle.startsWith(radical)) return false;
+  const q = colle.slice(radical.length);
+  if (!QUALIFICATIFS_SOUDES.has(q)) return false;
+  return !autres.some((w) => w.length >= 4 && (w.startsWith(q) || q.startsWith(w)));
+}
+
 /**
  * Deux noms que leurs marques disent différents : des formes juridiques de pays DISJOINTS
- * (« GmbH » contre « Inc. »), de familles disjointes (« Limited » contre « S.A. de C.V. »),
+ * (« GmbH » contre « Inc. »), de familles disjointes (« Limited » contre « S.A. de C.V. »), de
+ * désignations distinctes d'un même registre (« Corp. » contre « Inc. »),
  * ou un navire (préfixe « M/V ») contre une société (forme juridique). Comme un numéro d'un seul côté, le conflit abaisse (× 0,8), il n'annule pas :
  * un groupe sanctionné ouvre des homonymes ailleurs, et le relecteur doit les voir.
  */
@@ -1141,6 +1185,8 @@ export function marquesEnConflit(a: Marques, b: Marques): boolean {
      société du même nom (la cotée, l'étrangère), quand les deux portent une forme */
   if (a.prive !== b.prive && a.familles.length && b.familles.length) return true;
   if (a.familles.length && b.familles.length && !a.familles.some((p) => b.familles.includes(p))) return true;
+  /* « X Corp. » face à « X Inc. » : deux désignations d'un même registre, deux dépôts (voir DESIGNATIONS) */
+  if (a.designations.length && b.designations.length && !a.designations.some((d) => b.designations.includes(d))) return true;
   return (a.navire && b.societe) || (b.navire && a.societe);
 }
 
