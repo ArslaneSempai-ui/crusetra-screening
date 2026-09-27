@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import {
   blocs, champ, decoderEntites, analyserOfac, analyserOnu, analyserUe, analyser,
-  recouperOfac, lireManifeste, lireListe, SOURCES, type Manifeste,
+  recouperOfac, lireManifeste, lireListe, SOURCES, type Manifeste, analyserCsl, fichierDe,
 } from "./listes.ts";
 
 const fixture = (n: string) => readFileSync(fileURLToPath(new URL(`./fixtures/${n}`, import.meta.url)), "utf8");
@@ -113,7 +113,36 @@ test("CASCADE_OFFLINE=1 avec --fetch : refus code 2 qui nomme le drapeau ET l'is
   assert.match(r.stderr, /unset CASCADE_OFFLINE/, "un refus sans issue se fait commenter");
 });
 
-test("les trois sources déclarées sont celles du contrat, chacune en https", () => {
-  assert.deepEqual(SOURCES.map((s) => s.source).sort(), ["EU", "OFAC", "UN"]);
+test("les cinq sources déclarées sont celles du contrat, chacune en https", () => {
+  assert.deepEqual(SOURCES.map((s) => s.source).sort(), ["CSL", "EU", "OFAC", "OFAC-CONS", "UN"]);
   for (const s of SOURCES) assert.match(s.url, /^https:\/\//);
+});
+
+test("CSL : les lignes du Trésor écartées, les alias coupés au point-virgule, la liste d'origine gardée", () => {
+  const e = analyserCsl(readFileSync(new URL("./fixtures/csl.csv", import.meta.url), "utf8"));
+  /* Quatre vraies lignes du fichier du 27/09 : une SDN (doit partir, le fichier OFAC la porte
+     déjà), une Entity List à deux alias, une Denied Persons, une ITAR Debarred. */
+  assert.equal(e.length, 3, "la ligne SDN doit être écartée : comptée deux fois, elle ferait deux alertes");
+  assert.ok(e.every((x) => x.source === "CSL" && x.id.length > 0));
+  const el = e.find((x) => x.nom === "Ibrahim Haqqani")!;
+  assert.deepEqual(el.alias, ["Hajji Sahib", "Maulawi Haji Ibrahim Haqqani"]);
+  assert.equal(el.programme, "Entity List (EL)");
+  assert.equal(el.type, "other", "le Commerce ne dit pas le type : « other », pas une supposition");
+  assert.ok(e.some((x) => x.programme === "Denied Persons List (DPL)"));
+  assert.ok(e.some((x) => x.programme === "ITAR Debarred (DTC)"));
+});
+
+test("CSL : une colonne disparue se nomme, elle ne rend pas une liste vide", () => {
+  assert.throws(() => analyserCsl("_id,source,type,programs,nom,alt_names\n1,x,,,a,\n"), /no "name" column/);
+});
+
+test("OFAC consolidée : même schéma que la SDN, mais étiquetée à sa source", () => {
+  const xml = readFileSync(new URL("./fixtures/ofac.xml", import.meta.url), "utf8");
+  assert.ok(analyser("ofac-sdn-xml", xml, "OFAC-CONS").every((x) => x.source === "OFAC-CONS"));
+  assert.ok(analyser("ofac-sdn-xml", xml).every((x) => x.source === "OFAC"));
+});
+
+test("fichierDe : l'extension suit le format", () => {
+  assert.equal(fichierDe({ source: "CSL", format: "trade-csl-csv" }), "csl.csv");
+  assert.equal(fichierDe({ source: "OFAC-CONS", format: "ofac-sdn-xml" }), "ofac-cons.xml");
 });

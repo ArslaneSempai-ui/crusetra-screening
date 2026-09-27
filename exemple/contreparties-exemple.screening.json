@@ -1,0 +1,691 @@
+{
+  "version": 1,
+  "genre": "cascade-screening/counterparty-screening",
+  "emisLe": "2026-09-27T08:47:19.734Z",
+  "client": "Example Forwarding Inc. (invented)",
+  "commit": "6aeec81",
+  "fichier": {
+    "nom": "contreparties-exemple.csv",
+    "sha256": "fab131564c82ea6c859845e4cf53207059d66e0acb75d1603c5d12974f6cbf89",
+    "lignes": 30
+  },
+  "listes": [
+    {
+      "source": "OFAC",
+      "titre": "OFAC Specially Designated Nationals (SDN) list",
+      "url": "https://sanctionslistservice.ofac.treas.gov/api/publicationpreview/exports/sdn.xml",
+      "telechargeLe": "2026-09-26T22:24:12.777Z",
+      "sha256": "d533a38ee0a8dc1dca61574cda864d1740ec6785f1ae93f00e678fdf01654227",
+      "entrees": 19391
+    },
+    {
+      "source": "OFAC-CONS",
+      "titre": "OFAC Consolidated Sanctions List (the non-SDN lists)",
+      "url": "https://sanctionslistservice.ofac.treas.gov/api/publicationpreview/exports/consolidated.xml",
+      "telechargeLe": "2026-09-26T22:24:20.128Z",
+      "sha256": "a9a394cfa9457ed166728cc89c7b3aa373ad457bc908b1cef71ae2e10b147c4f",
+      "entrees": 481
+    },
+    {
+      "source": "CSL",
+      "titre": "US Consolidated Screening List: its Commerce and State lists (trade.gov)",
+      "url": "https://data.trade.gov/downloadable_consolidated_screening_list/v1/consolidated.csv",
+      "telechargeLe": "2026-09-26T22:24:21.178Z",
+      "sha256": "3bcdfb738dccf96a55a9fd1c0c205f0c212284ca031f81c115747fae510996ea",
+      "entrees": 6269
+    },
+    {
+      "source": "UN",
+      "titre": "UN Security Council Consolidated List",
+      "url": "https://scsanctions.un.org/resources/xml/en/consolidated.xml",
+      "telechargeLe": "2026-09-26T22:24:27.115Z",
+      "sha256": "8bd12c56c7acc2b7a3736d916b592c5382f7fe75191450e06aad799095fb2f68",
+      "entrees": 1011
+    },
+    {
+      "source": "EU",
+      "titre": "EU consolidated financial sanctions list (FSF, XML v1.1)",
+      "url": "https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content?token=dG9rZW4tMjAxNw",
+      "telechargeLe": "2026-09-26T22:24:31.044Z",
+      "sha256": "cd59eccb0278d33181c1d87814236109287c9ea5925502f00acfd2e0fd7fe440",
+      "entrees": 6241
+    }
+  ],
+  "nonCriblees": [],
+  "methode": {
+    "palier": "entite",
+    "description": "company and vessel names: words aligned in any order and weighted by their rarity on the lists, typos, OCR slips and romanisation variants tolerated, vessel numbers must agree, a listed name found inside a longer one is a possible match, and former names, trading names and document annotations are read as such",
+    "poids": "word weights are the smoothed inverse document frequency over the 33,393 entries of the screened lists",
+    "seuils": {
+      "fort": 0.81,
+      "possible": 0.8
+    },
+    "rappelMin": 0.9,
+    "tientLePlancher": true,
+    "apprentissage": {
+      "jeux": [
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "authored by this repository on 2026-09-27, every name invented; no client data, no list data. Written before any tier was scored on it.",
+          "sha256": "719033f72a740074b0a21a2489118f2aa902423bf0c760eeb9f936cd3302971e",
+          "match": 60,
+          "different": 60
+        },
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "authored on 2026-09-27 by a separate agent that never saw the matcher, as a held-out set; every name invented; no client data, no list data. It judged method v2 once, its misses were then studied, and from that moment it is a TRAINING set: its rates are not quoted as held-out.",
+          "sha256": "def5948158b6068c4a75cd8c6c064997b13b68959a47ee4ff30e391b16c96b4c",
+          "match": 60,
+          "different": 60
+        },
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "authored on 2026-09-27 by a separate agent that never saw the matcher nor any other pair set, as the FINAL held-out set; every name invented; no client data, no list data. It judged method v3 once (entites.ts sha256 70f91e07e5a2552f…: recall 72/100 [63-80], false alerts 12/100 [7-20] at 0.82; method v1: 68/100 and 40/100). Its misses were then studied, and from that moment it is a TRAINING set: its rates are not quoted as held-out.",
+          "sha256": "4148f1efb8429364137ba0e16347ef137bd6d7fa3865b369deddf4a6b7a91c54",
+          "match": 100,
+          "different": 100
+        },
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "authored on 2026-09-27 by a separate agent that never saw the matcher nor any other pair set, as final held-out set #2; every name invented; no client data, no list data. It judged method v4.1 once (entites.ts sha256 5f963c22…): strong 0.81 found 99/150 [58-73 %] with 7/150 false alerts [2-9 %]; possible 0.74 found 109/150 [65-79 %] with 22/150 [10-21 %]; v1 found 103/150 with 35/150. Its misses were then studied, and from that moment it is a TRAINING set: its rates are not quoted as held-out.",
+          "sha256": "135eff3f73436612cd629505c9d5107dab168804345cb64d51ef60699d52bdcc",
+          "match": 150,
+          "different": 150
+        },
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "authored on 2026-09-27 by a separate agent that never saw the matcher nor any other pair set, as final held-out set #3 (sha256 c53a55c5…); every name invented; no client data, no list data. It judged method v6 once (entites.ts 4ce80263…, cribler.ts f23ecac0…): at 0.81 found 167/200 [78-88 %], false alerts 25/200 [9-18 %]. Its misses were then studied, and from that moment it is a TRAINING set: its rates are not quoted as held-out.",
+          "sha256": "acc52065767316686b0c001c7d2ce5c9192a3d34e9ba07a6c3778d19b8545f87",
+          "match": 200,
+          "different": 200
+        }
+      ],
+      "fort": {
+        "rappel": {
+          "succes": 529,
+          "n": 570,
+          "taux": 0.9280701754385965,
+          "bas": 0.9038710932962681,
+          "haut": 0.9465378000289979
+        },
+        "fauxPositifs": {
+          "succes": 1,
+          "n": 570,
+          "taux": 0.0017543859649122807,
+          "bas": 0.000309751391349658,
+          "haut": 0.00987006129563574
+        }
+      },
+      "possible": {
+        "rappel": {
+          "succes": 555,
+          "n": 570,
+          "taux": 0.9736842105263158,
+          "bas": 0.9570375251077794,
+          "haut": 0.9839887093095232
+        },
+        "fauxPositifs": {
+          "succes": 91,
+          "n": 570,
+          "taux": 0.15964912280701754,
+          "bas": 0.13187202565965994,
+          "haut": 0.1919831984997596
+        }
+      }
+    },
+    "verdict": {
+      "jeu": {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "blind test set #5, authored on 2026-09-27 by a separate agent (a Houston brokerage brief) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
+        "sha256": "d90aba451bdab91aa98d034583e427d2e4981011324bf3f6940783d41506375c",
+        "match": 200,
+        "different": 200
+      },
+      "fort": {
+        "rappel": {
+          "succes": 164,
+          "n": 200,
+          "taux": 0.82,
+          "bas": 0.7608840628376157,
+          "haut": 0.8670544933746589
+        },
+        "fauxPositifs": {
+          "succes": 6,
+          "n": 200,
+          "taux": 0.03,
+          "bas": 0.013820125830748327,
+          "haut": 0.06389511973247333
+        }
+      },
+      "possible": {
+        "rappel": {
+          "succes": 183,
+          "n": 200,
+          "taux": 0.915,
+          "bas": 0.8681031145576462,
+          "haut": 0.9462547005301477
+        },
+        "fauxPositifs": {
+          "succes": 40,
+          "n": 200,
+          "taux": 0.2,
+          "bas": 0.15045120743928825,
+          "haut": 0.26085639611170436
+        }
+      }
+    }
+  },
+  "totaux": {
+    "lignes": 30,
+    "forts": 10,
+    "possibles": 1,
+    "sansCorrespondance": 19
+  },
+  "resultats": [
+    {
+      "ligne": 2,
+      "nom": "Harbor Point Logistics LLC",
+      "ref": "C-001",
+      "type": "entity",
+      "pays": "US",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 3,
+      "nom": "Midwest Grain Export Co.",
+      "ref": "C-002",
+      "type": "entity",
+      "pays": "US",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 4,
+      "nom": "Coastal Reefer Lines Inc",
+      "ref": "C-003",
+      "type": "entity",
+      "pays": "US",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 5,
+      "nom": "Tidewater Customs Brokerage",
+      "ref": "C-004",
+      "type": "entity",
+      "pays": "US",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 6,
+      "nom": "Lone Star Machinery Parts",
+      "ref": "C-005",
+      "type": "entity",
+      "pays": "US",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 7,
+      "nom": "Northgate Textiles Ltd",
+      "ref": "C-006",
+      "type": "entity",
+      "pays": "GB",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 8,
+      "nom": "Rotterdam Bulk Agency B.V.",
+      "ref": "C-007",
+      "type": "entity",
+      "pays": "NL",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 9,
+      "nom": "Hanseatic Coffee Trading GmbH",
+      "ref": "C-008",
+      "type": "entity",
+      "pays": "DE",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 10,
+      "nom": "Santos Citrus Exportadora",
+      "ref": "C-009",
+      "type": "entity",
+      "pays": "BR",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 11,
+      "nom": "Busan Auto Parts Co., Ltd.",
+      "ref": "C-010",
+      "type": "entity",
+      "pays": "KR",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 12,
+      "nom": "Shenzhen Brightway Electronics Co., Ltd.",
+      "ref": "C-011",
+      "type": "entity",
+      "pays": "CN",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 13,
+      "nom": "Istanbul Marble Export A.S.",
+      "ref": "C-012",
+      "type": "entity",
+      "pays": "TR",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 14,
+      "nom": "Dubai Horizon General Trading LLC",
+      "ref": "C-013",
+      "type": "entity",
+      "pays": "AE",
+      "statut": "possible",
+      "candidats": [
+        {
+          "source": "OFAC",
+          "liste": "SDNTK",
+          "ids": [
+            "10603"
+          ],
+          "nomListe": "DUBAI TRADING COMPANY",
+          "type": "entity",
+          "score": 0.8,
+          "par": "name"
+        }
+      ],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 15,
+      "nom": "Vancouver Timber Products",
+      "ref": "C-014",
+      "type": "entity",
+      "pays": "CA",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 16,
+      "nom": "Golden Gate Freight Solutions",
+      "ref": "C-015",
+      "type": "entity",
+      "pays": "US",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 17,
+      "nom": "Atlantic Seafood Imports",
+      "ref": "C-016",
+      "type": "entity",
+      "pays": "US",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 18,
+      "nom": "Kaohsiung Steel Fittings",
+      "ref": "C-017",
+      "type": "entity",
+      "pays": "TW",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 19,
+      "nom": "Davar Shipping Co. Limited",
+      "ref": "C-018",
+      "type": "entity",
+      "pays": "AE",
+      "statut": "strong",
+      "candidats": [
+        {
+          "source": "OFAC",
+          "liste": "IRAN",
+          "ids": [
+            "15124"
+          ],
+          "nomListe": "DAVAR SHIPPING CO LTD",
+          "type": "entity",
+          "score": 1,
+          "par": "name"
+        }
+      ],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 20,
+      "nom": "Proton Petrochemical Shipping Ltd",
+      "ref": "C-019",
+      "type": "entity",
+      "pays": "MT",
+      "statut": "strong",
+      "candidats": [
+        {
+          "source": "OFAC",
+          "liste": "IRAN",
+          "ids": [
+            "15122"
+          ],
+          "nomListe": "PROTON PETROCHEMICALS SHIPPING LIMITED",
+          "type": "entity",
+          "score": 0.949,
+          "par": "name"
+        }
+      ],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 21,
+      "nom": "Behineh Trading Co",
+      "ref": "C-020",
+      "type": "entity",
+      "pays": "IR",
+      "statut": "strong",
+      "candidats": [
+        {
+          "source": "OFAC",
+          "liste": "SDGT+IFSR",
+          "ids": [
+            "13110"
+          ],
+          "nomListe": "BEHINEH TRADING",
+          "type": "entity",
+          "score": 1,
+          "par": "name"
+        },
+        {
+          "source": "EU",
+          "liste": "IRN",
+          "ids": [
+            "6669"
+          ],
+          "nomListe": "Behineh Trading Co",
+          "type": "entity",
+          "score": 1,
+          "par": "name"
+        },
+        {
+          "source": "UN",
+          "liste": "Iran",
+          "ids": [
+            "110395"
+          ],
+          "nomListe": "BEHINEH TRADING CO.",
+          "type": "entity",
+          "score": 1,
+          "par": "name"
+        }
+      ],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 22,
+      "nom": "Gazprom Telecom LLC",
+      "ref": "C-021",
+      "type": "entity",
+      "pays": "RU",
+      "statut": "strong",
+      "candidats": [
+        {
+          "source": "CSL",
+          "liste": "Entity List (EL)",
+          "ids": [
+            "99e50726e21206e312fe8afa90edc93228ca2af7472d9049c094194d"
+          ],
+          "nomListe": "Gazprom Telekom, OOO",
+          "alias": "Gazprom Telecom",
+          "type": "other",
+          "score": 1,
+          "par": "name"
+        },
+        {
+          "source": "OFAC-CONS",
+          "liste": "UKRAINE-EO13662",
+          "ids": [
+            "19654"
+          ],
+          "nomListe": "GAZPROM TELEKOM, OOO",
+          "alias": "GAZPROM TELECOM",
+          "type": "entity",
+          "score": 1,
+          "par": "name"
+        }
+      ],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 23,
+      "nom": "IKCO Trading GmbH",
+      "ref": "C-022",
+      "type": "entity",
+      "pays": "DE",
+      "statut": "strong",
+      "candidats": [
+        {
+          "source": "CSL",
+          "liste": "Entity List (EL)",
+          "ids": [
+            "aa5c1f21dc415139a34b7e3fe02aab5c86da275dcb88948fd0a4aef7",
+            "ab0a903372d4faa85aa1156f9c2f59cb7fa025c4baf7732b7c90adf1"
+          ],
+          "nomListe": "IKCO Trading GmbH",
+          "type": "other",
+          "score": 1,
+          "par": "name"
+        }
+      ],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 24,
+      "nom": "Eliron Logistics Oy",
+      "ref": "C-023",
+      "type": "entity",
+      "pays": "FI",
+      "statut": "strong",
+      "candidats": [
+        {
+          "source": "CSL",
+          "liste": "Entity List (EL)",
+          "ids": [
+            "5a41a2cc0d8523fc6cbcc5f4608c921efc61492aa3c3ea9f17d05702"
+          ],
+          "nomListe": "Eliron Logistics Oy",
+          "type": "other",
+          "score": 1,
+          "par": "name"
+        }
+      ],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 25,
+      "nom": "Kong Fat Electronic Trading Ltd",
+      "ref": "C-024",
+      "type": "entity",
+      "pays": "HK",
+      "statut": "strong",
+      "candidats": [
+        {
+          "source": "CSL",
+          "liste": "Entity List (EL)",
+          "ids": [
+            "094359539fe950c37320d74b365ca457ce4a14583ba1d81c76bd0b71"
+          ],
+          "nomListe": "Kong Fat Electronic Trading Limited",
+          "type": "other",
+          "score": 1,
+          "par": "name"
+        }
+      ],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 26,
+      "nom": "MV Marshal Zhukov",
+      "ref": "V-001",
+      "type": "vessel",
+      "statut": "strong",
+      "candidats": [
+        {
+          "source": "OFAC",
+          "liste": "UKRAINE-EO13685",
+          "ids": [
+            "21115"
+          ],
+          "nomListe": "MARSHAL ZHUKOV",
+          "type": "vessel",
+          "imo": "9690224",
+          "score": 1,
+          "par": "name"
+        }
+      ],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 27,
+      "nom": "M/V Thae Pyong San",
+      "ref": "V-002",
+      "type": "vessel",
+      "statut": "strong",
+      "candidats": [
+        {
+          "source": "OFAC",
+          "liste": "DPRK3",
+          "ids": [
+            "19597"
+          ],
+          "nomListe": "THAE PYONG SAN",
+          "type": "vessel",
+          "imo": "9009085",
+          "score": 1,
+          "par": "name"
+        }
+      ],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 28,
+      "nom": "Tong Hung 1",
+      "ref": "V-003",
+      "type": "vessel",
+      "statut": "strong",
+      "candidats": [
+        {
+          "source": "OFAC",
+          "liste": "DPRK3",
+          "ids": [
+            "19598"
+          ],
+          "nomListe": "TONG HUNG 1",
+          "type": "vessel",
+          "imo": "8661575",
+          "score": 1,
+          "par": "name"
+        }
+      ],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 29,
+      "nom": "Tong Hung 3",
+      "ref": "V-004",
+      "type": "vessel",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 30,
+      "nom": "Coastal Spirit",
+      "ref": "V-005",
+      "type": "vessel",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    },
+    {
+      "ligne": 31,
+      "nom": "Northern Dawn",
+      "ref": "V-006",
+      "type": "vessel",
+      "statut": "no-match",
+      "candidats": [],
+      "autres": 0,
+      "ecartesParImo": []
+    }
+  ],
+  "reserves": [
+    "A candidate is not a finding. Each one is for your compliance officer to confirm or clear; this report does not decide, and it is not legal advice.",
+    "The lists are those downloaded on 2026-09-26. A name added to a list after that date is not in this report.",
+    "Names and IMO numbers only are compared. Dates of birth, addresses and other identifiers on the lists are not.",
+    "Ownership is not screened. Under OFAC's 50 Percent Rule, an entity owned 50 % or more, directly or indirectly, by one or more blocked persons is itself blocked even when it appears on no list; no name screening can see that.",
+    "The type and country columns are carried into the report, not used to filter: a counterparty listed under another type or country is still shown.",
+    "At most 5 candidates are shown per name, highest score first; the count of the others is given.",
+    "The rates quoted first come from 200 matching pairs and 200 hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties."
+  ],
+  "empreinte": "7ecc4b9f34de4692"
+}

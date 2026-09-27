@@ -2,7 +2,7 @@
  * Les listes publiques : la SEULE porte réseau de cet outil, et elle ne fait que descendre.
  *
  *   npm run listes              what is on disk: date, content hash, counts; no network
- *   npm run listes -- --fetch   download the three public lists into data/listes/
+ *   npm run listes -- --fetch   download the public lists into data/listes/
  *
  * `frontiere.test.ts` nomme ce fichier comme l'unique autorisé à toucher le réseau, et
  * exige qu'il lise CASCADE_OFFLINE. La liste descend, rien ne monte : aucune donnée du
@@ -30,30 +30,60 @@
  *   (token=[username]). Le manifeste le dit, et l'issue existe : CASCADE_EU_TOKEN.
  *   L'analyseur v1.1 est écrit contre le schéma PUBLIÉ, pas contre un fichier reçu —
  *   c'est dit ici plutôt que découvert le jour où le jeton marche.
+ *   Mesuré le 27 septembre 2026 : le jeton générique répond de nouveau (XML v1.1, 24,6 Mio),
+ *   et l'analyseur écrit contre le schéma lit 6 241 entrées pour 6 241 balises
+ *   `<sanctionEntity` dans le fichier. L'issue CASCADE_EU_TOKEN reste pour le jour où il
+ *   retombe.
+ *
+ * Ajoutées le 27 septembre 2026, pour le criblage de contreparties (cribler.ts) : un
+ * transitaire ou un exportateur américain ne crible pas contre la seule SDN.
+ *
+ *   OFAC-CONS : la liste consolidée « non-SDN » du même Sanctions List Service, au MÊME
+ *   schéma que sdn.xml (sdnList/sdnEntry, Record_Count) : l'analyseur OFAC la lit telle
+ *   quelle et `recouperOfac` s'y applique. Mesuré : Publish_Date 09/14/2026, Record_Count 481.
+ *
+ *   CSL : la Consolidated Screening List de trade.gov, dont la page officielle
+ *   (trade.gov/consolidated-screening-list) publie cette adresse. Piège mesuré : elle répond
+ *   404 à HEAD et 200 à GET. Mesuré : 26 144 lignes, dont 19 391 SDN et 486 autres lignes
+ *   du Trésor, et 6 269 lignes du Commerce (Entity List, Denied Persons, Unverified, Military
+ *   End User) et du Département d'État (ITAR Debarred, Nonproliferation). On n'en garde QUE
+ *   ces 6 269 : les listes du Trésor viennent de ses deux fichiers primaires ci-dessus, et une
+ *   entrée comptée deux fois ferait deux alertes pour un seul nom.
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
+import { lireTable } from "./csv.ts";
 
 /** LA forme commune : les noms restent TELS QUE LA LISTE LES ÉCRIT — la normalisation est
  *  le travail des matchers, pas du téléchargeur. */
 export type EntreeListe = {
-  source: "OFAC" | "EU" | "UN";
+  source: "OFAC" | "OFAC-CONS" | "CSL" | "EU" | "UN";
   id: string;
   nom: string;
   alias: string[];
   type: "person" | "entity" | "vessel" | "other";
   programme?: string;
+  /** Les alias que l'OFAC classe « weak » (catégorie de son fichier) : trop génériques pour
+   *  désigner seuls ; un candidat trouvé par eux le dit au relecteur. Sous-ensemble d'`alias`. */
+  aliasFaibles?: string[];
+  /** Le numéro OMI d'un navire, sept chiffres, tel que la liste l'écrit (« IMO 9187629 »). */
+  imo?: string;
 };
 
 export type SourceListe = {
   source: EntreeListe["source"];
   titre: string;
   url: string;
-  format: "ofac-sdn-xml" | "un-consolidated-xml" | "eu-fsf-xml-1.1";
+  format: "ofac-sdn-xml" | "un-consolidated-xml" | "eu-fsf-xml-1.1" | "trade-csl-csv";
 };
+
+/** Le fichier d'une source dans data/listes/ : son extension suit son format. */
+export function fichierDe(s: Pick<SourceListe, "source" | "format">): string {
+  return `${s.source.toLowerCase()}.${s.format === "trade-csl-csv" ? "csv" : "xml"}`;
+}
 
 const DOSSIER = fileURLToPath(new URL("..", import.meta.url));
 const DONNEES = join(DOSSIER, "data", "listes");
@@ -75,6 +105,16 @@ export const SOURCES: SourceListe[] = [
     source: "OFAC", titre: "OFAC Specially Designated Nationals (SDN) list",
     url: "https://sanctionslistservice.ofac.treas.gov/api/publicationpreview/exports/sdn.xml",
     format: "ofac-sdn-xml",
+  },
+  {
+    source: "OFAC-CONS", titre: "OFAC Consolidated Sanctions List (the non-SDN lists)",
+    url: "https://sanctionslistservice.ofac.treas.gov/api/publicationpreview/exports/consolidated.xml",
+    format: "ofac-sdn-xml",
+  },
+  {
+    source: "CSL", titre: "US Consolidated Screening List: its Commerce and State lists (trade.gov)",
+    url: "https://data.trade.gov/downloadable_consolidated_screening_list/v1/consolidated.csv",
+    format: "trade-csl-csv",
   },
   {
     source: "UN", titre: "UN Security Council Consolidated List",
@@ -128,17 +168,29 @@ export function decoderEntites(t: string): string {
 }
 
 /** OFAC : `<sdnEntry>` — uid, firstName?/lastName, sdnType, programList, akaList. */
-export function analyserOfac(xml: string): EntreeListe[] {
+export function analyserOfac(xml: string, source: "OFAC" | "OFAC-CONS" = "OFAC"): EntreeListe[] {
   return blocs(xml, "sdnEntry").map((b) => {
     const nom = [champ(b, "firstName"), champ(b, "lastName")].filter(Boolean).join(" ").trim();
     const TYPES: Record<string, EntreeListe["type"]> = { "Individual": "person", "Entity": "entity", "Vessel": "vessel" };
     const type: EntreeListe["type"] = TYPES[champ(b, "sdnType") ?? ""] ?? "other";
     const programmes = blocs(b, "programList").flatMap((p) => blocs(p, "program").map(decoderEntites));
-    const alias = blocs(b, "akaList").flatMap((l) => blocs(l, "aka"))
-      .map((a) => [champ(a, "firstName"), champ(a, "lastName")].filter(Boolean).join(" ").trim())
-      .filter((a) => a.length > 0);
-    return { source: "OFAC" as const, id: champ(b, "uid") ?? "", nom, alias, type,
-      ...(programmes.length ? { programme: programmes.join("+") } : {}) };
+    const akas = blocs(b, "akaList").flatMap((l) => blocs(l, "aka"))
+      .map((a) => ({ nom: [champ(a, "firstName"), champ(a, "lastName")].filter(Boolean).join(" ").trim(),
+        faible: champ(a, "category") === "weak" }))
+      .filter((a) => a.nom.length > 0);
+    const alias = akas.map((a) => a.nom);
+    const aliasFaibles = akas.filter((a) => a.faible).map((a) => a.nom);
+    /* Le numéro OMI vit dans `idList`, type « Vessel Registration Identification ». Mesuré le
+       27/09/2026 : 1 540 numéros, 1 533 au format « IMO nnnnnnn », dont 1 523 au chiffre de
+       contrôle valide ; les dix autres sont gardés tels quels (anciens numéros), jamais
+       réécrits : c'est la liste qui fait foi. */
+    const imo = blocs(b, "idList").flatMap((l) => blocs(l, "id"))
+      .filter((i) => champ(i, "idType") === "Vessel Registration Identification")
+      .map((i) => /^IMO\s*(\d{7})$/.exec((champ(i, "idNumber") ?? "").trim())?.[1])
+      .find(Boolean);
+    return { source, id: champ(b, "uid") ?? "", nom, alias, type,
+      ...(programmes.length ? { programme: programmes.join("+") } : {}),
+      ...(aliasFaibles.length ? { aliasFaibles } : {}), ...(imo ? { imo } : {}) };
   }).filter((e) => e.nom.length > 0 && e.id.length > 0);
 }
 
@@ -193,9 +245,40 @@ export function analyserUe(xml: string): EntreeListe[] {
   return entites.filter((e) => e.id.length > 0);
 }
 
-export function analyser(format: SourceListe["format"], xml: string): EntreeListe[] {
-  const entrees = format === "ofac-sdn-xml" ? analyserOfac(xml)
-    : format === "un-consolidated-xml" ? analyserOnu(xml) : analyserUe(xml);
+/**
+ * CSL (trade.gov, CSV) : une ligne par entrée, `alt_names` séparés par « ; », la liste
+ * d'origine dans `source` (« Entity List (EL) - Bureau of Industry and Security »). Les
+ * lignes du Trésor sont ÉCARTÉES ici, pas plus loin : ses deux fichiers primaires les
+ * portent déjà (voir l'en-tête), et un filtre posé en aval serait oublié par le prochain
+ * lecteur de cette fonction. `type` est vide pour les listes du Commerce : « other », dit.
+ */
+export function analyserCsl(texte: string): EntreeListe[] {
+  const t = lireTable(texte);
+  const col = (nom: string) => {
+    const i = t.noms.indexOf(nom);
+    if (i === -1) throw new Error(`the Consolidated Screening List has no "${nom}" column: its format changed.`);
+    return i;
+  };
+  const [iId, iSource, iType, iProg, iNom, iAlias] =
+    ["_id", "source", "type", "programs", "name", "alt_names"].map(col) as [number, number, number, number, number, number];
+  const TYPES: Record<string, EntreeListe["type"]> = { "Individual": "person", "Entity": "entity", "Vessel": "vessel" };
+  return t.lignes
+    .filter((l) => !(l[iSource] ?? "").includes("Treasury Department"))
+    .map((l) => {
+      const liste = (l[iSource] ?? "").split(" - ")[0]!.trim();
+      const programmes = (l[iProg] ?? "").trim();
+      return { source: "CSL" as const, id: (l[iId] ?? "").trim(), nom: (l[iNom] ?? "").trim(),
+        alias: (l[iAlias] ?? "").split(";").map((a) => a.trim()).filter((a) => a.length > 0),
+        type: TYPES[(l[iType] ?? "").trim()] ?? "other",
+        ...(liste ? { programme: programmes ? `${liste}: ${programmes}` : liste } : {}) };
+    })
+    .filter((e) => e.nom.length > 0 && e.id.length > 0);
+}
+
+export function analyser(format: SourceListe["format"], texte: string, source?: EntreeListe["source"]): EntreeListe[] {
+  const entrees = format === "ofac-sdn-xml" ? analyserOfac(texte, source === "OFAC-CONS" ? "OFAC-CONS" : "OFAC")
+    : format === "un-consolidated-xml" ? analyserOnu(texte)
+    : format === "trade-csl-csv" ? analyserCsl(texte) : analyserUe(texte);
   if (entrees.length === 0) {
     throw new Error(
       `the file does not look like ${format}: not one entry could be read from it.\n`
@@ -251,7 +334,8 @@ export function lireListe(source: EntreeListe["source"], racine: string = DOSSIE
   if (!ligne.disponible) {
     throw new Error(`${source} is recorded as unavailable: ${ligne.erreur}\n  → ${ligne.issue}`);
   }
-  const chemin = join(racine, "data", "listes", `${source.toLowerCase()}.xml`);
+  const def = SOURCES.find((s) => s.source === source)!;
+  const chemin = join(racine, "data", "listes", fichierDe(def));
   if (!existsSync(chemin)) {
     throw new Error(`${chemin} is missing while the manifest says ${source} was downloaded `
       + `on ${ligne.telechargeLe}. data/ is not committed: run \`npm run listes -- --fetch\`.`);
@@ -264,7 +348,7 @@ export function lireListe(source: EntreeListe["source"], racine: string = DOSSIE
       + `  Screening against a list that is not the one recorded certifies nothing.\n`
       + `  → npm run listes -- --fetch   (downloads again and reseals the manifest)`);
   }
-  return analyser(SOURCES.find((s) => s.source === source)!.format, brut.toString("utf8"));
+  return analyser(def.format, brut.toString("utf8"), source);
 }
 
 /* ─────────────────────────────── le téléchargement ─────────────────────────────── */
@@ -297,9 +381,9 @@ async function telecharger(s: SourceListe): Promise<LigneManifeste> {
       erreur: `network: ${(e as Error).message}`,
       issue: "no bytes were written; check the connection and run --fetch again." };
   }
-  const entrees = analyser(s.format, brut.toString("utf8"));
+  const entrees = analyser(s.format, brut.toString("utf8"), s.source);
   mkdirSync(DONNEES, { recursive: true });
-  const chemin = join(DONNEES, `${s.source.toLowerCase()}.xml`);
+  const chemin = join(DONNEES, fichierDe(s));
   const provisoire = `${chemin}.tmp`;
   writeFileSync(provisoire, brut);
   renameSync(provisoire, chemin);
@@ -326,17 +410,17 @@ async function principal(): Promise<void> {
   }
 
   if (veutFetch) {
-    console.log(`\nFetching the three public lists: they download to your machine, and nothing of yours is sent.\n`);
+    console.log(`\nFetching the ${SOURCES.length} public lists: they download to your machine, and nothing of yours is sent.\n`);
     const lignes: LigneManifeste[] = [];
     for (const s of SOURCES) {
       const l = await telecharger(s);
       lignes.push(l);
       if (l.disponible) {
-        console.log(`  ${s.source.padEnd(5)} ${l.entrees.toLocaleString("en-GB")} entr(ies) · `
+        console.log(`  ${s.source.padEnd(9)} ${l.entrees.toLocaleString("en-GB")} entr(ies) · `
           + `${(l.octets / 1_048_576).toFixed(1)} MiB · sha256 ${l.sha256.slice(0, 12)}…`
           + (l.avertissement ? `\n        ⚠ ${l.avertissement}` : ""));
       } else {
-        console.log(`  ${s.source.padEnd(5)} UNAVAILABLE: ${l.erreur}\n        → ${l.issue}`);
+        console.log(`  ${s.source.padEnd(9)} UNAVAILABLE: ${l.erreur}\n        → ${l.issue}`);
       }
     }
     ecrireManifeste({ version: 1, genereLe: new Date().toISOString(), listes: lignes });
@@ -354,14 +438,14 @@ async function principal(): Promise<void> {
   console.log(`\nPublic lists on this machine (manifest of ${m.genereLe.slice(0, 10)}; no network touched):\n`);
   for (const l of m.listes) {
     if (!l.disponible) {
-      console.log(`  ${l.source.padEnd(5)} UNAVAILABLE (checked ${l.verifieLe.slice(0, 10)}): ${l.erreur}\n        → ${l.issue}`);
+      console.log(`  ${l.source.padEnd(9)} UNAVAILABLE (checked ${l.verifieLe.slice(0, 10)}): ${l.erreur}\n        → ${l.issue}`);
       continue;
     }
-    const chemin = join(DONNEES, `${l.source.toLowerCase()}.xml`);
+    const chemin = join(DONNEES, fichierDe({ source: l.source as EntreeListe["source"], format: l.format as SourceListe["format"] }));
     const etat = !existsSync(chemin) ? "file MISSING from data/ (not committed by design): fetch again"
       : createHash("sha256").update(readFileSync(chemin)).digest("hex") === l.sha256
         ? "on disk, content hash matches" : "on disk but CHANGED since the manifest: fetch again";
-    console.log(`  ${l.source.padEnd(5)} ${l.entrees.toLocaleString("en-GB")} entr(ies) · downloaded ${l.telechargeLe.slice(0, 10)} · ${etat}`);
+    console.log(`  ${l.source.padEnd(9)} ${l.entrees.toLocaleString("en-GB")} entr(ies) · downloaded ${l.telechargeLe.slice(0, 10)} · ${etat}`);
   }
   console.log("");
 }

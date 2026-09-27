@@ -1,0 +1,34 @@
+ref,name,imo,level,listed_name,list_source,list,list_ids,via_alias,weak_alias,listed_imo,score,matched_on
+C-001,Harbor Point Logistics LLC,,no-match,,,,,,,,,
+C-002,Midwest Grain Export Co.,,no-match,,,,,,,,,
+C-003,Coastal Reefer Lines Inc,,no-match,,,,,,,,,
+C-004,Tidewater Customs Brokerage,,no-match,,,,,,,,,
+C-005,Lone Star Machinery Parts,,no-match,,,,,,,,,
+C-006,Northgate Textiles Ltd,,no-match,,,,,,,,,
+C-007,Rotterdam Bulk Agency B.V.,,no-match,,,,,,,,,
+C-008,Hanseatic Coffee Trading GmbH,,no-match,,,,,,,,,
+C-009,Santos Citrus Exportadora,,no-match,,,,,,,,,
+C-010,"Busan Auto Parts Co., Ltd.",,no-match,,,,,,,,,
+C-011,"Shenzhen Brightway Electronics Co., Ltd.",,no-match,,,,,,,,,
+C-012,Istanbul Marble Export A.S.,,no-match,,,,,,,,,
+C-013,Dubai Horizon General Trading LLC,,possible,DUBAI TRADING COMPANY,OFAC,SDNTK,10603,,,,0.800,name
+C-014,Vancouver Timber Products,,no-match,,,,,,,,,
+C-015,Golden Gate Freight Solutions,,no-match,,,,,,,,,
+C-016,Atlantic Seafood Imports,,no-match,,,,,,,,,
+C-017,Kaohsiung Steel Fittings,,no-match,,,,,,,,,
+C-018,Davar Shipping Co. Limited,,strong,DAVAR SHIPPING CO LTD,OFAC,IRAN,15124,,,,1.000,name
+C-019,Proton Petrochemical Shipping Ltd,,strong,PROTON PETROCHEMICALS SHIPPING LIMITED,OFAC,IRAN,15122,,,,0.949,name
+C-020,Behineh Trading Co,,strong,BEHINEH TRADING,OFAC,SDGT+IFSR,13110,,,,1.000,name
+C-020,Behineh Trading Co,,strong,Behineh Trading Co,EU,IRN,6669,,,,1.000,name
+C-020,Behineh Trading Co,,strong,BEHINEH TRADING CO.,UN,Iran,110395,,,,1.000,name
+C-021,Gazprom Telecom LLC,,strong,"Gazprom Telekom, OOO",CSL,Entity List (EL),99e50726e21206e312fe8afa90edc93228ca2af7472d9049c094194d,Gazprom Telecom,,,1.000,name
+C-021,Gazprom Telecom LLC,,strong,"GAZPROM TELEKOM, OOO",OFAC-CONS,UKRAINE-EO13662,19654,GAZPROM TELECOM,,,1.000,name
+C-022,IKCO Trading GmbH,,strong,IKCO Trading GmbH,CSL,Entity List (EL),aa5c1f21dc415139a34b7e3fe02aab5c86da275dcb88948fd0a4aef7 ab0a903372d4faa85aa1156f9c2f59cb7fa025c4baf7732b7c90adf1,,,,1.000,name
+C-023,Eliron Logistics Oy,,strong,Eliron Logistics Oy,CSL,Entity List (EL),5a41a2cc0d8523fc6cbcc5f4608c921efc61492aa3c3ea9f17d05702,,,,1.000,name
+C-024,Kong Fat Electronic Trading Ltd,,strong,Kong Fat Electronic Trading Limited,CSL,Entity List (EL),094359539fe950c37320d74b365ca457ce4a14583ba1d81c76bd0b71,,,,1.000,name
+V-001,MV Marshal Zhukov,,strong,MARSHAL ZHUKOV,OFAC,UKRAINE-EO13685,21115,,,9690224,1.000,name
+V-002,M/V Thae Pyong San,,strong,THAE PYONG SAN,OFAC,DPRK3,19597,,,9009085,1.000,name
+V-003,Tong Hung 1,,strong,TONG HUNG 1,OFAC,DPRK3,19598,,,8661575,1.000,name
+V-004,Tong Hung 3,,no-match,,,,,,,,,
+V-005,Coastal Spirit,,no-match,,,,,,,,,
+V-006,Northern Dawn,,no-match,,,,,,,,,
