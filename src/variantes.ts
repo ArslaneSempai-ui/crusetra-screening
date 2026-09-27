@@ -28,7 +28,7 @@ import { succursalesCompatibles } from "./score.ts";
 import { pliCantonais } from "./mots.ts";
 import { plier } from "./preparation.ts";
 
-const ANNONCES = /[\s,;]*(?:\b(?:a[./]?\s?k[./]?\s?a\.?|f[./]?\s?k[./]?\s?a\.?|formerly(?:\s+known\s+as|\s+called)?|also\s+known\s+as|previously\s+(?:known\s+as|called)|now\s+trading\s+as|d[./]?\s?b[./]?\s?a\.?|doing\s+business\s+as|t\/a|trading\s+as|now\s+known\s+as|n\.?k\.?a\.?|antes|anciennement|vormals|ehemals|voorheen|anteriormente|dawniej)(?=[\s:,])|(?<=\p{L}[\s,]*)\bex[-.\s]+(?=\p{L})|(?<![\p{L}])(?:δ\.?\s?τ\.?|διακριτικ[οό]ς\s+τ[ίι]τλος)(?=[\s:,«"]))\s*:?\s*/giu;
+const ANNONCES = /[\s,;]*(?:\b(?:a[./]?\s?k[./]?\s?a\.?|f[./]?\s?k[./]?\s?a\.?|formerly(?:\s+known\s+as|\s+called)?|gi[aà](?=\s)|trasformata\s+(?:da|in)|già\s+denominata|gia\s+denominata|also\s+known\s+as|previously\s+(?:known\s+as|called)|now\s+trading\s+as|d[./]?\s?b[./]?\s?a\.?|doing\s+business\s+as|t\/a|trading\s+as|now\s+known\s+as|n\.?k\.?a\.?|antes|anciennement|vormals|ehemals|voorheen|anteriormente|dawniej)(?=[\s:,])|(?<=\p{L}[\s,]*)\bex[-.\s]+(?=\p{L})|(?<![\p{L}])(?:δ\.?\s?τ\.?|διακριτικ[οό]ς\s+τ[ίι]τλος)(?=[\s:,«"]))\s*:?\s*/giu;
 /** La même annonce, capturée : `split` rend alors les parties ET l'annonce qui les sépare, pour savoir
  *  laquelle est le nom actuel (voir `variantesTypees`). */
 const ANNONCES_CAPTUREE = new RegExp(`(${ANNONCES.source})`, ANNONCES.flags);
@@ -131,6 +131,11 @@ const ANNOTATIONS: readonly RegExp[] = [
   /\s*\((?:t[üu]rk|turkish|greek|liberian|panamanian|maltese|cypriot)\s+(?:bayrakl[ıi]|flag(?:ged)?)\)\s*$/iu,
   /\s*\(\s*malta\s*\)\s*C\s*\d{4,6}\s*$/iu,
   /\s*,\s*(?:dumb\s+|pusher\s+|motor\s+|tank\s+)?(?:barge|tug|tanker|bulker|bulk\s+carrier|pusher|lighter)\s*$/iu,
+  /* jeu 18 : la référence d'un crédit derrière le nom (« DOC CREDIT REF 88213/24 », « REF LC/2024/778 », « /LCREF20240099 ») */
+  /\s+(?:doc(?:umentary)?\s+credit\s+)?(?:our\s+|your\s+)?ref(?:erence)?\.?\s*(?:no\.?|#)?\s*:?\s*(?:lc|dc|l\/c)?[\s\/]*[a-z0-9\/\-]{3,}\s*$/iu,
+  /\s*\/\s*(?:lc|dc)?\s*ref\w*\s*[:#]?\s*[a-z0-9\/\-]{4,}\s*$/iu,
+  /* et l'étiquette qu'une annotation antérieure laisse en queue (« DOC CREDIT », « REF LC ») */
+  /\s+(?:doc(?:umentary)?\s+credit|(?:our\s+|your\s+)?ref(?:erence)?\.?(?:\s+(?:lc|dc|l\/c))?|lc|dc|l\/c)\s*$/iu,
   /* jeu 15 : le CNIC pakistanais, le PIN kényan, le TIN et le NTN entre parenthèses derrière le nom */
   /\s*\(\s*(?:cnic|kra\s*pin|pin|tin|ntn|gstin|cin)\s*:?\s*[a-z0-9\-]{6,20}\s*\)\s*$/iu,
   /* « Curtume Bianchi Ltda - ME » (jeu 16) : la taille d'entreprise brésilienne (ME, EPP, MEI) derrière la forme */
@@ -183,7 +188,9 @@ const ANNOTATIONS: readonly RegExp[] = [
   /\s+(?:room|rm|unit|bldg|building|floor|fl|suite|ste|office|off|plot|shop)\.?\s*\d+[a-z]?\s*$/iu,
   /\s+(?:in\s+)?lay-?up\s*$/iu,
   /* les partenaires d'une société de personnes italienne : « S.n.c. di Perrone Luigi & C. » */
-  /\s+di\s+[\p{L}.' ]+&\s*c\.?\s*$/iu,
+  /* la clause des associés d'une société de personnes italienne, avec « & C. », « e C. », « e Figli », « & F.lli » (jeu 18) ; le nom
+     de l'associé reste porté par la propriété `associe` des variantes */
+  /\s+di\s+[\p{L}.' ]+(?:&|\be|\bet)\s*(?:c\.?|co\.?|figli|figlio|f\.lli|fratelli|soci)\s*$/iu,
   /\s+v\.?\s?\d{2,4}[nsew]?$/iu,
   /\s+\d{3,4}[nsew]$/iu,
   /\s+(?:bulk\s+carrier|lng\s+carrier|lpg\s+carrier|oil\s+tanker|chemical\s+tanker|container\s+ship|general\s+cargo)$/iu,
@@ -259,6 +266,10 @@ const PORTS_ET_QUARTIERS: ReadonlySet<string> = new Set(["bandar", "kota", "jebe
   "piraeus", "pireas", "peiraias", "thessaloniki", "volos", "patras", "heraklion", "limassol", "lemesos", "larnaca", "famagusta",
   "samsun", "mersin", "izmir", "iskenderun", "trabzon", "gemlik", "aliaga", "ambarli", "tekirdag", "bandirma", "istanbul",
   "almaty", "astana", "pavlodar", "aktau", "atyrau", "shymkent", "tashkent", "bishkek", "bukhara", "samarkand",
+  /* l'Adriatique et le Danube (jeu 18) */
+  "trieste", "koper", "rijeka", "split", "ploce", "zadar", "sibenik", "pula", "bar", "durres", "venezia", "venice", "ravenna", "ancona",
+  "bari", "brindisi", "monfalcone", "constanta", "varna", "burgas", "novi sad", "beograd", "belgrade", "osijek", "vukovar", "budapest",
+  "ruse", "galati", "braila", "smederevo", "pancevo", "ljubljana", "zagreb", "sarajevo", "skopje", "sofia", "bucuresti", "bucharest",
   "riga", "hamina", "kotka", "helsinki", "turku", "tallinn", "klaipeda", "constanta", "poti", "batumi", "goteborg", "gothenburg", "stockholm",
   "oslo", "copenhagen", "aarhus", "gdansk", "gdynia", "varna", "burgas", "odesa", "odessa", "mykolaiv", "kherson", "izmail", "samsun",
   "trabzon", "novorossiysk", "rostov", "taganrog", "izmir",
@@ -294,7 +305,16 @@ export type VarianteTypee = { texte: string; ancien: boolean; mention: string;
   /** le PAYS D'IMMATRICULATION écrit entre parenthèses en queue du nom (« Evdokimos Navigation Corp. (Liberia) ») : deux pays
    *  différents sont deux sociétés d'un même armateur (jeu 17, 28/09 : 1,000 face à « (Marshall Islands) », la parenthèse
    *  ôtée des deux côtés) ; la propriété la garde, `plafondDesLectures` la lit ; un pays d'un seul côté ne dit rien */
-  paysRegistre: string };
+  paysRegistre: string;
+  /** l'ASSOCIÉ d'une société de personnes italienne (« Alpina Trasporti S.a.s. di Qualizza Renzo & C. ») : la clause tombe des textes,
+   *  la propriété garde le nom de l'associé, et deux associés différents sont deux sociétés (jeu 18, 29/09 : 1,000 face à
+   *  « di Petris Renzo & C. », la clause ôtée des deux côtés) ; un associé d'un seul côté ne dit rien */
+  associe: string };
+/** Le nom de famille de l'associé d'une S.a.s. ou S.n.c. (« di Qualizza Renzo & C. », « di Bulfon Mario e Figli »), normalisé, ou « ». */
+export function associeDeLaSociete(brut: string): string {
+  const m = /(?<![\p{L}])(?:[Ss]\.?[Aa]\.?[Ss]\.?|[Ss]\.?[Nn]\.?[Cc]\.?|[Ss]\.?[Aa]\.?[Pp]\.?[Aa]\.?|[Dd]i)\s+(?:[Dd]i\s+)?([\p{Lu}][\p{L}']+)\s+(?:[\p{Lu}][\p{L}'.]+\s*)+(?:&|[Ee]|[Ee]t|[Aa]nd)\s*(?:[Cc]\.?|[Cc]o\.?|[Ff]igli|[Ff]iglio|[Ff]\.lli|[Ff]ratelli|[Ss]oci)(?![\p{L}])/u.exec(brut);
+  return m ? normaliser(m[1]!) : "";
+}
 /** Les pays qu'un registre de navires ou d'armateurs écrit entre parenthèses derrière le nom, et leur code. */
 const PAYS_DE_REGISTRE: ReadonlyMap<string, string> = new Map(Object.entries({
   liberia: "LR", panama: "PA", malta: "MT", "marshall islands": "MH", cyprus: "CY", greece: "GR", turkey: "TR", bahamas: "BS", singapore: "SG",
@@ -323,7 +343,7 @@ const QUEUES_COLLEES = ["ENTERPRISES", "INDUSTRIES", "ENTERPRISE", "HOLDINGS", "
   "LOGISTIKA", "EKSPORT", "TRANZIT", "SERVIS", "ASTYK", "ASTYQ", "SAVDO", "SAUDA", "TREID", "AGRO",
   "LTD", "LLC", "INC", "PLC", "BHD",
   /* et les formes de la CEI et d'Asie centrale (« JETYSUAGROTREIDTOO ») */
-  "TOO", "OOO", "LLP", "JSC", "ZAO", "OAO"];
+  "TOO", "OOO", "LLP", "JSC", "ZAO", "OAO", /* les Balkans, la Hongrie et l'Italie (jeu 18) */ "EOOD", "OOD", "JDOO", "DOO", "KFT", "ZRT", "SRL", "SPA", "SNC", "SAS", "DD"];
 const QUEUES_EN_MOTS: ReadonlyMap<string, string> = new Map([["PTYLTD", "PTY LTD"], ["PTELTD", "PTE LTD"], ["PVTLTD", "PVT LTD"],
   ["SDNBHD", "SDN BHD"], ["IMPEXP", "IMP EXP"], ["EXPIMP", "EXP IMP"], ["COLTD", "CO LTD"]]);
 export function decollerLesQueues(s: string): string {
@@ -417,7 +437,8 @@ export function variantesTypees(brut: string): VarianteTypee[] {
   const registre = numeroDeRegistre(brut);
   const partie = partieDuDocument(brut);
   const paysRegistre = paysDeRegistre(brut);
-  const poser = (texte: string, ancien: boolean, mention: string) => { if (!vues.has(texte)) vues.set(texte, { texte, ancien, mention, registre, partie, paysRegistre }); };
+  const associe = associeDeLaSociete(brut);
+  const poser = (texte: string, ancien: boolean, mention: string) => { if (!vues.has(texte)) vues.set(texte, { texte, ancien, mention, registre, partie, paysRegistre, associe }); };
   poser(brut.trim(), false, "");
   /* UN NOM SANS ESPACES (jeu 13, 28/09 : « CarmichaelExportsPtyLtd » à 0,482, « GUANGZHOUFENGYUANIMPEXP » et
      « WEIFANGHENGTAIFOODSCOLTD » à 0,000 face à leurs noms écrits) : les majuscules intérieures coupent les mots ; en
@@ -527,8 +548,11 @@ export function variantesTypees(brut: string): VarianteTypee[] {
        (« RIGA LV-1045 », « 49400 HAMINA FI »), une ville derrière une barre (« / Constanta Port Gate 7 ») */
     p = p.replace(/\s+([\p{L}-]{3,})\s+([a-z]{2})\s*$/iu, (m, ville: string, code: string) =>
       (PORTS_ET_QUARTIERS.has(normaliser(ville)) && CODES_PAYS.has(code.toLowerCase()) ? "" : m));
-    p = p.replace(/\s+[a-z]{2}-\d{4,5}\b.*$/iu, "").replace(/\s+\d{4,5}\s+[\p{L}-]{3,}\s+[a-z]{2}\s*$/iu, "");
+    /* le code postal nordique (« FI-00100 Helsinki ») veut sa ville derrière lui : « NS-2234 » seul est le numéro d'une barge (jeu 18) */
+    p = p.replace(/\s+[a-z]{2}-\d{4,5}\s+\p{L}.*$/iu, "").replace(/\s+\d{4,5}\s+[\p{L}-]{3,}\s+[a-z]{2}\s*$/iu, "");
     p = p.replace(/\s+\/\s*([\p{L}-]{3,})\b.*$/u, (m, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? "" : m));
+    /* « ,OSIJEK,HR » (jeu 18) : la ville et le code du pays derrière des virgules sans espaces */
+    p = p.replace(/\s*,\s*([\p{L} ]{3,25}?)\s*,\s*(?:[A-Z]{2}|[\p{L} ]{4,20})\s*$/u, (m, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? "" : m));
     /* la ville nue derrière une forme juridique (« ANONIM SIRKETI SAMSUN », « SITIRA LTD LIMASSOL CY », jeu 17) : une adresse */
     p = p.replace(/(\b(?:a\.?[sş]\.?|ltd\.?|limited|llc|inc\.?|gmbh|s\.?a\.?|s\.?r\.?l\.?|ltda\.?|sirketi|[sş]ti\.?|e\.?p\.?e\.?|a\.?e\.?|o\.?e\.?|i\.?k\.?e\.?|too|llp)\s+)([\p{L}' -]{3,25}?)(?:\s+[A-Z]{2})?\s*$/iu, (m, forme: string, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? forme.trimEnd() : m));
     /* le port d'attache écrit SEUL derrière une virgule ou un tiret (« Lekstern, Werkendam », « Dintelreiger - Rotterdam »,
@@ -609,18 +633,18 @@ export function variantesTypees(brut: string): VarianteTypee[] {
  *  cantonais (voir ecritures.ts) ; un nom latin n'a qu'une lecture, sauf celles que lui donnent
  *  les sinogrammes qu'il porte (`substitutions`). C'est ici que l'index et le score prennent
  *  leurs lectures : tout ce qui s'ajoute ici est vu des deux. */
-export type LectureDe = { texte: string; lecture: Lecture; ancien: boolean; mention: string; registre: string; partie: string; paysRegistre: string };
+export type LectureDe = { texte: string; lecture: Lecture; ancien: boolean; mention: string; registre: string; partie: string; paysRegistre: string; associe: string };
 export function lecturesDe(brut: string): LectureDe[] {
   const vues = new Map<string, LectureDe>();
   const poser = (l: LectureDe) => { const k = `${l.lecture}|${l.texte}`; if (!vues.has(k)) vues.set(k, l); };
   for (const v of variantesTypees(brut)) {
-    const { ancien, mention, registre, partie, paysRegistre } = v;
-    poser({ texte: v.texte, lecture: "mandarin", ancien, mention, registre, partie, paysRegistre });
+    const { ancien, mention, registre, partie, paysRegistre, associe } = v;
+    poser({ texte: v.texte, lecture: "mandarin", ancien, mention, registre, partie, paysRegistre, associe });
     if (/[\u4e00-\u9fff]/u.test(v.texte) && !estJaponais(v.texte)) {
-      poser({ texte: v.texte, lecture: "cantonais", ancien, mention, registre, partie, paysRegistre });
+      poser({ texte: v.texte, lecture: "cantonais", ancien, mention, registre, partie, paysRegistre, associe });
       /* et la troisième, en hokkien de Singapour et de Malaisie (« 金福隆33 » : Kim Hock Leong 33, jeu 13) */
-      poser({ texte: v.texte, lecture: "hokkien", ancien, mention, registre, partie, paysRegistre });
-      for (const s of substitutions(v.texte)) poser({ ...s, ancien, mention, registre, partie, paysRegistre });
+      poser({ texte: v.texte, lecture: "hokkien", ancien, mention, registre, partie, paysRegistre, associe });
+      for (const s of substitutions(v.texte)) poser({ ...s, ancien, mention, registre, partie, paysRegistre, associe });
     }
   }
   return [...vues.values()];
@@ -640,6 +664,8 @@ export function plafondDesLectures(a: LectureDe, b: LectureDe): number {
   if (a.partie !== "" && b.partie !== "" && a.partie !== b.partie) return FACTEUR_CONTENANCE;
   /* deux pays d'immatriculation entre parenthèses : deux sociétés d'un même groupe (« (Liberia) », « (Marshall Islands) », jeu 17) */
   if (a.paysRegistre !== "" && b.paysRegistre !== "" && a.paysRegistre !== b.paysRegistre) return FACTEUR_CONTENANCE;
+  /* deux associés d'une société de personnes (« di Qualizza Renzo & C. », « di Petris Renzo & C. », jeu 18) : deux sociétés */
+  if (a.associe !== "" && b.associe !== "" && a.associe !== b.associe) return FACTEUR_CONTENANCE;
   return 1;
 }
 
