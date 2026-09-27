@@ -257,6 +257,11 @@ export function squelette(mot: string): string {
   if (mot === "el" || mot === "ul" || mot === "il") return "al";
   const m = BRITANNIQUE.get(mot) ?? mot;
   return syllabeChinoise(m)
+    /* le w que le français écrit ou devant une voyelle, en tête de mot (« Ouahbi », « Wahbi » ; « Ouattara », « Wattara » ; « Ouest »,
+       « West ») : la graphie du Maghreb et de l'Afrique de l'Ouest, lue sans marque, la graphie elle-même étant la trace ; oua et oue
+       seulement (« Ouyang » est chinois, « oui » et « Louis » gardent leur u) (tour 10, jeu 14 : « Ouahbi Lahlou Négoce » face à « Wahbi
+       Lahlou Negoce » à 0,672, sans aucun marqueur arabe) */
+    .replace(/^ou(?=[ae])/, "w")
     /* orthographes britannique et américaine : harbour, centre, catalogue, cheque */
     .replace(/our$/, "or").replace(/re$/, "er").replace(/ogue$/, "og").replace(/que$/, "k")
     /* les digrammes d'abord : chacun rend UNE consonne, avant que les lettres simples bougent */
@@ -308,9 +313,27 @@ export function squeletteLongue(mot: string): string {
  * mots au crédit de romanisation, quand deux mots à 0,85 ne font pas un nom fort (voir `apport`). `persan` : p et f
  * fondus aussi, le پ persan que l'arabe écrit ف (« Sepid », « Sefid » ; « Pars », « Fars »), AVANT que le squelette ne fonde
  * b et p, pour que Bahr reste distinct de Fahr.
+ *
+ * Tour 10 (jeu 14) : la convention FRANÇAISE du Maghreb et du Levant face à l'anglaise du Golfe. و s'écrit w (v au squelette)
+ * ou ou (u au squelette) : « Ouahbi », « Wahbi » ; la diphtongue aw s'écrit aw, aou, ou ou o, les parlers la fermant en ō :
+ * « Chaouki », « Shawqi » ; « Toufic », « Tawfiq » ; « Hawsani », « Hosani » ; la diphtongue ay s'écrit ai, ay, ei ou ey :
+ * « Hosseini », « Husaini » ; « Mheiri », « Muhairi » ; et le c dur de la graphie française est ق ou ك (« Toufic », « Chaouki »),
+ * le squelette n'ayant lu que le c doux. Toutes fondues ici, sous la marque arabe seulement, et jamais entre deux mots anglais.
  */
-export function squeletteArabe(mot: string, persan = true): string {
-  return squeletteLongue(persan ? mot.replace(/ph/g, "f").replace(/p/g, "f") : mot).replace(/o/g, "u");
+/** Et la voyelle brève devant un ح ou un ه FINAL, écrite e ou i (« Saleh », « Salih » ; « Fateh », « Fatih ») : le squelette lit
+ *  la finale -eh comme le ه persan et la retire, si bien que « Saleh » (sal) et « Salih » (salih) ne se ressemblaient plus ; ici, -eh
+ *  après une consonne se lit -ih AVANT le squelette. « Salah » (صلاح, un autre nom) garde sa finale -ah (jeu 14, 29/09 : « Abdel Karim
+ *  Saleh Foodstuff Trading » face à « Abd Al-Kareem Salih … » à 0,800, le mot ambigu plafonné).
+ *  `latin` faux : le mot est lu dans une écriture native (arabe, persan), et sa romanisation est la nôtre (`romaniser`) : و y est
+ *  toujours w, aucune voyelle brève n'y est écrite, et les conventions latines n'ont rien à y plier ; seuls o et u, p et f se
+ *  fondent, comme au tour 9 (jeu 9, 29/09 : « بازرگانی سپید کاوه کیش » lu kawh face à « Sefid Kouh Trading Kish », deux maisons,
+ *  montait au fort quand aw s'y fermait en u). */
+export function squeletteArabe(mot: string, persan = true, latin = true): string {
+  const base = persan ? mot.replace(/ph/g, "f").replace(/p/g, "f") : mot;
+  if (!latin) return squeletteLongue(base).replace(/o/g, "u");
+  return squeletteLongue(base.replace(/(?<=[^aeiou])eh$/, "ih"))
+    .replace(/v/g, "u").replace(/[ao]u/g, "u").replace(/ei/g, "ai").replace(/c/g, "k")
+    .replace(/o/g, "u").replace(/(.)\1+/g, "$1");
 }
 
 /** Les orthographes britanniques que les règles générales ne ramènent pas à l'américaine. */
@@ -362,7 +385,10 @@ export function voyelles(sq: string): string {
 /** Deux squelettes qui ne diffèrent que par une voyelle substituée (« najm », « nejm » ;
  *  « khorshid », « khurshid »), ou deux dans un mot long : la variation d'une romanisation,
  *  pas un autre mot. */
-export function variationVocalique(sqA: string, sqB: string): boolean {
+/** `schwa` : sous la marque arabe seulement, e se confond aussi avec u. La graphie française du Maghreb écrit e toute voyelle
+ *  brève réduite (« Youssef », « Youcef » pour Yusuf ; « Mebarki » pour Mubaraki), quand le Golfe écrit la voyelle arabe
+ *  (jeu 14, 29/09 : « Youssef Chaouki » face à « Yusuf Shawqi » à 0,377). Hors de cette marque, e et u restent deux voyelles. */
+export function variationVocalique(sqA: string, sqB: string, schwa = false): boolean {
   if (sqA.length !== sqB.length || sqA === sqB) return false;
   /* une voyelle ; deux à partir de sept lettres (« mohamed », « muhamad ») */
   const tolere = sqA.length >= 7 ? 2 : 1;
@@ -373,7 +399,8 @@ export function variationVocalique(sqA: string, sqB: string): boolean {
      deux noms chacun ; jeu 9, 27/09 : Rashid et Rashad à 0,923, une fausse alerte forte). a et u ne
      se confondent pas non plus (« Jinyang », « Jinyoung » sont deux noms, mesuré le 27/09) */
   const confondues = (x: string, y: string) =>
-    (x === "e" && "ai".includes(y)) || (y === "e" && "ai".includes(x)) || ("ou".includes(x) && "ou".includes(y));
+    (x === "e" && "ai".includes(y)) || (y === "e" && "ai".includes(x)) || ("ou".includes(x) && "ou".includes(y))
+    || (schwa && ((x === "e" && y === "u") || (x === "u" && y === "e")));
   let ecarts = 0;
   for (let i = 0; i < sqA.length; i++) {
     if (sqA[i] === sqB[i]) continue;
@@ -504,6 +531,29 @@ export function voyelleSautee(a: string, b: string): boolean {
   }
   return false;
 }
+/** La voyelle brève sautée SOUS LA MARQUE ARABE, lue sur le squelette arabe (`squeletteArabe`, pour que « Mheiri » rejoigne
+ *  « Muhairi » une fois ei et ai fondus), et en TÊTE de mot aussi : le Maghreb élide la voyelle initiale (« Brahim », « Ibrahim » ;
+ *  « Smail », « Ismail »), et la voyelle brève de la PREMIÈRE syllabe, juste après la consonne initiale (« Krim », « Karim » ;
+ *  « Slimane », « Sulaiman » ; « Mheiri », « Muhairi »), dès quatre lettres au mot court : c'est la voyelle que le parler maghrébin
+ *  perd. Cinq lettres au moins ailleurs, comme `voyelleSautee` : « Amr » et « Amir » restent deux noms, la voyelle perdue n'y suit
+ *  pas la consonne initiale (jeu 14, 29/09 : « Tariq Al Muhairi » face à « Tarek El Mheiri » à 0,622, « Ould Brahim » face à « wuld
+ *  Ibrahim » à 0,427, « Chouaki Abdelkrim » face à « Shouaki Abdulkarim » à 0,800 une fois le nom théophore coupé). */
+export function voyelleSauteeArabe(a: string, b: string): boolean {
+  if (voyelleSautee(a, b)) return true;
+  if (Math.abs(a.length - b.length) !== 1) return false;
+  const [long, court] = a.length > b.length ? [a, b] : [b, a];
+  if (court.length >= 5 && "aeiou".includes(long[0]!) && long.slice(1) === court) return true;
+  return court.length >= 4 && !"aeiou".includes(long[0]!) && "aeiou".includes(long[1]!) && long[0] + long.slice(2) === court;
+}
+/** L'ARTICLE MAGHRÉBIN RÉDUIT À SON L et collé au nom (« Lamine » : al-Amin ; « Larbi », « Lakhdar », « Lhoussine ») : `l` est ce
+ *  mot, `nu` le nom écrit sans l'article (« Amin », l'article « al » à part ou absent). Un mot en l suivi d'une voyelle ou d'un h,
+ *  cinq lettres au moins, que le dictionnaire ignore (Logistics, Location, Leather restent des mots), dont le reste a le squelette
+ *  arabe de l'autre. Lu au score, sous la marque arabe, pour qu'un seul côté marqué suffise et qu'un « Lotfi » sans article ne se
+ *  coupe jamais (jeu 14, 29/09 : « Mohamed Lamine Ould Brahim Transit » face à « Muhammad al-Amin wuld Ibrahim Transit » à 0,598,
+ *  « lamine » et « amin » orphelins rares). */
+export function articleReduit(l: string, nu: string): boolean {
+  return l.length >= 5 && nu.length >= 4 && /^l[aeiouh]/.test(l) && lemme(l) === undefined && squeletteArabe(l.slice(1)) === squeletteArabe(nu);
+}
 /** Ce que vaut la voyelle d'appui d'un groupe final de consonnes (`voyelleEpenthetique` : « Bahr »,
  *  « Bahar ») : entre la variation d'une voyelle (0,85 : une voyelle substituée peut faire un autre
  *  mot, Hamad et Hamid) et le squelette égal (0,95), parce qu'elle ne change pas le mot arabe, بحر
@@ -613,3 +663,11 @@ export function radicalSlave(m: string): { radical: string; suffixe: string } | 
 
 /** Le plancher du rappel, à la borne BASSE de Wilson : un criblage qui rate un nom listé
  *  coûte plus cher que dix alertes à relire, donc on exige d'abord de ne pas rater. */
+
+/** L'UMLAUT ÉCRIT EN DEUX LETTRES : ä, ö, ü s'écrivent ae, oe, ue quand le clavier ou le système ne les a pas
+ *  (« Sueddeutsche », « Muenchen »), et la normalisation les a déjà pliés en a, o, u de l'autre côté. Le pli ramène les
+ *  deux graphies à la seconde. Il touche aussi un « ue » qui n'est pas un umlaut (« Bauer » devient « baur »), ce qui ne
+ *  gêne pas une comparaison où les deux côtés le subissent ; il ne sert que sous la marque germanique (tour 10). */
+export function pliUmlaut(m: string): string {
+  return m.replace(/ae/g, "a").replace(/oe/g, "o").replace(/ue/g, "u");
+}

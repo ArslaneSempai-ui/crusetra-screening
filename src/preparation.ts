@@ -21,6 +21,7 @@ import { pliSlave, clesSlaves } from "./mots.ts";
 import { traductionNordique, estFinnois, GENITIFS_FINNOIS } from "./nordique.ts";
 import { GRAPHIES_INDIENNES } from "./indien.ts";
 import { estVietnamien, LOCUTIONS_VIETNAMIENNES } from "./vietnamien.ts";
+import { lireArabizi } from "./arabizi.ts";
 import { lemme } from "./mots.ts";
 import { porteUnJalon } from "./score.ts";
 import { lettrePerdue } from "./score.ts";
@@ -92,10 +93,13 @@ const PHRASES = [
   " public company limited ", " designated activity company ", " perseroan terbatas ",
   " osauhing ", " aktsiaselts ", " anpartsselskab ", " sabiedriba ar ierobezotu atbildibu ", " uzdaroji akcine bendrove ",
   " usaha dagang ", " commanditaire vennootschap ", " perseroan komanditer ", " sole proprietor company ", " sole proprietorship company ",
+  /* la FZ-LLC, que le tiret coupe en deux jetons, et sa forme en toutes lettres : lues AVANT la « limited liability
+     company » qu'elles contiennent, sinon il restait « free zone » et la famille llc (tour 10) */
+  " fz llc ", " free zone limited liability company ",
   " joint stock company ", " limited liability company ", " limited liability partnership ",
   " private limited ", " public limited company ", " proprietary limited ",
   " with limited liability ", " sole proprietorship ",
-  " free zone establishment ", " free zone company ", " free zone limited liability company ",
+  " free zone establishment ", " free zone company ",
   " gesellschaft mit beschrankter haftung ", " aktiengesellschaft ", " kommanditgesellschaft ",
   /* LA GMBH & CO. KG : la société en commandite dont la GmbH est l'associée commanditée est une AUTRE
      personne morale que cette GmbH (« Vogel Kunststofftechnik GmbH » et « … GmbH & Co. KG », jeu 10, 27/09 :
@@ -279,6 +283,11 @@ function traduction(j: string, japonais = false, slave = false): string | undefi
   return traductionsJaponaisesPliees().get(pliJaponais(j));
 }
 export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
+  /* français (Maghreb, Levant, Afrique de l'Ouest) : « Logistique » est logistics (tour 10, jeu 14 : « Abdelkarim Tahar Logistique »
+     face à « Abdul Kareem Taher Logistics »). PAS « négoce » : traduit en trading, il faisait de « Ben Abdallah Négoce » et de
+     « Benabdallah Trading Co », d'« Ettayeb Négoce » et d'« El Tayeb Trading » deux alertes fortes, que l'auteur du jeu tient pour deux
+     maisons (mesuré le 29/09 : deux fausses alertes fortes pour un vrai nom gagné) */
+  logistique: "logistics",
   /* chinois (pinyin) */ maoyi: "trading", jinchukou: "import export", keji: "technology", dianzi: "electronics",
   gongye: "industry", shiye: "industrial", zhizao: "manufacturing", jituan: "group", guoji: "international",
   wuliu: "logistics", huoyun: "freight", hangyun: "shipping", chuanwu: "shipping", jixie: "machinery", luntai: "tire",
@@ -334,6 +343,11 @@ export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   /* allemand et néerlandais */ handel: "trading", handels: "trading", handelsgesellschaft: "trading", spedition: "forwarding",
   schifffahrt: "shipping", schiffahrt: "shipping", reederei: "shipping", werke: "works", werk: "works", bau: "construction",
   scheepvaart: "shipping", rederij: "shipping", expeditie: "forwarding", scheepsreparatie: "ship repair",
+  /* le français de Belgique et du Luxembourg : « Scheldemond Expédition SA » est « Scheldemond Expeditie NV », la même
+     société sous ses deux raisons sociales (jeu 14, tour 10 : 0,450, « expedition » resté un mot rare orphelin face à
+     « forwarding ») ; et la logistique, en néerlandais et en français (« Terbraak Logistiek B.V. », « Terbraak
+     Logistics B.V. » : 0,700) */
+  expedition: "forwarding", expeditions: "forwarding",
   /* les registres néerlandais et allemand (jeu 10) : la société de commerce en un mot, et l'adjectif face au
      radical que le nom d'usage garde (« Chemische » et « Chemie », « Agrarische » et « Agro ») */
   handelsmaatschappij: "trading", handelsgroep: "trading", handelsonderneming: "trading",
@@ -428,8 +442,27 @@ export const PARTICULES: ReadonlySet<string> = new Set(["de", "del", "des", "du"
   "wa", "ya", "za", "cha", "kwa"]);
 /* PAS « dos » (« Flores de Rionegro Dos » est le deuxième d'une série) : mesuré le 27/09 */
 /** La filiation que le nom écrit : « m » pour bin, ibn, ben, ould ; « f » pour bint, binti. */
-const FILIATION_M: ReadonlySet<string> = new Set(["bin", "ibn", "ben", "ould", "wad", "wld"]);
+const FILIATION_M: ReadonlySet<string> = new Set(["bin", "ibn", "ben", "ould", "wuld", "wad", "wld"]);
 const FILIATION_F: ReadonlySet<string> = new Set(["bint", "binti", "ibnat"]);
+/** LE NOM THÉOPHORE (عبد, l'article, un nom de Dieu) sous ses graphies : le Maghreb colle et écrit el (« Abdelkarim »), le Golfe écrit
+ *  ul, à part ou collé (« Abdul Kareem », « Abdulaziz »), l'article s'assimile devant r, s, n, t, z, d et double la consonne
+ *  (« Abdurrahman », « Abdessalam »). Rend « abd », « al » et le nom, ou « abd » et « al » seuls pour « Abdul », « Abdel », « Abdur »
+ *  écrits à part, pour que le nom (Karim, Aziz) se compare seul (tour 10, jeu 14 : « Abdelkarim Tahar Logistique » face à
+ *  « Abdul Kareem Taher Logistics » à 0,332). Undefined quand le mot n'a pas cette forme ou que moins de quatre lettres suivent
+ *  l'article : « Abdullah », « Abdou », « Abdi » restent entiers. */
+export function scinderAbd(j: string): string[] | undefined {
+  if (!j.startsWith("abd") || j.length < 5) return undefined;
+  let i = 3;
+  while (i < 5 && i < j.length && "aeiou".includes(j[i]!)) i++;
+  if (i === 3) return undefined;
+  const c = j[i];
+  let reste: string;
+  if (c === "l") reste = j.slice(i + 1);
+  else if (c !== undefined && "rsntzd".includes(c) && (j[i + 1] === c || i + 1 === j.length)) reste = j.slice(i + 1);
+  else return undefined;
+  if (reste === "") return ["abd", "al"];
+  return reste.length >= 4 ? ["abd", "al", reste] : undefined;
+}
 /** Les mots qui font d'un nom la succursale d'un autre : la même personne morale (« X - Penang Branch »
  *  est X), mais pas la filiale « X (Penang) Sdn. Bhd. » ; d'un seul côté, le nom tel qu'écrit se range au
  *  possible, et sa variante sans la mention rejoint X (jeu 9). */
@@ -450,15 +483,16 @@ const VIDES_DE_MENTION: ReadonlySet<string> = new Set(["of", "the", "de", "di", 
 
 /** LE NUMÉRO DE REGISTRE qu'une douane ou une facture ajoute au nom déposé : le RC et le BN du CAC nigérian
  *  (« (RC 884213) »), le « Reg. No. 2014/117230/07 » du CIPC sud-africain, le HRB et le HRA d'un Amtsgericht
- *  (« (HRB 22045, AG Leipzig) »), le KvK néerlandais, le CIN, l'UEN, l'ACN, le CNPJ ; entre parenthèses, ou
+ *  (« (HRB 22045, AG Leipzig) »), le KvK néerlandais, le KBO ou BCE belge (« (KBO 0712.448.391) », jeu 14, tour 10 :
+ *  0,667, le numéro lu comme trois jetons), le CIN, l'UEN, l'ACN, le CNPJ ; entre parenthèses, ou
  *  derrière la forme. Lus comme des jetons, ils faisaient un NUMÉRO d'un seul côté et la paire plafonnait au
  *  possible (jeu 10, 27/09 : dix paires) ; ôtés sans mémoire, deux dépôts du même nom sous deux numéros se
  *  confondaient (jeu 10 : cinq paires à 1,000). Le numéro est donc une propriété de toutes les variantes du
  *  nom (`VarianteTypee.registre`) : deux numéros différents, deux dépôts, le possible au plus. */
 export const REGISTRES: readonly RegExp[] = [
-  /\(\s*(?:rc|bn|cac|cipc|hrb|hra|kvk|crn|cin|uen|acn|abn|brn|cnpj|cuit|ruc|nit|siren|siret)\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*[a-z]?\d[\d/.\-]{2,}[^()]*\)/giu,
+  /\(\s*(?:rc|bn|cac|cipc|hrb|hra|kvk|kbo|bce|ondernemingsnummer|ondernemingsnr|crn|cin|uen|acn|abn|brn|cnpj|cuit|ruc|nit|siren|siret)\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*(?:[a-z]{1,2}\s?)?\d[\d/.\-]{2,}[^()]*\)/giu,
   /\(\s*reg(?:istration|istered)?\.?\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*[a-z]?\d[\d/.\-]{2,}[^()]*\)/giu,
-  /(?<=\b(?:ltd|limited|plc|inc|llc|gmbh|bhd|bv|nv)\.?)[\s,]+(?:rc|bn|hrb|hra|kvk|reg(?:istration)?\.?\s*(?:no\.?|nr\.?|number)?)\s*[:.]?\s*[a-z]?\d[\d/.\-]{3,}\s*$/giu,
+  /(?<=\b(?:ltd|limited|plc|inc|llc|gmbh|bhd|bv|nv)\.?)[\s,]+(?:rc|bn|hrb|hra|kvk|kbo|bce|reg(?:istration)?\.?\s*(?:no\.?|nr\.?|number)?)\s*[:.]?\s*[a-z]?\d[\d/.\-]{3,}\s*$/giu,
   /* le numéro de société japonais (法人番号, treize chiffres), entre parenthèses ou en tête, suivi d'un tiret ou d'un deux-points
      (« Corporate Number 8011001077453 », puis le nom, jeu 11 : un numéro d'un seul côté, 0,800) */
   /(?:\(\s*)?(?:法人番号|corporate\s+number|hojin\s+bango)\s*:?\s*\d{13}(?:\s*\)|\s*[-\u2013\u2014:])?/giu,
@@ -884,7 +918,7 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["AE", "SA", "QA", "BH", "KW", "OM"], ["fze", "fzco", "fzc", "fzllc", "fz", "wll", "spc", "sole proprietor company", "sole proprietorship company", "est",
     "sole proprietor company", "sole proprietorship company",
     "establishment", "establishments", "free zone establishment", "free zone company",
-    "free zone limited liability company", "with limited liability"]);
+    "free zone limited liability company", "fz llc", "with limited liability"]);
   poser(["MY"], ["sdn", "bhd", "berhad", "sendirian berhad", "sendirian"]);
   poser(["SG"], ["pte"]);
   poser(["AU", "ZA"], ["pty", "proprietary limited"]);
@@ -958,7 +992,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "societa a responsabilita limitata", "besloten vennootschap", "sp zoo", "sp z oo", "spolka z ograniczona odpowiedzialnoscia",
     "godo kaisha", "godo gaisha", "gk", "with limited liability", "spol s ro", "spol sro"]);
   /* la zone franche est un registre à part : une FZE et une LLC du même nom sont deux sociétés */
-  poser(["fz"], ["fze", "fzco", "fzc", "fzllc", "fz", "dmcc", "jafza", "dafza", "difc", "dso", "dwc", "rakez", "kizad",
+  poser(["fz"], ["fze", "fzco", "fzc", "fzllc", "fz llc", "fz", "dmcc", "jafza", "dafza", "difc", "dso", "dwc", "rakez", "kizad",
     "free zone establishment", "free zone company",
     "free zone limited liability company"]);
   poser(["corp"], ["inc", "incorporated", "corp", "corporation", "corporacion", "corporacao", "plc", "public limited company", "ag", "se", "sa", "sas", "sasu",
@@ -1016,9 +1050,19 @@ const PAYS_DU_CHINOIS_ECRIT = ["CN", "HK", "TW", "MO", "SG", "MY"];
 const DESIGNATIONS: ReadonlyMap<string, string> = new Map([
   ["inc", "inc"], ["incorporated", "inc"], ["corp", "corp"], ["corporation", "corp"], ["corporacion", "corp"], ["corporacao", "corp"],
   /* les zones franches des Émirats : « Silver Dune Logistics FZCO » et « Silver Dune Logistics DMCC » sont deux
-     dépôts dans deux zones (jeu 9) ; FZE, FZCO, FZC, FZ-LLC sont les formes d'une même zone, une seule désignation */
-  ["fze", "fz"], ["fzco", "fz"], ["fzc", "fz"], ["fzllc", "fz"], ["fz", "fz"],
+     dépôts dans deux zones (jeu 9). Et dans une même zone, la FZE (un seul actionnaire), la FZCO ou FZC (plusieurs)
+     et la FZ-LLC sont trois immatriculations : « Sadeem Crescent Marine FZE » n'est pas « Sadeem Crescent Marine
+     FZCO » (jeu 14, tour 10 : trois paires jugées différentes à 0,955 et 1,000, aucune dans l'autre sens sur les
+     quatorze jeux). « FZ » seul ne dit pas laquelle : aucune désignation. La forme en toutes lettres porte la
+     désignation de son sigle */
+  ["fze", "fze"], ["free zone establishment", "fze"], ["fzco", "fzco"], ["fzc", "fzco"], ["free zone company", "fzco"],
+  ["fzllc", "fzllc"], ["fz llc", "fzllc"], ["free zone limited liability company", "fzllc"],
   ["dmcc", "dmcc"], ["jafza", "jafza"], ["dafza", "dafza"], ["difc", "difc"], ["dso", "dso"], ["dwc", "dwc"], ["rakez", "rakez"], ["kizad", "kizad"],
+  /* Bahreïn : la S.P.C. (un seul associé) et la W.L.L. (plusieurs) sont deux immatriculations d'une même famille
+     (« Durrat Al Hadeel Trading S.P.C. », « … W.L.L. » : jeu 14, tour 10, deux paires à 1,000) ; la L.L.C., qui rend
+     aussi la W.L.L. du Koweït et du Qatar en anglais, n'en porte aucune et ne se met en conflit avec aucune des deux */
+  ["spc", "spc"], ["sole proprietor company", "spc"], ["sole proprietorship company", "spc"],
+  ["wll", "wll"], ["with limited liability", "wll"],
 ]);
 
 /** Ce que la préparation a retiré, et qui reste une information ; et la LANGUE que le nom
@@ -1080,12 +1124,29 @@ export type Marques = { pays: readonly string[]; familles: readonly string[]; na
 
 const MARQUEURS_ARABES = new Set(["al", "el", "ul", "bin", "bint", "ibn", "abu", "abou", "abd", "abdul", "abdel", "abdal", "umm",
   "sharikat", "sharika", "shirkat", "muassasat", "moassasat", "muassasa", "tijara", "tijarah", "tijariya", "sherkat", "bazargani",
-  "tejarat", "sanati", "lil", "wa", "bani", "dar", "beit", "bayt"]);
+  "tejarat", "sanati", "lil", "wa", "bani", "dar", "beit", "bayt",
+  /* la filiation et les titres du Maghreb et du Sahel (« Ould », « Sidi », « Moulay », « Hadj », « Cheikh »), sous la graphie
+     française et l'anglaise (tour 10, jeu 14 : « Mohamed Lamine Ould Brahim Transit » sans aucun marqueur) */
+  "ould", "wuld", "wld", "sidi", "moulay", "hadj", "hajj", "haj", "sheikh", "shaikh", "cheikh",
+  /* les prénoms arabes les plus portés, sous les graphies française (Maghreb, Levant), anglaise (Golfe) et malaise : le nom
+     d'un négociant marocain ou libanais n'a souvent ni article ni forme (« Youssef Chaouki Négoce », « Hosseini Kashani »), et
+     le prénom est la seule trace de la langue. Une table du monde : les dix prénoms, pas ceux du jeu. Ni Omar, ni Ali, ni Said
+     (Amérique latine, Italie, l'anglais « said ») */
+  "mohamed", "mohammed", "mohammad", "muhammad", "muhammed", "mohamad", "muhamad", "mhamed", "ahmed", "ahmad",
+  "youssef", "yousef", "yousuf", "yusuf", "yusef", "youcef", "yossef", "yusof", "ibrahim", "brahim", "ebrahim",
+  "hussein", "hussain", "husain", "hossein", "hocine", "hassan", "hasan", "abdallah", "abdullah", "abdellah",
+  "mahmoud", "mahmud", "mahmood", "mustafa", "mostafa", "moustapha", "mostefa", "fatima", "fatma", "khalid", "khaled"]);
 /** Le persan sans article : ses mots d'affaires et ses lieux. */
 const MARQUEURS_PERSANS = new Set(["sanat", "sanaat", "sanati", "sanaye", "sanayeh", "tolid", "tolidi", "farayand", "sahami", "khas",
   "amm", "tejarat", "tejarati", "bazargani", "pishro", "sherkat", "sherkate", "iran", "irani", "tehran", "tabriz", "isfahan", "esfahan",
   "shiraz", "mashhad", "karaj", "bandar", "abbas", "qeshm", "kish", "khazar", "pars", "parsian", "parsi", "novin", "omran", "toseh",
-  "tosee", "naft", "fulad", "foolad", "madan", "khorshid", "khurshid", "sepid", "sefid", "mehr", "sepehr", "aria", "arya", "lavazem"]);
+  "tosee", "naft", "fulad", "foolad", "madan", "khorshid", "khurshid", "sepid", "sefid", "mehr", "sepehr", "aria", "arya", "lavazem",
+  /* les autres villes et provinces d'Iran, et la nisba en -i qu'un nom de famille en tire (« Kashani », « Yazdi », « Tabrizi ») :
+     tour 10, jeu 14, « Hosseini Kashani Trading Co. » sans autre trace du persan */
+  "kashan", "kashani", "qom", "qomi", "yazd", "yazdi", "kerman", "kermani", "kermanshah", "ahvaz", "ahwaz", "rasht", "rashti",
+  "zanjan", "hamedan", "hamadan", "hamedani", "ardabil", "qazvin", "qazvini", "semnan", "urmia", "bushehr", "chabahar", "anzali",
+  "gilan", "gilani", "mazandaran", "khorasan", "khorasani", "khuzestan", "hormozgan", "tabrizi", "shirazi", "tehrani", "isfahani",
+  "esfahani", "mashhadi"]);
 const MARQUEURS_COREENS = new Set(["tongsang", "sanop", "sanup", "muyeok", "muyok", "jeongmil", "jungmil", "jeonja", "junja", "hwahak",
   "junggongeop", "chunggongop", "chunggongeop",
   "mulryu", "haeun", "gaebal", "hanguk", "hankook", "hankuk", "korea", "korean", "daehan", "seoul", "busan", "pusan", "incheon", "inchon",
@@ -1248,6 +1309,12 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
        Jamais un « ? » seul ni en fin de mot : là c'est une ponctuation, elle part avec les autres */
     .replace(/\?(?=\?*\p{L})/gu, PERDU)
     .replace(/int'l/gi, "international").replace(/\bF\.lli\b/gi, "Fratelli")
+    /* UNE FORME SOUDÉE AU NOM par un clavardage (« HoornbeekTransportBV », jeu 14) : la forme en capitales, ou dans sa
+       casse propre (GmbH, Ltd, Inc), collée derrière une minuscule et suivie de rien, se détache pour être lue comme
+       forme ; « HoornbeekTransport » reste soudé, le bloc le lit. Sans cela, la BV n'était pas lue et la paire montait
+       à 0,900 face à « Hoornbeek Transport N.V. », deux immatriculations (tour 10). Un nom tout en capitales n'a pas de
+       minuscule devant sa forme : il n'est pas touché */
+    .replace(/(\p{Ll})(BV|NV|GmbH|AG|LLC|LLP|Ltd|LTD|Inc|INC|PLC|Oy|AB|AS|SA|SAS|SARL|KG|SL|SRL|Srl|SpA|Bhd|Pty|Pte|Pvt)(?![\p{L}\d])/gu, "$1 $2")
     /* « M/s. » et « Messrs. », la civilité indienne et britannique d'une maison de commerce */
     .replace(/^\s*(?:M\/s\.?|Messrs\.?)\s+/i, "")
     /* « Mt. » et « Ft. » avec leur point sont Mount et Fort ; sans point, « MT » est un pétrolier */
@@ -1267,7 +1334,12 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     /* la coque en construction, « N/B » (newbuilding) devant son numéro de chantier (« N/B S1187 » face à « NEWBUILDING HULL
        NO. S-1187 », jeu 4 : 0,278, « nb » et « hull » mots rares sans répondant) : la barre est exigée, comme pour B/M ;
        sans elle, « NB » en tête est une initiale */
-    .replace(/(?<![\p{L}\d])N\/B(?![\p{L}])/giu, "NEWBUILDING")
+    .replace(/(?<![\p{L}\d])N\/B(?![\p{L}])/giu, "NEWBUILDING");
+  /* les chiffres de l'arabizi (« Mo7ammed », « Al 3'ubaiba », « 5alfan ») lus en lettres AVANT la normalisation, qui
+     couperait l'apostrophe de 3', et avant `ocr`, qui lirait le 5 comme un s (voir arabizi.ts) ; le 5 et le 8, que la lecture
+     optique lit aussi, exigent un marqueur arabe parmi les mots et un nom hors des capitales */
+  const arabizi = /\d/.test(soude) ? lireArabizi(soude, jetons(normaliser(soude)).some((j) => MARQUEURS_ARABES.has(j))) : { texte: soude, lu: false };
+  soude = arabizi.texte
     /* l'élision française et italienne (« d'Import-Export », « l'Industrie », « Côte d'Ivoire ») : la préposition ou
        l'article tombe et le mot reste entier (jeu 10, 27/09 : « dimport » face à « import », 0,728). La minuscule d
        seulement : « D'Angelo », « D'Souza » sont des noms, soudés comme « O'Brien » */
@@ -1366,6 +1438,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     if (PHRASES_PRIVEES.has(p.trim())) privePhrase = true;
     for (const k of PAYS_DES_FORMES.get(p.trim()) ?? []) pays.add(k);
     for (const k of FAMILLES_DES_FORMES.get(p.trim()) ?? []) familles.add(k);
+    /* la forme en toutes lettres porte la désignation de son sigle (« Free Zone Establishment » : fze, tour 10) */
+    const designation = DESIGNATIONS.get(p.trim());
+    if (designation !== undefined) designations.add(designation);
     /* 有限公司 ÉCRIT EN CARACTÈRES est la forme de toute société à responsabilité limitée de langue
        chinoise : de Chine, de Hong Kong, de Taïwan, de Macao, mais aussi de Singapour (Pte. Ltd.)
        et de Malaisie (Sdn. Bhd.), et elle ne dit pas si la société est privée. Romanisée
@@ -1397,7 +1472,15 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const sudAfricain = separes.some((j) => j === "pty" || j === "edms" || j === "eiendoms" || j === "bpk" || j === "beperk" || j === "maatskappy");
   /* le nom est arabe ou persan par son écriture ou l'un de ses mots (l'article, la filiation, un mot d'affaires) : lu ici pour
      l'article collé, avant la marque `arabe` que les mêmes marqueurs posent plus bas */
-  const arabePresume = /\p{Script=Arabic}/u.test(nom) || separes.some((j) => MARQUEURS_ARABES.has(j) || MARQUEURS_PERSANS.has(j));
+  /* et l'ÉTABLISSEMENT du Golfe (« Est. » abrégé, « Establishment » : la مؤسسة, la forme des maisons de commerce des Émirats, d'Arabie,
+     du Qatar, de Bahreïn, du Koweït et d'Oman) marque le nom arabe comme « Co., Ltd. » marque le nom d'Asie de l'Est (tour 10, jeu 14 :
+     « Ebrahim Alhosani Establishment », « Toufic Haddad Est. », sans article ni prénom marqueur). « Est » sans son point reste l'est */
+  const etablissementDuGolfe = separes.some((j) => j === "establishment" || j === "establishments" || (j === "est" && abreges.has(j)));
+  /* et un nom théophore, collé ou non (« Abdelkarim », « Abdurrahman » : voir `scinderAbd`), est arabe par lui-même */
+  const arabePresume = /\p{Script=Arabic}/u.test(nom) || etablissementDuGolfe
+    || separes.some((j) => MARQUEURS_ARABES.has(j) || MARQUEURS_PERSANS.has(j) || (scinderAbd(j) !== undefined && !connu(j)));
+  /* la forme malaise (Sdn. Bhd.) : la filiation s'y abrège aussi (« B. », « Bt. ») */
+  const malaisPresume = separes.some((j) => j === "sdn" || j === "bhd" || j === "berhad");
   const motsBruts = separes.flatMap((j, i) => {
     if (j === "i") return [j];
     if (CIVILITES.has(j)) { civilites.add(j); return []; }
@@ -1426,6 +1509,23 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
       for (const m of t.split(" ")) if (m !== "") { traduits.add(m); if (!sources.has(m)) sources.set(m, reste); }
       return ["al", ...t.split(" ").filter((m) => m !== "")];
     }
+    /* LE NOM THÉOPHORE (« Abdelkarim », « Abdul Kareem », « Abdurrahman ») : « abd », « al » et le nom, une seule suite sous toutes les
+       graphies (voir `scinderAbd`) ; jamais un mot que le dictionnaire connaît (abdomen) */
+    const abd = scinderAbd(j);
+    if (abd !== undefined && !connu(j)) return abd;
+    /* LA FILIATION SOUS UN SEUL MOT : bin, ibn, ben, ould, wuld (ولد), wad sont « bin », bint, binti, ibnat « bint ». Deux graphies
+       d'une même particule ne sont pas deux mots orphelins (tour 10, jeu 14 : « Obaid bin Sultan Al Ketbi » face à « Ubaid ibn
+       Sultan Al-Kitbi » à 0,779, bin et ibn orphelins de part et d'autre, le nom au dixième) ; le conflit de filiation
+       (« Bint » face à « Ibn ») se lit sur le genre, pas sur la graphie (voir FILIATION_M, FILIATION_F) */
+    if (FILIATION_M.has(j)) return ["bin"];
+    if (FILIATION_F.has(j)) return ["bint"];
+    /* LA FILIATION ABRÉGÉE : « Saeed B. Hamad » est Saeed bin Hamad, « Aminah Bt. Yusof » Aminah binti Yusof, dans le Golfe et en
+       Malaisie ; une lettre seule ENTRE deux noms, sous un marqueur arabe ou une forme malaise (jeu 14, 29/09 : « Saeed Bin Hamad
+       Trading Establishment » face à « Saeed B. Hamad Trading Est. » à 0,762, « b » initiale rare sans répondant) */
+    if ((j === "b" || j === "bt" || j === "bte" || j === "bti") && (arabePresume || malaisPresume) && i > 0 && i + 1 < separes.length
+      && separes[i - 1]!.length >= 3 && separes[i + 1]!.length >= 3 && !FORMES.has(separes[i - 1]!) && !FORMES.has(separes[i + 1]!)) {
+      return [j === "b" ? "bin" : "bint"];
+    }
     const a = ABREVIATIONS.get(j);
     /* une abréviation développée se traduit comme le mot entier : « Tic. » est ticaret, donc trading (jeu 13, 28/09 :
        « Tasimaciligi Tic. AS » à 0,704 face à « Ticaret A.Ş. », l'un traduit et l'autre non) */
@@ -1452,6 +1552,12 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      kazakh (ИП) porte un NOM DE PERSONNE et ses initiales ; « A.G. » n'y est pas une
      Aktiengesellschaft. Après ce sigle, les mots courts restent des mots. */
   const entrepreneur = ["ip", "fop", "chp", "flp", "spd"].includes(mots[0] ?? "");
+  /* sous un qualificatif de société privée (Pty, Pte, Pvt, Sdn), le registre garde « Co » et « Corp » dans le nom déposé :
+     « Trivedi Trading Co Pvt Ltd » n'est pas « Trivedi Trading Corp Pvt Ltd », « Blackwood Cattle Co Pty Ltd » n'est pas
+     « … Corp Pty Ltd » (jeux 13 et 14, tour 10 : quatre paires jugées différentes à 1,000 ; aucune paire des quatorze jeux
+     ne tient un « Co » pour un « Corp » sous ces qualificatifs). Hors de ces registres, « Co., Ltd. » et « Corporation »
+     rendent tous deux un K.K. ou une 有限公司, et « Co » ne porte aucune désignation */
+  const priveDesMots = mots.some((j) => QUALIFICATIFS_PRIVES.has(j));
   let t = mots.filter((j, i) => {
     if (j === "") return false;
     /* « PT » (perseroan terbatas) se place en tête, ou en queue après une virgule (« Sinar Kaloka
@@ -1482,6 +1588,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     for (const k of FAMILLES_DES_FORMES.get(j) ?? []) familles.add(k);
     const d = DESIGNATIONS.get(j);
     if (d !== undefined) designations.add(d);
+    if (priveDesMots && (j === "co" || j === "company")) designations.add("co");
     return false;
   });
   /* un sigle en tête fait des initiales des mots qui suivent (« IMZ Industrias Metalicas
@@ -1530,7 +1637,8 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* les marqueurs se lisent AVANT la traduction (« tongsang », « shoji » deviennent « trading ») et
      avant le retrait des civilités (« Shree ») */
   const tousLesMots = [...articles, ...mots];
-  const arabe = /[\u0600-\u06ff]/.test(nom) || tousLesMots.some((j) => MARQUEURS_ARABES.has(j) || MARQUEURS_PERSANS.has(j));
+  /* et un mot lu en arabizi est la trace d'un nom arabe, marqueur ou pas (« mo7ammed trading ») */
+  const arabe = /[\u0600-\u06ff]/.test(nom) || etablissementDuGolfe || arabizi.lu || tousLesMots.some((j) => MARQUEURS_ARABES.has(j) || MARQUEURS_PERSANS.has(j));
   /* un nom écrit en kana ou avec une forme japonaise, en sinogrammes, en hangul, est de cette
      langue avant tout marqueur : ses jetons viennent de `romaniser` (ecritures.ts) */
   const japonais = estJaponais(nom) || tousLesMots.some((j) => MARQUEURS_JAPONAIS.has(j));

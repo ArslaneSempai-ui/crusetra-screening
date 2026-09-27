@@ -286,7 +286,9 @@ export function variantesTypees(brut: string): VarianteTypee[] {
   /* « (Amharic: ተስፋዬ በቀለ ንግድ) » : l'étiquette de langue s'efface, la parenthèse native reste (jeu 10) */
   brut = brut.replace(/\(\s*(?:amharic|arabic|chinese|japanese|korean|thai|hebrew|russian|greek|hindi|tamil|persian|farsi|urdu|bengali|in\s+\p{L}+)\s*:\s*/giu, "(");
   /* une adresse collée à la forme sans espace, champ 59 : « Company Limited45 Marina Road » (jeu 10) */
-  brut = brut.replace(/\b(limited|ltd|plc|inc|llc|corp|gmbh|bv|nv|sa|sarl|lda|ltda|pty|bhd)\.?(?=\d)/giu, "$1 ");
+  /* le numéro de la rue est un nombre entier suivi d'une espace ou d'une ponctuation, jamais de lettres : « Sa3eed » n'est pas
+     « S.A. » collé au 3 d'une adresse, c'est l'ayn de l'arabizi (jeu 14 ; voir arabizi.ts) */
+  brut = brut.replace(/\b(limited|ltd|plc|inc|llc|corp|gmbh|bv|nv|sa|sarl|lda|ltda|pty|bhd)\.?(?=\d+(?![\p{L}\d]))/giu, "$1 ");
   const registre = numeroDeRegistre(brut);
   const partie = partieDuDocument(brut);
   const poser = (texte: string, ancien: boolean, mention: string) => { if (!vues.has(texte)) vues.set(texte, { texte, ancien, mention, registre, partie }); };

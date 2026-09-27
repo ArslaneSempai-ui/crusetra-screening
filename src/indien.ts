@@ -21,6 +21,9 @@ export const GRAPHIES_INDIENNES: ReadonlyMap<string, string> = new Map(Object.en
   chakrabarti: "chakraborty", chakrabarty: "chakraborty", chakravarti: "chakraborty", chakravarty: "chakraborty", chakravorty: "chakraborty", chakraverti: "chakraborty",
   /* le nord : Rathore, Rathod, Rathor, Rathour sont un clan rajpoute ; Chaudhary, Chowdhury, Chaudhry un même titre */
   rathod: "rathore", rathor: "rathore", rathour: "rathore", rathaur: "rathore",
+  /* le Sud : le titre tamoul ஐயர் s'écrit Iyer, Iyar, Aiyar, Ayyar, Aiyer ; ஐயங்கார் Iyengar, Aiyangar, Ayyangar (tour 10, jeu 14 :
+     « Iyer & Subramaniam Exports » face à « Iyar & Subramaniam Exports » à 0,742, e et a deux voyelles sans marque de romanisation) */
+  iyar: "iyer", aiyar: "iyer", ayyar: "iyer", aiyer: "iyer", aiyangar: "iyengar", ayyangar: "iyengar", ayengar: "iyengar",
   chaudhry: "chaudhary", chaudhari: "chaudhary", chaudhuri: "chaudhary", choudhary: "chaudhary", choudhury: "chaudhary", chowdhury: "chaudhary",
   chowdhary: "chaudhary", choudhry: "chaudhary", chaudhury: "chaudhary", choudhari: "chaudhary",
   /* les fleuves et les villes : le nom d'aujourd'hui et celui du Raj, que les registres anciens et les enseignes gardent */
