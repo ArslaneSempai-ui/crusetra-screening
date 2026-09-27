@@ -9,6 +9,7 @@ import {
   tronque, estCoupe, apport, simMinimale, choisirSeuils, marquesEnConflit, frequencesDe, mesurerJeux, qualificatifSoude,
   poidsDuMot, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, FAUSSES_ALERTES_MAX_FORT, SEUIL_POSSIBLE, lecturesDe, pliCantonais, pliTamoul,
   variantesTypees, plafondDesLectures, mentionDeSuccursale, succursalesCompatibles, numeroDeRegistre, formePlurielle, sembleCoupe,
+  pliJaponais, suffixeEtablissement, pliVoyellesCoreennes,
 } from "./entites.ts";
 import { validerPaires, type TableDUnPalier } from "./measure.ts";
 import { hangulEnLatin, pinyinDe, cleAbjad, cleAbjadSansTa, romaniser, CHEMIN_PINYIN, CHEMIN_JYUTPING, jyutpingDe, hongkong, thaiEnLatin, tamoulEnLatin } from "./ecritures.ts";
@@ -1035,4 +1036,110 @@ test("tour 7, voie locale : registres du Panama, du Mexique et du Japon, étique
   assert.equal(preparerEntite("Soluciones Logísticas Peñafiel S A S"), preparerEntite("Soluciones Logísticas Peñafiel, S.A.S."));
   assert.equal(preparerEntite("Transportadora Pena Blanca S de R L"), preparerEntite("Transportadora Pena Blanca, S. de R.L."));
   assert.equal(analyserEntite("SOC. ANON. TALLERES NAVALES DE VACAMONTE").familles.join(), analyserEntite("Talleres Navales de Vacamonte, S.A.").familles.join());
+});
+
+/* tour 7, voie japonaise : les poids d'une petite liste où les mots de métier sont communs, comme dans les vraies listes
+   (« industry » y pèse moitié moins qu'un nom propre) ; à poids uniformes, un mot générique ne tirerait rien */
+const fr7 = frequencesDe([["alpha industry"], ["beta industry"], ["gamma trading"], ["delta trading"], ["epsilon shipping"],
+  ["zeta industry"], ["eta trading"], ["theta marine"], ["iota industry"], ["kappa trading company"]]);
+const s7 = (a: string, b: string) => scoreNoms(fr7, a, b);
+
+test("tour 7, japonais : Kunrei et Hepburn, voyelles longues, n devant b, m, p ; les mêmes kana valent un squelette égal", () => {
+  for (const [a, b] of [["huzimoto", "fujimoto"], ["tyuo", "chuo"], ["sinwa", "shinwa"], ["zyonan", "jonan"], ["tuduki", "tsuzuki"], ["omura", "oomura"],
+    ["kogyo", "kogyou"], ["ohtsuki", "otsuki"], ["nanbu", "nambu"], ["shinpo", "shimpo"], ["honma", "homma"], ["yuuki", "yuki"], ["daiiti", "daiichi"],
+    ["hanazuki", "hanaduki"], ["matcha", "mattya"]]) assert.equal(pliJaponais(a!), pliJaponais(b!), `${a} / ${b}`);
+  assert.notEqual(pliJaponais("shirakaba"), pliJaponais("shirakawa"));
+  assert.notEqual(pliJaponais("sakuragawa"), pliJaponais("sakuragaoka"));
+  assert.notEqual(pliJaponais("ohashi"), pliJaponais("oashi"), "le h devant une voyelle est une consonne, pas une longue");
+  /* le crédit : au niveau fort avec un seul mot propre et un mot de métier (0,798 à 0,85), et lu AVANT la règle chinoise
+     des initiales que « Co., Ltd. » ouvre (h et f, t et c : 0,295 et 0,354 avant) */
+  for (const [a, b] of [["Huzimoto Sangyō K.K.", "Fujimoto Sangyo Co., Ltd."], ["Tyūō Seisakusho K.K.", "Chuo Seisakusho Co., Ltd."],
+    ["Sinwa Kōgyō K.K.", "Shinwa Kogyo Co., Ltd."], ["Zyōnan Kōgyō K.K.", "Jonan Kogyo Co., Ltd."], ["Ōmura Kōgyō K.K.", "Oomura Kogyou K.K."],
+    ["Ohtsuki Shoji K.K.", "Otsuki Trading Co., Ltd."], ["Kabushiki Kaisha Nanbu Tekkō", "Nambu Tekko Co., Ltd."],
+    ["Kabushiki Kaisha Shinpo Denki", "Shimpo Denki Co., Ltd."]]) assert.ok(s7(a!, b!) >= 0.81, `${a} / ${b} : ${s7(a!, b!)}`);
+  /* sans la marque, le pli ne s'applique pas : deux mots latins à deux lettres près */
+  assert.ok(s7("Huzimoto Holdings Ltd", "Fujimoto Holdings Ltd") < 0.81);
+  /* les mots de métier sous le pli : « Kogyou » se traduit comme « Kōgyō » sous un nom japonais ; « Teko » n'est pas « tekko » sans elle */
+  assert.equal(preparerEntite("Oomura Kogyou K.K."), "oomura industry");
+  assert.equal(preparerEntite("Teko Ltd"), "teko");
+  /* ce que le tour gagne ne rouvre pas les voisins du jeu 11 */
+  for (const [a, b] of [["Ryusei Unyu Co., Ltd.", "Ryusen Unyu Co., Ltd."], ["Seiryū Kaiun K.K.", "Seiun Kaiun K.K."], ["Jonan Kogyo Co., Ltd.", "Johoku Kogyo Co., Ltd."],
+    ["Nagasato Yuso Co., Ltd.", "Nagasako Yūsō Co., Ltd."]]) assert.ok(s7(a!, b!) < 0.81, `${a} / ${b} : ${s7(a!, b!)}`);
+});
+
+test("tour 7, japonais : un lemme par mot de métier ; deux mots différents sous un même lemme sont deux raisons sociales ; le suffixe d'établissement ; dix lettres", () => {
+  assert.equal(preparerEntite("Fukagawa Suisan Kabushiki Kaisha"), "fukagawa fisheries");
+  assert.equal(preparerEntite("Kabushiki Kaisha Sakaide Kōun"), "sakaide stevedoring");
+  assert.equal(preparerEntite("Kitazono Seisakusho Kabushiki Kaisha"), "kitazono manufacturing");
+  assert.equal(preparerEntite("Pomyung Junggongeop Co., Ltd."), "pomyung heavy industries");
+  for (const [a, b] of [["Fukagawa Suisan Kabushiki Kaisha", "Fukagawa Fisheries Co., Ltd."], ["Kabushiki Kaisha Sakaide Kōun", "Sakaide Stevedoring Co., Ltd."],
+    ["Tsurumaki Sōko Kabushiki Kaisha", "Tsurumaki Warehouse Co., Ltd."], ["Kabushiki Kaisha Nishihama Kikai", "Nishihama Machinery Co., Ltd. (西浜機械)"],
+    ["Hirata Zōsen Kabushiki Kaisha", "Hirata Shipbuilding Co., Ltd."], ["Kabushiki Kaisha Ōhashi Denshi", "Ohashi Electronics Co., Ltd."],
+    ["Kitazono Seisakusho Kabushiki Kaisha", "Kitazono Manufacturing Co., Ltd."], ["Bomyeong Heavy Industries Co., Ltd.", "Pomyung Junggongeop Co., Ltd."]]) {
+    assert.ok(s7(a!, b!) >= 0.81, `${a} / ${b} : ${s7(a!, b!)}`);
+  }
+  /* les sources : « Bōeki » et « Shōji » sont trading tous deux, « Tekkō » et « Tekkōsho » steel et steelworks ; le mot
+     anglais n'a pas de source, et la même source sous deux graphies reste une */
+  assert.ok(s7("Yūki Bōeki K.K.", "Yūki Shōji K.K.") < 0.81, "mesuré à 1,000 avant");
+  assert.ok(s7("Nambu Tekko Co., Ltd.", "Nambu Tekkosho Co., Ltd.") < 0.81, "mesuré à 0,900 avant");
+  assert.ok(s7("Ōtsuki Shōji K.K.", "Ōtsuki Kōgyō K.K.") < 0.81);
+  assert.ok(s7("Kawanami Boeki K.K.", "Kawanami Trading Company Limited") >= 0.81);
+  assert.ok(s7("Yūki Bōeki K.K.", "Yuuki Boueki Co Ltd") >= 0.81);
+  assert.ok(s7("Kawanami Bōeki Kabushiki Kaisha", "Kawanami Boeki Co., Ltd.") >= 0.81);
+  /* le suffixe d'établissement : ni mot coupé, ni abréviation d'un export en majuscules */
+  assert.ok(suffixeEtablissement("tekko", "tekkosho") && suffixeEtablissement("koki", "kokisho") && suffixeEtablissement("seizo", "seizosho"));
+  assert.ok(!suffixeEtablissement("engineer", "engineering") && !suffixeEtablissement("ko", "kosho"));
+  assert.ok(s7("Nambu Kōki K.K.", "Nambu Kōkisho K.K.") < 0.81, "mesuré à 0,900 avant, par le dernier mot coupé");
+  assert.ok(s7("NAMBU TEKKO CO LTD", "NAMBU TEKKOSHO CO LTD") < 0.81);
+  assert.ok(score("Thornbury Engineer", "Thornbury Engineering Ltd") >= 0.81, "hors de la marque, le dernier mot coupé se lit toujours");
+  /* le plafond d'ambiguïté jusqu'à dix lettres sous la marque : Shirakaba et Shirakawa, neuf lettres, une syllabe d'écart */
+  const shira = s7("Shirakaba Shokai Co., Ltd.", "Shirakawa Shōkai Co., Ltd.");
+  assert.ok(shira < 0.81 && shira >= 0.8 - 1e-9, `mesuré à 0,889 avant : ${shira}`);
+  assert.ok(s7("Brightwater Commodities", "Brightwatter Commodities") > 0.81, "hors de la marque, huit lettres restent la borne");
+});
+
+test("tour 7, japonais : G.K., Y.K., Kabushiki Gaisha ; la numérotation dai ; Maru est un navire ; la parenthèse native au milieu ; 〒 et le numéro de société", () => {
+  assert.equal(preparerEntite("Gōdō Kaisha Nishida Kōmuten"), preparerEntite("Nishida Komuten G.K."));
+  assert.equal(preparerEntite("Yūgen Kaisha Tanigawa Suisan"), preparerEntite("Tanigawa Suisan Y.K."));
+  assert.equal(preparerEntite("Kabushiki Gaisha Morioka Tekkō"), preparerEntite("Morioka Tekko Kabushiki Kaisha"));
+  assert.equal(preparerEntite("GK Alpha Beta"), "gk alpha beta", "en tête, un sigle de deux lettres reste un mot");
+  for (const [a, b] of [["Gōdō Kaisha Nishida Kōmuten", "Nishida Komuten G.K."], ["Yūgen Kaisha Tanigawa Suisan", "Tanigawa Suisan Y.K."],
+    ["Kabushiki Gaisha Morioka Tekkō", "Morioka Tekko Kabushiki Kaisha"], ["Tanigawa Suisan Y.K.", "Tanigawa Suisan Co., Ltd."]]) {
+    assert.ok(s7(a!, b!) >= 0.81, `${a} / ${b} : ${s7(a!, b!)}`);
+  }
+  assert.ok(s7("Tanigawa Suisan Y.K.", "Tanigawa Suisan Holdings K.K.") < 0.81, "la holding n'est pas la société qui exploite");
+  assert.ok(marquesEnConflit(analyserEntite("Nishida Komuten G.K."), analyserEntite("Nishida Komuten FZE")), "la G.K. porte la famille llc");
+  /* la numérotation : dai devant un chiffre, le numéral en lettres, en tête d'un nom japonais seulement */
+  assert.equal(preparerNom(f, "Daini Tsurumi Maru").numeros, "2");
+  assert.equal(preparerEntite("Daini Tsurumi Maru"), "2 tsurumi maru", "le numéral devient le jeton que la règle des numéros lit");
+  assert.equal(preparerNom(f, "Dai 8 Kōfuku Maru").numeros, "8");
+  assert.equal(preparerNom(f, "DAIJUU HOSEI MARU").numeros, "10", "sous les deux romanisations");
+  assert.equal(preparerEntite("Dai Duong Co., Ltd."), "dai duong", "hors d'un nom japonais, Dai est un mot");
+  assert.equal(preparerEntite("Daigo Sangyo K.K."), "daigo industry", "sans Maru, Daigo est un nom de société");
+  assert.equal(preparerEntite("Daiichi Sankyo Co., Ltd."), "daiichi sankyo");
+  for (const [a, b] of [["Dai 8 Kōfuku Maru", "Kofuku Maru No. 8"], ["Daini Tsurumi Maru", "Tsurumi Maru No. 2"], ["Daisan Hōsei Maru", "Hosei Maru No. 3"]]) {
+    assert.ok(score(a!, b!) >= 0.81, `${a} / ${b} : ${score(a!, b!)}`);
+  }
+  assert.equal(score("Daini Tsurumi Maru", "Daisan Tsurumi Maru"), 0, "deux numéros");
+  assert.equal(score("Daini Tsurumi Maru", "Tsurumi Maru No. 3"), 0);
+  /* Maru : la marque navire, comme un préfixe M/V, et le conflit face à l'armateur */
+  assert.ok(analyserEntite("Kōfuku Maru No. 18").navire && analyserEntite("Daini Tsurumi Maru").navire && !analyserEntite("Kofuku Kaiun K.K.").navire);
+  assert.ok(score("HOZUMI MARU NO. 18", "Hozumi Kaiun K.K.") < 0.81);
+  assert.ok(score("M/V Hakuyō Maru", "HAKUYO MARU") >= 0.81);
+  /* la parenthèse d'écriture native au milieu du nom : une lecture de plus, rien de retiré */
+  const v = variantes("Aoyagi Seisakusho (アオヤギ製作所) Co., Ltd.");
+  assert.ok(v.includes("Aoyagi Seisakusho Co., Ltd.") && v.includes("アオヤギ製作所") && v[0] === "Aoyagi Seisakusho (アオヤギ製作所) Co., Ltd.", v.join(" | "));
+  assert.ok(score("Aoyagi Seisakusho (アオヤギ製作所) Co., Ltd.", "Aoyagi Seisakusho Co., Ltd.") >= 0.81, "mesuré à 0,800 avant");
+  assert.ok(score("Aoyagi Seisakusho (アオヤギ製作所) Co., Ltd.", "Aoyama Seisakusho Co., Ltd.") < 0.81);
+  assert.ok(variantes("(株)Kuramochi Kōgyō").includes("Kuramochi Kōgyō"));
+  assert.ok(!variantes("Kabushiki Kaisha Sawamura (Sawamura Corporation)").includes("Sawamura Corporation"), "une parenthèse latine n'est pas une écriture native");
+  /* les résidus : l'adresse derrière 〒, le numéro de société en tête ou entre parenthèses */
+  assert.ok(variantes("Kimura Sōko Kabushiki Kaisha 〒105-0022 東京都港区海岸1-2-3").includes("Kimura Sōko Kabushiki Kaisha"));
+  assert.ok(score("Kimura Sōko Kabushiki Kaisha 〒105-0022 東京都港区海岸1-2-3", "Kimura Soko Co., Ltd.") >= 0.81);
+  assert.ok(score("Kimura Sōko Kabushiki Kaisha 〒105-0022 東京都港区海岸1-2-3", "Kimura Unyu Sōko Co., Ltd.") < 0.81);
+  assert.equal(numeroDeRegistre("Corporate Number 8011001077453 — Kurihara Kaiun Kabushiki Kaisha"), "8011001077453");
+  assert.ok(variantes("Corporate Number 8011001077453 — Kurihara Kaiun Kabushiki Kaisha").includes("Kurihara Kaiun Kabushiki Kaisha"));
+  assert.ok(score("Corporate Number 8011001077453 — Kurihara Kaiun Kabushiki Kaisha", "Kurihara Kaiun K.K.") >= 0.81);
+  assert.ok(score("Kabushiki Kaisha Minamisawa Kinzoku (法人番号 5010401099876)", "Minamisawa Kinzoku Co., Ltd.") >= 0.81);
+  assert.ok(score("Kabushiki Kaisha Minamisawa Kinzoku (法人番号 5010401099876)", "Kabushiki Kaisha Minamisawa Kinzoku (法人番号 5010401099877)") < 0.81, "deux numéros de société, deux dépôts");
 });

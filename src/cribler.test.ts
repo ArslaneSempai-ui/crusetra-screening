@@ -232,3 +232,25 @@ test("tour 6, registres : l'index retrouve à lui seul le composé allemand dans
     assert.notEqual(rapide.statut, "no-match", nom);
   }
 });
+
+test("tour 7 : l'index retrouve à lui seul les deux romanisations du japonais et du coréen, dans les deux sens de la marque", () => {
+  const e: EntreeListe[] = [
+    { source: "OFAC", id: "1", nom: "Fujimoto Sangyo Co., Ltd.", alias: [], type: "entity" },
+    { source: "OFAC", id: "2", nom: "Nambu Tekko Co., Ltd.", alias: [], type: "entity" },
+    { source: "OFAC", id: "3", nom: "Hanguk Cheonghae Co., Ltd.", alias: [], type: "entity" },
+    { source: "OFAC", id: "4", nom: "Shinwa Alpha Co., Ltd.", alias: [], type: "entity" },
+  ];
+  const fx = frequencesDe(e.map((x) => [x.nom]));
+  const ix = new Index(fx, e, 0.74);
+  /* chaque requête ne partage avec sa chaîne listée que le mot que le pli relie : la requête marquée face à une chaîne
+     marquée (1), la requête sans marque face à une chaîne marquée (2 : « Nanbu Alpha », le pli natif), le coréen (3),
+     et la requête marquée face à une chaîne sans marque (4 : « Sinwa » sous la marque de K.K.) */
+  for (const [nom, k] of [["Huzimoto Sangyou K.K.", 0], ["Nanbu Alpha Co., Ltd.", 1], ["Hanguk Chunghae Co., Ltd.", 2], ["Sinwa Alpha K.K.", 3]] as const) {
+    assert.ok(ix.candidats(preparerNom(fx, nom), nom).includes(k), `${nom} doit retrouver « ${e[k]!.nom} »`);
+  }
+  for (const nom of ["Huzimoto Sangyou K.K.", "Kabushiki Kaisha Nanbu Tekkō", "Hanguk Chunghae Co., Ltd.", "Sinwa Alpha K.K."]) {
+    const rapide = cribler({ ligne: 2, nom }, ix, seuils), exhaustif = cribler({ ligne: 2, nom }, ix, seuils, true);
+    assert.deepEqual(rapide, exhaustif, nom);
+    assert.notEqual(rapide.statut, "no-match", nom);
+  }
+});

@@ -134,6 +134,11 @@ const GENERIQUES_HANZI: ReadonlyMap<string, string> = new Map(Object.entries({
   "塑膠": "plastics", "塑胶": "plastics", "建筑": "construction", "建築": "construction", "能源": "energy", "发展": "development",
   "發展": "development", "投资": "investment", "投資": "investment", "控股": "holdings", "轮胎": "tire", "輪胎": "tire",
   "水产": "seafood", "水產": "seafood", "汽车": "automotive", "汽車": "automotive", "医药": "pharmaceutical", "醫藥": "pharmaceutical",
+  /* les kanji des métiers japonais, dans leurs graphies japonaises (産, 鉄), tels qu'un nom latin les porte entre
+     parenthèses sans kana ni forme (« Nishihama Machinery Co., Ltd. (西浜機械) », jeu 11) : les mêmes lemmes que
+     TRADUCTIONS_JAPONAISES. Un nom que ses kana ou sa forme disent japonais ne lit pas ses kanji (voir `estJaponais`) */
+  "製作所": "manufacturing", "造船": "shipbuilding", "倉庫": "warehouse", "港運": "stevedoring", "水産": "fisheries",
+  "鉄工": "steel", "鐵工": "steel", "鉄工所": "steelworks", "鐵工所": "steelworks",
   /* le commerce de Singapour et de Malaisie écrit en chinois (jeu 9, 27/09 : 协和电器供应私人有限公司,
      聯成廢金屬回收有限公司, 宝吉棕榈油贸易私人有限公司) : les mots que le côté anglais écrit */
   "电器": "electrical", "電器": "electrical", "供应": "supplies", "供應": "supplies", "橡胶": "rubber", "橡膠": "rubber",

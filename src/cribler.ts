@@ -37,7 +37,8 @@ import {
   frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD, sembleCoupe,
   compose, membres, gerondif,
   variationVocalique, voyelleEpenthetique, squeletteLongue, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
-  CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pluriel, CHEMIN_VERDICT, RAPPEL_MIN, BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare,
+  CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pliJaponais, pliCoreen, CREDIT_KANA, pluriel, CHEMIN_VERDICT, RAPPEL_MIN, BLOC_MIN, LONGUEUR_CHAMP,
+  type Frequences, type NomPrepare,
   type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme,
 } from "./entites.ts";
 import { cleAbjad, cleAbjadSansTa, type Abjad } from "./ecritures.ts";
@@ -168,7 +169,9 @@ type MotIndexe = { mot: string; sq: string; repli: string; abregeVu: boolean; no
   /** les abjads (a : arabe, h : hébreu, t : thaï) dans l'écriture desquels une chaîne listée porte ce mot */
   abjadVu: string;
   /** une chaîne listée lue en cantonais porte ce mot */
-  cantonaisVu: boolean };
+  cantonaisVu: boolean;
+  /** une chaîne listée marquée japonaise, coréenne, porte ce mot (voir `pliJaponais`, `pliCoreen`) */
+  japonaisVu: boolean; coreenVu: boolean };
 
 /**
  * L'INDEX, ET POURQUOI IL NE PERD RIEN.
@@ -220,6 +223,14 @@ export class Index {
   /** le même pli, pour les seuls mots que des chaînes lues en cantonais portent : c'est là qu'un
    *  nom latin cherche les leurs (voir `cantonais` dans scorePrepares) */
   private readonly parPliCantonaisNatif = new Map<string, MotIndexe[]>();
+  /** le pli des deux romanisations du japonais (`pliJaponais`, CREDIT_KANA) et celui du coréen (`pliCoreen`,
+   *  CREDIT_ROMANISATION) : un nom marqué cherche sous tous les mots, un nom sans marque sous les seuls mots
+   *  que des chaînes marquées portent, comme pour le cantonais (jeu 11, 28/09 : « Huzimoto » ne retrouvait
+   *  « Fujimoto » que par la comparaison exhaustive) */
+  private readonly parPliJaponais = new Map<string, MotIndexe[]>();
+  private readonly parPliJaponaisNatif = new Map<string, MotIndexe[]>();
+  private readonly parPliCoreen = new Map<string, MotIndexe[]>();
+  private readonly parPliCoreenNatif = new Map<string, MotIndexe[]>();
   /** les chaînes qui portent un bigramme, par bigramme ET longueur de bloc (« an20 ») : la
    *  borne de longueur du bloc se lit dans la clé, sans parcourir les autres longueurs */
   private readonly bigrammes = new Map<string, number[]>();
@@ -272,8 +283,11 @@ export class Index {
         nom.mots.forEach((mot, i) => {
           let m = this.vocabulaire.get(mot);
           if (!m) {
-            m = { mot, sq: nom.squelettes[i]!, repli: nom.replis[i]!, abregeVu: nom.abreges[i]!, noms: [k], abjadVu: "", cantonaisVu: false };
+            m = { mot, sq: nom.squelettes[i]!, repli: nom.replis[i]!, abregeVu: nom.abreges[i]!, noms: [k], abjadVu: "", cantonaisVu: false,
+              japonaisVu: false, coreenVu: false };
             ranger(this.parPliCantonais, pliCantonais(mot), m);
+            ranger(this.parPliJaponais, pliJaponais(mot), m);
+            ranger(this.parPliCoreen, pliCoreen(mot), m);
             this.vocabulaire.set(mot, m);
             ranger(this.parInitialeLongueur, mot[0]! + mot.length, m);
             ranger(this.parSqInitialeLongueur, (m.sq[0] ?? "") + m.sq.length, m);
@@ -304,6 +318,8 @@ export class Index {
             if (sansTa !== undefined && sansTa.length >= 3) ranger(this.parCleAbjadNatif, `a|${sansTa}`, m);
           }
           if (nom.marques.cantonais && !m.cantonaisVu) { m.cantonaisVu = true; ranger(this.parPliCantonaisNatif, pliCantonais(mot), m); }
+          if (nom.marques.japonais && !m.japonaisVu) { m.japonaisVu = true; ranger(this.parPliJaponaisNatif, pliJaponais(mot), m); }
+          if (nom.marques.coreen && !m.coreenVu) { m.coreenVu = true; ranger(this.parPliCoreenNatif, pliCoreen(mot), m); }
         });
         for (const [table, longueurs, bloc] of [[this.bigrammes, this.parLongueurBloc, nom.bloc],
           [this.bigrammesSq, this.parLongueurBlocSq, nom.blocSq]] as const) {
@@ -337,8 +353,9 @@ export class Index {
   }
 
   /** Les chaînes listées dont un mot est assez proche de `mot` (mêmes règles que le score). */
-  private nomsParMot(mot: string, sq: string, repli: string, dernier: boolean, coupe: boolean, abreviation: boolean, abjad: Abjad, cantonais: boolean): number[] {
-    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}|${abjad}|${cantonais ? 1 : 0}`;
+  private nomsParMot(mot: string, sq: string, repli: string, dernier: boolean, coupe: boolean, abreviation: boolean, abjad: Abjad, cantonais: boolean,
+    japonais: boolean, coreen: boolean): number[] {
+    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}|${abjad}|${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}`;
     const deja = this.cacheMots.get(cle);
     if (deja) return deja;
     const t = simMinimale(this.seuil);
@@ -383,8 +400,13 @@ export class Index {
         if (sansTa !== undefined && sansTa.length >= 3) for (const m of table.get(`a|${sansTa}`) ?? []) retenus.add(m);
       }
     }
+    /* les mêmes kana (CREDIT_KANA) : un nom marqué japonais face à tous les mots, un nom sans marque face aux mots
+       que des chaînes marquées portent */
+    if (t <= CREDIT_KANA) for (const m of (japonais ? this.parPliJaponais : this.parPliJaponaisNatif).get(pliJaponais(mot)) ?? []) retenus.add(m);
     if (t <= 0.9) {
       for (const m of this.parRepli.get(repli) ?? []) retenus.add(m);
+      /* le pli coréen (CREDIT_ROMANISATION), dans les deux sens de la marque, comme le cantonais */
+      for (const m of (coreen ? this.parPliCoreen : this.parPliCoreenNatif).get(pliCoreen(mot)) ?? []) retenus.add(m);
       /* le pli cantonais (CREDIT_ROMANISATION) : un nom lu en cantonais face à tous les mots, un nom
          latin face aux mots que des chaînes lues en cantonais portent */
       for (const m of (cantonais ? this.parPliCantonais : this.parPliCantonaisNatif).get(pliCantonais(mot)) ?? []) retenus.add(m);
@@ -476,7 +498,8 @@ export class Index {
     }
     const coupe = estCoupe(brut);
     q.mots.forEach((m, i) => {
-      for (const k of this.nomsParMot(m, q.squelettes[i]!, q.replis[i]!, i === q.mots.length - 1, coupe, q.abreges[i]!, q.marques.abjad, q.marques.cantonais)) retenus.add(k);
+      for (const k of this.nomsParMot(m, q.squelettes[i]!, q.replis[i]!, i === q.mots.length - 1, coupe, q.abreges[i]!, q.marques.abjad, q.marques.cantonais,
+        q.marques.japonais, q.marques.coreen)) retenus.add(k);
       /* une civilité que la requête soude au mot suivant (« sripelangi »), ou qu'elle écrit à part
          quand une chaîne listée la soude : mêmes règles que le score, qui vérifie que l'autre côté
          l'a écrite ; ici on retient large */
