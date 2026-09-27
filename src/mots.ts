@@ -105,15 +105,20 @@ function calculerRacines(m: string): string[] {
 export function pluriel(long: string, court: string): boolean {
   return DICTIONNAIRE.has(court) && (GENERIQUES_AU_PLURIEL.has(court) || GENERIQUES_AU_PLURIEL.has(long)) && formePlurielle(long, court);
 }
+/** Le PLURIEL TURC d'un mot (-lar, -ler) est un autre nom, comme le pluriel anglais hors des génériques du commerce :
+ *  « Kaptan » et « Kaptanlar », « Martı » et « Martılar » sont deux navires (jeu 12, 27/09 : 0,895 et 0,894, le crédit
+ *  d'abréviation par le début lisant le mot court comme le début du long). Un radical d'au moins quatre lettres
+ *  qu'aucun dictionnaire ne connaît, et un mot long qui n'est pas anglais non plus (« Handler » n'est pas le pluriel
+ *  de « Hand ») ; un générique traduit n'arrive pas ici, TRADUCTIONS l'a rendu en anglais. */
+export function plurielTurc(long: string, court: string): boolean {
+  if (court.length < 4 || long.length !== court.length + 3 || !long.startsWith(court)) return false;
+  const suffixe = long.slice(court.length);
+  if (suffixe !== "lar" && suffixe !== "ler") return false;
+  return lemme(court) === undefined && lemme(long) === undefined;
+}
 /** La FORME d'un pluriel anglais, sans regarder le dictionnaire : -s, -es, -y en -ies. */
 export function formePlurielle(long: string, court: string): boolean {
   return long !== court && (long === court + "s" || long === court + "es" || (court.endsWith("y") && long === court.slice(0, -1) + "ies"));
-}
-/** La FORME d'un pluriel turc : -lar, -ler (« Kaya », « Kayalar » ; « Deniz », « Denizler »), sur un radical de trois
- *  lettres au moins. Les points des voyelles (ı, ö, ü) tombent à la normalisation, l'harmonie vocalique ne se vérifie
- *  donc pas : les deux suffixes valent pour tout radical. Lu seulement dans un nom de navire (voir `simMot`). */
-export function plurielTurc(long: string, court: string): boolean {
-  return court.length >= 3 && long !== court && (long === court + "lar" || long === court + "ler");
 }
 /** Le GÉRONDIF ANGLAIS d'un mot du dictionnaire est le même mot du métier : « Trading » et « Trade », « Shipping »
  *  et « Ship », « Farming » et « Farm » (jeu 10, 27/09 : « Handel en Vervoer » traduit « trading transport » face à
