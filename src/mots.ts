@@ -481,5 +481,61 @@ export const CREDIT_APPUI = 0.9;
  *  squelette égal (0,95), parce que ce côté-là n'a pas de voyelles à mettre en défaut. */
 export const CREDIT_ABJAD = 0.95;
 
+/** Les NOMS DE LIEUX que l'ukrainien et le russe écrivent chacun à leur manière, en radical, pour que l'adjectif
+ *  les suive (« Mykolaivskyi », « Nikolaevskiy » ; « Chornomorska », « Chernomorska » ; « Odeskyi », « Odesskiy ») :
+ *  la forme ukrainienne, ramenée à la russe AVANT le pli (voir `pliSlave`). Une même douane écrit le port dans
+ *  l'une ou l'autre langue selon le document (jeu 12, 28/09 : « TOV Mykolaivskyi Kombikormovyi Zavod » face à
+ *  « Nikolaevskiy Kombikormovyy Zavod LLC » à 0,662). Pivdennyi est le port Youjny (Южный), traduit et non
+ *  transcrit. */
+const LIEUX_UKRAINIENS: readonly (readonly [string, string])[] = [
+  ["mykolaiv", "nikolaev"], ["kyiv", "kiev"], ["kyyiv", "kiev"], ["kharkiv", "kharkov"], ["dnipropetrovsk", "dnepropetrovsk"],
+  ["dnipro", "dnepr"], ["chornomor", "chernomor"], ["odesa", "odessa"], ["lviv", "lvov"], ["zaporizhzh", "zaporozh"],
+  ["pivdenn", "yuzhn"], ["luhansk", "lugansk"], ["ternopil", "ternopol"], ["chernihiv", "chernigov"], ["rivne", "rovno"],
+  ["vinnytsia", "vinnitsa"], ["kropyvnytsk", "kropivnitsk"], ["berdiansk", "berdyansk"], ["skadovsk", "skadovsk"],
+];
+/**
+ * LE CYRILLIQUE SOUS SES ROMANISATIONS : BGN/PCGN (zh, sh, ch, ts, shch, kh, y, yu, ya, ye en tête), ISO 9 et la
+ * translittération scientifique dont la normalisation a perdu les diacritiques (ž, š, č, c, šč, h, j, ju, ja : z, s,
+ * c, c, sc, h, j, ju, ja), le système national ukrainien (iu, ia, ii, yi), l'allemande (sch, tsch, w) ; ë écrit yo,
+ * jo ou e (Tkachyov, Tkachev) ; й, ы, и, ј confondus en i ; e, ye ou ie après une voyelle ou un signe mou (Nikolayev,
+ * Nikolaev ; Vasilyev, Vasiliev, Vasilev) ; les finales -iy, -ii, -ij, -yi, -yy, -y d'un même ий ; x pour ks
+ * (Agroexport, Agroeksport). Une seule clé, comparée
+ * sous la marque `slave` seulement, et elle vaut un squelette égal (CREDIT_CYRILLIQUE) : c'est la même suite de
+ * lettres cyrilliques sous deux systèmes, pas un autre mot (jeu 12, 28/09 : « ZAO Shchekinskiy Metallosklad » face à
+ * « ZAO Ščekinskij Metallosklad » à 0,675, « OOO Kubanskaya Zhatva » face à « OOO Kubanskaja Žatva » à 0,783, le
+ * squelette séparant sh et h, zh et z). Le c y confond ц et č, que l'ISO sans diacritique confond déjà.
+ */
+export function pliSlave(m: string): string {
+  let r = m;
+  for (const [ua, ru] of LIEUX_UKRAINIENS) if (r.startsWith(ua)) { r = ru + r.slice(ua.length); break; }
+  return r.replace(/shch/g, "sc").replace(/tsch/g, "c").replace(/sch/g, "s").replace(/tch/g, "c").replace(/zh/g, "z").replace(/sh/g, "s")
+    .replace(/ch/g, "c").replace(/ts/g, "c").replace(/kh/g, "h").replace(/x/g, "ks").replace(/w/g, "v")
+    .replace(/[yj]o/g, "e").replace(/[yj]/g, "i").replace(/ie/g, "e").replace(/(.)\1+/g, "$1");
+}
+/** Ce que vaut la même suite de lettres cyrilliques sous deux romanisations (`pliSlave`) : un squelette égal (0,95),
+ *  comme les kana. À 0,85, deux mots au crédit ne font pas un nom fort (« Kubanskaya Zhatva », « Kubanskaja Žatva » :
+ *  0,800). */
+export const CREDIT_CYRILLIQUE = 0.95;
+/** LES QUEUES DES COMPOSÉS SLAVES : -stroy (строй, la construction), -prom (l'industrie), -snab (l'approvisionnement),
+ *  -sbyt (la vente), -mash (les machines), -energo, -montazh, -remont, -servis, -torg, -trans, -eksport, -invest.
+ *  Sous la marque slave, un mot qui n'est l'autre qu'augmenté de l'une d'elles est une AUTRE raison sociale
+ *  (« Elevator », « Elevatorstroy » : le silo et l'entreprise qui le construit), pas le mot coupé par un champ ni son
+ *  abréviation (jeu 12, 28/09 : « OOO Salskiy Elevator » face à « OOO Salskiy Elevatorstroy » à 1,000, le nom de vingt
+ *  caractères lu comme le nom entier coupé par un champ AIS). Quatre lettres de radical au moins. */
+export const QUEUES_SLAVES: ReadonlySet<string> = new Set(["stroy", "stroi", "stroj", "prom", "snab", "sbyt", "mash", "energo", "montazh",
+  "remont", "servis", "torg", "trans", "eksport", "export", "import", "invest", "tekh", "tekhnika", "komplekt", "avto", "khim", "neft", "gaz"]);
+export function queueDeComposeSlave(court: string, long: string): boolean {
+  return court.length >= 4 && long.length > court.length && long.startsWith(court) && QUEUES_SLAVES.has(long.slice(court.length));
+}
+/** LE RADICAL D'UN ADJECTIF SLAVE DE LIEU : « Kubanskaya », « Kurganskaya », « Salskiy », « Temryukskiy », « Mykolaivskyi »
+ *  sont un nom de lieu et le même suffixe (-skiy, -skaya, -skoye, -skyi, -ska…). C'est le radical qui nomme : deux
+ *  radicaux à deux lettres près sont deux lieux, quand les mots entiers, longs de leur suffixe commun, se ressemblaient à
+ *  0,82 (jeu 12, 28/09 : « OOO Kubanskaya Zhatva » face à « OOO Kurganskaya Zhatva » à 0,818, une fausse alerte forte).
+ *  Rendu sur la clé du pli, avec le suffixe replié pour exiger le même ; trois lettres de radical au moins. */
+export function radicalSlave(m: string): { radical: string; suffixe: string } | undefined {
+  const r = /^(.{3,})(ski|skaia|skoe|skoi|ska|ske|sko)$/.exec(pliSlave(m));
+  return r ? { radical: r[1]!, suffixe: r[2]! } : undefined;
+}
+
 /** Le plancher du rappel, à la borne BASSE de Wilson : un criblage qui rate un nom listé
  *  coûte plus cher que dix alertes à relire, donc on exige d'abord de ne pas rater. */

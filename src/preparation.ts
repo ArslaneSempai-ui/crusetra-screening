@@ -15,6 +15,7 @@ import { translitterer } from "./matchers/translitteration.ts";
 import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, type Lecture } from "./ecritures.ts";
 /* une déclaration de fonction : elle traverse le cycle mots.ts → preparation.ts, et n'est appelée qu'à la première demande */
 import { pliJaponais } from "./mots.ts";
+import { pliSlave } from "./mots.ts";
 import { lemme } from "./mots.ts";
 import { porteUnJalon } from "./score.ts";
 import { lettrePerdue } from "./score.ts";
@@ -132,6 +133,11 @@ const PHRASES = [
   " scientific and production enterprise ", " scientific and production association ",
   " research and production enterprise ", " research and production association ",
   " production and commercial firm ", " production association ",
+  /* les formes ukrainiennes en toutes lettres, sous les deux romanisations (nationale : « Tovarystvo z Obmezhenoiu
+     Vidpovidalnistiu » ; BGN : « … Obmezhenoyu Vidpovidalnistyu ») : le TOV, le PrAT et le PAT que le registre écrit
+     devant le nom (jeu 12, 28/09 : face à « TOV Prychornomorskyi Terminal », 0,800, quatre mots rares sans répondant) */
+  " tovarystvo z obmezhenoiu vidpovidalnistiu ", " tovarystvo z obmezhenoyu vidpovidalnistyu ",
+  " pryvatne aktsionerne tovarystvo ", " publichne aktsionerne tovarystvo ", " aktsionerne tovarystvo ",
 ].sort((a, b) => b.length - a.length);   /* les plus longues d'abord : « sociedad anonima » ne doit pas manger « sociedad anonima unipersonal » */
 /** Les locutions d'usage abrégées en bloc : leur sens tient à leurs voisins (« San » seul
  *  est aussi « saint » en espagnol ; « San. ve Tic. » est toujours « Sanayi ve Ticaret »). */
@@ -234,12 +240,15 @@ function traductionsJaponaisesPliees(): ReadonlyMap<string, string> {
 /** La traduction d'un mot du commerce ; `japonais` : le nom porte une forme ou un mot japonais, et ses mots de métier
  *  se cherchent aussi sous le pli des deux romanisations (« Oomura Kogyou K.K. » : kogyou restait un mot rare orphelin
  *  face à « industry », jeu 11, 28/09 : 0,361). Sans cette marque, « Teko » n'est pas « tekko » et reste un nom. */
-function traduction(j: string, japonais = false): string | undefined {
+function traduction(j: string, japonais = false, slave = false): string | undefined {
   const t = TRADUCTIONS.get(j);
   if (t !== undefined) return t;
   const p = pliGenerique(j);
   const a = p === j ? undefined : TRADUCTIONS_ARABES.get(p);
-  if (a !== undefined || !japonais) return a;
+  if (a !== undefined) return a;
+  /* et sous la marque slave, les mots du commerce et les grades sous le pli des romanisations du cyrillique */
+  if (slave) { const s = traductionsSlavesPliees().get(pliSlave(j)); if (s !== undefined) return s; }
+  if (!japonais) return undefined;
   return traductionsJaponaisesPliees().get(pliJaponais(j));
 }
 export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
@@ -833,7 +842,8 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["VN"], ["tnhh", "cong ty tnhh", "cong ty co phan"]);
   poser(["TH"], ["borisat chamkat", "borisat jamkat", "chamkat", "jamkat"]);
   poser(["IR"], ["sherkat", "sherkate"]);
-  poser(["UA"], ["prat", "pat", "tov"]);
+  poser(["UA"], ["prat", "pat", "tov", "tovarystvo z obmezhenoiu vidpovidalnistiu", "tovarystvo z obmezhenoyu vidpovidalnistyu",
+    "pryvatne aktsionerne tovarystvo", "publichne aktsionerne tovarystvo", "aktsionerne tovarystvo"]);
   poser(["RU", "BY", "KZ", "UA"], ["npp", "npo", "npk", "npf", "pkf", "nauchno proizvodstvennoe predpriyatie",
     "nauchno proizvodstvennoe obedinenie", "nauchno proizvodstvennyi kompleks", "nauchno proizvodstvennaya firma",
     "proizvodstvenno kommercheskaya firma", "proizvodstvennoe obedinenie"]);
@@ -862,8 +872,12 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["ltd", "corp"], ["bhd", "berhad", "kk", "kabushiki kaisha", "kabushikigaisha", "kabushiki gaisha", "jusikhoesa", "chusikhoesa",
     "chusik hoesa", "jusik hoesa", "gufen youxian gongsi", "oy", "ab", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio"]);
   /* et la Yūgen Kaisha (有限会社), que l'anglais rend « Co., Ltd. » ou « Y.K. » */
-  poser(["ltd", "llc"], ["ooo", "tov", "ltda", "lda", "limitada", "sociedade limitada", "eireli", "osauhing", "anpartsselskab", "sabiedriba ar ierobezotu atbildibu", "uzdaroji akcine bendrove", "ou", "sia", "uab", "aps", "tnhh", "cong ty tnhh", "sti", "limited sirketi", "yuhanhoesa",
-    "yugen kaisha", "yugen gaisha", "yk", "empresa individual de responsabilidade limitada"]);
+  poser(["ltd", "llc"], ["ooo", "tov", "ltda", "lda", "limitada", "sociedade limitada", "eireli", "osauhing", "anpartsselskab",
+    "sabiedriba ar ierobezotu atbildibu", "uzdaroji akcine bendrove", "ou", "sia", "uab", "aps", "tnhh", "cong ty tnhh", "sti", "limited sirketi",
+    "yuhanhoesa", "yugen kaisha", "yugen gaisha", "yk", "empresa individual de responsabilidade limitada",
+    "tovarystvo z obmezhenoiu vidpovidalnistiu", "tovarystvo z obmezhenoyu vidpovidalnistyu"]);
+  /* l'AT ukrainien (акціонерне товариство), PrAT et PAT : la société par actions, comme JSC et AO */
+  poser(["corp"], ["pryvatne aktsionerne tovarystvo", "publichne aktsionerne tovarystvo", "aktsionerne tovarystvo"]);
   /* le TOO kazakh (товарищество с ограниченной ответственностью) se traduit LLP, LLC ou Ltd */
   poser(["ltd", "llc", "part"], ["too", "tovarishchestvo s ogranichennoi otvetstvennostyu", "tovarishchestvo s ogranichennoy otvetstvennostyu"]);
   poser(["ltd", "corp"], ["pt", "perseroan terbatas", "tbk", "ud", "usaha dagang", "commanditaire vennootschap", "perseroan komanditer", "pcl", "public company limited", "teoranta", "teo", "dac", "designated activity company"]);
@@ -951,6 +965,11 @@ export type Marques = { pays: readonly string[]; familles: readonly string[]; na
   /** un nom écrit en tamoul : ses lettres latines viennent de `romaniser`, et le sanskrit du
    *  tamoul se replie au crédit (voir `pliTamoul`) */
   tamoul: boolean;
+  /** un nom russe, ukrainien ou d'un autre pays d'écriture cyrillique : le cyrillique lui-même, une forme de la CEI ou
+   *  d'Ukraine (OOO, TOV, ZAO, PAO, AT…), un mot du commerce translittéré (zavod, torgovyy, morskoy, flot), un grade
+   *  de navire (kapitan, matros), le T/H du teplokhod, ou un suffixe de nom propre (-ov, -skiy, -enko, -chuk). Sous
+   *  cette marque, deux romanisations d'une même suite cyrillique sont un mot (voir `pliSlave`) */
+  slave: boolean;
   /** un qualificatif de société privée (Pty, Pte, Pvt, Sdn, (P)) : « X Pty Ltd » n'est pas « X Ltd » */
   prive: boolean;
   /** les désignations écrites qu'un même registre garde distinctes dans une même famille
@@ -1042,6 +1061,45 @@ const NUMERAUX_DAI: ReadonlyMap<string, string> = new Map(Object.entries({
   daiichi: "1", daini: "2", daisan: "3", daiyon: "4", daishi: "4", daigo: "5", dairoku: "6", dainana: "7", daishichi: "7",
   daihachi: "8", daikyu: "9", daiju: "10",
 }).map(([k, v]) => [pliJaponais(k), v]));
+/** Les mots translittérés du russe et de l'ukrainien qui marquent un nom slave (voir `Marques.slave`) : les mots du
+ *  commerce (torgovyy, zavod, kompaniya, morskoy, rechnoy, flot, sklad, stroy), les mots des formes écrites en toutes
+ *  lettres (obshchestvo, tovarystvo), les grades qu'un navire porte en tête (kapitan, shkiper, matros, botsman).
+ *  PAS les mots que l'anglais écrit pareil (terminal, port, elevator, agro, dom) : ils marqueraient la moitié
+ *  des listes, et le pli des romanisations s'ouvrirait sur des noms anglais. */
+const MARQUEURS_SLAVES = new Set(["torgovyy", "torgovyi", "torgovy", "torgovyj", "torgovaya", "torgovaia", "torgovaja", "torgovlya",
+  "zavod", "zavoda", "kompaniya", "kompaniia", "kompanija", "kompania", "morskoy", "morskoi", "morskoj", "morskaya", "morskaia",
+  "morskaja", "morska", "morske", "rechnoy", "rechnoi", "rechnoj", "recnoj", "recnoi", "richkovyi", "richkovyy", "richkova",
+  "flot", "flota", "sklad", "stroy", "stroi", "stroj", "sudokhodnaya", "sudokhodstvo", "promyshlennost", "promyshlennaya",
+  "kombinat", "fabrika", "gruppa", "predpriyatie", "obedinenie", "pidpryiemstvo", "obshchestvo", "tovarishchestvo", "tovarystvo",
+  "aktsionernoe", "aktsionerne", "publichnoe", "publichne", "pryvatne", "zakrytoe", "otkrytoe", "nauchno", "proizvodstvennoe",
+  "proizvodstvenno", "kapitan", "shkiper", "matros", "botsman", "bocman", "teplokhod", "teplohod"]);
+/** Les formes de la CEI et d'Ukraine, telles que le nom les écrit (voir FORMES) : elles marquent un nom slave. */
+const FORMES_SLAVES = new Set(["ooo", "oao", "zao", "pao", "ao", "too", "tov", "prat", "pat", "npp", "npo", "npk", "npf", "pkf", "fop", "chp", "flp", "spd"]);
+/** Les suffixes des noms propres slaves (Petrov, Belyaev, Tkachyov, Petrova ; Brodsky, Salskiy, Kubanskaya, Donskaja,
+ *  Rostovskoye ; Shevchenko, Kovalchuk, Semenyuk ; Ivanovich, Petrović) : sur un mot d'au moins six lettres que le
+ *  dictionnaire ignore (« whisky », « husky », « Geneva », « nova » sont des mots anglais). */
+const SUFFIXES_SLAVES = /(?:[oe]v|[oe]va|iov|yov|sk(?:iy|ii|ij|y|yi|yy|aya|aja|aia|a|oye|oe|oy|oi|oj)|enko|chuk|[yi]uk|[oe]v[iy]ch|vic)$/;
+function suffixeSlave(j: string): boolean {
+  return j.length >= 6 && SUFFIXES_SLAVES.test(j) && lemme(j) === undefined;
+}
+/** Le T/H et le T/KH du teplokhod (теплоход, le navire à moteur) devant un nom de navire, écrits avec leur barre :
+ *  le M/V des documents russes (jeu 12, 28/09 : « T/H NIZHNEDONSK-1408 » face à « NIZHNEDONSK 1408 » à 0,775, « th »
+ *  mot rare sans répondant ; « T/KH AZOVSKIY RUBEZH 7 » à 0,800). */
+const TEPLOKHOD = /(?<![\p{L}])t\/(?:kh|h)(?![\p{L}])/iu;
+/** Les mots du commerce et les grades des navires russes et ukrainiens, sous une clé par mot : leurs graphies se
+ *  rejoignent par `pliSlave` (morskoy, morskoi, morskoj ; rechnoy, rečnoj), et la table ne se lit que sous la
+ *  marque slave (voir `traduction`). « Kompaniia » et « Kompanija » sont le « Kompaniya » que LOCUTIONS ôte déjà.
+ *  Les grades : « Kapitan Semenyuk » et « Capt. Semenyuk » sont un navire (jeu 12, 28/09 : 0,494). */
+const TRADUCTIONS_SLAVES: ReadonlyMap<string, string> = new Map(Object.entries({
+  morskoy: "marine", morskaya: "marine", rechnoy: "river", rechnaya: "river", richkovyi: "river", richkova: "river",
+  kompaniya: "", flot: "fleet", sklad: "warehouse", stroy: "construction", torgovyy: "trading", torgovaya: "trading",
+  kapitan: "captain", shkiper: "skipper", matros: "seaman", botsman: "boatswain", bosun: "boatswain",
+}));
+let TRADUCTIONS_SLAVES_PLIEES: ReadonlyMap<string, string> | undefined;
+function traductionsSlavesPliees(): ReadonlyMap<string, string> {
+  if (!TRADUCTIONS_SLAVES_PLIEES) TRADUCTIONS_SLAVES_PLIEES = new Map([...TRADUCTIONS_SLAVES].map(([k, v]) => [pliSlave(k), v]));
+  return TRADUCTIONS_SLAVES_PLIEES;
+}
 const MARQUEURS_CHINOIS = new Set(["youxian", "gongsi", "gufen", "zeren", "maoyi", "jinchukou", "keji", "dianzi", "gongye", "shiye",
   "zhizao", "jituan", "guoji", "wuliu", "huoyun", "hangyun", "jixie", "huagong", "fangzhi", "fuzhuang", "shipin", "jinshu",
   "gangtie", "suliao", "jianzhu", "nengyuan", "fazhan", "touzi", "kongzhi", "konggu", "shangmao", "jingmao", "luntai"]);
@@ -1069,7 +1127,10 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      de mot fabriquerait des jetons d'une ou deux lettres qui ne désignent rien. « F.lli »
      (fratelli) et « LPG/C » (LPG carrier) ont une ponctuation qui porte le sens : lus avant. */
   const rom = romaniser(nom, lecture);
-  const soude = plierLatin(rom.texte)
+  /* le T/H ou T/KH du teplokhod devant un navire russe (voir TEPLOKHOD) : le M/V des documents russes, rendu tel quel
+     avant la soudure des sigles (« T/H » y deviendrait « th », un mot ; « T/KH » deux mots), et une marque slave */
+  const teplokhod = TEPLOKHOD.test(rom.texte);
+  let soude = plierLatin(teplokhod ? rom.texte.replace(new RegExp(TEPLOKHOD.source, "giu"), "MV") : rom.texte)
     /* un « ? » dans une forme juridique ou à sa fin (« LT? », « L?D », « Ltd? ») : la lettre perdue
        ou le point mal lu d'une forme, complétée AVANT que le « ? » final ne parte en ponctuation
        (mesuré le 27/09 sur le jeu 9 : « (PVT) LT? » laissait un mot « lt » orphelin, 0,800) */
@@ -1114,6 +1175,21 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* le nom est japonais par ses kana, sa forme ou l'un de ses mots (la marque `japonais`, lue ici avant les tables :
      ses mots de métier se traduisent aussi sous le pli des deux romanisations, voir `traduction`) */
   const japonaisPresume = estJaponais(nom) || jetons(normaliser(plier(soude))).some((j) => MARQUEURS_JAPONAIS.has(j));
+  /* le nom est slave par son écriture, sa forme, un mot du commerce translittéré, un grade, le teplokhod ou un suffixe
+     de nom propre (voir `Marques.slave`) : lue ici, avant les tables, parce que ses mots du commerce se traduisent sous
+     le pli des romanisations du cyrillique et que « AT » en tête y est une forme */
+  const slave = /[Ѐ-ӿ]/.test(nom) || teplokhod
+    || jetons(normaliser(plier(soude))).some((j) => MARQUEURS_SLAVES.has(j) || FORMES_SLAVES.has(j) || suffixeSlave(j));
+  /* LE TYPE DU NAVIRE ENTRE PARENTHÈSES en fin de nom (« PRIDONYE-41 (barge) », « (tug) », « (tanker) ») : ce que le
+     préfixe dit devant (« barge PRIDONYE 41 »), et non une filiale (jeu 12, 28/09 : 0,667, la parenthèse sans répondant
+     et « barge » mot rare orphelin) */
+  let typeNavire = "", navireEcrit = false;
+  const typeEntreParentheses = /\s*\(\s*(\p{L}+)\s*\)\s*$/u.exec(soude);
+  if (typeEntreParentheses !== null && PREFIXES_NAVIRE.has(normaliser(typeEntreParentheses[1]!)) && typeEntreParentheses.index > 0) {
+    navireEcrit = true;
+    typeNavire = TYPES_NAVIRE.get(normaliser(typeEntreParentheses[1]!)) ?? "";
+    soude = soude.slice(0, typeEntreParentheses.index);
+  }
   /* Les mots ENTRE PARENTHÈSES : « Quarnby Logistics (Shanghai) », « Tervalo Shipping (Hong
      Kong) ». Dans un nom de société, la parenthèse désigne le plus souvent une entité du
      groupe, distincte ; si l'autre nom n'a rien qui y réponde, on ne parle pas de la même
@@ -1123,7 +1199,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     .flatMap((m) => {
       let dedans = ` ${jetons(normaliser(plier(m[1]!))).join(" ")} `;
       for (const [de, vers] of LOCUTIONS) dedans = dedans.split(de).join(vers);
-      return dedans.trim().split(/ +/).flatMap((j) => (CIVILITES.has(j) ? "" : ABREVIATIONS.get(j) ?? traduction(j, japonaisPresume) ?? j).split(" "));
+      return dedans.trim().split(/ +/).flatMap((j) => (CIVILITES.has(j) ? "" : ABREVIATIONS.get(j) ?? traduction(j, japonaisPresume, slave) ?? j).split(" "));
     })
     .filter((j) => j !== "" && !FORMES.has(j)));
   /* Lettres et chiffres collés se séparent : « No18 » → « No 18 », « LANQIAOFENG16 » →
@@ -1211,7 +1287,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     if (a !== undefined) return a.split(" ");
     const p = PAYS_ADJECTIFS.get(j);
     if (p !== undefined) return [p];
-    const t = traduction(j, japonaisPresume);
+    const t = traduction(j, japonaisPresume, slave);
     if (t === undefined) return [j];
     for (const m of t.split(" ")) if (m !== "") { traduits.add(m); if (!sources.has(m)) sources.set(m, j); }
     return t.split(" ");
@@ -1231,6 +1307,10 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     /* « PT » (perseroan terbatas) se place en tête, ou en queue après une virgule (« Sinar Kaloka
        Abadi, PT ») ; ailleurs c'est un mot */
     if ((j === "pt" || j === "ud") && i > 0 && i !== mots.length - 1) return true;
+    /* « AT » en tête d'un nom slave est l'акціонерне товариство ukrainien, le JSC (jeu 12, 28/09 : « AT Pivdennyi
+       Portovyi Zavod » face à « JSC Pivdennyy Portovyy Zavod » à 0,788, « at » mot rare orphelin) ; ailleurs,
+       c'est l'anglais « at » ou l'article arabe assimilé (voir ARTICLES_ASSIMILES, lu avant) */
+    if (j === "at" && i === 0 && slave && mots.length > 1) { societe = true; pays.add("UA"); familles.add("corp"); return false; }
     if (!FORMES.has(j)) return true;
     if (entrepreneur && i > 0 && j.length <= 3) return true;
     /* une forme de fin en tête reste un mot (« Ag. Prokopis », « As-Salam »), sauf écrite
@@ -1254,7 +1334,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* un sigle en tête fait des initiales des mots qui suivent (« IMZ Industrias Metalicas
      Zacoalco ») : il ne dit rien de plus qu'eux, il s'ôte */
   if (t.length >= 3 && t[0]!.length >= 2 && t[0]!.length <= 6 && t[0] === t.slice(1, 1 + t[0]!.length).map((m) => m[0]).join("")) t = t.slice(1);
-  let typeNavire = "";
+  if (navireEcrit) navire = true;
   if (t.length > 1 && PREFIXES_NAVIRE.has(t[0]!)) { navire = true; typeNavire = TYPES_NAVIRE.get(t[0]!) ?? ""; t = t.slice(1); }
   /* LA NUMÉROTATION JAPONAISE DES NAVIRES : « Dai 8 Kōfuku Maru », « Daini Tsurumi Maru » (第二鶴見丸) sont « Kofuku Maru
      No. 8 », « Tsurumi Maru No. 2 ». Le préfixe 第 (dai) devant un chiffre s'ôte, le numéral en lettres (daiichi… daiju,
@@ -1317,7 +1397,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites, traduits, sources,
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
     hebreuOuGrec, indien, hispanique, tamoul, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture === "cantonais", priveInconnu,
-    natifs: rom.natifs, filiation, succursale, typeNavire };
+    natifs: rom.natifs, filiation, succursale, typeNavire, slave };
 }
 
 /** Le texte d'une parenthèse NOMME-T-IL UNE SOCIÉTÉ : une forme juridique, et devant elle un nom qui n'est pas

@@ -44,6 +44,11 @@ import { pliTamoul } from "./mots.ts";
 import { CREDIT_ROMANISATION } from "./mots.ts";
 import { CREDIT_KANA } from "./mots.ts";
 import { suffixeEtablissement } from "./mots.ts";
+import { pliSlave } from "./mots.ts";
+import { CREDIT_CYRILLIQUE } from "./mots.ts";
+import { queueDeComposeSlave } from "./mots.ts";
+import { QUEUES_SLAVES } from "./mots.ts";
+import { radicalSlave } from "./mots.ts";
 import { pliVoyellesCoreennes } from "./mots.ts";
 import { CREDIT_APPUI } from "./mots.ts";
 import { CREDIT_ABJAD } from "./mots.ts";
@@ -85,7 +90,7 @@ export type NomPrepare = {
 
 const SANS_MARQUES: Marques = { pays: [], familles: [], designations: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
   coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, tamoul: false, prive: false, majuscules: false, chat: false, abjad: "", cantonais: false,
-  priveInconnu: false, natifs: new Map(), filiation: "", succursale: "", typeNavire: "" };
+  priveInconnu: false, natifs: new Map(), filiation: "", succursale: "", typeNavire: "", slave: false };
 
 export function preparerNom(f: Frequences, nom: string, lecture: Lecture = "mandarin"): NomPrepare {
   const a = analyserEntite(nom, lecture);
@@ -361,6 +366,10 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   const chat = A.marques.chat || B.marques.chat;
   /* un navire d'un côté ou de l'autre : le pluriel d'un mot n'y est jamais le même mot (voir `simMot`) */
   const navire = A.marques.navire || B.marques.navire;
+  /* un nom russe ou ukrainien d'un côté : deux romanisations d'une même suite cyrillique sont un mot (`pliSlave`), le
+     radical d'un adjectif de lieu se compare seul (`radicalSlave`), et la queue d'un composé fait une autre société
+     (`queueDeComposeSlave`) */
+  const slave = A.marques.slave || B.marques.slave;
   /* aucune forme juridique d'aucun côté : deux noms tapés, pas copiés d'un registre (voir le pluriel d'un clavardage) */
   const sansForme = !A.marques.societe && !B.marques.societe;
   /* là où une romanisation écrit les voyelles librement, deux mots anglais qui n'en diffèrent que
@@ -385,7 +394,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
         const nx = X.marques.natifs.get(x) ?? "", ny = Y.marques.natifs.get(y) ?? "";
         /* la clé porte tout ce qui décide : les deux mots, leurs marques d'abréviation, et
            leur position de dernier mot (la troncature ne vaut que pour lui) */
-        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}${navire ? 1 : 0}${sansForme ? 1 : 0}${germanique ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
+        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}${navire ? 1 : 0}${sansForme ? 1 : 0}${germanique ? 1 : 0}${slave ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
         /* le cache code l'équivalence de romanisation en ajoutant 2 à la valeur (elle est dans [0, 1]) */
         const enCache = memo?.get(cle);
         let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
@@ -397,7 +406,12 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
              initiales, parce que « Co., Ltd. » marque aussi le nom chinois, et que h et f (« Huzimoto »,
              « Fujimoto »), t et c (« Tyūō », « Chūō ») ne sont pas deux syllabes chinoises mais un seul kana */
           const pliJ = japonais && x !== y && !tousDeuxAnglais(x, y) && pliJaponais(x) === pliJaponais(y);
-          const autreSyllabe = chinois && x !== y && !pliC && !pliJ && !initialesChinoisesCompatibles(x, y);
+          /* la même suite cyrillique sous deux romanisations (`pliSlave` : « Zhatva », « Žatva » ; « Yeyskiy », « Eiskii » ;
+             « Mykolaivskyi », « Nikolaevskiy ») ; et la voyelle d'appui que la forme anglaise d'un prénom russe écrit dans
+             son groupe final (« Aleksandr », « Alexander » ; « Dnepr », « Dnieper »), au crédit d'une romanisation */
+          const pliS = slave && x !== y && !tousDeuxAnglais(x, y) && pliSlave(x) === pliSlave(y);
+          const appuiSlave = slave && !pliS && x !== y && !tousDeuxAnglais(x, y) && voyelleEpenthetique(pliSlave(x), pliSlave(y));
+          const autreSyllabe = chinois && x !== y && !pliC && !pliJ && !pliS && !initialesChinoisesCompatibles(x, y);
           if (autreSyllabe) v = Math.min(v, 0.5);
           /* une équivalence de romanisation, dans le contexte de la langue : elle vaut au moins
              CREDIT_ROMANISATION, et elle lève l'ambiguïté du mot court (voir plus bas) */
@@ -407,7 +421,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
             || (arabe && voyelleEpenthetique(X.squelettes[i]!, Y.squelettes[j]!))
             /* et « oe » y était « u » (« Soerya », « Surya ») : o et u ne font qu'une classe sous cette marque */
             || (indonesien && X.squelettes[i]!.replace(/o/g, "u") === Y.squelettes[j]!.replace(/o/g, "u"))
-            || pliJ
+            || pliJ || pliS || appuiSlave
             || (coreen && pliCoreen(x) === pliCoreen(y))
             /* v, w, b : hindi, hébreu, espagnol, portugais ; sous leur contexte, au crédit et non au
                squelette, pour que Fabre reste distinct de Favre */
@@ -420,6 +434,19 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           if (equivalent) v = Math.max(v, CREDIT_ROMANISATION);
           /* et les mêmes kana valent un squelette égal (voir CREDIT_KANA) */
           if (pliJ) v = Math.max(v, CREDIT_KANA);
+          /* et la même suite cyrillique aussi (voir CREDIT_CYRILLIQUE) */
+          if (pliS) v = Math.max(v, CREDIT_CYRILLIQUE);
+          /* L'ADJECTIF SLAVE DE LIEU : « Kubanskaya » et « Kurganskaya » se ressemblent à 0,82 par leur suffixe commun ;
+             ce sont leurs radicaux qui nomment, Kuban et Kurgan, deux lieux à deux lettres près (voir `radicalSlave`).
+             Sous la marque, deux mots au même suffixe et de radicaux différents valent leurs radicaux seuls ; sauf quand
+             le squelette les égale déjà (0,95 : « Zhurbinskiy », « Jourbinski » à la française, mesuré le 28/09 sur le
+             jeu 8, deux vrais noms perdus sans cette réserve) */
+          if (slave && !equivalent && v < 0.95 && x !== y) {
+            const rx = radicalSlave(x), ry = radicalSlave(y);
+            if (rx !== undefined && ry !== undefined && rx.suffixe === ry.suffixe && rx.radical !== ry.radical) {
+              v = Math.min(v, simMot(rx.radical, ry.radical, squelette(rx.radical), squelette(ry.radical), voyellesLibres, !navire));
+            }
+          }
           /* les voyelles du coréen sous deux systèmes (« Cheonghae », « Chunghae » ; « Hanseong », « Hansung ») : le crédit
              de la voyelle d'appui (voir `pliVoyellesCoreennes`) ; l'index les retrouve par `pliCoreen`, que ce pli implique */
           if (coreen && x !== y && !tousDeuxAnglais(x, y) && pliVoyellesCoreennes(x) === pliVoyellesCoreennes(y)) { equivalent = true; v = Math.max(v, CREDIT_APPUI); }
@@ -446,7 +473,11 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
             && squeletteLongue(x) === squeletteLongue(y)) { equivalent = true; v = 0.95; }
           /* sous la marque japonaise, le mot augmenté d'un suffixe d'établissement (« Tekkō », « Tekkōsho ») est une autre
              raison sociale : ni abréviation sans point, ni mot coupé, ni mot abrégé (voir `suffixeEtablissement`) */
-          const etablissement = japonais && (suffixeEtablissement(x, y) || suffixeEtablissement(y, x));
+          /* et sous la marque slave, le mot augmenté d'une queue de composé (« Elevator », « Elevatorstroy » ; « Agro »,
+             « Agroprom ») : une autre société, comme la holding face à la société qui exploite (voir `queueDeComposeSlave`
+             et QUALIFICATIFS_SOUDES) ; la paire se range au possible */
+          const composeSlave = slave && (queueDeComposeSlave(x, y) || queueDeComposeSlave(y, x));
+          const etablissement = (japonais && (suffixeEtablissement(x, y) || suffixeEtablissement(y, x))) || composeSlave;
           /* dans un export tout en majuscules, un mot court qu'aucun dictionnaire ne connaît et
              qui commence un mot long de l'autre nom est une abréviation sans point (« HVY IND ») */
           if (v < 0.9 && !etablissement && ((X.marques.majuscules && x.length >= 2 && x.length <= 9 && y.length >= x.length + 3 && y.length >= 6 && y.startsWith(x) && !lemme(x) && !(navire && plurielTurc(y, x)))
@@ -459,7 +490,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
              ni majuscules (« Agri Supplies » pour Agricultural Supplies) : un crédit partiel, celui
              d'une romanisation, pas celui d'un mot égal. Hors des noms chinois, coréens et japonais,
              où une syllabe qui en commence une autre est un autre mot (Hua, Huaxin) */
-          if (v < CREDIT_ROMANISATION && !chinois && !coreen && !japonais
+          if (v < CREDIT_ROMANISATION && !chinois && !coreen && !japonais && !composeSlave
             && ((x.length >= 4 && y.length >= x.length + 3 && y.startsWith(x) && !lemme(x))
               || (y.length >= 4 && x.length >= y.length + 3 && x.startsWith(y) && !lemme(y)))) v = CREDIT_ROMANISATION;
           /* LES COMPOSÉS allemands et néerlandais : le nom déterminé ferme le mot (« Stahlrohr » est un Rohr,
@@ -550,6 +581,9 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
       if (m >= 0.9 && X.poids[i]! >= 0.5 * X.poidsMax) rareCouvert[cote] = true;
       if (X.parentheses[i]) { parenthese[cote] = true; if (m >= 0.8) parentheseReconnue[cote] = true; }
       if (Y.mots.some((y) => qualificatifSoude(X.mots[i]!, y, Y.mots))) qualificatifSoudeVu = true;
+      /* la queue d'un composé slave (« Elevatorstroy » face à « Elevator ») range la paire au possible, comme le
+         qualificatif soudé ; hors du cache des mots, qui ne porte pas ce drapeau */
+      if (slave && Y.mots.some((y) => queueDeComposeSlave(X.mots[i]!, y) || queueDeComposeSlave(y, X.mots[i]!))) qualificatifSoudeVu = true;
       s += X.poids[i]! * apport(m);
     }
     return s;
@@ -770,6 +804,10 @@ export function sembleCoupe(court: string, long: string): boolean {
   const dernierMot = c.split(" ").at(-1) ?? "";
   const reste = /^\p{L}+/u.exec(suite)?.[0] ?? "";
   if (reste !== "" && ((FORMES.has(dernierMot) && FORMES.has(dernierMot + reste)) || (DICTIONNAIRE.has(dernierMot) && /^(?:s|es)$/.test(reste)))) return false;
+  /* ni dans un composé dont la suite est un qualificatif de groupe ou une queue slave : « OOO Salskiy Elevator » (vingt
+     caractères, la largeur AIS) n'est pas « OOO Salskiy Elevatorstroy » coupé, c'est le silo face à l'entreprise qui le
+     construit (jeu 12, 28/09 : 1,000 par cette seule porte) ; « X Agro » n'est pas « X Agroholding » coupé */
+  if (reste !== "" && (QUALIFICATIFS_SOUDES.has(reste) || QUEUES_SLAVES.has(reste))) return false;
   /* à 35 (le champ SWIFT), la coupe peut tomber sur une limite de mot ; aux autres largeurs,
      plus rares, on exige qu'elle tombe au milieu d'un mot (« Thornbury Chemical Corporation »
      en trente n'est pas « … Corporation of Canada » coupé) */
