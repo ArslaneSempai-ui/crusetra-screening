@@ -268,3 +268,55 @@ test("les contextes de langue : arabe et persan, japonais, coréen, hindi, hébr
   assert.ok(score("Meier Metallbau GmbH", "Mayer Metallbau GmbH") < 0.81);
   assert.ok(score("Jinyang Chemical Co., Ltd.", "Jinyoung Chemical Co., Ltd.") < 0.81);
 });
+
+test("tour 4 : ce qu'un document met devant ou autour du nom s'ôte, mais jamais un nom entier", () => {
+  const porte = (brut: string, attendu: string) => assert.ok(variantes(brut).includes(attendu), `${brut} → ${variantes(brut).join(" | ")}`);
+  porte("SHIPPER: Vilaplana Textil S.L.", "Vilaplana Textil S.L.");
+  porte("NOTIFY PARTY: Grandval Freight Forwarding SARL", "Grandval Freight Forwarding SARL");
+  porte("BENEFICIARY - Pham Thi Ngoc Lan Garment JSC", "Pham Thi Ngoc Lan Garment JSC");
+  porte("VESSEL: MV Quennell Meridian", "MV Quennell Meridian");
+  porte("Attn: Accounts Dept, Nkemelu Fabrics Ltd", "Nkemelu Fabrics Ltd");
+  porte("Attn. Mr. Sørensen, Kjeldahl Fiskeindustri A/S", "Kjeldahl Fiskeindustri A/S");
+  porte("OUR REF DC-88-2101 MV Wexford Halo", "MV Wexford Halo");
+  porte("OUR REF 71-33920-LC Bakhtiari Dried Fruits Co.", "Bakhtiari Dried Fruits Co.");
+  porte("Hull No. 2287 Halbrook Reliance", "Halbrook Reliance");
+  porte("MV Tenebrae Aurora (H/N S-441)", "MV Tenebrae Aurora");
+  porte("Haverstock Grain Merchants (Est. 1887) Ltd", "Haverstock Grain Merchants Ltd");
+  porte("MT Belisama Grace (built 2015, Panama)", "MT Belisama Grace");
+  porte("Pescadores del Cantábrico Norte S.A. (en liquidación)", "Pescadores del Cantábrico Norte S.A.");
+  porte("MT Salomé Ardent (under arrest, Piraeus)", "MT Salomé Ardent");
+  porte("MT Belisama Grace, Port of Loading: Antwerp", "MT Belisama Grace");
+  porte("MV Corriedale Breeze/Voyage 0932W", "MV Corriedale Breeze");
+  porte("Tarrant & Wolde Shipping Agencies Ltd (Rotterdam office)", "Tarrant & Wolde Shipping Agencies Ltd");
+  porte("Kwame Asare Enterprises also known as Asare Trading", "Asare Trading");
+  porte("Ibarra Cordero Aceites S.L. (antes Aceites Ibarra S.L.)", "Aceites Ibarra S.L.");
+  /* les gardes : une année seule est une société successeur ; « pol » n'est pas « POL: » ;
+     un numéro de coque seul reste un nom ; « Owner » sans deux-points est un mot du nom */
+  assert.ok(!variantes("Negev Drip Systems (2014) Ltd").includes("Negev Drip Systems Ltd"));
+  assert.deepEqual(variantes("Vantera Polymers AG"), ["Vantera Polymers AG"]);
+  assert.deepEqual(variantes("Olvetra Polska Sp. z o.o."), ["Olvetra Polska Sp. z o.o."]);
+  assert.deepEqual(variantes("NEWBUILDING HULL NO. H2217"), ["NEWBUILDING HULL NO. H2217"]);
+  assert.deepEqual(variantes("Owner Farms Ltd"), ["Owner Farms Ltd"]);
+});
+
+test("tour 4 : particules au plancher, forme en tête, « joint stock company » sans pays, mots génériques européens", () => {
+  /* des fréquences réelles mais petites : un mot absent des listes pèse le maximum, une particule le plancher */
+  const fr = frequencesDe([["alpha holdings"], ["beta trading"], ["gamma shipping"], ["delta industries"], ["epsilon logistics"],
+    ["zeta group"], ["eta marine"], ["theta foods"], ["iota metals"], ["kappa trading company"]]);
+  assert.ok(scoreNoms(fr, "Compañía Naviera del Golfo de Anselmo S.A.", "Compañía Naviera Golfo de Anselmo S.A.") >= 0.81);
+  assert.ok(scoreNoms(fr, "Société des Entrepôts Frigorifiques de Marbeuf", "Société Entrepôts Frigorifiques de Marbeuf") >= 0.81);
+  /* « Dos » n'est pas une particule : le deuxième d'une série reste distinct */
+  assert.ok(scoreNoms(fr, "C.I. Flores de Rionegro S.A.S.", "C.I. Flores de Rionegro Dos S.A.S.") < 0.81);
+  assert.ok(scoreNoms(fr, "Bint Al Nakhuda", "Ibn Al Nakhuda") < 0.81);
+  /* avec des poids réels : en poids uniformes, « des » orphelin pèse le maximum et plafonne (c'est le cas de tout orphelin) */
+  assert.ok(scoreNoms(fr, "S.A. des Filatures de Montrouge-Étoile", "Filatures de Montrouge-Étoile S.A.") >= 0.81);
+  assert.ok(score("As-Salam Trading", "Salam Trading") < 1, "As-Salam garde son article : ce n'est pas une forme");
+  assert.ok(score("Sokołowiec Chemical Works Spółka Akcyjna", "Sokołowiec Chemical Works Joint-Stock Company") >= 0.81);
+  assert.ok(score("Yıldırım Kardeşler Nakliyat Ltd. Şti.", "Yildirim Brothers Transport Ltd.") >= 0.81);
+  assert.ok(score("Fratelli Tremonti Spedizioni S.r.l.", "Tremonti Brothers Forwarding S.r.l.") >= 0.81);
+  assert.ok(score("Zakłady Chemiczne Sokołowiec S.A.", "Sokolowiec Chemical Works S.A.") >= 0.81);
+  assert.ok(score("Hermanos Villalobos Comercio S.A.", "Villalobos Brothers Trading S.A.") >= 0.81);
+  assert.ok(score("Ναυτιλιακή Εταιρεία Αργυρόπετρα Α.Ε.", "Argyropetra Shipping Company S.A.") >= 0.81);
+  /* « maritime » n'est pas traduit : deux sociétés d'un groupe */
+  assert.ok(score("Beaurivage Maritime Ltd", "Beaurivage Shipping Ltd") < 1);
+});
