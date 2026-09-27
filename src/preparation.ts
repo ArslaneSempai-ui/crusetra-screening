@@ -179,7 +179,8 @@ const LOCUTIONS: readonly [string, string][] = [
   /* russe : les mots génériques d'entreprise, translittérés, vers l'anglais */
   [" stal ", " steel "], [" treiding ", " trading "], [" treyding ", " trading "], [" torgovlya ", " trade "],
   [" promyshlennost ", " industry "], [" promyshlennaya ", " industrial "], [" zavod ", " plant "], [" kombinat ", " works "],
-  [" fabrika ", " factory "], [" neft ", " oil "], [" khimiya ", " chemical "], [" khimicheskiy ", " chemical "],
+  [" fabrika ", " factory "], [" neft ", " oil "], [" khimiya ", " chemical "], [" khimicheskiy ", " chemical "], [" khimicheskii ", " chemical "], [" khimicheskij ", " chemical "], [" himicheskiy ", " chemical "],
+  [" himiceskij ", " chemical "], [" khimichnyi ", " chemical "], [" khimichnyy ", " chemical "], [" khimichna ", " chemical "],
   [" metallurgicheskiy ", " metallurgical "], [" mashinostroitelny ", " machine building "], [" stroitelstvo ", " construction "],
   [" sudokhodnaya kompaniya ", " shipping "], [" sudokhodstvo ", " shipping "], [" morskoy ", " marine "], [" gruppa ", " group "],
   [" kompaniya ", " "], [" kompania ", " "], [" firma ", " "],
@@ -285,6 +286,9 @@ export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
      « maritime » n'y est pas : c'est aussi un mot anglais, et « X Maritime » et « X Shipping »
      sont deux sociétés d'un même groupe */
   /* turc */ kardesler: "brothers", nakliyat: "transport", tasimacilik: "transport", ticaret: "trading", sanayi: "industry",
+  ithalati: "import", ihracati: "export",
+  /* russe : les composés en -khim (хим, la chimie), que l'anglais rend -chem (jeu 13 : « Agrokhim » / « Agrochem ») */
+  agrokhim: "agrochem", neftekhim: "petrochem", khimprom: "chemical", khimreaktiv: "chemical", khimvolokno: "chemical",
   denizcilik: "shipping", gida: "food", tekstil: "textile", insaat: "construction", lojistik: "logistics", ihracat: "export",
   ithalat: "import", madencilik: "mining", enerji: "energy", kimya: "chemical", yatirim: "investment", tarim: "agriculture",
   /* italien */ spedizioni: "forwarding", trasporti: "transport", navigazione: "navigation", commercio: "trading",
@@ -1106,7 +1110,15 @@ const TRADUCTIONS_SLAVES: ReadonlyMap<string, string> = new Map(Object.entries({
 }));
 let TRADUCTIONS_SLAVES_PLIEES: ReadonlyMap<string, string> | undefined;
 function traductionsSlavesPliees(): ReadonlyMap<string, string> {
-  if (!TRADUCTIONS_SLAVES_PLIEES) TRADUCTIONS_SLAVES_PLIEES = new Map([...TRADUCTIONS_SLAVES].map(([k, v]) => [pliSlave(k), v]));
+  if (!TRADUCTIONS_SLAVES_PLIEES) {
+    /* les entrées de TRADUCTIONS qu'une autre romanisation écrit autrement (« khimicheskiy », « khimicheskii », « himiceskij » :
+       chemical), pliées aussi, sans écraser celles de TRADUCTIONS_SLAVES (jeu 13, 28/09 : « AO Zarianskii Khimicheskii
+       Kombinat » à 0,582 face à « Khimicheskiy », un côté traduit et l'autre non) */
+    const m = new Map<string, string>();
+    for (const [k, v] of TRADUCTIONS) { const p = pliSlave(k); if (p !== k && !m.has(p)) m.set(p, v); }
+    for (const [k, v] of TRADUCTIONS_SLAVES) m.set(pliSlave(k), v);
+    TRADUCTIONS_SLAVES_PLIEES = m;
+  }
   return TRADUCTIONS_SLAVES_PLIEES;
 }
 const MARQUEURS_CHINOIS = new Set(["youxian", "gongsi", "gufen", "zeren", "maoyi", "jinchukou", "keji", "dianzi", "gongye", "shiye",
@@ -1292,8 +1304,17 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     /* « Bou » (« Bou en Konstruksie ») n'est l'afrikaans « building » que sous une forme sud-africaine :
        ailleurs c'est l'arabe maghrébin « Abu » (« Bou Regreg ») */
     if (j === "bou" && sudAfricain) { traduits.add("building"); return ["building"]; }
+    /* « San. » avec son point est « Sanayi » (jeu 13 : « Bafra Un San. A.Ş. ») ; sans point, « San » reste San Miguel */
+    if (j === "san" && abreges.has(j)) { traduits.add("industry"); if (!sources.has("industry")) sources.set("industry", j); return ["industry"]; }
     const a = ABREVIATIONS.get(j);
-    if (a !== undefined) return a.split(" ");
+    /* une abréviation développée se traduit comme le mot entier : « Tic. » est ticaret, donc trading (jeu 13, 28/09 :
+       « Tasimaciligi Tic. AS » à 0,704 face à « Ticaret A.Ş. », l'un traduit et l'autre non) */
+    if (a !== undefined) return a.split(" ").flatMap((m) => {
+      const t = m === "" ? undefined : traduction(m, japonaisPresume, slave);
+      if (t === undefined) return [m];
+      for (const x of t.split(" ")) if (x !== "") { traduits.add(x); if (!sources.has(x)) sources.set(x, j); }
+      return t.split(" ");
+    });
     const p = PAYS_ADJECTIFS.get(j);
     if (p !== undefined) return [p];
     const t = traduction(j, japonaisPresume, slave);
