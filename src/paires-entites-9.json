@@ -1,0 +1,2407 @@
+{
+ "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+ "provenance": "authored on 2026-09-27 by a separate agent (a Singapore trade-finance KYC desk brief, organised by counterparty type: ASEAN SMEs, Gulf and South Asian houses, regional vessels, commodity traders, group structures; a fifth model) that never saw the matcher nor any other pair set, as blind test set #8 (sha256 197c7ead…); every name invented; no client data, no list data; overlap with the eight earlier training sets: 0 pairs, 1 name. It judged method v10 once (entites.ts b05e1be0…, cribler.ts 7f564556…): strong 0.81 found 110/200 [48-62 %] with 3/200 false alerts [1-4 %]; possible 0.80 found 129/200 [58-71 %] with 48/200 [19-30 %]. Studied afterwards and promoted to training set 9 on 2026-09-27, so it no longer measures anything held out.",
+ "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+ "paires": [
+  {
+   "a": "Soon Heng Hardware (Kuching) Sdn. Bhd.",
+   "b": "Shun Hing Hardware (Kuching) Sdn Bhd 顺兴五金",
+   "verdict": "match",
+   "nature": "dialect-romanisation"
+  },
+  {
+   "a": "Eng Hong Provision Trading Pte. Ltd.",
+   "b": "Wing Fung Provision Trading Pte Ltd (荣丰)",
+   "verdict": "match",
+   "nature": "dialect-romanisation"
+  },
+  {
+   "a": "Hiap Hoe Electrical Supplies Pte. Ltd.",
+   "b": "协和电器供应私人有限公司",
+   "verdict": "match",
+   "nature": "native-chinese"
+  },
+  {
+   "a": "Tek Leong Packaging Sdn. Bhd.",
+   "b": "Delong Packaging Sdn Bhd (德隆包装)",
+   "verdict": "match",
+   "nature": "dialect-romanisation"
+  },
+  {
+   "a": "Lian Huat Plastic Industries Sdn. Bhd.",
+   "b": "联发塑胶工业有限公司",
+   "verdict": "match",
+   "nature": "native-chinese"
+  },
+  {
+   "a": "Teo Heng Seafood Trading Pte. Ltd.",
+   "b": "Zhang Xing Seafood Trading Pte Ltd 张兴海产",
+   "verdict": "match",
+   "nature": "dialect-romanisation"
+  },
+  {
+   "a": "Sri Pelangi Distributors Sdn. Bhd.",
+   "b": "sripelangi distributors sdn bhd",
+   "verdict": "match",
+   "nature": "chat-lowercase-nospace"
+  },
+  {
+   "a": "Kim Seng Hardware & Building Materials Pte. Ltd.",
+   "b": "Kim Send Hardware & Building Materials Pre Ltd",
+   "verdict": "match",
+   "nature": "chat-autocorrect"
+  },
+  {
+   "a": "Maju Bersama Food Distributors Sdn. Bhd.",
+   "b": "Maju Bersama  Food Distributors Sdn Bhd ️",
+   "verdict": "match",
+   "nature": "chat-emoji-residue"
+  },
+  {
+   "a": "Seng Huat Industrial Supplies Pte. Ltd.",
+   "b": "5ENG HUAT INDU5TRIAL SUPPLIE5 PTE. LTD.",
+   "verdict": "match",
+   "nature": "ocr-digit-letter"
+  },
+  {
+   "a": "Makmur Sentosa Marine Supplies Sdn. Bhd.",
+   "b": "MAKRNUR SENTOSA RNARINE SUPPLIES SDN. BHD.",
+   "verdict": "match",
+   "nature": "ocr-rn-m"
+  },
+  {
+   "a": "Công ty TNHH Thương mại Hoàng Phát Lộc",
+   "b": "CONG TY TNHH THUONG MAI HOANG PHAT LOC",
+   "verdict": "match",
+   "nature": "ocr-lost-diacritic"
+  },
+  {
+   "a": "Công ty Cổ phần Nông sản Tân Đức Minh",
+   "b": "Cong ty Co phan N?ng san T?n ??c Minh",
+   "verdict": "match",
+   "nature": "ocr-question-mark"
+  },
+  {
+   "a": "Công ty TNHH Xuất nhập khẩu Bảo Ngọc Long",
+   "b": "Bao Ngoc Long Import Export Company Limited",
+   "verdict": "match",
+   "nature": "legal-form-local-language"
+  },
+  {
+   "a": "Tagumpay Agri Supplies Corp.",
+   "b": "TAGUMPAY AGRI SUPPLIES CORPORATION",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Dalisay Hardware and Construction Supply, Inc.",
+   "b": "dalisay hardware & const supply inc",
+   "verdict": "match",
+   "nature": "chat-abbreviation"
+  },
+  {
+   "a": "PT Sinar Kenari Abadi",
+   "b": "PERSEROAN TERBATAS SINAR KENARI ABADI",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "CV Cahaya Bintang Timur Jaya",
+   "b": "Commanditaire Vennootschap Cahaya Bintang Timur Jaya",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "PT Tjahaja Soerya Kentjana (Surabaya)",
+   "b": "PT Cahaya Surya Kencana Surabaya",
+   "verdict": "match",
+   "nature": "old-spelling"
+  },
+  {
+   "a": "Sri Vel Murugan Traders Pte. Ltd.",
+   "b": "ஸ்ரீ வேல் முருகன் டிரேடர்ஸ் பிரைவேட் லிமிடெட்",
+   "verdict": "match",
+   "nature": "native-tamil"
+  },
+  {
+   "a": "Lakshmi Kalyani Textiles Sdn. Bhd.",
+   "b": "லட்சுமி கல்யாணி டெக்ஸ்டைல்ஸ் Sdn Bhd",
+   "verdict": "match",
+   "nature": "native-tamil"
+  },
+  {
+   "a": "Siam Chokchai Packaging Co., Ltd.",
+   "b": "บริษัท สยามโชคชัย แพ็คเกจจิ้ง จำกัด",
+   "verdict": "match",
+   "nature": "native-thai"
+  },
+  {
+   "a": "Chin Heng Auto Parts Trading Pte. Ltd.",
+   "b": "CONSIGNEE: CHIN HENG AUTO PARTS TRADING PTE LTD SINGAPORE",
+   "verdict": "match",
+   "nature": "bl-party-label"
+  },
+  {
+   "a": "Permai Frozen Foods Sdn. Bhd.",
+   "b": "NOTIFY PARTY: PERMAI FROZEN FOODS SDN BHD PORT KLANG",
+   "verdict": "match",
+   "nature": "bl-party-label"
+  },
+  {
+   "a": "Masagana Coco Products Inc.",
+   "b": "MASAGANA COCO PRODUCTS INC C/O BAYVIEW CUSTOMS BROKERAGE",
+   "verdict": "match",
+   "nature": "bl-care-of"
+  },
+  {
+   "a": "Hock Lee Electrical & Engineering Trading Pte. Ltd.",
+   "b": "Hock Lee Elect. & Engrg. Trdg. Pte Ltd",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Sri Pelangi Distributors Sdn. Bhd.",
+   "b": "PELANGI DISTRIBUTORS SDN BHD, SRI",
+   "verdict": "match",
+   "nature": "inverted-list-order"
+  },
+  {
+   "a": "Yusof bin Abdullah Hardware Enterprise",
+   "b": "Yusof Abdullah Hardware Enterprise",
+   "verdict": "match",
+   "nature": "bin-bint-particle"
+  },
+  {
+   "a": "Mohd Faizal Frozen Food Supply",
+   "b": "Mohamad Faizal Frozen Food Supply",
+   "verdict": "match",
+   "nature": "malay-name-abbreviation"
+  },
+  {
+   "a": "Bayanihan Pharma Distributors, Inc.",
+   "b": "BAYANIHAN PHARMA D1STRIBUTORS, lNC.",
+   "verdict": "match",
+   "nature": "ocr-digit-letter"
+  },
+  {
+   "a": "Hanbit Vina Co., Ltd.",
+   "b": "한빛비나 유한회사",
+   "verdict": "match",
+   "nature": "native-korean"
+  },
+  {
+   "a": "Harum Manis Bakery Supplies Sdn. Bhd.",
+   "b": "HARUM MANIS BAKERY SUPPLIES SENDIRIAN BERHAD",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Lucky Tamarind Trading Pte. Ltd.",
+   "b": "LUCKY TAMARIND TRADING PRIVATE LIMITED",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Kenari Food Distribution Sdn. Bhd. (formerly known as Kenari Frozen Foods Sdn. Bhd.)",
+   "b": "Kenari Frozen Foods Sdn. Bhd.",
+   "verdict": "match",
+   "nature": "registry-former-name"
+  },
+  {
+   "a": "Sri Ganapathy Spices & Provisions Pte. Ltd.",
+   "b": "SRI GANAPATHY SPICES ? PROVISIONS PTE LTD",
+   "verdict": "match",
+   "nature": "ocr-question-mark"
+  },
+  {
+   "a": "Guan Heng Marine Supplies Pte. Ltd.",
+   "b": "yuanxing marine supplies pte ltd (源兴)",
+   "verdict": "match",
+   "nature": "dialect-romanisation"
+  },
+  {
+   "a": "Kam Sing Electrical (M) Sdn. Bhd.",
+   "b": "金成电器(马)有限公司",
+   "verdict": "match",
+   "nature": "native-chinese"
+  },
+  {
+   "a": "Ban Lee Stationery Supplies Pte. Ltd.",
+   "b": "Man Lee Stationery Supplies Pte Ltd 万利文具",
+   "verdict": "match",
+   "nature": "dialect-romanisation"
+  },
+  {
+   "a": "Chokdee Frozen Food Co., Ltd.",
+   "b": "บริษัท โชคดี โฟรเซ่น ฟู้ด จำกัด",
+   "verdict": "match",
+   "nature": "native-thai"
+  },
+  {
+   "a": "Công ty Cổ phần Phân phối Minh Khang",
+   "b": "cty cp phan phoi minh khang",
+   "verdict": "match",
+   "nature": "chat-abbreviation"
+  },
+  {
+   "a": "Chin Heng Trading Pte. Ltd. (振兴贸易)",
+   "b": "Chin Hong Trading Pte Ltd (振丰贸易)",
+   "verdict": "different",
+   "nature": "dialect-lookalike"
+  },
+  {
+   "a": "Soon Heng Hardware (Kuching) Sdn. Bhd.",
+   "b": "Soon Huat Hardware (Kuching) Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "dialect-lookalike"
+  },
+  {
+   "a": "Kim Seng Hardware & Building Materials Pte. Ltd.",
+   "b": "Kim Seng Hardware & Marine Supplies Pte. Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Eng Hong Provision Trading Pte. Ltd.",
+   "b": "Eng Hong Provision Trading Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Lian Huat Plastic Industries Sdn. Bhd.",
+   "b": "Lian Huat Plastic Industries (Vietnam) Co., Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Permata Kitchen Equipment Sdn. Bhd.",
+   "b": "Pertama Kitchen Equipment Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "near-string-real-word"
+  },
+  {
+   "a": "Rahman bin Yusof Enterprise",
+   "b": "Rahmah binti Yusof Enterprise",
+   "verdict": "different",
+   "nature": "bin-bint-lookalike"
+  },
+  {
+   "a": "Yusof bin Abdullah Hardware Enterprise",
+   "b": "Yusof bin Abdul Rahman Hardware Enterprise",
+   "verdict": "different",
+   "nature": "bin-bint-lookalike"
+  },
+  {
+   "a": "Công ty TNHH Thương mại Hoàng Phát Lộc",
+   "b": "Công ty TNHH Thương mại Hoàng Phúc Lộc",
+   "verdict": "different",
+   "nature": "vietnamese-lookalike"
+  },
+  {
+   "a": "Công ty Cổ phần Nông sản Tân Đức Minh",
+   "b": "Công ty Cổ phần Thủy sản Tân Đức Minh",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Sri Pelangi Distributors Sdn. Bhd.",
+   "b": "Sri Pelangi Holdings Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Yeo & Sons Hardware Pte. Ltd.",
+   "b": "Yeo & Sons Provision Pte. Ltd.",
+   "verdict": "different",
+   "nature": "family-name-other-business"
+  },
+  {
+   "a": "Tagumpay Agri Supplies Corp.",
+   "b": "Tagumpay Agri Ventures Corp.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "PT Sinar Kenari Abadi",
+   "b": "PT Sinar Kenari Utama",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "CV Cahaya Bintang Timur Jaya",
+   "b": "CV Cahaya Bintang Barat Jaya",
+   "verdict": "different",
+   "nature": "near-string-real-word"
+  },
+  {
+   "a": "Sri Vel Murugan Traders Pte. Ltd.",
+   "b": "Sri Vel Murugan Jewellers Pte. Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "ஸ்ரீ லட்சுமி டிரேடர்ஸ்",
+   "b": "Sri Lakshmi Textiles",
+   "verdict": "different",
+   "nature": "native-script-other-word"
+  },
+  {
+   "a": "Siam Chokchai Packaging Co., Ltd.",
+   "b": "บริษัท สยามโชคดี แพ็คเกจจิ้ง จำกัด",
+   "verdict": "different",
+   "nature": "native-script-other-word"
+  },
+  {
+   "a": "Lian Huat Plastic Industries Sdn. Bhd.",
+   "b": "联合塑胶工业有限公司",
+   "verdict": "different",
+   "nature": "dialect-lookalike"
+  },
+  {
+   "a": "maju bersama food distributors",
+   "b": "Maju Bersatu Food Distributors Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "near-string-real-word"
+  },
+  {
+   "a": "5ENG HUAT INDU5TRIAL SUPPLIE5 PTE LTD",
+   "b": "Seng Huat Industrial Services Pte. Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Hock Lee Electrical & Engineering Trading Pte. Ltd.",
+   "b": "Hock Lee Electrical & Engineering Trading (Thailand) Co., Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Bayanihan Pharma Distributors, Inc.",
+   "b": "Bayanihan Pharma Distributors Pte. Ltd.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Harum Manis Bakery Supplies Sdn. Bhd.",
+   "b": "Harum Wangi Bakery Supplies Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Tek Leong Packaging Sdn. Bhd.",
+   "b": "Tek Seng Packaging Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "dialect-lookalike"
+  },
+  {
+   "a": "Hiap Hoe Electrical Supplies Pte. Ltd.",
+   "b": "Hiap Hong Electrical Supplies Pte. Ltd.",
+   "verdict": "different",
+   "nature": "dialect-lookalike"
+  },
+  {
+   "a": "Kenari Food Distribution Sdn. Bhd.",
+   "b": "Kenari Food Distribution (Sabah) Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-region"
+  },
+  {
+   "a": "Teo Heng Seafood Trading Pte. Ltd.",
+   "b": "Teo Heng Seafood Restaurant Pte. Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Bao Ngoc Long Import Export Company Limited",
+   "b": "Bao Ngoc Lan Import Export Company Limited",
+   "verdict": "different",
+   "nature": "vietnamese-lookalike"
+  },
+  {
+   "a": "Hanbit Vina Co., Ltd.",
+   "b": "주식회사 한빛코리아",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Dalisay Hardware and Construction Supply, Inc.",
+   "b": "Dalisay Hardware and Electrical Supply, Inc.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "PT Mitra Usaha Kenanga",
+   "b": "PT Mitra Usaha Kencana",
+   "verdict": "different",
+   "nature": "near-string-real-word"
+  },
+  {
+   "a": "Nusa Indah Trading & Distribution Sdn. Bhd.",
+   "b": "Nusa Intan Trading & Distribution Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "near-string-real-word"
+  },
+  {
+   "a": "Lucky Tamarind Trading Pte. Ltd.",
+   "b": "Lucky Tamarind Trading (Hong Kong) Limited",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "SHIPPER: MASAGANA COCO PRODUCTS INC",
+   "b": "Masagana Coco Exports Inc.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Ban Lee Stationery Supplies Pte. Ltd.",
+   "b": "Ban Leong Stationery Supplies Pte. Ltd.",
+   "verdict": "different",
+   "nature": "dialect-lookalike"
+  },
+  {
+   "a": "Mohd Faizal Frozen Food Supply",
+   "b": "Mohd Fazli Frozen Food Supply",
+   "verdict": "different",
+   "nature": "personal-name-lookalike"
+  },
+  {
+   "a": "Chokdee Frozen Food Co., Ltd.",
+   "b": "Chokdee Frozen Food (Cambodia) Co., Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Sri Ganapathy Spices & Provisions Pte. Ltd.",
+   "b": "Sri Ganapathy Spices & Provisions Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Guan Heng Marine Supplies Pte. Ltd.",
+   "b": "guan heng marine services pte ltd",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Ahmed Rashid Al Suwaidi General Trading L.L.C.",
+   "b": "Ahmad Rashed Alsuwaidi General Trading LLC",
+   "verdict": "match",
+   "nature": "arabic-romanisation"
+  },
+  {
+   "a": "Dar Al Noor General Trading L.L.C.",
+   "b": "دار النور للتجارة العامة ذ.م.م",
+   "verdict": "match",
+   "nature": "native-arabic"
+  },
+  {
+   "a": "Dar Al Noor General Trading L.L.C.",
+   "b": "Dar Alnoor Gen Trdg LLC",
+   "verdict": "match",
+   "nature": "al-article"
+  },
+  {
+   "a": "Saeed Bin Hamad Trading Establishment",
+   "b": "Saeed B. Hamad Trading Est.",
+   "verdict": "match",
+   "nature": "bin-bint-particle"
+  },
+  {
+   "a": "مؤسسة سعيد بن حمد للتجارة",
+   "b": "Saeed Bin Hamad Trading Est.",
+   "verdict": "match",
+   "nature": "native-arabic"
+  },
+  {
+   "a": "Khalid Yousuf Building Materials Trading Co. L.L.C.",
+   "b": "KHALID YOUSUF BUILDING MATERIALS TRADING COMPANY LIMITED LIABILITY COMPANY",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Mohammed Hussain Al Hashimi Trading",
+   "b": "Muhammad Husain Al-Hashemi Trading",
+   "verdict": "match",
+   "nature": "arabic-romanisation"
+  },
+  {
+   "a": "Abdulrahman Qasim Foodstuff Trading L.L.C.",
+   "b": "Abdul Rahman Kasim Foodstuff Trading LLC",
+   "verdict": "match",
+   "nature": "arabic-romanisation"
+  },
+  {
+   "a": "Najmat Al Sahel Electronics Trading L.L.C.",
+   "b": "najmat alsahel electronics trdg llc",
+   "verdict": "match",
+   "nature": "chat-lowercase-nospace"
+  },
+  {
+   "a": "Bayt Al Zaafaran Spices Trading L.L.C.",
+   "b": "BAYT AL ZAAFARAN 5PICES TRAD1NG L.L.C",
+   "verdict": "match",
+   "nature": "ocr-digit-letter"
+  },
+  {
+   "a": "Khalid Yousuf Building Materials Trading Co. L.L.C.",
+   "b": "CONSIGNEE: KHALID YOUSUF BLDG MATERIALS TRDG CO LLC DEIRA DUBAI",
+   "verdict": "match",
+   "nature": "bl-party-label"
+  },
+  {
+   "a": "Shree Vasudha Agro Exports Pvt. Ltd.",
+   "b": "SHREE VASUDHA AGRO EXPORTS PRIVATE LIMITED",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "M/s. Kanakdhara Spices Exports",
+   "b": "Kanakdhara Spices Exports",
+   "verdict": "match",
+   "nature": "messrs-prefix"
+  },
+  {
+   "a": "Noor-e-Sahar Textile Mills (Pvt.) Ltd.",
+   "b": "Noor e Sahar Textile Mills (Private) Limited",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Ghazanfar Leather Exporters (Pvt) Ltd",
+   "b": "ghazanfarleather exporters pvt ltd",
+   "verdict": "match",
+   "nature": "chat-lowercase-nospace"
+  },
+  {
+   "a": "Mahtab Sepehr Bazargani Co.",
+   "b": "Mahtaab Sepehr Bazarghani Company",
+   "verdict": "match",
+   "nature": "persian-romanisation"
+  },
+  {
+   "a": "شرکت بازرگانی مهتاب سپهر",
+   "b": "Mahtab Sepehr Trading Company",
+   "verdict": "match",
+   "nature": "native-persian"
+  },
+  {
+   "a": "Sherkat-e Tejarat-e Golestan Nakhl (Sahami Khass)",
+   "b": "Golestan Nakhl Trading Co. (Private Joint Stock)",
+   "verdict": "match",
+   "nature": "legal-form-local-language"
+  },
+  {
+   "a": "Sepid Kaveh Tejarat Kish",
+   "b": "Sepid Kaveh Tijarat-e Kish",
+   "verdict": "match",
+   "nature": "persian-romanisation"
+  },
+  {
+   "a": "Fatima Bint Obaid Ladies Tailoring & Textiles Trading",
+   "b": "Fatma Bnt Obaid Ladies Tailoring and Textiles Trading",
+   "verdict": "match",
+   "nature": "bin-bint-particle"
+  },
+  {
+   "a": "Hamdan Obaid Al Kutbi Trading Est.",
+   "b": "Hamdan Obaid Al-Qutbi Trading Establishment",
+   "verdict": "match",
+   "nature": "arabic-romanisation"
+  },
+  {
+   "a": "Qasr Al Yasmin Perfumes Trading L.L.C.",
+   "b": "قصر الياسمين لتجارة العطور ذ.م.م",
+   "verdict": "match",
+   "nature": "native-arabic"
+  },
+  {
+   "a": "Wadi Sahtan Trading & Contracting SPC",
+   "b": "WADI SAHTAN TRADING & CONTRACTING SOLE PROPRIETOR COMPANY",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Sharikat Rawasi Al Najd Lil Tijara",
+   "b": "Rawasi Al Najd Trading Company",
+   "verdict": "match",
+   "nature": "legal-form-local-language"
+  },
+  {
+   "a": "Rimal Horizon Trading W.L.L.",
+   "b": "Rimal Horizon Trading With Limited Liability",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Vasundhara Polymers & Chemicals Pvt. Ltd.",
+   "b": "VASUNDHARA POLYRNERS & CHEMICALS PVT LTD",
+   "verdict": "match",
+   "nature": "ocr-rn-m"
+  },
+  {
+   "a": "Qamar-ul-Islam Surgical Instruments (Pvt.) Ltd.",
+   "b": "QAMAR UL ISLAM SURGICAL INSTRUMENTS (PVT) LT?",
+   "verdict": "match",
+   "nature": "ocr-question-mark"
+  },
+  {
+   "a": "Mulji Devshi & Sons General Trading L.L.C.",
+   "b": "mulji devshi n sons gen trading",
+   "verdict": "match",
+   "nature": "chat-abbreviation"
+  },
+  {
+   "a": "Ghazanfar Leather Exporters (Pvt) Ltd",
+   "b": "SHIPPER: GHAZANFAR LEATHER EXPORTERS (PVT) LTD C/O SIALKOT CARGO SERVICES",
+   "verdict": "match",
+   "nature": "bl-care-of"
+  },
+  {
+   "a": "Mahtab Sepehr Bazargani Co.",
+   "b": "NOTIFY: MAHTAB SEPEHR BAZARGANI CO. BANDAR ABBAS",
+   "verdict": "match",
+   "nature": "bl-party-label"
+  },
+  {
+   "a": "Abdel Karim Saleh Foodstuff Trading L.L.C.",
+   "b": "Abd Al-Kareem Salih Foodstuff Trading LLC",
+   "verdict": "match",
+   "nature": "arabic-romanisation"
+  },
+  {
+   "a": "Nujoom Al Fajr Tyres Trading L.L.C.",
+   "b": "نجوم الفجر لتجارة الإطارات ش.ذ.م.م",
+   "verdict": "match",
+   "nature": "native-arabic"
+  },
+  {
+   "a": "Thirumalai Coir Exports Pvt. Ltd.",
+   "b": "திருமலை காயர் எக்ஸ்போர்ட்ஸ் பிரைவேட் லிமிடெட்",
+   "verdict": "match",
+   "nature": "native-tamil"
+  },
+  {
+   "a": "Mian Tufail Cutlery Works (Pvt.) Ltd.",
+   "b": "Main Tufail Cutlery Works Pvt Ltd",
+   "verdict": "match",
+   "nature": "chat-autocorrect"
+  },
+  {
+   "a": "Burj Al Mizan Auto Spare Parts Trading L.L.C.",
+   "b": "Burj El Mizan Auto Spare Parts Trdg LLC",
+   "verdict": "match",
+   "nature": "al-article"
+  },
+  {
+   "a": "Vasudev Ramchand Trading Co. L.L.C.",
+   "b": "Vasudev Ram Chand Trading Co. L.L.C.",
+   "verdict": "match",
+   "nature": "token-split"
+  },
+  {
+   "a": "Nasmat Al Jahra General Trading & Contracting Co. W.L.L.",
+   "b": "Nasmat Al Jahra Gen. Trdg. & Cont. Co. WLL",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "بازرگانی سپید کاوه کیش",
+   "b": "Sepid Kaveh Kish Trading",
+   "verdict": "match",
+   "nature": "native-persian"
+  },
+  {
+   "a": "Qasr Al Yasmin Perfumes Trading L.L.C.",
+   "b": "Qasr al Yasmin Perfumes Trading LLC ️",
+   "verdict": "match",
+   "nature": "chat-emoji-residue"
+  },
+  {
+   "a": "Ranmuthu Ceylon Spice Traders (Pvt) Ltd",
+   "b": "RANMUTHU CEYLON SPICE TRADERS (PRIVATE) LIMITED",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Ahmed Rashid Al Suwaidi General Trading L.L.C.",
+   "b": "ahmed rashad al suwaidi general trading llc",
+   "verdict": "different",
+   "nature": "arabic-name-lookalike"
+  },
+  {
+   "a": "Mohammed Hussain Al Hashimi Trading",
+   "b": "Mohammed Hassan Al Hashimi Trading",
+   "verdict": "different",
+   "nature": "arabic-name-lookalike"
+  },
+  {
+   "a": "Saeed Bin Hamad Trading Establishment",
+   "b": "Saeed Bin Hamdan Trading Establishment",
+   "verdict": "different",
+   "nature": "bin-bint-lookalike"
+  },
+  {
+   "a": "Ahmed Rashid Al Suwaidi General Trading L.L.C.",
+   "b": "Ahmed Rashid Al Suwaidi Real Estate Brokers L.L.C.",
+   "verdict": "different",
+   "nature": "family-name-other-business"
+  },
+  {
+   "a": "Dar Al Noor General Trading L.L.C.",
+   "b": "Dar Al Nada General Trading L.L.C.",
+   "verdict": "different",
+   "nature": "near-string-real-word"
+  },
+  {
+   "a": "دار النور للمقاولات ذ.م.م",
+   "b": "Dar Al Noor General Trading L.L.C.",
+   "verdict": "different",
+   "nature": "native-script-other-word"
+  },
+  {
+   "a": "Mahtab Sepehr Bazargani Co.",
+   "b": "Mahtab Sahar Bazargani Co.",
+   "verdict": "different",
+   "nature": "persian-lookalike"
+  },
+  {
+   "a": "Sepid Kaveh Tejarat Kish",
+   "b": "Sepid Kaveh Tejarat Qeshm",
+   "verdict": "different",
+   "nature": "place-name-swap"
+  },
+  {
+   "a": "Shree Vasudha Agro Exports Pvt. Ltd.",
+   "b": "Shree Vasudha Agro Industries Pvt. Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Noor-e-Sahar Textile Mills (Pvt.) Ltd.",
+   "b": "Noor-e-Sahar Textile Exports (Pvt.) Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Vasundhara Polymers & Chemicals Pvt. Ltd.",
+   "b": "Vasundhara Polymers & Chemicals L.L.C.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Rimal Horizon Trading W.L.L.",
+   "b": "Rimal Horizon Contracting W.L.L.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Abdulrahman Qasim Foodstuff Trading L.L.C.",
+   "b": "Abdulrahim Qasim Foodstuff Trading L.L.C.",
+   "verdict": "different",
+   "nature": "arabic-name-lookalike"
+  },
+  {
+   "a": "Fatima Bint Obaid Ladies Tailoring & Textiles Trading",
+   "b": "Fatima Bint Obaid Ladies Salon",
+   "verdict": "different",
+   "nature": "family-name-other-business"
+  },
+  {
+   "a": "Hamdan Obaid Al Kutbi Trading Est.",
+   "b": "Hamdan Abid Al Kutbi Trading Est.",
+   "verdict": "different",
+   "nature": "arabic-name-lookalike"
+  },
+  {
+   "a": "M/s. Kanakdhara Spices Exports",
+   "b": "M/s. Kanakdhara Tea Exports",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Ghazanfar Leather Exporters (Pvt) Ltd",
+   "b": "Ghazanfar Leather Garments (Pvt) Ltd",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Mulji Devshi & Sons General Trading L.L.C.",
+   "b": "Mulji Devshi & Grandsons General Trading L.L.C.",
+   "verdict": "different",
+   "nature": "family-name-other-business"
+  },
+  {
+   "a": "Mian Tufail Cutlery Works (Pvt.) Ltd.",
+   "b": "Mian Tufail Surgical Works (Pvt.) Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Qamar-ul-Islam Surgical Instruments (Pvt.) Ltd.",
+   "b": "Qamar-ul-Zaman Surgical Instruments (Pvt.) Ltd.",
+   "verdict": "different",
+   "nature": "personal-name-lookalike"
+  },
+  {
+   "a": "Nujoom Al Fajr Tyres Trading L.L.C.",
+   "b": "Nujoom Al Sahar Tyres Trading L.L.C.",
+   "verdict": "different",
+   "nature": "near-string-real-word"
+  },
+  {
+   "a": "Burj Al Mizan Auto Spare Parts Trading L.L.C.",
+   "b": "Burj Al Mizan Auto Repair Workshop L.L.C.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Vasudev Ramchand Trading Co. L.L.C.",
+   "b": "Vasudev Premchand Trading Co. L.L.C.",
+   "verdict": "different",
+   "nature": "personal-name-lookalike"
+  },
+  {
+   "a": "Nasmat Al Jahra General Trading & Contracting Co. W.L.L.",
+   "b": "Nasmat Al Ahmadi General Trading & Contracting Co. W.L.L.",
+   "verdict": "different",
+   "nature": "place-name-swap"
+  },
+  {
+   "a": "Ranmuthu Ceylon Spice Traders (Pvt) Ltd",
+   "b": "Ranmuthu Ceylon Tea Traders (Pvt) Ltd",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "شرکت بازرگانی مهتاب سپهر",
+   "b": "Mahtab Sepehr Sanat Co.",
+   "verdict": "different",
+   "nature": "native-script-other-word"
+  },
+  {
+   "a": "Sharikat Rawasi Al Najd Lil Tijara",
+   "b": "Rawasi Al Najd Contracting Company",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Wadi Sahtan Trading & Contracting SPC",
+   "b": "Wadi Sahtan Engineering & Contracting SPC",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Sherkat-e Tejarat-e Golestan Nakhl (Sahami Khass)",
+   "b": "Sherkat-e Tejarat-e Golestan Nakhl-e Jonoub (Sahami Khass)",
+   "verdict": "different",
+   "nature": "persian-lookalike"
+  },
+  {
+   "a": "Thirumalai Coir Exports Pvt. Ltd.",
+   "b": "Thirumalai Coir Mats Pvt. Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Qasr Al Yasmin Perfumes Trading L.L.C.",
+   "b": "Qasr Al Yasmin Oud & Perfumes Manufacturing L.L.C.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Abdel Karim Saleh Foodstuff Trading L.L.C.",
+   "b": "Abdel Karim Salem Foodstuff Trading L.L.C.",
+   "verdict": "different",
+   "nature": "arabic-name-lookalike"
+  },
+  {
+   "a": "Khalid Yousuf Building Materials Trading Co. L.L.C.",
+   "b": "KHALID YOUNIS BLDG MATERIALS TRDG CO LLC",
+   "verdict": "different",
+   "nature": "arabic-name-lookalike"
+  },
+  {
+   "a": "Najmat Al Sahel Electronics Trading L.L.C.",
+   "b": "Najmat Al Shamal Electronics Trading L.L.C.",
+   "verdict": "different",
+   "nature": "near-string-real-word"
+  },
+  {
+   "a": "Bayt Al Zaafaran Spices Trading L.L.C.",
+   "b": "Bayt Al Zaafaran Restaurant L.L.C.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "بازرگانی سپید کاوه کیش",
+   "b": "Sefid Kouh Trading Kish",
+   "verdict": "different",
+   "nature": "persian-lookalike"
+  },
+  {
+   "a": "Chaudhry Ilyas & Sons Exporters",
+   "b": "Chaudhry Ilyas & Brothers Exporters",
+   "verdict": "different",
+   "nature": "family-name-other-business"
+  },
+  {
+   "a": "Hamdan Obaid Al Kutbi Trading Est.",
+   "b": "Rashid Obaid Al Kutbi Trading Est.",
+   "verdict": "different",
+   "nature": "personal-name-lookalike"
+  },
+  {
+   "a": "Abdulrahman Qasim Foodstuff Trading L.L.C.",
+   "b": "Abdulrahman Qasim Foodstuff Industries L.L.C.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Noor e Sahar Textile Mills (Private) Limited",
+   "b": "Noor e Sahar Textile Mills (Bangladesh) Limited",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "MV MERANTI SUNRISE",
+   "b": "M/V Meranti Sunrise",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "MT LOTUS MERIDIAN",
+   "b": "M.T. LOTUS MERIDIAN",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "MT LOTUS MERIDIAN (EX-PACIFIC TAMARIND)",
+   "b": "PACIFIC TAMARIND",
+   "verdict": "match",
+   "nature": "vessel-ex-name"
+  },
+  {
+   "a": "MERANTI SUNRISE",
+   "b": "VESSEL/VOY: MERANTI SUNRISE V.2409S",
+   "verdict": "match",
+   "nature": "bl-voyage-port"
+  },
+  {
+   "a": "MT CORAL KEMUNING",
+   "b": "OCEAN VESSEL: CORAL KEMUNING PORT OF LOADING: DUMAI",
+   "verdict": "match",
+   "nature": "bl-voyage-port"
+  },
+  {
+   "a": "해솔 파이오니어호",
+   "b": "MT HAESOL PIONEER",
+   "verdict": "match",
+   "nature": "native-korean"
+  },
+  {
+   "a": "荣源泰16",
+   "b": "MV RONG YUAN TAI 16",
+   "verdict": "match",
+   "nature": "native-chinese"
+  },
+  {
+   "a": "نسيم البحر ٣",
+   "b": "NASEEM AL BAHAR 3",
+   "verdict": "match",
+   "nature": "native-arabic"
+  },
+  {
+   "a": "เรือลำเลียง ทองเจริญ 9",
+   "b": "BARGE THONG CHAROEN 9",
+   "verdict": "match",
+   "nature": "native-thai"
+  },
+  {
+   "a": "MV MERANTI DAWN",
+   "b": "mv merantidawn",
+   "verdict": "match",
+   "nature": "chat-lowercase-nospace"
+  },
+  {
+   "a": "MT CORAL KEMUNING",
+   "b": "MT C0RAL KEMUN1NG",
+   "verdict": "match",
+   "nature": "ocr-digit-letter"
+  },
+  {
+   "a": "MV ANDAMAN KESTREL",
+   "b": "MV ANDARNAN KESTREL",
+   "verdict": "match",
+   "nature": "ocr-rn-m"
+  },
+  {
+   "a": "MTUG SERI KEMUNING 3",
+   "b": "MTUG SERI KEMUN?NG 3",
+   "verdict": "match",
+   "nature": "ocr-question-mark"
+  },
+  {
+   "a": "TB KENARI SAMUDERA 5",
+   "b": "TUG KENARI SAMUDERA 5",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "BG BAHARI MUTIARA 12",
+   "b": "BARGE BAHARI MUTIARA 12",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "KM SINAR BAHARI 27",
+   "b": "F/V SINAR BAHARI 27",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "SERI MERANTI II",
+   "b": "SERI MERANTI 2",
+   "verdict": "match",
+   "nature": "numeral-style"
+  },
+  {
+   "a": "MV TELUK BIDARA (EX-ORIENT KALYANI)",
+   "b": "M/V ORIENT KALYANI",
+   "verdict": "match",
+   "nature": "vessel-ex-name"
+  },
+  {
+   "a": "FV KIM HOCK LEONG 33 (EX KIM SOON 23)",
+   "b": "KIM SOON 23",
+   "verdict": "match",
+   "nature": "vessel-ex-name"
+  },
+  {
+   "a": "BG BAHARI MUTIARA 12",
+   "b": "BARGE BAHARI MUTIARA 12 (HULL NO. BM-12)",
+   "verdict": "match",
+   "nature": "bl-hull-number"
+  },
+  {
+   "a": "MT HAESOL PIONEER",
+   "b": "MT HAE SOL PIONEER",
+   "verdict": "match",
+   "nature": "token-split"
+  },
+  {
+   "a": "BG BAHARI MUTIARA 12",
+   "b": "bg bahrain mutiara 12",
+   "verdict": "match",
+   "nature": "chat-autocorrect"
+  },
+  {
+   "a": "MT HAESOL PIONEER",
+   "b": "MT HAESOL PIONEER C/O HAESOL MARINE CO LTD",
+   "verdict": "match",
+   "nature": "bl-care-of"
+  },
+  {
+   "a": "MV RONG YUAN TAI 16",
+   "b": "SHIPPED ON BOARD MV RONG YUAN TAI 16 AT FANGCHENG",
+   "verdict": "match",
+   "nature": "bl-voyage-port"
+  },
+  {
+   "a": "MV MERANTI DAWN (PANAMA FLAG)",
+   "b": "MERANTI DAWN",
+   "verdict": "match",
+   "nature": "flag-residue"
+  },
+  {
+   "a": "MTUG SERI KEMUNING 3",
+   "b": "M/TUG SERI KEMUNING NO. 3",
+   "verdict": "match",
+   "nature": "vessel-prefix"
+  },
+  {
+   "a": "鑫瑞洋9",
+   "b": "XIN RUI YANG 9",
+   "verdict": "match",
+   "nature": "native-chinese"
+  },
+  {
+   "a": "金福隆33",
+   "b": "FV KIM HOCK LEONG 33",
+   "verdict": "match",
+   "nature": "native-chinese"
+  },
+  {
+   "a": "M.V. NASEEM AL BAHAR 3",
+   "b": "NASIM AL BAHR 3",
+   "verdict": "match",
+   "nature": "arabic-romanisation"
+  },
+  {
+   "a": "MT DURRAT AL KHOR",
+   "b": "MT DURRAT ALKHOR",
+   "verdict": "match",
+   "nature": "al-article"
+  },
+  {
+   "a": "MOTOR TANKER SRI PELANGI BIRU",
+   "b": "MT SRI PELANGI BIRU",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "M/V ORIENT KALYANI",
+   "b": "orientkalyani",
+   "verdict": "match",
+   "nature": "chat-lowercase-nospace"
+  },
+  {
+   "a": "BG BAHARI MUTIARA 12",
+   "b": "8G 8AHARI MUTIARA l2",
+   "verdict": "match",
+   "nature": "ocr-digit-letter"
+  },
+  {
+   "a": "한빛서린호",
+   "b": "M/V HANBIT SEORIN",
+   "verdict": "match",
+   "nature": "native-korean"
+  },
+  {
+   "a": "MV ANDAMAN KESTREL",
+   "b": "อันดามัน เคสเตรล",
+   "verdict": "match",
+   "nature": "native-thai"
+  },
+  {
+   "a": "MV ORIENT KALYANI",
+   "b": "ஓரியண்ட் கல்யாணி",
+   "verdict": "match",
+   "nature": "native-tamil"
+  },
+  {
+   "a": "MV ANDAMAN KESTREL (EX-GOLDEN RAMBAI)",
+   "b": "GOLDEN RAMBAI",
+   "verdict": "match",
+   "nature": "vessel-ex-name"
+  },
+  {
+   "a": "MV MERANTI SUNRISE",
+   "b": "meranti sunrise ️",
+   "verdict": "match",
+   "nature": "chat-emoji-residue"
+  },
+  {
+   "a": "FV KIM HOCK LEONG 33",
+   "b": "F.V. KIM HOCK LEONG NO.33",
+   "verdict": "match",
+   "nature": "numeral-style"
+  },
+  {
+   "a": "TB KENARI SAMUDERA 5",
+   "b": "TOWING VESSEL: TB. KENARI SAMUDERA-5",
+   "verdict": "match",
+   "nature": "bl-party-label"
+  },
+  {
+   "a": "MV MERANTI SUNRISE",
+   "b": "MV MERANTI SUNSET",
+   "verdict": "different",
+   "nature": "sister-ship-name"
+  },
+  {
+   "a": "MERANTI SUNRISE",
+   "b": "MERANTI DAWN",
+   "verdict": "different",
+   "nature": "sister-ship-name"
+  },
+  {
+   "a": "TB KENARI SAMUDERA 5",
+   "b": "TB KENARI SAMUDERA 8",
+   "verdict": "different",
+   "nature": "sister-ship-number"
+  },
+  {
+   "a": "TB KENARI SAMUDERA 5",
+   "b": "BG KENARI SAMUDERA 305",
+   "verdict": "different",
+   "nature": "tug-vs-barge"
+  },
+  {
+   "a": "MT LOTUS MERIDIAN",
+   "b": "Lotus Meridian Shipping Pte. Ltd.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "MT HAESOL PIONEER",
+   "b": "Haesol Marine Co., Ltd.",
+   "verdict": "different",
+   "nature": "vessel-vs-manager"
+  },
+  {
+   "a": "해솔 파이오니어호",
+   "b": "Haesol Pioneer Shipping S.A.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "NASEEM AL BAHAR 3",
+   "b": "NASEEM AL BAHAR 5",
+   "verdict": "different",
+   "nature": "sister-ship-number"
+  },
+  {
+   "a": "نسيم البحر ٣",
+   "b": "NASEEM AL BAHAR 8",
+   "verdict": "different",
+   "nature": "sister-ship-number"
+  },
+  {
+   "a": "荣源泰16",
+   "b": "RONG YUAN TAI 18",
+   "verdict": "different",
+   "nature": "sister-ship-number"
+  },
+  {
+   "a": "MT LOTUS MERIDIAN (EX-PACIFIC TAMARIND)",
+   "b": "PACIFIC TAMARIND II",
+   "verdict": "different",
+   "nature": "ex-name-lookalike"
+  },
+  {
+   "a": "BG BAHARI MUTIARA 12",
+   "b": "BG BAHARI MUTIARA 11",
+   "verdict": "different",
+   "nature": "sister-ship-number"
+  },
+  {
+   "a": "KM SINAR BAHARI 27",
+   "b": "KM SINAR BAHARI 29",
+   "verdict": "different",
+   "nature": "sister-ship-number"
+  },
+  {
+   "a": "FV KIM HOCK LEONG 33",
+   "b": "Kim Hock Leong Fishery Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "BARGE THONG CHAROEN 9",
+   "b": "TUG THONG CHAROEN 9",
+   "verdict": "different",
+   "nature": "tug-vs-barge"
+  },
+  {
+   "a": "MV ORIENT KALYANI",
+   "b": "Orient Kalyani Chartering Pvt. Ltd.",
+   "verdict": "different",
+   "nature": "vessel-vs-charterer"
+  },
+  {
+   "a": "MT CORAL KEMUNING",
+   "b": "MT CORAL KENANGA",
+   "verdict": "different",
+   "nature": "sister-ship-name"
+  },
+  {
+   "a": "MTUG SERI KEMUNING 3",
+   "b": "MTUG SERI KENANGA 3",
+   "verdict": "different",
+   "nature": "sister-ship-name"
+  },
+  {
+   "a": "MV TELUK BIDARA",
+   "b": "MV TANJUNG BIDARA",
+   "verdict": "different",
+   "nature": "sister-ship-name"
+  },
+  {
+   "a": "한빛서린호",
+   "b": "한빛해운 주식회사",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "SERI MERANTI II",
+   "b": "SERI MERANTI III",
+   "verdict": "different",
+   "nature": "sister-ship-number"
+  },
+  {
+   "a": "MT DURRAT AL KHOR",
+   "b": "Durrat Al Khor Marine Services L.L.C.",
+   "verdict": "different",
+   "nature": "vessel-vs-manager"
+  },
+  {
+   "a": "M/V ORIENT KALYANI",
+   "b": "M/s Orient Kalyani Exports",
+   "verdict": "different",
+   "nature": "messrs-vs-vessel"
+  },
+  {
+   "a": "MV ANDAMAN KESTREL",
+   "b": "MV ANDAMAN KINGFISHER",
+   "verdict": "different",
+   "nature": "sister-ship-name"
+  },
+  {
+   "a": "อันดามัน เคสเตรล",
+   "b": "ANDAMAN FALCON",
+   "verdict": "different",
+   "nature": "sister-ship-name"
+  },
+  {
+   "a": "meranti sunrise 2",
+   "b": "MV MERANTI SUNRISE",
+   "verdict": "different",
+   "nature": "sister-ship-number"
+  },
+  {
+   "a": "BG 8AHARI MUTIARA l5",
+   "b": "BG BAHARI MUTIARA 12",
+   "verdict": "different",
+   "nature": "sister-ship-number"
+  },
+  {
+   "a": "MV TELUK BIDARA",
+   "b": "Teluk Bidara Port Services Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "vessel-vs-namesake-company"
+  },
+  {
+   "a": "NASEEM AL BAHAR 3",
+   "b": "Naseem Al Bahar Marine Services L.L.C.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "FV KIM HOCK LEONG 33",
+   "b": "FV KIM HOCK LEONG 38",
+   "verdict": "different",
+   "nature": "sister-ship-number"
+  },
+  {
+   "a": "FV KIM HOCK LEONG 33 (EX KIM SOON 23)",
+   "b": "FV KIM SOON 28",
+   "verdict": "different",
+   "nature": "ex-name-lookalike"
+  },
+  {
+   "a": "MV RONG YUAN TAI 16",
+   "b": "Rong Yuan Tai Ship Management (HK) Limited",
+   "verdict": "different",
+   "nature": "vessel-vs-manager"
+  },
+  {
+   "a": "M/V HANBIT SEORIN",
+   "b": "M/V HANBIT SEOHAE",
+   "verdict": "different",
+   "nature": "sister-ship-name"
+  },
+  {
+   "a": "BG BAHARI MUTIARA 12",
+   "b": "BG BAHARI PERMATA 12",
+   "verdict": "different",
+   "nature": "sister-ship-name"
+  },
+  {
+   "a": "MT SRI PELANGI BIRU",
+   "b": "MT SRI PELANGI HIJAU",
+   "verdict": "different",
+   "nature": "sister-ship-name"
+  },
+  {
+   "a": "鑫瑞洋9",
+   "b": "XIN RUI YANG 6",
+   "verdict": "different",
+   "nature": "sister-ship-number"
+  },
+  {
+   "a": "金福隆33",
+   "b": "KIM HOCK SENG 33",
+   "verdict": "different",
+   "nature": "dialect-lookalike"
+  },
+  {
+   "a": "MT DURRAT AL KHOR",
+   "b": "MT DURRAT AL BAHR",
+   "verdict": "different",
+   "nature": "sister-ship-name"
+  },
+  {
+   "a": "MT HAESOL PIONEER",
+   "b": "MT HAESOL PILOT",
+   "verdict": "different",
+   "nature": "near-string-real-word"
+  },
+  {
+   "a": "TB KENARI SAMUDERA 5",
+   "b": "PT Kenari Samudera Pelayaran",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "Kilang Beras Seri Padi Sdn. Bhd.",
+   "b": "Seri Padi Rice Mill Sdn Bhd",
+   "verdict": "match",
+   "nature": "trade-word-translation"
+  },
+  {
+   "a": "PT Pabrik Kelapa Sawit Rimba Kenari",
+   "b": "PT Rimba Kenari Palm Oil Mill",
+   "verdict": "match",
+   "nature": "trade-word-translation"
+  },
+  {
+   "a": "Tong Seng Rubber Industries Sdn. Bhd.",
+   "b": "同成橡胶工业有限公司",
+   "verdict": "match",
+   "nature": "native-chinese"
+  },
+  {
+   "a": "Tong Seng Rubber Industries Sdn. Bhd.",
+   "b": "Tongcheng Rubber Industries Sdn Bhd (同成)",
+   "verdict": "match",
+   "nature": "dialect-romanisation"
+  },
+  {
+   "a": "Rawabi Al Sahel Scrap Metal Trading L.L.C.",
+   "b": "روابي الساحل لتجارة خردة المعادن ذ.م.م",
+   "verdict": "match",
+   "nature": "native-arabic"
+  },
+  {
+   "a": "Rungroj Sugar Co., Ltd.",
+   "b": "บริษัท น้ำตาลรุ่งโรจน์ จำกัด",
+   "verdict": "match",
+   "nature": "native-thai"
+  },
+  {
+   "a": "Công ty TNHH Gạo Phước Thịnh An",
+   "b": "CONG TY TNHH GAO PHUOC THINH AN",
+   "verdict": "match",
+   "nature": "ocr-lost-diacritic"
+  },
+  {
+   "a": "Công ty TNHH Gạo Phước Thịnh An",
+   "b": "Phuoc Thinh An Rice Company Limited",
+   "verdict": "match",
+   "nature": "trade-word-translation"
+  },
+  {
+   "a": "Shree Kanak Kaveri Chawal Udyog Pvt. Ltd.",
+   "b": "Shri Kanak Kaveri Chaval Udhyog Private Limited",
+   "verdict": "match",
+   "nature": "hindi-romanisation"
+  },
+  {
+   "a": "Syarikat Getah Bukit Tembusu Sdn. Bhd.",
+   "b": "Bukit Tembusu Rubber Company Sdn Bhd",
+   "verdict": "match",
+   "nature": "trade-word-translation"
+  },
+  {
+   "a": "PT Kayu Jati Lestari Nusantara",
+   "b": "PT KAYU JAT1 LESTAR1 NU5ANTARA",
+   "verdict": "match",
+   "nature": "ocr-digit-letter"
+  },
+  {
+   "a": "Sri Tembusu Timber Merchants Sdn. Bhd.",
+   "b": "SRI TEMBUSU TIRNBER RNERCHANTS SDN BHD",
+   "verdict": "match",
+   "nature": "ocr-rn-m"
+  },
+  {
+   "a": "Rawabi Al Sahel Scrap Metal Trading L.L.C.",
+   "b": "RAWABI AL SAHEL SCRAP ME?AL TRADING L.L.C",
+   "verdict": "match",
+   "nature": "ocr-question-mark"
+  },
+  {
+   "a": "Kilang Beras Seri Padi Sdn. Bhd.",
+   "b": "kilang beras seripadi sdn bhd",
+   "verdict": "match",
+   "nature": "chat-lowercase-nospace"
+  },
+  {
+   "a": "PT Pabrik Kelapa Sawit Rimba Kenari",
+   "b": "PT Pabrik Kelapa Sawit Rumba Kenari",
+   "verdict": "match",
+   "nature": "chat-autocorrect"
+  },
+  {
+   "a": "Rungroj Sugar Co., Ltd.",
+   "b": "SHIPPER: RUNGROJ SUGAR CO LTD, LAEM CHABANG THAILAND",
+   "verdict": "match",
+   "nature": "bl-party-label"
+  },
+  {
+   "a": "Tong Seng Rubber Industries Sdn. Bhd.",
+   "b": "SHIPPER: TONG SENG RUBBER INDUSTRIES SDN BHD 20 PALLETS SMR 20",
+   "verdict": "match",
+   "nature": "bl-cargo-residue"
+  },
+  {
+   "a": "PT Kayu Jati Lestari Nusantara",
+   "b": "PERSEROAN TERBATAS KAYU JATI LESTARI NUSANTARA",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Sunbulat Al Khair Rice Trading L.L.C.",
+   "b": "Sonbolat Al Kheir Rice Trading LLC",
+   "verdict": "match",
+   "nature": "arabic-romanisation"
+  },
+  {
+   "a": "Sunbulat Al Khair Rice Trading L.L.C.",
+   "b": "Sunbulat Al Khair Li Tijarat Al Aruz L.L.C.",
+   "verdict": "match",
+   "nature": "trade-word-translation"
+  },
+  {
+   "a": "Guan Seng Sugar Trading Pte. Ltd.",
+   "b": "源成糖业贸易私人有限公司",
+   "verdict": "match",
+   "nature": "native-chinese"
+  },
+  {
+   "a": "Poh Kiat Palm Oil Trading Pte. Ltd.",
+   "b": "宝吉棕榈油贸易私人有限公司",
+   "verdict": "match",
+   "nature": "native-chinese"
+  },
+  {
+   "a": "Poh Kiat Palm Oil Trading Pte. Ltd.",
+   "b": "Baoji Palm Oil Trading Pte Ltd (宝吉)",
+   "verdict": "match",
+   "nature": "dialect-romanisation"
+  },
+  {
+   "a": "Sri Annapoorani Rice Merchants Pte. Ltd.",
+   "b": "ஸ்ரீ அன்னபூரணி அரிசி வியாபாரிகள் பிரைவேட் லிமிடெட்",
+   "verdict": "match",
+   "nature": "native-tamil"
+  },
+  {
+   "a": "Cheongsol Resources Co., Ltd.",
+   "b": "주식회사 청솔자원",
+   "verdict": "match",
+   "nature": "native-korean"
+  },
+  {
+   "a": "Masaganang Tubo Sugar Trading Corp.",
+   "b": "MASAGANANG TUBO SUGAR TRADING CORPORATION",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Công ty Cổ phần Cao su Bình Lộc Hưng",
+   "b": "Cong ty Co phan Cao su Binh Loc Hung",
+   "verdict": "match",
+   "nature": "ocr-lost-diacritic"
+  },
+  {
+   "a": "Công ty Cổ phần Cao su Bình Lộc Hưng",
+   "b": "Binh Loc Hung Rubber Joint Stock Company",
+   "verdict": "match",
+   "nature": "trade-word-translation"
+  },
+  {
+   "a": "UD Besi Tua Sumber Rejeki",
+   "b": "Usaha Dagang Besi Tua Sumber Rezeki",
+   "verdict": "match",
+   "nature": "spelling-variant"
+  },
+  {
+   "a": "Syarikat Besi Buruk Kim Loong",
+   "b": "sykt besi buruk kim loong",
+   "verdict": "match",
+   "nature": "chat-abbreviation"
+  },
+  {
+   "a": "Rimal Al Dhahab Sugar Trading L.L.C.",
+   "b": "رمال الذهب لتجارة السكر ذ.م.م",
+   "verdict": "match",
+   "nature": "native-arabic"
+  },
+  {
+   "a": "Chenab Sona Rice Mills (Pvt.) Ltd.",
+   "b": "CHENAB SONA RICE MILLS PVT LTD C/O KARACHI RICE EXPORT AGENCY",
+   "verdict": "match",
+   "nature": "bl-care-of"
+  },
+  {
+   "a": "Pesteh Kavir Kerman Trading Co.",
+   "b": "Peste Kavir Kerman Tejarat Co.",
+   "verdict": "match",
+   "nature": "persian-romanisation"
+  },
+  {
+   "a": "PT Pabrik Kelapa Sawit Rimba Kenari",
+   "b": "SHIPPER: PT PKS RIMBA KENARI, DUMAI - CPO IN BULK",
+   "verdict": "match",
+   "nature": "bl-cargo-residue"
+  },
+  {
+   "a": "Sri Tembusu Timber Merchants Sdn. Bhd.",
+   "b": "Sri Tembusu Timber Mcht. Sdn Bhd",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Luen Shing Recycling Metals Limited",
+   "b": "聯成廢金屬回收有限公司",
+   "verdict": "match",
+   "nature": "native-chinese"
+  },
+  {
+   "a": "Sunbulat Al Khair Rice Trading L.L.C.",
+   "b": "Sunbulat Al Khair Rice Trading LLC ️️",
+   "verdict": "match",
+   "nature": "chat-emoji-residue"
+  },
+  {
+   "a": "M/s. Tapti Dhara Cotton Traders",
+   "b": "Tapti Dhara Cotton Traders",
+   "verdict": "match",
+   "nature": "messrs-prefix"
+  },
+  {
+   "a": "Rungroj Sugar Co., Ltd.",
+   "b": "RUNGROJ SUGAR COMPANY LIMITED",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Kilang Isirong Sawit Pelangi Emas Sdn. Bhd.",
+   "b": "Pelangi Emas Palm Kernel Mill Sdn Bhd",
+   "verdict": "match",
+   "nature": "trade-word-translation"
+  },
+  {
+   "a": "PT Pabrik Kelapa Sawit Rimba Kenari",
+   "b": "PT Pabrik Karet Rimba Kenari",
+   "verdict": "different",
+   "nature": "commodity-word-swap"
+  },
+  {
+   "a": "Kilang Beras Seri Padi Sdn. Bhd.",
+   "b": "Kilang Gula Seri Padi Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "commodity-word-swap"
+  },
+  {
+   "a": "Kilang Beras Seri Padi Sdn. Bhd.",
+   "b": "Seri Padi Rice Trading Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Tong Seng Rubber Industries Sdn. Bhd.",
+   "b": "Tong Seng Rubber Plantation Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "同成橡胶工业有限公司",
+   "b": "Tong Seng Plastic Industries Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "native-script-other-word"
+  },
+  {
+   "a": "روابي الساحل لتجارة خردة المعادن ذ.م.م",
+   "b": "Rawabi Al Sahel Timber Trading L.L.C.",
+   "verdict": "different",
+   "nature": "native-script-other-word"
+  },
+  {
+   "a": "บริษัท น้ำตาลรุ่งโรจน์ จำกัด",
+   "b": "Rungroj Rice Co., Ltd.",
+   "verdict": "different",
+   "nature": "native-script-other-word"
+  },
+  {
+   "a": "Công ty TNHH Gạo Phước Thịnh An",
+   "b": "Công ty TNHH Gỗ Phước Thịnh An",
+   "verdict": "different",
+   "nature": "commodity-word-swap"
+  },
+  {
+   "a": "Công ty Cổ phần Cao su Bình Lộc Hưng",
+   "b": "Công ty Cổ phần Cà phê Bình Lộc Hưng",
+   "verdict": "different",
+   "nature": "commodity-word-swap"
+  },
+  {
+   "a": "Shree Kanak Kaveri Chawal Udyog Pvt. Ltd.",
+   "b": "Shree Kanak Kaveri Cheeni Udyog Pvt. Ltd.",
+   "verdict": "different",
+   "nature": "commodity-word-swap"
+  },
+  {
+   "a": "Shree Kanak Kaveri Chawal Udyog Pvt. Ltd.",
+   "b": "Kanak Kaveri Agro Foods Pvt. Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Sunbulat Al Khair Rice Trading L.L.C.",
+   "b": "Sunbulat Al Khair Flour Mills L.L.C.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Sunbulat Al Khair Rice Trading L.L.C.",
+   "b": "Sunbulat Al Nakheel Rice Trading L.L.C.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Syarikat Getah Bukit Tembusu Sdn. Bhd.",
+   "b": "Syarikat Getah Bukit Tembaga Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "near-string-real-word"
+  },
+  {
+   "a": "PT Kayu Jati Lestari Nusantara",
+   "b": "PT Kayu Jati Lestari Sumatera",
+   "verdict": "different",
+   "nature": "place-name-swap"
+  },
+  {
+   "a": "PT Kayu Jati Lestari Nusantara",
+   "b": "PT Kayu Meranti Lestari Nusantara",
+   "verdict": "different",
+   "nature": "commodity-word-swap"
+  },
+  {
+   "a": "UD Besi Tua Sumber Rejeki",
+   "b": "UD Plastik Bekas Sumber Rejeki",
+   "verdict": "different",
+   "nature": "commodity-word-swap"
+  },
+  {
+   "a": "Syarikat Besi Buruk Kim Loong",
+   "b": "Syarikat Kertas Buruk Kim Loong",
+   "verdict": "different",
+   "nature": "commodity-word-swap"
+  },
+  {
+   "a": "Sri Annapoorani Rice Merchants Pte. Ltd.",
+   "b": "Sri Annapoorani Restaurant Pte. Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "ஸ்ரீ அன்னபூரணி அரிசி வியாபாரிகள்",
+   "b": "Sri Annapoorani Spice Merchants",
+   "verdict": "different",
+   "nature": "native-script-other-word"
+  },
+  {
+   "a": "Poh Kiat Palm Oil Trading Pte. Ltd.",
+   "b": "Poh Kiat Palm Oil Trading Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Guan Seng Sugar Trading Pte. Ltd.",
+   "b": "Guan Seng Sugar Refinery Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "源成糖业贸易私人有限公司",
+   "b": "源盛糖业贸易私人有限公司",
+   "verdict": "different",
+   "nature": "homophone-characters"
+  },
+  {
+   "a": "Luen Shing Recycling Metals Limited",
+   "b": "Luen Shing Recycling Paper Limited",
+   "verdict": "different",
+   "nature": "commodity-word-swap"
+  },
+  {
+   "a": "Cheongsol Resources Co., Ltd.",
+   "b": "주식회사 청솔자원개발",
+   "verdict": "different",
+   "nature": "native-script-other-word"
+  },
+  {
+   "a": "Masaganang Tubo Sugar Trading Corp.",
+   "b": "Masaganang Tubo Sugar Milling Corp.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Chenab Sona Rice Mills (Pvt.) Ltd.",
+   "b": "Chenab Sona Flour Mills (Pvt.) Ltd.",
+   "verdict": "different",
+   "nature": "commodity-word-swap"
+  },
+  {
+   "a": "Pesteh Kavir Kerman Trading Co.",
+   "b": "Khorma Kavir Kerman Trading Co.",
+   "verdict": "different",
+   "nature": "commodity-word-swap"
+  },
+  {
+   "a": "Pesteh Kavir Kerman Trading Co.",
+   "b": "Pesteh Kavir Rafsanjan Trading Co.",
+   "verdict": "different",
+   "nature": "place-name-swap"
+  },
+  {
+   "a": "Rimal Al Dhahab Sugar Trading L.L.C.",
+   "b": "Rimal Al Dhahab Gold & Jewellery Trading L.L.C.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Sri Tembusu Timber Merchants Sdn. Bhd.",
+   "b": "Sri Tembusu Timber Merchants (Sabah) Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-region"
+  },
+  {
+   "a": "Rungroj Sugar Co., Ltd.",
+   "b": "Rungroj Sugar Cane Plantation Co., Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Kilang Isirong Sawit Pelangi Emas Sdn. Bhd.",
+   "b": "Kilang Kelapa Sawit Pelangi Emas Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "commodity-word-swap"
+  },
+  {
+   "a": "PT Rimba Kenari Palm Oil Mill",
+   "b": "PT Rimba Kenari Plantations",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "M/s. Tapti Dhara Cotton Traders",
+   "b": "Tapti Dhara Cotton Spinning Mills",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Rawabi Al Sahel Scrap Metal Trading L.L.C.",
+   "b": "Rawabi Al Shamal Scrap Metal Trading L.L.C.",
+   "verdict": "different",
+   "nature": "near-string-real-word"
+  },
+  {
+   "a": "Cong ty TNHH Gao Phuoc Thinh An",
+   "b": "Cong ty TNHH Gao Phuc Thinh An",
+   "verdict": "different",
+   "nature": "vietnamese-lookalike"
+  },
+  {
+   "a": "Syarikat Getah Bukit Tembusu Sdn. Bhd.",
+   "b": "PT Karet Bukit Tembusu",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "PT Minyak Sawit Tirta Emas",
+   "b": "PT Minyak Kelapa Tirta Emas",
+   "verdict": "different",
+   "nature": "commodity-word-swap"
+  },
+  {
+   "a": "宝吉棕榈油贸易私人有限公司",
+   "b": "宝吉橡胶贸易私人有限公司",
+   "verdict": "different",
+   "nature": "commodity-word-swap"
+  },
+  {
+   "a": "Kenanga Pacific Holdings Pte. Ltd.",
+   "b": "KENANGA PACIFIC HOLDINGS PRIVATE LIMITED",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Zahrat Al Waha Petrochem FZE",
+   "b": "Zahrat Al Waha Petrochem Free Zone Establishment",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Silver Dune Logistics FZCO",
+   "b": "SILVER DUNE LOGISTICS F.Z.CO.",
+   "verdict": "match",
+   "nature": "legal-form-punctuation"
+  },
+  {
+   "a": "Blue Mangrove Trading FZ-LLC",
+   "b": "Blue Mangrove Trading Free Zone Limited Liability Company",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Kenanga-Haesol Marine JV Sdn. Bhd.",
+   "b": "KENANGA HAESOL MARINE JOINT VENTURE SDN BHD",
+   "verdict": "match",
+   "nature": "registry-written-out"
+  },
+  {
+   "a": "Wing Shing Group Holdings Limited",
+   "b": "永成集團控股有限公司",
+   "verdict": "match",
+   "nature": "native-chinese"
+  },
+  {
+   "a": "Hanbit Holdings Co., Ltd.",
+   "b": "주식회사 한빛홀딩스",
+   "verdict": "match",
+   "nature": "native-korean"
+  },
+  {
+   "a": "Siam Chokchai Group Co., Ltd.",
+   "b": "บริษัท สยามโชคชัย กรุ๊ป จำกัด",
+   "verdict": "match",
+   "nature": "native-thai"
+  },
+  {
+   "a": "Zahrat Al Waha Petrochem FZE",
+   "b": "زهرة الواحة للبتروكيماويات م.م.ح",
+   "verdict": "match",
+   "nature": "native-arabic"
+  },
+  {
+   "a": "Kenanga Pacific Sdn. Bhd. - Penang Branch",
+   "b": "Kenanga Pacific Sdn. Bhd.",
+   "verdict": "match",
+   "nature": "branch-same-entity"
+  },
+  {
+   "a": "Vasudha Global FZ-LLC (Dubai Branch)",
+   "b": "Vasudha Global FZ-LLC",
+   "verdict": "match",
+   "nature": "branch-same-entity"
+  },
+  {
+   "a": "Tamarind Crest Commodities Pte. Ltd. (formerly Tamarind Crest Resources Pte. Ltd.)",
+   "b": "Tamarind Crest Resources Pte Ltd",
+   "verdict": "match",
+   "nature": "registry-former-name"
+  },
+  {
+   "a": "Vasudha Infra Projects Pvt. Ltd.",
+   "b": "VASUDHA INFRA PR0JECTS PVT. LTD.",
+   "verdict": "match",
+   "nature": "ocr-digit-letter"
+  },
+  {
+   "a": "Noor-e-Sahar Holdings (Pvt.) Ltd.",
+   "b": "nooresahar holdings pvt ltd",
+   "verdict": "match",
+   "nature": "chat-lowercase-nospace"
+  },
+  {
+   "a": "Orchid Ridge Commodities DMCC",
+   "b": "0RCHID RIDGE C0MMODITIES DMCC",
+   "verdict": "match",
+   "nature": "ocr-digit-letter"
+  },
+  {
+   "a": "Orchid Ridge Commodities DMCC",
+   "b": "NOTIFY PARTY: ORCHID RIDGE COMMODITIES DMCC, JLT, DUBAI",
+   "verdict": "match",
+   "nature": "bl-party-label"
+  },
+  {
+   "a": "Kenanga Pacific Vietnam Co., Ltd.",
+   "b": "Công ty TNHH Kenanga Pacific Việt Nam",
+   "verdict": "match",
+   "nature": "legal-form-local-language"
+  },
+  {
+   "a": "Công ty TNHH Kenanga Pacific Việt Nam",
+   "b": "C?NG TY TNHH KENANGA PACIFIC VI?T NAM",
+   "verdict": "match",
+   "nature": "ocr-question-mark"
+  },
+  {
+   "a": "PT Kenanga Pacific Indonesia",
+   "b": "PT. KENANGA PASIFIK INDONESIA",
+   "verdict": "match",
+   "nature": "spelling-variant"
+  },
+  {
+   "a": "Kenanga Pacific (Thailand) Co., Ltd.",
+   "b": "บริษัท เคนันกา แปซิฟิก (ประเทศไทย) จำกัด",
+   "verdict": "match",
+   "nature": "native-thai"
+  },
+  {
+   "a": "Kenanga-Haesol Marine JV Sdn. Bhd.",
+   "b": "Kenanga Hassle Marine JV Sdn Bhd",
+   "verdict": "match",
+   "nature": "chat-autocorrect"
+  },
+  {
+   "a": "Wing Shing Group Holdings Limited",
+   "b": "WING SHING GROUP HOLDINGS LIRNITED",
+   "verdict": "match",
+   "nature": "ocr-rn-m"
+  },
+  {
+   "a": "Wing Shing Trading (Shenzhen) Co., Ltd.",
+   "b": "永成贸易(深圳)有限公司",
+   "verdict": "match",
+   "nature": "native-chinese"
+  },
+  {
+   "a": "Wing Shing Trading (Shenzhen) Co., Ltd.",
+   "b": "Yongcheng Trading (Shenzhen) Co Ltd 永成",
+   "verdict": "match",
+   "nature": "dialect-romanisation"
+  },
+  {
+   "a": "Wing Shing Group Holdings Limited (Singapore Branch)",
+   "b": "Wing Shing Group Holdings Limited",
+   "verdict": "match",
+   "nature": "branch-same-entity"
+  },
+  {
+   "a": "Noor-e-Sahar Logistics (SMC-Private) Limited",
+   "b": "Noor-e-Sahar Logistics (SMC-Pvt.) Ltd.",
+   "verdict": "match",
+   "nature": "legal-form-abbreviation"
+  },
+  {
+   "a": "Zahrat Al Waha Petrochem FZE",
+   "b": "Zahrat Al-Waha Petro Chem F.Z.E.",
+   "verdict": "match",
+   "nature": "token-split"
+  },
+  {
+   "a": "Kenanga Pacific Sdn. Bhd.",
+   "b": "CONSIGNEE: TO THE ORDER OF KENANGA PACIFIC SDN BHD",
+   "verdict": "match",
+   "nature": "bl-party-label"
+  },
+  {
+   "a": "Blue Mangrove Trading FZ-LLC",
+   "b": "BLUE MANGROVE TRADING FZ-LLC C/O SILVER DUNE LOGISTICS FZCO",
+   "verdict": "match",
+   "nature": "bl-care-of"
+  },
+  {
+   "a": "Kenanga-Haesol Marine JV Sdn. Bhd.",
+   "b": "KENANGA-HAES0L MAR1NE JV SDN BHD",
+   "verdict": "match",
+   "nature": "ocr-digit-letter"
+  },
+  {
+   "a": "Zahrat Al Waha Petrochem FZE",
+   "b": "ZAHRAT AL WAHA PETROCHEM FZE, HAMRIYAH FREE ZONE, SHARJAH",
+   "verdict": "match",
+   "nature": "address-residue"
+  },
+  {
+   "a": "Hanbit Holdings Co., Ltd.",
+   "b": "hanbitholdings co ltd",
+   "verdict": "match",
+   "nature": "chat-lowercase-nospace"
+  },
+  {
+   "a": "Siam Chokchai Group Co., Ltd.",
+   "b": "SHIPPER: SIAM CHOKCHAI GROUP CO LTD BANGKOK THAILAND",
+   "verdict": "match",
+   "nature": "bl-party-label"
+  },
+  {
+   "a": "Vasudha Global FZ-LLC",
+   "b": "VASUDHA GLOBAL F.Z.-L.L.C., RAS AL KHAIMAH",
+   "verdict": "match",
+   "nature": "address-residue"
+  },
+  {
+   "a": "Meenakshi Sundaram Group Holdings Pte. Ltd.",
+   "b": "மீனாட்சி சுந்தரம் க்ரூப் ஹோல்டிங்ஸ் பிரைவேட் லிமிடெட்",
+   "verdict": "match",
+   "nature": "native-tamil"
+  },
+  {
+   "a": "Silver Dune Logistics FZCO",
+   "b": "سيلفر ديون للخدمات اللوجستية ش.م.ح",
+   "verdict": "match",
+   "nature": "native-arabic"
+  },
+  {
+   "a": "Rawasi Al Najd Holding Company",
+   "b": "Sharikat Rawasi Al Najd Al Qabidha",
+   "verdict": "match",
+   "nature": "legal-form-local-language"
+  },
+  {
+   "a": "Orchid Ridge Commodities DMCC",
+   "b": "Orchid  Ridge Comm. DMCC ️",
+   "verdict": "match",
+   "nature": "chat-emoji-residue"
+  },
+  {
+   "a": "Kenanga Pacific Lanka (Private) Limited",
+   "b": "Kenanga Pacific Lanka (Pvt) Ltd",
+   "verdict": "match",
+   "nature": "legal-form-abbreviation"
+  },
+  {
+   "a": "Meenakshi Sundaram Group Holdings Pte. Ltd.",
+   "b": "Meenakshi Sundaram Grp Hldgs Pte Ltd",
+   "verdict": "match",
+   "nature": "abbreviation"
+  },
+  {
+   "a": "Kenanga Pacific Holdings Pte. Ltd.",
+   "b": "Kenanga Pacific Pte. Ltd.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Kenanga Pacific Pte. Ltd.",
+   "b": "Kenanga Pacific Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "PT Kenanga Pacific Indonesia",
+   "b": "Kenanga Pacific Vietnam Co., Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Kenanga Pacific (Thailand) Co., Ltd.",
+   "b": "Kenanga Pacific Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Kenanga-Haesol Marine JV Sdn. Bhd.",
+   "b": "Haesol Marine Co., Ltd.",
+   "verdict": "different",
+   "nature": "jv-vs-parent"
+  },
+  {
+   "a": "Kenanga-Haesol Marine JV Sdn. Bhd.",
+   "b": "Kenanga Marine Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "jv-vs-parent"
+  },
+  {
+   "a": "Zahrat Al Waha Petrochem FZE",
+   "b": "Zahrat Al Waha Petrochem Trading L.L.C.",
+   "verdict": "different",
+   "nature": "freezone-vs-mainland"
+  },
+  {
+   "a": "Silver Dune Logistics FZCO",
+   "b": "Silver Dune Logistics DMCC",
+   "verdict": "different",
+   "nature": "freezone-other-zone"
+  },
+  {
+   "a": "Blue Mangrove Trading FZ-LLC",
+   "b": "Blue Mangrove Shipping FZ-LLC",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Wing Shing Group Holdings Limited (Singapore Branch)",
+   "b": "Wing Shing Group (Singapore) Pte. Ltd.",
+   "verdict": "different",
+   "nature": "branch-vs-subsidiary"
+  },
+  {
+   "a": "永成集團控股有限公司",
+   "b": "永成貿易有限公司",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Wing Shing Trading (Shenzhen) Co., Ltd.",
+   "b": "Wing Shing Trading (Guangzhou) Co., Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-region"
+  },
+  {
+   "a": "주식회사 한빛홀딩스",
+   "b": "Hanbit Shipping Co., Ltd.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Hanbit Holdings Co., Ltd.",
+   "b": "Hanbit Holdings (Singapore) Pte. Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Siam Chokchai Group Co., Ltd.",
+   "b": "Siam Chokchai Packaging Co., Ltd.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Vasudha Infra Projects Pvt. Ltd.",
+   "b": "Vasudha Global FZ-LLC",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Vasudha Global FZ-LLC",
+   "b": "Vasudha Global Pte. Ltd.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Noor-e-Sahar Holdings (Pvt.) Ltd.",
+   "b": "Noor-e-Sahar Logistics (SMC-Private) Limited",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Orchid Ridge Commodities DMCC",
+   "b": "Orchid Ridge Commodities Pte. Ltd.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Tamarind Crest Commodities Pte. Ltd.",
+   "b": "Tamarind Crest Capital Pte. Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Kenanga-Haesol Marine JV Sdn. Bhd.",
+   "b": "Kenanga-Hanbit Marine JV Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "jv-other-partner"
+  },
+  {
+   "a": "Rawasi Al Najd Holding Company",
+   "b": "Rawasi Al Najd Trading Company",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Meenakshi Sundaram Group Holdings Pte. Ltd.",
+   "b": "Meenakshi Sundaram Textiles Pte. Ltd.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "மீனாட்சி சுந்தரம் க்ரூப் ஹோல்டிங்ஸ் பிரைவேட் லிமிடெட்",
+   "b": "Meenakshi Sundaram Group Holdings Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Kenanga Pacific Lanka (Private) Limited",
+   "b": "Kenanga Pacific India Private Limited",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Zahrat Al Waha Petrochem FZE",
+   "b": "Zahrat Al Waha Bunkering FZE",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Silver Dune Logistics FZCO",
+   "b": "Silver Dune Freight Forwarding L.L.C.",
+   "verdict": "different",
+   "nature": "freezone-vs-mainland"
+  },
+  {
+   "a": "Kenanga Pacific Sdn. Bhd. - Penang Branch",
+   "b": "Kenanga Pacific (Penang) Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "branch-vs-subsidiary"
+  },
+  {
+   "a": "BLUE MANGROVE TRADING FZ-LLC C/O SILVER DUNE LOGISTICS FZCO",
+   "b": "Silver Dune Logistics FZCO",
+   "verdict": "different",
+   "nature": "care-of-agent-trap"
+  },
+  {
+   "a": "CONSIGNEE: TO THE ORDER OF KENANGA PACIFIC SDN BHD",
+   "b": "Kenanga Pacific Holdings Pte. Ltd.",
+   "verdict": "different",
+   "nature": "holding-vs-operating"
+  },
+  {
+   "a": "Wing Shing Group Holdings Limited",
+   "b": "Wing Shing Group (Singapore) Pte. Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Hanbit Holdings Co., Ltd.",
+   "b": "Hanbit Capital Co., Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "PT Kenanga Pacific Indonesia",
+   "b": "PT Kenanga Pacific Logistik Indonesia",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Công ty TNHH Kenanga Pacific Việt Nam",
+   "b": "Công ty TNHH Kenanga Pacific Hải Phòng",
+   "verdict": "different",
+   "nature": "subsidiary-by-region"
+  },
+  {
+   "a": "زهرة الواحة للبتروكيماويات م.م.ح",
+   "b": "Zahrat Al Waha Petrochem Trading L.L.C.",
+   "verdict": "different",
+   "nature": "freezone-vs-mainland"
+  },
+  {
+   "a": "Noor-e-Sahar Holdings (Pvt.) Ltd.",
+   "b": "Noor-e-Sahar Holdings FZE",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  },
+  {
+   "a": "Rawasi Al Najd Holding Company",
+   "b": "Rawasi Al Hijaz Holding Company",
+   "verdict": "different",
+   "nature": "place-name-swap"
+  },
+  {
+   "a": "บริษัท สยามโชคชัย กรุ๊ป จำกัด",
+   "b": "Siam Chokchai Group (Myanmar) Co., Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-country"
+  },
+  {
+   "a": "Meenakshi Sundaram Group Holdings Pte. Ltd.",
+   "b": "Meenakshi Sundaram & Sons Holdings Pte. Ltd.",
+   "verdict": "different",
+   "nature": "sibling-one-word"
+  },
+  {
+   "a": "Tamarind Crest Commodities Pte. Ltd. (formerly Tamarind Crest Resources Pte. Ltd.)",
+   "b": "Tamarind Crest Resources (Australia) Pty Ltd",
+   "verdict": "different",
+   "nature": "former-name-trap"
+  }
+ ]
+}
