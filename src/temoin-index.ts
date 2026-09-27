@@ -5,8 +5,13 @@
  *   node src/temoin-index.ts [--exhaustif] [--noms=N]
  *
  * Sans --exhaustif, seul le temps de l'index est mesuré (la comparaison exhaustive prend
- * deux secondes par nom). Les noms : ceux de exemple/contreparties-exemple.csv, plus des
+ * quatre secondes par nom). Les noms : ceux de exemple/contreparties-exemple.csv, plus des
  * noms listés perturbés (faute, coupe à 35, mots collés, ordre, abréviation, annotation).
+ *
+ * La comparaison exhaustive se répartit sur des fils (src/mesure-parallele.ts), chacun avec son
+ * index des mêmes entrées, le fil principal prenant sa part avec le sien ; l'index lui-même et
+ * le criblage rapide restent sur ce seul fil, pour que leur temps veuille dire quelque chose.
+ * MESURE_SEQUENTIELLE=1 garde tout sur un fil : la référence.
  */
 import { readFileSync } from "node:fs";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
@@ -14,16 +19,19 @@ import { lireManifeste, lireListe, SOURCES, type EntreeListe } from "./listes.ts
 import { frequencesDe, mesurerJeux, choisirSeuils, CHEMINS_APPRENTISSAGE } from "./entites.ts";
 import { Index, cribler, lireContreparties, type Contrepartie } from "./cribler.ts";
 import { frequencesDesListes } from "./frequences.ts";
+import { criblerExhaustif, mesurerJeuxParallele, sequentielDemande } from "./mesure-parallele.ts";
 
-function principal(): void {
+async function principal(): Promise<void> {
   refuserDrapeauxInconnus(["--exhaustif", "--noms"]);
   const n = Number(process.argv.find((a) => a.startsWith("--noms="))?.slice(7) ?? 60);
   const m = lireManifeste();
   if (!m) { console.error("no listes-manifest.json: run `npm run listes -- --fetch` first."); process.exit(2); }
   const entrees: EntreeListe[] = SOURCES.filter((s) => m.listes.some((l) => l.source === s.source && l.disponible))
     .flatMap((s) => lireListe(s.source));
-  const f = frequencesDesListes();   /* le cache des fréquences (src/frequences.ts) : les mêmes poids, sans relire les listes */
-  const r = choisirSeuils(mesurerJeux(f, CHEMINS_APPRENTISSAGE.map((u) => readFileSync(u, "utf8"))).table);
+  const f = frequencesDesListes();   /* le cache des fréquences (src/frequences.ts) : les mêmes poids, sans relire les listes ; construit ici s'il manque, avant tout fil */
+  const bruts = CHEMINS_APPRENTISSAGE.map((u) => readFileSync(u, "utf8"));
+  const sequentiel = sequentielDemande();
+  const r = choisirSeuils(sequentiel ? mesurerJeux(f, bruts).table : (await mesurerJeuxParallele(f, bruts, { cache: true })).table);
   const seuils = { fort: r.fort.seuil, possible: r.possible.seuil };
   let t = Date.now();
   const index = new Index(f, entrees, seuils.possible);
@@ -52,14 +60,22 @@ function principal(): void {
   console.log(`${tous.length} noms · index ${tr} ms (${(tr / tous.length).toFixed(1)} ms/nom) · ${trouves} avec candidat`);
   if (process.argv.includes("--exhaustif")) {
     t = Date.now();
-    let ecarts = 0;
-    tous.forEach((c, i) => {
-      const lent = cribler(c, index, seuils, true);
-      if (JSON.stringify(lent) !== JSON.stringify(rapides[i])) { ecarts++; console.log(`  ÉCART ${c.nom}`); }
-    });
-    console.log(`exhaustif ${Date.now() - t} ms · écarts ${ecarts}${ecarts ? "  ← L'INDEX PERD DES CANDIDATS" : " (l'index ne perd rien)"}`);
+    let ecarts = 0, fils = "";
+    if (sequentiel) {
+      tous.forEach((c, i) => {
+        const lent = cribler(c, index, seuils, true);
+        if (JSON.stringify(lent) !== JSON.stringify(rapides[i])) { ecarts++; console.log(`  ÉCART ${c.nom}`); }
+      });
+    } else {
+      const e = await criblerExhaustif(f, entrees, seuils, tous, { cache: true, principal: (c) => cribler(c, index, seuils, true) });
+      fils = ` (${e.fils} fils, index prêts en ${e.demarrage} ms)`;
+      tous.forEach((c, i) => {
+        if (e.resultats[i] !== JSON.stringify(rapides[i])) { ecarts++; console.log(`  ÉCART ${c.nom}`); }
+      });
+    }
+    console.log(`exhaustif ${Date.now() - t} ms${fils} · écarts ${ecarts}${ecarts ? "  ← L'INDEX PERD DES CANDIDATS" : " (l'index ne perd rien)"}`);
     if (ecarts) process.exit(1);
   }
 }
 
-if (isMain(import.meta)) principal();
+if (isMain(import.meta)) await principal();

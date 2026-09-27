@@ -5,7 +5,9 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { cleImprimee, lignesDuJeu, rendre, type Paire } from "./rates-du-jeu.ts";
+import { readFileSync } from "node:fs";
+import { cleImprimee, lignesDuJeu, rendre, lignesLimites, limitesDepuis, CHEMIN_LIMITES, type Paire } from "./rates-du-jeu.ts";
+import { fichierDuJeu } from "./promouvoir.ts";
 
 const MESURE = [
   "16 jeux d'apprentissage, 2770 paires vraies, 2770 pièges · poids des 33393 entrées listées",
@@ -66,4 +68,57 @@ test("rates-du-jeu : dans un groupe, les ratés avant les fausses alertes fortes
   const jeu: Paire[] = [["A", "B"], ["C", "D"], ["E", "F"], ["G", "H"], ["I", "J"]].map(([a, b]) => ({ a: a!, b: b!, nature: "n" }));
   assert.deepEqual(lignesDuJeu(mesure, jeu)[0]!.lignes.map((l) => l.texte), ["G  /  H", "E  /  F", "I  /  J", "C  /  D", "A  /  B"]);
   assert.equal(cleImprimee({ a: "A", b: "B" }), "A  /  B");
+});
+
+/* le registre des limites connues, sur une table écrite ici : une paire listée sort avec sa raison, dans
+   l'ordre du jeu comme dans l'autre ; une paire absente sort nue ; le total les compte */
+const REGISTRE = [
+  "# Les limites connues", "", "Une phrase avant la table.", "",
+  "| a | b | set | score | reason |",
+  "|---|---|---|---|---|",
+  "| Zia Corporation (Pvt) Ltd | Zia Trading Corporation (Pvt) Ltd | 15 | 0.811 | le poids des génériques |",
+  "| Chinedu Phones | Chinedu Phone Accessories Nigeria Limited | 10 | 0.413 | deux mots rares d'un seul côté |",
+  "| pas une ligne de la table | deux colonnes |",
+  "",
+].join("\n");
+
+test("rates-du-jeu : une paire du registre sort avec sa raison, dans les deux ordres ; une paire absente sort nue", () => {
+  assert.deepEqual(lignesLimites(REGISTRE).map((l) => [l.a, l.jeu, l.score, l.raison]), [
+    ["Zia Corporation (Pvt) Ltd", 15, "0.811", "le poids des génériques"],
+    ["Chinedu Phones", 10, "0.413", "deux mots rares d'un seul côté"],
+  ]);
+  const limites = limitesDepuis(REGISTRE);
+  assert.equal(limites.size, 4, "each pair under its two orders");
+  const lignes = rendre(lignesDuJeu(MESURE, JEU), limites);
+  assert.ok(lignes.includes("  FAUSSE-F 0.811  Zia Corporation (Pvt) Ltd  /  Zia Trading Corporation (Pvt) Ltd (limite connue: le poids des génériques)"), lignes.join("\n"));
+  assert.ok(lignes.includes("  RATÉ     0.413  Chinedu Phone Accessories Nigeria Limited  /  Chinedu Phones (limite connue: deux mots rares d'un seul côté)"),
+    "the register wrote the pair in the other order, the measure prints it in the set's order");
+  assert.ok(lignes.includes("  RATÉ     0.000  Ets Abou Khalil et Fils  /  EtsAbouKhalil etFils"), "a pair outside the register carries nothing");
+  assert.equal(lignes.at(-1), "total: 2 RATÉ, 1 FAUSSE-F, 1 possible · 2 limites connues");
+  assert.equal(rendre(lignesDuJeu(MESURE, JEU)).at(-1), "total: 2 RATÉ, 1 FAUSSE-F, 1 possible", "without a register, the total is as before");
+});
+
+test("doc/LIMITES.md : chaque ligne est une paire de son jeu, un score à trois décimales, une raison ; aucune en double, aucun cadratin", () => {
+  const texte = readFileSync(CHEMIN_LIMITES, "utf8");
+  assert.ok(!texte.includes(String.fromCharCode(0x2014)), "an em dash in the register");
+  const lignes = lignesLimites(texte);
+  assert.ok(lignes.length >= 40, `${lignes.length} lines: the register lost its seed`);
+  const jeux = new Map<number, Set<string>>();
+  const vues = new Set<string>();
+  for (const l of lignes) {
+    const cle = cleImprimee(l);
+    assert.match(l.score, /^[01]\.\d{3}$/, `${cle}: score "${l.score}"`);
+    assert.ok(l.raison.length >= 20, `${cle}: the reason is missing`);
+    assert.ok(Number.isInteger(l.jeu) && l.jeu >= 1, `${cle}: set "${l.jeu}"`);
+    let paires = jeux.get(l.jeu);
+    if (paires === undefined) {
+      const jeu = JSON.parse(readFileSync(new URL(`./${fichierDuJeu(l.jeu)}`, import.meta.url), "utf8")) as { paires: Paire[] };
+      paires = new Set(jeu.paires.flatMap((p) => [cleImprimee(p), cleImprimee({ a: p.b, b: p.a })]));
+      jeux.set(l.jeu, paires);
+    }
+    assert.ok(paires.has(cle), `${cle} is not a pair of set ${l.jeu}`);
+    assert.ok(!vues.has(cle), `${cle} is listed twice`);
+    vues.add(cle);
+    vues.add(cleImprimee({ a: l.b, b: l.a }));
+  }
 });

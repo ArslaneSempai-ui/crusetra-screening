@@ -1,0 +1,366 @@
+{
+  "quoi": "60 pairs drawn from the 17 training sets (one pair in a hundred, in file order): the fixture of src/mesure-parallele.test.ts, where the threads and the single thread must give every pair the same score",
+  "provenance": "drawn on 2026-09-28 by scratch script fixture.mjs from src/paires-entites*.json; never used to choose a threshold",
+  "paires": [
+    {
+      "a": "Blue Harbor Logistics LLC",
+      "b": "Blue Harbor Logistics",
+      "verdict": "match",
+      "nature": "legal-form"
+    },
+    {
+      "a": "Continental Grain Export",
+      "b": "Continental Glass Export",
+      "verdict": "different",
+      "nature": "generic-words"
+    },
+    {
+      "a": "Ferrandine International Trading Company",
+      "b": "Solvanek International Trading Company",
+      "verdict": "different",
+      "nature": "generic-words"
+    },
+    {
+      "a": "Cheonggye Hydraulics Co., Ltd.",
+      "b": "Chonggye Hydraulics Co., Ltd.",
+      "verdict": "match",
+      "nature": "translit-korean"
+    },
+    {
+      "a": "Korvessa Industrial GmbH",
+      "b": "Korvessa Industrial Sdn. Bhd.",
+      "verdict": "different",
+      "nature": "same-name-other-jurisdiction"
+    },
+    {
+      "a": "AO Zlatoborskiy Kirpichnyy Zavod",
+      "b": "JSC Zlatoborsky Kirpichny Zavod",
+      "verdict": "match",
+      "nature": "translit-cyrillic"
+    },
+    {
+      "a": "Arkenfeld Tankers AS",
+      "b": "Arkenfeld Bulk AS",
+      "verdict": "different",
+      "nature": "one-word-sibling"
+    },
+    {
+      "a": "ESTRAVELLE GRACE II",
+      "b": "ESTRAVELLE GRACE III",
+      "verdict": "different",
+      "nature": "vessel-sister-numbered"
+    },
+    {
+      "a": "Carrowmore Specialty Chemicals International Inc.",
+      "b": "CARROWMORE SPECIALTY CHEMICALS INTE",
+      "verdict": "match",
+      "nature": "fixed-width-truncation-35"
+    },
+    {
+      "a": "Bulk carrier Windward Sable",
+      "b": "M/V WINDWARD SABLE",
+      "verdict": "match",
+      "nature": "vessel-type-vs-prefix"
+    },
+    {
+      "a": "Larchmont Receivables Funding I LLC",
+      "b": "Larchmont Receivables Funding II LLC",
+      "verdict": "different",
+      "nature": "numbered-spv"
+    },
+    {
+      "a": "Pacific Trader",
+      "b": "Atlantic Trader",
+      "verdict": "different",
+      "nature": "generic-words-only"
+    },
+    {
+      "a": "Arcadio Tank Barges LLC",
+      "b": "Arcadio Floral Design LLC",
+      "verdict": "different",
+      "nature": "same-word-unrelated-business"
+    },
+    {
+      "a": "Baekhyang Trading Co., Ltd.",
+      "b": "Baekhyang Bakery Co., Ltd.",
+      "verdict": "different",
+      "nature": "same-word-unrelated-business"
+    },
+    {
+      "a": "Cortiças Vale do Mondeiro, Lda.",
+      "b": "Cortiças Vale do Mondego, Lda.",
+      "verdict": "different",
+      "nature": "near-string-real-words"
+    },
+    {
+      "a": "Kochav Yarden Irrigation Ltd.",
+      "b": "Kochav Yarden Real Estate Ltd.",
+      "verdict": "different",
+      "nature": "same-word-unrelated-business"
+    },
+    {
+      "a": "MERIDIAN CAPITAL PARTNERS LP",
+      "b": "Meridian Capital Partners GP LLC",
+      "verdict": "different",
+      "nature": "general-partner-vs-partnership"
+    },
+    {
+      "a": "NORDHAVEN CHEMICAL TRADING CORPORAT",
+      "b": "Nordhaven Chemical Trading Corporation Limited",
+      "verdict": "match",
+      "nature": "thirty-five-char-truncation"
+    },
+    {
+      "a": "AEGEAN SPIRIT EX AEGEAN P",
+      "b": "Aegean Spirit (ex-Aegean Pride)",
+      "verdict": "match",
+      "nature": "ex-name-annotation"
+    },
+    {
+      "a": "VECTRAOIL TRADING LLC (a.k.a. VECTRA OIL AND GAS TRADING LIMITED LIABILITY COMPANY)",
+      "b": "Vectra Gas Distribution LLC",
+      "verdict": "different",
+      "nature": "one-word-sibling-activity"
+    },
+    {
+      "a": "Halvorsen Fjordtrafikk AS",
+      "b": "Halvorsen Fjordtrafikk Danmark ApS",
+      "verdict": "different",
+      "nature": "subsidiary-by-country"
+    },
+    {
+      "a": "沧澜远洋航运有限公司",
+      "b": "Canglan Ocean Shipping Co., Ltd.",
+      "verdict": "match",
+      "nature": "native-vs-english"
+    },
+    {
+      "a": "Bright Anchor Logistics Pte Ltd (formerly Anchorline Freight Pte Ltd)",
+      "b": "Anchorline Freight Pte Ltd",
+      "verdict": "match",
+      "nature": "former-name"
+    },
+    {
+      "a": "Weatherby Cold Chain Ltd c/o Harbourline Agencies Ltd",
+      "b": "Harbourline Agencies Ltd",
+      "verdict": "different",
+      "nature": "care-of-agent-vs-party"
+    },
+    {
+      "a": "5ENG HUAT INDU5TRIAL SUPPLIE5 PTE LTD",
+      "b": "Seng Huat Industrial Services Pte. Ltd.",
+      "verdict": "different",
+      "nature": "sibling-one-word"
+    },
+    {
+      "a": "MV MERANTI SUNRISE",
+      "b": "M/V Meranti Sunrise",
+      "verdict": "match",
+      "nature": "vessel-prefix"
+    },
+    {
+      "a": "Guan Seng Sugar Trading Pte. Ltd.",
+      "b": "源成糖业贸易私人有限公司",
+      "verdict": "match",
+      "nature": "native-chinese"
+    },
+    {
+      "a": "Kenanga Pacific Holdings Pte. Ltd.",
+      "b": "Kenanga Pacific Pte. Ltd.",
+      "verdict": "different",
+      "nature": "holding-vs-operating"
+    },
+    {
+      "a": "Bendel River Holdings Limited",
+      "b": "Bendel River Agro Processing Limited",
+      "verdict": "different",
+      "nature": "holding-vs-operating-customs"
+    },
+    {
+      "a": "Adeyemi Agro Commodities Nigeria Limited (RC 884213)",
+      "b": "Adeyemi Agro Commodities",
+      "verdict": "match",
+      "nature": "cac-rc-number-vs-trading-name"
+    },
+    {
+      "a": "Bonny Freight Forwarders Ltd",
+      "b": "Bonny Freight Fwd Ltd",
+      "verdict": "match",
+      "nature": "notify-party-abbreviation"
+    },
+    {
+      "a": "Mohamed Bencherif Trading",
+      "b": "Mohamed Bencharif Trading",
+      "verdict": "different",
+      "nature": "transliteration-collision-different-family"
+    },
+    {
+      "a": "Autopartes Núñez & Salgado, S.A.S.",
+      "b": "Autopartes Nunez y Salcedo SAS",
+      "verdict": "different",
+      "nature": "latam-second-surname"
+    },
+    {
+      "a": "Kabushiki Kaisha Ōtsuki Shōji",
+      "b": "Otsuki Shoji Co., Ltd.",
+      "verdict": "match",
+      "nature": "jp-macron-kk-coltd"
+    },
+    {
+      "a": "MARIA DEL ROSARIO ANZALDUA GARCIA / CURP AAGR790315MNLNRS08",
+      "b": "María del Rosario Anzaldúa García",
+      "verdict": "match",
+      "nature": "residue-curp-person"
+    },
+    {
+      "a": "Kuramochi Kogyo Co., Ltd.",
+      "b": "Kuramochi Kogyo (Mexico), S.A. de C.V.",
+      "verdict": "different",
+      "nature": "trap-country-subsidiary"
+    },
+    {
+      "a": "Pedersen Havnetjenester A/S",
+      "b": "Petersen Havnetjenester A/S",
+      "verdict": "different",
+      "nature": "nordic-near-surname"
+    },
+    {
+      "a": "OOO Yuzhnyy Zernovoy Prichal",
+      "b": "Iuzhnyi Zernovoi Prichal LLC",
+      "verdict": "match",
+      "nature": "cyrillic-yu-iu-endings"
+    },
+    {
+      "a": "GENERAL KHOTINTSEV",
+      "b": "GENERAL HOTINCEV",
+      "verdict": "match",
+      "nature": "vessel-transliteration"
+    },
+    {
+      "a": "SAMSUN TAHIL DEPOLAMA VE DIS TICAR ET ANONIM SIRKETI",
+      "b": "Samsun Tahıl Taşımacılık ve Dış Ticaret A.Ş.",
+      "verdict": "different",
+      "nature": "residue-swift-near-name"
+    },
+    {
+      "a": "Konkan Engg. Enterprises",
+      "b": "Konkan Exp. Enterprises",
+      "verdict": "different",
+      "nature": "abbreviation-collision"
+    },
+    {
+      "a": "MV Southern Fortune",
+      "b": "Southern Fortune",
+      "verdict": "match",
+      "nature": "mv-prefix-drop"
+    },
+    {
+      "a": "DOC CREDIT NO IN0072 SARASWATI ENGG WORKS PVT LTD",
+      "b": "Saraswati Engg Works Pvt Ltd",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "Kennedy Grain Co Put Ltd",
+      "b": "Kennedy Bean Co Put Ltd",
+      "verdict": "different",
+      "nature": "autocorrect-different-firm"
+    },
+    {
+      "a": "Stichting Administratiekantoor Vlasbloem",
+      "b": "Vlasbloem Handelmaatschappij B.V.",
+      "verdict": "different",
+      "nature": "form-stichting-versus-company"
+    },
+    {
+      "a": "Maha Gulf 3",
+      "b": "Maha Gulf 8",
+      "verdict": "different",
+      "nature": "hull-fleet-number-changed"
+    },
+    {
+      "a": "GEBR TJALLINGII SCHEEPSBENODIGDHEDEN",
+      "b": "Gebroeders Tjallingii Scheepsbenodigdheden B.V.",
+      "verdict": "match",
+      "nature": "edi-abbreviation-in-export"
+    },
+    {
+      "a": "Burj Al Rival Tiles Trading",
+      "b": "Burj Al Rimal Tiles Contracting",
+      "verdict": "different",
+      "nature": "chat-autocorrect-other-activity-word"
+    },
+    {
+      "a": "Nakuru Grain Millers Ltd",
+      "b": "Nakuru Grain Traders Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "MV Bahari Tamu (ex Gulf Sunbird)",
+      "b": "Gulf Sunbird",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "BENEF: MWANZA LAKE TRANSPORT LTD",
+      "b": "Mwanza Lake Transport Limited",
+      "verdict": "match",
+      "nature": "field-label-residue"
+    },
+    {
+      "a": "Kamau Hardware Ltd",
+      "b": "Kamau Homeware Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Société Baldé Cuirs et Peaux",
+      "b": "Société Bah Cuirs et Peaux",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "MV Étoile du Golfe (ex-Fraternité des Mers)",
+      "b": "MV Fraternité des Mers",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "AGROINDUSTRIAL NAKASHIMA LTDA/CNPJ04512678",
+      "b": "AGROINDUSTRIAL NAKASHIMA LTDA",
+      "verdict": "match",
+      "nature": "bank-reference-residue"
+    },
+    {
+      "a": "Ets Koffi et Freres",
+      "b": "Ets Koffi et Soeurs",
+      "verdict": "different",
+      "nature": "different-real-word"
+    },
+    {
+      "a": "Stamatogiannis Emporiki E.P.E.",
+      "b": "Stamatopoulos Emporiki E.P.E.",
+      "verdict": "different",
+      "nature": "other-surname-same-stem"
+    },
+    {
+      "a": "Kalliopi Dawn (ex-Orion Tanager)",
+      "b": "Orion Tanager",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "TOO KAMYSTY BIDAI ONDIRIS\nKOSTANAISKAYA OBL. KAMYSTY",
+      "b": "Qamysty Bidai Öndırıs JŞS",
+      "verdict": "match",
+      "nature": "swift-vs-2021-latin"
+    },
+    {
+      "a": "8alassopori shipmanagement",
+      "b": "Thalassoploia Shipmanagement S.A.",
+      "verdict": "different",
+      "nature": "greeklish-other-word"
+    }
+  ]
+}

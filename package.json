@@ -26,6 +26,7 @@
     "valider-jeu": "node src/valider-jeu.ts",
     "promouvoir": "node src/promouvoir.ts",
     "rates-du-jeu": "node src/rates-du-jeu.ts",
+    "paire": "node src/paire.ts",
     "doublons": "node scripts/doublons.mjs",
     "exemple": "zsh scripts/exemple.sh"
   },
