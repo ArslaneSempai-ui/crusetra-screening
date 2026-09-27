@@ -495,7 +495,17 @@ const MARQUEURS_GRECS = new Set(["kai", "sia", "naftiliaki", "naftiki", "emporik
 const SUFFIXES_GRECS = /(akis|opoulos|poulos|ides|idis|iadis|iotis|iki|ikos|ellis)$/;
 const MARQUEURS_JAPONAIS = new Set(["kk", "kabushiki", "kaisha", "kabushikigaisha", "godo", "yugen", "kogyo", "kougyou", "shoji",
   "shouji", "sangyo", "sangyou", "seisakusho", "boeki", "boueki", "denki", "kagaku", "seiko", "jidosha", "unyu", "kaiun", "kaihatsu",
-  "tsusho", "maru"]);
+  "tsusho", "maru",
+  /* les mots de métier des raisons sociales japonaises, romanisés : suisan (pêche et produits de la
+     mer), gyogyo (pêcherie), bussan (produits, négoce), shokai et shoten (maison de commerce),
+     kensetsu (construction), kikai (machines), kinzoku (métaux), seizo (fabrication), zosen
+     (chantier naval), senpaku (navires), sekiyu (pétrole), shokuhin (alimentaire), seiyaku et
+     yakuhin (pharmacie), tsushin (télécommunications), tetsudo (chemin de fer), kumiai
+     (coopérative), kyokai (association), kogaku (optique). Sans marque, le pli des deux
+     romanisations (`pliJaponais`) ne s'applique pas : « Shimotsuki Suisan » et « Simotuki Suisan »
+     restaient au possible (mesuré le 27/09 sur le jeu 8 : 0,800) */
+  "suisan", "gyogyo", "bussan", "shokai", "shoten", "kensetsu", "kikai", "kinzoku", "seizo", "zosen", "senpaku", "sekiyu",
+  "shokuhin", "seiyaku", "yakuhin", "tsushin", "tetsudo", "kumiai", "kyokai", "kogaku"]);
 const MARQUEURS_CHINOIS = new Set(["youxian", "gongsi", "gufen", "zeren", "maoyi", "jinchukou", "keji", "dianzi", "gongye", "shiye",
   "zhizao", "jituan", "guoji", "wuliu", "huoyun", "hangyun", "jixie", "huagong", "fangzhi", "fuzhuang", "shipin", "jinshu",
   "gangtie", "suliao", "jianzhu", "nengyuan", "fazhan", "touzi", "kongzhi", "konggu", "shangmao", "jingmao", "luntai"]);
@@ -517,6 +527,11 @@ export function analyserEntite(nom: string): { texte: string; abreges: ReadonlyS
      de mot fabriquerait des jetons d'une ou deux lettres qui ne désignent rien. « F.lli »
      (fratelli) et « LPG/C » (LPG carrier) ont une ponctuation qui porte le sens : lus avant. */
   const soude = plier(nom)
+    /* la lettre qu'un encodage a PERDUE : un « ? » dans un mot ou en tête (« SE?ORA » pour
+       Señora, « ?ugowski » pour Ługowski) devient la lettre-jalon PERDU, que la normalisation
+       laisse passer ; le score la lit comme UNE lettre inconnue (`lettrePerdue`). Jamais un
+       « ? » seul ni en fin de mot : là c'est une ponctuation, elle part avec les autres */
+    .replace(/(?<!\?)\?(?=\p{L})/gu, PERDU)
     .replace(/int'l/gi, "international").replace(/\bF\.lli\b/gi, "Fratelli")
     /* « M/s. » et « Messrs. », la civilité indienne et britannique d'une maison de commerce */
     .replace(/^\s*(?:M\/s\.?|Messrs\.?)\s+/i, "")
@@ -718,6 +733,13 @@ function calculerRacines(m: string): string[] {
   if (m.endsWith("ed")) r.push(m.slice(0, -2), m.slice(0, -1));
   if (m.endsWith("er") || m.endsWith("or")) r.push(m.slice(0, -2), m.slice(0, -1));
   if (m.endsWith("ers") || m.endsWith("ors")) r.push(m.slice(0, -3), m.slice(0, -2));
+  /* les orthographes britanniques que la règle générale ramène à l'américaine du dictionnaire :
+     -re, -er (sabre, centre, fibre) ; -our, -or (harbour, colour) ; -ogue, -og (catalogue). Sans
+     cette racine, « Sabre » n'était pas un mot anglais, et « Sable » et « Sabre » passaient pour
+     une faute de frappe (mesuré le 27/09 sur le jeu 8 : 0,839, une fausse alerte forte) */
+  if (m.endsWith("re")) r.push(m.slice(0, -2) + "er");
+  if (m.endsWith("our")) r.push(m.slice(0, -3) + "or");
+  if (m.endsWith("ogue")) r.push(m.slice(0, -4) + "og");
   return r;
 }
 /** Le lemme d'un mot s'il est anglais : sa première racine au dictionnaire ; sinon undefined. */
@@ -737,14 +759,57 @@ const voyellesRomanes = (m: string) => m.replace(/[aeiy]+/g, "a").replace(/[ou]+
  * l'américaine), de racines différentes, et qui ne diffèrent pas par ces seules voyelles
  * qu'une romanisation confond. « Wine » et « Wire » oui, « Cold » et « Gold » oui ; « Trader »
  * et « Traders » non ; « Amir » et « Emir » non ; « Aluminium » et « Aluminum » non.
+ *
+ * L'exemption des voyelles est celle d'une ROMANISATION (Amir, Emir : le même mot arabe ; Lung,
+ * Long : la même syllabe chinoise) : elle ne vaut que là où le nom en porte une (`voyellesLibres`,
+ * les marques de langue du nom, hors l'espagnol). Ailleurs, deux mots anglais qui ne diffèrent que par une voyelle
+ * sont deux mots (mesuré le 27/09 sur le jeu 8 : « Marlin Fisheries » et « Merlin Fisheries »
+ * passaient à 0,835, une fausse alerte forte).
  */
-export function motsDistincts(a: string, b: string): boolean {
+export function motsDistincts(a: string, b: string, voyellesLibres = true): boolean {
   const a2 = BRITANNIQUE.get(a) ?? a, b2 = BRITANNIQUE.get(b) ?? b;
   if (a2 === b2 || a2.length < 4 || b2.length < 4) return false;
   if (lemme(a2) === undefined || lemme(b2) === undefined) return false;
-  if (voyellesRomanes(a2) === voyellesRomanes(b2)) return false;
+  if (voyellesLibres && voyellesRomanes(a2) === voyellesRomanes(b2)) return false;
   const ra = racines(a2), rb = racines(b2);
   return !rb.some((r) => ra.includes(r));
+}
+
+/** Les deux moitiés d'un mot COMPOSÉ anglais que le dictionnaire ne connaît pas d'un bloc :
+ *  « ironbridge » (iron, bridge), « northgate » (north, gate). Chaque moitié est un mot du
+ *  dictionnaire (donc d'au moins quatre lettres, voir `lemme`). En cache : le criblage pose la
+ *  question des milliers de fois sur les mêmes mots. */
+const CACHE_MOITIES = new Map<string, readonly (readonly [string, string])[]>();
+function moities(m: string): readonly (readonly [string, string])[] {
+  const deja = CACHE_MOITIES.get(m);
+  if (deja) return deja;
+  const r: (readonly [string, string])[] = [];
+  if (m.length >= 8 && lemme(m) === undefined) {
+    for (let k = 4; k <= m.length - 4; k++) {
+      const tete = m.slice(0, k), queue = m.slice(k);
+      if (lemme(tete) !== undefined && lemme(queue) !== undefined) r.push([tete, queue]);
+    }
+  }
+  CACHE_MOITIES.set(m, r);
+  return r;
+}
+/** Deux composés anglais DISTINCTS : une moitié commune, l'autre deux mots distincts (`motsDistincts`).
+ *  Ce que le dictionnaire dit de « bridge » et « ridge », il le dit d'« Ironbridge » et « Ironridge »
+ *  (mesuré le 27/09 sur le jeu 8 : 0,900, une fausse alerte forte, hors de portée du plafond
+ *  d'ambiguïté qui s'arrête à huit lettres). SAUF quand les deux moitiés qui diffèrent ne sont
+ *  séparées que par le geste d'une faute de frappe (`gesteDeFrappe`) : dans un mot long, deux
+ *  lettres inversées ou une lettre doublée sont une faute, même si elles font un mot du
+ *  dictionnaire (mesuré le 27/09 sur le jeu 1 : « Silverlien » pour Silverline, « Brightwatter »
+ *  pour Brightwater, deux vrais noms perdus sans cette exception). */
+export function composesDistincts(a: string, b: string, voyellesLibres = true): boolean {
+  if (a === b) return false;
+  for (const [ta, qa] of moities(a)) {
+    for (const [tb, qb] of moities(b)) {
+      if ((ta === tb && motsDistincts(qa, qb, voyellesLibres) && !gesteDeFrappe(qa, qb))
+        || (qa === qb && motsDistincts(ta, tb, voyellesLibres) && !gesteDeFrappe(ta, tb))) return true;
+    }
+  }
+  return false;
 }
 
 /** Les deux mots sont anglais : le dictionnaire les connaît tous les deux. Le repli des
@@ -923,10 +988,14 @@ export function depuisJetons(f: Frequences, J: readonly string[], marques: Marqu
  * « Barlow »). Le squelette, lui, ramène déjà Q et K, W et V, Kh et H à la même initiale :
  * « Qadir » et « Kadir » ne paient rien.
  */
-export function simMot(a: string, b: string, sqA: string, sqB: string): number {
+export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesLibres = true): number {
   if (a === b) return 1;
+  /* la lettre perdue d'un encodage (« seʔora » pour Señora) tient lieu d'une lettre, et d'une
+     seule : le mot vaut l'égalité quand tout le reste est égal, lettre pour lettre */
+  if ((a.includes(PERDU) || b.includes(PERDU)) && lettrePerdue(a, b)) return 1;
   if (abrege(a, b) || abrege(b, a)) return 0.9;
-  if (motsDistincts(a, b)) return 0.5;
+  if (motsDistincts(a, b, voyellesLibres) || composesDistincts(a, b, voyellesLibres)) return 0.5;
+  if (initialeLueOptiquement(a, b)) return 0.95;
   if (sqA === sqB) return 0.95;
   /* la longueur seule tranche : deux mots dont les longueurs diffèrent de moitié ne se
      rapprochent jamais au-dessus de 0,5, et la distance d'édition n'a pas à se calculer */
@@ -936,6 +1005,65 @@ export function simMot(a: string, b: string, sqA: string, sqB: string): number {
   const romanise = Math.abs(sqA.length - sqB.length) * 2 > Ls ? 0
     : Math.max(0, Math.min(0.95, 1 - (distanceOsa(sqA, sqB) + (sqA[0] === sqB[0] ? 0 : 1)) / Ls));
   return Math.max(ecrit, romanise);
+}
+
+/** La lettre-jalon d'une lettre PERDUE à l'encodage (« SE?ORA », « ?ugowski ») : le coup de glotte
+ *  (U+0294), une lettre pour la normalisation, qu'aucun nom n'écrit. Posée par `analyserEntite`. */
+export const PERDU = "\u0294";
+/** Les lettres que `plier` rend par deux : æ, œ, ß, þ. Une lettre perdue en vaut deux là. */
+const DIGRAMMES_PLIES: ReadonlySet<string> = new Set(["ae", "oe", "ss", "th"]);
+/** Deux mots égaux lettre pour lettre, sauf là où l'un porte la lettre-jalon, qui vaut UNE lettre
+ *  de l'autre (« seʔora », « senora »), ou l'une des lettres que `plier` rend par deux (« skjʔrgʔrd »,
+ *  « skjaergard » : æ). Jamais davantage : « stra?e » et « strass » ne se lisent pas. */
+export function lettrePerdue(a: string, b: string): boolean {
+  const suite = (i: number, j: number): boolean => {
+    if (i === a.length || j === b.length) return i === a.length && j === b.length;
+    if (a[i] === b[j]) return suite(i + 1, j + 1);
+    if (a[i] === PERDU) return suite(i + 1, j + 1) || (DIGRAMMES_PLIES.has(b.slice(j, j + 2)) && suite(i + 1, j + 2));
+    if (b[j] === PERDU) return suite(i + 1, j + 1) || (DIGRAMMES_PLIES.has(a.slice(i, i + 2)) && suite(i + 2, j + 1));
+    return false;
+  };
+  return Math.abs(a.length - b.length) <= 3 && suite(0, 0);
+}
+/** Une lecture optique lit la capitale I comme un l minuscule (« lsolde » pour Isolde, « lllmarinen »
+ *  pour Illmarinen) ; la casse perdue à la normalisation, il reste deux mots qui ne diffèrent que par
+ *  cette initiale. À partir de cinq lettres : plus court, un i et un l en tête font deux noms (Ian et
+ *  Lan, Iago et Lago). Le chiffre 1 lu l ou I passe déjà par `ocr`. */
+export function initialeLueOptiquement(a: string, b: string): boolean {
+  if (a.length !== b.length || a.length < 5 || a.slice(1) !== b.slice(1)) return false;
+  return (a[0] === "i" && b[0] === "l") || (a[0] === "l" && b[0] === "i");
+}
+
+/**
+ * LA SIGNATURE D'UNE FAUTE DE FRAPPE entre deux mots qu'aucun dictionnaire ne connaît : une seule
+ * transposition de deux lettres qui se suivent (« Lindhlom », « Nordhvan », « Aegaen »), ou une seule
+ * lettre tombée ou doublée (« Tarnhem » pour Tarnhelm) ; jamais sur l'initiale, et sur des mots d'au
+ * moins six lettres. Elle lève l'ambiguïté du mot court (voir `scorePrepares`) : sous six lettres,
+ * ou entre deux mots anglais, une lettre de différence reste un autre mot (Phuong et Phong ; Marlin
+ * et Merlin), et le plafond tient.
+ *
+ * PAS LA SUBSTITUTION D'UNE LETTRE, même entre deux touches voisines du clavier : c'est aussi la
+ * signature de deux mots réels (mesuré le 27/09 sur le jeu 7 : « Castello » et « Castelli »
+ * passaient de 0,800 à 0,869, « Fedorov » et « Fedotov » à 0,878, deux fausses alertes fortes,
+ * pour un seul vrai nom gagné, « Torvakd »).
+ */
+export function fauteDeFrappe(a: string, b: string): boolean {
+  if (a.length < 6 || b.length < 6) return false;
+  if (lemme(a) !== undefined || lemme(b) !== undefined) return false;
+  return gesteDeFrappe(a, b);
+}
+/** Le GESTE d'une faute de frappe, sans regarder la longueur ni le dictionnaire : deux lettres qui se
+ *  suivent inversées, ou une lettre tombée ou doublée, jamais sur l'initiale. */
+export function gesteDeFrappe(a: string, b: string): boolean {
+  if (a === b || a[0] !== b[0]) return false;
+  if (a.length === b.length) {
+    const k = [...a].findIndex((c, i) => c !== b[i]);
+    return a[k] === b[k + 1] && a[k + 1] === b[k] && a.slice(k + 2) === b.slice(k + 2);
+  }
+  if (Math.abs(a.length - b.length) !== 1) return false;
+  const [court, long] = a.length < b.length ? [a, b] : [b, a];
+  const k = [...long].findIndex((c, i) => c !== court[i]);
+  return long.slice(0, k) + long.slice(k + 1) === court;
 }
 
 /**
@@ -1024,6 +1152,11 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   /* en pinyin, l'initiale est un phonème : Jin n'est pas Yin, Chang n'est pas Shang ; seules les
      paires d'aspiration du Wade-Giles se confondent (k, g ; t, d ; p, b ; ts, z, c ; ch, zh, j, q ; hs, x) */
   const chinois = A.marques.chinois || B.marques.chinois;
+  /* là où une romanisation écrit les voyelles librement, deux mots anglais qui n'en diffèrent que
+     par une ne sont pas deux mots (Amir, Emir ; Lung, Long en Wade-Giles et en pinyin, mesuré le
+     27/09 sur le jeu 4) ; sans aucune marque de langue, si (Marlin, Merlin ; voir `motsDistincts`).
+     L'espagnol et le portugais écrivent leurs voyelles : leur marque n'ouvre rien */
+  const voyellesLibres = romanisation || hebreuOuGrec || chinois || coreen || indien;
   const memo = options.memo;
   const cote = (X: NomPrepare, Y: NomPrepare, cote: 0 | 1) => {
     let s = 0;
@@ -1041,7 +1174,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
         let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
         let equivalent = enCache !== undefined && enCache >= 2;
         if (v === undefined) {
-          v = simMot(x, y, X.squelettes[i]!, Y.squelettes[j]!);
+          v = simMot(x, y, X.squelettes[i]!, Y.squelettes[j]!, voyellesLibres);
           const autreSyllabe = chinois && x !== y && !initialesChinoisesCompatibles(x, y);
           if (autreSyllabe) v = Math.min(v, 0.5);
           /* une équivalence de romanisation, dans le contexte de la langue : elle vaut au moins
@@ -1062,6 +1195,14 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           /* un mot abrégé d'un point correspond au mot entier qu'il commence, ou dont il garde
              les lettres dans l'ordre depuis l'initiale (« Petrochem. », « Dist. », « Capt. ») ;
              dans les DEUX sens, sinon le côté entier ne rendait qu'un demi-crédit */
+          /* un mot d'au moins quatre lettres qu'aucun dictionnaire ne connaît et qui COMMENCE un mot
+             de l'autre nom plus long d'au moins trois lettres est une abréviation d'usage, sans point
+             ni majuscules (« Agri Supplies » pour Agricultural Supplies) : un crédit partiel, celui
+             d'une romanisation, pas celui d'un mot égal. Hors des noms chinois, coréens et japonais,
+             où une syllabe qui en commence une autre est un autre mot (Hua, Huaxin) */
+          if (v < CREDIT_ROMANISATION && !chinois && !coreen && !japonais
+            && ((x.length >= 4 && y.length >= x.length + 3 && y.startsWith(x) && !lemme(x))
+              || (y.length >= 4 && x.length >= y.length + 3 && x.startsWith(y) && !lemme(y)))) v = CREDIT_ROMANISATION;
           if (v < 0.9 && X.abreges[i] && x.length < y.length && (y.startsWith(x) || abrege(x, y))) v = 0.9;
           if (v < 0.9 && Y.abreges[j] && y.length < x.length && (x.startsWith(y) || abrege(y, x))) v = 0.9;
           if (v < 0.9 && dernierX && tronque(x, y)) v = 0.9;
@@ -1078,9 +1219,13 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
       if (m < 0.8 && (X.poids[i]! >= SEUIL_RARE * X.poidsMax || PAYS_MOTS.has(X.mots[i]!)) && !(i <= 1 && REGIONS.has(X.mots[i]!))) orphelinRare = true;
       /* un mot équivalent par sa romanisation n'est pas ambigu */
       /* ni une particule : « del » aligné sur « de » n'est pas un mot court ambigu, c'est une
-         particule sautée (« Compañía Naviera del Golfo » contre « … Naviera Golfo », 27/09) */
+         particule sautée (« Compañía Naviera del Golfo » contre « … Naviera Golfo », 27/09) ;
+         et la signature d'une faute de frappe (`fauteDeFrappe` : deux lettres inversées, une lettre
+         tombée) lève le plafond, hors du chinois et du coréen, où une lettre de plus ou de moins est
+         une autre syllabe (Xin, Xing) */
       if (m > 0.5 && m < 0.9 && !equivalentM && meilleurY >= 0 && X.mots[i]!.length <= 8 && Y.mots[meilleurY]!.length <= 8
-        && !lemme(X.mots[i]!) && !lemme(Y.mots[meilleurY]!) && !PARTICULES.has(X.mots[i]!) && !PARTICULES.has(Y.mots[meilleurY]!)) motAmbigu = true;
+        && !lemme(X.mots[i]!) && !lemme(Y.mots[meilleurY]!) && !PARTICULES.has(X.mots[i]!) && !PARTICULES.has(Y.mots[meilleurY]!)
+        && (chinois || coreen || !fauteDeFrappe(X.mots[i]!, Y.mots[meilleurY]!))) motAmbigu = true;
       if (m >= 0.9 && X.poids[i]! >= 0.5 * X.poidsMax) rareCouvert[cote] = true;
       if (X.parentheses[i]) { parenthese[cote] = true; if (m >= 0.8) parentheseReconnue[cote] = true; }
       if (Y.mots.some((y) => qualificatifSoude(X.mots[i]!, y, Y.mots))) qualificatifSoudeVu = true;

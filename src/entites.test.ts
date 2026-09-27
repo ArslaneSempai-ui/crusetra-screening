@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   preparerEntite, analyserEntite, preparerNom, scorePrepares, scoreBrut, scoreNoms, variantes, squelette, voyelles, abrege,
-  motsDistincts, lemme, variationVocalique,
+  motsDistincts, lemme, variationVocalique, lettrePerdue, PERDU, fauteDeFrappe, composesDistincts,
   tronque, estCoupe, apport, simMinimale, choisirSeuils, marquesEnConflit, frequencesDe, mesurerJeux, qualificatifSoude,
   poidsDuMot, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, FAUSSES_ALERTES_MAX_FORT, SEUIL_POSSIBLE,
 } from "./entites.ts";
@@ -344,4 +344,69 @@ test("les désignations : Corp. contre Inc. est possible, jamais fort ; Corp. et
   assert.equal(marquesEnConflit(m("Sarnova Petrochem JSC"), m("Joint Stock Company Sarnova Petrochem")), false, "une traduction n'est pas une désignation");
   assert.deepEqual(m("Harlowe Grain Inc.").designations, ["inc"]);
   assert.deepEqual(m("Harlowe Grain Ltd").designations, [], "Ltd n'est pas une désignation : les familles la séparent déjà de Corp. et d'Inc.");
+});
+
+test("la lettre perdue d'un encodage : « ? » dans un mot ou en tête vaut une lettre ; en fin de mot c'est une ponctuation", () => {
+  assert.ok(score("MV Señora del Carmen", "MV SE?ORA DEL CARMEN") > 0.81, "ñ perdu : mesuré à 0,524 avant");
+  assert.ok(score("Ługowski Meble Sp. z o.o.", "?ugowski Meble Sp. z o.o.") > 0.81, "Ł perdu en tête : mesuré à 0,675 avant");
+  assert.ok(score("Skjærgård Kystrederi AS", "Skj?rg?rd Kystrederi AS") > 0.81, "æ se plie en deux lettres");
+  assert.equal(score("What? Ever Ltd", "What Ever Ltd"), 1, "un « ? » après un mot est une ponctuation");
+  assert.equal(lettrePerdue(`se${PERDU}ora`, "senora"), true);
+  assert.equal(lettrePerdue(`stra${PERDU}e`, "strass"), false, "une lettre, pas deux");
+  assert.ok(score("Nordhavn Kystfart AS", "Nordh?vn Kystfart AS") > 0.81);
+});
+
+test("OCR : la capitale I lue l en tête d'un mot, à partir de cinq lettres", () => {
+  assert.ok(score("MT Isolde Marlin", "MT lsolde Marlin") > 0.81, "mesuré à 0,585 avant");
+  assert.ok(score("Illmarinen Sähkö Oy", "lllmarinen Sähkö Oy") > 0.81, "mesuré à 0,800 avant");
+  assert.ok(score("Iago Trading", "Lago Trading") < 0.81, "quatre lettres : deux noms");
+});
+
+test("la faute de frappe lève le plafond d'ambiguïté : lettres inversées, lettre tombée ; jamais une substitution", () => {
+  assert.ok(score("MV Kaspar Lindholm", "MV Kaspar Lindhlom") > 0.81, "mesuré à 0,800 avant");
+  assert.ok(score("Nordhavn Kystfart AS", "Nordhvan Kystfart AS") > 0.81, "mesuré à 0,800 avant");
+  assert.ok(score("M/V Tarnhelm Star", "M/V Tarnhem Star") > 0.81, "mesuré à 0,800 avant");
+  assert.ok(score("Aegean Star Navigation", "Aegaen Star Navigation") > 0.81);
+  /* la substitution d'une lettre, même entre touches voisines, est aussi la signature de deux mots réels :
+     la lever gagnait « Torvakd » et perdait ces deux pièges (mesuré le 27/09) */
+  assert.ok(score("CASTELLO RESIN SRL", "Castelli Resin S.r.l.") < 0.81);
+  assert.ok(score("FEDOROV NIKOLAI SERGEEVICH", "Fedotov Nikolai Sergeevich") < 0.81);
+  assert.equal(fauteDeFrappe("phuong", "phong"), false, "cinq lettres : un autre mot autant qu'une faute");
+  assert.equal(fauteDeFrappe("nordhavn", "nordhvan"), true);
+  assert.equal(fauteDeFrappe("tarnhelm", "tarnhem"), true);
+  assert.equal(fauteDeFrappe("torvald", "torvakd"), false);
+  assert.ok(score("Huaxin Trading Co., Ltd.", "Huaxing Trading Co., Ltd.") < 0.81, "chinois : une lettre de plus est une autre syllabe");
+});
+
+test("le dictionnaire : les orthographes britanniques en -re, -our, -ogue ont un lemme ; Sable et Sabre sont deux mots", () => {
+  assert.equal(lemme("sabre"), "saber");
+  assert.equal(motsDistincts("sable", "sabre"), true);
+  assert.equal(motsDistincts("centre", "center"), false, "la même racine");
+  assert.ok(score("Sable Coast Logistics Ltd", "Sabre Coast Logistics Ltd") < 0.81, "mesuré à 0,839 avant la racine britannique");
+});
+
+test("le dictionnaire : les voyelles ne sont libres que sous une romanisation ; Marlin et Merlin sont deux mots, Lung et Long une syllabe", () => {
+  assert.equal(motsDistincts("marlin", "merlin"), false, "sous une romanisation, comme Amir et Emir");
+  assert.equal(motsDistincts("marlin", "merlin", false), true, "sans aucune marque de langue");
+  assert.ok(score("Marlin Fisheries Ltd", "Merlin Fisheries Ltd") < 0.81, "mesuré à 0,835 avant");
+  assert.ok(score("Chiu Hsiang Lung Precision Industrial Co., Ltd.", "Qiu Xiang Long Precision Industrial Co Ltd") > 0.81, "Wade-Giles et pinyin : mesuré à 0,672 quand le chinois n'ouvrait pas les voyelles");
+});
+
+test("les composés anglais : Ironbridge et Ironridge sont deux mots ; Silverlien pour Silverline est une faute", () => {
+  assert.equal(composesDistincts("ironbridge", "ironridge"), true);
+  assert.equal(composesDistincts("silverline", "silverlien"), false, "deux lettres inversées dans une moitié");
+  assert.equal(composesDistincts("brightwater", "brightwatter"), false, "une lettre doublée dans une moitié");
+  assert.ok(score("Ironbridge Castings Ltd", "Ironridge Castings Ltd") < 0.81, "mesuré à 0,900 avant");
+  assert.ok(score("Silverline Tankers", "Silverlien Tankers") > 0.81);
+  assert.ok(score("Brightwater Commodities", "Brightwatter Commodities") > 0.81);
+});
+
+test("l'abréviation d'usage : un mot inconnu du dictionnaire qui commence un mot plus long de l'autre nom", () => {
+  assert.ok(score("Ravenscourt Agricultural Supplies Limited", "Ravenscourt Agri Supplies") > 0.81, "mesuré à 0,603 avant");
+  assert.ok(score("Atlas Logistics", "Atlas Logic Systems") < 0.81, "« logic » est un mot : un début de mot est un autre mot");
+});
+
+test("les mots de métier japonais marquent la langue : Suisan ouvre le pli des deux romanisations", () => {
+  assert.ok(score("Shimotsuki Suisan", "Simotuki Suisan") > 0.81, "shi, si ; tsu, tu : mesuré à 0,800 sans la marque");
+  assert.ok(score("Shimotsuki Suisan Co., Ltd.", "Shimotsuki Shoji Co., Ltd.") < 0.81, "deux sociétés du même groupe");
 });

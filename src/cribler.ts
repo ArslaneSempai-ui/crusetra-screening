@@ -35,7 +35,7 @@ import { commitCourant } from "./your-alerts.ts";
 import type { Cellule } from "./measure.ts";
 import {
   frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, tronque, simMinimale, palierEntite, estCoupe,
-  sembleCoupe, variationVocalique, tousDeuxAnglais, mesurerJeux, choisirSeuils, lireJeu, CHEMINS_APPRENTISSAGE,
+  sembleCoupe, variationVocalique, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu, CHEMINS_APPRENTISSAGE,
   CHEMIN_VERDICT, RAPPEL_MIN, BLOC_MIN, LONGUEUR_CHAMP,
   type Frequences, type NomPrepare, type Reglage, type JeuMesure,
 } from "./entites.ts";
@@ -194,6 +194,8 @@ export class Index {
   private readonly parInitiale = new Map<string, MotIndexe[]>();
   private readonly parSq = new Map<string, MotIndexe[]>();
   private readonly parRepli = new Map<string, MotIndexe[]>();
+  /** les mots listés qui portent une lettre perdue à l'encodage (« seʔora »), par longueur */
+  private readonly parLongueurPerdu = new Map<string, MotIndexe[]>();
   /** les chaînes qui portent un bigramme, par bigramme ET longueur de bloc (« an20 ») : la
    *  borne de longueur du bloc se lit dans la clé, sans parcourir les autres longueurs */
   private readonly bigrammes = new Map<string, number[]>();
@@ -252,6 +254,7 @@ export class Index {
           ranger(this.parInitiale, mot[0]!, m);
           ranger(this.parSq, m.sq, m);
           ranger(this.parRepli, m.repli, m);
+          if (mot.includes(PERDU)) ranger(this.parLongueurPerdu, String(mot.length), m);
         });
         for (const [table, longueurs, bloc] of [[this.bigrammes, this.parLongueurBloc, nom.bloc],
           [this.bigrammesSq, this.parLongueurBlocSq, nom.blocSq]] as const) {
@@ -293,6 +296,26 @@ export class Index {
     const retenus = new Set<MotIndexe>();
     const exact = this.vocabulaire.get(mot);
     if (exact) retenus.add(exact);
+    /* la lettre perdue d'un encodage, des deux côtés (mêmes règles que `simMot`) : le mot
+       demandé qui en porte une se cherche parmi les mots listés de même longueur (sous toutes
+       les initiales si c'est l'initiale qui manque), et les mots listés qui en portent une
+       se comparent au mot demandé */
+    const jalons = mot.split(PERDU).length - 1;
+    if (jalons > 0) {
+      /* une lettre-jalon vaut une lettre, ou deux quand la lettre perdue se plie en deux (æ) */
+      for (const c of mot[0] === PERDU ? [...INITIALES] : [mot[0]!]) for (let L = mot.length; L <= mot.length + jalons; L++) {
+        for (const m of this.parInitialeLongueur.get(c + L) ?? []) if (lettrePerdue(mot, m.mot)) retenus.add(m);
+      }
+    }
+    for (let L = mot.length - 3; L <= mot.length; L++) {
+      for (const m of this.parLongueurPerdu.get(String(L)) ?? []) if (lettrePerdue(mot, m.mot)) retenus.add(m);
+    }
+    /* la capitale I lue l par une lecture optique (« lsolde », Isolde) : le mot listé qui n'en
+       diffère que par cette initiale, dans un sens comme dans l'autre */
+    if (mot.length >= 5 && (mot[0] === "i" || mot[0] === "l")) {
+      const lu = this.vocabulaire.get((mot[0] === "i" ? "l" : "i") + mot.slice(1));
+      if (lu) retenus.add(lu);
+    }
     if (t <= 0.95) for (const m of this.parSq.get(sq) ?? []) retenus.add(m);
     if (t <= 0.9) {
       for (const m of this.parRepli.get(repli) ?? []) retenus.add(m);
