@@ -1,0 +1,771 @@
+/**
+ * LE SCORE : le nom préparé et ses marques, la similitude de deux mots, l'alignement de deux noms et ses plafonds,
+ * les conflits de marques, les champs coupés, scoreBrut.
+ * Découpé de entites.ts le 28/09/2026 : entites.ts reste la façade qui réexporte tout, aucun import ailleurs ne change.
+ */
+import { readFileSync, existsSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { gunzipSync } from "node:zlib";
+import { normaliser, jetons } from "./matchers/normaliser.ts";
+import { mesurerPaires, validerPaires, type JeuDePaires, type TableDUnPalier, type Cellule } from "./measure.ts";
+import type { Matcher, PalierId } from "./matcher.ts";
+import { distanceOsa } from "./matchers/damerau.ts";
+import { preparer } from "./matchers/preparer.ts";
+import { translitterer } from "./matchers/translitteration.ts";
+import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, type Lecture } from "./ecritures.ts";
+import type { Marques } from "./preparation.ts";
+import type { Frequences } from "./mots.ts";
+import { analyserEntite } from "./preparation.ts";
+import { numero } from "./mots.ts";
+import { PARTICULES } from "./preparation.ts";
+import { poidsDuMot } from "./mots.ts";
+import { squelette } from "./mots.ts";
+import { voyelles } from "./mots.ts";
+import { regionDeRegistre } from "./preparation.ts";
+import { POINTS_CARDINAUX } from "./preparation.ts";
+import { formePlurielle } from "./mots.ts";
+import { DICTIONNAIRE } from "./mots.ts";
+import { pluriel } from "./mots.ts";
+import { gerondif } from "./mots.ts";
+import { motsDistincts } from "./mots.ts";
+import { composesDistincts } from "./mots.ts";
+import { lemme } from "./mots.ts";
+import { tousDeuxAnglais } from "./mots.ts";
+import { initialesChinoisesCompatibles } from "./mots.ts";
+import { variationVocalique } from "./mots.ts";
+import { voyelleSautee } from "./mots.ts";
+import { voyelleEpenthetique } from "./mots.ts";
+import { pliJaponais } from "./mots.ts";
+import { pliCoreen } from "./mots.ts";
+import { pliIndien } from "./mots.ts";
+import { pliTamoul } from "./mots.ts";
+import { CREDIT_ROMANISATION } from "./mots.ts";
+import { CREDIT_APPUI } from "./mots.ts";
+import { CREDIT_ABJAD } from "./mots.ts";
+import { squeletteLongue } from "./mots.ts";
+import { estSyllabeIsolee } from "./mots.ts";
+import { PAYS_MOTS } from "./variantes.ts";
+import { REGIONS } from "./preparation.ts";
+import { plier } from "./preparation.ts";
+import { pliCantonais } from "./mots.ts";
+import { FORMES } from "./preparation.ts";
+
+export type NomPrepare = {
+  mots: readonly string[]; poids: readonly number[]; total: number;
+  /** le poids d'un mot qu'aucune liste ne porte : l'échelle de la rareté */
+  poidsMax: number;
+  squelettes: readonly string[]; replis: readonly string[];
+  /** les mots que leur auteur a abrégés d'un point (« Petrochem. ») */
+  abreges: readonly boolean[];
+  /** les mots écrits entre parenthèses (« (Shanghai) ») */
+  parentheses: readonly boolean[];
+  /** les mots que les tables ont traduits (« Comercial » devenu « commercial ») : des mots du métier, jamais
+   *  des orphelins rares (voir `scorePrepares`) */
+  traduits: readonly boolean[];
+  /** les adjectifs régionaux d'un registre (« Rheinische », « Noord-Brabantse » avec son point cardinal) :
+   *  au plancher quand l'autre nom n'en porte aucun (voir REGIONS_DE_REGISTRE et `regionsAuPlancher`) */
+  decor: readonly boolean[];
+  numeros: string; bloc: string;
+  /** les civilités que la préparation a ôtées (« sri », « shree ») : un clavardage les soude au mot
+   *  qui suit, et le score ne le lit que si l'autre nom les a écrites (voir CIVILITES) */
+  civilites: readonly string[];
+  /** le bloc des squelettes : la comparaison des mots collés s'y fait, pour que « Aldeeb »
+   *  et « Al Dheeb » ne paient pas leur romanisation en plus de leur espace */
+  blocSq: string;
+  marques: Marques;
+};
+
+const SANS_MARQUES: Marques = { pays: [], familles: [], designations: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
+  coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, tamoul: false, prive: false, majuscules: false, chat: false, abjad: "", cantonais: false,
+  priveInconnu: false, natifs: new Map(), filiation: "", succursale: "", typeNavire: "" };
+
+export function preparerNom(f: Frequences, nom: string, lecture: Lecture = "mandarin"): NomPrepare {
+  const a = analyserEntite(nom, lecture);
+  const { texte: _t, abreges, parentheses, civilites, traduits, ...marques } = a;
+  return depuisJetons(f, jetons(preparer(a.texte)), marques, abreges, parentheses, civilites, traduits);
+}
+
+export function depuisJetons(f: Frequences, J: readonly string[], marques: Marques = SANS_MARQUES,
+  abreges: ReadonlySet<string> = new Set(), parentheses: ReadonlySet<string> = new Set(), civilites: ReadonlySet<string> = new Set(),
+  traduits: ReadonlySet<string> = new Set()): NomPrepare {
+  /* Un chiffre romain n'est un NUMÉRO qu'en fin de nom (« Karina II », « Star I ») : au milieu,
+     « I » est un mot (« Shun I Fa », le « yi » chinois en Wade-Giles, mesuré le 27/09 : la
+     règle des numéros le lisait « 1 » et rendait 0 face à « Shun Yi Fa No. 232 »). */
+  const num = (j: string, i: number) => /^\d+$/.test(j) ? String(Number(j)) : i === J.length - 1 ? numero(j) : undefined;
+  const mots = J.filter((j, i) => !num(j, i));
+  const poids = mots.map((m) => (PARTICULES.has(m) ? 1 : poidsDuMot(f, m)));
+  return {
+    mots, poids, total: poids.reduce((s, p) => s + p, 0), poidsMax: poidsDuMot(f, "\u0000"),
+    squelettes: mots.map(squelette),
+    replis: mots.map((m) => voyelles(squelette(m))),
+    abreges: mots.map((m) => abreges.has(m)),
+    parentheses: mots.map((m) => parentheses.has(m)),
+    traduits: mots.map((m) => traduits.has(m)),
+    decor: mots.map((m, i) => regionDeRegistre(m) || (POINTS_CARDINAUX.has(m) && regionDeRegistre(mots[i + 1] ?? ""))),
+    numeros: J.map(num).filter(Boolean).sort().join(" "),
+    bloc: mots.join(""), blocSq: mots.map(squelette).join(""),
+    civilites: [...civilites],
+    marques,
+  };
+}
+
+/**
+ * Deux mots, dans [0, 1] : identiques (1), à quelques fautes près, ou même squelette de
+ * romanisation (≤ 0,95).
+ *
+ * PAS DE CLÉ PHONÉTIQUE ICI, et c'est mesuré : elle efface les voyelles, et rendait « grain »
+ * et « green », « freight » et « fruit » identiques, deux fausses alertes à 0,98 sur le jeu
+ * d'apprentissage. Pour des noms de personnes elle sert (Mohammad, Muhammad) ; pour des
+ * sociétés, les variantes réelles sont celles de la romanisation, que le squelette porte
+ * explicitement.
+ *
+ * LA PREMIÈRE LETTRE COMPTE DOUBLE à l'écrit : une faute de frappe touche rarement
+ * l'initiale, et une initiale différente fait presque toujours un autre mot (« Harlow »,
+ * « Barlow »). Le squelette, lui, ramène déjà Q et K, W et V, Kh et H à la même initiale :
+ * « Qadir » et « Kadir » ne paient rien.
+ */
+export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesLibres = true, pluriels = true): number {
+  if (a === b) return 1;
+  /* la lettre perdue d'un encodage (« seʔora » pour Señora) tient lieu d'une lettre, et d'une
+     seule : le mot vaut l'égalité quand tout le reste est égal, lettre pour lettre */
+  if ((porteUnJalon(a) || porteUnJalon(b)) && lettrePerdue(a, b)) return 1;
+  /* le pluriel d'un mot du dictionnaire : le même mot quand c'est un mot du commerce (« Metals », « Metal »),
+     un AUTRE NOM sinon (« Egret », « Egrets » ; « Store », « Stores » ; « Pearl », « Pearls »), comme deux mots
+     anglais distincts, et non une lettre de différence (jeu 10, 27/09 : 0,836 pour « Bonny Egret » face à
+     « Bonny Egrets » par la seule distance). Dans un nom de navire (`pluriels` faux), tout pluriel est une
+     autre coque : « Nembe Fortune » et « Nembe Fortunes » */
+  if (formePlurielle(a, b) || formePlurielle(b, a)) {
+    const court = a.length < b.length ? a : b;
+    if (DICTIONNAIRE.has(court)) return pluriels && (pluriel(a, b) || pluriel(b, a)) ? 0.95 : 0.5;
+  }
+  if (gerondif(a, b) || gerondif(b, a)) return 0.95;
+  if (abrege(a, b) || abrege(b, a)) return 0.9;
+  if (motsDistincts(a, b, voyellesLibres) || composesDistincts(a, b, voyellesLibres)) return 0.5;
+  if (initialeLueOptiquement(a, b)) return 0.95;
+  if (sqA === sqB) return 0.95;
+  /* la longueur seule tranche : deux mots dont les longueurs diffèrent de moitié ne se
+     rapprochent jamais au-dessus de 0,5, et la distance d'édition n'a pas à se calculer */
+  const L = Math.max(a.length, b.length), Ls = Math.max(sqA.length, sqB.length);
+  const ecrit = Math.abs(a.length - b.length) * 2 > L ? 0
+    : Math.max(0, 1 - (distanceOsa(a, b) + (a[0] === b[0] ? 0 : 1)) / L);
+  const romanise = Math.abs(sqA.length - sqB.length) * 2 > Ls ? 0
+    : Math.max(0, Math.min(0.95, 1 - (distanceOsa(sqA, sqB) + (sqA[0] === sqB[0] ? 0 : 1)) / Ls));
+  return Math.max(ecrit, romanise);
+}
+
+/** La lettre-jalon d'une lettre PERDUE à l'encodage (« SE?ORA », « ?ugowski ») : le coup de glotte
+ *  (U+0294), une lettre pour la normalisation, qu'aucun nom n'écrit. Posée par `analyserEntite`. */
+export const PERDU = "\u0294";
+/** La lettre-jalon du 1 d'une lecture optique (« KEMUN1NG », « Trai1 ») : la fricative pharyngale
+ *  (U+0295), une lettre pour la normalisation, qu'aucun nom n'écrit. Elle vaut un i ou un l, rien
+ *  d'autre (voir `ocr`). Posée par `ocr`, donc par `analyserEntite`. */
+export const LU_UN = "\u0295";
+/** Le mot porte une lettre-jalon, de l'une ou l'autre sorte. */
+export function porteUnJalon(mot: string): boolean {
+  return mot.includes(PERDU) || mot.includes(LU_UN);
+}
+/** Les lettres que `plier` rend par deux : æ, œ, ß, þ. Une lettre perdue en vaut deux là. */
+const DIGRAMMES_PLIES: ReadonlySet<string> = new Set(["ae", "oe", "ss", "th"]);
+/** Deux mots égaux lettre pour lettre, sauf là où l'un porte la lettre-jalon, qui vaut UNE lettre
+ *  de l'autre (« seʔora », « senora »), ou l'une des lettres que `plier` rend par deux (« skjʔrgʔrd »,
+ *  « skjaergard » : æ). Jamais davantage : « stra?e » et « strass » ne se lisent pas. Le jalon du 1
+ *  lu optiquement (LU_UN) ne vaut qu'un i ou un l (« kemunʕng », « kemuning »). */
+export function lettrePerdue(a: string, b: string): boolean {
+  const suite = (i: number, j: number): boolean => {
+    if (i === a.length || j === b.length) return i === a.length && j === b.length;
+    if (a[i] === b[j]) return suite(i + 1, j + 1);
+    if (a[i] === PERDU) return suite(i + 1, j + 1) || (DIGRAMMES_PLIES.has(b.slice(j, j + 2)) && suite(i + 1, j + 2));
+    if (b[j] === PERDU) return suite(i + 1, j + 1) || (DIGRAMMES_PLIES.has(a.slice(i, i + 2)) && suite(i + 2, j + 1));
+    if ((a[i] === LU_UN && (b[j] === "i" || b[j] === "l")) || (b[j] === LU_UN && (a[i] === "i" || a[i] === "l"))) return suite(i + 1, j + 1);
+    return false;
+  };
+  return Math.abs(a.length - b.length) <= 3 && suite(0, 0);
+}
+/** Une lecture optique lit la capitale I comme un l minuscule (« lsolde » pour Isolde, « lllmarinen »
+ *  pour Illmarinen) ; la casse perdue à la normalisation, il reste deux mots qui ne diffèrent que par
+ *  cette initiale. À partir de cinq lettres : plus court, un i et un l en tête font deux noms (Ian et
+ *  Lan, Iago et Lago). Le chiffre 1 lu l ou I passe déjà par `ocr`. */
+export function initialeLueOptiquement(a: string, b: string): boolean {
+  if (a.length !== b.length || a.length < 5 || a.slice(1) !== b.slice(1)) return false;
+  return (a[0] === "i" && b[0] === "l") || (a[0] === "l" && b[0] === "i");
+}
+
+/**
+ * LA SIGNATURE D'UNE FAUTE DE FRAPPE entre deux mots qu'aucun dictionnaire ne connaît : une seule
+ * transposition de deux lettres qui se suivent (« Lindhlom », « Nordhvan », « Aegaen »), ou une seule
+ * lettre tombée ou doublée (« Tarnhem » pour Tarnhelm) ; jamais sur l'initiale, et sur des mots d'au
+ * moins six lettres. Elle lève l'ambiguïté du mot court (voir `scorePrepares`) : sous six lettres,
+ * ou entre deux mots anglais, une lettre de différence reste un autre mot (Phuong et Phong ; Marlin
+ * et Merlin), et le plafond tient.
+ *
+ * PAS LA SUBSTITUTION D'UNE LETTRE, même entre deux touches voisines du clavier : c'est aussi la
+ * signature de deux mots réels (mesuré le 27/09 sur le jeu 7 : « Castello » et « Castelli »
+ * passaient de 0,800 à 0,869, « Fedorov » et « Fedotov » à 0,878, deux fausses alertes fortes,
+ * pour un seul vrai nom gagné, « Torvakd »).
+ */
+export function fauteDeFrappe(a: string, b: string): boolean {
+  if (a.length < 6 || b.length < 6) return false;
+  if (lemme(a) !== undefined || lemme(b) !== undefined) return false;
+  /* un « s » final en plus n'est pas le geste d'une faute : c'est le pluriel ou le possessif d'un nom de
+     famille, l'enseigne d'une autre boutique (« Njoroge », « Njoroges » ; jeu 10, 27/09 : 0,917, la
+     lettre tombée levant le plafond du mot ambigu) */
+  if (formePlurielle(a, b) || formePlurielle(b, a)) return false;
+  return gesteDeFrappe(a, b);
+}
+/** Le GESTE d'une faute de frappe, sans regarder la longueur ni le dictionnaire : deux lettres qui se
+ *  suivent inversées, ou une lettre tombée ou doublée, jamais sur l'initiale. */
+export function gesteDeFrappe(a: string, b: string): boolean {
+  if (a === b || a[0] !== b[0]) return false;
+  if (a.length === b.length) {
+    const k = [...a].findIndex((c, i) => c !== b[i]);
+    return a[k] === b[k + 1] && a[k + 1] === b[k] && a.slice(k + 2) === b.slice(k + 2);
+  }
+  if (Math.abs(a.length - b.length) !== 1) return false;
+  const [court, long] = a.length < b.length ? [a, b] : [b, a];
+  const k = [...long].findIndex((c, i) => c !== court[i]);
+  return long.slice(0, k) + long.slice(k + 1) === court;
+}
+
+/**
+ * `court` abrège-t-il `long` ? « engg » engineering, « mktg » marketing, « hldgs » holdings :
+ * une abréviation garde l'initiale et ses lettres dans l'ordre, sans en être le DÉBUT (un
+ * début de mot est un autre mot : « sun » n'abrège pas « sunshine ») et sans voyelle après
+ * l'initiale (un mot ordinaire en a : « star » n'abrège pas « steamer », mesuré par le témoin
+ * le 27/09 quand la règle tolérait encore une voyelle).
+ */
+export function abrege(court: string, long: string): boolean {
+  /* trois lettres au moins : « brk » abrège brokerage ; « pm » trouverait ses deux lettres
+     dans la moitié des mots (mesuré le 27/09 : « AO PROTON PM » contre « Proton Petrochemical ») */
+  if (court.length < 3 || court.length > 5 || long.length < court.length + 3) return false;
+  if (court[0] !== long[0] || long.startsWith(court)) return false;
+  if (/[aeiou]/.test(court.slice(1))) return false;
+  let i = 0;
+  for (const c of long) if (c === court[i]) i++;
+  return i === court.length;
+}
+
+/** Le dernier mot d'un nom coupé par un champ de longueur fixe (35 caractères dans un
+ *  message de paiement) est un DÉBUT de mot : « Engineer » pour « Engineering ». Vrai à
+ *  partir de quatre lettres, et seulement pour le dernier mot. */
+export function tronque(dernier: string, long: string): boolean {
+  if (long.length <= dernier.length || !long.startsWith(dernier)) return false;
+  /* un mot du dictionnaire suivi de son seul pluriel n'est pas un début coupé, c'est le pluriel, et c'est
+     `pluriel` qui en décide : « Egret » n'est pas « Egrets » tronqué (jeu 10, 27/09 : quatre navires et deux
+     boutiques au pluriel passaient par cette porte une fois le pluriel restreint aux mots du commerce) */
+  if (DICTIONNAIRE.has(dernier) && /^(?:s|es)$/.test(long.slice(dernier.length))) return false;
+  /* trois lettres suffisent quand le mot entier est long (« Pro » pour « Prosperity ») */
+  return dernier.length >= 4 || (dernier.length === 3 && long.length >= 7);
+}
+
+/**
+ * Ce qu'un mot apporte au score : sa similarité, TRANCHÉE. Un mot à moitié ressemblant
+ * (« north » et « south », 0,6) n'est pas à moitié le même mot : il est un autre mot. Sous
+ * 0,5 un mot n'apporte rien ; au-dessus, l'écart à 1 compte double.
+ */
+export function apport(sim: number): number {
+  return sim >= 1 ? 1 : Math.max(0, (sim - 0.5) / 0.5);
+}
+
+/**
+ * Le score de deux noms préparés, dans [0, 1].
+ *
+ *  - Les mots s'alignent sans ordre : chaque mot des deux côtés cherche son meilleur
+ *    correspondant, apporte sa similarité tranchée (`apport`), et pèse selon sa RARETÉ
+ *    dans les listes. « Golden Star Shipping » contre
+ *    « Golden Sun Shipping » se joue sur « star » et « sun », pas sur « shipping ».
+ *  - Le bloc (les mots collés : « Petro Link » contre « PetroLink ») ne compte QUE si les
+ *    deux noms n'ont pas le même nombre de mots : c'est l'écart qu'il existe pour lire. Sur
+ *    deux noms de même longueur, il laisserait une lettre de différence par mot se diluer
+ *    dans la chaîne entière.
+ *  - Les NUMÉROS ne se discutent pas : deux navires numérotés différemment sont deux
+ *    navires ; un numéro d'un seul côté plafonne le score au niveau possible sans l'annuler,
+ *    parce qu'un nom saisi sans son numéro reste à relire. Des marques en conflit
+ *    (`marquesEnConflit`) plafonnent de même.
+ */
+/** Ce que le criblage passe au score : le seuil sous lequel un candidat ne l'intéresse plus
+ *  (sortie anticipée), et un cache des paires de mots déjà comparées pour cette requête. */
+export type OptionsScore = { auMoins?: number; memo?: Map<string, number> };
+
+export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScore = {}): number {
+  if (A.numeros && B.numeros && A.numeros !== B.numeros) return 0;
+  /* deux noms lus dans des sinogrammes se comparent sous la MÊME lecture : le mandarin de l'un
+     face au cantonais de l'autre ne dit rien (jeu 9, 27/09 : 源成 en mandarin, yuancheng, face à
+     源盛 en cantonais, yuen sing, passait à 0,857 par le bloc, hors de la garde des homophones) */
+  if (A.marques.natifs.size > 0 && B.marques.natifs.size > 0 && A.marques.cantonais !== B.marques.cantonais) return 0;
+  if (A.mots.length === 0 || B.mots.length === 0) {
+    return A.mots.length === B.mots.length && A.numeros === B.numeros && A.numeros !== "" ? 1 : 0;
+  }
+  [A, B] = [regionsAuPlancher(A, B), regionsAuPlancher(B, A)];
+  const orphelins = [false, false];
+  const rareCouvert = [false, false];
+  const parenthese = [false, false], parentheseReconnue = [false, false];
+  /* un mot RARE sans répondant de l'autre côté (« Navigation », « Beheer », « Zambia »,
+     « Machinery », « Plus ») : l'autre nom ne le porte pas, ce n'est pas la même entité, au
+     mieux sa mère, sa filiale ou l'armateur de ce navire ; et un mot court, non anglais,
+     à une lettre près d'un mot de l'autre nom (« Phuong », « Phong » ; « Lixing », « Lixin » ;
+     « Meier », « Mayer ») : en chinois, en vietnamien, en allemand, c'est un autre mot autant
+     qu'une faute. Les deux plafonnent au niveau POSSIBLE. */
+  let orphelinRare = false, motAmbigu = false;
+  /* un qualificatif de groupe soudé à son radical d'un côté (« Agroholding »), le radical nu
+     de l'autre (« Agro ») : la holding face à la société qui exploite (voir QUALIFICATIFS_SOUDES) */
+  let qualificatifSoudeVu = false;
+  const orphelinsMots: [string[], string[]] = [[], []];
+  /* LE NOM COMMERCIAL FACE AU NOM DÉPOSÉ : un côté sans aucune forme juridique (le nom tel qu'un WhatsApp,
+     une facture ou un manifeste l'écrit), l'autre avec sa forme, et rien de plus qu'un mot de pays et des
+     qualificatifs de registre (« Adeyemi Agro Commodities » face à « Adeyemi Agro Commodities Nigeria
+     Limited », « Okafor Integrated Resources » face à « … Nig. Ltd ») : la douane ajoute le suffixe déposé,
+     c'est la même société, et le mot de pays n'y fait pas une filiale (jeu 10, 27/09 : quinze paires à
+     0,800). Quand les DEUX côtés portent une forme, « X Nigeria Ltd » face à « X Ltd » reste la filiale */
+  const sansFormeA = !A.marques.societe && A.marques.familles.length === 0, sansFormeB = !B.marques.societe && B.marques.familles.length === 0;
+  const nomCommercial: 0 | 1 | undefined = sansFormeA !== sansFormeB ? (sansFormeA ? 0 : 1) : undefined;
+  /* la variation de voyelle et le repli ne sont crédités que là où une romanisation les
+     produit : l'arabe et le persan (a, e, i ; o, u), le japonais (ō, ū : o, ou, oo, u). En
+     allemand, en espagnol, en vietnamien, en chinois, une voyelle de plus ou de moins est un
+     autre mot (Meier, Mayer ; Solaris, Solares ; Phuong, Phong ; Jinyang, Jinyoung : mesuré) */
+  const romanisation = A.marques.arabe || B.marques.arabe || A.marques.japonais || B.marques.japonais;
+  /* l'Indonésie et la Malaisie (PT, CV, UD, Tbk, Sdn Bhd) : l'orthographe d'avant 1972 (tj, dj, oe) et la
+     moderne s'écrivent avec le même squelette, et c'est le squelette qui fait foi (« Tjahaja Soerya Kentjana »,
+     « Cahaya Surya Kencana », jeu 9) */
+  const indonesien = ["ID", "MY"].some((k) => A.marques.pays.includes(k) || B.marques.pays.includes(k));
+  /* l'allemand et le néerlandais (GmbH, mbH, AG, KG, B.V., N.V. ; Autriche, Suisse, Belgique) : là où les noms
+     composent leurs mots, et où le nom d'usage garde un membre du composé (voir `compose`) */
+  const germanique = ["DE", "AT", "CH", "NL", "BE"].some((k) => A.marques.pays.includes(k) || B.marques.pays.includes(k));
+  /* la voyelle d'appui d'un groupe final de consonnes (« Bahr », « Bahar ») n'est que de l'arabe */
+  const arabe = A.marques.arabe || B.marques.arabe;
+  const japonais = A.marques.japonais || B.marques.japonais, coreen = A.marques.coreen || B.marques.coreen;
+  const hebreuOuGrec = A.marques.hebreuOuGrec || B.marques.hebreuOuGrec, indien = A.marques.indien || B.marques.indien;
+  const hispanique = A.marques.hispanique || B.marques.hispanique;
+  const tamoul = A.marques.tamoul || B.marques.tamoul;
+  /* en pinyin, l'initiale est un phonème : Jin n'est pas Yin, Chang n'est pas Shang ; seules les
+     paires d'aspiration du Wade-Giles se confondent (k, g ; t, d ; p, b ; ts, z, c ; ch, zh, j, q ; hs, x) */
+  const chinois = A.marques.chinois || B.marques.chinois;
+  /* une lecture cantonaise d'un côté : les syllabes se replient sur la graphie de Hong Kong (Shing,
+     Sing ; Kam, Gam ; Luen, Lyun ; Cheung, Tseung) et l'équivalence vaut CREDIT_ROMANISATION, comme
+     celle du coréen (jeu 9, 27/09 : « Wing Shing Group Holdings » contre 永成集團控股, à 0,800 par le
+     seul bloc des squelettes quand 永成 ne se lisait qu'en mandarin) */
+  const cantonais = A.marques.cantonais || B.marques.cantonais;
+  /* l'un des deux noms vient d'un clavardage : une lettre de différence avec un mot que le
+     dictionnaire connaît y est une faute ou le correcteur d'un téléphone (voir plus bas) */
+  const chat = A.marques.chat || B.marques.chat;
+  /* un navire d'un côté ou de l'autre : le pluriel d'un mot n'y est jamais le même mot (voir `simMot`) */
+  const navire = A.marques.navire || B.marques.navire;
+  /* aucune forme juridique d'aucun côté : deux noms tapés, pas copiés d'un registre (voir le pluriel d'un clavardage) */
+  const sansForme = !A.marques.societe && !B.marques.societe;
+  /* là où une romanisation écrit les voyelles librement, deux mots anglais qui n'en diffèrent que
+     par une ne sont pas deux mots (Amir, Emir ; Lung, Long en Wade-Giles et en pinyin, mesuré le
+     27/09 sur le jeu 4) ; sans aucune marque de langue, si (Marlin, Merlin ; voir `motsDistincts`).
+     L'espagnol et le portugais écrivent leurs voyelles : leur marque n'ouvre rien */
+  const voyellesLibres = romanisation || hebreuOuGrec || chinois || coreen || indien;
+  /* un côté écrit dans un abjad (arabe et persan, hébreu) n'a pas de voyelles : ses mots se
+     comparent aux consonnes du côté latin (`cleAbjad`), et l'égalité vaut un squelette égal */
+  const abjad = A.marques.abjad || B.marques.abjad;
+  const memo = options.memo;
+  const cote = (X: NomPrepare, Y: NomPrepare, cote: 0 | 1) => {
+    let s = 0;
+    const descripteurX = descripteur(X);
+    for (let i = 0; i < X.mots.length; i++) {
+      let m = 0, meilleurY = -1, equivalentM = false;
+      const dernierX = i === X.mots.length - 1;
+      for (let j = 0; j < Y.mots.length && m < 1; j++) {
+        const x = X.mots[i]!, y = Y.mots[j]!;
+        const dernierY = j === Y.mots.length - 1;
+        /* un jeton lu dans des sinogrammes garde ses caractères (voir `natifs`) */
+        const nx = X.marques.natifs.get(x) ?? "", ny = Y.marques.natifs.get(y) ?? "";
+        /* la clé porte tout ce qui décide : les deux mots, leurs marques d'abréviation, et
+           leur position de dernier mot (la troncature ne vaut que pour lui) */
+        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}${navire ? 1 : 0}${sansForme ? 1 : 0}${germanique ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
+        /* le cache code l'équivalence de romanisation en ajoutant 2 à la valeur (elle est dans [0, 1]) */
+        const enCache = memo?.get(cle);
+        let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
+        let equivalent = enCache !== undefined && enCache >= 2;
+        if (v === undefined) {
+          v = simMot(x, y, X.squelettes[i]!, Y.squelettes[j]!, voyellesLibres, !navire);
+          const pliC = cantonais && x !== y && !tousDeuxAnglais(x, y) && pliCantonais(x) === pliCantonais(y);
+          const autreSyllabe = chinois && x !== y && !pliC && !initialesChinoisesCompatibles(x, y);
+          if (autreSyllabe) v = Math.min(v, 0.5);
+          /* une équivalence de romanisation, dans le contexte de la langue : elle vaut au moins
+             CREDIT_ROMANISATION, et elle lève l'ambiguïté du mot court (voir plus bas) */
+          equivalent = !autreSyllabe && x !== y && !tousDeuxAnglais(x, y) && (pliC
+            || (romanisation && (X.replis[i] === Y.replis[j] || variationVocalique(X.squelettes[i]!, Y.squelettes[j]!)
+              || voyelleSautee(X.squelettes[i]!, Y.squelettes[j]!)))
+            || (arabe && voyelleEpenthetique(X.squelettes[i]!, Y.squelettes[j]!))
+            /* et « oe » y était « u » (« Soerya », « Surya ») : o et u ne font qu'une classe sous cette marque */
+            || (indonesien && X.squelettes[i]!.replace(/o/g, "u") === Y.squelettes[j]!.replace(/o/g, "u"))
+            || (japonais && pliJaponais(x) === pliJaponais(y))
+            || (coreen && pliCoreen(x) === pliCoreen(y))
+            /* v, w, b : hindi, hébreu, espagnol, portugais ; sous leur contexte, au crédit et non au
+               squelette, pour que Fabre reste distinct de Favre */
+            || ((indien || hispanique) && pliIndien(x) === pliIndien(y))
+            /* le tamoul et son sanskrit (Lakshmi, லட்சுமி latchumi), sa sonorité non écrite */
+            || (tamoul && pliTamoul(x) === pliTamoul(y))
+            || (hebreuOuGrec && (X.squelettes[i]!.replace(/X/g, "h") === Y.squelettes[j]!.replace(/X/g, "h") || pliIndien(x) === pliIndien(y))));
+          if (equivalent) v = Math.max(v, CREDIT_ROMANISATION);
+          /* la voyelle d'appui (« Bahr », « Bahar ») ne change pas le mot arabe, quand une voyelle
+             substituée peut en faire un autre : son crédit est au-dessus (CREDIT_APPUI) */
+          if (arabe && x !== y && !tousDeuxAnglais(x, y) && voyelleEpenthetique(X.squelettes[i]!, Y.squelettes[j]!)) v = Math.max(v, CREDIT_APPUI);
+          /* les mêmes consonnes qu'un mot venu d'un abjad : ce côté n'a jamais eu de voyelles à
+             comparer, c'est l'égalité de squelette de son écriture (« بحر » bhr et « Bahr »,
+             « הנגב » hngb et « HaNegev »). Mesuré le 27/09 sur les paires des jeux 6 et 8 : au
+             crédit de 0,85, « بحر الذهب » restait à 0,744, « سپیددشت » à 0,787 et « שחר הגליל » à
+             0,700, sous le possible, chaque mot du nom propre n'apportant que 0,7 */
+          if (abjad !== "" && x !== y && !tousDeuxAnglais(x, y)) {
+            const kx = cleAbjad(x, abjad), ky = cleAbjad(y, abjad);
+            /* et la ta marbuta (ة), « -at » en annexion d'un côté, « -a » de l'autre (« Zahrat », « zahra ») */
+            const memes = (kx.length >= 3 && kx === ky) || (abjad === "arabe"
+              && ((ky.length >= 3 && cleAbjadSansTa(x) === ky) || (kx.length >= 3 && cleAbjadSansTa(y) === kx)));
+            if (memes) { equivalent = true; v = Math.max(v, CREDIT_ABJAD); }
+          }
+          /* la voyelle longue ī écrite ee ou i : le même mot au squelette près (« Naseem », « Nasim » ;
+             « Waleed », « Walid »), sous les marques arabe et indienne, et il vaut un squelette égal
+             (0,95), pas une variation (jeu 9, 27/09 : « Naseem Al Bahar » et « Nasim Al Bahr », deux mots
+             au crédit de 0,85, restaient à 0,715) */
+          if (v < 0.95 && (arabe || indien) && x !== y && !tousDeuxAnglais(x, y) && (x.includes("ee") || y.includes("ee"))
+            && squeletteLongue(x) === squeletteLongue(y)) { equivalent = true; v = 0.95; }
+          /* dans un export tout en majuscules, un mot court qu'aucun dictionnaire ne connaît et
+             qui commence un mot long de l'autre nom est une abréviation sans point (« HVY IND ») */
+          if (v < 0.9 && ((X.marques.majuscules && x.length >= 2 && x.length <= 9 && y.length >= x.length + 3 && y.length >= 6 && y.startsWith(x) && !lemme(x))
+            || (Y.marques.majuscules && y.length >= 2 && y.length <= 9 && x.length >= y.length + 3 && x.length >= 6 && x.startsWith(y) && !lemme(y)))) v = 0.9;
+          /* un mot abrégé d'un point correspond au mot entier qu'il commence, ou dont il garde
+             les lettres dans l'ordre depuis l'initiale (« Petrochem. », « Dist. », « Capt. ») ;
+             dans les DEUX sens, sinon le côté entier ne rendait qu'un demi-crédit */
+          /* un mot d'au moins quatre lettres qu'aucun dictionnaire ne connaît et qui COMMENCE un mot
+             de l'autre nom plus long d'au moins trois lettres est une abréviation d'usage, sans point
+             ni majuscules (« Agri Supplies » pour Agricultural Supplies) : un crédit partiel, celui
+             d'une romanisation, pas celui d'un mot égal. Hors des noms chinois, coréens et japonais,
+             où une syllabe qui en commence une autre est un autre mot (Hua, Huaxin) */
+          if (v < CREDIT_ROMANISATION && !chinois && !coreen && !japonais
+            && ((x.length >= 4 && y.length >= x.length + 3 && y.startsWith(x) && !lemme(x))
+              || (y.length >= 4 && x.length >= y.length + 3 && x.startsWith(y) && !lemme(y)))) v = CREDIT_ROMANISATION;
+          /* LES COMPOSÉS allemands et néerlandais : le nom déterminé ferme le mot (« Stahlrohr » est un Rohr,
+             « Textilmaschinen » des machines textiles, « Metaalhandel » le commerce du métal), et le nom d'usage
+             garde l'un des deux membres (« Rheinstahl Rohr », « Hoffmann Textil », « De Groot Machines », jeu 10).
+             Sous la marque, un mot qui commence ou finit par un mot de l'autre nom vaut le crédit d'une
+             romanisation, dans les deux sens (voir `compose`) */
+          if (v < CREDIT_ROMANISATION && germanique && (compose(x, y) || compose(y, x))) v = CREDIT_ROMANISATION;
+          /* LA FAUTE D'UN CLAVARDAGE : sous la marque chat, un mot que le dictionnaire connaît face à un
+             mot qu'il ne connaît pas, à UNE lettre près hors l'initiale (substituée, tombée, doublée,
+             inversée), est la faute d'un pouce ou le correcteur d'un téléphone qui a fait un mot anglais
+             d'un nom (« Kim Send » pour Kim Seng, jeu 9, 27/09 : 0,720), pas deux mots. Deux mots que le
+             dictionnaire connaît restent deux mots (Marlin, Merlin ; Rail, Mail), deux qu'il ignore restent
+             ambigus (Phuong, Phong) ; l'initiale reste l'initiale (Qadir, Nadir) ; et deux syllabes isolées
+             sont deux syllabes, marque chinoise ou pas (Heng, Hong : mesuré le 27/09 sur le jeu 9, « Chin
+             Heng Trading » et « Chin Hong Trading » montaient à 0,919 sur la variante sans leurs
+             sinogrammes). Mesuré sur les neuf jeux : aucun piège ne monte */
+          if (v < 0.9 && chat && !chinois && !coreen && !japonais && x.length >= 4 && y.length >= 4 && x[0] === y[0]
+            && !(estSyllabeIsolee(x) && estSyllabeIsolee(y))
+            && (lemme(x) === undefined) !== (lemme(y) === undefined) && distanceOsa(x, y) === 1) v = 0.9;
+          /* LE PLURIEL D'UN CLAVARDAGE : sous la marque chat, sans forme juridique d'aucun côté, un mot du
+             dictionnaire et son pluriel sont un mot, le correcteur du téléphone ôtant ou ajoutant le s
+             (« Chukwuemeka Stores », « Chukwuemeka Store », jeu 10). Dès qu'un côté porte une forme, le
+             pluriel est l'orthographe déposée au registre, et « Provisions Store » n'est pas « Provisions
+             Stores Limited » (jeu 10, 27/09, deux boutiques) ; un navire non plus (voir `simMot`) */
+          if (v <= 0.5 && chat && sansForme && !navire && (formePlurielle(x, y) || formePlurielle(y, x))
+            && DICTIONNAIRE.has(x.length < y.length ? x : y)) v = 0.9;
+          if (v < 0.9 && X.abreges[i] && x.length < y.length && (y.startsWith(x) || abrege(x, y))) v = 0.9;
+          if (v < 0.9 && Y.abreges[j] && y.length < x.length && (x.startsWith(y) || abrege(y, x))) v = 0.9;
+          if (v < 0.9 && dernierX && tronque(x, y)) v = 0.9;
+          if (v < 0.9 && dernierY && tronque(y, x)) v = 0.9;
+          /* deux lectures de sinogrammes différents sont des homophones (« 新海 », « 鑫海 » : xinhai
+             tous deux), et un homophone est un autre mot */
+          if (nx !== "" && ny !== "" && nx !== ny) v = Math.min(v, 0.5);
+          memo?.set(cle, equivalent ? v + 2 : v);
+        }
+        if (v > m) { m = v; meilleurY = j; equivalentM = equivalent; }
+      }
+      /* une civilité que l'autre nom écrit à part et que celui-ci SOUDE au mot suivant (« sripelangi »
+         pour « Sri Pelangi »), ou l'inverse : le même mot, la civilité en plus (jeu 9, 27/09 : 0,529).
+         Il faut que l'autre côté l'ait écrite : « Srinivas » n'est pas « Nivas » */
+      if (m < 1) {
+        const x = X.mots[i]!;
+        for (const c of Y.civilites) {
+          const k = x.startsWith(c) && x.length >= c.length + 4 ? Y.mots.indexOf(x.slice(c.length)) : -1;
+          if (k >= 0) { m = 1; meilleurY = k; equivalentM = false; break; }
+        }
+        if (m < 1) for (const c of X.civilites) {
+          const k = Y.mots.indexOf(c + x);
+          if (k >= 0) { m = 1; meilleurY = k; equivalentM = false; break; }
+        }
+      }
+      if (m < 0.8) { orphelins[cote] = true; orphelinsMots[cote].push(X.mots[i]!); }
+      /* un mot géographique en tête (« Fujian Quanzhou Xingtai Shoes ») n'est pas un mot en
+         trop : la province se dit ou s'omet pour la même société chinoise */
+      /* un mot de pays ou de région du monde est distinctif quel que soit son poids : « UK Limited »
+         n'est pas « Limited » */
+      /* ni un mot que les tables ont traduit quand il OUVRE le nom : dans l'ordre roman, les mots d'activité
+         précèdent le nom propre (« Comercial Pereira e Filhos », « Exportação de Café de Huambo »), et le nom
+         d'usage les omet (jeu 10 : plafonnés à 0,800 par l'IDF du mot traduit). En queue, le même mot traduit
+         dit une société sœur (« Северный Янтарь Логистик », jeu 8), et plafonne comme tout orphelin rare ;
+         ni l'adjectif régional d'un registre au plancher (voir `regionsAuPlancher`) */
+      if (m < 0.8 && (X.poids[i]! >= SEUIL_RARE * X.poidsMax || PAYS_MOTS.has(X.mots[i]!)) && !(i <= 1 && REGIONS.has(X.mots[i]!))
+        && !(X.traduits[i] && i < descripteurX) && !X.decor[i]) orphelinRare = true;
+      /* un mot équivalent par sa romanisation n'est pas ambigu */
+      /* ni une particule : « del » aligné sur « de » n'est pas un mot court ambigu, c'est une
+         particule sautée (« Compañía Naviera del Golfo » contre « … Naviera Golfo », 27/09) ;
+         et la signature d'une faute de frappe (`fauteDeFrappe` : deux lettres inversées, une lettre
+         tombée) lève le plafond, hors du chinois et du coréen, où une lettre de plus ou de moins est
+         une autre syllabe (Xin, Xing) */
+      if (m > 0.5 && m < 0.9 && !equivalentM && meilleurY >= 0 && X.mots[i]!.length <= 8 && Y.mots[meilleurY]!.length <= 8
+        && !lemme(X.mots[i]!) && !lemme(Y.mots[meilleurY]!) && !PARTICULES.has(X.mots[i]!) && !PARTICULES.has(Y.mots[meilleurY]!)
+        && (chinois || coreen || !fauteDeFrappe(X.mots[i]!, Y.mots[meilleurY]!))) motAmbigu = true;
+      if (m >= 0.9 && X.poids[i]! >= 0.5 * X.poidsMax) rareCouvert[cote] = true;
+      if (X.parentheses[i]) { parenthese[cote] = true; if (m >= 0.8) parentheseReconnue[cote] = true; }
+      if (Y.mots.some((y) => qualificatifSoude(X.mots[i]!, y, Y.mots))) qualificatifSoudeVu = true;
+      s += X.poids[i]! * apport(m);
+    }
+    return s;
+  };
+  const cA = cote(A, B, 0);
+  /* SORTIE ANTICIPÉE : le côté B parfait, la contenance parfaite, le bloc à son maximum ;
+     si même cela n'atteint pas ce que le criblage demande, inutile d'aller plus loin */
+  if (options.auMoins !== undefined) {
+    const plafond = Math.max((cA + B.total) / (A.total + B.total), FACTEUR_CONTENANCE,
+      A.mots.length !== B.mots.length ? 1 : 0);
+    if (plafond < options.auMoins) return 0;
+  }
+  const cB = cote(B, A, 1);
+  if (nomCommercial !== undefined) {
+    const depose = nomCommercial === 0 ? 1 : 0;
+    if ([A, B][nomCommercial]!.mots.length >= 2 && orphelinsMots[nomCommercial]!.length === 0 && orphelinsMots[depose].length > 0
+      && orphelinsMots[depose].every((w) => PAYS_MOTS.has(w) || QUALIFICATIFS_DE_REGISTRE.has(w))) orphelinRare = false;
+  }
+  let s = (cA + cB) / (A.total + B.total);
+  /* UN MOT ORPHELIN DE CHAQUE CÔTÉ (« Logistics » contre « Engineering », « Nigeria » contre
+     « Ghana ») : les deux noms ont chacun ce que l'autre n'a pas, c'est la signature d'une
+     société sœur, pas d'une graphie. Un mot en trop d'un seul côté (un nom abrégé, un nom
+     coupé) ne déclenche rien. */
+  if (orphelins[0] && orphelins[1]) s *= 0.9;
+  if (orphelinRare || motAmbigu) s = Math.min(s, FACTEUR_CONTENANCE);
+  /* le bloc ne joue pas quand l'écart de longueur des deux blocs est exactement un mot sans
+     répondant : ce n'est pas une soudure, c'est un mot en plus (« Ingredients UK Limited »
+     contre « Ingredients Limited », mesuré le 27/09) */
+  const ecart = Math.abs(A.bloc.length - B.bloc.length);
+  const motEnPlus = ecart > 0 && (A.bloc.length > B.bloc.length ? orphelinsMots[0] : orphelinsMots[1]).some((w) => w.length === ecart);
+  if (A.mots.length !== B.mots.length && !motEnPlus) {
+    /* la première lettre compte double ici aussi (mesuré le 27/09 : « Eliron Logistics »
+       contre « Oboronlogistics » passait à 0,80 sans elle). Sous BLOC_MIN, le bloc ne compte
+       pas : deux chaînes qui diffèrent d'un cinquième ne sont pas les mêmes mots autrement
+       coupés, et c'est cette borne qui permet à l'index de ne comparer que les blocs proches */
+    /* une soudure ou une coupure de mots ne change pas les lettres : deux blocs qui diffèrent de
+       plus de deux caractères en longueur ont un MOT de plus d'un côté, pas une espace (mesuré le
+       27/09 : « …Thanh Dat » et « …Thanh Dat Phat » passaient à 0,824 par le bloc) */
+    const similitude = (a: string, b: string) => {
+      const L = Math.max(a.length, b.length);
+      if (Math.abs(a.length - b.length) > 2) return 0;
+      return 1 - (distanceOsa(a, b) + (a[0] === b[0] ? 0 : 1)) / L;
+    };
+    const meilleur = Math.max(similitude(A.bloc, B.bloc), Math.min(0.95, similitude(A.blocSq, B.blocSq)));
+    if (meilleur >= BLOC_MIN) s = Math.max(s, meilleur);
+  }
+  /* LA CONTENANCE : un nom entier retrouvé DANS l'autre (« Quarrington Metals FZE » dans
+     « Quarrington Metals FZE, Jebel Ali Free Zone, Dubai »). La question du criblage n'est pas
+     « ces deux noms sont-ils égaux » mais « le nom listé est-il là ». Deux mots au moins, et un
+     mot rare parmi ceux retrouvés : sinon « Global Trading » serait contenu partout. Plafonnée
+     à FACTEUR_CONTENANCE : une contenance seule reste une alerte POSSIBLE, parce qu'une filiale
+     (« Quarnby Logistics (Shanghai) ») contient aussi le nom de sa mère. */
+  const contenance = Math.max(
+    A.mots.length >= 2 && rareCouvert[0] ? cA / A.total : 0,
+    B.mots.length >= 2 && rareCouvert[1] ? cB / B.total : 0);
+  s = Math.max(s, FACTEUR_CONTENANCE * contenance);
+  /* une parenthèse à laquelle l'autre nom ne répond par aucun mot : une filiale, pas une
+     graphie ; comme un conflit de marques, elle abaisse (× 0,8) sans annuler */
+  const filiale = (parenthese[0] && !parentheseReconnue[0]) || (parenthese[1] && !parentheseReconnue[1]);
+  /* un numéro d'un seul côté, des marques en conflit, une filiale, un qualificatif de groupe
+     soudé : la méthode a une raison précise de douter, et le candidat se range au niveau
+     POSSIBLE, quelle que soit la ressemblance des mots ; il n'est pas effacé (un groupe ouvre
+     des homonymes ailleurs) */
+  return A.numeros === B.numeros && !marquesEnConflit(A.marques, B.marques) && !filiale && !qualificatifSoudeVu
+    ? s : Math.min(s, FACTEUR_CONTENANCE);
+}
+
+export const FACTEUR_CONTENANCE = 0.8;
+/** Un mot est RARE quand son poids atteint cette part du poids d'un mot inconnu des listes :
+ *  « Shipping » (439 entrées sur 33 393) l'est tout juste, « Trading » (826) ne l'est pas. */
+export const SEUIL_RARE = 0.45;
+/** Le bloc (mots collés ou coupés) ne compte qu'à partir de cette similarité. */
+export const BLOC_MIN = 0.8;
+
+/** Les qualificatifs de groupe qu'un nom SOUDE à son radical : « Agroholding », « Agroinvest »,
+ *  « Uraltrade ». Écrit en un mot à part (« Dorreval Chemicals Holdings »), le qualificatif est
+ *  un mot rare sans répondant, et le plafond des orphelins range déjà la paire au niveau
+ *  possible ; soudé, il n'était plus un mot, et la règle du dernier mot coupé lisait le radical
+ *  nu comme un début tronqué (mesuré le 27/09 : « Rakhmatullin Agroholding LLC » contre
+ *  « Rakhmatullin Agro LLC » à 0,907, la holding face à la société qui exploite). */
+const QUALIFICATIFS_SOUDES: ReadonlySet<string> = new Set(["holding", "holdings", "group", "invest", "trade", "export", "import", "industries"]);
+
+/** Les QUALIFICATIFS qu'un registre ajoute au nom commercial en le déposant, avec le mot de pays et la forme :
+ *  « Balogun Global Ventures » est déposé « Balogun Global Ventures Enterprises Limited », « Chukwu Petroleum
+ *  Services » « … Services Integrated Limited », « Nwosu Farm Produce » « … Produce & Sons Limited » (jeu 10).
+ *  Ils ne disent rien de plus que le nom commercial ; ce sont eux, et le pays, qu'un nom commercial sans
+ *  forme a le droit de ne pas porter (voir `scorePrepares`). */
+const QUALIFICATIFS_DE_REGISTRE: ReadonlySet<string> = new Set(["enterprise", "enterprises", "integrated", "venture", "ventures",
+  "global", "international", "general", "sons", "brothers", "limited", "company", "co"]);
+/* ni « Holdings » ni « Group » : la holding est une autre société que celle qui exploite (« Chelyabinsk Metal
+   Works » face à « Chelyabinsk Metal Works Holdings JSC », jeu 7 ; voir aussi QUALIFICATIFS_SOUDES) */
+/** Les membres génériques d'un composé allemand ou néerlandais : ce qui reste quand le nom d'usage a gardé
+ *  l'autre membre (« Stahl » de Stahlrohr, « maschinen » de Textilmaschinen, « handel » de Metaalhandel). */
+const GENERIQUES_COMPOSES: ReadonlySet<string> = new Set(["handel", "handels", "technik", "techniek", "maschinen", "maschine", "machines",
+  "machine", "gesellschaft", "groep", "gruppe", "werk", "werke", "bau", "industrie", "stahl", "staal", "metall", "metaal", "chemie",
+  "chemische", "agro", "expeditie", "overslag", "fabrik", "fabriek", "anlagen", "systeme", "service", "transport", "logistik",
+  "logistiek", "vertrieb", "vertriebs", "produktion", "produkte", "materiaal", "materialen", "handelsgroep", "import", "export"]);
+/** Les formes sous lesquelles `court` peut être un membre d'un composé : lui-même, et sans son pluriel
+ *  (« machines » dans « Machinehandel »). L'index cherche sous les mêmes (voir cribler.ts). */
+export function membres(court: string): string[] {
+  const m = [court];
+  if (court.endsWith("es")) m.push(court.slice(0, -2));
+  if (court.endsWith("s")) m.push(court.slice(0, -1));
+  return m;
+}
+/** `long` est-il un COMPOSÉ dont `court` (quatre lettres au moins, son pluriel ôté) est le premier ou le
+ *  dernier membre ? Le reste est un générique connu, ou un membre d'au moins quatre lettres quand `court`
+ *  n'est pas un mot anglais (« Logic » ne commence pas « Logistics » : voir l'abréviation d'usage). Ne vaut
+ *  que sous la marque allemande ou néerlandaise (voir `scorePrepares`). */
+export function compose(long: string, court: string): boolean {
+  for (const c of membres(court)) {
+    if (c.length < 4 || long.length < c.length + 3) continue;
+    const reste = long.startsWith(c) ? long.slice(c.length) : long.endsWith(c) ? long.slice(0, long.length - c.length) : "";
+    if (reste === "") continue;
+    if (GENERIQUES_COMPOSES.has(reste) || (reste.length >= 4 && !lemme(court))) return true;
+  }
+  return false;
+}
+/** La longueur du DESCRIPTEUR qui ouvre un nom : la suite des mots traduits, des particules et des adjectifs
+ *  régionaux avant le premier mot que les tables ne connaissent pas (« Comércio e Importação Ferreira » : deux ;
+ *  « Ferreira Comércio » : zéro). */
+export function descripteur(X: NomPrepare): number {
+  let n = 0;
+  while (n < X.mots.length && (X.traduits[n] || X.decor[n] || PARTICULES.has(X.mots[n]!))) n++;
+  return n;
+}
+/** `X` avec ses adjectifs régionaux au plancher, si `Y` n'en porte aucun ; sinon `X` tel quel, sans la
+ *  marque de décor (deux noms qui portent chacun un adjectif régional se distinguent par lui). */
+function regionsAuPlancher(X: NomPrepare, Y: NomPrepare): NomPrepare {
+  if (!X.decor.some(Boolean)) return X;
+  if (Y.decor.some(Boolean)) return { ...X, decor: X.decor.map(() => false) };
+  const poids = X.poids.map((p, i) => (X.decor[i] ? 1 : p));
+  return { ...X, poids, total: poids.reduce((s, p) => s + p, 0) };
+}
+
+/** `colle` est-il `radical` suivi d'un qualificatif de groupe soudé, face à un nom (`autres`,
+ *  les mots de l'autre côté) qui porte le radical nu et nulle part le qualificatif ? Trois
+ *  lettres de radical au moins ; et « Agro Holding » en deux mots face à « Agroholding » n'est
+ *  qu'une soudure, que le bloc lit. */
+export function qualificatifSoude(colle: string, radical: string, autres: readonly string[]): boolean {
+  if (radical.length < 3 || colle.length <= radical.length || !colle.startsWith(radical)) return false;
+  const q = colle.slice(radical.length);
+  if (!QUALIFICATIFS_SOUDES.has(q)) return false;
+  return !autres.some((w) => w.length >= 4 && (w.startsWith(q) || q.startsWith(w)));
+}
+
+/**
+ * Deux noms que leurs marques disent différents : des formes juridiques de pays DISJOINTS
+ * (« GmbH » contre « Inc. »), de familles disjointes (« Limited » contre « S.A. de C.V. »), de
+ * désignations distinctes d'un même registre (« Corp. » contre « Inc. »),
+ * ou un navire (préfixe « M/V ») contre une société (forme juridique). Comme un numéro d'un seul côté, le conflit abaisse (× 0,8), il n'annule pas :
+ * un groupe sanctionné ouvre des homonymes ailleurs, et le relecteur doit les voir.
+ */
+export function marquesEnConflit(a: Marques, b: Marques): boolean {
+  if (a.pays.length && b.pays.length && !a.pays.some((p) => b.pays.includes(p))) return true;
+  /* « X Pty Ltd » ou « X Sdn Bhd » face à « X Ltd » nu : la société privée et une autre
+     société du même nom (la cotée, l'étrangère), quand les deux portent une forme */
+  /* (sauf quand la forme d'un côté est écrite en chinois, 有限公司, qui ne dit pas le statut : voir `priveInconnu`) */
+  if (a.prive !== b.prive && a.familles.length && b.familles.length && !a.priveInconnu && !b.priveInconnu) return true;
+  if (a.familles.length && b.familles.length && !a.familles.some((p) => b.familles.includes(p))) return true;
+  /* « X Corp. » face à « X Inc. » : deux désignations d'un même registre, deux dépôts (voir DESIGNATIONS) */
+  if (a.designations.length && b.designations.length && !a.designations.some((d) => b.designations.includes(d))) return true;
+  /* deux filiations (« Bint » face à « Ibn »), deux types de navire (« Tug » face à « Barge »), une succursale
+     d'un seul côté (« X - Penang Branch » face à « X (Penang) ») : le possible, jamais le fort (jeu 9) */
+  if (a.filiation && b.filiation && a.filiation !== b.filiation) return true;
+  if (a.typeNavire && b.typeNavire && a.typeNavire !== b.typeNavire) return true;
+  if (!succursalesCompatibles(a.succursale, b.succursale)) return true;
+  return (a.navire && b.societe) || (b.navire && a.societe);
+}
+
+/** Deux mentions de succursale nomment-elles la même chose ? La même, oui ; une mention d'un seul côté,
+ *  non ; le siège face à une succursale, non ; deux lieux différents, non ; une succursale dont le nom ne dit
+ *  pas le lieu (« branch ») reste compatible avec un lieu, pas avec le siège (voir `mentionDeSuccursale`). */
+export function succursalesCompatibles(a: string, b: string): boolean {
+  if (a === b) return true;
+  if (a === "" || b === "" || a === "siege" || b === "siege") return false;
+  return a === "branch" || b === "branch";
+}
+
+/**
+ * LE CHAMP DE 35 CARACTÈRES. Un message de paiement (SWIFT, champs « 35x ») coupe le nom du
+ * bénéficiaire à 35 caractères, souvent au milieu d'un mot : « Beijing Zhongshang Dingsheng
+ * Mechan ». Comparé au nom entier, le nom coupé perd tous les mots qui manquent. Quand un nom
+ * a exactement cette longueur (34 si la coupe est tombée sur une espace) et que l'autre est
+ * plus long, on le compare AUSSI au début de l'autre coupé à la même longueur, et on garde le
+ * meilleur des deux scores.
+ */
+export const LONGUEUR_CHAMP = 35;
+/** Les largeurs de champ qui coupent un nom : AIS (20), les systèmes à 25, 30, 40, 50 caractères,
+ *  et SWIFT (35). Une coupe tombée sur une espace donne une lettre de moins. */
+export const LONGUEURS_CHAMP: readonly number[] = [20, 25, 30, 35, 40, 50, 60];
+export function estCoupe(brut: string): boolean {
+  const n = brut.trim().length;
+  return LONGUEURS_CHAMP.some((L) => n === L || n === L - 1);
+}
+
+/** `court` a-t-il l'air d'être le DÉBUT coupé de `long` ? La longueur ne suffit pas : un nom
+ *  de 34 caractères n'est pas coupé pour autant (« Selvaggio Maritime Holdings I S.A. », mesuré
+ *  le 27/09 : comparé au début de « … III S.A. », il perdait son numéro). Le début de l'autre
+ *  doit être le même texte, à deux caractères près, casse et espaces mis à part. */
+export function sembleCoupe(court: string, long: string): boolean {
+  if (!estCoupe(court) || long.trim().length <= court.trim().length) return false;
+  /* un champ coupe le texte TEL QUEL : le début du nom entier est le nom coupé, à la casse, aux
+     accents et à la ponctuation près, sans autre écart (tolérer deux lettres prenait « Denki
+     K.K. » pour « Denki S.A.S. » coupé à vingt, mesuré le 27/09) */
+  const n = (x: string) => normaliser(plier(x)).replace(/\s+/g, " ").trim();
+  const c = n(court), l = n(long);
+  if (!l.startsWith(c) || l.length <= c.length) return false;
+  /* la coupe tombe AU MILIEU d'un mot (un champ coupe sans regarder), et ce qui suit n'est
+     pas un numéro : « Istrenna Venture II » n'est pas « Istrenna Venture III » coupé, ni
+     « Kerrindale Express 3 » un « Kerrindale Express 30 » (mesuré le 27/09 sur le jeu 5) */
+  const suite = l.slice(c.length);
+  if (/^(?:\s*)(?:\d+|[ivx]+)(?![\p{L}])/u.test(suite)) return false;
+  /* la coupe ne tombe pas DANS une forme juridique qui en commence une autre, ni dans le pluriel d'un
+     mot du dictionnaire : « … d'Import-Export SA » (34 caractères) n'est pas « … SARL » coupé, ce sont deux
+     sociétés ; « Patience Provisions Store » (25) n'est pas « … Stores Limited » coupé (jeu 10, 27/09 :
+     deux fausses alertes à 1,000 par cette seule porte) */
+  const dernierMot = c.split(" ").at(-1) ?? "";
+  const reste = /^\p{L}+/u.exec(suite)?.[0] ?? "";
+  if (reste !== "" && ((FORMES.has(dernierMot) && FORMES.has(dernierMot + reste)) || (DICTIONNAIRE.has(dernierMot) && /^(?:s|es)$/.test(reste)))) return false;
+  /* à 35 (le champ SWIFT), la coupe peut tomber sur une limite de mot ; aux autres largeurs,
+     plus rares, on exige qu'elle tombe au milieu d'un mot (« Thornbury Chemical Corporation »
+     en trente n'est pas « … Corporation of Canada » coupé) */
+  const n0 = court.trim().length;
+  if (n0 === LONGUEUR_CHAMP || n0 === LONGUEUR_CHAMP - 1) return /^\s?\p{L}/u.test(suite);
+  return /^\p{L}/u.test(suite);
+}
+
+/** Le score de deux noms BRUTS, déjà préparés, règle du champ de 35 comprise. */
+export function scoreBrut(f: Frequences, a: string, A: NomPrepare, b: string, B: NomPrepare, options: OptionsScore = {}): number {
+  let s = scorePrepares(A, B, options);
+  const ta = a.trim(), tb = b.trim();
+  /* le nom coupé à la longueur de l'autre est CE nom, tronqué : la coupe emporte avec les derniers mots la
+     mention de succursale qu'ils portaient, et le nom coupé la garde (jeu 10, 27/09 : « …, Maputo Branch »
+     coupé à 34 lettres rejoignait « …, Durban Branch » à 1,000, sans plus rien dire de sa succursale). Ses
+     formes, elles, se lisent sur le texte coupé, tel que le champ le montre : « FOSHAN JINYUAN CERAMIC SA »
+     est « … Sanitary Ware Co., Ltd. » coupé à 25, et son « SA » n'est pas une forme en conflit avec Ltd */
+  const coupeDe = (brut: string, entier: NomPrepare, L: number): NomPrepare => {
+    const c = preparerNom(f, brut.slice(0, L), entier.marques.cantonais ? "cantonais" : "mandarin");
+    return { ...c, marques: { ...c.marques, succursale: entier.marques.succursale } };
+  };
+  if (sembleCoupe(ta, tb)) s = Math.max(s, scorePrepares(A, coupeDe(tb, B, ta.length), options));
+  if (sembleCoupe(tb, ta)) s = Math.max(s, scorePrepares(coupeDe(ta, A, tb.length), B, options));
+  return s;
+}
+
+/**
+ * LES VARIANTES D'UN NOM TEL QU'UN DOCUMENT L'ÉCRIT. Un connaissement, un virement, une
+ * facture ajoutent au nom ce qui n'en fait pas partie, et le nom listé se perd dedans :
+ *  - un AUTRE nom annoncé : « ex- », « f/k/a », « formerly », « a.k.a. », « dba », « t/a »,
+ *    « trading as » ; chaque nom est une variante, et chacun est criblé ;
+ *  - des annotations : le pavillon (« (PANAMA FLAG) », « - LIBERIA FLAG »), l'état
+ *    (« (in liquidation) »), la succursale (« , Singapore Branch »), la boîte postale et ce qui
+ *    suit, le type de navire (« (BULK CARRIER) », « LNG CARRIER » en fin), un numéro de voyage
+ *    en fin (« V.031W », « 0412N ») ;
+ *  - une adresse après la forme juridique (« Quarrington Metals FZE, Jebel Ali Free Zone »).
+ * Le nom tel qu'écrit reste toujours une variante : on ajoute des lectures, on n'en retire
+ * aucune. Un « (Shanghai) » n'est PAS retiré : c'est souvent une filiale, pas une annotation.
+ */

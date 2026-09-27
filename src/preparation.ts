@@ -1,0 +1,1170 @@
+/**
+ * LA PRÉPARATION D'UN NOM D'ENTITÉ ET SES TABLES : formes juridiques, phrases, locutions, traductions,
+ * particules, abréviations, marqueurs de langue, préfixes de navires ; analyserEntite, preparerEntite, jetonsEntite.
+ * Découpé de entites.ts le 28/09/2026 : entites.ts reste la façade qui réexporte tout, aucun import ailleurs ne change.
+ */
+import { readFileSync, existsSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { gunzipSync } from "node:zlib";
+import { normaliser, jetons } from "./matchers/normaliser.ts";
+import { mesurerPaires, validerPaires, type JeuDePaires, type TableDUnPalier, type Cellule } from "./measure.ts";
+import type { Matcher, PalierId } from "./matcher.ts";
+import { distanceOsa } from "./matchers/damerau.ts";
+import { preparer } from "./matchers/preparer.ts";
+import { translitterer } from "./matchers/translitteration.ts";
+import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, type Lecture } from "./ecritures.ts";
+import { lemme } from "./mots.ts";
+import { porteUnJalon } from "./score.ts";
+import { lettrePerdue } from "./score.ts";
+import { LU_UN } from "./score.ts";
+import { PERDU } from "./score.ts";
+import { PAYS_ADJECTIFS } from "./variantes.ts";
+import { SIGLES_PAYS } from "./variantes.ts";
+
+/* ─────────────────────────── la préparation ─────────────────────────── */
+
+/** Formes juridiques d'un mot, telles que la normalisation les laisse (minuscules, sans
+ *  points, lettres isolées rejointes : « S.A. » → « sa », « A.Ş. » → « as »). « Compañía »,
+ *  « Compagnie », « Cía », « Cie » et « Établissements » sont le mot « société » : retirés
+ *  comme lui. */
+export const FORMES = new Set([
+  /* anglophones */ "llc", "pllc", "ltd", "limited", "ltee", "inc", "incorporated", "corp", "corporation",
+  "co", "company", "plc", "llp", "lp", "pvt", "pte", "pty",
+  /* le mot « société » */ "compania", "companhia", "compagnie", "cia", "cie", "etablissements", "ets",
+  "establishment", "establishments", "societe", "ste", "sociedad", "sociedade", "borisat", "sherkat", "sherkate", "sharikat", "sharika",
+  "shirkat", "shirka", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio", "scea", "gaec", "earl", "dac",
+  "pcl", "teoranta", "teo", "cuideachta", "sapi", "sau",
+  /* Europe ; « mbH » est le « GmbH » d'une « Gesellschaft mbH » ou « Handelsgesellschaft mbH » ; « KGaA », « GbR »,
+     « SCE » sont des sociétés de personnes et de coopérateurs ; « Lda » la Limitada portugaise, angolaise, mozambicaine */
+  "mbh", "kgaa", "gbr", "sce", "lda",
+  /* Europe */ "gmbh", "kg", "ohg", "ug", "ag", "se", "sa", "sas", "sasu", "sarl", "eurl", "snc",
+  "sprl", "bvba", "srl", "spa", "sl", "slu", "sau", "bv", "nv", "vof", "oy", "oyj", "ab", "as",
+  "asa", "aps", "kft", "zrt", "nyrt", "sro", "doo", "ad", "eood", "ood",
+  /* Amérique latine ; « Lda » au Portugal, en Angola, au Mozambique (jeu 10) */ "ltda", "lda", "eireli", "cv", "sapi", "sac", "saa",
+  /* Russie et CEI */ "ooo", "oao", "zao", "pao", "ao", "jsc", "pjsc", "ojsc", "cjsc", "too",
+  /* Ukraine, Grèce, Vietnam, Thaïlande */ "prat", "pat", "tov", "ae", "epe", "ike", "oe", "ee", "sia", "tnhh", "chamkat", "jamkat",
+  /* désignations russes */ "npp", "npo", "npk", "npf", "pkf",
+  /* Indonésie, en tête seulement (voir le filtre) */ "pt", "ud",
+  /* Turquie */ "sti",
+  /* Golfe */ "fze", "fzco", "fzc", "fzllc", "fz", "wll", "spc", "est",
+  /* les zones franches de Dubaï et des Émirats, écrites comme une forme (« Orchid Ridge Commodities DMCC ») */
+  "dmcc", "jafza", "dafza", "difc", "dso", "dwc", "rakez", "kizad",
+  /* Azerbaïdjan, Liban */ "mmc", "sal",
+  /* Asie */ "sdn", "bhd", "berhad", "kk", "jusikhoesa", "chusikhoesa", "yuhanhoesa", "tbk",
+]);
+/** Formes qui ne se placent QU'À LA FIN d'un nom : en tête, le même jeton est autre chose
+ *  (« Ag. Prokopis » est « Agios », « As-Salam » un article arabe). Les formes russes, elles,
+ *  se placent devant (« OOO Kamaflot ») et restent retirées partout. */
+const FORMES_FINALES = new Set(["ag", "se", "sa", "as", "ad", "ab", "sl", "kg", "nv", "bv", "oy",
+  "spa", "srl", "sas", "snc", "sac", "sti", "est", "kk", "cv", "ae", "epe", "ike",
+  /* « Teo. » (Teoranta) ferme un nom irlandais ; en tête, « Teo » est une syllabe teochew (« Teo Heng », jeu 9) */
+  "teo"]);
+/** Les formes écrites en plusieurs mots, retirées AVANT les mots isolés (sinon « liability »
+ *  resterait seul au milieu du nom). Les translittérations russes sont parmi les mots les
+ *  plus fréquents des listes : « obshchestvo » figure dans 1 361 entrées sur 33 393
+ *  (mesuré le 27/09/2026 sur les cinq listes), sans rien dire de qui est désigné. */
+const PHRASES = [
+  " obshchestvo s ogranichennoi otvetstvennostyu ", " obshchestvo s ogranichennoy otvetstvennostyu ",
+  " tovarishchestvo s ogranichennoi otvetstvennostyu ",
+  " publichnoe aktsionernoe obshchestvo ", " zakrytoe aktsionernoe obshchestvo ",
+  " otkrytoe aktsionernoe obshchestvo ", " aktsionernoe obshchestvo ",
+  " public joint stock company ", " closed joint stock company ", " open joint stock company ",
+  " private joint stock company ",
+  /* la même forme entre parenthèses, sans le mot company : « Golestan Nakhl Trading Co. (Private Joint
+     Stock) » ; lue comme une filiale, elle plafonnait la paire au possible (jeu 9, 27/09 : 0,800) */
+  " private joint stock ", " public joint stock ", " closed joint stock ", " open joint stock ",
+  " sherkat sahami khas ", " sherkate sahami khas ", " sahami khas ", " sahami khass ", " sahami amm ",
+  " public company limited ", " designated activity company ", " perseroan terbatas ",
+  " usaha dagang ", " commanditaire vennootschap ", " perseroan komanditer ", " sole proprietor company ", " sole proprietorship company ",
+  " joint stock company ", " limited liability company ", " limited liability partnership ",
+  " private limited ", " public limited company ", " proprietary limited ",
+  " with limited liability ", " sole proprietorship ",
+  " free zone establishment ", " free zone company ", " free zone limited liability company ",
+  " gesellschaft mit beschrankter haftung ", " aktiengesellschaft ", " kommanditgesellschaft ",
+  /* LA GMBH & CO. KG : la société en commandite dont la GmbH est l'associée commanditée est une AUTRE
+     personne morale que cette GmbH (« Vogel Kunststofftechnik GmbH » et « … GmbH & Co. KG », jeu 10, 27/09 :
+     1,000, le « & Co. KG » fondu dans les formes et la famille « llc » partagée). Lue en bloc, avant les
+     mots isolés, elle porte la seule famille des sociétés de personnes ; « & » est déjà une espace ici, et
+     « und », « and » s'écrivent encore */
+  " gmbh co kg ", " gmbh und co kg ", " gmbh and co kg ", " mbh co kg ", " mbh und co kg ", " mbh and co kg ",
+  " ag co kg ", " ag und co kg ", " se co kg ", " se und co kg ", " gmbh co ohg ", " mbh co ohg ", " gmbh co kgaa ",
+  " gmbh co ", " mbh co ", " co kg ", " co ohg ", " und co kg ", " and co kg ",
+  /* et la forme allemande écrite avec son préfixe de commerce (« Handelsgesellschaft mbH » est une GmbH, voie registres) */
+  " handelsgesellschaft mbh co kg ", " gesellschaft mbh co kg ",
+  " societe anonyme ", " societe a responsabilite limitee ", " societe par actions simplifiee ",
+  " sociedad anonima cerrada ", " sociedad anonima ", " sociedad limitada ",
+  " sociedad de responsabilidad limitada ",
+  " sociedad anonima promotora de inversion de capital variable ", " sociedad anonima promotora de inversion ",
+  " sociedad anonima unipersonal ", " sociedad anonima de capital variable ",
+  " sociedade anonima ", " sociedade limitada ", " limitada ", " s de rl de cv ", " s de rl ",
+  " sa de cv ", " de cv ", " spol s ro ", " spol sro ",
+  " societa per azioni ", " societa a responsabilita limitata ",
+  " besloten vennootschap ", " naamloze vennootschap ", " sp zoo ", " sp z oo ",
+  " anonim sirketi ", " limited sirketi ", " sirketi ",
+  " sendirian berhad ", " sendirian ",
+  " kabushiki kaisha ", " kabushikigaisha ", " godo kaisha ", " yugen kaisha ",
+  " chusik hoesa ", " jusik hoesa ", " gufen youxian gongsi ", " siren youxian gongsi ", " youxian gongsi ", " youxian zeren gongsi ",
+  " cong ty tnhh ", " cong ty co phan ", " cong ty ",
+  " spolka z ograniczona odpowiedzialnoscia ", " spolka akcyjna ", " spolka jawna ",
+  " borisat chamkat ", " borisat jamkat ",
+  " tovarishchestvo s ogranichennoy otvetstvennostyu ",
+  /* les désignations russes d'entreprise, sigle ou en toutes lettres : NPP (entreprise
+     scientifique et de production), NPO, NPK, PKF, PO. Comme une forme, elles disent le
+     statut, pas le nom : « NPP Ilmenostat » est « Ilmenostat ». */
+  " nauchno proizvodstvennoe predpriyatie ", " nauchno proizvodstvennoe obedinenie ",
+  " nauchno proizvodstvennyi kompleks ", " nauchno proizvodstvennaya firma ",
+  " proizvodstvenno kommercheskaya firma ", " proizvodstvennoe obedinenie ",
+  " scientific production enterprise ", " scientific production association ",
+  " scientific and production enterprise ", " scientific and production association ",
+  " research and production enterprise ", " research and production association ",
+  " production and commercial firm ", " production association ",
+].sort((a, b) => b.length - a.length);   /* les plus longues d'abord : « sociedad anonima » ne doit pas manger « sociedad anonima unipersonal » */
+/** Les locutions d'usage abrégées en bloc : leur sens tient à leurs voisins (« San » seul
+ *  est aussi « saint » en espagnol ; « San. ve Tic. » est toujours « Sanayi ve Ticaret »). */
+const LOCUTIONS: readonly [string, string][] = [
+  [" san ve tic ", " sanayi ticaret "], [" san tic ", " sanayi ticaret "],
+  [" ind e com ", " industria comercio "], [" ind com ", " industria comercio "],
+  [" imp exp ", " import export "], [" imp and exp ", " import export "],
+  [" import and export ", " import export "],
+  [" torgovy dom ", " trading house "], [" torgovyi dom ", " trading house "], [" torgovyy dom ", " trading house "],
+  /* malais, indonésien, vietnamien, arabe romanisé (jeu 9) */
+  [" kelapa sawit ", " palm oil "], [" minyak kelapa sawit ", " palm oil "], [" minyak sawit ", " palm oil "],
+  [" isirong sawit ", " palm kernel "], [" buah sawit ", " palm fruit "],
+  [" cao su ", " rubber "], [" phan phoi ", " distribution "], [" thuc pham ", " food "], [" may mac ", " garment "],
+  [" hai san ", " seafood "], [" dau tu ", " investment "], [" thiet bi ", " equipment "], [" vat tu ", " materials "], [" kinh doanh ", " trading "],
+  [" al aruz ", " rice "], [" al arz ", " rice "], [" al sukkar ", " sugar "], [" al amma ", " general "], [" al qabidha ", " holding "],
+  [" li tijarat ", " trading "], [" li tijarah ", " trading "], [" lil tijara ", " trading "], [" lil tijarah ", " trading "],
+  /* vietnamien : thương mại (commerce), xuất nhập khẩu (import-export), sản xuất (production),
+     dịch vụ (services), vận tải (transport), công nghiệp (industrie), kỹ thuật (technique) */
+  [" thuong mai ", " trading "], [" xuat nhap khau ", " import export "], [" san xuat ", " production "],
+  [" dich vu ", " services "], [" van tai ", " transport "], [" cong nghiep ", " industry "], [" ky thuat ", " technology "],
+  [" det may ", " textile garment "], [" giay da ", " leather shoes "], [" thep ", " steel "], [" xay dung ", " construction "],
+  [" co khi ", " mechanical "], [" dien tu ", " electronics "], [" thuy san ", " seafood "], [" nong san ", " agricultural products "],
+  [" mot thanh vien ", " "], [" mtv ", " "], [" one member ", " "],
+  /* les sigles d'un clavardage vietnamien : « cty cp » est « công ty cổ phần », la société par actions,
+     que la phrase retire ensuite (jeu 9, 27/09 : « cty cp phan phoi minh khang » plafonné à 0,800, « cp »
+     mot rare orphelin) ; « phân phối » (distribution) est un mot du commerce, traduit comme les autres */
+  [" cty cp ", " cong ty co phan "], [" cong ty cp ", " cong ty co phan "], [" phan phoi ", " distribution "],
+  [" xnk ", " import export "], [" cty ", " "], [" tong cong ty ", " "], [" hop tac xa ", " cooperative "], [" htx ", " cooperative "],
+  [" det lua ", " silk weaving "], [" lua ", " silk "], [" gao ", " rice "], [" nhua ", " plastics "], [" go ", " wood "],
+  [" tp ho chi minh ", " hochiminh "], [" ho chi minh city ", " hochiminh "], [" ho chi minh ", " hochiminh "], [" tp ", " "],
+  [" thanh pho ", " "], [" ha noi ", " hanoi "], [" hai phong ", " haiphong "], [" da nang ", " danang "], [" nam dinh ", " namdinh "],
+  [" can tho ", " cantho "], [" sai gon ", " saigon "], [" binh duong ", " binhduong "], [" dong nai ", " dongnai "],
+  /* villes thaïes et chinoises que les documents soudent */
+  [" chiang mai ", " chiangmai "], [" hat yai ", " hatyai "], [" hong kong ", " hongkong "],
+  /* russe : les mots génériques d'entreprise, translittérés, vers l'anglais */
+  [" stal ", " steel "], [" treiding ", " trading "], [" treyding ", " trading "], [" torgovlya ", " trade "],
+  [" promyshlennost ", " industry "], [" promyshlennaya ", " industrial "], [" zavod ", " plant "], [" kombinat ", " works "],
+  [" fabrika ", " factory "], [" neft ", " oil "], [" khimiya ", " chemical "], [" khimicheskiy ", " chemical "],
+  [" metallurgicheskiy ", " metallurgical "], [" mashinostroitelny ", " machine building "], [" stroitelstvo ", " construction "],
+  [" sudokhodnaya kompaniya ", " shipping "], [" sudokhodstvo ", " shipping "], [" morskoy ", " marine "], [" gruppa ", " group "],
+  [" kompaniya ", " "], [" kompania ", " "], [" firma ", " "],
+  /* polonais : les descripteurs d'entreprise, en sigle ou en toutes lettres, ne nomment pas */
+  [" przedsiebiorstwo produkcyjno handlowo uslugowe ", " "], [" przedsiebiorstwo handlowo uslugowe ", " "],
+  [" przedsiebiorstwo produkcyjno handlowe ", " "], [" przedsiebiorstwo wielobranzowe ", " "],
+  [" firma handlowo uslugowa ", " "], [" firma handlowa ", " "], [" zaklad produkcyjno handlowy ", " "],
+  [" pphu ", " "], [" phu ", " "], [" fhu ", " "], [" zph ", " "], [" phpu ", " "], [" ph ", " "],
+  [" przedsiebiorstwo handlowe ", " "], [" przedsiebiorstwo produkcyjne ", " "], [" przedsiebiorstwo uslugowe ", " "],
+];
+/**
+ * LES MOTS GÉNÉRIQUES DU COMMERCE, TRADUITS. Une société chinoise a un nom officiel en
+ * caractères, une romanisation (« Jiangsu Mingluochen Maoyi Youxian Gongsi ») et un nom
+ * anglais (« Jiangsu Mingluochen Trading Co., Ltd. ») ; les documents et les listes portent
+ * l'un ou l'autre. Les mots traduits ici sont ceux du VOCABULAIRE COMMERCIAL (trading,
+ * industry, technology, precision…), jamais le nom propre : traduits, ils pèsent peu (ils
+ * sont partout dans les listes) et le nom propre décide, comme il doit.
+ */
+/** Le persan et l'arabe romanisés, à part : « li » ne s'y lit préposition que devant l'un de ces
+ *  mots, et le repli des graphies (`pliGenerique`) ne cherche que parmi eux. Tejarat (تجارت) et
+ *  tijara (تجارة) sont « trading » : le nom anglais d'une société de commerce le dit ainsi, jamais
+ *  « trade » (jeu 9, 27/09 : « Pesteh Kavir Kerman Trading Co. » et « Peste Kavir Kerman Tejarat Co. » à
+ *  0,770, « trade » orphelin face à « trading »). */
+const TRADUCTIONS_ARABES: ReadonlyMap<string, string> = new Map(Object.entries({
+  bazargani: "trading", tejarat: "trading", tejarati: "trading", tijarat: "trading", sanati: "industrial",
+  tolid: "production", tolidi: "production", tijara: "trading", tijarah: "trading", tijariya: "trading",
+  tijariyah: "trading", sinaiya: "industrial", sinaiyah: "industrial", lil: "",
+  muqawalat: "contracting", mukawalat: "contracting", muassasat: "", moassasat: "", muassasa: "", moassasa: "",
+  liltijara: "trading", liltijarah: "trading", liltijariya: "trading", liltijarat: "trading", litijara: "trading",
+  litijarah: "trading", litijarat: "trading", lilmuqawalat: "contracting", lilsinaa: "industry",
+  lilsinaah: "industry", handasiya: "engineering", handasiyah: "engineering", alhandasiya: "al engineering",
+  /* la holding (القابضة), les services (الخدمات), le riz (الأرز) : les mots que le nom anglais traduit
+     (« Sharikat Rawasi Al Najd Al Qabidha » est « Rawasi Al Najd Holding Company », jeu 9) */
+  qabidha: "holding", qabida: "holding", qabidah: "holding", khadamat: "services", khidmat: "services", aruz: "rice",
+}));
+/** Les graphies d'une romanisation persane ou arabe que la table ne liste pas une à une : gh pour
+ *  g (« Bazarghani »), une voyelle longue doublée (« Tejaarat », « Bazaargani »). Le repli ne touche
+ *  que la CLÉ cherchée, parmi les mots persans et arabes : un nom propre reste tel quel. */
+function pliGenerique(j: string): string {
+  return j.replace(/gh/g, "g").replace(/aa/g, "a").replace(/ee/g, "i").replace(/oo/g, "u");
+}
+function traduction(j: string): string | undefined {
+  const t = TRADUCTIONS.get(j);
+  if (t !== undefined) return t;
+  const p = pliGenerique(j);
+  return p === j ? undefined : TRADUCTIONS_ARABES.get(p);
+}
+export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
+  /* chinois (pinyin) */ maoyi: "trading", jinchukou: "import export", keji: "technology", dianzi: "electronics",
+  gongye: "industry", shiye: "industrial", zhizao: "manufacturing", jituan: "group", guoji: "international",
+  wuliu: "logistics", huoyun: "freight", hangyun: "shipping", chuanwu: "shipping", jixie: "machinery", luntai: "tire",
+  huagong: "chemical", fangzhi: "textile", fuzhuang: "garment", shipin: "food", jinshu: "metal",
+  gangtie: "steel", suliao: "plastic", jianzhu: "construction", nengyuan: "energy", fazhan: "development",
+  touzi: "investment", kongzhi: "holdings", konggu: "holdings", shangmao: "trading", jingmao: "trading",
+  yuanyang: "ocean", jingmi: "precision", haiyun: "shipping", gongju: "tools",
+  /* japonais */ kogyo: "industry", kougyou: "industry", shoji: "trading", shouji: "trading", sangyo: "industry",
+  sangyou: "industry", seisakusho: "works", boeki: "trading", boueki: "trading", denki: "electric",
+  kagaku: "chemical", seiko: "precision", seikou: "precision", jidosha: "automotive", unyu: "transport",
+  kaiun: "shipping", kaihatsu: "development", tsusho: "trading", tsuusho: "trading",
+  /* coréen */ sanop: "industry", sanup: "industry", muyeok: "trading", muyok: "trading", jeongmil: "precision",
+  jungmil: "precision", jeonja: "electronics", junja: "electronics", hwahak: "chemical", mulryu: "logistics",
+  haeun: "shipping", gaebal: "development", tongsang: "trading",
+  /* persan et arabe : voir TRADUCTIONS_ARABES */ ...Object.fromEntries(TRADUCTIONS_ARABES),
+  /* « fils » et « frères » dans les langues du commerce */
+  sinovi: "sons", synowie: "sons", sohne: "sons", soehne: "sons", hijos: "sons", fils: "sons", figli: "sons",
+  filhos: "sons", zonen: "sons", sonner: "sons", oglu: "sons", ogullari: "sons",
+  freres: "brothers", fratelli: "brothers", irmaos: "brothers", brueder: "brothers", bruder: "brothers",
+  bracia: "brothers", hermanos: "brothers", gebruder: "brothers", ikhwan: "brothers",
+  /* les mots génériques des langues européennes du commerce, ramenés au lemme anglais que
+     les listes écrivent (jeu 8, 27/09 : « Kardeşler Nakliyat » contre « Brothers Transport »,
+     « Spedizioni » contre « Forwarding », « Zakłady Chemiczne » contre « Chemical Works »).
+     « maritime » n'y est pas : c'est aussi un mot anglais, et « X Maritime » et « X Shipping »
+     sont deux sociétés d'un même groupe */
+  /* turc */ kardesler: "brothers", nakliyat: "transport", tasimacilik: "transport", ticaret: "trading", sanayi: "industry",
+  denizcilik: "shipping", gida: "food", tekstil: "textile", insaat: "construction", lojistik: "logistics", ihracat: "export",
+  ithalat: "import", madencilik: "mining", enerji: "energy", kimya: "chemical", yatirim: "investment", tarim: "agriculture",
+  /* italien */ spedizioni: "forwarding", trasporti: "transport", navigazione: "navigation", commercio: "trading",
+  commerciale: "commercial", industriale: "industrial", industrie: "industries", costruzioni: "construction",
+  /* espagnol et portugais */ comercio: "trading", comercial: "commercial", naviera: "shipping", transportes: "transport",
+  industrias: "industries", sucesores: "successors", navegacao: "navigation", navegacion: "navigation", construcciones: "construction",
+  alimentos: "food", alimentacion: "food", pesquera: "fishing", agricola: "agricultural", agropecuaria: "agricultural",
+  /* les noms d'activité des registres lusophones et hispanophones (« Exportação de Café de Huambo », « Comércio e
+     Importação Ferreira », jeu 10) : la table n'avait que l'adjectif (« exportadora ») */
+  exportacao: "export", importacao: "import", exportacoes: "export", importacoes: "import", exportacion: "export",
+  importacion: "import", exportaciones: "export", importaciones: "import",
+  /* allemand et néerlandais */ handel: "trading", handels: "trading", handelsgesellschaft: "trading", spedition: "forwarding",
+  schifffahrt: "shipping", schiffahrt: "shipping", reederei: "shipping", werke: "works", werk: "works", bau: "construction",
+  scheepvaart: "shipping", rederij: "shipping", expeditie: "forwarding", scheepsreparatie: "ship repair",
+  /* les registres néerlandais et allemand (jeu 10) : la société de commerce en un mot, et l'adjectif face au
+     radical que le nom d'usage garde (« Chemische » et « Chemie », « Agrarische » et « Agro ») */
+  handelsmaatschappij: "trading", handelsgroep: "trading", handelsonderneming: "trading",
+  chemische: "chemical", chemisch: "chemical", chemie: "chemical", agrarische: "agro", agrarisch: "agro", overslag: "transshipment",
+  /* afrikaans (jeu 10 : « Voedsel Verwerking » est « Food Processing », « Boerdery » est « Farming ») ; « Eiendoms
+     Beperk » et son sigle « (Edms) Bpk » sont la forme « (Pty) Ltd ». « Bou » seul n'y est pas : c'est aussi l'arabe
+     maghrébin « Bou » (Abu), et il ne se traduit que sous une forme sud-africaine (voir `analyserEntite`) */
+  voedsel: "food", verwerking: "processing", konstruksie: "construction", vervoer: "transport", boerdery: "farming",
+  boumateriaal: "building materials", maatskappy: "company", beperk: "ltd", eiendoms: "pty", edms: "pty", bpk: "ltd",
+  vervaardiging: "manufacturing", ingenieurs: "engineering", myn: "mining", landbou: "agriculture", visserye: "fisheries",
+  hout: "timber", staal: "steel", chemies: "chemical", dienste: "services", beleggings: "investments", groep: "group",
+  nywerhede: "industries", produkte: "products", handelaars: "traders", vervoerdienste: "transport services",
+  /* polonais et tchèque */ zaklady: "works", zaklad: "works", chemiczne: "chemical", handlowy: "trading", handlowa: "trading",
+  handlowe: "trading", przemysl: "industry", przemyslowe: "industrial", budowlane: "construction", transportowe: "transport",
+  spedycja: "forwarding", logistyka: "logistics", zegluga: "shipping", stavebni: "construction", obchodni: "trading",
+  /* grec translittéré (« Ναυτιλιακή Εταιρεία » est « Shipping Company ») */ naftiliaki: "shipping", naftiki: "shipping",
+  etaireia: "", etairia: "", emporiki: "trading", viomichaniki: "industrial", viomichania: "industry", techniki: "technical",
+  kataskevastiki: "construction", metaforiki: "transport", touristiki: "tourism",
+  /* scandinave */ rederi: "shipping", brodre: "brothers", broder: "brothers", handelsbolag: "trading",
+  /* malais et indonésien (jeu 9 : « Kilang Beras » est « Rice Mill », « Syarikat Getah » est « Rubber Company ») */
+  kilang: "mill", pabrik: "mill", beras: "rice", padi: "paddy", getah: "rubber", sawit: "palm", minyak: "oil",
+  perdagangan: "trading", perniagaan: "trading", dagang: "trading", pembinaan: "construction", pengangkutan: "transport",
+  perkapalan: "shipping", pelayaran: "shipping", industri: "industries", logistik: "logistics", elektrik: "electrical",
+  makanan: "food", sumber: "resources", pertanian: "agriculture", perikanan: "fisheries", pembangunan: "development",
+  kejuruteraan: "engineering", teknologi: "technology", hartanah: "property", pelaburan: "investment", perusahaan: "enterprise",
+  pengeluaran: "manufacturing", pembekal: "supplier", pembekalan: "supply", perabot: "furniture", kayu: "timber",
+  syarikat: "company", kumpulan: "group",
+  /* l'arabe romanisé des marchandises : « Li Tijarat Al Aruz » est « Rice Trading » (les locutions font le reste) */
+  aruz: "rice", sukkar: "sugar", sukar: "sugar", hadid: "steel", mawad: "materials", khadamat: "services", khidmat: "services",
+  naql: "transport", shahn: "shipping", aghdhiya: "food", malabis: "garments", utoor: "perfumes", otoor: "perfumes",
+  itarat: "tyres", khurda: "scrap", maadin: "metals", qabidha: "holding", qabida: "holding",
+}));
+
+/* construit ici, à côté de TRADUCTIONS, pour qu'aucun module chargé avant la préparation ne le lise trop tôt (découpage du 28/09) */
+/** Les MOTS DU COMMERCE dont le pluriel ne change pas la société : les cibles anglaises de TRADUCTIONS
+ *  (« metal », « industry », « supply »), et les qualificatifs qu'un registre écrit au pluriel ou non
+ *  (« Enterprises », « Holdings », « Products », « Solutions »). Hors de cette liste, un pluriel est un
+ *  autre nom : « Bonny Egret » et « Bonny Egrets » sont deux navires, « Provisions Store » et
+ *  « Provisions Stores » deux boutiques, « Yusuf Provisions Shop » et « … Shops » aussi (jeu 10, 27/09 :
+ *  six fausses alertes fortes du pluriel ouvert à tout le dictionnaire au tour cinq). */
+export const GENERIQUES_AU_PLURIEL: ReadonlySet<string> = new Set([
+  ...[...TRADUCTIONS.values()].flatMap((v) => v.split(" ")).filter((m) => m.length >= 3),
+  "industries", "supplies", "services", "products", "systems", "solutions", "enterprises", "holdings", "investments",
+  "resources", "textiles", "foods", "exports", "imports", "traders", "merchants", "metals", "chemicals", "materials",
+  "logistics", "technologies", "machines", "industry", "supply", "service", "product", "system", "solution", "enterprise",
+  "investment", "resource", "food", "trader", "merchant", "machine",
+  /* les noms d'agent du commerce, qu'un registre met au pluriel ou non (« Contractors », « Engineers ») */
+  "engineer", "engineers", "contractor", "contractors", "consultant", "consultants", "builder", "builders", "developer", "developers",
+  "distributor", "distributors", "supplier", "suppliers", "exporter", "exporters", "importer", "importers", "manufacturer",
+  "manufacturers", "producer", "producers", "associate", "associates", "partner", "partners", "agent", "agents", "broker", "brokers",
+  "dealer", "dealers", "grower", "growers", "planter", "planters", "miller", "millers", "printer", "printers", "packer", "packers",
+  "farmer", "farmers", "forwarder", "forwarders", "shipper", "shippers", "carrier", "carriers", "operator", "operators",
+  "wholesaler", "wholesalers", "retailer", "retailers", "refiner", "refiners", "tanner", "tanners", "weaver", "weavers",
+  /* les marchandises et les métiers, ce qu'une société vend ou fait : au pluriel ou non, c'est la même
+     (« Valve Co. », « Valves Co. » ; « Fuel Supply », « Fuels Supply » ; « Malting », « Maltings »). Jamais
+     l'enseigne elle-même : « Store », « Shop », « Boutique » au pluriel sont une autre boutique */
+  "valve", "valves", "fuel", "fuels", "provision", "provisions", "venture", "ventures", "malting", "maltings", "part", "parts",
+  "spare", "spares", "motor", "motors", "pump", "pumps", "pipe", "pipes", "cable", "cables", "wire", "wires", "paint", "paints",
+  "coating", "coatings", "fertilizer", "fertilizers", "seed", "seeds", "grain", "grains", "feed", "feeds", "mineral", "minerals",
+  "ore", "ores", "log", "logs", "board", "boards", "panel", "panels", "brick", "bricks", "tile", "tiles", "polymer", "polymers",
+  "resin", "resins", "paper", "papers", "fabric", "fabrics", "shoe", "shoes", "bag", "bags", "tool", "equipment", "equipments",
+  "instrument", "instruments", "device", "devices", "component", "components", "accessory", "accessories", "commodity",
+  "commodities", "beverage", "beverages", "drink", "drinks", "fruit", "fruits", "vegetable", "vegetables", "nut", "nuts", "spice",
+  "spices", "cosmetic", "cosmetics", "pharmaceutical", "pharmaceuticals", "medicine", "medicines", "drug", "drugs", "vehicle",
+  "vehicles", "truck", "trucks", "tyre", "tire", "tires", "battery", "batteries", "lubricant", "lubricants", "solvent", "solvents",
+  "dye", "dyes", "pigment", "pigments", "ceramic", "ceramics", "mill", "mills", "farm", "farms", "estate", "estates", "plantation",
+  "plantations", "fishery", "mine", "mines", "quarry", "quarries", "foundry", "foundries", "workshop", "workshops", "warehouse",
+  "warehouses", "depot", "depots", "terminal", "terminals", "work", "tanker", "tankers", "trawler", "trawlers", "cargo", "cargoes",
+]);
+
+/** Les PARTICULES des langues du commerce : articles et prépositions qui lient les mots d'un nom
+ *  sans rien désigner. Elles ne disparaissent pas (« de la Rúa » les porte), mais leur poids est
+ *  le plancher : les listes sont surtout anglaises, « del » y est rare, et l'IDF en faisait un mot
+ *  rare orphelin quand un côté l'omettait (« Compañía Naviera del Golfo » contre « Compañía
+ *  Naviera Golfo », mesuré le 27/09 : plafonné à 0,80 pour une particule sautée). */
+export const PARTICULES: ReadonlySet<string> = new Set(["de", "del", "des", "du", "della", "delle", "dei", "degli", "dello", "di", "da",
+  "do", "das", "la", "le", "les", "el", "los", "las", "al", "van", "der", "den", "von", "zu", "zum", "zur", "ten", "ter",
+  "het", "fur", "na",
+  /* la filiation arabe et malaise : « bin », « bint », « binti », « ibn », « ben », « ould » lient deux noms ;
+     un côté qui l'omet (« Yusof bin Abdullah » contre « Yusof Abdullah », jeu 9) ne perd rien, mais « Bint »
+     face à « Ibn » (« Bint Al Nakhuda », « Ibn Al Nakhuda », deux navires) est un CONFLIT : voir `filiation` */
+  "bin", "bint", "binti", "ibn", "ben", "ould",
+  /* le swahili : « Usafirishaji wa Bahari » et « Usafirishaji Bahari » (jeu 10) */
+  "wa", "ya", "za", "cha", "kwa"]);
+/* PAS « dos » (« Flores de Rionegro Dos » est le deuxième d'une série) : mesuré le 27/09 */
+/** La filiation que le nom écrit : « m » pour bin, ibn, ben, ould ; « f » pour bint, binti. */
+const FILIATION_M: ReadonlySet<string> = new Set(["bin", "ibn", "ben", "ould", "wad", "wld"]);
+const FILIATION_F: ReadonlySet<string> = new Set(["bint", "binti", "ibnat"]);
+/** Les mots qui font d'un nom la succursale d'un autre : la même personne morale (« X - Penang Branch »
+ *  est X), mais pas la filiale « X (Penang) Sdn. Bhd. » ; d'un seul côté, le nom tel qu'écrit se range au
+ *  possible, et sa variante sans la mention rejoint X (jeu 9). */
+export const SUCCURSALES: ReadonlySet<string> = new Set(["branch", "branches", "succursale", "sucursale", "sucursal", "filiale", "filial", "filiaal",
+  "zweigniederlassung", "niederlassung", "zweigstelle", "sucursales"]);
+/** Les mots du SIÈGE, dans les langues des registres, tels qu'un document les écrit derrière une virgule ou un
+ *  tiret (« , Head Office », « , Hauptsitz », « , Hoofdkantoor », « , Siège social », « , Sede central ») ; et ceux
+ *  d'un bureau ou d'une agence, qui ne sont une succursale que derrière une virgule ou un tiret (« Office »
+ *  seul est un mot du nom : « Office National des Ports »). Une même source pour l'annotation qui les ôte et
+ *  pour la mention qu'elle laisse (voir `mentionDeSuccursale`). */
+export const MOTS_DE_SIEGE = "head\\s*office|headquarters?|hq|hauptsitz|hauptverwaltung|zentrale|hoofdkantoor|hoofdzetel|si[e\u00e8]ge(?:\\s+social)?|sede\\s+(?:central|social|legale|principal)|casa\\s+matriz|hovedkontor|huvudkontor|registered\\s+office|main\\s+office|central\\s+office|principal\\s+office";
+export const MOTS_DE_BUREAU = "representative\\s+office|liaison\\s+office|branch\\s+office|agence|agencia|agenzia|kantoor|office|bureau|oficina|ufficio";
+const SIEGE = new RegExp(`(?<![\\p{L}])(?:${MOTS_DE_SIEGE})(?![\\p{L}])`, "iu");
+const BUREAU = new RegExp(`(?<![\\p{L}])(?:${[...SUCCURSALES].join("|")}|${MOTS_DE_BUREAU})(?![\\p{L}])`, "iu");
+/** Les mots vides d'une mention de succursale : ce qui reste est le lieu. */
+const VIDES_DE_MENTION: ReadonlySet<string> = new Set(["of", "the", "de", "di", "du", "des", "del", "della", "la", "le", "les", "van", "der",
+  "den", "het", "and", "in", "at", "a", "en"]);
+
+/** LE NUMÉRO DE REGISTRE qu'une douane ou une facture ajoute au nom déposé : le RC et le BN du CAC nigérian
+ *  (« (RC 884213) »), le « Reg. No. 2014/117230/07 » du CIPC sud-africain, le HRB et le HRA d'un Amtsgericht
+ *  (« (HRB 22045, AG Leipzig) »), le KvK néerlandais, le CIN, l'UEN, l'ACN, le CNPJ ; entre parenthèses, ou
+ *  derrière la forme. Lus comme des jetons, ils faisaient un NUMÉRO d'un seul côté et la paire plafonnait au
+ *  possible (jeu 10, 27/09 : dix paires) ; ôtés sans mémoire, deux dépôts du même nom sous deux numéros se
+ *  confondaient (jeu 10 : cinq paires à 1,000). Le numéro est donc une propriété de toutes les variantes du
+ *  nom (`VarianteTypee.registre`) : deux numéros différents, deux dépôts, le possible au plus. */
+export const REGISTRES: readonly RegExp[] = [
+  /\(\s*(?:rc|bn|cac|cipc|hrb|hra|kvk|crn|cin|uen|acn|abn|brn|cnpj|cuit|ruc|nit|siren|siret)\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*[a-z]?\d[\d/.\-]{2,}[^()]*\)/giu,
+  /\(\s*reg(?:istration|istered)?\.?\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*[a-z]?\d[\d/.\-]{2,}[^()]*\)/giu,
+  /(?<=\b(?:ltd|limited|plc|inc|llc|gmbh|bhd|bv|nv)\.?)[\s,]+(?:rc|bn|hrb|hra|kvk|reg(?:istration)?\.?\s*(?:no\.?|nr\.?|number)?)\s*[:.]?\s*[a-z]?\d[\d/.\-]{3,}\s*$/giu,
+];
+/** Les numéros de registre d'un nom brut, chiffres seuls, triés ; « » sans numéro. */
+export function numeroDeRegistre(brut: string): string {
+  const nums = new Set<string>();
+  for (const r of REGISTRES) for (const m of brut.matchAll(r)) {
+    const n = /\d[\d/.\-]*/.exec(m[0])?.[0].replace(/\D/g, "");
+    if (n) nums.add(n);
+  }
+  return [...nums].sort().join(" ");
+}
+
+/**
+ * CE QUE NOMME une mention de succursale : « siege » pour le siège (« Hauptsitz », « Head Office »,
+ * « Hoofdkantoor », « Nairobi Head Office »), le LIEU de la succursale quand une virgule, un tiret ou une
+ * forme juridique le délimite (« , Speicherstadt Branch » : « speicherstadt » ; « - Penang Branch » :
+ * « penang » ; « Limited Sabon Gari Branch » : « sabon gari » ; « , Havengebied Kantoor » : « havengebied »),
+ * « branch » quand le nom dit la succursale sans dire laquelle, et « » sans mention. Deux mentions qui ne
+ * nomment pas la même chose sont deux établissements d'une même personne morale, et pas le même
+ * compte, la même caisse, la même immatriculation locale : le siège n'est pas la succursale de la
+ * Speicherstadt, celle de Cotonou n'est pas celle de Lomé (jeu 10, 27/09 : dix paires à 1,000 dont la
+ * variante sans mention rejoignait l'autre). Une mention d'un seul côté, elle, reste la même personne
+ * morale (« X - Penang Branch » est X, jeu 9). Une adresse (« Office 12 ») ne nomme rien.
+ */
+export function mentionDeSuccursale(brut: string): string {
+  /* le numéro de registre s'ôte d'abord : « Zweigniederlassung Leipzig (HRB 22045, AG Leipzig) » nomme Leipzig */
+  brut = REGISTRES.reduce((t, r) => t.replace(r, ""), brut);
+  const lieu = (segment: string): string => {
+    const mots = jetons(normaliser(plier(segment)));
+    if (mots.some((m) => /^\d+$/.test(m))) return "";
+    const reste = mots.filter((m) => !SUCCURSALES.has(m) && !VIDES_DE_MENTION.has(m) && !BUREAU.test(m));
+    return reste.length > 0 && reste.length <= 3 ? reste.join(" ") : "branch";
+  };
+  const segments = brut.split(/\s*,\s*|\s+[-\u2013]\s+/u);
+  for (const s of segments.slice(1)) {
+    if (SIEGE.test(s)) return "siege";
+    if (BUREAU.test(s)) { const l = lieu(s); if (l !== "") return l; }
+  }
+  const tete = segments[0] ?? "";
+  if (SIEGE.test(tete) && !/(?<![\p{L}])(?:hq|zentrale)(?![\p{L}])/iu.test(tete)) return "siege";
+  const mots = jetons(normaliser(plier(tete)));
+  const i = mots.findIndex((m) => SUCCURSALES.has(m));
+  if (i < 0) return "";
+  /* sans virgule, le lieu suit la forme juridique : « Kano Merchant Bank Limited Sabon Gari Branch » */
+  let j = -1;
+  for (let k = 0; k < i; k++) if (FORMES.has(mots[k]!)) j = k;
+  const place = j >= 0 ? mots.slice(j + 1, i).filter((m) => !VIDES_DE_MENTION.has(m)) : [];
+  return place.length > 0 && place.length <= 3 ? place.join(" ") : "branch";
+}
+
+/** Les ADJECTIFS RÉGIONAUX que le Handelsregister et la KvK écrivent devant un nom (« Rheinische Rheinstahl
+ *  Stahlrohr », « Overijsselse Visser Agrarische Handelsmaatschappij ») : une décoration du registre, que le nom
+ *  d'usage omet toujours (« Rheinstahl Rohr », « Visser Agro »). Comme une particule, l'adjectif pèse le plancher
+ *  quand l'autre nom n'en porte aucun ; deux noms qui en portent chacun un autre sont deux sociétés (« Rheinische
+ *  Industrietechnik » et « Westfälische Industrietechnik », jeu 10), et l'adjectif garde alors son poids
+ *  (voir `regionsAuPlancher`). La famille des suffixes (-ische, -sche, -se) se reconnaît sur le radical d'un
+ *  Land allemand ou d'une province néerlandaise ; les formes en -er des villes s'énumèrent. */
+const REGIONS_DE_REGISTRE: ReadonlySet<string> = new Set([
+  "rheinische", "westfalische", "bayerische", "niedersachsische", "sachsische", "hessische", "badische", "schwabische",
+  "hanseatische", "norddeutsche", "suddeutsche", "ostdeutsche", "westdeutsche", "mitteldeutsche", "nordrhein",
+  "thuringer", "berliner", "hamburger", "bremer", "munchner", "kolner", "frankfurter", "stuttgarter", "dusseldorfer",
+  "nurnberger", "leipziger", "dresdner", "hannoversche", "oldenburger",
+  "overijsselse", "brabantse", "zeeuwse", "gelderse", "hollandse",
+  "friese", "groningse", "limburgse", "utrechtse", "drentse", "flevolandse", "twentse", "amsterdamse", "rotterdamse", "haagse",
+]);
+const RACINES_REGIONALES: ReadonlySet<string> = new Set(["rhein", "westfal", "bayer", "niedersachs", "sachs", "hess", "bad", "schwab",
+  "hanseat", "norddeutsch", "suddeutsch", "ostdeutsch", "westdeutsch", "mitteldeutsch", "thuring", "pfalz", "saarland", "brandenburg",
+  "mecklenburg", "holstein", "schleswig", "frank", "ostfries", "oldenburg", "hannover", "markisch", "lausitz", "allgau",
+  "overijssel", "brabant", "zeeuw", "gelder", "holland", "groning", "limburg", "utrecht", "drent", "flevoland", "twent",
+  "amsterdam", "rotterdam", "haag", "veluw", "betuw", "achterhoek"]);
+const SUFFIXES_REGIONAUX: readonly string[] = ["ische", "ischer", "ischen", "isches", "sche", "scher", "schen", "sches", "se"];
+/** Le point cardinal soudé à l'adjectif (« Noord-Brabantse », « Zuid-Hollandse ») : la normalisation le sépare. */
+export const POINTS_CARDINAUX: ReadonlySet<string> = new Set(["noord", "zuid", "oost", "west", "nord", "sud", "ost"]);
+export function regionDeRegistre(m: string): boolean {
+  if (REGIONS_DE_REGISTRE.has(m)) return true;
+  for (const s of SUFFIXES_REGIONAUX) {
+    if (m.length - s.length >= 3 && m.endsWith(s) && RACINES_REGIONALES.has(m.slice(0, -s.length))) return true;
+  }
+  return false;
+}
+
+/** Les abréviations d'usage, ramenées au mot entier ; les mots de liaison disparaissent
+ *  (« & », « and », « et », « ve », « und », « y », « e », « for », « of », « the »). */
+/* Des Map, jamais des objets littéraux : un nom listé contient « constructor » ou
+   « toString », et `objet[mot]` rendait alors une fonction héritée (mesuré le 27/09 :
+   « .split is not a function » au premier criblage des cinq listes). */
+const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
+  intl: "international", bros: "brothers", mfg: "manufacturing", mgmt: "management",
+  svcs: "services", assoc: "associates", st: "saint", capt: "captain", sta: "santa", sto: "santo",
+  /* les abréviations d'un clavardage ou d'un connaissement, sans point ni majuscules (jeu 9, 27/09 :
+     « najmat alsahel electronics trdg llc », « mulji devshi n sons gen trading ») */
+  gle: "generale", gal: "general", fres: "freres", entreprises: "enterprises", entreprise: "enterprise", les: "",
+  td: "trading house", nlle: "nouvelle", nouv: "nouvelle",
+  hnos: "brothers", gebr: "brothers", hk: "hongkong",
+  /* « Nig. Ltd », le suffixe du registre nigérian (CAC) : « Okafor Integrated Resources Nig. Ltd » (jeu 10) */
+  nig: "nigeria",
+  /* les abréviations d'un crédit documentaire et d'un registre (jeu 9) : « Gen Trdg », « Grp Hldgs », « JV », « PKS » */
+  jv: "joint venture", grp: "group", hldgs: "holdings", hldg: "holding", gen: "general", trdg: "trading", trdng: "trading",
+  bldg: "building", mfrs: "manufacturers", pks: "palm oil mill", bnt: "bint",
+  /* les affrètements (jeu 10) : « Shipmgmt » ; « Nig. » est plus haut, avec la voie formes */
+  shipmgmt: "ship management",
+  /* les prénoms et civilités malais : « Mohd » est Mohamad ; Haji, Dato', Datuk, Encik, Puan ne désignent personne */
+  mohd: "mohamad", muhd: "muhammad", haji: "", hajjah: "", hj: "", hjh: "", dato: "", datuk: "", datin: "", encik: "", puan: "", tuan: "",
+  /* les nombres écrits en lettres deviennent des chiffres : « Nine Willows » est « 9 Willows » */
+  zero: "0", one: "1", two: "2", three: "3", four: "4", five: "5", six: "6", seven: "7", eight: "8",
+  nine: "9", ten: "10", eleven: "11", twelve: "12",
+  /* mots de liaison, ézafé persan, titres de civilité indiens (« Shree », « M/s. ») */
+  and: "", et: "", ve: "", und: "", y: "", e: "", i: "", ye: "", kai: "", for: "", of: "", the: "",
+  /* « en », le « et » néerlandais et afrikaans (« Expeditie en Overslag », « Bou en Konstruksie », jeu 10) */
+  en: "",
+}));
+/** Les CIVILITÉS indiennes d'une maison de commerce (« Shree », « Shri », « Sri », « Smt. ») : retirées
+ *  comme un mot de liaison, mais RETENUES, parce qu'un clavardage les soude au mot qui suit
+ *  (« sripelangi distributors » pour « Sri Pelangi Distributors ») et que le score doit savoir que
+ *  l'autre nom l'a écrite (voir `scorePrepares`). */
+export const CIVILITES: ReadonlySet<string> = new Set(["shri", "shree", "sri", "sree", "smt"]);
+/**
+ * LE VOCABULAIRE DU MÉTIER : les mots que la préparation connaît par leurs tables (formes juridiques,
+ * locutions, traductions, abréviations), rangés par longueur. Un mot qu'une lecture optique a abîmé
+ * (« LIRNITED », « L1MITED », « C?NG TY ») ne se reconnaît qu'à cette aune : rendu à ce vocabulaire,
+ * il redevient la forme ou le mot générique que les tables retirent ou traduisent. Les nombres en
+ * lettres n'en sont pas : « T?N » n'est pas « ten », et un numéro d'un seul côté plafonnerait la paire.
+ * Construit à la première demande : les tables qu'il lit sont déclarées au-dessus.
+ */
+let VOCABULAIRE_DU_METIER: ReadonlyMap<number, readonly string[]> | undefined;
+function vocabulaireDuMetier(): ReadonlyMap<number, readonly string[]> {
+  if (VOCABULAIRE_DU_METIER) return VOCABULAIRE_DU_METIER;
+  const mots = new Set<string>(FORMES);
+  for (const p of PHRASES) for (const m of p.trim().split(" ")) mots.add(m);
+  for (const [de, vers] of LOCUTIONS) {
+    /* une locution qui ne fait que SOUDER un lieu (« da nang » : « danang ») n'apprend pas un mot du
+       métier : « nang » y ferait concurrence à « nong » (de « nong san »), et « N?ng » resterait perdu */
+    const v = vers.trim();
+    if (v !== "" && !v.includes(" ") && de.replace(/ /g, "").includes(v)) continue;
+    for (const m of de.trim().split(" ")) mots.add(m);
+  }
+  for (const m of TRADUCTIONS.keys()) mots.add(m);
+  for (const [m, vers] of ABREVIATIONS) if (!/^\d+$/.test(vers)) mots.add(m);
+  const parLongueur = new Map<number, string[]>();
+  for (const m of mots) {
+    const l = parLongueur.get(m.length);
+    if (l) l.push(m); else parLongueur.set(m.length, [m]);
+  }
+  VOCABULAIRE_DU_METIER = parLongueur;
+  return parLongueur;
+}
+/** Le mot est connu : du vocabulaire du métier, ou du dictionnaire anglais (`lemme`). */
+function motConnu(m: string): boolean {
+  return (vocabulaireDuMetier().get(m.length) ?? []).includes(m) || lemme(m) !== undefined;
+}
+
+/**
+ * LES DIGRAMMES D'UNE LECTURE OPTIQUE : « rn » lu pour m (« LIRNITED »), « cl » pour d (« LTCL »),
+ * « vv » pour w (« VVORKS »). Un mot que rien ne connaît, et qui, le digramme rendu, est une forme,
+ * un mot du métier ou un mot du dictionnaire, est ce mot ; il faut le rendre AVANT la lecture des
+ * formes, sinon « Lirnited » restait un mot rare sans répondant (mesuré le 27/09 sur le jeu 9 :
+ * « WING SHING GROUP HOLDINGS LIRNITED » plafonné à 0,800). Jamais l'inverse, et jamais sur un mot
+ * connu : « Carnowell » reste Carnowell, « Warner » reste Warner (le squelette lit déjà rn comme m
+ * entre deux noms propres, au score).
+ */
+const DIGRAMMES_OPTIQUES: readonly (readonly [string, string])[] = [["rn", "m"], ["cl", "d"], ["vv", "w"]];
+function digrammeOptique(j: string): string {
+  if (j.length < 4 || !/\p{L}/u.test(j) || /\d/.test(j) || motConnu(j)) return j;
+  for (const [lu, vrai] of DIGRAMMES_OPTIQUES) {
+    if (!j.includes(lu)) continue;
+    const rendu = j.split(lu).join(vrai);
+    if (motConnu(rendu)) return rendu;
+  }
+  return j;
+}
+
+/**
+ * UNE FORME ABÎMÉE D'UN « ? » : le mot autour du « ? » (« LT? » : « lt » et « » ; « L?D » : « l » et
+ * « d »), complété par rien (le point d'une abréviation mal lu : « Ltd? ») ou par une lettre, est-il
+ * une forme juridique ? Deux lettres au moins autour du « ? » : « S? » serait n'importe quoi. Rendu
+ * en minuscules, ce que la normalisation fait de toute façon ; undefined si rien ne complète.
+ */
+const LETTRES = "abcdefghijklmnopqrstuvwxyz";
+function formeAbimee(avant: string, apres: string): string | undefined {
+  const a = normaliser(avant), b = normaliser(apres);
+  if (a.length + b.length < 2) return undefined;
+  if (FORMES.has(a + b)) return a + b;
+  for (const c of LETTRES) if (FORMES.has(a + c + b)) return a + c + b;
+  return undefined;
+}
+
+/**
+ * UN MOT À LETTRE-JALON QUE LE VOCABULAIRE DU MÉTIER CONNAÎT D'UNE SEULE FAÇON : « cʔng » est « cong »
+ * (de « cong ty »), « nʔng » est « nong » (de « nong san »), « lʕmited » est « limited ». Rendu au mot,
+ * il retrouve sa table : la forme part, la locution se traduit, comme sur l'autre nom (mesuré le 27/09
+ * sur le jeu 9 : « C?NG TY TNHH » gardait « cʔng ty » pour deux mots rares, 0,800 ; « N?ng san » ne
+ * rencontrait plus « agricultural products », 0,400). Deux mots du vocabulaire qui conviennent, et le
+ * jalon reste (« ʔʔc » est « inc », « llc », « sac » : on ne choisit pas) ; un nom propre n'est jamais
+ * touché, le score lit son jalon (`lettrePerdue`).
+ */
+function motDuMetierPerdu(j: string): string {
+  if (!porteUnJalon(j)) return j;
+  const perdus = j.split(PERDU).length - 1;
+  let trouve: string | undefined;
+  for (let L = j.length; L <= j.length + perdus; L++) {
+    for (const m of vocabulaireDuMetier().get(L) ?? []) {
+      if (!lettrePerdue(j, m)) continue;
+      if (trouve !== undefined) return j;
+      trouve = m;
+    }
+  }
+  return trouve ?? j;
+}
+
+/**
+ * Les lettres que la décomposition Unicode ne ramène PAS à leur base : « ı » turc, « ł »
+ * polonais, « ø » danois, « đ » croate, « ß », les ligatures. `normaliser` retire les marques
+ * combinantes, mais ces lettres-là n'en ont pas : sans cette table, « Łódź » ne rencontre
+ * jamais « Lodz » (mesuré : 0,40 sur le jeu d'apprentissage). Elle vit ici et non dans
+ * `normaliser`, que les sept paliers de personnes partagent : la changer là déplacerait le
+ * relevé public scellé.
+ */
+const LETTRES_SANS_BASE: Readonly<Record<string, string>> = {
+  "ı": "i", "İ": "I", "ł": "l", "Ł": "L", "ø": "o", "Ø": "O", "đ": "d", "Đ": "D", "ħ": "h", "Ħ": "H",
+  "ß": "ss", "æ": "ae", "Æ": "AE", "œ": "oe", "Œ": "OE", "þ": "th", "Þ": "Th", "ð": "d", "Ð": "D", "ə": "e", "Ə": "E",
+};
+export function plier(nom: string): string {
+  return plierLatin(romaniser(nom).texte);
+}
+/** Le cyrillique est translittéré ICI, avant l'analyse des formes : « ООО » doit être lu
+ *  « OOO » pour être une forme (mesuré le 27/09 : sinon il restait un mot rare sans répondant,
+ *  et « ООО Северный Транзит » plafonnait au possible face à « OOO Severny Tranzit »). Les
+ *  autres écritures (hangul, arabe et persan, hébreu, sinogrammes) ont déjà été lues par
+ *  `romaniser` (ecritures.ts), qui rend des jetons latins et traduit leurs mots du commerce. */
+function plierLatin(nom: string): string {
+  const latin = /[\u0400-\u04ff]/.test(nom) ? translitterer(nom.toLowerCase()) : nom;
+  return grec(latin.replace(/[ıİłŁøØđĐħĦßæÆœŒþÞðÐəƏ]/g, (c) => LETTRES_SANS_BASE[c] ?? c));
+}
+
+/**
+ * LE GREC, translittéré (ELOT 743, la norme des passeports et des registres grecs) : les
+ * armateurs et les listes écrivent « Αφοί Λευκαδίτη Ναυτιλιακή » et « Afoi Lefkaditi
+ * Naftiliaki ». Les digrammes d'abord (αυ, ευ devant une consonne sourde : af, ef ; ου : ou ;
+ * μπ : b ; ντ : d ; γκ : g), puis lettre à lettre. Ici et non dans la couche commune des
+ * personnes, dont le relevé public est scellé.
+ */
+const GREC_LETTRES: Readonly<Record<string, string>> = {
+  α: "a", β: "v", γ: "g", δ: "d", ε: "e", ζ: "z", η: "i", θ: "th", ι: "i", κ: "k", λ: "l", μ: "m", ν: "n",
+  ξ: "x", ο: "o", π: "p", ρ: "r", σ: "s", ς: "s", τ: "t", υ: "y", φ: "f", χ: "ch", ψ: "ps", ω: "o",
+};
+function grec(nom: string): string {
+  if (!/[\u0370-\u03ff]/.test(nom)) return nom;
+  const bas = nom.normalize("NFD").replace(/\p{M}+/gu, "").toLowerCase();
+  return bas
+    .replace(/(α|ε)υ(?=[θκξπστφχψ]|$|[^\p{L}])/gu, (_, v: string) => (v === "α" ? "af" : "ef"))
+    .replace(/(α|ε)υ/g, (_, v: string) => (v === "α" ? "av" : "ev"))
+    .replace(/ου/g, "ou").replace(/(?<![\p{L}])μπ/gu, "b").replace(/μπ/g, "mp")
+    .replace(/(?<![\p{L}])ντ/gu, "d").replace(/ντ/g, "nt").replace(/γκ/g, "g").replace(/γγ/g, "ng")
+    .replace(/[α-ω]/g, (c) => GREC_LETTRES[c] ?? c);
+}
+
+/**
+ * LES CONFUSIONS D'UNE LECTURE OPTIQUE (OCR) : un mot fait de lettres où traînent un 0, un 1,
+ * un 5 ou un 8 était « o », « l » ou « i », « s », « b » (« C0LBROOK », « E5BRAND », « 8EARING »,
+ * « 8AHARI ») ; un numéro court où traînent un « o » ou un « l » était un chiffre (« BELLAMARE 1O »,
+ * « MUTIARA l2 »). Hors de ces deux cas, rien ne bouge : « S1187 » reste un numéro de coque,
+ * « 3M » un nom.
+ *
+ * Le 1 est la seule lecture AMBIGUË : un l minuscule ou une I capitale, que la casse perdue à la
+ * normalisation ne départage plus (« KEMUN1NG » est Kemuning, « Trai1 » est Trail). Il devient la
+ * lettre-jalon LU_UN, que le score lit comme un i ou un l et rien d'autre (`lettrePerdue`). Lu « l »
+ * d'office, « kemunlng » face à « kemuning » restait un mot ambigu plafonné au possible (mesuré le
+ * 27/09 sur le jeu 9 : « MT C0RAL KEMUN1NG » à 0,800, « JAT1 LESTAR1 NU5ANTARA » à 0,727).
+ */
+function ocr(j: string): string {
+  if (j === "000") return "ooo";
+  if (!/\d/.test(j) || !/\p{L}/u.test(j)) return j;
+  const enLettres = (m: string) => m.replace(/0/g, "o").replace(/1/g, LU_UN).replace(/5/g, "s").replace(/8/g, "b");
+  /* un seul 1, 0 ou 5 à la fin d'un mot d'au moins quatre lettres est un l, un o, un s mal lus
+     (« Trai1 ») ; deux chiffres ou plus sont un numéro (« TCB1207 ») */
+  if (/^\p{L}{4,}[105]$/u.test(j)) return enLettres(j);
+  /* « AUT0 » (trois lettres) et « ELECTR0NIC5 » (des chiffres au milieu ET à la fin) : quand le mot
+     corrigé est un mot du dictionnaire, c'est une lecture fautive, pas un numéro (jeu 10, 27/09) */
+  const commeUnMot = j.replace(/0/g, "o").replace(/1/g, "i").replace(/5/g, "s").replace(/8/g, "b");
+  if (/^\p{L}+[0158](?:\p{L}+[0158]?)*$/u.test(j) && /\p{L}{3,}/u.test(j) && lemme(commeUnMot)) return enLettres(j);
+  const lettres = j.replace(/\d/g, ""), chiffres = j.replace(/\D/g, "");
+  /* des chiffres EN FIN de mot sont un numéro (« No18 », « TCB1207 »), pas une lecture fautive */
+  if (j.length >= 4 && lettres.length >= 2 && /^[0158]+$/.test(chiffres) && !/\d$/.test(j)) return enLettres(j);
+  if (j.length <= 4 && /^[olis]+$/.test(lettres)) return j.replace(/o/g, "0").replace(/[li]/g, "1").replace(/s/g, "5");
+  /* un chiffre confondu EN TÊTE d'un mot court (« 8G » pour BG, le préfixe d'une barge) : un numéro
+     ne commence pas par un chiffre que suivent des lettres qui ne sont pas elles-mêmes des chiffres
+     mal lus ; les mots d'ordre (« 1st », « 8th ») passent aussi, des deux côtés de la comparaison */
+  if (/^[0158]\p{L}+$/u.test(j)) return enLettres(j);
+  return j;
+}
+
+/** Préfixes et codes de type de navire, seulement EN TÊTE et seulement s'il reste un nom
+ *  derrière : M/V, M/T, M/S, M/Y, S/Y, SS, FV, RV, LPG/C, LNG/C. */
+const PREFIXES_NAVIRE = new Set(["mv", "mt", "ms", "my", "sy", "ss", "mts", "fv", "rv", "tb", "lpgc", "lngc", "tug", "barge", "tugboat",
+  /* l'Asie du Sud-Est (jeu 9) : BG et TK (barge, tongkang), TB (tug boat), KM (kapal motor), LCT, SPOB */
+  "bg", "tk", "km", "kmp", "klm", "lct", "spob", "mtug", "mfv",
+  "tanker", "vessel", "roro", "ferry", "dredger", "trawler"]);
+/** Le TYPE que le préfixe déclare quand il en déclare un : un remorqueur et sa barge portent souvent le
+ *  même nom (« Tug Heron Reef », « Barge Heron Reef 2 » ; jeu 9 : « BARGE THONG CHAROEN 9 » et « TUG THONG
+ *  CHAROEN 9 » jugés deux navires, quand « TB » et « TUG » écrivent le même). MV et MT ne disent rien ici. */
+const TYPES_NAVIRE: ReadonlyMap<string, string> = new Map([["tug", "tug"], ["tb", "tug"], ["tugboat", "tug"], ["mtug", "tug"],
+  ["barge", "barge"], ["bg", "barge"], ["tk", "barge"]]);
+const PHRASES_NAVIRE = [" motor vessel ", " motor tanker ", " motor ship ", " motor yacht ",
+  " sailing yacht ", " steam ship ", " lpg carrier ", " lng carrier ", " lpg tanker ", " fishing vessel ",
+  " bulk carrier ", " container ship ", " oil tanker ", " chemical tanker ", " hopper barge ", " tug barge ", " ro ro vessel ",
+  " ro ro ship ", " roro vessel ", " ro ro ", " general cargo ship ", " general cargo vessel ", " offshore supply vessel ", " supply vessel "];
+/** L'article arabe assimilé : « Ash-Shuraymi », « As-Salam », « Ad-Dawha » sont « Al ». */
+const ARTICLES_ASSIMILES = new Set(["as", "ash", "ad", "adh", "ar", "at", "ath", "az", "an",
+  /* à la française (Maghreb) : « Ech-Chourouk », « Er-Rahma » */ "ech", "es", "ed", "er", "et", "ez", "en"]);
+
+/**
+ * Les PAYS d'une forme juridique, quand elle en a. On retire la forme pour comparer les
+ * noms, mais on garde ce qu'elle dit : « Wexmoor Engineering GmbH » et « Wexmoor Engineering
+ * Inc. » sont deux sociétés, allemande et américaine. Une forme partagée par plusieurs pays
+ * en porte plusieurs (S.R.L. : Italie, Roumanie, Argentine, Pérou…) ; il y a conflit quand
+ * les deux ensembles sont DISJOINTS. Les formes de partout (Ltd, LLC, Co., Corp., S.A.,
+ * Private Limited) n'en portent pas, et les TRADUCTIONS d'une même forme restent compatibles :
+ * « OOO » et « LLC », « Co., Ltd. » et « Youxian Gongsi », « Pte. Ltd. » et « Private Limited ».
+ */
+const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
+  const t = new Map<string, string[]>();
+  const poser = (pays: string[], formes: string[]) => { for (const f of formes) t.set(f, [...(t.get(f) ?? []), ...pays]); };
+  poser(["DE", "AT", "CH"], ["gmbh", "ag", "gesellschaft mit beschrankter haftung", "aktiengesellschaft"]);
+  poser(["DE", "AT"], ["kg", "ohg", "kommanditgesellschaft", "gmbh co kg", "gmbh und co kg", "gmbh and co kg", "mbh co kg", "mbh und co kg",
+    "mbh and co kg", "ag co kg", "ag und co kg", "se co kg", "se und co kg", "gmbh co ohg", "mbh co ohg", "gmbh co kgaa", "gmbh co", "mbh co",
+    "co kg", "co ohg", "und co kg", "and co kg", "kgaa", "gesellschaft mbh co kg", "handelsgesellschaft mbh co kg"]);
+  poser(["DE", "AT", "CH"], ["mbh"]); poser(["DE"], ["gbr"]);
+  poser(["PT", "AO", "MZ", "CV"], ["lda"]);
+  poser(["DE"], ["ug"]);
+  poser(["FR"], ["sasu", "eurl", "societe par actions simplifiee", "etablissements", "ets", "scea", "gaec", "earl"]);
+  poser(["IE"], ["dac", "designated activity company", "teoranta", "teo", "cuideachta"]);
+  poser(["TH"], ["pcl", "public company limited"]);
+  poser(["ID"], ["pt", "perseroan terbatas", "tbk", "ud", "usaha dagang", "perseroan komanditer"]);
+  poser(["IR"], ["sherkat sahami khas", "sherkate sahami khas", "sahami khas", "sahami khass", "sahami amm"]);
+  poser(["AZ"], ["mmc"]); poser(["LB"], ["sal"]);
+  poser(["FR", "LU", "MA", "TN", "LB"], ["sarl", "societe a responsabilite limitee"]);
+  poser(["FR", "CO"], ["sas"]);
+  poser(["FR", "IT"], ["snc"]);
+  poser(["BE"], ["sprl", "bvba"]);
+  poser(["NL"], ["bv", "vof", "besloten vennootschap"]);
+  poser(["NL", "BE"], ["nv", "naamloze vennootschap"]);
+  poser(["IT", "RO", "AR", "PE", "BO", "UY"], ["srl", "societa a responsabilita limitata"]);
+  poser(["IT"], ["spa", "societa per azioni"]);
+  poser(["ES"], ["sl", "slu", "sau", "sociedad limitada"]);
+  poser(["MX"], ["sa de cv", "de cv", "cv", "sapi", "s de rl de cv", "s de rl", "sociedad anonima promotora de inversion de capital variable",
+    "sociedad anonima promotora de inversion", "sociedad anonima de capital variable"]);
+  poser(["CZ", "SK"], ["spol s ro", "spol sro"]);
+  poser(["PE"], ["sac", "saa", "sociedad anonima cerrada"]);
+  poser(["BR", "CO", "CL", "PT"], ["ltda", "limitada", "sociedade limitada"]);
+  poser(["PT", "AO", "MZ", "CV"], ["lda"]);
+  poser(["BR"], ["eireli"]);
+  poser(["RU", "BY", "KZ", "UZ", "UA", "KG", "TJ", "AM", "AZ", "GE"], ["ooo", "oao", "zao", "pao", "ao", "jsc", "pjsc", "ojsc", "cjsc", "too",
+    "obshchestvo s ogranichennoi otvetstvennostyu", "obshchestvo s ogranichennoy otvetstvennostyu",
+    "tovarishchestvo s ogranichennoi otvetstvennostyu", "publichnoe aktsionernoe obshchestvo",
+    "zakrytoe aktsionernoe obshchestvo", "otkrytoe aktsionernoe obshchestvo", "aktsionernoe obshchestvo"]);
+  /* « joint stock company » écrit en anglais n'a PAS de pays : la Pologne (« Spółka Akcyjna »), le
+     Vietnam, le Golfe, la Bulgarie le traduisent ainsi ; le lier à la CEI faisait un conflit de pays
+     entre « Sokołowiec Chemical Works Spółka Akcyjna » et « … Joint-Stock Company » (27/09) */
+  poser(["TR"], ["sti", "anonim sirketi", "limited sirketi", "sirketi"]);
+  poser(["TR", "NO", "DK", "EE"], ["as"]);
+  poser(["NO"], ["asa"]); poser(["DK"], ["aps"]);
+  poser(["AE"], ["dmcc", "jafza", "dafza", "difc", "dso", "dwc", "rakez", "kizad"]);
+  poser(["AE", "SA", "QA", "BH", "KW", "OM"], ["fze", "fzco", "fzc", "fzllc", "fz", "wll", "spc", "sole proprietor company", "sole proprietorship company", "est",
+    "sole proprietor company", "sole proprietorship company",
+    "establishment", "establishments", "free zone establishment", "free zone company",
+    "free zone limited liability company", "with limited liability"]);
+  poser(["MY"], ["sdn", "bhd", "berhad", "sendirian berhad", "sendirian"]);
+  poser(["SG"], ["pte"]);
+  poser(["AU", "ZA"], ["pty", "proprietary limited"]);
+  poser(["IN", "PK", "LK", "BD"], ["pvt"]);
+  poser(["IN", "PK", "LK", "BD", "SG", "NG", "ZA", "AU", "NZ", "KE"], ["private limited"]);
+  poser(["JP"], ["kk", "kabushiki kaisha", "kabushikigaisha", "godo kaisha", "yugen kaisha"]);
+  poser(["KR"], ["chusik hoesa", "jusik hoesa", "jusikhoesa", "chusikhoesa", "yuhanhoesa"]);
+  poser(["CN", "HK", "TW"], ["youxian gongsi", "gufen youxian gongsi", "youxian zeren gongsi"]);
+  /* 私人有限公司 : la société privée de Singapour (Pte. Ltd.) et de Malaisie (Sdn. Bhd.), en chinois */
+  poser(["SG", "MY"], ["siren youxian gongsi"]);
+  poser(["US", "CA", "PH"], ["inc", "incorporated", "pllc"]);
+  poser(["CA"], ["ltee"]); poser(["SE"], ["aktiebolag"]); poser(["DK"], ["aktieselskab"]); poser(["NO"], ["aksjeselskap"]); poser(["FI"], ["osakeyhtio"]);
+  poser(["UK", "IE", "NG", "LK", "ZA"], ["plc", "public limited company"]);
+  poser(["PL"], ["sp zoo", "sp z oo", "spolka z ograniczona odpowiedzialnoscia", "spolka akcyjna", "spolka jawna"]);
+  poser(["VN"], ["tnhh", "cong ty tnhh", "cong ty co phan"]);
+  poser(["TH"], ["borisat chamkat", "borisat jamkat", "chamkat", "jamkat"]);
+  poser(["IR"], ["sherkat", "sherkate"]);
+  poser(["UA"], ["prat", "pat", "tov"]);
+  poser(["RU", "BY", "KZ", "UA"], ["npp", "npo", "npk", "npf", "pkf", "nauchno proizvodstvennoe predpriyatie",
+    "nauchno proizvodstvennoe obedinenie", "nauchno proizvodstvennyi kompleks", "nauchno proizvodstvennaya firma",
+    "proizvodstvenno kommercheskaya firma", "proizvodstvennoe obedinenie"]);
+  poser(["GR", "CY"], ["ae", "epe", "ike", "oe", "ee", "sia"]);
+  poser(["FI"], ["oy", "oyj"]); poser(["SE"], ["ab"]); poser(["HU"], ["kft", "zrt", "nyrt"]);
+  poser(["CZ", "SK"], ["sro"]); poser(["RS", "HR", "BA", "SI", "ME", "MK"], ["doo"]);
+  poser(["BG", "RS", "MK"], ["ad"]); poser(["BG"], ["eood", "ood"]);
+  return t;
+})();
+
+/**
+ * LA FAMILLE d'une forme juridique : ce qu'elle dit de la société au-delà du pays. Une
+ * « Limited » et une « S.A. de C.V. » ne sont pas la même personne morale même quand rien
+ * ne dit leur pays ; une « LLC » et une « Pty Ltd » non plus. Les familles : ltd (société
+ * privée à responsabilité limitée à l'anglaise), llc, corp (société par actions), part
+ * (société de personnes), est (établissement individuel). Une forme que l'usage traduit de
+ * plusieurs façons en porte plusieurs (« OOO » s'écrit LLC ou Ltd dans les documents russes ;
+ * « K.K. » Co., Ltd., Corporation ou Inc.), et il y a conflit quand les deux ensembles sont
+ * DISJOINTS. « Co. » et « Company » seuls n'en portent aucune.
+ */
+const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
+  const t = new Map<string, string[]>();
+  const poser = (familles: string[], formes: string[]) => { for (const f of formes) t.set(f, [...(t.get(f) ?? []), ...familles]); };
+  poser(["ltd"], ["ltd", "limited", "ltee", "pvt", "pte", "pty", "sdn", "sendirian", "sendirian berhad", "private limited",
+    "proprietary limited", "youxian gongsi", "youxian zeren gongsi", "siren youxian gongsi", "borisat chamkat", "borisat jamkat", "chamkat", "jamkat"]);
+  poser(["ltd", "corp"], ["bhd", "berhad", "kk", "kabushiki kaisha", "kabushikigaisha", "jusikhoesa", "chusikhoesa",
+    "chusik hoesa", "jusik hoesa", "gufen youxian gongsi", "oy", "ab", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio"]);
+  poser(["ltd", "llc"], ["ooo", "tov", "ltda", "lda", "limitada", "sociedade limitada", "eireli", "tnhh", "cong ty tnhh", "sti", "limited sirketi", "yuhanhoesa"]);
+  /* le TOO kazakh (товарищество с ограниченной ответственностью) se traduit LLP, LLC ou Ltd */
+  poser(["ltd", "llc", "part"], ["too", "tovarishchestvo s ogranichennoi otvetstvennostyu", "tovarishchestvo s ogranichennoy otvetstvennostyu"]);
+  poser(["ltd", "corp"], ["pt", "perseroan terbatas", "tbk", "ud", "usaha dagang", "commanditaire vennootschap", "perseroan komanditer", "pcl", "public company limited", "teoranta", "teo", "dac", "designated activity company"]);
+  poser(["corp"], ["private joint stock company", "private joint stock", "public joint stock", "closed joint stock", "open joint stock",
+    "sherkat sahami khas", "sherkate sahami khas", "sahami khas", "sahami amm",
+    "sociedad anonima promotora de inversion de capital variable", "sociedad anonima promotora de inversion",
+    "sociedad anonima unipersonal", "sociedad anonima de capital variable"]);
+  poser(["part"], ["scea", "gaec", "earl"]);
+  poser(["llc"], ["llc", "pllc", "gmbh", "mbh", "gesellschaft mbh", "handelsgesellschaft mbh", "ug", "sarl", "eurl", "sprl", "bvba", "srl", "sl", "slu", "bv", "aps", "kft", "sro",
+    "doo", "eood", "ood", "epe", "ike", "wll", "spc", "mmc", "s de rl", "s de rl de cv",
+    "limited liability company", "obshchestvo s ogranichennoi otvetstvennostyu", "obshchestvo s ogranichennoy otvetstvennostyu",
+    "gesellschaft mit beschrankter haftung",
+    "societe a responsabilite limitee", "sociedad limitada", "sociedad de responsabilidad limitada",
+    "societa a responsabilita limitata", "besloten vennootschap", "sp zoo", "sp z oo", "spolka z ograniczona odpowiedzialnoscia",
+    "godo kaisha", "yugen kaisha", "with limited liability", "spol s ro", "spol sro"]);
+  /* la zone franche est un registre à part : une FZE et une LLC du même nom sont deux sociétés */
+  poser(["fz"], ["fze", "fzco", "fzc", "fzllc", "fz", "dmcc", "jafza", "dafza", "difc", "dso", "dwc", "rakez", "kizad",
+    "free zone establishment", "free zone company",
+    "free zone limited liability company"]);
+  poser(["corp"], ["inc", "incorporated", "corp", "corporation", "plc", "public limited company", "ag", "se", "sa", "sas", "sasu",
+    "spa", "sau", "nv", "oyj", "as", "asa", "zrt", "nyrt", "ad", "cv", "sapi", "sac", "saa", "oao", "zao", "pao", "ao", "jsc",
+    "pjsc", "ojsc", "cjsc", "prat", "pat", "ae", "joint stock company", "public joint stock company", "closed joint stock company",
+    "open joint stock company", "aktsionernoe obshchestvo", "publichnoe aktsionernoe obshchestvo",
+    "zakrytoe aktsionernoe obshchestvo", "otkrytoe aktsionernoe obshchestvo", "aktiengesellschaft", "societe anonyme",
+    "societe par actions simplifiee", "sociedad anonima", "sociedad anonima cerrada", "sociedade anonima",
+    "societa per azioni", "naamloze vennootschap", "anonim sirketi", "spolka akcyjna", "cong ty co phan", "sa de cv", "de cv"]);
+  poser(["part"], ["llp", "lp", "kg", "ohg", "snc", "vof", "limited liability partnership", "kommanditgesellschaft", "spolka jawna",
+    /* les sociétés de personnes allemandes dont une société de capitaux est l'associée : une autre personne que celle-ci */
+    "gmbh co kg", "gmbh und co kg", "gmbh and co kg", "mbh co kg", "mbh und co kg", "mbh and co kg", "ag co kg", "ag und co kg",
+    "se co kg", "se und co kg", "gmbh co ohg", "mbh co ohg", "gmbh co kgaa", "gmbh co", "mbh co", "co kg", "co ohg", "und co kg",
+    "and co kg", "kgaa", "gbr", "sce", "gesellschaft mbh co kg", "handelsgesellschaft mbh co kg"]);
+  poser(["llc"], ["mbh"]);
+  poser(["ltd", "llc"], ["lda"]);
+  poser(["est"], ["est", "establishment", "establishments", "sole proprietorship"]);
+  return t;
+})();
+
+/** Les provinces et grandes villes de Chine, qui ouvrent le nom d'une société chinoise et s'omettent
+ *  aussi souvent qu'elles se disent : « Fujian Quanzhou Xingtai Shoes » est « Quanzhou Xingtai Shoes ». */
+export const REGIONS: ReadonlySet<string> = new Set([
+  "anhui", "beijing", "chongqing", "fujian", "gansu", "guangdong", "guangxi", "guizhou", "hainan", "hebei",
+  "heilongjiang", "henan", "hubei", "hunan", "jiangsu", "jiangxi", "jilin", "liaoning", "neimenggu", "ningxia",
+  "qinghai", "shaanxi", "shandong", "shanghai", "shanxi", "sichuan", "tianjin", "xinjiang", "xizang", "yunnan",
+  "zhejiang", "hongkong", "macau", "taiwan", "shenzhen", "guangzhou", "dongguan", "foshan", "zhongshan", "ningbo",
+  "hangzhou", "wenzhou", "yiwu", "suzhou", "wuxi", "nanjing", "qingdao", "yantai", "weifang", "xiamen", "quanzhou",
+  "fuzhou", "wuhan", "changsha", "zhengzhou", "chengdu", "xian", "dalian", "shenyang", "harbin", "kunming", "nanning",
+  "hefei", "jinan", "shijiazhuang", "taizhou", "jiaxing", "shaoxing", "zhuhai", "huizhou", "jiangmen", "shantou",
+  "nanhai", "shunde", "baoan", "longgang", "pudong", "minhang", "jiading", "xiaoshan", "yuhang", "binjiang", "cixi", "yuyao",
+  "jinjiang", "shishi", "changle", "fuqing", "panyu", "huadu", "nansha", "zengcheng", "tongzhou", "kunshan", "zhangjiagang",
+  "changzhou", "nantong", "yangzhou", "xuzhou", "linyi", "zibo", "dongying", "weihai", "rizhao", "tangshan", "baoding",
+]);
+
+const QUALIFICATIFS_PRIVES = new Set(["pty", "pte", "pvt", "sdn", "sendirian"]);
+/** Un mot de trois lettres à UNE substitution de pte, pty ou pvt, hors des formes : ce qualificatif
+ *  (voir `analyserEntite`, devant Ltd). Sinon le mot lui-même. */
+function qualificatifAbime(j: string): string {
+  if (j.length !== 3 || FORMES.has(j)) return j;
+  return ["pte", "pty", "pvt"].find((q) => [...q].filter((c, i) => c !== j[i]).length === 1) ?? j;
+}
+const PHRASES_PRIVEES = new Set(["private limited", "proprietary limited", "sendirian berhad", "siren youxian gongsi"]);
+/** Les formes chinoises qui, ÉCRITES EN CARACTÈRES, ne disent ni le pays ni le statut privé (voir `analyserEntite`). */
+const FORMES_CHINOISES = new Set(["youxian gongsi", "youxian zeren gongsi"]);
+const PAYS_DU_CHINOIS_ECRIT = ["CN", "HK", "TW", "MO", "SG", "MY"];
+
+/** Dans le registre nord-américain, une société par actions se désigne « Inc. » ou « Corp. »,
+ *  et la désignation fait partie du nom déposé : « Harlowe Grain Corporation » et « Harlowe
+ *  Grain Inc. » sont deux sociétés (jeu 8, quatre paires jugées différentes ; les jeux 1 à 7
+ *  n'en jugent aucune dans l'autre sens). Les familles ne les séparent pas, toutes deux
+ *  « corp », et « Inc. » traduit aussi bien un K.K. ou une JSC : la désignation est plus fine
+ *  que la famille, et ne se lit que là où un registre la garde distincte. Les deux écritures
+ *  d'une même désignation (« Inc. », « Incorporated » ; « Corp. », « Corporation ») restent une. */
+const DESIGNATIONS: ReadonlyMap<string, string> = new Map([
+  ["inc", "inc"], ["incorporated", "inc"], ["corp", "corp"], ["corporation", "corp"],
+  /* les zones franches des Émirats : « Silver Dune Logistics FZCO » et « Silver Dune Logistics DMCC » sont deux
+     dépôts dans deux zones (jeu 9) ; FZE, FZCO, FZC, FZ-LLC sont les formes d'une même zone, une seule désignation */
+  ["fze", "fz"], ["fzco", "fz"], ["fzc", "fz"], ["fzllc", "fz"], ["fz", "fz"],
+  ["dmcc", "dmcc"], ["jafza", "jafza"], ["dafza", "dafza"], ["difc", "difc"], ["dso", "dso"], ["dwc", "dwc"], ["rakez", "rakez"], ["kizad", "kizad"],
+]);
+
+/** Ce que la préparation a retiré, et qui reste une information ; et la LANGUE que le nom
+ *  laisse voir (l'article arabe, une forme japonaise, une province chinoise), qui décide où
+ *  les variations de romanisation sont créditées. */
+export type Marques = { pays: readonly string[]; familles: readonly string[]; navire: boolean; societe: boolean;
+  arabe: boolean; japonais: boolean; chinois: boolean; coreen: boolean; hebreuOuGrec: boolean; indien: boolean; hispanique: boolean;
+  /** un nom écrit en tamoul : ses lettres latines viennent de `romaniser`, et le sanskrit du
+   *  tamoul se replie au crédit (voir `pliTamoul`) */
+  tamoul: boolean;
+  /** un qualificatif de société privée (Pty, Pte, Pvt, Sdn, (P)) : « X Pty Ltd » n'est pas « X Ltd » */
+  prive: boolean;
+  /** les désignations écrites qu'un même registre garde distinctes dans une même famille
+   *  (« Inc. » et « Corp. », voir DESIGNATIONS) */
+  designations: readonly string[];
+  /** le nom entier est en majuscules et compte plusieurs mots : un export de système, où les
+   *  mots courts sont souvent abrégés sans point (« HVY IND ») */
+  majuscules: boolean;
+  /** la filiation écrite (« m » bin, ibn ; « f » bint, binti) : deux filiations sont deux personnes */
+  filiation: string;
+  /** le nom porte « branch », « succursale », « head office » : ce que la mention NOMME (voir
+   *  `mentionDeSuccursale`), « » sans mention ; d'un seul côté, ou deux mentions différentes, la paire se
+   *  range au possible */
+  succursale: string;
+  /** le type que le préfixe de navire déclare (« tug », « barge ») : deux types sont deux navires */
+  typeNavire: string;
+  /** la marque d'un CLAVARDAGE : tout en minuscules, ou en casse mixte sans le moindre point, virgule
+   *  ni parenthèse (« Kim Send Hardware & Building Materials Pre Ltd ») ; celui qui tape ne ponctue pas
+   *  et son téléphone corrige ses mots (voir `scorePrepares`). Un export en majuscules n'en est pas un,
+   *  ni un nom qui porte une annotation entre parenthèses (« Chin Hong Trading Pte Ltd (振丰贸易) ») */
+  chat: boolean;
+  /** le nom est écrit dans un abjad (arabe et persan, hébreu) : ses mots n'ont pas de voyelles,
+   *  et se comparent aux consonnes de l'autre côté (voir `cleAbjad`) */
+  abjad: Abjad;
+  /** le nom est lu en cantonais (la seconde lecture d'un nom en sinogrammes, ou une lecture
+   *  cantonaise substituée aux mots d'un nom latin) : ses syllabes se replient sur la graphie de
+   *  Hong Kong (`pliCantonais`) */
+  cantonais: boolean;
+  /** la forme est écrite en chinois (有限公司) : elle ne dit pas si la société est privée
+   *  (Pte. Ltd., Sdn. Bhd.) ou non, et ne se met pas en conflit là-dessus */
+  priveInconnu: boolean;
+  /** pour un jeton lu dans des sinogrammes, les caractères lus : deux lectures égales de
+   *  caractères différents sont des homophones (« 新海 », « 鑫海 »), pas le même mot */
+  natifs: ReadonlyMap<string, string> };
+
+const MARQUEURS_ARABES = new Set(["al", "el", "ul", "bin", "bint", "ibn", "abu", "abou", "abd", "abdul", "abdel", "abdal", "umm",
+  "sharikat", "sharika", "shirkat", "muassasat", "moassasat", "muassasa", "tijara", "tijarah", "tijariya", "sherkat", "bazargani",
+  "tejarat", "sanati", "lil", "wa", "bani", "dar", "beit", "bayt"]);
+/** Le persan sans article : ses mots d'affaires et ses lieux. */
+const MARQUEURS_PERSANS = new Set(["sanat", "sanaat", "sanati", "sanaye", "sanayeh", "tolid", "tolidi", "farayand", "sahami", "khas",
+  "amm", "tejarat", "tejarati", "bazargani", "pishro", "sherkat", "sherkate", "iran", "irani", "tehran", "tabriz", "isfahan", "esfahan",
+  "shiraz", "mashhad", "karaj", "bandar", "abbas", "qeshm", "kish", "khazar", "pars", "parsian", "parsi", "novin", "omran", "toseh",
+  "tosee", "naft", "fulad", "foolad", "madan", "khorshid", "khurshid", "sepid", "sefid", "mehr", "sepehr", "aria", "arya", "lavazem"]);
+const MARQUEURS_COREENS = new Set(["tongsang", "sanop", "sanup", "muyeok", "muyok", "jeongmil", "jungmil", "jeonja", "junja", "hwahak",
+  "mulryu", "haeun", "gaebal", "hanguk", "hankook", "hankuk", "korea", "korean", "daehan", "seoul", "busan", "pusan", "incheon", "inchon",
+  "daegu", "taegu", "ulsan", "gwangju", "kwangju", "daejeon", "taejon", "gyeonggi", "kyonggi", "kyunggi", "chungcheong", "jeolla",
+  "gyeongsang", "kyongsang", "kyung", "gyeong", "kyoung", "hwaseong", "hwasung", "cheonan", "chonan", "pyeongtaek", "pyongtaek"]);
+/** L'écriture tamoule (U+0B80 à U+0BFF). */
+const TAMOUL = /[\u0b80-\u0bff]/u;
+const MARQUEURS_INDIENS = new Set(["pvt", "india", "indian", "bharat", "bharati", "hindustan", "udyog", "vyapar", "mumbai", "bombay",
+  "delhi", "chennai", "madras", "kolkata", "calcutta", "bangalore", "bengaluru", "hyderabad", "pune", "ahmedabad", "surat", "jaipur",
+  "gujarat", "maharashtra", "tamil", "nadu", "kerala", "punjab", "rajasthan", "karnataka", "andhra", "telangana", "bengal", "noida",
+  "gurgaon", "gurugram", "ludhiana", "kanpur", "coimbatore", "tirupur", "jodhpur", "agra", "kathiawar", "shree", "shri", "sri",
+  "lal", "bhai", "kumar", "singh", "sahib", "chand", "das", "prasad", "devi", "ram", "krishna", "ganesh", "lakshmi", "laxmi",
+  "agro", "agrotech", "kesari", "masala", "basmati", "handloom", "handicrafts", "jute", "sarees", "saree"]);
+const MARQUEURS_HISPANIQUES = new Set(["distribuidora", "comercial", "comercializadora", "industrias", "industria", "hermanos", "hijos",
+  "compania", "companhia", "sociedad", "sociedade", "exportadora", "importadora", "agropecuaria", "agricola", "del", "los", "las",
+  "grupo", "corporacion", "fabrica", "productos", "servicios", "transportes", "construcciones", "alimentos", "minera", "pesquera",
+  "textil", "textiles", "quimica", "metalicas", "mexico", "espana", "brasil", "peru", "colombia", "chile", "argentina", "venezuela"]);
+const MARQUEURS_HEBREUX = new Set(["yam", "kfar", "kokhav", "kochav", "yarden", "shachar", "shahar", "galil", "hagalil", "kibbutz",
+  "moshav", "negev", "haifa", "aviv", "ashdod", "eilat", "israel", "israeli", "beit", "bet", "tzafrir", "zafrir", "sde", "sdeh"]);
+const MARQUEURS_GRECS = new Set(["kai", "sia", "naftiliaki", "naftiki", "emporiki", "viomichaniki", "techniki", "kataskevastiki", "ellas",
+  "hellas", "elliniki", "hellenic", "piraeus", "pireas", "athens", "athina", "thessaloniki", "patras", "afoi", "aphoi", "adelfoi", "kapetan"]);
+const SUFFIXES_GRECS = /(akis|opoulos|poulos|ides|idis|iadis|iotis|iki|ikos|ellis)$/;
+const MARQUEURS_JAPONAIS = new Set(["kk", "kabushiki", "kaisha", "kabushikigaisha", "godo", "yugen", "kogyo", "kougyou", "shoji",
+  "shouji", "sangyo", "sangyou", "seisakusho", "boeki", "boueki", "denki", "kagaku", "seiko", "jidosha", "unyu", "kaiun", "kaihatsu",
+  "tsusho", "maru",
+  /* les mots de métier des raisons sociales japonaises, romanisés : suisan (pêche et produits de la
+     mer), gyogyo (pêcherie), bussan (produits, négoce), shokai et shoten (maison de commerce),
+     kensetsu (construction), kikai (machines), kinzoku (métaux), seizo (fabrication), zosen
+     (chantier naval), senpaku (navires), sekiyu (pétrole), shokuhin (alimentaire), seiyaku et
+     yakuhin (pharmacie), tsushin (télécommunications), tetsudo (chemin de fer), kumiai
+     (coopérative), kyokai (association), kogaku (optique). Sans marque, le pli des deux
+     romanisations (`pliJaponais`) ne s'applique pas : « Shimotsuki Suisan » et « Simotuki Suisan »
+     restaient au possible (mesuré le 27/09 sur le jeu 8 : 0,800) */
+  "suisan", "gyogyo", "bussan", "shokai", "shoten", "kensetsu", "kikai", "kinzoku", "seizo", "zosen", "senpaku", "sekiyu",
+  "shokuhin", "seiyaku", "yakuhin", "tsushin", "tetsudo", "kumiai", "kyokai", "kogaku"]);
+const MARQUEURS_CHINOIS = new Set(["youxian", "gongsi", "gufen", "zeren", "maoyi", "jinchukou", "keji", "dianzi", "gongye", "shiye",
+  "zhizao", "jituan", "guoji", "wuliu", "huoyun", "hangyun", "jixie", "huagong", "fangzhi", "fuzhuang", "shipin", "jinshu",
+  "gangtie", "suliao", "jianzhu", "nengyuan", "fazhan", "touzi", "kongzhi", "konggu", "shangmao", "jingmao", "luntai"]);
+
+/**
+ * Un nom de société ou de navire, prêt pour la comparaison. Les lettres isolées successives
+ * sont d'abord rejointes (« F.Z.E. » → « fze », « M/V » → « mv », « A.K. » → « ak ») pour
+ * que la ponctuation ne décide de rien. Jamais vide : un nom fait tout entier de formes
+ * juridiques (« Company Limited ») se rend normalisé plutôt que de disparaître.
+ */
+export function preparerEntite(nom: string, lecture: Lecture = "mandarin"): string {
+  return analyserEntite(nom, lecture).texte;
+}
+
+/** La préparation, avec ce qu'elle a retiré (les pays des formes juridiques, un préfixe de
+ *  navire, une forme de société) et les mots que leur auteur a ABRÉGÉS d'un point. */
+const REGISTRE = /\(\s*(?:rc|reg\.?(?:\s*no\.?)?|registration\s*(?:no\.?)?|hrb|hra|kvk|cipc|cac|eori|company\s*no\.?|co\.?\s*reg\.?\s*no\.?|crn|tin|vat|nif|nit|cnpj|cuit|rfc|siret|siren|folio)\s*:?\s*([a-z0-9][a-z0-9\/\-. ]*?)(?:,\s*amtsgericht\s+[\p{L} .-]+)?\s*\)/iu;
+export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { texte: string; abreges: ReadonlySet<string>; parentheses: ReadonlySet<string>; civilites: ReadonlySet<string>; traduits: ReadonlySet<string> } & Marques {
+  /* L'apostrophe DANS un mot le soude (« O'Brien », « Ch'iao ») : en faire une frontière
+     de mot fabriquerait des jetons d'une ou deux lettres qui ne désignent rien. « F.lli »
+     (fratelli) et « LPG/C » (LPG carrier) ont une ponctuation qui porte le sens : lus avant. */
+  const rom = romaniser(nom, lecture);
+  const soude = plierLatin(rom.texte)
+    /* un « ? » dans une forme juridique ou à sa fin (« LT? », « L?D », « Ltd? ») : la lettre perdue
+       ou le point mal lu d'une forme, complétée AVANT que le « ? » final ne parte en ponctuation
+       (mesuré le 27/09 sur le jeu 9 : « (PVT) LT? » laissait un mot « lt » orphelin, 0,800) */
+    .replace(/(?<![\p{L}?])(\p{L}*)\?(\p{L}*)(?![\p{L}?])/gu, (m, avant: string, apres: string) => formeAbimee(avant, apres) ?? m)
+    /* la lettre qu'un encodage a PERDUE : un « ? » dans un mot ou en tête (« SE?ORA » pour
+       Señora, « ?ugowski » pour Ługowski) devient la lettre-jalon PERDU, que la normalisation
+       laisse passer ; le score la lit comme UNE lettre inconnue (`lettrePerdue`). Une suite de
+       « ? » vaut autant de lettres (« T?n ??c » pour Tân Đức : Đ et ứ perdus, un jalon chacun ;
+       mesuré le 27/09 sur le jeu 9, la suite partait en ponctuation et « ??c » devenait « c »).
+       Jamais un « ? » seul ni en fin de mot : là c'est une ponctuation, elle part avec les autres */
+    .replace(/\?(?=\?*\p{L})/gu, PERDU)
+    .replace(/int'l/gi, "international").replace(/\bF\.lli\b/gi, "Fratelli")
+    /* « M/s. » et « Messrs. », la civilité indienne et britannique d'une maison de commerce */
+    .replace(/^\s*(?:M\/s\.?|Messrs\.?)\s+/i, "")
+    /* « Mt. » et « Ft. » avec leur point sont Mount et Fort ; sans point, « MT » est un pétrolier */
+    .replace(/^Mt\.\s+/i, "Mount ").replace(/\bFt\.\s+/gi, "Fort ")
+    /* « S.à r.l. », « S.à.r.l. » : la forme luxembourgeoise et française, avec son accent et
+       son espace, que le sigle général ne reconnaît pas */
+    .replace(/\bS\.?\s?[àa]\.?\s?r\.?\s?l\.?(?!\p{L})/giu, "SARL")
+    /* « (P) Ltd. » et « (Pvt.) Ltd. », la société privée indienne : une forme, pas une filiale */
+    .replace(/\(\s*P(?:vt)?\.?\s*\)\s*(?=Ltd|Limited)/gi, "Pvt ")
+    .replace(/\b(LPG|LNG)\s*\/\s*C\b/gi, "$1C")
+    /* l'élision française et italienne (« d'Import-Export », « l'Industrie », « Côte d'Ivoire ») : la préposition ou
+       l'article tombe et le mot reste entier (jeu 10, 27/09 : « dimport » face à « import », 0,728). La minuscule d
+       seulement : « D'Angelo », « D'Souza » sont des noms, soudés comme « O'Brien » */
+    .replace(/(?<!\p{L})(?:d|l|L)['’ʼ`](?=\p{L})/gu, "")
+    .replace(/(\p{L})['’ʼ`](\p{L})/gu, "$1$2")
+    /* Les lettres séparées par un point ou une barre forment UN sigle (« S.A. », « F.Z.E. »,
+       « M/V », « A.K. ») : on les soude ici, sur le texte, parce qu'après la normalisation une
+       espace et un point se confondent, et « Holdings I S.A. » devenait « Holdings ISA » (le
+       numéro I fondu dans la forme, mesuré le 27/09 contre « Holdings III S.A. »). */
+    .replace(/(?<!\p{L})\p{L}(?:[./]\s?\p{L}(?!\p{L}))+\.?/gu, (m) => m.replace(/[./\s]/g, ""));
+  /* Un mot suivi d'un point est une ABRÉVIATION écrite comme telle (« Petrochem. », « Dist. »,
+     « Capt. ») : le mot entier qu'il commence lui correspond (voir `scorePrepares`). */
+  const abreges = new Set([...soude.matchAll(/(\p{L}{2,})\./gu)].map((m) => normaliser(m[1]!)));
+  /* Les mots ENTRE PARENTHÈSES : « Quarnby Logistics (Shanghai) », « Tervalo Shipping (Hong
+     Kong) ». Dans un nom de société, la parenthèse désigne le plus souvent une entité du
+     groupe, distincte ; si l'autre nom n'a rien qui y réponde, on ne parle pas de la même
+     (voir `scorePrepares`). Les mêmes tables que le nom entier, pour retrouver ces mots
+     tels que la préparation les laisse. */
+  const parentheses = new Set([...soude.matchAll(/\(([^()]+)\)/g)]
+    .flatMap((m) => {
+      let dedans = ` ${jetons(normaliser(plier(m[1]!))).join(" ")} `;
+      for (const [de, vers] of LOCUTIONS) dedans = dedans.split(de).join(vers);
+      return dedans.trim().split(/ +/).flatMap((j) => (CIVILITES.has(j) ? "" : ABREVIATIONS.get(j) ?? traduction(j) ?? j).split(" "));
+    })
+    .filter((j) => j !== "" && !FORMES.has(j)));
+  /* Lettres et chiffres collés se séparent : « No18 » → « No 18 », « LANQIAOFENG16 » →
+     « LANQIAOFENG 16 » ; le numéro d'un navire devient un jeton que la règle des numéros lit. */
+  const brut = jetons(jetons(normaliser(soude)).map(ocr).join(" ")
+    .replace(/(\p{L})(\d)/gu, "$1 $2").replace(/(\d)(\p{L})/gu, "$1 $2")).map(digrammeOptique).map(motDuMetierPerdu);
+  const joints = brut;
+  /* « No. », « Nr. », « Number » devant un numéro ne sont que le mot « numéro ». */
+  const sansNo = joints.filter((j, i) => !(/^(no|nr|num|number)$/.test(j) && /^\d+$/.test(joints[i + 1] ?? "")));
+  /* L'article arabe assimilé devient « al » AVANT le retrait des formes : sinon « As »
+     d'« As-Salam » partirait comme une forme juridique. */
+  const articles = sansNo.map((j, i) =>
+    ARTICLES_ASSIMILES.has(j) && i + 1 < sansNo.length && sansNo[i + 1]!.startsWith(j.slice(1)) ? "al" : j);
+  let texte = ` ${articles.join(" ")} `;
+  /* une locution dont les mots portent un point d'abréviation (« Imp. e Exp. », « San. ve
+     Tic. ») se développe, et ses mots développés gardent la marque : « import » abrégé lit
+     encore « importadora », « sanayi » lit « sanayi » */
+  for (const [de, vers] of LOCUTIONS) {
+    if (!texte.includes(de)) continue;
+    if (de.trim().split(" ").some((m) => abreges.has(m))) for (const m of vers.trim().split(" ")) abreges.add(m);
+    texte = texte.split(de).join(vers);
+  }
+  let navire = false;
+  for (const p of PHRASES_NAVIRE) {
+    if (texte.startsWith(p) && texte.length > p.length) { navire = true; texte = " " + texte.slice(p.length); }
+  }
+  const pays = new Set<string>();
+  const familles = new Set<string>();
+  const designations = new Set<string>();
+  let societe = false;
+  let privePhrase = false;
+  let priveInconnu = false;
+  const ecritEnSinogrammes = /[\u4e00-\u9fff]/u.test(nom) && !estJaponais(nom);
+  /* « Co., Ltd. », les deux mots ensemble, est la forme des sociétés d'Asie de l'Est et du
+     Sud-Est (有限公司, 株式会社, 주식회사, TNHH) : une « Sdn. Bhd. » ou une « GmbH » du même nom
+     est une autre société (mesuré le 27/09 sur le jeu 5) */
+  if (/ co (ltd|limited) /.test(texte)) for (const k of ["CN", "HK", "TW", "MO", "JP", "KR", "TH", "VN", "ID", "MM", "KH"]) pays.add(k);
+  for (const p of PHRASES) {
+    if (!texte.includes(p)) continue;
+    societe = true;
+    if (PHRASES_PRIVEES.has(p.trim())) privePhrase = true;
+    for (const k of PAYS_DES_FORMES.get(p.trim()) ?? []) pays.add(k);
+    for (const k of FAMILLES_DES_FORMES.get(p.trim()) ?? []) familles.add(k);
+    /* 有限公司 ÉCRIT EN CARACTÈRES est la forme de toute société à responsabilité limitée de langue
+       chinoise : de Chine, de Hong Kong, de Taïwan, de Macao, mais aussi de Singapour (Pte. Ltd.)
+       et de Malaisie (Sdn. Bhd.), et elle ne dit pas si la société est privée. Romanisée
+       (« Youxian Gongsi »), elle reste continentale. Jeu 9, 27/09 : « 金成电器(马)有限公司 » face
+       à « Kam Sing Electrical (M) Sdn. Bhd. » se mettait en conflit de pays et de statut. */
+    if (ecritEnSinogrammes && FORMES_CHINOISES.has(p.trim())) {
+      for (const k of PAYS_DU_CHINOIS_ECRIT) pays.add(k);
+      priveInconnu = true;
+    }
+    texte = texte.split(p).join(" ");
+  }
+  const civilites = new Set<string>();
+  const separes = texte.trim().split(/ +/);
+  /* les mots que les tables ont TRADUITS (« Comercial », « Exportação », « Handelsmaatschappij ») : des mots
+     du métier par construction, qu'un nom d'usage omet sans être une autre société (voir `scorePrepares`) */
+  const traduits = new Set<string>();
+  const sudAfricain = separes.some((j) => j === "pty" || j === "edms" || j === "eiendoms" || j === "bpk" || j === "beperk" || j === "maatskappy");
+  const motsBruts = separes.flatMap((j, i) => {
+    if (j === "i") return [j];
+    if (CIVILITES.has(j)) { civilites.add(j); return []; }
+    /* « li » (ل, « pour ») devant un mot du commerce arabe est la préposition, comme « lil » :
+       « Li Tijarat Al Aruz » est « Rice Trading » (jeu 9) ; devant tout autre mot c'est un nom (« Li Ning ») */
+    if (j === "li" && TRADUCTIONS_ARABES.has(separes[i + 1] ?? "")) return [];
+    /* « Bou » (« Bou en Konstruksie ») n'est l'afrikaans « building » que sous une forme sud-africaine :
+       ailleurs c'est l'arabe maghrébin « Abu » (« Bou Regreg ») */
+    if (j === "bou" && sudAfricain) { traduits.add("building"); return ["building"]; }
+    const a = ABREVIATIONS.get(j);
+    if (a !== undefined) return a.split(" ");
+    const p = PAYS_ADJECTIFS.get(j);
+    if (p !== undefined) return [p];
+    const t = traduction(j);
+    if (t === undefined) return [j];
+    for (const m of t.split(" ")) if (m !== "") traduits.add(m);
+    return t.split(" ");
+  });
+  /* LE QUALIFICATIF PRIVÉ ABÎMÉ : « Pre Ltd » pour Pte Ltd, le correcteur d'un téléphone ayant fait un
+     mot du sigle (jeu 9, 27/09 : « Kim Send Hardware & Building Materials Pre Ltd », « pre » mot rare
+     orphelin, 0,720). Devant « Ltd » ou « Limited », un mot de trois lettres qui n'est pas une forme et
+     ne diffère de pte, pty ou pvt que par UNE lettre substituée est ce qualificatif : rien d'autre de
+     trois lettres ne précède Ltd dans l'usage. Le prix, assumé : « Happy Pet Ltd » y perd son « Pet ». */
+  const mots = motsBruts.map((j, i) => (motsBruts[i + 1] === "ltd" || motsBruts[i + 1] === "limited") ? qualificatifAbime(j) : j);
+  /* « IP Tavrizyan A.G. » : l'entrepreneur individuel russe (ИП), ukrainien (ФОП, ЧП),
+     kazakh (ИП) porte un NOM DE PERSONNE et ses initiales ; « A.G. » n'y est pas une
+     Aktiengesellschaft. Après ce sigle, les mots courts restent des mots. */
+  const entrepreneur = ["ip", "fop", "chp", "flp", "spd"].includes(mots[0] ?? "");
+  let t = mots.filter((j, i) => {
+    if (j === "") return false;
+    /* « PT » (perseroan terbatas) se place en tête, ou en queue après une virgule (« Sinar Kaloka
+       Abadi, PT ») ; ailleurs c'est un mot */
+    if ((j === "pt" || j === "ud") && i > 0 && i !== mots.length - 1) return true;
+    if (!FORMES.has(j)) return true;
+    if (entrepreneur && i > 0 && j.length <= 3) return true;
+    /* une forme de fin en tête reste un mot (« Ag. Prokopis », « As-Salam »), sauf écrite
+       avec son point d'abréviation : « Est. Nasser Al-Dhufairi » est un établissement */
+    /* et « S.A. des Filatures de Montrouge », « S.p.A. di Navigazione », « N.V. van der Meulen » : la forme
+       abrégée en tête, suivie d'une particule, est la forme (le français et l'italien la placent devant) */
+    /* et « CV Cahaya Bintang Timur Jaya » : le CV indonésien (commanditaire vennootschap) se place en tête, comme PT */
+    if (i === 0 && FORMES_FINALES.has(j) && mots.length > 1 && !(j === "est" && abreges.has(j))
+      && !(PARTICULES.has(mots[1] ?? "") && mots.length > 2) && !(j === "cv" && mots.length > 2)) return true;
+    societe = true;
+    for (const k of PAYS_DES_FORMES.get(j) ?? []) pays.add(k);
+    for (const k of FAMILLES_DES_FORMES.get(j) ?? []) familles.add(k);
+    const d = DESIGNATIONS.get(j);
+    if (d !== undefined) designations.add(d);
+    return false;
+  });
+  /* un sigle en tête fait des initiales des mots qui suivent (« IMZ Industrias Metalicas
+     Zacoalco ») : il ne dit rien de plus qu'eux, il s'ôte */
+  if (t.length >= 3 && t[0]!.length >= 2 && t[0]!.length <= 6 && t[0] === t.slice(1, 1 + t[0]!.length).map((m) => m[0]).join("")) t = t.slice(1);
+  let typeNavire = "";
+  if (t.length > 1 && PREFIXES_NAVIRE.has(t[0]!)) { navire = true; typeNavire = TYPES_NAVIRE.get(t[0]!) ?? ""; t = t.slice(1); }
+  /* « i » (« et », en serbe, croate, polonais) ne s'efface qu'ENTRE deux mots : en dernière
+     position, formes juridiques ôtées, c'est le chiffre romain I (« Holdings I S.A. », mesuré
+     le 27/09 : il disparaissait et « Holdings I » ne se distinguait plus de « Holdings III ») */
+  /* et le « I » du Wade-Giles (« Shun I Fa », yi) vit parmi des monosyllabes : le « i » slave
+     ne s'efface qu'à côté d'un mot d'au moins cinq lettres */
+  t = t.filter((j, i) => j !== "i" || i === t.length - 1 || !((t[i - 1]?.length ?? 0) >= 5 || (t[i + 1]?.length ?? 0) >= 5));
+  /* « n » ENTRE deux mots est le « and » d'un clavardage (« Mulji Devshi n Sons ») ; écrit avec son
+     point (« N. Kumar Traders »), c'est une initiale, qui reste ; en tête ou en queue aussi (mesuré le
+     27/09 sur le jeu 9 : « mulji devshi n sons gen trading » à 0,689, « n » mot rare sans répondant) */
+  const initialeN = /(?<![\p{L}.])n\.(?!\p{L})/iu.test(soude);
+  t = t.filter((j, i) => j !== "n" || i === 0 || i === t.length - 1 || initialeN);
+  /* « d » ou « l » seul devant un mot est l'élision dont un système a ôté l'apostrophe (« Societe Malienne d
+     Import-Export ») ; écrit avec son point (« L. Dupont »), c'est une initiale, qui reste */
+  const initialeDL = /(?<![\p{L}.])[dl]\.(?!\p{L})/iu.test(soude);
+  t = t.filter((j, i) => (j !== "d" && j !== "l") || i === t.length - 1 || initialeDL);
+  /* le sigle du pays en queue d'un nom d'usage ouest-africain (« Bois Tropicaux CI ») dit le pays que l'adjectif
+     de nationalité du nom déposé écrit en tête (« Société Ivoirienne des Bois Tropicaux ») : voir PAYS_ADJECTIFS */
+  if (t.length >= 2) { const s = SIGLES_PAYS.get(t[t.length - 1]!); if (s !== undefined) t[t.length - 1] = s; }
+  /* les marqueurs se lisent AVANT la traduction (« tongsang », « shoji » deviennent « trading ») et
+     avant le retrait des civilités (« Shree ») */
+  const tousLesMots = [...articles, ...mots];
+  const arabe = /[\u0600-\u06ff]/.test(nom) || tousLesMots.some((j) => MARQUEURS_ARABES.has(j) || MARQUEURS_PERSANS.has(j));
+  /* un nom écrit en kana ou avec une forme japonaise, en sinogrammes, en hangul, est de cette
+     langue avant tout marqueur : ses jetons viennent de `romaniser` (ecritures.ts) */
+  const japonais = estJaponais(nom) || tousLesMots.some((j) => MARQUEURS_JAPONAIS.has(j));
+  const chinois = pays.has("CN") || REGIONS.has(t[0] ?? "") || ecritEnSinogrammes || lecture === "cantonais"
+    || tousLesMots.some((j) => MARQUEURS_CHINOIS.has(j));
+  const coreen = /[\uac00-\ud7a3]/u.test(nom) || tousLesMots.some((j) => MARQUEURS_COREENS.has(j));
+  const hebreuOuGrec = /[\u0370-\u03ff\u0590-\u05ff]/.test(nom)
+    || tousLesMots.some((j) => MARQUEURS_HEBREUX.has(j) || MARQUEURS_GRECS.has(j) || (j.length >= 6 && SUFFIXES_GRECS.test(j)));
+  const prive = tousLesMots.some((j) => QUALIFICATIFS_PRIVES.has(j)) || privePhrase;
+  /* un nom écrit en tamoul est indien : le crédit v, w, b vaut pour lui (வ s'écrit v ou w) */
+  const tamoul = TAMOUL.test(nom);
+  const indien = tamoul || tousLesMots.some((j) => MARQUEURS_INDIENS.has(j));
+  const hispanique = ["MX", "ES", "BR", "PE", "CO", "CL", "AR", "PT", "UY", "BO"].some((k) => pays.has(k)) || tousLesMots.some((j) => MARQUEURS_HISPANIQUES.has(j));
+  const majuscules = !/\p{Ll}/u.test(nom) && /\p{Lu}/u.test(nom) && t.length >= 2;
+  const filiation = tousLesMots.some((j) => FILIATION_M.has(j)) ? "m" : tousLesMots.some((j) => FILIATION_F.has(j)) ? "f" : "";
+  const succursale = mentionDeSuccursale(soude);
+  const chat = t.length >= 2 && !majuscules && (!/\p{Lu}/u.test(nom) || !/[.,()]/.test(nom));
+  return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites, traduits,
+    pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
+    hebreuOuGrec, indien, hispanique, tamoul, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture === "cantonais", priveInconnu,
+    natifs: rom.natifs, filiation, succursale, typeNavire };
+}
+
+/** Les jetons d'un nom brut : préparation d'entité, puis le pipeline commun des paliers
+ *  (translittération des écritures cyrillique et arabe comprise). */
+export function jetonsEntite(nom: string): string[] {
+  return jetons(preparer(preparerEntite(nom)));
+}
