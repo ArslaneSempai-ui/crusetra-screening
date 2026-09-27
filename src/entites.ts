@@ -671,6 +671,9 @@ const DESIGNATIONS: ReadonlyMap<string, string> = new Map([
  *  les variations de romanisation sont créditées. */
 export type Marques = { pays: readonly string[]; familles: readonly string[]; navire: boolean; societe: boolean;
   arabe: boolean; japonais: boolean; chinois: boolean; coreen: boolean; hebreuOuGrec: boolean; indien: boolean; hispanique: boolean;
+  /** un nom écrit en tamoul : ses lettres latines viennent de `romaniser`, et le sanskrit du
+   *  tamoul se replie au crédit (voir `pliTamoul`) */
+  tamoul: boolean;
   /** un qualificatif de société privée (Pty, Pte, Pvt, Sdn, (P)) : « X Pty Ltd » n'est pas « X Ltd » */
   prive: boolean;
   /** les désignations écrites qu'un même registre garde distinctes dans une même famille
@@ -716,6 +719,8 @@ const MARQUEURS_COREENS = new Set(["tongsang", "sanop", "sanup", "muyeok", "muyo
   "mulryu", "haeun", "gaebal", "hanguk", "hankook", "hankuk", "korea", "korean", "daehan", "seoul", "busan", "pusan", "incheon", "inchon",
   "daegu", "taegu", "ulsan", "gwangju", "kwangju", "daejeon", "taejon", "gyeonggi", "kyonggi", "kyunggi", "chungcheong", "jeolla",
   "gyeongsang", "kyongsang", "kyung", "gyeong", "kyoung", "hwaseong", "hwasung", "cheonan", "chonan", "pyeongtaek", "pyongtaek"]);
+/** L'écriture tamoule (U+0B80 à U+0BFF). */
+const TAMOUL = /[\u0b80-\u0bff]/u;
 const MARQUEURS_INDIENS = new Set(["pvt", "india", "indian", "bharat", "bharati", "hindustan", "udyog", "vyapar", "mumbai", "bombay",
   "delhi", "chennai", "madras", "kolkata", "calcutta", "bangalore", "bengaluru", "hyderabad", "pune", "ahmedabad", "surat", "jaipur",
   "gujarat", "maharashtra", "tamil", "nadu", "kerala", "punjab", "rajasthan", "karnataka", "andhra", "telangana", "bengal", "noida",
@@ -931,7 +936,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const hebreuOuGrec = /[\u0370-\u03ff\u0590-\u05ff]/.test(nom)
     || tousLesMots.some((j) => MARQUEURS_HEBREUX.has(j) || MARQUEURS_GRECS.has(j) || (j.length >= 6 && SUFFIXES_GRECS.test(j)));
   const prive = tousLesMots.some((j) => QUALIFICATIFS_PRIVES.has(j)) || privePhrase;
-  const indien = tousLesMots.some((j) => MARQUEURS_INDIENS.has(j));
+  /* un nom écrit en tamoul est indien : le crédit v, w, b vaut pour lui (வ s'écrit v ou w) */
+  const tamoul = TAMOUL.test(nom);
+  const indien = tamoul || tousLesMots.some((j) => MARQUEURS_INDIENS.has(j));
   const hispanique = ["MX", "ES", "BR", "PE", "CO", "CL", "AR", "PT", "UY", "BO"].some((k) => pays.has(k)) || tousLesMots.some((j) => MARQUEURS_HISPANIQUES.has(j));
   const majuscules = !/\p{Ll}/u.test(nom) && /\p{Lu}/u.test(nom) && t.length >= 2;
   const filiation = tousLesMots.some((j) => FILIATION_M.has(j)) ? "m" : tousLesMots.some((j) => FILIATION_F.has(j)) ? "f" : "";
@@ -939,7 +946,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const chat = t.length >= 2 && !majuscules && (!/\p{Lu}/u.test(nom) || !/[.,()]/.test(nom));
   return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites,
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
-    hebreuOuGrec, indien, hispanique, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture === "cantonais", priveInconnu,
+    hebreuOuGrec, indien, hispanique, tamoul, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture === "cantonais", priveInconnu,
     natifs: rom.natifs, filiation, succursale, typeNavire };
 }
 
@@ -1283,7 +1290,7 @@ export type NomPrepare = {
 };
 
 const SANS_MARQUES: Marques = { pays: [], familles: [], designations: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
-  coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, prive: false, majuscules: false, chat: false, abjad: "", cantonais: false,
+  coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, tamoul: false, prive: false, majuscules: false, chat: false, abjad: "", cantonais: false,
   priveInconnu: false, natifs: new Map(), filiation: "", succursale: false, typeNavire: "" };
 
 export function preparerNom(f: Frequences, nom: string, lecture: Lecture = "mandarin"): NomPrepare {
@@ -1510,6 +1517,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   const japonais = A.marques.japonais || B.marques.japonais, coreen = A.marques.coreen || B.marques.coreen;
   const hebreuOuGrec = A.marques.hebreuOuGrec || B.marques.hebreuOuGrec, indien = A.marques.indien || B.marques.indien;
   const hispanique = A.marques.hispanique || B.marques.hispanique;
+  const tamoul = A.marques.tamoul || B.marques.tamoul;
   /* en pinyin, l'initiale est un phonème : Jin n'est pas Yin, Chang n'est pas Shang ; seules les
      paires d'aspiration du Wade-Giles se confondent (k, g ; t, d ; p, b ; ts, z, c ; ch, zh, j, q ; hs, x) */
   const chinois = A.marques.chinois || B.marques.chinois;
@@ -1542,7 +1550,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
         const nx = X.marques.natifs.get(x) ?? "", ny = Y.marques.natifs.get(y) ?? "";
         /* la clé porte tout ce qui décide : les deux mots, leurs marques d'abréviation, et
            leur position de dernier mot (la troncature ne vaut que pour lui) */
-        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
+        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}|${abjad}|${nx}|${ny}` : "";
         /* le cache code l'équivalence de romanisation en ajoutant 2 à la valeur (elle est dans [0, 1]) */
         const enCache = memo?.get(cle);
         let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
@@ -1565,6 +1573,8 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
             /* v, w, b : hindi, hébreu, espagnol, portugais ; sous leur contexte, au crédit et non au
                squelette, pour que Fabre reste distinct de Favre */
             || ((indien || hispanique) && pliIndien(x) === pliIndien(y))
+            /* le tamoul et son sanskrit (Lakshmi, லட்சுமி latchumi), sa sonorité non écrite */
+            || (tamoul && pliTamoul(x) === pliTamoul(y))
             || (hebreuOuGrec && (X.squelettes[i]!.replace(/X/g, "h") === Y.squelettes[j]!.replace(/X/g, "h") || pliIndien(x) === pliIndien(y))));
           if (equivalent) v = Math.max(v, CREDIT_ROMANISATION);
           /* la voyelle d'appui (« Bahr », « Bahar ») ne change pas le mot arabe, quand une voyelle
@@ -1576,7 +1586,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
              crédit de 0,85, « بحر الذهب » restait à 0,744, « سپیددشت » à 0,787 et « שחר הגליל » à
              0,700, sous le possible, chaque mot du nom propre n'apportant que 0,7 */
           if (abjad !== "" && x !== y && !tousDeuxAnglais(x, y)) {
-            const kx = cleAbjad(x, abjad === "hebreu"), ky = cleAbjad(y, abjad === "hebreu");
+            const kx = cleAbjad(x, abjad), ky = cleAbjad(y, abjad);
             /* et la ta marbuta (ة), « -at » en annexion d'un côté, « -a » de l'autre (« Zahrat », « zahra ») */
             const memes = (kx.length >= 3 && kx === ky) || (abjad === "arabe"
               && ((ky.length >= 3 && cleAbjadSansTa(x) === ky) || (kx.length >= 3 && cleAbjadSansTa(y) === kx)));
@@ -2168,6 +2178,15 @@ export function pliJaponais(m: string): string {
  *  niveau du crédit (0,85), pas du squelette : Fabre et Favre restent sous le niveau fort. */
 export function pliIndien(m: string): string {
   return m.replace(/[vw]/g, "b").replace(/(.)\1+/g, "$1");
+}
+/** Le tamoul en lettres latines : le sanskrit que son écriture adapte (kṣ s'écrit ட்ச, avec le u que
+ *  l'écriture glisse entre deux consonnes : Lakshmi, லட்சுமி latchumi ; Meenakshi, மீனாட்சி meenatchi),
+ *  ச lu s ou ch, ழ écrit zh ou l, la sonorité qui ne s'écrit pas (k, g ; t, d ; p, b ; th, dh), வ écrit
+ *  v, w ou b, les longues doublées (ee, oo) ou non. Au crédit (0,85), pas au squelette. */
+export function pliTamoul(m: string): string {
+  return m.replace(/ksh/g, "tch").replace(/tchu(?=[^aeiou])/g, "tch").replace(/(sh|ch)/g, "s").replace(/zh/g, "l")
+    .replace(/(th|dh)/g, "t").replace(/d/g, "t").replace(/g/g, "k").replace(/b/g, "p").replace(/[vw]/g, "b")
+    .replace(/ee/g, "i").replace(/oo/g, "u").replace(/aa/g, "a").replace(/(.)\1+/g, "$1");
 }
 /** Le coréen en romanisation révisée et en McCune-Reischauer : eo, o, u (ㅓ, ㅗ, ㅜ) ; eu, u ; ae, e ;
  *  g, k ; d, t ; b, p ; j, ch ; r, l (ㄹ). */

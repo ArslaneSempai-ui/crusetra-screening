@@ -161,7 +161,7 @@ type NomIndexe = { brut: string; nom: NomPrepare; entree: EntreeListe; alias?: s
 
 /** Un mot du vocabulaire des listes : sa forme, ses clés, et les chaînes qui le portent. */
 type MotIndexe = { mot: string; sq: string; repli: string; abregeVu: boolean; noms: number[];
-  /** les abjads (a : arabe, h : hébreu) dans l'écriture desquels une chaîne listée porte ce mot */
+  /** les abjads (a : arabe, h : hébreu, t : thaï) dans l'écriture desquels une chaîne listée porte ce mot */
   abjadVu: string;
   /** une chaîne listée lue en cantonais porte ce mot */
   cantonaisVu: boolean };
@@ -202,7 +202,7 @@ export class Index {
   private readonly parRepli = new Map<string, MotIndexe[]>();
   /** les mots listés qui portent une lettre perdue à l'encodage (« seʔora »), par longueur */
   private readonly parLongueurPerdu = new Map<string, MotIndexe[]>();
-  /** la clé consonantique (`cleAbjad`) de chaque mot, dans les deux lectures (« a| », « h| ») :
+  /** la clé consonantique (`cleAbjad`) de chaque mot, dans les trois lectures (« a| », « h| », « t| ») :
    *  c'est là qu'un nom écrit dans un abjad cherche ses mots */
   private readonly parCleAbjad = new Map<string, MotIndexe[]>();
   /** la même clé, pour les seuls mots que des chaînes écrites dans un abjad portent : c'est là
@@ -275,9 +275,9 @@ export class Index {
             if (mot.includes("ee")) ranger(this.parSq, squeletteLongue(mot), m);
             ranger(this.parRepli, m.repli, m);
             if (porteUnJalon(mot)) ranger(this.parLongueurPerdu, String(mot.length), m);
-            for (const mode of ["a", "h"]) {
-              const c = cleAbjad(mot, mode === "h");
-              if (c.length >= 3) ranger(this.parCleAbjad, `${mode}|${c}`, m);
+            for (const mode of ["arabe", "hebreu", "thai"] as const) {
+              const c = cleAbjad(mot, mode);
+              if (c.length >= 3) ranger(this.parCleAbjad, `${mode[0]}|${c}`, m);
             }
             /* la ta marbuta : un mot en « -at » se range aussi sous sa clé sans ce t (voir cleAbjadSansTa) */
             const sansTa = cleAbjadSansTa(mot);
@@ -286,12 +286,12 @@ export class Index {
             if (m.noms[m.noms.length - 1] !== k) m.noms.push(k);
             if (nom.abreges[i]) m.abregeVu = true;
           }
-          const mode = nom.marques.abjad[0] ?? "";
-          if (mode !== "" && !m.abjadVu.includes(mode)) {
-            m.abjadVu += mode;
-            const c = cleAbjad(mot, mode === "h");
-            if (c.length >= 3) ranger(this.parCleAbjadNatif, `${mode}|${c}`, m);
-            const sansTa = mode === "a" ? cleAbjadSansTa(mot) : undefined;
+          const mode = nom.marques.abjad;
+          if (mode !== "" && !m.abjadVu.includes(mode[0]!)) {
+            m.abjadVu += mode[0];
+            const c = cleAbjad(mot, mode);
+            if (c.length >= 3) ranger(this.parCleAbjadNatif, `${mode[0]}|${c}`, m);
+            const sansTa = mode === "arabe" ? cleAbjadSansTa(mot) : undefined;
             if (sansTa !== undefined && sansTa.length >= 3) ranger(this.parCleAbjadNatif, `a|${sansTa}`, m);
           }
           if (nom.marques.cantonais && !m.cantonaisVu) { m.cantonaisVu = true; ranger(this.parPliCantonaisNatif, pliCantonais(mot), m); }
@@ -364,9 +364,9 @@ export class Index {
     /* les mêmes consonnes (CREDIT_ABJAD) : un nom écrit dans un abjad face à tous les mots, un nom
        latin face aux mots que des chaînes écrites dans un abjad portent */
     if (t <= CREDIT_ABJAD) {
-      for (const mode of abjad !== "" ? [abjad] : ["arabe", "hebreu"] as const) {
+      for (const mode of abjad !== "" ? [abjad] : ["arabe", "hebreu", "thai"] as const) {
         const table = abjad !== "" ? this.parCleAbjad : this.parCleAbjadNatif;
-        const c = cleAbjad(mot, mode === "hebreu");
+        const c = cleAbjad(mot, mode);
         if (c.length >= 3) for (const m of table.get(`${mode[0]}|${c}`) ?? []) retenus.add(m);
         /* la ta marbuta, dans les deux sens : le mot demandé en « -at » cherche aussi sous sa clé sans
            ce t, et les mots listés en « -at » sont rangés sous la leur */

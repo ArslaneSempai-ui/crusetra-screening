@@ -7,10 +7,10 @@ import {
   variationVocalique, voyelleEpenthetique, squeletteLongue, lettrePerdue, PERDU, fauteDeFrappe, composesDistincts, simMot, pluriel, LU_UN,
   estSyllabeIsolee,
   tronque, estCoupe, apport, simMinimale, choisirSeuils, marquesEnConflit, frequencesDe, mesurerJeux, qualificatifSoude,
-  poidsDuMot, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, FAUSSES_ALERTES_MAX_FORT, SEUIL_POSSIBLE, lecturesDe, pliCantonais,
+  poidsDuMot, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, FAUSSES_ALERTES_MAX_FORT, SEUIL_POSSIBLE, lecturesDe, pliCantonais, pliTamoul,
 } from "./entites.ts";
 import { validerPaires, type TableDUnPalier } from "./measure.ts";
-import { hangulEnLatin, pinyinDe, cleAbjad, cleAbjadSansTa, romaniser, CHEMIN_PINYIN, CHEMIN_JYUTPING, jyutpingDe, hongkong } from "./ecritures.ts";
+import { hangulEnLatin, pinyinDe, cleAbjad, cleAbjadSansTa, romaniser, CHEMIN_PINYIN, CHEMIN_JYUTPING, jyutpingDe, hongkong, thaiEnLatin, tamoulEnLatin } from "./ecritures.ts";
 
 const f = FREQUENCES_UNIFORMES;
 const score = (a: string, b: string) => scoreNoms(f, a, b);
@@ -436,9 +436,9 @@ test("les écritures natives : hangul, sinogrammes, arabe et persan, hébreu, ve
   assert.ok(score("光星産業株式会社", "幸生産業株式会社") < 0.81);
   /* les abjads : consonnes contre consonnes, l'article séparé, la forme et le commerce traduits */
   assert.equal(preparerEntite("MT بحر الذهب"), "bhr al dhhb");
-  assert.equal(cleAbjad("bahr", false), cleAbjad("bhr", false));
-  assert.equal(cleAbjad("hanegev", true), cleAbjad("hngb", true));
-  assert.equal(cleAbjad("shachar", true), cleAbjad("shchr", true), "ח s'écrit ch, ש reste sh");
+  assert.equal(cleAbjad("bahr", "arabe"), cleAbjad("bhr", "arabe"));
+  assert.equal(cleAbjad("hanegev", "hebreu"), cleAbjad("hngb", "hebreu"));
+  assert.equal(cleAbjad("shachar", "hebreu"), cleAbjad("shchr", "hebreu"), "ח s'écrit ch, ש reste sh");
   assert.ok(score("MT بحر الذهب", "MT Bahr Al Dhahab") >= 0.81);
   assert.ok(score("شرکت بازرگانی سپیددشت", "Sepiddasht Trading Company") >= 0.81, "persan : شرکت et بازرگانی sont la forme et le commerce");
   assert.ok(score("مؤسسة الرحيلي للتجارة", "Al Ruhaili Trading Est.") >= 0.81, "arabe : للتجارة est le commerce, مؤسسة la forme");
@@ -446,8 +446,8 @@ test("les écritures natives : hangul, sinogrammes, arabe et persan, hébreu, ve
   assert.ok(score("שחר הגליל בע״מ", "Shachar HaGalil Ltd.") >= 0.81);
   assert.ok(score("אורות הנגב תעשיות בע״מ", "Orot HaGalil Industries Ltd.") < 0.81, "d'autres consonnes sont un autre mot");
   assert.equal(score("MT بحر الذهب ٢", "MT Bahr Al Dhahab 3"), 0, "un chiffre arabe oriental est un numéro, et deux numéros différents tranchent");
-  /* le thaï n'est pas lu : dit ici, pas découvert par la mesure */
-  assert.ok(score("บริษัท พระจันทร์เงิน อุตสาหกรรม จำกัด", "Phrachan Ngoen Industry Co., Ltd.") < 0.8);
+  /* le thaï se lit depuis le tour 5 (voir le test des écritures thaïe et tamoule) */
+  assert.ok(score("บริษัท พระจันทร์เงิน อุตสาหกรรม จำกัด", "Phrachan Ngoen Industry Co., Ltd.") >= 0.81);
 });
 
 test("l'arabe et le persan natifs : les formes et leurs sigles, les mots du commerce sous ل, لل et ال, la filiation", () => {
@@ -464,10 +464,10 @@ test("l'arabe et le persan natifs : les formes et leurs sigles, les mots du comm
   assert.equal(romaniser("نجوم").texte, "njum", "و entre deux consonnes reste une voyelle");
   /* la clé arabe : ج est une consonne, و sa propre lettre */
   for (const [a, b] of [["nujoom", "njum"], ["rawabi", "rwabi"], ["kaveh", "kawh"], ["fajr", "fjr"], ["suwaidi", "swidi"]]) {
-    assert.equal(cleAbjad(a, false), cleAbjad(b, false), `${a} / ${b}`);
-    assert.ok(cleAbjad(a, false).length >= 3, `${a} : trois consonnes au moins`);
+    assert.equal(cleAbjad(a, "arabe"), cleAbjad(b, "arabe"), `${a} / ${b}`);
+    assert.ok(cleAbjad(a, "arabe").length >= 3, `${a} : trois consonnes au moins`);
   }
-  assert.equal(cleAbjadSansTa("zahrat"), cleAbjad("zahra", false), "la ta marbuta en annexion");
+  assert.equal(cleAbjadSansTa("zahrat"), cleAbjad("zahra", "arabe"), "la ta marbuta en annexion");
   assert.equal(cleAbjadSansTa("bayt"), undefined);
   for (const [a, b] of [
     ["Rawabi Al Sahel Scrap Metal Trading L.L.C.", "روابي الساحل لتجارة خردة المعادن ذ.م.م"],
@@ -695,4 +695,60 @@ test("tour 5, clavardage : le qualificatif privé à une lettre près devant Ltd
   assert.equal(analyserEntite("KIM SEND HARDWARE PRE LTD").chat, false, "un export en majuscules n'est pas un clavardage");
   assert.equal(analyserEntite("Kim Seng Hardware Pte. Ltd.").chat, false, "un registre ponctue");
   assert.equal(analyserEntite("Chin Hong Trading Pte Ltd (振丰贸易)").chat, false, "une annotation entre parenthèses n'est pas un clavardage");
+});
+
+test("tour 5 : le thaï se lit (RTGS), se compare sur ses consonnes, et ses mots du commerce se traduisent", () => {
+  /* la lecture : voyelles devant, après, implicites ; ห muet ; groupes ; ์ éteint ; รร */
+  assert.equal(thaiEnLatin("โชคดี"), "chokdi");
+  assert.equal(thaiEnLatin("เจริญ"), "charoen", "เ-ิ autour d'un faux groupe");
+  assert.equal(thaiEnLatin("รุ่งโรจน์"), "rungrot", "์ éteint le น, จ final se lit t");
+  assert.equal(thaiEnLatin("ขนส่ง"), "khonsong", "la voyelle implicite o de la syllabe fermée");
+  assert.equal(thaiEnLatin("ถนน"), "thanon", "a puis o sur trois consonnes nues");
+  assert.equal(thaiEnLatin("หมอ"), "mo", "ห muet devant ม, อ voyelle");
+  assert.equal(thaiEnLatin("กรรม"), "kam");
+  assert.equal(thaiEnLatin("สวน"), "suan");
+  assert.equal(thaiEnLatin("เพชร"), "phet", "le ร qui reste après une finale est muet");
+  assert.equal(thaiEnLatin("จันทร์"), "chan");
+  assert.equal(thaiEnLatin("เสรี"), "seri", "สร n'est un groupe que devant un signe lié à la voyelle écrite devant");
+  assert.equal(thaiEnLatin("เคสเตรล"), "khestrel", "ส et ล finales gardent leur lettre : les mots anglais écrits en thaï");
+  /* la préparation : formes, préfixe de navire, parenthèse de pays, mots collés */
+  assert.equal(preparerEntite("บริษัท โชคดี โฟรเซ่น ฟู้ด จำกัด"), "chokdi frozen food");
+  assert.equal(preparerEntite("บริษัท น้ำตาลรุ่งโรจน์ จำกัด"), "sugar rungrot", "le mot du commerce collé au nom propre");
+  assert.equal(preparerEntite("เรือลำเลียง ทองเจริญ 9"), "thongcharoen 9");
+  assert.ok(analyserEntite("เรือลำเลียง ทองเจริญ 9").navire);
+  assert.deepEqual(analyserEntite("บริษัท เคนันกา แปซิฟิก (ประเทศไทย) จำกัด").pays, ["TH"]);
+  assert.deepEqual([...analyserEntite("บริษัท เคนันกา แปซิฟิก (ประเทศไทย) จำกัด").parentheses], ["thailand"]);
+  /* la clé consonantique, mode thaï : kh k, ph p, th t, j ch, ch final t */
+  assert.equal(cleAbjad("khenanka", "thai"), cleAbjad("kenanga", "thai"));
+  assert.equal(cleAbjad("rungroj", "thai"), cleAbjad("rungrot", "thai"));
+  assert.notEqual(cleAbjad("chokdi", "thai"), cleAbjad("chokchai", "thai"));
+  /* les scores, et les pièges du jeu 9 */
+  assert.ok(score("Chokdee Frozen Food Co., Ltd.", "บริษัท โชคดี โฟรเซ่น ฟู้ด จำกัด") >= 0.81);
+  assert.ok(score("Kenanga Pacific (Thailand) Co., Ltd.", "บริษัท เคนันกา แปซิฟิก (ประเทศไทย) จำกัด") >= 0.81);
+  assert.ok(score("MV ANDAMAN KESTREL", "อันดามัน เคสเตรล") >= 0.81);
+  assert.ok(score("Rungroj Sugar Co., Ltd.", "บริษัท น้ำตาลรุ่งโรจน์ จำกัด") >= 0.81);
+  assert.ok(score("เรือลำเลียง ทองเจริญ 9", "BARGE THONG CHAROEN 9") >= 0.81, "deux mots collés en thaï : le bloc");
+  assert.ok(score("Siam Chokchai Packaging Co., Ltd.", "บริษัท สยามโชคดี แพ็คเกจจิ้ง จำกัด") < 0.81, "โชคดี n'est pas โชคชัย");
+  assert.ok(score("บริษัท น้ำตาลรุ่งโรจน์ จำกัด", "Rungroj Rice Co., Ltd.") < 0.81, "le sucre n'est pas le riz");
+  assert.ok(score("บริษัท สยามโชคชัย กรุ๊ป จำกัด", "Siam Chokchai Group (Myanmar) Co., Ltd.") < 0.81, "la filiale");
+});
+
+test("tour 5 : le tamoul se lit (abugida), son sanskrit se replie au crédit, et ses mots du commerce se traduisent", () => {
+  assert.equal(tamoulEnLatin("கல்யாணி"), "kalyani");
+  assert.equal(tamoulEnLatin("லட்சுமி"), "latchumi", "ச après une consonne éteinte se lit ch");
+  assert.equal(tamoulEnLatin("மீனாட்சி"), "meenatchi", "ீ s'écrit ee, comme l'usage");
+  assert.equal(tamoulEnLatin("அன்னபூரணி"), "annapoorani");
+  assert.equal(tamoulEnLatin("முருகன்"), "murukan", "la sourde : le squelette replie g sur k");
+  assert.equal(tamoulEnLatin("காஞ்சிபுரம்"), "kanchipuram", "ஞ éteint est n, ச après lui ch");
+  assert.equal(pliTamoul("lakshmi"), pliTamoul("latchumi"), "kṣ écrit ட்ச, avec le u glissé");
+  assert.equal(pliTamoul("meenakshi"), pliTamoul("meenatchi"));
+  assert.equal(preparerEntite("ஸ்ரீ வேல் முருகன் டிரேடர்ஸ் பிரைவேட் லிமிடெட்"), "vel murukan traders", "ஸ்ரீ est la civilité, பிரைவேட் லிமிடெட் la forme");
+  assert.ok(analyserEntite("மீனாட்சி சுந்தரம்").indien, "un nom tamoul est indien : le crédit v, w, b");
+  assert.ok(score("Lakshmi Kalyani Textiles Sdn. Bhd.", "லட்சுமி கல்யாணி டெக்ஸ்டைல்ஸ் Sdn Bhd") >= 0.81);
+  assert.ok(score("Meenakshi Sundaram Group Holdings Pte. Ltd.", "மீனாட்சி சுந்தரம் க்ரூப் ஹோல்டிங்ஸ் பிரைவேட் லிமிடெட்") >= 0.81);
+  assert.ok(score("Sri Annapoorani Rice Merchants Pte. Ltd.", "ஸ்ரீ அன்னபூரணி அரிசி வியாபாரிகள் பிரைவேட் லிமிடெட்") >= 0.81);
+  assert.ok(score("MV ORIENT KALYANI", "ஓரியண்ட் கல்யாணி") >= 0.81);
+  assert.ok(score("ஸ்ரீ லட்சுமி டிரேடர்ஸ்", "Sri Lakshmi Textiles") < 0.81, "un autre mot du commerce");
+  assert.ok(score("ஸ்ரீ அன்னபூரணி அரிசி வியாபாரிகள்", "Sri Annapoorani Spice Merchants") < 0.81);
+  assert.ok(score("மீனாட்சி சுந்தரம் க்ரூப் ஹோல்டிங்ஸ் பிரைவேட் லிமிடெட்", "Meenakshi Sundaram Group Holdings Sdn. Bhd.") < 0.81, "Private Limited contre Sdn. Bhd. : deux pays");
 });

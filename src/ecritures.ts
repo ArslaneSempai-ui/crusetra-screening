@@ -24,17 +24,24 @@
  *     registres de Hong Kong écrivent « Wing Shing », ceux du continent « Yongcheng ». Chaque
  *     lecture est une variante que l'index voit (`lecturesDe`, entites.ts).
  *
+ *   - le THAÏ écrit ses voyelles autour de la consonne, ou pas du tout (la voyelle implicite),
+ *     et le côté latin les écrit comme il l'entend (Chokdee, Chokdi ; Charoen, Jaroen) : la
+ *     lecture suit la romanisation royale (RTGS), et le mot se compare sur ses consonnes,
+ *     comme un mot venu d'un abjad (mode « thai » de `cleAbjad`) ;
+ *   - le TAMOUL est un abugida : consonne + signe de voyelle, ் (virama) pour la consonne
+ *     seule ; la sonorité ne s'écrit pas (க : k ou g), et le squelette la replie déjà.
+ *
  * Le JAPONAIS reste tel quel : un kanji a plusieurs lectures (« 霜月 » se lit Shimotsuki, pas
- * Shuangyue), et une lecture chinoise d'un nom japonais ne rencontrerait rien. Le THAÏ aussi :
- * sa romanisation (voyelles implicites, voyelles écrites avant la consonne, tons) demande un
- * moteur que ce fichier ne prétend pas être.
+ * Shuangyue), et une lecture chinoise d'un nom japonais ne rencontrerait rien.
  *
  * Tout caractère hors des tables traverse INCHANGÉ, comme dans la couche commune : une table
  * qui remplacerait l'inconnu par du vide ferait converger deux noms différents.
  */
 import { readFileSync } from "node:fs";
 
-export type Abjad = "" | "arabe" | "hebreu";
+/** L'écriture dont un mot se compare sur ses consonnes : les deux abjads, et le thaï (voir
+ *  `cleAbjad`), dont la lecture écrit des voyelles que le côté latin n'écrit pas pareil. */
+export type Abjad = "" | "arabe" | "hebreu" | "thai";
 export type Romanise = { texte: string; natifs: Map<string, string> };
 /** La lecture d'un nom en sinogrammes : le mandarin (pinyin, le nom propre soudé) ou le cantonais
  *  (jyutping en graphie de Hong Kong, syllabe par syllabe). Un nom latin se lit pareil sous les deux. */
@@ -281,6 +288,298 @@ function hanzi(nom: string, natifs: Map<string, string>, lecture: Lecture): stri
   return generiques.replace(/\([^()]*\)/gu, (p) => p.replace(SINOGRAMMES, mandarin)).replace(SINOGRAMMES, cantonais);
 }
 
+/* ─────────────────────────── le thaï ─────────────────────────── */
+
+/**
+ * LE THAÏ, en romanisation générale royale (RTGS, celle des registres et des routes), sans
+ * les tons. Un alphabet où la voyelle s'écrit avant, après, au-dessus ou au-dessous de la
+ * consonne, ou pas du tout (la voyelle implicite : o dans une syllabe fermée, a devant une
+ * syllabe écrite), où un ์ (thanthakhat) éteint la consonne qu'il coiffe, et où les mots
+ * d'un nom se collent (« น้ำตาลรุ่งโรจน์ » : sucre + Rungrot). Le côté latin écrit les voyelles
+ * comme il l'entend (Chokdee, Chokdi ; Charoen, Jaroen) et les aspirées avec ou sans h
+ * (Kenanga, Khenangka) : un mot thaï se compare sur ses consonnes, comme un mot venu d'un
+ * abjad (`cleAbjad`, mode « thai »), et la lecture sert au bloc et à la distance écrite.
+ * Une suite de consonnes nues a parfois deux lectures (« ราชบุรี » se lit rat-cha-bu-ri, la
+ * finale redoublée en initiale) : aucune règle ne les départage, la clé consonantique les
+ * absorbe.
+ */
+
+/** Les consonnes : valeur en tête de syllabe, valeur en finale (RTGS). En finale, ส ซ ศ ษ
+ *  gardent s et ล ฬ gardent l, contre la norme (t, n) : les noms thaïs de sociétés sont pleins
+ *  de mots anglais écrits en thaï (เคสเตรล kestrel, สตีล steel, โฮเทล hotel), que le côté latin
+ *  écrit en anglais (mesuré le 27/09 à poids uniformes : « อันดามัน เคสเตรล » lu khettren tombait
+ *  à 0,563 face à « MV ANDAMAN KESTREL », 0,950 lu khestrel ; les six autres paires thaïes
+ *  ne bougeaient pas). La voyelle implicite, elle, ne change aucun score des sept paires,
+ *  émise ou non : la clé consonantique l'absorbe, et la lecture RTGS reste lisible. */
+const THAI_CONSONNES: ReadonlyMap<string, readonly [string, string]> = new Map(Object.entries({
+  "ก": ["k", "k"], "ข": ["kh", "k"], "ฃ": ["kh", "k"], "ค": ["kh", "k"], "ฅ": ["kh", "k"], "ฆ": ["kh", "k"], "ง": ["ng", "ng"],
+  "จ": ["ch", "t"], "ฉ": ["ch", "t"], "ช": ["ch", "t"], "ซ": ["s", "s"], "ฌ": ["ch", "t"], "ญ": ["y", "n"], "ฎ": ["d", "t"],
+  "ฏ": ["t", "t"], "ฐ": ["th", "t"], "ฑ": ["th", "t"], "ฒ": ["th", "t"], "ณ": ["n", "n"], "ด": ["d", "t"], "ต": ["t", "t"],
+  "ถ": ["th", "t"], "ท": ["th", "t"], "ธ": ["th", "t"], "น": ["n", "n"], "บ": ["b", "p"], "ป": ["p", "p"], "ผ": ["ph", "p"],
+  "ฝ": ["f", "p"], "พ": ["ph", "p"], "ฟ": ["f", "p"], "ภ": ["ph", "p"], "ม": ["m", "m"], "ย": ["y", "i"], "ร": ["r", "n"],
+  "ฤ": ["ru", ""], "ล": ["l", "l"], "ฦ": ["lu", ""], "ว": ["w", "o"], "ศ": ["s", "s"], "ษ": ["s", "s"], "ส": ["s", "s"],
+  "ห": ["h", ""], "ฬ": ["l", "l"], "อ": ["", "o"], "ฮ": ["h", ""],
+} as Record<string, readonly [string, string]>));
+/** Les groupes de consonnes lus d'un souffle (กร, ปล, คว), ceux des mots anglais (ฟร, บล, ดร),
+ *  et ทร, สร, lus s dans les mots thaïs (ทรัพย์ sap, สร้าง sang) ; ศร reste sr (ศรี, « Sri »). */
+const THAI_GROUPES: ReadonlyMap<string, string> = new Map(Object.entries({
+  "กร": "kr", "กล": "kl", "กว": "kw", "ขร": "khr", "ขล": "khl", "ขว": "khw", "คร": "khr", "คล": "khl", "คว": "khw",
+  "ตร": "tr", "ปร": "pr", "ปล": "pl", "ผล": "phl", "พร": "phr", "พล": "phl", "ฟร": "fr", "ฟล": "fl", "บร": "br", "บล": "bl",
+  "ดร": "dr", "ทร": "s", "สร": "s", "ศร": "sr",
+}));
+/** Les sonantes devant lesquelles un ห muet change le ton (หน, หม, หล, หว, หย, หง, หร, หญ). */
+const THAI_SONANTES: ReadonlySet<string> = new Set(["ง", "ญ", "น", "ม", "ย", "ร", "ล", "ว"]);
+/** Les consonnes qui ne ferment jamais une syllabe (ฉ ฌ ผ ฝ ห ฮ) : nues, elles en ouvrent une. */
+const THAI_JAMAIS_FINALES: ReadonlySet<string> = new Set(["ฉ", "ฌ", "ผ", "ฝ", "ห", "ฮ"]);
+/** Les voyelles écrites DEVANT la consonne : เ แ โ ใ ไ. */
+const THAI_PREPOSEES: ReadonlySet<string> = new Set(["เ", "แ", "โ", "ใ", "ไ"]);
+/** Les signes écrits après, au-dessus ou au-dessous de la consonne, codés d'une lettre : ะ a,
+ *  า A, ั n (elle appelle une finale), ำ m, ิ i, ี I, ึ v, ื V, ุ u, ู U, ็ x (bref), ํ m (avec
+ *  son า), ๅ rien. */
+const THAI_SIGNES: ReadonlyMap<string, string> = new Map([
+  ["ะ", "a"], ["า", "A"], ["ั", "n"], ["ำ", "m"], ["ิ", "i"], ["ี", "I"], ["ึ", "v"],
+  ["ื", "V"], ["ุ", "u"], ["ู", "U"], ["็", "x"], ["ํ", "m"], ["ๅ", ""],
+]);
+
+/** Une consonne thaïe et ce qui l'habille : la voyelle écrite devant, les signes écrits après
+ *  (codés), un ton, un ์ qui l'éteint. Les tons tombent, ๆ et ฯ aussi. */
+type UniteThai = { c: string; pre: string; signes: string; ton: boolean; morte: boolean };
+
+function unitesThai(mot: string): UniteThai[] {
+  const u: UniteThai[] = [];
+  let pre = "";
+  for (const c of mot) {
+    if (THAI_PREPOSEES.has(c)) { pre = c; continue; }
+    if (THAI_CONSONNES.has(c)) { u.push({ c, pre, signes: "", ton: false, morte: false }); pre = ""; continue; }
+    const d = u[u.length - 1];
+    if (!d) continue;
+    const code = THAI_SIGNES.get(c);
+    if (code !== undefined) { if (!(code === "A" && d.signes.endsWith("m"))) d.signes += code; }
+    else if (c >= "่" && c <= "๋") d.ton = true;
+    else if (c === "์") d.morte = true;
+  }
+  return u;
+}
+
+/** Un mot thaï, syllabe par syllabe, en RTGS sans les tons. */
+export function thaiEnLatin(mot: string): string {
+  const u = unitesThai(mot);
+  const n = u.length;
+  /* une consonne NUE : ni voyelle devant, ni signe, ni ton, ni ์ ; elle seule peut être une finale */
+  const nue = (k: number) => k < n && u[k]!.pre === "" && u[k]!.signes === "" && !u[k]!.ton && !u[k]!.morte;
+  /* une consonne nue qui PEUT fermer la syllabe précédente */
+  const fermante = (k: number) => nue(k) && !THAI_JAMAIS_FINALES.has(u[k]!.c);
+  let s = "";
+  let i = 0;
+  let finaleLue = false;
+  while (i < n) {
+    let t = u[i]!;
+    if (t.morte) { i++; continue; }
+    /* une consonne nue devant une consonne éteinte l'est aussi (จันทร์ chan, ศาสตร์ sat), et un ร
+       nu qui reste en fin de mot après une finale déjà lue (เพชร phet, สมัคร samak) */
+    if (i > 0 && nue(i) && finaleLue && ((i + 1 < n && u[i + 1]!.morte) || (i === n - 1 && t.c === "ร"))) { i++; continue; }
+    const pre = t.pre;
+    finaleLue = false;
+    /* ห muet devant une sonante : la consonne qui suit porte la syllabe et la voyelle écrite devant */
+    if (t.c === "ห" && t.signes === "" && !t.ton && i + 1 < n && THAI_SONANTES.has(u[i + 1]!.c) && u[i + 1]!.pre === "" && !u[i + 1]!.morte) {
+      i++; t = u[i]!;
+    }
+    let init = THAI_CONSONNES.get(t.c)![0];
+    let voy = "", fin = "";
+    let finale = true;
+    /* ว entre deux consonnes nues est la voyelle ua (สวน suan, ควร khuan) */
+    if (pre === "" && t.signes === "" && !t.ton && i + 2 < n && u[i + 1]!.c === "ว" && nue(i + 1) && fermante(i + 2)) {
+      s += init + "ua" + THAI_CONSONNES.get(u[i + 2]!.c)![1]; i += 3; finaleLue = true; continue;
+    }
+    /* la seconde consonne d'un faux groupe porte un signe qui ne se lit qu'avec la voyelle écrite
+       devant (เ-ิ, เ-็, เ-า, เ-ะ, เ-ีย, เ-ือ ; แ-็, แ-ะ ; โ-ะ), ou elle est nue devant une finale qui
+       clôt le mot ou la syllabe (แสดง sadaeng, เกษม kasem), sauf ร (เพชร phet) */
+    const liee = (k: number) => {
+      const sg = u[k]!.signes;
+      if (pre === "เ") return sg.includes("i") || sg.includes("x") || sg.includes("A") || sg.includes("a")
+        || (sg.includes("I") && nue(k + 1) && u[k + 1]!.c === "ย") || (sg.includes("V") && nue(k + 1) && u[k + 1]!.c === "อ");
+      if (pre === "แ" || pre === "โ") return sg.includes("x") || sg.includes("a");
+      return false;
+    };
+    /* le mot finit là : plus rien, ou une consonne éteinte, ou un ร nu qui restera muet (เกษตร kaset) */
+    const finDeMot = (k: number) => k >= n || u[k]!.morte || (k === n - 1 && nue(k) && u[k]!.c === "ร");
+    /* un groupe (กร, ปล, ฟร) : avec une voyelle devant (la seconde nue, ou liée à cette voyelle :
+       เสริม soem, mais เสรี seri), un signe ou un ton sur la seconde, ou une finale derrière ; sinon
+       la seconde est la finale (นคร nakhon) ; jamais devant รร (กรรม kam) */
+    if (t.signes === "" && !t.ton && i + 1 < n && u[i + 1]!.pre === "" && !u[i + 1]!.morte && THAI_GROUPES.has(t.c + u[i + 1]!.c)
+      && (pre !== "" ? nue(i + 1) || liee(i + 1) : u[i + 1]!.signes !== "" || u[i + 1]!.ton || (i + 2 < n && !u[i + 2]!.morte))
+      && !(u[i + 1]!.c === "ร" && nue(i + 2) && u[i + 2]!.c === "ร")) {
+      init = THAI_GROUPES.get(t.c + u[i + 1]!.c)!; i++; t = u[i]!;
+    } else if (pre !== "" && t.signes === "" && !t.ton && i + 1 < n && u[i + 1]!.pre === "" && !u[i + 1]!.morte
+      && (liee(i + 1) || (nue(i + 1) && fermante(i + 2) && u[i + 2]!.c !== "ร" && finDeMot(i + 3)))) {
+      /* un faux groupe sous une voyelle écrite devant (เจริญ charoen, เฉลิม chaloem) : la première
+         consonne prend un a, la voyelle passe à la seconde */
+      s += init + "a"; i++; t = u[i]!; init = THAI_CONSONNES.get(t.c)![0];
+    }
+    const sg = t.signes;
+    const suivante = (c: string) => nue(i + 1) && u[i + 1]!.c === c;
+    if (pre === "เ") {
+      /* เ : เ-าะ o, เ-า ao, เ-ะ e, เ-ีย ia, เ-ือ uea, เ-ิ oe, เ-็ e, เ-อ oe, เ-ย oei, เ-ว eo, เ- e */
+      if (sg.includes("A") && sg.includes("a")) { voy = "o"; finale = false; }
+      else if (sg.includes("A")) { voy = "ao"; finale = false; }
+      else if (sg.includes("a")) { voy = "e"; finale = false; }
+      else if (sg.includes("I") && suivante("ย")) { voy = "ia"; i++; }
+      else if (sg.includes("V") && suivante("อ")) { voy = "uea"; i++; }
+      else if (sg.includes("i")) voy = "oe";
+      else if (sg.includes("x")) voy = "e";
+      else if (sg === "" && suivante("อ")) { voy = "oe"; i++; finale = false; }
+      else if (sg === "" && suivante("ย")) { voy = "oei"; i++; finale = false; }
+      else if (sg === "" && suivante("ว")) { voy = "eo"; i++; finale = false; }
+      else voy = "e";
+    } else if (pre === "แ") {
+      /* แ : แ-ะ ae, แ-ว aeo, แ- ae */
+      if (sg.includes("a")) { voy = "ae"; finale = false; }
+      else if (sg === "" && suivante("ว")) { voy = "aeo"; i++; finale = false; }
+      else voy = "ae";
+    } else if (pre === "โ") {
+      /* โ : o, ouvert avec ะ */
+      voy = "o"; if (sg.includes("a")) finale = false;
+    } else if (pre !== "") {
+      /* ใ ไ : ai, avec ou sans ย (ไทย thai) */
+      voy = "ai"; finale = false; if (suivante("ย")) i++;
+    } else if (sg.includes("m")) { voy = "am"; finale = false; }
+    else if (sg.includes("a")) { voy = "a"; finale = false; }
+    else if (sg.includes("n")) { if (suivante("ว")) { voy = "ua"; i++; finale = false; } else voy = "a"; }
+    else if (sg.includes("A")) voy = "a";
+    else if (sg.includes("i") || sg.includes("I")) voy = "i";
+    else if (sg.includes("v")) voy = "ue";
+    else if (sg.includes("V")) { voy = "ue"; if (suivante("อ")) { i++; finale = false; } }
+    else if (sg.includes("u") || sg.includes("U")) voy = "u";
+    else if (sg.includes("x")) voy = "o";
+    else if (t.c === "ฤ" || t.c === "ฦ") voy = "";
+    else if (suivante("อ")) { voy = "o"; i++; }
+    else if (suivante("ร") && nue(i + 2) && u[i + 2]!.c === "ร") {
+      /* รร : a devant une finale (กรรม kam), an sinon (สรร san, บรรทุก banthuk) */
+      i += 2; if (fermante(i + 1)) voy = "a"; else { voy = "an"; finale = false; }
+    } else {
+      /* la voyelle implicite : a devant une syllabe écrite (สยาม sayam), o dans une syllabe
+         fermée (คน khon, ขนส่ง khonsong), a puis o sur trois consonnes nues (ถนน thanon) */
+      let k = 0;
+      while (fermante(i + 1 + k)) k++;
+      /* la consonne qui suit ouvre elle-même une syllabe (อุตสาหกรรม utsahakam, สวน dans un mot) :
+         la nôtre reste ouverte */
+      if (k >= 1 && nue(i + 2) && ((nue(i + 3) && u[i + 2]!.c === "ร" && u[i + 3]!.c === "ร") || (u[i + 2]!.c === "ว" && fermante(i + 3)))) k = 0;
+      if (k === 0 || k === 2) { voy = "a"; finale = false; } else voy = "o";
+    }
+    if (finale && fermante(i + 1)) { i++; fin = THAI_CONSONNES.get(u[i]!.c)![1]; finaleLue = true; }
+    s += init + voy + fin;
+    i++;
+  }
+  return s;
+}
+
+/** Thaï : les formes (บริษัท … จำกัด, มหาชน, หจก.), le préfixe de navire, le vocabulaire du
+ *  commerce, et les mots anglais écrits en thaï (กรุ๊ป, โฟรเซ่น, แพ็คเกจจิ้ง), collés au nom propre
+ *  comme en hangul. « ไทย » et « สยาม » : l'usage latin (Thai, Siam) n'est pas la lecture. */
+const GENERIQUES_THAI: ReadonlyMap<string, string> = new Map(Object.entries({
+  /* les formes */ "บริษัท": "borisat", "บจก": "borisat", "จำกัด": "jamkat", "มหาชน": "pcl", "บมจ": "borisat pcl",
+  "ห้างหุ้นส่วนจำกัด": "lp", "หจก": "lp", "ห้างหุ้นส่วนสามัญ": "partnership", "สหกรณ์": "cooperative", "และ": "", "แอนด์": "",
+  /* les navires */ "เรือลำเลียง": "barge", "เรือลากจูง": "tug", "เรือบรรทุก": "mv", "เรือประมง": "fv",
+  /* le commerce, en thaï */ "การค้า": "trading", "ค้าขาย": "trading", "การพาณิชย์": "commerce", "พาณิชย์": "commercial",
+  "อุตสาหกรรม": "industry", "การขนส่ง": "transport", "ขนส่ง": "transport", "โลจิสติกส์": "logistics", "การเดินเรือ": "navigation",
+  "เดินเรือ": "shipping", "อาหารทะเล": "seafood", "อาหาร": "food", "น้ำตาล": "sugar", "น้ำมัน": "oil", "เหล็ก": "steel", "เคมี": "chemical",
+  "พลังงาน": "energy", "การก่อสร้าง": "construction", "ก่อสร้าง": "construction", "วิศวกรรม": "engineering", "การพัฒนา": "development",
+  "พัฒนา": "development", "ผลิตภัณฑ์": "products", "เครื่องจักร": "machinery", "การลงทุน": "investment", "บริการ": "services",
+  "สิ่งทอ": "textile", "ยานยนต์": "automotive", "ประมง": "fishing", "ปิโตรเลียม": "petroleum", "ปิโตรเคมี": "petrochemical",
+  "พลาสติก": "plastic", "กระดาษ": "paper", "กลุ่ม": "group", "นานาชาติ": "international", "สากล": "international",
+  "ระหว่างประเทศ": "international", "ธุรกิจ": "business", "ประเทศไทย": "thailand", "ไทยแลนด์": "thailand", "ไทย": "thai",
+  "สยาม": "siam", "กรุงเทพมหานคร": "bangkok", "กรุงเทพฯ": "bangkok", "กรุงเทพ": "bangkok",
+  /* les mots anglais écrits en thaï */ "กรุ๊ป": "group", "อินเตอร์เนชั่นแนล": "international", "อินเตอร์": "inter",
+  "เอ็นจิเนียริ่ง": "engineering", "เทรดดิ้ง": "trading", "โฮลดิ้งส์": "holdings", "โฮลดิ้ง": "holding", "มาร์เก็ตติ้ง": "marketing",
+  "เซอร์วิสเซส": "services", "เซอร์วิส": "service", "ซัพพลาย": "supply", "ซีฟู้ด": "seafood", "ฟู้ดส์": "foods", "ฟู้ด": "food",
+  "โฟรเซ่น": "frozen", "แพ็คเกจจิ้ง": "packaging", "แพคเกจจิ้ง": "packaging", "แปซิฟิก": "pacific", "สตีล": "steel", "เคมีคอล": "chemical",
+  "เทคโนโลยี": "technology", "คอนสตรัคชั่น": "construction", "ดีเวลลอปเม้นท์": "development", "ชิปปิ้ง": "shipping", "มารีน": "marine",
+  "เอ็กซ์ปอร์ต": "export", "อิมปอร์ต": "import", "เอ็นเตอร์ไพรส์": "enterprise", "คอร์ปอเรชั่น": "corporation", "อินดัสทรี": "industry",
+  "อินดัสเตรียล": "industrial", "โปรดักส์": "products", "แมชชีนเนอรี่": "machinery", "เท็กซ์ไทล์": "textile",
+}));
+
+const CLES_THAI = alternative(GENERIQUES_THAI);
+function thai(nom: string): string {
+  return nom.replace(/[๐-๙]/gu, (c) => String(c.codePointAt(0)! - 0x0e50))
+    /* « เรือ » seul en tête, suivi d'une espace, est le préfixe de navire ; dans un mot c'est une
+       syllabe (เรือน ruean), et il n'est pas dans la table */
+    .replace(/^\s*เรือ(?=\s)/u, " mv ")
+    .replace(CLES_THAI, (m) => ` ${GENERIQUES_THAI.get(m) ?? m} `)
+    .replace(/[฀-๿]+/gu, thaiEnLatin);
+}
+
+/* ─────────────────────────── le tamoul ─────────────────────────── */
+
+/**
+ * LE TAMOUL, un abugida : chaque consonne porte un a, qu'un signe remplace (கா ka, கி ki) et
+ * que le ் (virama) éteint (க் k). La sonorité ne s'écrit pas (க : k ou g, ட : t ou d, ப : p ou
+ * b) : la lecture rend la sourde, que le squelette replie déjà (g : k, d : t, b : p). Les
+ * longues s'écrivent comme l'usage latin (ீ ee, ூ oo : Meenakshi, Annapoorani), et le
+ * sanskrit du tamoul (kṣ écrit ட்ச : லட்சுமி Lakshmi, மீனாட்சி Meenakshi) se replie au crédit,
+ * dans `pliTamoul` (entites.ts). Les mots anglais écrits en tamoul (டெக்ஸ்டைல்ஸ், டிரேடர்ஸ்) et
+ * les mots du commerce se traduisent avant ; les mots d'un nom tamoul sont séparés d'espaces.
+ */
+const GENERIQUES_TAMOUL: ReadonlyMap<string, string> = new Map(Object.entries({
+  /* les formes */ "பிரைவேட் லிமிடெட்": "private limited", "பப்ளிக் லிமிடெட்": "public limited", "பிரைவேட்": "pvt", "லிமிடெட்": "limited",
+  "லிமிடட்": "limited", "நிறுவனம்": "company", "கம்பெனி": "company", "கார்ப்பரேஷன்": "corporation", "அண்ட்": "", "மற்றும்": "",
+  /* le commerce, en tamoul */ "வர்த்தகம்": "trading", "வியாபாரம்": "trading", "வியாபாரிகள்": "merchants", "வியாபாரி": "merchant",
+  "வணிகம்": "trading", "வணிகர்கள்": "merchants", "தொழிற்சாலை": "works", "தொழில்": "industry", "ஏற்றுமதி": "export",
+  "ஏற்றுமதியாளர்கள்": "exporters", "இறக்குமதி": "import", "போக்குவரத்து": "transport", "கப்பல்": "shipping", "அரிசி": "rice",
+  "ஜவுளி": "textiles", "ஜவுளிகள்": "textiles", "மில்": "mill", "மில்ஸ்": "mills", "மகன்கள்": "sons", "சகோதரர்கள்": "brothers",
+  "சர்வதேச": "international", "இந்தியா": "india", "தமிழ்நாடு": "tamilnadu",
+  /* les mots anglais écrits en tamoul */ "டெக்ஸ்டைல்ஸ்": "textiles", "டெக்ஸ்டைல்": "textile", "டிரேடர்ஸ்": "traders",
+  "டிரேடிங்": "trading", "எக்ஸ்போர்ட்ஸ்": "exports", "எக்ஸ்போர்ட்": "export", "இம்போர்ட்ஸ்": "imports", "க்ரூப்": "group",
+  "குரூப்": "group", "ஓரியண்ட்": "orient", "காயர்": "coir", "ஹோல்டிங்ஸ்": "holdings", "இண்டஸ்ட்ரீஸ்": "industries",
+  "இண்டஸ்ட்ரி": "industry", "இன்டர்நேஷனல்": "international", "லாஜிஸ்டிக்ஸ்": "logistics", "சர்வீசஸ்": "services",
+  "என்டர்பிரைசஸ்": "enterprises", "ஸ்பின்னிங்": "spinning", "ஸ்டீல்": "steel", "மெரைன்": "marine", "ஷிப்பிங்": "shipping",
+  "சன்ஸ்": "sons", "பிரதர்ஸ்": "brothers", "எஞ்சினியரிங்": "engineering", "கன்ஸ்ட்ரக்ஷன்": "construction",
+  "மெர்ச்சன்ட்ஸ்": "merchants", "ஏஜென்சீஸ்": "agencies", "ஃபுட்ஸ்": "foods", "ஃபுட்": "food",
+}).map(([k, v]) => [k.normalize("NFC"), v] as const));
+const TAMOUL_CONSONNES: ReadonlyMap<string, string> = new Map(Object.entries({
+  "க": "k", "ங": "ng", "ச": "s", "ஜ": "j", "ஞ": "ny", "ட": "t", "ண": "n", "த": "th", "ந": "n", "ன": "n", "ப": "p",
+  "ம": "m", "ய": "y", "ர": "r", "ற": "r", "ல": "l", "ள": "l", "ழ": "zh", "வ": "v", "ஶ": "sh", "ஷ": "sh", "ஸ": "s", "ஹ": "h",
+}));
+const TAMOUL_VOYELLES: ReadonlyMap<string, string> = new Map(Object.entries({
+  "அ": "a", "ஆ": "a", "இ": "i", "ஈ": "ee", "உ": "u", "ஊ": "oo", "எ": "e", "ஏ": "e", "ஐ": "ai", "ஒ": "o", "ஓ": "o", "ஔ": "au",
+}));
+/** Les signes de voyelle (ா ி ீ ு ூ ெ ே ை ொ ோ ௌ) ; les composés ொ ோ ௌ tiennent en un code après NFC. */
+const TAMOUL_SIGNES: ReadonlyMap<string, string> = new Map([
+  ["ா", "a"], ["ி", "i"], ["ீ", "ee"], ["ு", "u"], ["ூ", "oo"], ["ெ", "e"], ["ே", "e"],
+  ["ை", "ai"], ["ொ", "o"], ["ோ", "o"], ["ௌ", "au"],
+]);
+const VIRAMA = "்", AYTHAM = "ஃ";
+
+/** Un mot tamoul, consonne par consonne, avec la voyelle que chacune porte. */
+export function tamoulEnLatin(mot: string): string {
+  const l = [...mot.normalize("NFC")];
+  let s = "";
+  let f = false;
+  for (let i = 0; i < l.length; i++) {
+    const c = l[i]!;
+    const v = TAMOUL_VOYELLES.get(c);
+    if (v !== undefined) { s += v; continue; }
+    /* ஃ devant ப fait un f (ஃபுட் food) ; seul, il tombe */
+    if (c === AYTHAM) { f = l[i + 1] === "ப"; continue; }
+    const k = TAMOUL_CONSONNES.get(c);
+    if (k === undefined) continue;
+    /* ச se lit s, et ch après une consonne éteinte (ட்ச, ஞ்ச : Meenatchi, Kanchi) ; ஞ éteint est n */
+    s += f ? "f" : c === "ச" && l[i - 1] === VIRAMA ? "ch" : c === "ஞ" && l[i + 1] === VIRAMA ? "n" : k;
+    f = false;
+    const suite = l[i + 1] ?? "";
+    if (suite === VIRAMA) i++;
+    else if (TAMOUL_SIGNES.has(suite)) { s += TAMOUL_SIGNES.get(suite)!; i++; }
+    else s += "a";
+  }
+  return s;
+}
+
+const CLES_TAMOUL = alternative(GENERIQUES_TAMOUL);
+function tamoul(nom: string): string {
+  return nom.normalize("NFC").replace(/[௦-௯]/gu, (c) => String(c.codePointAt(0)! - 0x0be6))
+    .replace(new RegExp(`(?<![\\u0b80-\\u0bff])(?:${CLES_TAMOUL.source})(?![\\u0b80-\\u0bff])`, "gu"), (m) => ` ${GENERIQUES_TAMOUL.get(m) ?? m} `)
+    .replace(/[஀-௿]+/gu, tamoulEnLatin);
+}
+
 /* ─────────────────────────── les abjads ─────────────────────────── */
 
 /** Arabe et persan : translittération consonantique (ALA-LC simplifiée, sans diacritiques
@@ -408,11 +707,16 @@ function hebreu(nom: string): string {
  * 27/09 : j replié sur i, « Nujoom » et « njum » n'avaient plus que deux consonnes (nm), sous
  * la longueur qui vaut le crédit ; w replié sur b, « Rawabi » et « rwabi » de même (rp).
  */
-export function cleAbjad(mot: string, hebreu: boolean): string {
-  let m = hebreu ? mot.replace(/[vw]/g, "b").replace(/(?<!s)ch/g, "h") : mot.replace(/v/g, "w").replace(/dj/g, "j");
+export function cleAbjad(mot: string, abjad: Abjad): string {
+  /* arabe et persan : v est و, dj est ج (voie arabe) ; hébreu : v et w sont ב, ch est ח ; thaï : le côté latin
+     écrit les aspirées avec ou sans h (Kenanga, Khenangka ; Pattaya, Phatthaya), จ s'écrit ch ou j et se lit t
+     en finale (Rungroj, Rungrot) : kh, ph, th sont k, p, t, j est ch, et un ch final est t */
+  let m = abjad === "hebreu" ? mot.replace(/[vw]/g, "b").replace(/(?<!s)ch/g, "h")
+    : abjad === "thai" ? mot.replace(/[vw]/g, "b").replace(/kh/g, "k").replace(/ph/g, "p").replace(/th/g, "t").replace(/j/g, "ch").replace(/ch$/, "t")
+    : mot.replace(/v/g, "w").replace(/dj/g, "j");
   m = m.replace(/(tsch|sch|tch|ch|sh)/g, "X").replace(/kh/g, "h").replace(/zh/g, "j").replace(/(th|dh)/g, "t").replace(/ph/g, "f")
     .replace(/gh/g, "k").replace(/ck/g, "k").replace(/(ts|tz|z)/g, "s").replace(/c(?=[ei])/g, "s").replace(/[cq]/g, "k")
-    .replace(/g/g, "k").replace(/b/g, "p").replace(/d/g, "t").replace(hebreu ? /[yj]/g : /y/g, "i");
+    .replace(/g/g, "k").replace(/b/g, "p").replace(/d/g, "t").replace(abjad === "hebreu" ? /[yj]/g : /y/g, "i");
   return m.replace(/[aeiou]/g, "").replace(/(.)\1+/g, "$1");
 }
 
@@ -422,12 +726,12 @@ export function cleAbjad(mot: string, hebreu: boolean): string {
  *  celle-là. Jeu 9, 27/09 : « Zahrat Al Waha Petrochem FZE » et « زهرة الواحة للبتروكيماويات م.م.ح »
  *  restaient plafonnés au possible (0,800), « zahrat » un mot court à une lettre de « zahra ». */
 export function cleAbjadSansTa(mot: string): string | undefined {
-  return mot.length >= 4 && /[ae]t$/.test(mot) ? cleAbjad(mot.slice(0, -1), false) : undefined;
+  return mot.length >= 4 && /[ae]t$/.test(mot) ? cleAbjad(mot.slice(0, -1), "arabe") : undefined;
 }
 
-/** L'abjad dans lequel un nom est écrit, s'il l'est. */
+/** L'abjad dans lequel un nom est écrit, s'il l'est ; le thaï compte ici (voir `cleAbjad`). */
 export function abjadDe(nom: string): Abjad {
-  return /[\u0600-\u06ff]/u.test(nom) ? "arabe" : /[\u0590-\u05ff]/u.test(nom) ? "hebreu" : "";
+  return /[\u0600-\u06ff]/u.test(nom) ? "arabe" : /[\u0590-\u05ff]/u.test(nom) ? "hebreu" : /[\u0e00-\u0e7f]/u.test(nom) ? "thai" : "";
 }
 
 /* ─────────────────────────── l'entrée ─────────────────────────── */
@@ -443,5 +747,7 @@ export function romaniser(nom: string, lecture: Lecture = "mandarin"): Romanise 
   if (/[\u4e00-\u9fff]/u.test(t) && !estJaponais(t)) t = hanzi(t, natifs, lecture);
   if (/[\u0590-\u05ff]/u.test(t)) t = hebreu(t);
   if (/[\u0600-\u06ff]/u.test(t)) t = arabe(t);
+  if (/[\u0e00-\u0e7f]/u.test(t)) t = thai(t);
+  if (/[\u0b80-\u0bff]/u.test(t)) t = tamoul(t);
   return { texte: t, natifs };
 }
