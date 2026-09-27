@@ -65,3 +65,14 @@ in non-English names (5), GmbH against KG (2), SARL against SA (1), autocorrect 
 misses at strong, 30 are legal forms written out in full by the German, Dutch and African registries, 10 are
 registry numbers against trading names, and the rest are customs and SWIFT residues: a known list for round six.
 v11 on the nine training sets: strong 1284/1370 with 6/1370 false alerts (v10: 1208 with 9).
+
+Reading of v14 (blind set 12, judged 2026-09-28). The strong level found 149/200 with 34/200 false alerts, twice
+v13's rate. Of the thirty-four, twenty-three are a single letter changed inside a proper name with everything else
+identical (Mittal / Mital, Kennedy / Kennedey, McAllister / McAlister, Radcliffe / Ratcliffe, Kulkarni / Kulkani), which
+this author labels "different firm" while the same set labels "Harrington Miming / Mining" a typo of one firm and
+earlier authors labelled one letter in a company name a typo throughout. A screening tool must raise Mital against
+Mittal: the officer decides. The rate at strong therefore measures the author's convention as much as the method, and
+the brief of the next blind author states the convention explicitly: one letter changed inside a proper name is the
+same name misspelt, except in a vessel name; two real words (Coal / Coke, Cypress / Cyprus, Chiang Mai / Chiang Rai)
+are two names. The remaining eleven (plurals of trade words without a vessel prefix, Bros. / Bro., Supplies /
+Suppliers, Maghreb spellings held apart by convention) go to round nine's known list with the fifty-one misses.
