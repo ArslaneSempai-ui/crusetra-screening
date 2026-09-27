@@ -240,6 +240,23 @@ export function partieDuDocument(brut: string): string {
   const m = /(?:^|[\s(\/\-\u2013])(?:the\s+)?(applicant|beneficiary|seller|buyer|shipper|consignee|drawee|drawer|remitter|payee|ordering\s+customer)s?\s*(?:[:)\/\-\u2013]|$)/iu.exec(brut);
   return m ? m[1]!.toLowerCase().replace(/\s+/g, " ") : "";
 }
+/** Les formes et génériques qu'un export en capitales colle à la queue d'un nom sans espaces, du plus long au plus
+ *  court, trois lettres au moins (les formes de deux lettres, SA, BV, AS, couperaient « MIMOSA ») ; ce qui reste devant
+ *  garde six lettres au moins ; « IMP » et « EXP » seuls n'y sont pas (« NORTHSHRIMP » perdait « IMP »). */
+const QUEUES_COLLEES = ["ENTERPRISES", "INDUSTRIES", "ENTERPRISE", "HOLDINGS", "TRADING", "TRADERS", "EXPORTS", "IMPORTS", "PTYLTD", "PTELTD",
+  "PVTLTD", "SDNBHD", "IMPEXP", "EXPIMP", "EXPORT", "IMPORT", "COLTD", "FOODS", "GROUP", "GMBH", "CORP", "LTD", "LLC", "INC", "PLC", "BHD"];
+const QUEUES_EN_MOTS: ReadonlyMap<string, string> = new Map([["PTYLTD", "PTY LTD"], ["PTELTD", "PTE LTD"], ["PVTLTD", "PVT LTD"],
+  ["SDNBHD", "SDN BHD"], ["IMPEXP", "IMP EXP"], ["EXPIMP", "EXP IMP"], ["COLTD", "CO LTD"]]);
+export function decollerLesQueues(s: string): string {
+  const queues: string[] = [];
+  let tete = s;
+  for (;;) {
+    const q = QUEUES_COLLEES.find((x) => tete.endsWith(x) && tete.length - x.length >= 6);
+    if (q === undefined) break;
+    tete = tete.slice(0, -q.length); queues.unshift(QUEUES_EN_MOTS.get(q) ?? q);
+  }
+  return queues.length ? [tete, ...queues].join(" ") : s;
+}
 /** Les variantes d'un nom brut, textes seuls (voir `variantesTypees`). */
 export function variantes(brut: string): string[] {
   return variantesTypees(brut).map((v) => v.texte);
@@ -247,6 +264,10 @@ export function variantes(brut: string): string[] {
 export function variantesTypees(brut: string): VarianteTypee[] {
   const vues = new Map<string, VarianteTypee>();
   /* les astérisques d'un message de banque (« *** COMPANIA … *** PANAMA », jeu 11) ne sont que du décor */
+  /* UN TAMPON SCANNÉ épelle les lettres (« M A L H O T R A  B R O S », jeu 13, 0,515) : les lettres seules séparées d'une
+     espace se soudent et les doubles espaces séparent les mots, lu AVANT que les espaces se resserrent ; « S A S » et
+     « J P Morgan » gardent leur soudure (préparation) */
+  const tampon = /^(?:\p{L} )+\p{L}(?:\s{2,}(?:\p{L} )+\p{L})+\s*$/u.test(brut) ? brut.trim().split(/\s{2,}/).map((m) => m.replace(/ /g, "")).join(" ") : undefined;
   brut = brut.replace(/\*+/g, " ").replace(/\s{2,}/g, " ").trim();
   /* « (Amharic: ተስፋዬ በቀለ ንግድ) » : l'étiquette de langue s'efface, la parenthèse native reste (jeu 10) */
   brut = brut.replace(/\(\s*(?:amharic|arabic|chinese|japanese|korean|thai|hebrew|russian|greek|hindi|tamil|persian|farsi|urdu|bengali|in\s+\p{L}+)\s*:\s*/giu, "(");
@@ -256,6 +277,16 @@ export function variantesTypees(brut: string): VarianteTypee[] {
   const partie = partieDuDocument(brut);
   const poser = (texte: string, ancien: boolean, mention: string) => { if (!vues.has(texte)) vues.set(texte, { texte, ancien, mention, registre, partie }); };
   poser(brut.trim(), false, "");
+  /* UN NOM SANS ESPACES (jeu 13, 28/09 : « CarmichaelExportsPtyLtd » à 0,482, « GUANGZHOUFENGYUANIMPEXP » et
+     « WEIFANGHENGTAIFOODSCOLTD » à 0,000 face à leurs noms écrits) : les majuscules intérieures coupent les mots ; en
+     capitales, les formes et génériques collés en queue se détachent un à un (COLTD, PTYLTD, IMPEXP), et le reste demeure
+     un bloc que le score compare aux mots de l'autre nom ressoudés (voir le bloc dans scorePrepares) */
+  const seul = brut.trim();
+  if (!/\s/.test(seul) && /\p{L}{10,}/u.test(seul)) {
+    if (/\p{Ll}\p{Lu}/u.test(seul)) poser(seul.replace(/(\p{Ll})(\p{Lu})/gu, "$1 $2").replace(/(\p{Lu}+)(\p{Lu}\p{Ll})/gu, "$1 $2"), false, "");
+    else if (!/\p{Ll}/u.test(seul)) { const d = decollerLesQueues(seul); if (d !== seul) poser(d, false, ""); }
+  }
+  if (tampon !== undefined) poser(tampon, false, "");
   /* le registre écrit la personne nom d'abord : « Okeke, Chidi Building Materials » (jeu 10) */
   const inverse = /^([\p{Lu}][\p{L}'-]+),\s+([\p{Lu}][\p{L}'-]+)\s+(\p{L}.*)$/u.exec(brut.trim());
   if (inverse) poser(`${inverse[2]} ${inverse[1]} ${inverse[3]}`, false, "");
