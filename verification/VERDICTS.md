@@ -23,6 +23,8 @@ a verdict set is ever listed by any tool before it becomes training.
 | | | | | possible 0.80 | 163/200 [76-86 %] | 78/200 [33-46 %] |
 | 2026-09-28 | v12 dc363c55 / 949b2356 / ecritures 4348bc88 | set #10 985eb7c1 (Tokyo, Panama and Mexico brief by error source, explicit conventions, seventh model; overlap with the ten training sets: 0 pairs, 0 names; 0 pairs identical but for case), becomes paires-entites-11.json | 200 + 200 | strong 0.81 | 128/200 [57-70 %] | 6/200 [1-6 %] |
 | | | | | possible 0.80 | 179/200 [84-93 %] | 45/200 [17-29 %] |
+| 2026-09-28 | v13 3702a136 / 83ac2577 / ecritures aec60a13 | set #11 a963a80c (Helsinki and Black Sea brief by trap family, explicit conventions, eighth model; overlap with the eleven training sets: 0 pairs, 0 names; 0 pairs identical but for case), becomes paires-entites-12.json | 200 + 200 | strong 0.81 | 135/200 [61-74 %] | 14/200 [4-11 %] |
+| | | | | possible 0.80 | 165/200 [77-87 %] | 44/200 [17-28 %] |
 
 v6 on set #3 at other thresholds: 0.70 found 182 with 52 false; 0.75 found 181 with 37; 0.85 found 162
 with 19; 0.90 found 153 with 11.

@@ -1,2407 +1,2407 @@
 {
  "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
- "provenance": "blind test set #10, authored on 2026-09-27 by a separate agent (a Tokyo trading house, Panama registry and Mexico customs brief, organised by error source, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
+ "provenance": "blind test set #11, authored on 2026-09-28 by a separate agent (a Helsinki sanctions desk and Black Sea forwarder brief, organised by trap family, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
  "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
  "paires": [
   {
-   "a": "Comercializadora Peñaloza y Asociados, S.A. de C.V.",
-   "b": "COMERCIALIZADORA PENALOZA Y ASOCIADOS SA DE CV",
+   "a": "Kylmäsäilö Oy",
+   "b": "Kylmasailo Oy",
    "verdict": "match",
-   "nature": "latam-accent-dropped-uppercase"
+   "nature": "nordic-diacritics-dropped"
   },
   {
-   "a": "Transportes Nuñez e Hijos, S. de R.L.",
-   "b": "Transportes Nunyez e Hijos S de RL",
+   "a": "Pohjanlahden Rahti Oy",
+   "b": "Pohjanlahden Rahti Osakeyhtiö",
    "verdict": "match",
-   "nature": "latam-ny-for-enye"
+   "nature": "nordic-legal-form-expanded"
   },
   {
-   "a": "Industrias Ibáñez Carvajal, S.A.P.I. de C.V.",
-   "b": "Industrias Ibanez Carvajal SAPI de CV",
+   "a": "Järvenpään Teräskauppa Oy",
+   "b": "JARVENPAAN TERASKAUPPA OY",
    "verdict": "match",
-   "nature": "latam-accent-dropped"
+   "nature": "nordic-diacritics-dropped"
   },
   {
-   "a": "Agroexportadora Muñoz Ltda.",
-   "b": "Agroexportadora Munoz Limitada",
+   "a": "Söderholm Shipping Ab",
+   "b": "Soederholm Shipping Ab",
    "verdict": "match",
-   "nature": "latam-ltda-expanded"
+   "nature": "nordic-diacritics-transcribed"
   },
   {
-   "a": "Fábrica de Calçados Marinho EIRELI",
-   "b": "Fabrica de Calcados Marinho E.I.R.E.L.I.",
+   "a": "Åkerström Frakt AB",
+   "b": "Aakerstroem Frakt Aktiebolag",
    "verdict": "match",
-   "nature": "latam-cedilla-dropped"
+   "nature": "nordic-diacritics-transcribed"
   },
   {
-   "a": "Distribuidora Ortega y Ortega, S.A.S.",
-   "b": "Distribuidora Ortega & Ortega SAS",
+   "a": "Nordvik Lastebil AS",
+   "b": "Nordvik Lastebil A/S",
    "verdict": "match",
-   "nature": "latam-y-ampersand"
+   "nature": "nordic-legal-form-variant"
   },
   {
-   "a": "Frigorífico do Vale Ltda",
-   "b": "Frigorifico do Vale Ltda.",
+   "a": "Brøndby Kornhandel ApS",
+   "b": "Broendby Kornhandel ApS",
    "verdict": "match",
-   "nature": "latam-accent-dropped"
+   "nature": "nordic-diacritics-transcribed"
   },
   {
-   "a": "Constructora Zúñiga Hermanos, S.A.",
-   "b": "Constructora Zuniga Hnos. SA",
+   "a": "Kaldvik Stålservice A/S",
+   "b": "Kaldvik Staalservice Aktieselskab",
    "verdict": "match",
-   "nature": "latam-hermanos-abbrev"
+   "nature": "nordic-diacritics-transcribed"
   },
   {
-   "a": "Grupo Empresarial Ávila Mendoza, S.A. de C.V.",
-   "b": "Grupo Empresarial Avila Mendoza SA de CV",
+   "a": "SIA Rīgas Graudu Termināls",
+   "b": "SIA Rigas Graudu Terminals",
    "verdict": "match",
-   "nature": "latam-accent-dropped"
+   "nature": "nordic-baltic-diacritics"
   },
   {
-   "a": "Laboratorios Quiñones e Ibarra, S.A. de C.V.",
-   "b": "Laboratorios Quinones y Ibarra SA de CV",
+   "a": "UAB Klaipėdos Krovinių Linija",
+   "b": "Klaipedos Kroviniu Linija UAB",
    "verdict": "match",
-   "nature": "latam-e-y-conjunction"
+   "nature": "nordic-baltic-diacritics"
   },
   {
-   "a": "Serviços Marítimos Peixoto Ltda.",
-   "b": "Servicos Maritimos Peixoto Ltda",
+   "a": "Tallinna Vilja OÜ",
+   "b": "Tallinna Vilja OU",
    "verdict": "match",
-   "nature": "latam-cedilla-accent-dropped"
+   "nature": "nordic-baltic-diacritics"
   },
   {
-   "a": "Almacenes Ordoñez Rocha, S. de R.L. de C.V.",
-   "b": "Almacenes Ordonez Rocha S de RL de CV",
+   "a": "Põhjaranniku Logistika OÜ",
+   "b": "Pohjaranniku Logistika osaühing",
    "verdict": "match",
-   "nature": "latam-enye-n"
+   "nature": "nordic-legal-form-expanded"
   },
   {
-   "a": "Comercial Piña Delgado, S.A.S.",
-   "b": "Comercial Pina Delgado S.A.S",
+   "a": "Nordström & Lindqvist AB (publ)",
+   "b": "Nordstrom och Lindqvist AB",
    "verdict": "match",
-   "nature": "latam-enye-n"
+   "nature": "nordic-publ-and-conjunction"
   },
   {
-   "a": "Importadora Yáñez del Pacífico, S.A. de C.V.",
-   "b": "Importadora Yanez del Pacifico SA de CV",
+   "a": "Havskraft Holding AB (publ)",
+   "b": "Havskraft Holding AB",
    "verdict": "match",
-   "nature": "latam-accent-dropped"
+   "nature": "nordic-publ-and-conjunction"
   },
   {
-   "a": "Pesquera Bahía Serena, S.A.",
-   "b": "PESQUERA BAHIA SERENA SA",
+   "a": "Kornlagerhuset i Norden AB",
+   "b": "Kornlager Huset i Norden AB",
    "verdict": "match",
-   "nature": "latam-accent-dropped-uppercase"
+   "nature": "nordic-compound-split"
   },
   {
-   "a": "Tecnologías Aplicadas Sotomayor, S.A.P.I. de C.V.",
-   "b": "Tecnologias Aplicadas Sotomayor S.A.P.I. de C.V.",
+   "a": "Stålvalsverket Norrby AB",
+   "b": "Stal Valsverket Norrby AB",
    "verdict": "match",
-   "nature": "latam-accent-dropped"
+   "nature": "nordic-compound-split"
   },
   {
-   "a": "Cafés Especiais Serra Azul EIRELI",
-   "b": "Cafes Especiais Serra Azul Eireli",
+   "a": "Lindbergs Spedition AB",
+   "b": "Lindberg Spedition AB",
    "verdict": "match",
-   "nature": "latam-accent-dropped"
+   "nature": "nordic-genitive-ending"
   },
   {
-   "a": "Transportadora Peña Blanca, S. de R.L.",
-   "b": "Transportadora Pena Blanca S de R L",
+   "a": "Andersen & Søn Transport ApS",
+   "b": "Andersen og Soen Transport ApS",
    "verdict": "match",
-   "nature": "latam-enye-n-form-spaced"
+   "nature": "nordic-diacritics-transcribed"
   },
   {
-   "a": "Envases Metálicos Guerrero y Cía., S.A.",
-   "b": "Envases Metalicos Guerrero y Compañia SA",
+   "a": "Pedersen Havnetjenester A/S",
+   "b": "Pedersen Havnetjenester Aktieselskab",
    "verdict": "match",
-   "nature": "latam-cia-expanded"
+   "nature": "nordic-legal-form-expanded"
   },
   {
-   "a": "Mineração Três Rios Ltda.",
-   "b": "Mineracao Tres Rios Ltda",
+   "a": "Oy Suomen Viljaterminaali Ab",
+   "b": "Suomen Viljaterminaali Oy",
    "verdict": "match",
-   "nature": "latam-tilde-cedilla-dropped"
+   "nature": "nordic-bilingual-form"
   },
   {
-   "a": "Textiles Hernández-Gómez, S.A. de C.V.",
-   "b": "Textiles Hernandez Gomez SA de CV",
+   "a": "Satamapalvelu Kotka Oy",
+   "b": "Hamntjänst Kotka Ab",
    "verdict": "match",
-   "nature": "latam-hyphen-double-surname"
+   "nature": "nordic-bilingual-name"
   },
   {
-   "a": "Autopartes Núñez & Salgado, S.A.S.",
-   "b": "Autopartes Nunez y Salgado SAS",
+   "a": "Kotkan Ahtaus Oy",
+   "b": "Kotkan Ahtaus Oy, Haminan sivuliike",
    "verdict": "match",
-   "nature": "latam-ampersand-y"
+   "nature": "nordic-branch"
   },
   {
-   "a": "Refrigeración Industrial del Bajío, S.A. de C.V.",
-   "b": "Refrigeracion Industrial del Bajio SA de CV",
+   "a": "UAB Baltijos Grūdų Prekyba",
+   "b": "Baltijos Grudu Prekyba, UAB",
    "verdict": "match",
-   "nature": "latam-accent-dropped"
+   "nature": "nordic-baltic-diacritics"
   },
   {
-   "a": "Bodegas Aristizábal e Hijos Ltda.",
-   "b": "Bodegas Aristizabal e Hijos Limitada",
+   "a": "AS Tallinna Laevaagentuur",
+   "b": "Tallinna Laevaagentuur AS",
    "verdict": "match",
-   "nature": "latam-ltda-expanded"
+   "nature": "nordic-legal-form-position"
   },
   {
-   "a": "Empacadora Santa Mónica, S.A. de C.V.",
-   "b": "Empacadora Santa Monica S.A. de C.V.",
+   "a": "SIA Ventspils Kokmateriāli",
+   "b": "Ventspils Kokmateriali SIA",
    "verdict": "match",
-   "nature": "latam-accent-dropped"
+   "nature": "nordic-legal-form-position"
   },
   {
-   "a": "Navegação Costeira Almeida Ltda.",
-   "b": "Navegacao Costeira Almeida Ltda",
+   "a": "Lõunaranna Kaubandus OÜ",
+   "b": "Lounaranna Kaubandus Osauhing",
    "verdict": "match",
-   "nature": "latam-cedilla-tilde-dropped"
+   "nature": "nordic-legal-form-expanded"
   },
   {
-   "a": "Soluciones Logísticas Peñafiel, S.A.S.",
-   "b": "Soluciones Logisticas Penafiel S A S",
+   "a": "Hjelmsäter Maskin AB",
+   "b": "HJELMSAETER MASKIN AKTIEBOLAG",
    "verdict": "match",
-   "nature": "latam-form-spaced"
+   "nature": "nordic-diacritics-transcribed"
   },
   {
-   "a": "Ferretería La Unión de Ocaña, S.A.",
-   "b": "Ferreteria La Union de Ocana SA",
+   "a": "Terästorni Oy",
+   "b": "Terastorni Oy",
    "verdict": "match",
-   "nature": "latam-accent-enye-dropped"
+   "nature": "nordic-diacritics-dropped"
   },
   {
-   "a": "Distribuciones Farmacéuticas Ruiz Escalante, S.A.P.I. de C.V.",
-   "b": "Distribuciones Farmaceuticas Ruíz Escalante SAPI de CV",
+   "a": "Mäkelä & Hyvönen Kuljetus Oy",
+   "b": "Makela ja Hyvonen Kuljetus Oy",
    "verdict": "match",
-   "nature": "latam-stray-accent"
+   "nature": "nordic-diacritics-dropped"
   },
   {
-   "a": "Companhia Agrícola São Benedito S.A.",
-   "b": "Cia. Agricola Sao Benedito SA",
+   "a": "Fiskebäcks Rederi AB",
+   "b": "Fiskebaecks Rederi AB",
    "verdict": "match",
-   "nature": "latam-companhia-cia"
+   "nature": "nordic-diacritics-transcribed"
   },
   {
-   "a": "Servicios Portuarios Muñiz y Cía., S. de R.L. de C.V.",
-   "b": "Servicios Portuarios Muniz y Cia S de RL de CV",
+   "a": "Østergaard Kornkompagni A/S",
+   "b": "Ostergaard Kornkompagni A/S",
    "verdict": "match",
-   "nature": "latam-enye-cia"
+   "nature": "nordic-diacritics-dropped"
   },
   {
-   "a": "Inversiones Beltrán-Ocampo, S.A.S.",
-   "b": "Inversiones Beltran Ocampo SAS",
+   "a": "UAB Žalgirio Logistika",
+   "b": "UAB Zalgirio Logistika",
    "verdict": "match",
-   "nature": "latam-hyphen-double-surname"
+   "nature": "nordic-baltic-diacritics"
   },
   {
-   "a": "Alimentos Procesados Castañeda, S.A. de C.V.",
-   "b": "Alimentos Procesados Castanyeda SA de CV",
+   "a": "UAB Šiaurės Krantas",
+   "b": "UAB Siaures Krantas",
    "verdict": "match",
-   "nature": "latam-ny-for-enye"
+   "nature": "nordic-baltic-diacritics"
   },
   {
-   "a": "Química Rodríguez e Isaza Ltda.",
-   "b": "Quimica Rodriguez y Isaza Ltda",
+   "a": "SIA Kurzemes Metāls",
+   "b": "Kurzemes Metals, SIA",
    "verdict": "match",
-   "nature": "latam-e-y-conjunction"
+   "nature": "nordic-baltic-diacritics"
   },
   {
-   "a": "Transportes Terrestres Villaseñor, S.A. de C.V.",
-   "b": "Transportes Terrestres Villasenor SA DE CV",
+   "a": "Oy Jääkarhu Logistics Ab",
+   "b": "Jaakarhu Logistics Oy",
    "verdict": "match",
-   "nature": "latam-enye-n"
+   "nature": "nordic-bilingual-form"
   },
   {
-   "a": "Construções Navais Porto Seguro Ltda.",
-   "b": "Construcoes Navais Porto Seguro Ltda",
+   "a": "Sjöfartsbolaget Kronholm AB",
+   "b": "Sjofartsbolaget Kronholm Aktiebolag",
    "verdict": "match",
-   "nature": "latam-tilde-cedilla-dropped"
+   "nature": "nordic-legal-form-expanded"
   },
   {
-   "a": "Comercializadora Núñez Peñaranda, S. de R.L.",
-   "b": "Comercializadora Nunez Penaranda S. de R.L.",
+   "a": "Göteborgs Spannmålsexport AB",
+   "b": "Goteborgs Spannmals Export AB",
    "verdict": "match",
-   "nature": "latam-enye-n"
+   "nature": "nordic-compound-split"
   },
   {
-   "a": "Consultoría Jurídica Ordóñez y Asociados, S.A.S.",
-   "b": "Consultoria Juridica Ordonez & Asoc. S.A.S.",
+   "a": "Porin Viljasatama Oy",
+   "b": "Pori Viljasatama Oy",
    "verdict": "match",
-   "nature": "latam-asociados-abbrev"
+   "nature": "nordic-genitive-ending"
   },
   {
-   "a": "Maquinaria Pesada Iturbide, Sociedad Anónima de Capital Variable",
-   "b": "Maquinaria Pesada Iturbide S.A. de C.V.",
+   "a": "Kristiansen Fragt ApS",
+   "b": "Kristiansen Fragt Anpartsselskab",
    "verdict": "match",
-   "nature": "latam-form-expanded"
+   "nature": "nordic-legal-form-expanded"
   },
   {
-   "a": "Ganadería Los Álamos, S. de R.L. de C.V.",
-   "b": "Ganaderia Los Alamos S. de R.L. de C.V.",
+   "a": "Viljo Heikkisen Kuljetus Oy",
+   "b": "Viljo Heikkinen Kuljetus Oy",
    "verdict": "match",
-   "nature": "latam-accent-dropped"
+   "nature": "nordic-genitive-ending"
   },
   {
-   "a": "Transportes Nuñez e Hijos, S. de R.L.",
-   "b": "Transportes Nunez y Hermanos S de RL",
+   "a": "Pohjanlahden Rahti Oy",
+   "b": "Pohjanmaan Rahti Oy",
    "verdict": "different",
-   "nature": "latam-hijos-hermanos"
+   "nature": "nordic-near-place-name"
   },
   {
-   "a": "Distribuidora Ortega y Ortega, S.A.S.",
-   "b": "Distribuidora Ortega y Ortiz SAS",
+   "a": "Söderholm Shipping Ab",
+   "b": "Söderholm Shipping AS",
    "verdict": "different",
-   "nature": "latam-second-surname"
+   "nature": "nordic-other-country-form"
   },
   {
-   "a": "Comercializadora Peñaloza y Asociados, S.A. de C.V.",
-   "b": "Comercializadora Penalver y Asociados SA de CV",
+   "a": "Andersen Fragt ApS",
+   "b": "Andersson Frakt AB",
    "verdict": "different",
-   "nature": "latam-surname-swap"
+   "nature": "nordic-sen-son"
   },
   {
-   "a": "Agroexportadora Muñoz Ltda.",
-   "b": "Agroexportadora Muniz Ltda",
+   "a": "Kristiansen Bunkring ApS",
+   "b": "Kristiansson Bunkring ApS",
    "verdict": "different",
-   "nature": "latam-munoz-muniz"
+   "nature": "nordic-sen-son"
   },
   {
-   "a": "Fábrica de Calçados Marinho EIRELI",
-   "b": "Fabrica de Calcas Marinho EIRELI",
+   "a": "Nielsen Kornhandel A/S",
+   "b": "Nilsson Kornhandel A/S",
    "verdict": "different",
-   "nature": "latam-product-word"
+   "nature": "nordic-sen-son"
   },
   {
-   "a": "Frigorífico do Vale Ltda",
-   "b": "Frigorifico do Vale Verde Ltda",
+   "a": "Lindbergs Spedition AB",
+   "b": "Lindholms Spedition AB",
    "verdict": "different",
-   "nature": "latam-added-word"
+   "nature": "nordic-near-surname"
   },
   {
-   "a": "Constructora Zúñiga Hermanos, S.A.",
-   "b": "Constructora Zuniga e Hijos SA",
+   "a": "Tallinna Vilja OÜ",
+   "b": "Tartu Vilja OÜ",
    "verdict": "different",
-   "nature": "latam-hermanos-hijos"
+   "nature": "nordic-near-place-name"
   },
   {
-   "a": "Grupo Empresarial Ávila Mendoza, S.A. de C.V.",
-   "b": "Grupo Empresarial Avila Mendieta SA de CV",
+   "a": "SIA Rīgas Graudu Termināls",
+   "b": "SIA Rīgas Graudu Tranzīts",
    "verdict": "different",
-   "nature": "latam-second-surname"
+   "nature": "nordic-activity-word"
   },
   {
-   "a": "Laboratorios Quiñones e Ibarra, S.A. de C.V.",
-   "b": "Laboratorios Quinones e Ibanez SA de CV",
+   "a": "UAB Klaipėdos Krovinių Linija",
+   "b": "UAB Klaipėdos Krovinių Terminalas",
    "verdict": "different",
-   "nature": "latam-second-surname"
+   "nature": "nordic-activity-word"
   },
   {
-   "a": "Serviços Marítimos Peixoto Ltda.",
-   "b": "Servicos Portuarios Peixoto Ltda",
+   "a": "Nordström & Lindqvist AB",
+   "b": "Nordström & Lindgren AB",
    "verdict": "different",
-   "nature": "latam-activity-word"
+   "nature": "nordic-near-surname"
   },
   {
-   "a": "Almacenes Ordoñez Rocha, S. de R.L. de C.V.",
-   "b": "Almacenes Ordonez Rojas S de RL de CV",
+   "a": "Havskraft Holding AB (publ)",
+   "b": "Havskraft Shipping AB",
    "verdict": "different",
-   "nature": "latam-second-surname"
+   "nature": "nordic-group-sibling"
   },
   {
-   "a": "Comercial Piña Delgado, S.A.S.",
-   "b": "Comercial Pinto Delgado SAS",
+   "a": "Kotkan Ahtaus Oy",
+   "b": "Haminan Ahtaus Oy",
    "verdict": "different",
-   "nature": "latam-surname-swap"
+   "nature": "nordic-near-place-name"
   },
   {
-   "a": "Importadora Yáñez del Pacífico, S.A. de C.V.",
-   "b": "Importadora Yanez del Atlantico SA de CV",
+   "a": "Satamapalvelu Kotka Oy",
+   "b": "Satamapalvelu Kokkola Oy",
    "verdict": "different",
-   "nature": "latam-region-word"
+   "nature": "nordic-near-place-name"
   },
   {
-   "a": "Pesquera Bahía Serena, S.A.",
-   "b": "Pesquera Bahia Solano SA",
+   "a": "Järvenpään Teräskauppa Oy",
+   "b": "Järvenpään Teräsrakenne Oy",
    "verdict": "different",
-   "nature": "latam-place-word"
+   "nature": "nordic-activity-word"
   },
   {
-   "a": "Tecnologías Aplicadas Sotomayor, S.A.P.I. de C.V.",
-   "b": "Tecnologias Avanzadas Sotomayor SAPI de CV",
+   "a": "Fiskebäcks Rederi AB",
+   "b": "Fiskebäcks Rederi Två AB",
    "verdict": "different",
-   "nature": "latam-adjective-swap"
+   "nature": "nordic-numbered-entity"
   },
   {
-   "a": "Cafés Especiais Serra Azul EIRELI",
-   "b": "Cafes Especiais Serra Verde EIRELI",
+   "a": "Brøndby Kornhandel ApS",
+   "b": "Brøndbyvester Kornhandel ApS",
    "verdict": "different",
-   "nature": "latam-color-word"
+   "nature": "nordic-near-place-name"
   },
   {
-   "a": "Transportadora Peña Blanca, S. de R.L.",
-   "b": "Transportadora Pena Negra S de RL",
+   "a": "Østergaard Kornkompagni A/S",
+   "b": "Vestergaard Kornkompagni A/S",
    "verdict": "different",
-   "nature": "latam-color-word"
+   "nature": "nordic-near-surname"
   },
   {
-   "a": "Envases Metálicos Guerrero y Cía., S.A.",
-   "b": "Envases Plasticos Guerrero y Cia SA",
+   "a": "Mäkelä & Hyvönen Kuljetus Oy",
+   "b": "Mäkinen & Hyvönen Kuljetus Oy",
    "verdict": "different",
-   "nature": "latam-material-word"
+   "nature": "nordic-near-surname"
   },
   {
-   "a": "Mineração Três Rios Ltda.",
-   "b": "Mineracao Dois Rios Ltda",
+   "a": "UAB Žalgirio Logistika",
+   "b": "UAB Žalvario Logistika",
    "verdict": "different",
-   "nature": "latam-numeral-word"
+   "nature": "nordic-baltic-near-word"
   },
   {
-   "a": "Textiles Hernández-Gómez, S.A. de C.V.",
-   "b": "Textiles Hernandez Gamez SA de CV",
+   "a": "UAB Šiaurės Krantas",
+   "b": "UAB Šiaurės Kraštas",
    "verdict": "different",
-   "nature": "latam-gomez-gamez"
+   "nature": "nordic-baltic-near-word"
   },
   {
-   "a": "Autopartes Núñez & Salgado, S.A.S.",
-   "b": "Autopartes Nunez y Salcedo SAS",
+   "a": "Pedersen Havnetjenester A/S",
+   "b": "Petersen Havnetjenester A/S",
    "verdict": "different",
-   "nature": "latam-second-surname"
+   "nature": "nordic-near-surname"
   },
   {
-   "a": "Refrigeración Industrial del Bajío, S.A. de C.V.",
-   "b": "Refrigeracion Comercial del Bajio SA de CV",
+   "a": "Suomen Viljaterminaali Oy",
+   "b": "Suomen Öljyterminaali Oy",
    "verdict": "different",
-   "nature": "latam-activity-word"
+   "nature": "nordic-activity-word"
   },
   {
-   "a": "Bodegas Aristizábal e Hijos Ltda.",
-   "b": "Vinedos Aristizabal e Hijos Ltda",
+   "a": "Göteborgs Spannmålsexport AB",
+   "b": "Göteborgs Spannmålsimport AB",
    "verdict": "different",
-   "nature": "latam-activity-word"
+   "nature": "nordic-activity-word"
   },
   {
-   "a": "Empacadora Santa Mónica, S.A. de C.V.",
-   "b": "Empacadora Santa Marta SA de CV",
+   "a": "Sjöfartsbolaget Kronholm AB",
+   "b": "Sjöfartsbolaget Kronhjelm AB",
    "verdict": "different",
-   "nature": "latam-saint-name"
+   "nature": "nordic-near-surname"
   },
   {
-   "a": "Navegação Costeira Almeida Ltda.",
-   "b": "Navegacao Fluvial Almeida Ltda",
+   "a": "AS Tallinna Laevaagentuur",
+   "b": "AS Tallinna Laevaremont",
    "verdict": "different",
-   "nature": "latam-activity-word"
+   "nature": "nordic-activity-word"
   },
   {
-   "a": "Soluciones Logísticas Peñafiel, S.A.S.",
-   "b": "Soluciones Logisticas Penaflor SAS",
+   "a": "SIA Ventspils Kokmateriāli",
+   "b": "SIA Ventspils Kokmateriālu Osta",
    "verdict": "different",
-   "nature": "latam-surname-swap"
+   "nature": "nordic-activity-word"
   },
   {
-   "a": "Ferretería La Unión de Ocaña, S.A.",
-   "b": "Ferreteria La Union de Ocampo SA",
+   "a": "Terästorni Oy",
+   "b": "Teräspuomi Oy",
    "verdict": "different",
-   "nature": "latam-place-word"
+   "nature": "nordic-compound-part"
   },
   {
-   "a": "Distribuciones Farmacéuticas Ruiz Escalante, S.A.P.I. de C.V.",
-   "b": "Distribuciones Farmaceuticas Ruiz Escamilla SAPI de CV",
+   "a": "Hjelmsäter Maskin AB",
+   "b": "Hjelmsäter Maskin Oy",
    "verdict": "different",
-   "nature": "latam-second-surname"
+   "nature": "nordic-other-country-form"
   },
   {
-   "a": "Companhia Agrícola São Benedito S.A.",
-   "b": "Cia Agricola Sao Bento SA",
+   "a": "Kotkan Ahtaus Oy",
+   "b": "Kotkan Ahtaus Eesti OÜ",
    "verdict": "different",
-   "nature": "latam-saint-name"
+   "nature": "nordic-foreign-subsidiary"
   },
   {
-   "a": "Servicios Portuarios Muñiz y Cía., S. de R.L. de C.V.",
-   "b": "Servicios Aduanales Muniz y Cia S de RL de CV",
+   "a": "Stålhuset Nord AB",
+   "b": "Stålhuset Syd AB",
    "verdict": "different",
-   "nature": "latam-activity-word"
+   "nature": "nordic-direction-word"
   },
   {
-   "a": "Inversiones Beltrán-Ocampo, S.A.S.",
-   "b": "Inversiones Beltran Ochoa SAS",
+   "a": "Nordvik Lastebil AS",
+   "b": "Norvik Lastebil AS",
    "verdict": "different",
-   "nature": "latam-second-surname"
+   "nature": "nordic-near-place-name"
   },
   {
-   "a": "Alimentos Procesados Castañeda, S.A. de C.V.",
-   "b": "Alimentos Congelados Castaneda SA de CV",
+   "a": "Lõunaranna Kaubandus OÜ",
+   "b": "Lääneranna Kaubandus OÜ",
    "verdict": "different",
-   "nature": "latam-activity-word"
+   "nature": "nordic-direction-word"
   },
   {
-   "a": "Química Rodríguez e Isaza Ltda.",
-   "b": "Quimica Rodriguez e Isaacs Ltda",
+   "a": "SIA Kurzemes Metāls",
+   "b": "SIA Kurzemes Metālapstrāde",
    "verdict": "different",
-   "nature": "latam-second-surname"
+   "nature": "nordic-activity-word"
   },
   {
-   "a": "Transportes Terrestres Villaseñor, S.A. de C.V.",
-   "b": "Transportes Maritimos Villasenor SA de CV",
+   "a": "Jääkarhu Logistics Oy",
+   "b": "Jääkotka Logistics Oy",
    "verdict": "different",
-   "nature": "latam-activity-word"
+   "nature": "nordic-compound-part"
   },
   {
-   "a": "Construções Navais Porto Seguro Ltda.",
-   "b": "Construcoes Civis Porto Seguro Ltda",
+   "a": "Söderholm Shipping Ab",
+   "b": "Söderberg Shipping Ab",
    "verdict": "different",
-   "nature": "latam-activity-word"
+   "nature": "nordic-near-surname"
   },
   {
-   "a": "Comercializadora Núñez Peñaranda, S. de R.L.",
-   "b": "Comercializadora Nunez Penalosa S de RL",
+   "a": "Fredriksen Skipsmegling AS",
+   "b": "Fredriksson Skeppsmäkleri AB",
    "verdict": "different",
-   "nature": "latam-second-surname"
+   "nature": "nordic-sen-son"
   },
   {
-   "a": "Consultoría Jurídica Ordóñez y Asociados, S.A.S.",
-   "b": "Consultoria Contable Ordonez y Asociados SAS",
+   "a": "Viljavarasto Hamina Oy",
+   "b": "Viljavarasto Hamina 2 Oy",
    "verdict": "different",
-   "nature": "latam-activity-word"
+   "nature": "nordic-numbered-entity"
   },
   {
-   "a": "Maquinaria Pesada Iturbide, Sociedad Anónima de Capital Variable",
-   "b": "Maquinaria Agricola Iturbide SA de CV",
+   "a": "Karlsen Bunkring AS",
+   "b": "Karlsson Bunkring AS",
    "verdict": "different",
-   "nature": "latam-activity-word"
+   "nature": "nordic-sen-son"
   },
   {
-   "a": "Ganadería Los Álamos, S. de R.L. de C.V.",
-   "b": "Ganaderia Los Olmos S de RL de CV",
+   "a": "Rasmussen Kornsilo ApS",
+   "b": "Rasmusson Kornsilo ApS",
    "verdict": "different",
-   "nature": "latam-tree-word"
+   "nature": "nordic-sen-son"
   },
   {
-   "a": "Distribuidora Hermanos Salazar, S.A. de C.V.",
-   "b": "Distribuidora Hermanos Salinas SA de CV",
+   "a": "Porin Viljasatama Oy",
+   "b": "Porvoon Viljasatama Oy",
    "verdict": "different",
-   "nature": "latam-surname-swap"
+   "nature": "nordic-near-place-name"
   },
   {
-   "a": "M/N ESTRELLA DEL CARIBE",
-   "b": "MV Estrella del Caribe",
+   "a": "Karadeniz Hububat Sanayi ve Ticaret A.Ş.",
+   "b": "Karadeniz Hububat San. ve Tic. A.S.",
    "verdict": "match",
-   "nature": "ocr-prefix-mn-mv"
+   "nature": "turkish-abbreviated-form"
   },
   {
-   "a": "B/M LUCERO AUSTRAL",
-   "b": "Lucero Austral",
+   "a": "Yıldızoğlu Nakliyat Ltd. Şti.",
+   "b": "Yildizoglu Nakliyat Limited Sirketi",
    "verdict": "match",
-   "nature": "ocr-prefix-dropped"
+   "nature": "turkish-form-expanded"
   },
   {
-   "a": "MT GOLFO DE CHIRIQU?",
-   "b": "M/T Golfo de Chiriquí",
+   "a": "Özkırım Denizcilik ve Ticaret A.Ş.",
+   "b": "Ozkirim Denizcilik ve Ticaret Anonim Sirketi",
    "verdict": "match",
-   "nature": "ocr-question-mark-accent"
+   "nature": "turkish-form-expanded"
   },
   {
-   "a": "LPG/C 0RQUIDEA DEL PACIFIC0",
-   "b": "LPG/C Orquídea del Pacífico",
+   "a": "Çağlayan Gıda San. Tic. Ltd. Şti.",
+   "b": "Caglayan Gida Sanayi Ticaret Limited Sirketi",
    "verdict": "match",
-   "nature": "ocr-zero-for-o"
+   "nature": "turkish-form-expanded"
   },
   {
-   "a": "NAVIERA BOCAS DEL TOR0 S.A.",
-   "b": "Naviera Bocas del Toro, S.A.",
+   "a": "Şenkaya İnşaat Taahhüt A.Ş.",
+   "b": "SENKAYA INSAAT TAAHHUT AS",
    "verdict": "match",
-   "nature": "ocr-zero-for-o"
+   "nature": "turkish-diacritics-dropped"
   },
   {
-   "a": "C0MPANIA MARITIMA ISLA C0IBA S.A.",
-   "b": "Compañía Marítima Isla Coiba S.A.",
+   "a": "Güneyliler Dış Ticaret Ltd. Şti.",
+   "b": "Guneyliler Dis Ticaret Ltd Sti",
    "verdict": "match",
-   "nature": "ocr-zero-enye-lost"
+   "nature": "turkish-diacritics-dropped"
   },
   {
-   "a": "ATLANTIC 8ELIZE FISHERIES LTD.",
-   "b": "Atlantic Belize Fisheries Ltd",
+   "a": "Samsun Liman Hizmetleri A.Ş.",
+   "b": "Samsun Liman Hizmetleri Anonim Şirketi",
    "verdict": "match",
-   "nature": "ocr-eight-for-b"
+   "nature": "turkish-form-expanded"
   },
   {
-   "a": "M/N SAN 8LAS TRADER",
-   "b": "MV San Blas Trader",
+   "a": "Göktürk Çelik Dış Ticaret A.Ş.",
+   "b": "Goektuerk Celik Dis Ticaret A.S.",
    "verdict": "match",
-   "nature": "ocr-eight-for-b-prefix"
+   "nature": "turkish-diacritics-transcribed"
   },
   {
-   "a": "PESQUERA VERAGUAS 5.A.",
-   "b": "Pesquera Veraguas S.A.",
+   "a": "Doğanbey Denizcilik A.Ş.",
+   "b": "Doganbey Denizcilik Joint Stock Company",
    "verdict": "match",
-   "nature": "ocr-five-for-s-form"
+   "nature": "turkish-form-translated"
   },
   {
-   "a": "TRAN5PORTES FLUVIALE5 DEL DARIEN S.A.",
-   "b": "Transportes Fluviales del Darién S.A.",
+   "a": "Tirebolu Çelik Ticaret Ltd. Şti.",
+   "b": "Tirebolu Steel Trading Ltd.",
    "verdict": "match",
-   "nature": "ocr-five-for-s"
+   "nature": "turkish-name-translated"
   },
   {
-   "a": "MV CARIBBEAN 5UNRISE",
-   "b": "M/V Caribbean Sunrise",
+   "a": "Akyol Nakliyat ve Lojistik A.Ş. İstanbul Şubesi",
+   "b": "Akyol Nakliyat ve Lojistik A.Ş.",
    "verdict": "match",
-   "nature": "ocr-five-for-s"
+   "nature": "turkish-branch"
   },
   {
-   "a": "ARMAD0RA PERLA5 DEL SUR S.A.",
-   "b": "Armadora Perlas del Sur S.A.",
+   "a": "Bafra Un Sanayi A.Ş.",
+   "b": "Bafra Un San. A.Ş.",
    "verdict": "match",
-   "nature": "ocr-mixed-digits"
+   "nature": "turkish-abbreviated-form"
   },
   {
-   "a": "M/T CORAL DE PORTOBEL0",
-   "b": "MT Coral de Portobelo",
+   "a": "Kıyıboyu Tarım Ürünleri İth. İhr. Ltd. Şti.",
+   "b": "Kiyiboyu Tarim Urunleri Ithalat Ihracat Limited Sirketi",
    "verdict": "match",
-   "nature": "ocr-zero-for-o"
+   "nature": "turkish-abbreviated-form"
   },
   {
-   "a": "BELIZE MARINE HOLDINGS LIMlTED",
-   "b": "Belize Marine Holdings Limited",
+   "a": "Ünalan Metal San. ve Tic. Ltd. Şti.",
+   "b": "UNALAN METAL SAN VE TIC LTD STI",
    "verdict": "match",
-   "nature": "ocr-l-for-i"
+   "nature": "turkish-diacritics-dropped"
   },
   {
-   "a": "NAVIERA PUNTA CHAME S.A.",
-   "b": "NAVlERA PUNTA CHAME 5.A.",
+   "a": "Kılıçarslan Hububat Ticaret A.Ş.",
+   "b": "Kilicarslan Hububat Ticaret AS",
    "verdict": "match",
-   "nature": "ocr-l-for-i-five-for-s"
+   "nature": "turkish-dotless-i"
   },
   {
-   "a": "M/N PRINCESA DE AZUER0",
-   "b": "M/N Princesa de Azuero",
+   "a": "İlkadım Denizcilik Ltd. Şti.",
+   "b": "ILKADIM DENIZCILIK LTD. STI.",
    "verdict": "match",
-   "nature": "ocr-zero-for-o"
+   "nature": "turkish-dotted-capital-i"
   },
   {
-   "a": "COMPAÑIA DE REMOLCADORES BAHIA LIMON S.A.",
-   "b": "COMPANIA DE REMOLCADORES BAHIA LIMON, S.A.",
+   "a": "Gemlik Dökme Yük Taşımacılığı A.Ş.",
+   "b": "Gemlik Dokme Yuk Tasimaciligi A.S.",
    "verdict": "match",
-   "nature": "ocr-enye-lost"
+   "nature": "turkish-diacritics-dropped"
   },
   {
-   "a": "MV STELLA MARlS DE COLON",
-   "b": "M/V Stella Maris de Colón",
+   "a": "Poyrazköy Gemi İşletmeciliği A.Ş.",
+   "b": "Poyrazkoy Gemi Isletmeciligi Anonim Sirketi",
    "verdict": "match",
-   "nature": "ocr-l-for-i"
+   "nature": "turkish-form-expanded"
   },
   {
-   "a": "GOLFO DULCE SHlPPING CORP.",
-   "b": "Golfo Dulce Shipping Corporation",
+   "a": "Tuncerler İnşaat Malzemeleri San. Tic. Ltd. Şti.",
+   "b": "Tuncerler Insaat Malz. San. Tic. Ltd. Sti.",
    "verdict": "match",
-   "nature": "ocr-l-for-i-corp-expanded"
+   "nature": "turkish-abbreviated-form"
   },
   {
-   "a": "PLACENClA CARGO LINES LTD",
-   "b": "Placencia Cargo Lines Ltd.",
+   "a": "Kuşadalı Nakliyat Ltd. Şti.",
+   "b": "Kushadali Nakliyat Ltd. Sti.",
    "verdict": "match",
-   "nature": "ocr-l-for-i"
+   "nature": "turkish-diacritics-transcribed"
   },
   {
-   "a": "B/M DON RAMÓN II",
-   "b": "B/M DON RAM0N ll",
+   "a": "Sarıyer Liman Acenteliği Ltd. Şti.",
+   "b": "Sariyer Liman Acenteligi Limited Şirketi",
    "verdict": "match",
-   "nature": "ocr-zero-ll-for-ii"
+   "nature": "turkish-form-expanded"
   },
   {
-   "a": "SEAFOOD PROCESSORS OF DANGRlGA LTD",
-   "b": "Seafood Processors of Dangriga Ltd",
+   "a": "Hopa Sınır Ticaret A.Ş.",
+   "b": "Hopa Sinir Ticaret A.Ş.",
    "verdict": "match",
-   "nature": "ocr-l-for-i"
+   "nature": "turkish-dotless-i"
   },
   {
-   "a": "ARENAS BLANCAS 14",
-   "b": "ARENAS 8LANCAS l4",
+   "a": "Karadeniz Hububat Sanayi ve Ticaret A.Ş.",
+   "b": "Karadeniz Hububat A.Ş.",
    "verdict": "match",
-   "nature": "ocr-numbered-fleet-mixed"
+   "nature": "turkish-boilerplate-dropped"
   },
   {
-   "a": "M/N RIO CHAGRES",
-   "b": "MN RÍO CHAGRES",
+   "a": "Yavuzlar Deniz Taşımacılığı Ticaret A.Ş.",
+   "b": "Yavuzlar Deniz Tasimaciligi Tic. AS",
    "verdict": "match",
-   "nature": "ocr-prefix-slash-accent"
+   "nature": "turkish-abbreviated-form"
   },
   {
-   "a": "NAVIERA DEL ISTMO S.A.",
-   "b": "NAVIERA DEL I5TMO S.A.",
+   "a": "Balcıoğlu Gıda Pazarlama Ltd. Şti.",
+   "b": "Balcioglu Gida Pazarlama Ltd. Sti.",
    "verdict": "match",
-   "nature": "ocr-five-for-s"
+   "nature": "turkish-soft-g"
   },
   {
-   "a": "AGENCIA NAVIERA TABOGA, S.A.",
-   "b": "AGENCIA NAVIERA TAB0GA SA",
+   "a": "Ordu Fındık Gıda San. ve Tic. A.Ş.",
+   "b": "Ordu Findik Gida Sanayi ve Ticaret AS",
    "verdict": "match",
-   "nature": "ocr-zero-for-o"
+   "nature": "turkish-abbreviated-form"
   },
   {
-   "a": "M/V AMBERGRIS QUEEN",
-   "b": "MV AM8ERGRIS QUEEN",
+   "a": "Değirmendere Ambarcılık Ltd. Şti.",
+   "b": "DEGIRMENDERE AMBARCILIK LTD.STI.",
    "verdict": "match",
-   "nature": "ocr-eight-for-b"
+   "nature": "turkish-diacritics-dropped"
   },
   {
-   "a": "MT SANTA CATALINA DEL MAR",
-   "b": "M.T. SANTA CATALlNA DEL MAR",
+   "a": "Çelikyol Nakliyat A.Ş.",
+   "b": "Chelikyol Nakliyat A.S.",
    "verdict": "match",
-   "nature": "ocr-l-for-i-prefix-dots"
+   "nature": "turkish-diacritics-transcribed"
   },
   {
-   "a": "CAMARONERA DEL PACIFICO 7",
-   "b": "CAMARONERA DEL PACIFIC0 7",
+   "a": "Beyazkaya Lojistik ve Dış Ticaret Ltd. Şti.",
+   "b": "Beyazkaya Lojistik ve Dis Tic. Ltd. Sti.",
    "verdict": "match",
-   "nature": "ocr-numbered-fleet-zero"
+   "nature": "turkish-abbreviated-form"
   },
   {
-   "a": "REMOLCADOR BAHIA DE PARITA",
-   "b": "REM0LCADOR 8AHIA DE PARITA",
+   "a": "Kaptanoğlu Gemicilik A.Ş.",
+   "b": "Kaptanoglu Shipping Inc.",
    "verdict": "match",
-   "nature": "ocr-mixed-digits"
+   "nature": "turkish-name-translated"
   },
   {
-   "a": "M/V Carmen de Bocas",
-   "b": "M/V Carrnen de Bocas",
+   "a": "Aydınoğlu Nakliyat Ltd. Şti.",
+   "b": "Aydinoglu Nakliyat Ltd. Şti. Samsun Şubesi",
    "verdict": "match",
-   "nature": "ocr-rn-for-m"
+   "nature": "turkish-branch"
   },
   {
-   "a": "Naviera Almirante Ltd.",
-   "b": "Naviera Alrnirante Ltd.",
+   "a": "Sultanhisar Tarım Ürünleri A.Ş.",
+   "b": "Sultanhisar Tarim Urunleri Anonim Sirketi",
    "verdict": "match",
-   "nature": "ocr-rn-for-m"
+   "nature": "turkish-form-expanded"
   },
   {
-   "a": "Belize Timber & Marine Co. Ltd.",
-   "b": "Belize Tirnber & Marine Co. Ltd.",
+   "a": "Uğurlu Nakliyat Ltd. Şti.",
+   "b": "Ugurlu Nakliyat Ltd. Sti.",
    "verdict": "match",
-   "nature": "ocr-rn-for-m"
+   "nature": "turkish-soft-g"
   },
   {
-   "a": "Compañía Pesquera Montijo S.A.",
-   "b": "COMPA?IA PESQUERA MONTIJO S.A.",
+   "a": "Erdoğmuş Hurda Metal Dış Ticaret A.Ş.",
+   "b": "Erdogmus Hurda Metal Dis Tic. A.S.",
    "verdict": "match",
-   "nature": "ocr-question-mark-enye"
+   "nature": "turkish-abbreviated-form"
   },
   {
-   "a": "Transportes Marítimos Bahía Piña S.A.",
-   "b": "TRANSPORTES MARITIMOS BAHIA PI?A S.A.",
+   "a": "Söğütlü Un ve Yem Sanayi A.Ş.",
+   "b": "Sogutlu Un ve Yem San. A.S.",
    "verdict": "match",
-   "nature": "ocr-question-mark-enye"
+   "nature": "turkish-soft-g"
   },
   {
-   "a": "M/N ESPÍRITU DE VERAGUAS",
-   "b": "M/N ESP?RITU DE VERAGUAS",
+   "a": "Işıkyolu Denizcilik Ltd. Şti.",
+   "b": "ISIKYOLU DENIZCILIK LTD STI",
    "verdict": "match",
-   "nature": "ocr-question-mark-accent"
+   "nature": "turkish-dotless-i"
   },
   {
-   "a": "Isla Grande Charters Limited",
-   "b": "lSLA GRANDE CHARTERS LlMlTED",
+   "a": "Gökçeli İnşaat ve Ticaret A.Ş.",
+   "b": "Goekceli Insaat ve Ticaret A.S.",
    "verdict": "match",
-   "nature": "ocr-l-for-i-uppercase"
+   "nature": "turkish-diacritics-transcribed"
   },
   {
-   "a": "LPG/C CIELO DE PANAMÁ",
-   "b": "LPG/C CIEL0 DE PANAMA",
+   "a": "Demirci ve Oğulları Nakliyat Ltd. Şti.",
+   "b": "Demirci & Ogullari Nakliyat Ltd. Sti.",
    "verdict": "match",
-   "nature": "ocr-zero-accent"
+   "nature": "turkish-ve-ampersand"
   },
   {
-   "a": "M/T Bahía de Almirante",
-   "b": "MT BAHIA DE ALMIRANTE",
+   "a": "Tekinalp Kömür Ticaret A.Ş.",
+   "b": "Tekinalp Coal Trading Inc.",
    "verdict": "match",
-   "nature": "ocr-prefix-uppercase-accent"
+   "nature": "turkish-name-translated"
   },
   {
-   "a": "FLOTA CAMARONERA DEL GOLFO No. 3",
-   "b": "FL0TA CAMARONERA DEL GOLFO N° 3",
+   "a": "Denizkızı Balıkçılık Ltd. Şti.",
+   "b": "Denizkizi Balikcilik Ltd. Sti.",
    "verdict": "match",
-   "nature": "ocr-numbered-fleet-degree"
+   "nature": "turkish-dotless-i"
   },
   {
-   "a": "M/N ESTRELLA DEL CARIBE",
-   "b": "M/N ESTRELLA DEL CARIBE II",
+   "a": "Karadeniz Hububat San. ve Tic. A.Ş.",
+   "b": "Akdeniz Hububat San. ve Tic. A.Ş.",
    "verdict": "different",
-   "nature": "ocr-numeral-sibling"
+   "nature": "turkish-near-place-name"
   },
   {
-   "a": "B/M LUCERO AUSTRAL",
-   "b": "B/M LUCER0 BOREAL",
+   "a": "Yıldızoğlu Nakliyat Ltd. Şti.",
+   "b": "Yıldırımoğlu Nakliyat Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-vessel-word"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "MT GOLFO DE CHIRIQUI",
-   "b": "MT G0LFO DE MONTIJO",
+   "a": "Özkırım Denizcilik A.Ş.",
+   "b": "Özkaram Denizcilik A.Ş.",
    "verdict": "different",
-   "nature": "ocr-vessel-place"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "LPG/C ORQUIDEA DEL PACIFICO",
-   "b": "LPG/C 0RQUIDEA DEL ATLANTICO",
+   "a": "Çağlayan Gıda Ltd. Şti.",
+   "b": "Çağlar Gıda Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-vessel-ocean"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "NAVIERA BOCAS DEL TORO S.A.",
-   "b": "NAVIERA BOCAS DEL DRAG0 S.A.",
+   "a": "Şenkaya İnşaat A.Ş.",
+   "b": "Şenkaya Gıda A.Ş.",
    "verdict": "different",
-   "nature": "ocr-company-place"
+   "nature": "turkish-sector-word"
   },
   {
-   "a": "COMPANIA MARITIMA ISLA COIBA S.A.",
-   "b": "C0MPANIA MARITIMA ISLA C0L0N S.A.",
+   "a": "Güneyliler Dış Ticaret Ltd. Şti.",
+   "b": "Güneydoğulu Dış Ticaret Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-company-place"
+   "nature": "turkish-near-word"
   },
   {
-   "a": "ATLANTIC BELIZE FISHERIES LTD.",
-   "b": "PACIFIC 8ELIZE FISHERIES LTD.",
+   "a": "Samsun Liman Hizmetleri A.Ş.",
+   "b": "Samsun Liman İşletmeleri A.Ş.",
    "verdict": "different",
-   "nature": "ocr-company-ocean"
+   "nature": "turkish-activity-word"
   },
   {
-   "a": "M/N SAN BLAS TRADER",
-   "b": "M/N SAN 8LAS TRADER II",
+   "a": "Doğanbey Denizcilik A.Ş.",
+   "b": "Doğanay Denizcilik A.Ş.",
    "verdict": "different",
-   "nature": "ocr-numeral-sibling"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "PESQUERA VERAGUAS S.A.",
-   "b": "PE5QUERA VERAGUAS DOS S.A.",
+   "a": "Kılıç Nakliyat Ltd. Şti.",
+   "b": "Kılınç Nakliyat Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-company-numeral-word"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "TRANSPORTES FLUVIALES DEL DARIEN S.A.",
-   "b": "TRAN5PORTES FLUVIALES DEL CHAGRES S.A.",
+   "a": "Uğurlu Nakliyat Ltd. Şti.",
+   "b": "Uğurlar Nakliyat Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-company-place"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "MV CARIBBEAN SUNRISE",
-   "b": "MV CARIBBEAN 5UNSET",
+   "a": "Bafra Un Sanayi A.Ş.",
+   "b": "Bafra Yem Sanayi A.Ş.",
    "verdict": "different",
-   "nature": "ocr-vessel-word"
+   "nature": "turkish-sector-word"
   },
   {
-   "a": "M/N PERLAS DEL PACIFICO",
-   "b": "M/N PERLA DEL PACIFIC0",
+   "a": "Kıyıboyu Tarım Ürünleri Ltd. Şti.",
+   "b": "Kıyıkent Tarım Ürünleri Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-vessel-plural"
+   "nature": "turkish-near-word"
   },
   {
-   "a": "M/T CORAL DE PORTOBELO",
-   "b": "M/T CORALES DE PORTOBEL0",
+   "a": "Ünalan Metal San. ve Tic. Ltd. Şti.",
+   "b": "Ünaldı Metal San. ve Tic. Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-vessel-plural"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "BELIZE MARINE HOLDINGS LIMITED",
-   "b": "BELIZE MARINE SERVICES LIMlTED",
+   "a": "Akyol Nakliyat ve Lojistik A.Ş.",
+   "b": "Akyol Nakliyat ve Lojistik GmbH",
    "verdict": "different",
-   "nature": "ocr-company-word"
+   "nature": "turkish-foreign-subsidiary"
   },
   {
-   "a": "NAVIERA PUNTA CHAME S.A.",
-   "b": "NAVIERA PUNTA MALA 5.A.",
+   "a": "Tirebolu Çelik Ticaret Ltd. Şti.",
+   "b": "Tirebolu Çelik Ticaret SRL",
    "verdict": "different",
-   "nature": "ocr-company-place"
+   "nature": "turkish-foreign-subsidiary"
   },
   {
-   "a": "M/N PRINCESA DE AZUERO",
-   "b": "M/N PRINCESA DE AZUER0 III",
+   "a": "Gemlik Dökme Yük Taşımacılığı A.Ş.",
+   "b": "Gemlik Sıvı Yük Taşımacılığı A.Ş.",
    "verdict": "different",
-   "nature": "ocr-numeral-sibling"
+   "nature": "turkish-activity-word"
   },
   {
-   "a": "COMPANIA DE REMOLCADORES BAHIA LIMON S.A.",
-   "b": "COMPANIA DE REMOLCADORES BAHIA LAS MINAS S.A.",
+   "a": "Poyrazköy Gemi İşletmeciliği A.Ş.",
+   "b": "Poyrazköy Gemi İnşa A.Ş.",
    "verdict": "different",
-   "nature": "ocr-company-place"
+   "nature": "turkish-activity-word"
   },
   {
-   "a": "MV STELLA MARIS DE COLON",
-   "b": "MV STELLA MARlS DE CRISTOBAL",
+   "a": "Tuncerler İnşaat Malzemeleri Ltd. Şti.",
+   "b": "Tunçkanlar İnşaat Malzemeleri Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-vessel-place"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "GOLFO DULCE SHIPPING CORP.",
-   "b": "GOLFO DULCE TANKERS C0RP.",
+   "a": "Hopa Sınır Ticaret A.Ş.",
+   "b": "Hopa Sınai Ticaret A.Ş.",
    "verdict": "different",
-   "nature": "ocr-company-word"
+   "nature": "turkish-near-word"
   },
   {
-   "a": "PLACENCIA CARGO LINES LTD",
-   "b": "PLACENClA FERRY LINES LTD",
+   "a": "Sarıyer Liman Acenteliği Ltd. Şti.",
+   "b": "Sarıyer Deniz Acenteliği Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-company-word"
+   "nature": "turkish-activity-word"
   },
   {
-   "a": "B/M DON RAMON II",
-   "b": "B/M DON RAM0N III",
+   "a": "Kuşadalı Nakliyat Ltd. Şti.",
+   "b": "Kuşadası Nakliyat Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-numeral-sibling"
+   "nature": "turkish-near-place-name"
   },
   {
-   "a": "SEAFOOD PROCESSORS OF DANGRIGA LTD",
-   "b": "SEAFOOD EXPORTERS OF DANGRlGA LTD",
+   "a": "İlkadım Denizcilik Ltd. Şti.",
+   "b": "İlkada Denizcilik Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-company-word"
+   "nature": "turkish-near-word"
   },
   {
-   "a": "ARENAS BLANCAS 14",
-   "b": "ARENAS 8LANCAS 24",
+   "a": "Yavuzlar Deniz Taşımacılığı A.Ş.",
+   "b": "Yavuzhan Deniz Taşımacılığı A.Ş.",
    "verdict": "different",
-   "nature": "ocr-numbered-fleet-sibling"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "M/N RIO CHAGRES",
-   "b": "M/N RI0 CHUCUNAQUE",
+   "a": "Balcıoğlu Gıda Pazarlama Ltd. Şti.",
+   "b": "Balcılar Gıda Pazarlama Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-vessel-river"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "NAVIERA DEL ISTMO S.A.",
-   "b": "NAVIERA DEL I5TMO SUR S.A.",
+   "a": "Demirkollar Hurda Metal A.Ş.",
+   "b": "Demirkaya Hurda Metal A.Ş.",
    "verdict": "different",
-   "nature": "ocr-company-added-word"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "AGENCIA NAVIERA TABOGA S.A.",
-   "b": "AGENCIA ADUANERA TAB0GA S.A.",
+   "a": "Göktürk Çelik Dış Ticaret A.Ş.",
+   "b": "Gökburç Çelik Dış Ticaret A.Ş.",
    "verdict": "different",
-   "nature": "ocr-company-activity"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "MV AMBERGRIS QUEEN",
-   "b": "MV AM8ERGRIS PRINCESS",
+   "a": "Ordu Fındık Gıda A.Ş.",
+   "b": "Ordu Fıstık Gıda A.Ş.",
    "verdict": "different",
-   "nature": "ocr-vessel-word"
+   "nature": "turkish-near-word"
   },
   {
-   "a": "MT SANTA CATALINA DEL MAR",
-   "b": "MT SANTA CAROLlNA DEL MAR",
+   "a": "Kaptanoğlu Gemicilik A.Ş.",
+   "b": "Kaptanlar Gemicilik A.Ş.",
    "verdict": "different",
-   "nature": "ocr-vessel-saint"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "CAMARONERA DEL PACIFICO 7",
-   "b": "CAMARONERA DEL PACIFIC0 17",
+   "a": "Beyazkaya Lojistik Ltd. Şti.",
+   "b": "Karakaya Lojistik Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-numbered-fleet-sibling"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "REMOLCADOR BAHIA DE PARITA",
-   "b": "REM0LCADOR BAHIA DE PANAMA",
+   "a": "Sultanhisar Tarım Ürünleri A.Ş.",
+   "b": "Sultanhan Tarım Ürünleri A.Ş.",
    "verdict": "different",
-   "nature": "ocr-vessel-place"
+   "nature": "turkish-near-place-name"
   },
   {
-   "a": "M/V Carmen de Bocas",
-   "b": "M/V Carrnela de Bocas",
+   "a": "Çelikyol Nakliyat A.Ş.",
+   "b": "Çelikyel Nakliyat A.Ş.",
    "verdict": "different",
-   "nature": "ocr-vessel-name"
+   "nature": "turkish-near-word"
   },
   {
-   "a": "Naviera Almirante Ltd.",
-   "b": "Naviera Alrnirantazgo Ltd.",
+   "a": "Değirmendere Ambarcılık Ltd. Şti.",
+   "b": "Değirmendere Ambalaj Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-company-word"
+   "nature": "turkish-sector-word"
   },
   {
-   "a": "Belize Timber & Marine Co. Ltd.",
-   "b": "Belize Tirnber & Mining Co. Ltd.",
+   "a": "Tekinalp Kömür Ticaret A.Ş.",
+   "b": "Tekinalp Kömür Taşımacılık A.Ş.",
    "verdict": "different",
-   "nature": "ocr-company-activity"
+   "nature": "turkish-activity-word"
   },
   {
-   "a": "Compañía Pesquera Montijo S.A.",
-   "b": "COMPA?IA CAMARONERA MONTIJO S.A.",
+   "a": "Aydınoğlu Nakliyat Ltd. Şti.",
+   "b": "Aydınlıoğlu Nakliyat Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-company-activity"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "Transportes Marítimos Bahía Piña S.A.",
-   "b": "TRANSPORTES TERRESTRES BAHIA PI?A S.A.",
+   "a": "Söğütlü Un ve Yem Sanayi A.Ş.",
+   "b": "Söğütçü Un ve Yem Sanayi A.Ş.",
    "verdict": "different",
-   "nature": "ocr-company-activity"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "M/N ESPIRITU DE VERAGUAS",
-   "b": "M/N ESP?RITU DE HERRERA",
+   "a": "Işıkyolu Denizcilik Ltd. Şti.",
+   "b": "Işıkyurdu Denizcilik Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-vessel-province"
+   "nature": "turkish-near-word"
   },
   {
-   "a": "Isla Grande Charters Limited",
-   "b": "lSLA GRANDE CHARTERS & TOURS LlMlTED",
+   "a": "Denizkızı Balıkçılık Ltd. Şti.",
+   "b": "Denizkuşu Balıkçılık Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-company-added-words"
+   "nature": "turkish-near-word"
   },
   {
-   "a": "LPG/C CIELO DE PANAMA",
-   "b": "LPG/C CIEL0 DE PANAMA 2",
+   "a": "Erdoğmuş Hurda Metal Dış Ticaret A.Ş.",
+   "b": "Erdoğan Hurda Metal Dış Ticaret A.Ş.",
    "verdict": "different",
-   "nature": "ocr-numeral-sibling"
+   "nature": "turkish-near-surname"
   },
   {
-   "a": "M/T Bahía de Almirante",
-   "b": "MT BAHIA DE ALMIRANTE II",
+   "a": "Demirci ve Oğulları Nakliyat Ltd. Şti.",
+   "b": "Demirci ve Kardeşleri Nakliyat Ltd. Şti.",
    "verdict": "different",
-   "nature": "ocr-numeral-sibling"
+   "nature": "turkish-family-word"
   },
   {
-   "a": "FLOTA CAMARONERA DEL GOLFO No. 3",
-   "b": "FL0TA CAMARONERA DEL GOLFO N° 7",
+   "a": "Gökçeli İnşaat ve Ticaret A.Ş.",
+   "b": "Gökçeli İnşaat ve Ticaret EOOD",
    "verdict": "different",
-   "nature": "ocr-numbered-fleet-sibling"
+   "nature": "turkish-foreign-subsidiary"
   },
   {
-   "a": "Kabushiki Kaisha Ōtsuki Shōji",
-   "b": "Otsuki Shoji Co., Ltd.",
+   "a": "OOO Yuzhnyy Zernovoy Prichal",
+   "b": "Iuzhnyi Zernovoi Prichal LLC",
    "verdict": "match",
-   "nature": "jp-macron-kk-coltd"
+   "nature": "cyrillic-yu-iu-endings"
   },
   {
-   "a": "Ohtsuki Shoji K.K.",
-   "b": "Otsuki Trading Co., Ltd.",
+   "a": "ООО «Южный зерновой причал»",
+   "b": "OOO Yuzhnyy Zernovoy Prichal",
    "verdict": "match",
-   "nature": "jp-oh-long-vowel-shoji-trading"
+   "nature": "cyrillic-original-script"
   },
   {
-   "a": "Hokushin Kaiun Kabushiki Kaisha",
-   "b": "Hokushin Shipping Co., Ltd.",
+   "a": "TOV Chornomorska Khlibna Kompaniia",
+   "b": "Chornomorska Hlibna Kompaniya LLC",
    "verdict": "match",
-   "nature": "jp-kaiun-shipping"
+   "nature": "cyrillic-kh-h"
   },
   {
-   "a": "Tōhō Unyu K.K.",
-   "b": "Toho Unyu Kabushiki Kaisha",
+   "a": "PAO Tsemzavod Mayachnyy",
+   "b": "PJSC Cemzavod Majachnyj",
    "verdict": "match",
-   "nature": "jp-macron-dropped-kk"
+   "nature": "cyrillic-iso9-ts-c"
   },
   {
-   "a": "Sinwa Kōgyō K.K.",
-   "b": "Shinwa Kogyo Co., Ltd.",
+   "a": "OOO Shchedryy Kolos Dona",
+   "b": "OOO Schedry Kolos Dona",
    "verdict": "match",
-   "nature": "jp-kunrei-si-shi"
+   "nature": "cyrillic-shch-sch"
   },
   {
-   "a": "Tyūō Seisakusho K.K.",
-   "b": "Chuo Seisakusho Co., Ltd.",
+   "a": "ZAO Zhuravlyovo Agro",
+   "b": "ZAO Žuravljovo Agro",
    "verdict": "match",
-   "nature": "jp-kunrei-tyu-chu"
+   "nature": "cyrillic-iso9-zh"
   },
   {
-   "a": "Huzimoto Sangyō K.K.",
-   "b": "Fujimoto Sangyo Co., Ltd.",
+   "a": "AT Pivdennyi Portovyi Zavod",
+   "b": "JSC Pivdennyy Portovyy Zavod",
    "verdict": "match",
-   "nature": "jp-kunrei-hu-fu"
+   "nature": "cyrillic-form-translated"
   },
   {
-   "a": "Kawanami Bōeki Kabushiki Kaisha",
-   "b": "Kawanami Boeki Co., Ltd.",
+   "a": "ООО «Азовметаллторг»",
+   "b": "OOO Azovmetalltorg",
    "verdict": "match",
-   "nature": "jp-macron-dropped"
+   "nature": "cyrillic-original-script"
   },
   {
-   "a": "Kawanami Boeki K.K.",
-   "b": "Kawanami Trading Company Limited",
+   "a": "ТОВ «Дніпровський зерновий елеватор»",
+   "b": "TOV Dniprovskyi Zernovyi Elevator",
    "verdict": "match",
-   "nature": "jp-boeki-trading"
+   "nature": "cyrillic-original-script"
   },
   {
-   "a": "Sakuragawa Kogyo Co., Ltd. (桜川工業株式会社)",
-   "b": "Sakuragawa Kōgyō K.K.",
+   "a": "TOV Izmailskyi Richkovyi Prychal",
+   "b": "Izmailskiy Rechnoy Prichal LLC",
    "verdict": "match",
-   "nature": "jp-kanji-parenthetical"
+   "nature": "cyrillic-ukrainian-russian-form"
   },
   {
-   "a": "Aoyagi Seisakusho (アオヤギ製作所) Co., Ltd.",
-   "b": "Aoyagi Seisakusho Co., Ltd.",
+   "a": "OOO Tsimlyanskiy Rechnoy Flot",
+   "b": "Cimljanskij Rečnoj Flot OOO",
    "verdict": "match",
-   "nature": "jp-katakana-parenthetical"
+   "nature": "cyrillic-iso9-ts-c"
   },
   {
-   "a": "Matsuzono Sangyō Kabushiki Kaisha",
-   "b": "Matsuzono Industries Co., Ltd.",
+   "a": "PAO Kuban-Agroeksport",
+   "b": "PJSC Kuban Agroexport",
    "verdict": "match",
-   "nature": "jp-sangyo-industries"
+   "nature": "cyrillic-ks-x"
   },
   {
-   "a": "Nishikōri Kaiun K.K.",
-   "b": "Nishikoori Kaiun Co., Ltd.",
+   "a": "OOO Taganrogskiy Metallotsentr",
+   "b": "Taganrogsky Metallocentr LLC",
    "verdict": "match",
-   "nature": "jp-oo-long-vowel"
+   "nature": "cyrillic-iy-y-endings"
   },
   {
-   "a": "Ryūsei Unyu Kabushiki Kaisha",
-   "b": "Ryusei Transport Co., Ltd.",
+   "a": "AO Rostovskiy Portovyy Elevator",
+   "b": "JSC Rostovsky Portovy Elevator",
    "verdict": "match",
-   "nature": "jp-unyu-transport"
+   "nature": "cyrillic-form-translated"
   },
   {
-   "a": "Kabushiki Kaisha Hōryū Kōsan",
-   "b": "Horyu Kosan Co., Ltd.",
+   "a": "OOO Torgovyy Dom Yevdokimov",
+   "b": "OOO Torgovyi Dom Evdokimov",
    "verdict": "match",
-   "nature": "jp-macron-kk-fronted"
+   "nature": "cyrillic-ye-e"
   },
   {
-   "a": "Kitazono Seisakusho Kabushiki Kaisha",
-   "b": "Kitazono Manufacturing Co., Ltd.",
+   "a": "TOV Mykolaivskyi Kombikormovyi Zavod",
+   "b": "Nikolaevskiy Kombikormovyy Zavod LLC",
    "verdict": "match",
-   "nature": "jp-seisakusho-manufacturing"
+   "nature": "cyrillic-ukrainian-russian-form"
   },
   {
-   "a": "Ōmura Kōgyō K.K.",
-   "b": "Oomura Kogyou K.K.",
+   "a": "OOO Khimtrans-Yug",
+   "b": "OOO Himtrans-Jug",
    "verdict": "match",
-   "nature": "jp-ou-oo-long-vowel"
+   "nature": "cyrillic-kh-h"
   },
   {
-   "a": "Yūki Bōeki K.K.",
-   "b": "Yuuki Boueki Co Ltd",
+   "a": "OOO Kamen'-Portservis",
+   "b": "OOO Kamen Portservis",
    "verdict": "match",
-   "nature": "jp-uu-ou-long-vowel"
+   "nature": "cyrillic-soft-sign"
   },
   {
-   "a": "Seiryū Kaiun Kabushiki Kaisha",
-   "b": "Seiryu Kaiun Co., Ltd. (清流海運株式会社)",
+   "a": "Obshchestvo s Ogranichennoy Otvetstvennostyu Donantratsit-Trans",
+   "b": "OOO Donantratsit-Trans",
    "verdict": "match",
-   "nature": "jp-kanji-parenthetical"
+   "nature": "cyrillic-form-expanded"
   },
   {
-   "a": "Kabushiki Kaisha Nanbu Tekkō",
-   "b": "Nambu Tekko Co., Ltd.",
+   "a": "Tovarystvo z Obmezhenoiu Vidpovidalnistiu Prychornomorskyi Terminal",
+   "b": "TOV Prychornomorskyi Terminal",
    "verdict": "match",
-   "nature": "jp-nb-mb-hepburn"
+   "nature": "cyrillic-form-expanded"
   },
   {
-   "a": "Kabushiki Kaisha Shinpo Denki",
-   "b": "Shimpo Denki Co., Ltd.",
+   "a": "OOO Yuzhtranzitservis",
+   "b": "OOO Juzhtranzitservis",
    "verdict": "match",
-   "nature": "jp-np-mp-hepburn"
+   "nature": "cyrillic-yu-iu-endings"
   },
   {
-   "a": "Hirata Zōsen Kabushiki Kaisha",
-   "b": "Hirata Shipbuilding Co., Ltd.",
+   "a": "OOO Tsentrsnab-Don",
+   "b": "OOO Centrsnab-Don",
    "verdict": "match",
-   "nature": "jp-zosen-shipbuilding"
+   "nature": "cyrillic-iso9-ts-c"
   },
   {
-   "a": "Isikawa Bōeki K.K.",
-   "b": "Ishikawa Boeki Co., Ltd.",
+   "a": "TOV Kharkivskyi Metalotorh",
+   "b": "Kharkivskyy Metalotorh LLC",
    "verdict": "match",
-   "nature": "jp-kunrei-si-shi"
+   "nature": "cyrillic-iy-y-endings"
   },
   {
-   "a": "Tuduki Unyu K.K.",
-   "b": "Tsuzuki Unyu Co., Ltd.",
+   "a": "OOO Temryukskiy Morskoy Terminal",
+   "b": "Temriukskii Morskoi Terminal LLC",
    "verdict": "match",
-   "nature": "jp-kunrei-tu-tsu-du-zu"
+   "nature": "cyrillic-yu-iu-endings"
   },
   {
-   "a": "Zyōnan Kōgyō K.K.",
-   "b": "Jonan Kogyo Co., Ltd.",
+   "a": "ООО «Таман-Агротранс»",
+   "b": "Taman-Agrotrans LLC",
    "verdict": "match",
-   "nature": "jp-kunrei-zy-j"
+   "nature": "cyrillic-original-script"
   },
   {
-   "a": "M/V Hakuyō Maru",
-   "b": "MV HAKUYO MARU",
+   "a": "OOO Stalprokat-Yug",
+   "b": "Stalprokat-Iug OOO",
    "verdict": "match",
-   "nature": "jp-vessel-macron"
+   "nature": "cyrillic-yu-iu-endings"
   },
   {
-   "a": "Yamazoe Kagaku Kōgyō K.K.",
-   "b": "Yamazoe Chemical Industries Co., Ltd.",
+   "a": "TOV Zaporizkyi Metalozbut",
+   "b": "TOV Zaporiz'kyj Metalozbut",
    "verdict": "match",
-   "nature": "jp-kagaku-kogyo-chemical"
+   "nature": "cyrillic-soft-sign"
   },
   {
-   "a": "Kabushiki Kaisha Ōhashi Denshi",
-   "b": "Ohashi Electronics Co., Ltd.",
+   "a": "PAO Priazovskiy Kombinat Zhelezobetona",
+   "b": "PJSC Priazovsky Kombinat Zhelezobetona",
    "verdict": "match",
-   "nature": "jp-denshi-electronics"
+   "nature": "cyrillic-form-translated"
   },
   {
-   "a": "Fukagawa Suisan Kabushiki Kaisha",
-   "b": "Fukagawa Fisheries Co., Ltd.",
+   "a": "OOO Salskiy Elevator",
+   "b": "OOO Sal'skiy Elevator",
    "verdict": "match",
-   "nature": "jp-suisan-fisheries"
+   "nature": "cyrillic-soft-sign"
   },
   {
-   "a": "Kabushiki Kaisha Sakaide Kōun",
-   "b": "Sakaide Stevedoring Co., Ltd.",
+   "a": "OOO Don-Zernoprodukt",
+   "b": "LLC Don Zernoprodukt",
    "verdict": "match",
-   "nature": "jp-koun-stevedoring"
+   "nature": "cyrillic-form-translated"
   },
   {
-   "a": "Seihō Maru No. 3",
-   "b": "SEIHO MARU NO. 3",
+   "a": "ZAO Shchekinskiy Metallosklad",
+   "b": "ZAO Ščekinskij Metallosklad",
    "verdict": "match",
-   "nature": "jp-vessel-macron-numbered"
+   "nature": "cyrillic-shch-sch"
   },
   {
-   "a": "Tsurumaki Sōko Kabushiki Kaisha",
-   "b": "Tsurumaki Warehouse Co., Ltd.",
+   "a": "OOO Novotitarovskiy Elevator",
+   "b": "OOO Novotitarovskii Elevator",
    "verdict": "match",
-   "nature": "jp-soko-warehouse"
+   "nature": "cyrillic-iy-y-endings"
   },
   {
-   "a": "Hanseong Sangsa Co., Ltd.",
-   "b": "Hansung Sangsa Co., Ltd.",
+   "a": "TOV Reniiskyi Richkovyi Terminal",
+   "b": "TOV Reniyskyy Richkovyy Terminal",
    "verdict": "match",
-   "nature": "kr-eo-u-variant"
+   "nature": "cyrillic-iy-y-endings"
   },
   {
-   "a": "Bomyeong Heavy Industries Co., Ltd.",
-   "b": "Pomyung Junggongeop Co., Ltd.",
+   "a": "OOO Kubanskaya Zhatva",
+   "b": "OOO Kubanskaja Žatva",
    "verdict": "match",
-   "nature": "kr-variant-translation"
+   "nature": "cyrillic-iso9-zh"
   },
   {
-   "a": "Cheonghae Marine Co., Ltd.",
-   "b": "Chunghae Marine Co., Ltd.",
+   "a": "OOO Primorsko-Akhtarskiy Rybzavod",
+   "b": "Primorsko-Ahtarskij Rybzavod OOO",
    "verdict": "match",
-   "nature": "kr-eo-u-variant"
+   "nature": "cyrillic-kh-h"
   },
   {
-   "a": "Ilseon Jeongmil Co., Ltd.",
-   "b": "Ilsun Precision Co., Ltd.",
+   "a": "OOO Azovzernotrans",
+   "b": "Azovzernotrans Limited Liability Company",
    "verdict": "match",
-   "nature": "kr-variant-translation"
+   "nature": "cyrillic-form-translated"
   },
   {
-   "a": "Yeonhwa Mulsan Co., Ltd.",
-   "b": "Yunhwa Mulsan Co., Ltd.",
+   "a": "TOV Zhytomyrskyi Lisotorh",
+   "b": "TOV Zhytomyrskyi Lisotorh, Odeska filiia",
    "verdict": "match",
-   "nature": "kr-eo-u-variant"
+   "nature": "cyrillic-branch"
   },
   {
-   "a": "Kabushiki Kaisha Miyahara Kaiun",
-   "b": "Miyahara Kaiun K.K.",
+   "a": "OOO Yeyskiy Portovyy Elevator",
+   "b": "OOO Eiskii Portovyi Elevator",
    "verdict": "match",
-   "nature": "jp-kk-position"
+   "nature": "cyrillic-ye-e"
   },
   {
-   "a": "Ōkubo Tsūshō K.K.",
-   "b": "Okubo Tsusho Co., Ltd.",
+   "a": "ООО «Щедрый колос Дона»",
+   "b": "OOO Shchedryy Kolos Dona",
    "verdict": "match",
-   "nature": "jp-macron-dropped-tsusho"
+   "nature": "cyrillic-original-script"
   },
   {
-   "a": "Kabushiki Kaisha Nishihama Kikai",
-   "b": "Nishihama Machinery Co., Ltd. (西浜機械)",
+   "a": "PAO Tuapsinskiy Bunkerovshchik",
+   "b": "PJSC Tuapsinsky Bunkerovschik",
    "verdict": "match",
-   "nature": "jp-kikai-machinery-kanji"
+   "nature": "cyrillic-shch-sch"
   },
   {
-   "a": "Ōtsuki Shōji K.K.",
-   "b": "Ōtsuki Kōgyō K.K.",
+   "a": "OOO Yuzhnyy Zernovoy Prichal",
+   "b": "OOO Yuzhnyy Neftyanoy Prichal",
    "verdict": "different",
-   "nature": "jp-shoji-kogyo"
+   "nature": "cyrillic-activity-word"
   },
   {
-   "a": "Hokushin Kaiun Co., Ltd.",
-   "b": "Hokushin Kisen Co., Ltd.",
+   "a": "TOV Chornomorska Khlibna Kompaniia",
+   "b": "TOV Chornomorska Rybna Kompaniia",
    "verdict": "different",
-   "nature": "jp-kaiun-kisen"
+   "nature": "cyrillic-activity-word"
   },
   {
-   "a": "Toho Unyu K.K.",
-   "b": "Tōhō Unsō K.K.",
+   "a": "OOO Shchedryy Kolos Dona",
+   "b": "OOO Shchedraya Niva Dona",
    "verdict": "different",
-   "nature": "jp-unyu-unso"
+   "nature": "cyrillic-near-word"
   },
   {
-   "a": "Shinwa Kōgyō K.K.",
-   "b": "Shinwa Kōsan K.K.",
+   "a": "ZAO Zhuravlyovo Agro",
+   "b": "ZAO Zhuravlino Agro",
    "verdict": "different",
-   "nature": "jp-kogyo-kosan"
+   "nature": "cyrillic-near-place-name"
   },
   {
-   "a": "Chūō Seisakusho Co., Ltd.",
-   "b": "Chūō Seikōsho Co., Ltd.",
+   "a": "OOO Azovmetalltorg",
+   "b": "OOO Azovmetallsnab",
    "verdict": "different",
-   "nature": "jp-seisakusho-seikosho"
+   "nature": "cyrillic-compound-part"
   },
   {
-   "a": "Fujimoto Sangyo Co., Ltd.",
-   "b": "Fujimoto Sangyo Kaihatsu Co., Ltd.",
+   "a": "OOO Tsimlyanskiy Rechnoy Flot",
+   "b": "OOO Tsimlyanskiy Rybnyy Flot",
    "verdict": "different",
-   "nature": "jp-added-word"
+   "nature": "cyrillic-near-word"
   },
   {
-   "a": "Kawanami Boeki Co., Ltd.",
-   "b": "Kawanami Bussan Co., Ltd.",
+   "a": "PAO Kuban-Agroeksport",
+   "b": "PAO Kuban-Agroimport",
    "verdict": "different",
-   "nature": "jp-boeki-bussan"
+   "nature": "cyrillic-compound-part"
   },
   {
-   "a": "Sakuragawa Kōgyō K.K.",
-   "b": "Sakuragaoka Kōgyō K.K.",
+   "a": "OOO Taganrogskiy Metallotsentr",
+   "b": "OOO Taganrogskiy Metallokontsern",
    "verdict": "different",
-   "nature": "jp-place-swap"
+   "nature": "cyrillic-compound-part"
   },
   {
-   "a": "Aoyagi Seisakusho Co., Ltd.",
-   "b": "Aoyama Seisakusho Co., Ltd.",
+   "a": "AO Rostovskiy Portovyy Elevator",
+   "b": "AO Rostovskiy Rechnoy Elevator",
    "verdict": "different",
-   "nature": "jp-surname-swap"
+   "nature": "cyrillic-activity-word"
   },
   {
-   "a": "Matsuzono Industries Co., Ltd.",
-   "b": "Matsuzono Industrial Transport Co., Ltd.",
+   "a": "OOO Torgovyy Dom Yevdokimov",
+   "b": "OOO Torgovyy Dom Yefimov",
    "verdict": "different",
-   "nature": "jp-added-word-en"
+   "nature": "cyrillic-near-surname"
   },
   {
-   "a": "Nishikori Kaiun Co., Ltd.",
-   "b": "Nishikori Kaiji Co., Ltd.",
+   "a": "OOO Khimtrans-Yug",
+   "b": "OOO Khimtrans-Sever",
    "verdict": "different",
-   "nature": "jp-kaiun-kaiji"
+   "nature": "cyrillic-direction-word"
   },
   {
-   "a": "Ryusei Unyu Co., Ltd.",
-   "b": "Ryusen Unyu Co., Ltd.",
+   "a": "OOO Tsentrsnab-Don",
+   "b": "OOO Tsentrsnab-Kuban",
    "verdict": "different",
-   "nature": "jp-near-string"
+   "nature": "cyrillic-region-word"
   },
   {
-   "a": "Hōryū Kōsan K.K.",
-   "b": "Hōryū Fudōsan K.K.",
+   "a": "TOV Izmailskyi Richkovyi Prychal",
+   "b": "TOV Reniiskyi Richkovyi Prychal",
    "verdict": "different",
-   "nature": "jp-kosan-fudosan"
+   "nature": "cyrillic-near-place-name"
   },
   {
-   "a": "Kitazono Seisakusho Co., Ltd.",
-   "b": "Kitazono Tekkōsho Co., Ltd.",
+   "a": "OOO Belogorye-Trans",
+   "b": "OOO Belozerye-Trans",
    "verdict": "different",
-   "nature": "jp-seisakusho-tekkosho"
+   "nature": "cyrillic-near-place-name"
   },
   {
-   "a": "Ōmura Kōgyō K.K.",
-   "b": "Ōmura Kōki K.K.",
+   "a": "OOO Kamen-Portservis",
+   "b": "OOO Kamysh-Portservis",
    "verdict": "different",
-   "nature": "jp-kogyo-koki"
+   "nature": "cyrillic-near-word"
   },
   {
-   "a": "Yūki Bōeki K.K.",
-   "b": "Yūki Shōji K.K.",
+   "a": "OOO Rostov-Zerno",
+   "b": "OOO Rostok-Zerno",
    "verdict": "different",
-   "nature": "jp-boeki-shoji"
+   "nature": "cyrillic-near-word"
   },
   {
-   "a": "Seiryū Kaiun K.K.",
-   "b": "Seiun Kaiun K.K.",
+   "a": "OOO Novotitarovskiy Elevator",
+   "b": "OOO Novotroitskiy Elevator",
    "verdict": "different",
-   "nature": "jp-near-string"
+   "nature": "cyrillic-near-place-name"
   },
   {
-   "a": "Nambu Tekko Co., Ltd.",
-   "b": "Nambu Tekkosho Co., Ltd.",
+   "a": "OOO Primorsko-Akhtarskiy Rybzavod",
+   "b": "OOO Primorsko-Akhtarskiy Kombikormzavod",
    "verdict": "different",
-   "nature": "jp-tekko-tekkosho"
+   "nature": "cyrillic-activity-word"
   },
   {
-   "a": "Shimpo Denki Co., Ltd.",
-   "b": "Shimpo Denshi Co., Ltd.",
+   "a": "TOV Chornomorska Khlibna Kompaniia",
+   "b": "Chornomorska Khlibna Kompaniia SRL",
    "verdict": "different",
-   "nature": "jp-denki-denshi"
+   "nature": "cyrillic-foreign-subsidiary"
   },
   {
-   "a": "Hirata Zosen Co., Ltd.",
-   "b": "Hirata Zōki Co., Ltd.",
+   "a": "OOO Yuzhtranzitservis",
+   "b": "OOO Yuzhtransservis",
    "verdict": "different",
-   "nature": "jp-zosen-zoki"
+   "nature": "cyrillic-compound-part"
   },
   {
-   "a": "Ishikawa Bōeki K.K.",
-   "b": "Ishizaki Bōeki K.K.",
+   "a": "OOO Kubanskaya Zhatva",
+   "b": "OOO Kurganskaya Zhatva",
    "verdict": "different",
-   "nature": "jp-surname-swap"
+   "nature": "cyrillic-near-place-name"
   },
   {
-   "a": "Tsuzuki Unyu Co., Ltd.",
-   "b": "Tsuzuki Kōtsū Co., Ltd.",
+   "a": "OOO Stalprokat-Yug",
+   "b": "OOO Stalprofil-Yug",
    "verdict": "different",
-   "nature": "jp-unyu-kotsu"
+   "nature": "cyrillic-compound-part"
   },
   {
-   "a": "Jonan Kogyo Co., Ltd.",
-   "b": "Johoku Kogyo Co., Ltd.",
+   "a": "TOV Zaporizkyi Metalozbut",
+   "b": "TOV Zaporizkyi Metalobaza",
    "verdict": "different",
-   "nature": "jp-nan-hoku"
+   "nature": "cyrillic-compound-part"
   },
   {
-   "a": "Shirakaba Shokai Co., Ltd.",
-   "b": "Shirakawa Shōkai Co., Ltd.",
+   "a": "OOO Temryukskiy Morskoy Terminal",
+   "b": "OOO Temryukskiy Portovyy Terminal",
    "verdict": "different",
-   "nature": "jp-near-string"
+   "nature": "cyrillic-activity-word"
   },
   {
-   "a": "Yamazoe Chemical Industries Co., Ltd.",
-   "b": "Yamazoe Chemical Trading Co., Ltd.",
+   "a": "OOO Taman-Agrotrans",
+   "b": "OOO Taman-Avtotrans",
    "verdict": "different",
-   "nature": "jp-industries-trading"
+   "nature": "cyrillic-compound-part"
   },
   {
-   "a": "Ohashi Electronics Co., Ltd.",
-   "b": "Ohashi Electric Co., Ltd.",
+   "a": "OOO Don-Zernoprodukt",
+   "b": "OOO Don-Zernoproekt",
    "verdict": "different",
-   "nature": "jp-electronics-electric"
+   "nature": "cyrillic-compound-part"
   },
   {
-   "a": "Fukagawa Suisan K.K.",
-   "b": "Fukagawa Reizō K.K.",
+   "a": "OOO Salskiy Elevator",
+   "b": "OOO Salskiy Elevatorstroy",
    "verdict": "different",
-   "nature": "jp-suisan-reizo"
+   "nature": "cyrillic-compound-part"
   },
   {
-   "a": "Sakaide Kōun K.K.",
-   "b": "Sakaide Kaiun K.K.",
+   "a": "ООО «Азовзернотранс»",
+   "b": "OOO Azovzernoterminal",
    "verdict": "different",
-   "nature": "jp-koun-kaiun"
+   "nature": "cyrillic-original-script-near"
   },
   {
-   "a": "Nagasato Yuso Co., Ltd.",
-   "b": "Nagasako Yūsō Co., Ltd.",
+   "a": "PAO Priazovskiy Kombinat Zhelezobetona",
+   "b": "PAO Priazovskiy Zavod Zhelezobetona",
    "verdict": "different",
-   "nature": "jp-near-string"
+   "nature": "cyrillic-activity-word"
   },
   {
-   "a": "Tsurumaki Warehouse Co., Ltd.",
-   "b": "Tsurumaki Transport Co., Ltd.",
+   "a": "TOV Kharkivskyi Metalotorh",
+   "b": "TOV Khersonskyi Metalotorh",
    "verdict": "different",
-   "nature": "jp-warehouse-transport"
+   "nature": "cyrillic-near-place-name"
   },
   {
-   "a": "Hanseong Sangsa Co., Ltd.",
-   "b": "Hanseong Mulsan Co., Ltd.",
+   "a": "ZAO Shchekinskiy Metallosklad",
+   "b": "ZAO Shchuchinskiy Metallosklad",
    "verdict": "different",
-   "nature": "kr-sangsa-mulsan"
+   "nature": "cyrillic-near-place-name"
   },
   {
-   "a": "Bomyeong Heavy Industries Co., Ltd.",
-   "b": "Bomyeong Shipbuilding Co., Ltd.",
+   "a": "TOV Mykolaivskyi Kombikormovyi Zavod",
+   "b": "TOV Mykolaivskyi Kombikormovyi Zavod No. 2",
    "verdict": "different",
-   "nature": "kr-activity-word"
+   "nature": "cyrillic-numbered-entity"
   },
   {
-   "a": "Cheonghae Marine Co., Ltd.",
-   "b": "Cheongho Marine Co., Ltd.",
+   "a": "OOO Yeyskiy Portovyy Elevator",
+   "b": "OOO Yeyskiy Portovyy Kholodilnik",
    "verdict": "different",
-   "nature": "kr-near-string"
+   "nature": "cyrillic-activity-word"
   },
   {
-   "a": "Ilsun Precision Co., Ltd.",
-   "b": "Ilsin Precision Co., Ltd.",
+   "a": "PAO Tuapsinskiy Bunkerovshchik",
+   "b": "PAO Tuapsinskiy Buksirovshchik",
    "verdict": "different",
-   "nature": "kr-near-string"
+   "nature": "cyrillic-near-word"
   },
   {
-   "a": "Yeonhwa Mulsan Co., Ltd.",
-   "b": "Yeonhwa Mulsan Vietnam Co., Ltd.",
+   "a": "ООО «Таман-Агротранс»",
+   "b": "ООО «Тамань-Агросервис»",
    "verdict": "different",
-   "nature": "kr-country-subsidiary"
+   "nature": "cyrillic-original-script-near"
   },
   {
-   "a": "Miyahara Kaiun K.K.",
-   "b": "Miyahara Kaiun Singapore Pte. Ltd.",
+   "a": "AT Pivdennyi Portovyi Zavod",
+   "b": "AT Pivnichnyi Portovyi Zavod",
    "verdict": "different",
-   "nature": "jp-country-subsidiary"
+   "nature": "cyrillic-direction-word"
   },
   {
-   "a": "Okubo Tsusho Co., Ltd.",
-   "b": "Okubo Tsūun Co., Ltd.",
+   "a": "TOV Prychornomorskyi Terminal",
+   "b": "TOV Pryazovskyi Terminal",
    "verdict": "different",
-   "nature": "jp-tsusho-tsuun"
+   "nature": "cyrillic-near-place-name"
   },
   {
-   "a": "Nishihama Machinery Co., Ltd.",
-   "b": "Nishihama Machine Tools Co., Ltd.",
+   "a": "OOO Donantratsit-Trans",
+   "b": "OOO Donantratsit-Snab",
    "verdict": "different",
-   "nature": "jp-added-word-en"
+   "nature": "cyrillic-compound-part"
   },
   {
-   "a": "MV Hakuyo Maru",
-   "b": "MV Hakuyo Maru No. 2",
+   "a": "TOV Zhytomyrskyi Lisotorh",
+   "b": "TOV Zhytomyrskyi Lisokombinat",
    "verdict": "different",
-   "nature": "jp-vessel-numbered-sibling"
+   "nature": "cyrillic-compound-part"
   },
   {
-   "a": "Seiho Maru No. 3",
-   "b": "Seiho Maru No. 8",
+   "a": "PAO Tsemzavod Mayachnyy",
+   "b": "PAO Tsemzavod Mayskiy",
    "verdict": "different",
-   "nature": "jp-vessel-numbered-sibling"
+   "nature": "cyrillic-near-word"
   },
   {
-   "a": "Naviera Golfo de San Miguel, S.A. — Folio 155874 (S) Registro Público de Panamá",
-   "b": "Naviera Golfo de San Miguel S.A.",
+   "a": "MV KAPITAN ZAVYALOV",
+   "b": "M/V Kapitan Zavyalov",
    "verdict": "match",
-   "nature": "residue-panama-folio"
+   "nature": "vessel-prefix-variant"
   },
   {
-   "a": "COMERCIALIZADORA TEXTIL DEL NORTE SA DE CV RFC CTN950812K73",
-   "b": "Comercializadora Textil del Norte, S.A. de C.V.",
+   "a": "KAPITAN ZAVYALOV",
+   "b": "KAPITAN ZAVJALOV",
    "verdict": "match",
-   "nature": "residue-rfc-glued"
+   "nature": "vessel-transliteration"
   },
   {
-   "a": "AGROINDUSTRIAS VALLE DE MEXICALI SAPI DE CV / RFC: AVM040917QX2",
-   "b": "Agroindustrias Valle de Mexicali, S.A.P.I. de C.V.",
+   "a": "КАПИТАН ЗАВЬЯЛОВ",
+   "b": "KAPITAN ZAV'YALOV",
    "verdict": "match",
-   "nature": "residue-rfc"
+   "nature": "vessel-cyrillic-original"
   },
   {
-   "a": "Kabushiki Kaisha Minamisawa Kinzoku (法人番号 5010401099876)",
-   "b": "Minamisawa Kinzoku Co., Ltd.",
+   "a": "T/H NIZHNEDONSK-1408",
+   "b": "NIZHNEDONSK 1408",
    "verdict": "match",
-   "nature": "residue-jp-corporate-number"
+   "nature": "vessel-teplokhod-prefix"
   },
   {
-   "a": "Corporate Number 8011001077453 — Kurihara Kaiun Kabushiki Kaisha",
-   "b": "Kurihara Kaiun K.K.",
+   "a": "T/KH AZOVSKIY RUBEZH 7",
+   "b": "Azovskiy Rubezh-7",
    "verdict": "match",
-   "nature": "residue-jp-corporate-number-en"
+   "nature": "vessel-teplokhod-prefix"
   },
   {
-   "a": "Distribuidora Peninsular de Alimentos S. de R.L. de C.V., Av. Insurgentes Sur 1602, Col. Crédito Constructor, CDMX",
-   "b": "Distribuidora Peninsular de Alimentos, S. de R.L. de C.V.",
+   "a": "ALTAIR STAR (ex-MEKHANIK KHARITONOV)",
+   "b": "MEKHANIK KHARITONOV",
+   "verdict": "match",
+   "nature": "vessel-former-name"
+  },
+  {
+   "a": "MEKHANIK KHARITONOV",
+   "b": "MEHANIK HARITONOV",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "MV AKDENİZ ŞAFAK",
+   "b": "M/V AKDENIZ SAFAK",
+   "verdict": "match",
+   "nature": "vessel-turkish-diacritics"
+  },
+  {
+   "a": "ŞEHİT KAPTAN ÖZER",
+   "b": "SEHIT KAPTAN OZER",
+   "verdict": "match",
+   "nature": "vessel-turkish-diacritics"
+  },
+  {
+   "a": "CAPT. SEMENYUK",
+   "b": "KAPITAN SEMENYUK",
+   "verdict": "match",
+   "nature": "vessel-rank-translated"
+  },
+  {
+   "a": "AKADEMIK PETRYAKOV",
+   "b": "AKAD. PETRYAKOV",
+   "verdict": "match",
+   "nature": "vessel-rank-abbreviated"
+  },
+  {
+   "a": "SEYIT REIS (Panama)",
+   "b": "SEYIT REIS",
+   "verdict": "match",
+   "nature": "vessel-flag-residue"
+  },
+  {
+   "a": "NIKOLAY ORLOVSKIY, port of registry Taganrog",
+   "b": "NIKOLAY ORLOVSKIY",
+   "verdict": "match",
+   "nature": "vessel-port-residue"
+  },
+  {
+   "a": "PRIAZOVYE-1204",
+   "b": "PRIAZOVYE 1204",
+   "verdict": "match",
+   "nature": "vessel-series-number"
+  },
+  {
+   "a": "DENIZ YOLCUSU 2",
+   "b": "DENIZ YOLCUSU II",
+   "verdict": "match",
+   "nature": "vessel-numeral-roman"
+  },
+  {
+   "a": "MV KARA BURUN ex ZOLOTAYA KOSA",
+   "b": "ZOLOTAYA KOSA",
+   "verdict": "match",
+   "nature": "vessel-former-name"
+  },
+  {
+   "a": "KERCHENSKIY PROLIV-3",
+   "b": "KERCHENSKY PROLIV 3",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "VOLNA DONA-2208",
+   "b": "Volna Dona 2208",
+   "verdict": "match",
+   "nature": "vessel-series-number"
+  },
+  {
+   "a": "M/V YILDIZ KAPTAN",
+   "b": "MV YILDIZ KAPTAN (Comoros flag)",
+   "verdict": "match",
+   "nature": "vessel-flag-residue"
+  },
+  {
+   "a": "MT ÇAMLIBEL",
+   "b": "M/T CAMLIBEL",
+   "verdict": "match",
+   "nature": "vessel-turkish-diacritics"
+  },
+  {
+   "a": "GENERAL KHOTINTSEV",
+   "b": "GENERAL HOTINCEV",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "ZHURAVUSHKA DONSKAYA",
+   "b": "ŽURAVUŠKA DONSKAJA",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "ЖУРАВУШКА ДОНСКАЯ",
+   "b": "ZHURAVUSHKA DONSKAYA",
+   "verdict": "match",
+   "nature": "vessel-cyrillic-original"
+  },
+  {
+   "a": "barge PRIDONYE 41",
+   "b": "PRIDONYE-41 (barge)",
+   "verdict": "match",
+   "nature": "vessel-type-residue"
+  },
+  {
+   "a": "KAPITAN GUSEYNOV (ex-MARMARA GULU)",
+   "b": "MARMARA GÜLÜ",
+   "verdict": "match",
+   "nature": "vessel-former-name"
+  },
+  {
+   "a": "DENIZ KARTALI",
+   "b": "M/V DENİZ KARTALI",
+   "verdict": "match",
+   "nature": "vessel-prefix-variant"
+  },
+  {
+   "a": "STEPNOY VETER 17",
+   "b": "STEPNOI VETER 17",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "KAPITAN YUSHKEVICH",
+   "b": "KAPITAN IUSHKEVICH",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "MATROS TSYBULSKIY",
+   "b": "MATROS CYBULSKIJ",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "T/H SHKIPER KOVALCHUK",
+   "b": "SKIPPER KOVALCHUK",
+   "verdict": "match",
+   "nature": "vessel-rank-translated"
+  },
+  {
+   "a": "NORD AMBER (ex-PRIAZOVYE-1207)",
+   "b": "PRIAZOVYE-1207",
+   "verdict": "match",
+   "nature": "vessel-former-name"
+  },
+  {
+   "a": "KARADENİZ ŞAHİNİ",
+   "b": "KARADENIZ SAHINI",
+   "verdict": "match",
+   "nature": "vessel-turkish-diacritics"
+  },
+  {
+   "a": "M/V SAMSUN YILDIZI",
+   "b": "SAMSUN YILDIZI, Samsun",
+   "verdict": "match",
+   "nature": "vessel-port-residue"
+  },
+  {
+   "a": "ILYA TOKAREV",
+   "b": "IL'YA TOKAREV",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "GEROY TRUDA MAKSIMOV",
+   "b": "GEROI TRUDA MAKSIMOV",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "ALEKSANDR ZHEREBTSOV",
+   "b": "ALEXANDER ZHEREBTSOV",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "RUSLAN TKACHYOV",
+   "b": "RUSLAN TKACHEV",
+   "verdict": "match",
+   "nature": "vessel-transliteration"
+  },
+  {
+   "a": "TUG KORSAK 12",
+   "b": "tug KORSAK-12",
+   "verdict": "match",
+   "nature": "vessel-series-number"
+  },
+  {
+   "a": "MV ARDA NUR",
+   "b": "ARDA NUR (Moldova flag)",
+   "verdict": "match",
+   "nature": "vessel-flag-residue"
+  },
+  {
+   "a": "T/H VOLNA DONA-2208",
+   "b": "VOLNA DONA 2208, flag Russia, port Rostov-on-Don",
+   "verdict": "match",
+   "nature": "vessel-port-residue"
+  },
+  {
+   "a": "NIZHNEDONSK-1408",
+   "b": "NIZHNEDONSK-1403",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "AZOVSKIY RUBEZH 7",
+   "b": "AZOVSKIY RUBEZH 17",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "KAPITAN ZAVYALOV",
+   "b": "KAPITAN ZAVARZIN",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "MEKHANIK KHARITONOV",
+   "b": "MEKHANIK KHARLAMOV",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "DENIZ YOLCUSU 1",
+   "b": "DENIZ YOLCUSU 2",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "MV KARADENİZ ŞAHİNİ",
+   "b": "Karadeniz Şahini Denizcilik Ltd. Şti.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "PRIAZOVYE-1204",
+   "b": "Priazovye Shipmanagement LLC",
+   "verdict": "different",
+   "nature": "vessel-vs-manager"
+  },
+  {
+   "a": "TUG KORSAK 12",
+   "b": "BARGE KORSAK 12",
+   "verdict": "different",
+   "nature": "vessel-tug-vs-barge"
+  },
+  {
+   "a": "YILDIZ KAPTAN",
+   "b": "YILDIZ KAPTANLAR",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "SEHIT KAPTAN OZER",
+   "b": "SEHIT KAPTAN OZEN",
+   "verdict": "different",
+   "nature": "vessel-one-letter"
+  },
+  {
+   "a": "AKADEMIK PETRYAKOV",
+   "b": "AKADEMIK PETROVSKIY",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "KERCHENSKIY PROLIV-3",
+   "b": "KERCHENSKIY PROLIV-8",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "VOLNA DONA-2208",
+   "b": "VOLNA DONA-2280",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "SEYIT REIS",
+   "b": "SEYIT REIS II",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "KAPITAN SEMENYUK",
+   "b": "KAPITAN SEMENOV",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "M/V SAMSUN YILDIZI",
+   "b": "Samsun Yıldızı Gemi İşletmeciliği A.Ş.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "ZHURAVUSHKA DONSKAYA",
+   "b": "ZHURAVUSHKA KUBANSKAYA",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "MT ÇAMLIBEL",
+   "b": "MT ÇAMLIDERE",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "GENERAL KHOTINTSEV",
+   "b": "GENERAL KHOTIMSKIY",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "STEPNOY VETER 17",
+   "b": "STEPNOY VETER 7",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "KAPITAN YUSHKEVICH",
+   "b": "KAPITAN YURKEVICH",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "MATROS TSYBULSKIY",
+   "b": "MATROS TSYBULKIN",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "SHKIPER KOVALCHUK",
+   "b": "SHKIPER KOVALENKO",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "NORD AMBER",
+   "b": "NORD AMBERG",
+   "verdict": "different",
+   "nature": "vessel-one-letter"
+  },
+  {
+   "a": "KARADENIZ SAHINI",
+   "b": "KARADENIZ SAHINLERI",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "ILYA TOKAREV",
+   "b": "ILYA TOKMAKOV",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "GEROY TRUDA MAKSIMOV",
+   "b": "GEROY TRUDA MAKAROV",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "ALEKSANDR ZHEREBTSOV",
+   "b": "ALEKSEY ZHEREBTSOV",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "RUSLAN TKACHYOV",
+   "b": "RUSLANA TKACHYOVA",
+   "verdict": "different",
+   "nature": "vessel-near-name"
+  },
+  {
+   "a": "barge PRIDONYE 41",
+   "b": "barge PRIDONYE 14",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "ARDA NUR",
+   "b": "ARDA NURU",
+   "verdict": "different",
+   "nature": "vessel-one-letter"
+  },
+  {
+   "a": "DENIZ KARTALI",
+   "b": "DENIZ KARTALLARI",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "MV DENİZ KARTALI",
+   "b": "Deniz Kartalı Denizcilik A.Ş.",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "ALTAIR STAR",
+   "b": "ALTAIR STARS",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "MARMARA GÜLÜ",
+   "b": "MARMARA GÜLLERİ",
+   "verdict": "different",
+   "nature": "vessel-plural"
+  },
+  {
+   "a": "KAPITAN GUSEYNOV",
+   "b": "Kapitan Guseynov Shipping Ltd",
+   "verdict": "different",
+   "nature": "vessel-vs-owner"
+  },
+  {
+   "a": "PRIAZOVYE-1207",
+   "b": "PRIAZOVYE-1204",
+   "verdict": "different",
+   "nature": "vessel-sister-number"
+  },
+  {
+   "a": "TUG ATAMAN 5",
+   "b": "BARGE ATAMAN 5",
+   "verdict": "different",
+   "nature": "vessel-tug-vs-barge"
+  },
+  {
+   "a": "ZOLOTAYA KOSA",
+   "b": "ZOLOTAYA ROSA",
+   "verdict": "different",
+   "nature": "vessel-one-letter"
+  },
+  {
+   "a": "YILDIZ KAPTAN",
+   "b": "Yıldız Kaptan Gemi Acenteliği Ltd. Şti.",
+   "verdict": "different",
+   "nature": "vessel-vs-agent"
+  },
+  {
+   "a": "SAMSUN TAHIL DEPOLAMA VE DIS TICAR ET ANONIM SIRKETI",
+   "b": "Samsun Tahıl Depolama ve Dış Ticaret A.Ş.",
+   "verdict": "match",
+   "nature": "residue-swift-line-cut"
+  },
+  {
+   "a": "POHJOISRANNIKON VILJAKAUPPA OY HAMIN ANTIE 12 49400 HAMINA FI",
+   "b": "Pohjoisrannikon Viljakauppa Oy",
    "verdict": "match",
    "nature": "residue-address-glued"
   },
   {
-   "a": "SHIPPER: TRANSPORTES REFRIGERADOS DEL SURESTE SA DE CV",
-   "b": "Transportes Refrigerados del Sureste, S.A. de C.V.",
+   "a": "/NAME/KUZEYRUZGAR LOJISTIK VE DIS TIC ARET LTD STI",
+   "b": "Kuzeyrüzgar Lojistik ve Dış Ticaret Ltd. Şti.",
+   "verdict": "match",
+   "nature": "residue-swift-line-cut"
+  },
+  {
+   "a": "BENEFICIARY: Sarıkaya Hububat Ltd. Şti.",
+   "b": "Sarikaya Hububat Ltd Sti",
    "verdict": "match",
    "nature": "residue-party-label"
   },
   {
-   "a": "CONSIGNEE: SAKAMOTO TSUSHO KABUSHIKI KAISHA",
-   "b": "Sakamoto Tsūshō Co., Ltd.",
+   "a": "ORDERING CUSTOMER: KALLIOSAARI TRADING OY",
+   "b": "Kalliosaari Trading Oy",
    "verdict": "match",
-   "nature": "residue-party-label-romanisation"
+   "nature": "residue-party-label"
   },
   {
-   "a": "NOTIFY PARTY: NAVIERA ISLA CEBACO SA ATTN CAPT R. MORENO",
-   "b": "Naviera Isla Cébaco, S.A.",
+   "a": "hi pls check laaksonen viljakuljetus oy thx",
+   "b": "Laaksonen Viljakuljetus Oy",
    "verdict": "match",
-   "nature": "residue-notify-line"
+   "nature": "residue-chat-typing"
   },
   {
-   "a": "/BENEFICIARY/ PESQUERA DEL ARCHIPIELAGO SA/PANAMA",
-   "b": "Pesquera del Archipiélago S.A.",
+   "a": "0ZKAYA NAKL1YAT LTD. ST1.",
+   "b": "Özkaya Nakliyat Ltd. Şti.",
    "verdict": "match",
-   "nature": "residue-swift-beneficiary"
+   "nature": "residue-ocr-stamp"
   },
   {
-   "a": ":59:/PA12BNPA00001234567890 IMPORTADORA MEDINA Y CASTELLANOS SA DE CV",
-   "b": "Importadora Medina y Castellanos, S.A. de C.V.",
+   "a": "TARNMELAN RAHTI OY",
+   "b": "Tammelan Rahti Oy",
    "verdict": "match",
-   "nature": "residue-swift-59"
+   "nature": "residue-ocr-stamp"
   },
   {
-   "a": "ORDERING CUSTOMER: KABUSHIKI KAISHA HANAMURA BOEKI, 2-14-7 KAIGAN, MINATO-KU, TOKYO",
-   "b": "Hanamura Bōeki K.K.",
+   "a": "Dnistrovska Agrotorhivlia LLC 14 Portova str Odesa 65026 Ukraine",
+   "b": "Dnistrovska Agrotorhivlia LLC",
    "verdict": "match",
-   "nature": "residue-swift-50-address"
+   "nature": "residue-address-glued"
   },
   {
-   "a": "TRANSPORTADORA INTERNACIONAL DE CARG A PESADA DEL PACIFICO SA DE CV",
-   "b": "Transportadora Internacional de Carga Pesada del Pacífico, S.A. de C.V.",
+   "a": "MESSRS. BALTIC TIMBERLINE OU",
+   "b": "Baltic Timberline OÜ",
    "verdict": "match",
-   "nature": "residue-swift-35-cut"
+   "nature": "residue-party-label"
   },
   {
-   "a": "CIA MARITIMA DEL GOLFO DE PANAMA S A / CTA 0012 3456 7890",
-   "b": "Compañía Marítima del Golfo de Panamá, S.A.",
+   "a": "NORDMARK + SKOGBERG AB",
+   "b": "Nordmark & Skogberg AB",
    "verdict": "match",
-   "nature": "residue-bank-account"
+   "nature": "residue-swift-charset"
   },
   {
-   "a": "REF: INV-2026-0781 / SERVICIOS ADUANALES OCHOA Y MORALES SC",
-   "b": "Servicios Aduanales Ochoa y Morales, S.C.",
+   "a": "REF FT2231-0915 /BNF/ KAYALAR UN SANAYI AS",
+   "b": "Kayalar Un Sanayi A.Ş.",
    "verdict": "match",
-   "nature": "residue-invoice-ref"
+   "nature": "residue-bank-reference"
   },
   {
-   "a": "M/V CORAZON DEL ISTMO V.014E",
-   "b": "MV Corazón del Istmo",
+   "a": "CONSIGNEE: TOV ZERNOVA HAVAN, MYKOLAIV",
+   "b": "TOV Zernova Havan",
    "verdict": "match",
-   "nature": "residue-voyage-number"
+   "nature": "residue-party-label"
   },
   {
-   "a": "MT BAHIA DE CHARCO AZUL / VOY 2611 / LOADPORT BALBOA",
-   "b": "M/T Bahía de Charco Azul",
+   "a": "NOTIFY PARTY - Marinero Ship Agency SRL Constanta Romania",
+   "b": "Marinero Ship Agency SRL",
    "verdict": "match",
-   "nature": "residue-voyage-port"
+   "nature": "residue-address-glued"
   },
   {
-   "a": "MV NORTHERN LAGOON EXPRESS – POL BELIZE CITY – POD PROGRESO",
-   "b": "Northern Lagoon Express",
+   "a": "VESSEL: MV KARA MARTI / IMO N/A",
+   "b": "KARA MARTI",
    "verdict": "match",
-   "nature": "residue-port-pair"
+   "nature": "residue-vessel-field"
   },
   {
-   "a": "Kimura Sōko Kabushiki Kaisha 〒105-0022 東京都港区海岸1-2-3",
-   "b": "Kimura Soko Co., Ltd.",
+   "a": "PER MV TAMAN ZARYA VOY 14",
+   "b": "TAMAN ZARYA",
    "verdict": "match",
-   "nature": "residue-jp-address"
+   "nature": "residue-vessel-field"
   },
   {
-   "a": "OGATA UNYU K.K. (TEL 03-5555-0100)",
-   "b": "Ogata Unyu Kabushiki Kaisha",
+   "a": "LAIVANVARUSTAMO REPOLA OYVAASANKATU 3",
+   "b": "Laivanvarustamo Repola Oy",
    "verdict": "match",
-   "nature": "residue-phone"
+   "nature": "residue-address-glued"
   },
   {
-   "a": "MARIA DEL ROSARIO ANZALDUA GARCIA / CURP AAGR790315MNLNRS08",
-   "b": "María del Rosario Anzaldúa García",
+   "a": "KYLMAKONTTI PALVELUT OY",
+   "b": "Kylmäkontti Palvelut Oy",
    "verdict": "match",
-   "nature": "residue-curp-person"
+   "nature": "residue-uppercase-export"
   },
   {
-   "a": "JOSE ANTONIO ESQUIVEL BENAVIDES RFC EEBJ800220A1 PERSONA FISICA CON ACTIVIDAD EMPRESARIAL",
-   "b": "José Antonio Esquivel Benavides",
+   "a": "SIA DAUGAVAS KRASTA LOGISTIKA RIGA LV-1045",
+   "b": "SIA Daugavas Krasta Loģistika",
    "verdict": "match",
-   "nature": "residue-rfc-person"
+   "nature": "residue-address-glued"
   },
   {
-   "a": "Grupo Logístico Ancla del Caribe, S.A. — Ficha 887123, Documento 2456789",
-   "b": "GRUPO LOGISTICO ANCLA DEL CARIBE SA",
+   "a": "uab vetrunges kroviniu ekspedijavimas",
+   "b": "UAB Vėtrungės Krovinių Ekspedijavimas",
    "verdict": "match",
-   "nature": "residue-panama-ficha"
+   "nature": "residue-chat-typing"
   },
   {
-   "a": "SOC. ANON. TALLERES NAVALES DE VACAMONTE (RUC 1234567-1-654321 DV 45)",
-   "b": "Talleres Navales de Vacamonte, S.A.",
+   "a": "PAYEE: ANADOLUKAVAGI HUBUBAT SAN.TIC.A.S. ISTANBUL/TURKEY",
+   "b": "Anadolukavağı Hububat San. ve Tic. A.Ş.",
    "verdict": "match",
-   "nature": "residue-panama-ruc"
+   "nature": "residue-party-label"
   },
   {
-   "a": "Pescados y Mariscos del Golfo Ltda. — NIT 900.123.456-7",
-   "b": "Pescados y Mariscos del Golfo Limitada",
+   "a": "1/POLTAVSKA ZERNOVA KOMPANIIA TOV 2/VUL. SHKILNA 7 3/UA/POLTAVA",
+   "b": "TOV Poltavska Zernova Kompaniia",
    "verdict": "match",
-   "nature": "residue-nit"
+   "nature": "residue-swift-structured"
   },
   {
-   "a": "Companhia Mineira de Cabotagem S.A. CNPJ 12.345.678/0001-90",
-   "b": "Cia. Mineira de Cabotagem S.A.",
+   "a": "OOO KALINOVYY PRlCHAL",
+   "b": "OOO Kalinovyy Prichal",
    "verdict": "match",
-   "nature": "residue-cnpj"
+   "nature": "residue-ocr-stamp"
   },
   {
-   "a": "ARMADORES DEL PACIFICO SUR SA C/O AGENCIA MARITIMA CRISTOBAL",
-   "b": "Armadores del Pacífico Sur, S.A.",
+   "a": "TOKATLIGIL DENIZCILIK A.S. (THE SELLER)",
+   "b": "Tokatlıgil Denizcilik A.Ş.",
    "verdict": "match",
-   "nature": "residue-care-of"
+   "nature": "residue-party-label"
   },
   {
-   "a": "Yoshinaga Kaiun K.K. as agents only",
-   "b": "Yoshinaga Kaiun Co., Ltd.",
+   "a": "ATTN MR. KORHONEN / MERIVIRTA OY",
+   "b": "Merivirta Oy",
    "verdict": "match",
-   "nature": "residue-as-agents"
+   "nature": "residue-attention-line"
   },
   {
-   "a": "OWNERS: HIGASHIYAMA SENPAKU KABUSHIKI KAISHA, TOKYO",
-   "b": "Higashiyama Senpaku Co., Ltd.",
+   "a": "KAARNATAIVAS OY, Y-TUNNUS 1234567-8",
+   "b": "Kaarnataivas Oy",
    "verdict": "match",
-   "nature": "residue-owners-label"
+   "nature": "residue-registration-number"
   },
   {
-   "a": "CHARTERERS: ARIMURA SHOJI CO LTD",
-   "b": "Arimura Shōji Kabushiki Kaisha",
+   "a": "can u check odessa grainlink tov asap",
+   "b": "TOV Odesa Grainlink",
    "verdict": "match",
-   "nature": "residue-charterers-label"
+   "nature": "residue-chat-typing"
   },
   {
-   "a": "MV SIRENA DE TABOGA IMO N/A CALL SIGN HP1234 FLAG PANAMA",
-   "b": "M/N Sirena de Taboga",
+   "a": "SHIPPER: SINOPLU SU ÜRÜNLERİ LTD. ŞTİ.",
+   "b": "Sinoplu Su Urunleri Ltd. Sti.",
    "verdict": "match",
-   "nature": "residue-callsign-flag"
+   "nature": "residue-party-label"
   },
   {
-   "a": "B/M ESMERALDA DEL DARIEN — MATRICULA PMA-45678-B",
-   "b": "Esmeralda del Darién",
+   "a": "LIMANTEPE GEMI KIRAL AMA VE TICARET A.S.",
+   "b": "Limantepe Gemi Kiralama ve Ticaret A.Ş.",
    "verdict": "match",
-   "nature": "residue-matricula"
+   "nature": "residue-swift-line-cut"
   },
   {
-   "a": "LPG/C CIELO DE COLON (BUILT 2009 / GT 4,512 / PANAMA)",
-   "b": "LPG/C Cielo de Colón",
+   "a": "LLC KOLKHURI TVIRTI, POTI, GEORGIA",
+   "b": "Kolkhuri Tvirti LLC",
    "verdict": "match",
-   "nature": "residue-particulars"
+   "nature": "residue-address-glued"
   },
   {
-   "a": "*** COMPANIA DE SEGUROS MARITIMOS ISTMENOS S.A. *** PANAMA, REP. DE PANAMA",
-   "b": "Compañía de Seguros Marítimos Istmeños, S.A.",
+   "a": "SJÖGRIND LOGISTIK AB (PUBL) GOTEBORG SE",
+   "b": "Sjögrind Logistik AB",
    "verdict": "match",
-   "nature": "residue-asterisks-country"
+   "nature": "residue-address-glued"
   },
   {
-   "a": "APPLICANT: KANEDA SANGYO KK / 3-1-1 MARUNOUCHI CHIYODA-KU",
-   "b": "Kaneda Sangyō Kabushiki Kaisha",
+   "a": "Valkeasaari Shpiping Oy",
+   "b": "Valkeasaari Shipping Oy",
    "verdict": "match",
-   "nature": "residue-applicant-label"
+   "nature": "residue-typo"
   },
   {
-   "a": "50: IMPORTADORA Y EXPORTADORA DOS OCEANOS SA DE CV",
-   "b": "Importadora y Exportadora Dos Océanos, S.A. de C.V.",
-   "verdict": "match",
-   "nature": "residue-swift-50"
-  },
-  {
-   "a": "70: /RFB/INV 4471 PAGO A ELECTRONICA INDUSTRIAL MONTERREY SA DE CV",
-   "b": "Electrónica Industrial Monterrey, S.A. de C.V.",
-   "verdict": "match",
-   "nature": "residue-swift-70"
-  },
-  {
-   "a": "Registro Público de Panamá, Tomo 1245, Folio 332, Asiento 1 — Inversiones Marítimas Bahía Honda, S.A.",
-   "b": "Inversiones Marítimas Bahía Honda S.A.",
-   "verdict": "match",
-   "nature": "residue-tomo-folio"
-  },
-  {
-   "a": "SERVICOS DE REBOCADORES COSTA VERDE LTDA CNPJ 98.765.432/0001-10 SANTOS SP",
-   "b": "Serviços de Rebocadores Costa Verde Ltda.",
-   "verdict": "match",
-   "nature": "residue-cnpj-city"
-  },
-  {
-   "a": "TAKASE BOEKI CO LTD JP",
-   "b": "Takase Bōeki K.K.",
+   "a": "KARADAGLI NAKLIYAT LTD STI (TR)",
+   "b": "Karadağlı Nakliyat Ltd. Şti.",
    "verdict": "match",
    "nature": "residue-country-code"
   },
   {
-   "a": "Naviera Golfo de San Miguel, S.A. — Folio 155874 (S)",
-   "b": "Naviera Golfo de Montijo, S.A.",
-   "verdict": "different",
-   "nature": "residue-folio-different-gulf"
-  },
-  {
-   "a": "COMERCIALIZADORA TEXTIL DEL NORTE SA DE CV RFC CTN950812K73",
-   "b": "Comercializadora Textil del Noreste, S.A. de C.V.",
-   "verdict": "different",
-   "nature": "residue-rfc-norte-noreste"
-  },
-  {
-   "a": "AGROINDUSTRIAS VALLE DE MEXICALI SAPI DE CV / RFC: AVM040917QX2",
-   "b": "Agroindustrias Valle de Mexicali Exportaciones, S.A. de C.V.",
-   "verdict": "different",
-   "nature": "residue-rfc-added-word"
-  },
-  {
-   "a": "Kabushiki Kaisha Minamisawa Kinzoku (法人番号 5010401099876)",
-   "b": "Minamisawa Kinzoku Kōgyō Co., Ltd.",
-   "verdict": "different",
-   "nature": "residue-jp-number-added-word"
-  },
-  {
-   "a": "Corporate Number 8011001077453 — Kurihara Kaiun Kabushiki Kaisha",
-   "b": "Kurihara Kisen K.K.",
-   "verdict": "different",
-   "nature": "residue-jp-kaiun-kisen"
-  },
-  {
-   "a": "Distribuidora Peninsular de Alimentos S. de R.L. de C.V., Av. Insurgentes Sur 1602, CDMX",
-   "b": "Distribuidora Peninsular de Bebidas, S. de R.L. de C.V.",
-   "verdict": "different",
-   "nature": "residue-address-activity"
-  },
-  {
-   "a": "SHIPPER: TRANSPORTES REFRIGERADOS DEL SURESTE SA DE CV",
-   "b": "Transportes Refrigerados del Suroeste, S.A. de C.V.",
-   "verdict": "different",
-   "nature": "residue-sureste-suroeste"
-  },
-  {
-   "a": "CONSIGNEE: SAKAMOTO TSUSHO KABUSHIKI KAISHA",
-   "b": "Sakamoto Tsūun Co., Ltd.",
-   "verdict": "different",
-   "nature": "residue-tsusho-tsuun"
-  },
-  {
-   "a": "NOTIFY PARTY: NAVIERA ISLA CEBACO SA ATTN CAPT R. MORENO",
-   "b": "Naviera Isla Caña, S.A.",
-   "verdict": "different",
-   "nature": "residue-notify-different-island"
-  },
-  {
-   "a": "/BENEFICIARY/ PESQUERA DEL ARCHIPIELAGO SA/PANAMA",
-   "b": "Pesquera del Archipiélago de las Perlas, S.A.",
-   "verdict": "different",
-   "nature": "residue-added-words"
-  },
-  {
-   "a": ":59:/PA12BNPA00001234567890 IMPORTADORA MEDINA Y CASTELLANOS SA DE CV",
-   "b": "Importadora Medina y Castellón, S.A. de C.V.",
-   "verdict": "different",
-   "nature": "residue-swift-surname-swap"
-  },
-  {
-   "a": "ORDERING CUSTOMER: KABUSHIKI KAISHA HANAMURA BOEKI, MINATO-KU, TOKYO",
-   "b": "Hanamura Bussan K.K.",
-   "verdict": "different",
-   "nature": "residue-boeki-bussan"
-  },
-  {
-   "a": "TRANSPORTADORA INTERNACIONAL DE CARG A PESADA DEL PACIFICO SA DE CV",
-   "b": "Transportadora Internacional de Carga Pesada del Golfo, S.A. de C.V.",
-   "verdict": "different",
-   "nature": "residue-cut-different-region"
-  },
-  {
-   "a": "CIA MARITIMA DEL GOLFO DE PANAMA S A / CTA 0012 3456 7890",
-   "b": "Compañía Marítima del Golfo de Chiriquí, S.A.",
-   "verdict": "different",
-   "nature": "residue-bank-different-gulf"
-  },
-  {
-   "a": "REF: INV-2026-0781 / SERVICIOS ADUANALES OCHOA Y MORALES SC",
-   "b": "Servicios Aduanales Ochoa y Mora, S.C.",
-   "verdict": "different",
-   "nature": "residue-surname-swap"
-  },
-  {
-   "a": "M/V CORAZON DEL ISTMO V.014E",
-   "b": "MV Corazón del Istmo II",
-   "verdict": "different",
-   "nature": "residue-voyage-numeral-sibling"
-  },
-  {
-   "a": "MT BAHIA DE CHARCO AZUL / VOY 2611 / LOADPORT BALBOA",
-   "b": "M/T Bahía de Charco Verde",
-   "verdict": "different",
-   "nature": "residue-voyage-different-vessel"
-  },
-  {
-   "a": "MV NORTHERN LAGOON EXPRESS – POL BELIZE CITY – POD PROGRESO",
-   "b": "MV Northern Lagoon Trader",
-   "verdict": "different",
-   "nature": "residue-port-different-vessel"
-  },
-  {
-   "a": "Kimura Sōko Kabushiki Kaisha 〒105-0022 東京都港区海岸1-2-3",
-   "b": "Kimura Unyu Sōko Co., Ltd.",
-   "verdict": "different",
-   "nature": "residue-jp-added-word"
-  },
-  {
-   "a": "OGATA UNYU K.K. (TEL 03-5555-0100)",
-   "b": "Ogata Kōun K.K.",
-   "verdict": "different",
-   "nature": "residue-unyu-koun"
-  },
-  {
-   "a": "MARIA DEL ROSARIO ANZALDUA GARCIA / CURP AAGR790315MNLNRS08",
-   "b": "María del Rosario Anzaldúa Guerra",
-   "verdict": "different",
-   "nature": "residue-curp-surname-swap"
-  },
-  {
-   "a": "JOSE ANTONIO ESQUIVEL BENAVIDES RFC EEBJ800220A1",
-   "b": "José Alberto Esquivel Benavides",
-   "verdict": "different",
-   "nature": "residue-rfc-given-name"
-  },
-  {
-   "a": "Grupo Logístico Ancla del Caribe, S.A. — Ficha 887123",
-   "b": "Grupo Logístico Ancla del Pacífico, S.A.",
-   "verdict": "different",
-   "nature": "residue-ficha-different-ocean"
-  },
-  {
-   "a": "SOC. ANON. TALLERES NAVALES DE VACAMONTE (RUC 1234567-1-654321 DV 45)",
-   "b": "Talleres Navales de Veracruz, S.A. de C.V.",
-   "verdict": "different",
-   "nature": "residue-ruc-different-place"
-  },
-  {
-   "a": "Pescados y Mariscos del Golfo Ltda. — NIT 900.123.456-7",
-   "b": "Pescados y Mariscos del Pacífico Ltda.",
-   "verdict": "different",
-   "nature": "residue-nit-different-name"
-  },
-  {
-   "a": "Companhia Mineira de Cabotagem S.A. CNPJ 12.345.678/0001-90",
-   "b": "Companhia Mineira de Navegação S.A.",
-   "verdict": "different",
-   "nature": "residue-cnpj-activity"
-  },
-  {
-   "a": "ARMADORES DEL PACIFICO SUR SA C/O AGENCIA MARITIMA CRISTOBAL",
-   "b": "Agencia Marítima Cristóbal, S.A.",
-   "verdict": "different",
-   "nature": "residue-care-of-agent-not-principal"
-  },
-  {
-   "a": "Yoshinaga Kaiun K.K. as agents only",
-   "b": "Yoshinaga Shōji K.K.",
-   "verdict": "different",
-   "nature": "residue-kaiun-shoji"
-  },
-  {
-   "a": "OWNERS: HIGASHIYAMA SENPAKU KABUSHIKI KAISHA, TOKYO",
-   "b": "Higashiyama Senpaku Kanri Co., Ltd.",
-   "verdict": "different",
-   "nature": "residue-owner-vs-manager"
-  },
-  {
-   "a": "CHARTERERS: ARIMURA SHOJI CO LTD",
-   "b": "Arimura Kaiun Co., Ltd.",
-   "verdict": "different",
-   "nature": "residue-shoji-kaiun"
-  },
-  {
-   "a": "MV SIRENA DE TABOGA IMO N/A CALL SIGN HP1234 FLAG PANAMA",
-   "b": "M/N Sirena de Taboga II",
-   "verdict": "different",
-   "nature": "residue-numeral-sibling"
-  },
-  {
-   "a": "B/M ESMERALDA DEL DARIEN — MATRICULA PMA-45678-B",
-   "b": "B/M Esmeralda del Darién III",
-   "verdict": "different",
-   "nature": "residue-numeral-sibling"
-  },
-  {
-   "a": "LPG/C CIELO DE COLON (BUILT 2009 / GT 4,512 / PANAMA)",
-   "b": "LPG/C Cielos de Colón",
-   "verdict": "different",
-   "nature": "residue-plural-sibling"
-  },
-  {
-   "a": "*** COMPANIA DE SEGUROS MARITIMOS ISTMENOS S.A. ***",
-   "b": "Compañía de Seguros Generales Istmeños, S.A.",
-   "verdict": "different",
-   "nature": "residue-activity-word"
-  },
-  {
-   "a": "APPLICANT: KANEDA SANGYO KK / 3-1-1 MARUNOUCHI CHIYODA-KU",
-   "b": "Kaneda Sangyō (Thailand) Co., Ltd.",
-   "verdict": "different",
-   "nature": "residue-country-subsidiary"
-  },
-  {
-   "a": "50: IMPORTADORA Y EXPORTADORA DOS OCEANOS SA DE CV",
-   "b": "Importadora y Exportadora Tres Océanos, S.A. de C.V.",
-   "verdict": "different",
-   "nature": "residue-numeral-word"
-  },
-  {
-   "a": "70: /RFB/INV 4471 PAGO A ELECTRONICA INDUSTRIAL MONTERREY SA DE CV",
-   "b": "Electrónica Industrial de Monterrey Norte, S.A. de C.V.",
-   "verdict": "different",
-   "nature": "residue-added-words"
-  },
-  {
-   "a": "Registro Público de Panamá, Tomo 1245, Folio 332 — Inversiones Marítimas Bahía Honda, S.A.",
-   "b": "Inversiones Marítimas Bahía Escondida, S.A.",
-   "verdict": "different",
-   "nature": "residue-tomo-different-bay"
-  },
-  {
-   "a": "SERVICOS DE REBOCADORES COSTA VERDE LTDA CNPJ 98.765.432/0001-10 SANTOS SP",
-   "b": "Serviços de Rebocadores Costa Azul Ltda.",
-   "verdict": "different",
-   "nature": "residue-cnpj-color-word"
-  },
-  {
-   "a": "TAKASE BOEKI CO LTD JP",
-   "b": "Takase Bōeki (Hong Kong) Ltd.",
-   "verdict": "different",
-   "nature": "residue-country-subsidiary"
-  },
-  {
-   "a": "MV Aurora del Istmo (ex Northern Aurora)",
-   "b": "Northern Aurora",
+   "a": "Dunarea Verde Grain Logistics S.R.L. / Constanta Port Gate 7",
+   "b": "Dunarea Verde Grain Logistics SRL",
    "verdict": "match",
-   "nature": "trap-former-name-alias"
+   "nature": "residue-address-glued"
   },
   {
-   "a": "MT Kaisei Maru (ex Golden Verbena)",
-   "b": "GOLDEN VERBENA",
+   "a": "PETROVSKAYA HLEBNAYA BAZA OOO M.P.",
+   "b": "OOO Petrovskaya Khlebnaya Baza",
    "verdict": "match",
-   "nature": "trap-former-name-alias"
+   "nature": "residue-ocr-stamp"
   },
   {
-   "a": "Bahía Serena (ex Serene Bay)",
-   "b": "MV Serene Bay",
+   "a": "For and on behalf of AKSOYLAR CELIK DIS TICARET A.S.",
+   "b": "Aksoylar Çelik Dış Ticaret A.Ş.",
    "verdict": "match",
-   "nature": "trap-former-name-alias"
+   "nature": "residue-signature-line"
   },
   {
-   "a": "MV Estrella de Belén (ex Bethlehem Star)",
-   "b": "Bethlehem Star",
+   "a": "TO THE ORDER OF KUMSALLAR HUBUBAT A.S.",
+   "b": "Kumsallar Hububat A.Ş.",
    "verdict": "match",
-   "nature": "trap-former-name-alias"
+   "nature": "residue-party-label"
   },
   {
-   "a": "MT Nuevo Amanecer (ex New Dawn, ex Dawn Trader)",
-   "b": "Dawn Trader",
+   "a": "59:/ACC 0042771 KIRMIZIGUL GIDA LTD STI",
+   "b": "Kırmızıgül Gıda Ltd. Şti.",
    "verdict": "match",
-   "nature": "trap-second-former-name"
+   "nature": "residue-bank-reference"
   },
   {
-   "a": "Comercial Peñuelas S.A., Sucursal Guadalajara",
-   "b": "Comercial Peñuelas, S.A.",
+   "a": "B/L: SHIPPED ON BOARD M/V SARI KAYA",
+   "b": "SARI KAYA",
    "verdict": "match",
-   "nature": "trap-branch-sucursal"
+   "nature": "residue-vessel-field"
   },
   {
-   "a": "Hanamori Shōji K.K., Osaka Branch",
-   "b": "Hanamori Shoji Co., Ltd.",
+   "a": "M/V ÖZLEM ANA - OWNERS ACCOUNT",
+   "b": "OZLEM ANA",
    "verdict": "match",
-   "nature": "trap-branch-en"
+   "nature": "residue-vessel-field"
   },
   {
-   "a": "Hanamori Shoji Co., Ltd. Nagoya Shiten",
-   "b": "Hanamori Shōji Kabushiki Kaisha",
-   "verdict": "match",
-   "nature": "trap-branch-shiten"
-  },
-  {
-   "a": "Marítima Andrade Ltda. – Filial Paranaguá",
-   "b": "Marítima Andrade Ltda.",
-   "verdict": "match",
-   "nature": "trap-branch-filial"
-  },
-  {
-   "a": "Naviera Golfo Azul, S.A. (agencia Balboa)",
-   "b": "Naviera Golfo Azul S.A.",
-   "verdict": "match",
-   "nature": "trap-branch-agencia"
-  },
-  {
-   "a": "Remolcadores del Canal S.A. – Sucursal Cristóbal",
-   "b": "Remolcadores del Canal, S.A.",
-   "verdict": "match",
-   "nature": "trap-branch-sucursal"
-  },
-  {
-   "a": "Compañía Panameña de Remolque y Salvamento, S.A.",
-   "b": "Cía. Panameña de Remolque y Salvamento S.A.",
-   "verdict": "match",
-   "nature": "trap-cia-abbrev"
-  },
-  {
-   "a": "Sociedad Anónima Talleres Ibarra",
-   "b": "Talleres Ibarra, S.A.",
-   "verdict": "match",
-   "nature": "trap-form-fronted"
-  },
-  {
-   "a": "Sociedad Anónima Promotora de Inversión de Capital Variable Textiles Roldán",
-   "b": "Textiles Roldán, S.A.P.I. de C.V.",
-   "verdict": "match",
-   "nature": "trap-sapi-expanded-fronted"
-  },
-  {
-   "a": "Empresa Individual de Responsabilidade Limitada Duarte Pescados",
-   "b": "Duarte Pescados EIRELI",
-   "verdict": "match",
-   "nature": "trap-eireli-expanded-fronted"
-  },
-  {
-   "a": "Ferrer y Ballesteros, S. en C.",
-   "b": "S. en C. Ferrer y Ballesteros",
-   "verdict": "match",
-   "nature": "trap-form-fronted"
-  },
-  {
-   "a": "Importaciones Zapata, S. de R.L. de C.V.",
-   "b": "Importaciones Zapata SRL de CV",
-   "verdict": "match",
-   "nature": "trap-srl-abbrev"
-  },
-  {
-   "a": "The Belize Mahogany Company Limited",
-   "b": "Belize Mahogany Co. Ltd.",
-   "verdict": "match",
-   "nature": "trap-the-dropped"
-  },
-  {
-   "a": "Corporación Marítima del Pacífico Central",
-   "b": "Corp. Marítima del Pacífico Central",
-   "verdict": "match",
-   "nature": "trap-corp-abbrev"
-  },
-  {
-   "a": "Kabushiki Gaisha Morioka Tekkō",
-   "b": "Morioka Tekko Kabushiki Kaisha",
-   "verdict": "match",
-   "nature": "trap-gaisha-kaisha"
-  },
-  {
-   "a": "(株)Kuramochi Kōgyō",
-   "b": "Kuramochi Kogyo Co., Ltd.",
-   "verdict": "match",
-   "nature": "trap-kabu-parenthetical"
-  },
-  {
-   "a": "㈱Ōnishi Denki",
-   "b": "Onishi Denki Co., Ltd.",
-   "verdict": "match",
-   "nature": "trap-kabu-unicode"
-  },
-  {
-   "a": "Kabushiki Kaisha Sawamura (Sawamura Corporation)",
-   "b": "Sawamura Corporation",
-   "verdict": "match",
-   "nature": "trap-english-name-parenthetical"
-  },
-  {
-   "a": "Yūgen Kaisha Tanigawa Suisan",
-   "b": "Tanigawa Suisan Y.K.",
-   "verdict": "match",
-   "nature": "trap-yk-form"
-  },
-  {
-   "a": "Gōdō Kaisha Nishida Kōmuten",
-   "b": "Nishida Komuten G.K.",
-   "verdict": "match",
-   "nature": "trap-gk-form"
-  },
-  {
-   "a": "Rojas Hermanos, S.A. de C.V. d/b/a Ferretería El Tornillo",
-   "b": "Ferretería El Tornillo",
-   "verdict": "match",
-   "nature": "trap-dba-alias"
-  },
-  {
-   "a": "Marisquería El Puerto (Pescados Anzures, S. de R.L.)",
-   "b": "Pescados Anzures S. de R.L.",
-   "verdict": "match",
-   "nature": "trap-trade-name-owner-parenthetical"
-  },
-  {
-   "a": "MV Perla Negra No. 2",
-   "b": "PERLA NEGRA 2",
-   "verdict": "match",
-   "nature": "trap-numbered-same-hull"
-  },
-  {
-   "a": "M/N Perla Negra II",
-   "b": "Perla Negra No. 2",
-   "verdict": "match",
-   "nature": "trap-roman-arabic-numeral"
-  },
-  {
-   "a": "Kōfuku Maru No. 18",
-   "b": "KOFUKU MARU NO.18",
-   "verdict": "match",
-   "nature": "trap-numbered-same-hull"
-  },
-  {
-   "a": "Dai 8 Kōfuku Maru",
-   "b": "Kofuku Maru No. 8",
-   "verdict": "match",
-   "nature": "trap-dai-prefix-numbering"
-  },
-  {
-   "a": "Daini Tsurumi Maru",
-   "b": "Tsurumi Maru No. 2",
-   "verdict": "match",
-   "nature": "trap-daini-numbering"
-  },
-  {
-   "a": "Daisan Hōsei Maru",
-   "b": "Hosei Maru No. 3",
-   "verdict": "match",
-   "nature": "trap-daisan-numbering"
-  },
-  {
-   "a": "Tug Titán del Canal",
-   "b": "Remolcador Titán del Canal",
-   "verdict": "match",
-   "nature": "trap-tug-translation"
-  },
-  {
-   "a": "Barcaza Manglar 3",
-   "b": "Barge MANGLAR 3",
-   "verdict": "match",
-   "nature": "trap-barge-translation"
-  },
-  {
-   "a": "Tug Poderoso",
-   "b": "R/M Poderoso",
-   "verdict": "match",
-   "nature": "trap-tug-prefix"
-  },
-  {
-   "a": "Fishing vessel Doña Elvira",
-   "b": "F/V Dona Elvira",
-   "verdict": "match",
-   "nature": "trap-fv-prefix"
-  },
-  {
-   "a": "Barcaza BRV-12",
-   "b": "Barge BRV 12",
-   "verdict": "match",
-   "nature": "trap-barge-alnum"
-  },
-  {
-   "a": "Kōyō Maru No. 21",
-   "b": "Koyo Maru 21",
-   "verdict": "match",
-   "nature": "trap-numbered-same-hull"
-  },
-  {
-   "a": "LPG/C Aries Gas (ex Gas Aries)",
-   "b": "MT Gas Aries",
-   "verdict": "match",
-   "nature": "trap-former-name-word-order"
-  },
-  {
-   "a": "Kuramochi Kogyo Co., Ltd.",
-   "b": "Kuramochi Kogyo (Mexico), S.A. de C.V.",
+   "a": "SAMSUN TAHIL DEPOLAMA VE DIS TICAR ET ANONIM SIRKETI",
+   "b": "Samsun Tahıl Taşımacılık ve Dış Ticaret A.Ş.",
    "verdict": "different",
-   "nature": "trap-country-subsidiary"
+   "nature": "residue-swift-near-name"
   },
   {
-   "a": "Textiles Roldán, S.A.P.I. de C.V.",
-   "b": "Textiles Roldán do Brasil Ltda.",
+   "a": "POHJOISRANNIKON VILJAKAUPPA OY HAMINANTIE 12",
+   "b": "Pohjoisrannikon Viljavarasto Oy",
    "verdict": "different",
-   "nature": "trap-country-subsidiary"
+   "nature": "residue-address-near-name"
   },
   {
-   "a": "Hanamori Shoji Co., Ltd.",
-   "b": "Hanamori Shoji America, Inc.",
+   "a": "BENEFICIARY: Sarıkaya Hububat Ltd. Şti.",
+   "b": "Sarıyaka Hububat Ltd. Şti.",
    "verdict": "different",
-   "nature": "trap-country-subsidiary"
+   "nature": "residue-label-near-name"
   },
   {
-   "a": "Comercial Peñuelas, S.A.",
-   "b": "Comercial Peñuelas de Guatemala, S.A.",
+   "a": "ORDERING CUSTOMER: KALLIOSAARI TRADING OY",
+   "b": "Kalliosalmi Trading Oy",
    "verdict": "different",
-   "nature": "trap-country-subsidiary"
+   "nature": "residue-label-near-name"
   },
   {
-   "a": "Grupo Industrial Ferrer, S.A.B. de C.V.",
-   "b": "Ferrer Servicios Logísticos, S.A. de C.V.",
+   "a": "pls check laaksonen viljakuljetus",
+   "b": "Laaksonen Viljakauppa Oy",
    "verdict": "different",
-   "nature": "trap-activity-subsidiary"
+   "nature": "residue-chat-near-name"
   },
   {
-   "a": "Sawamura Holdings Co., Ltd.",
-   "b": "Sawamura Corporation",
+   "a": "0ZKAYA NAKL1YAT LTD. ST1.",
+   "b": "Özkaya Nakış Ltd. Şti.",
    "verdict": "different",
-   "nature": "trap-holding-vs-operating"
+   "nature": "residue-ocr-near-name"
   },
   {
-   "a": "Inversiones Marítimas Andrade, S.A.",
-   "b": "Marítima Andrade Ltda.",
+   "a": "TARNMELAN RAHTI OY",
+   "b": "Tampereen Rahti Oy",
    "verdict": "different",
-   "nature": "trap-holding-vs-operating"
+   "nature": "residue-ocr-near-name"
   },
   {
-   "a": "Tanigawa Suisan Y.K.",
-   "b": "Tanigawa Suisan Holdings K.K.",
+   "a": "Dnistrovska Agrotorhivlia LLC 14 Portova str Odesa",
+   "b": "Dnistrovska Agrotekhnika LLC",
    "verdict": "different",
-   "nature": "trap-holding-vs-operating"
+   "nature": "residue-address-near-name"
   },
   {
-   "a": "Belize Mahogany Co. Ltd.",
-   "b": "Belize Mahogany (Panama), S.A.",
+   "a": "MESSRS. BALTIC TIMBERLINE OU",
+   "b": "Baltic Timberland OÜ",
    "verdict": "different",
-   "nature": "trap-other-jurisdiction"
+   "nature": "residue-label-near-name"
   },
   {
-   "a": "Naviera Golfo Azul, S.A.",
-   "b": "Naviera Golfo Azul de Honduras, S. de R.L.",
+   "a": "NORDMARK + SKOGBERG AB",
+   "b": "Nordmark & Skogby AB",
    "verdict": "different",
-   "nature": "trap-other-jurisdiction"
+   "nature": "residue-swift-near-name"
   },
   {
-   "a": "Ferretería Rojas Hermanos",
-   "b": "Panadería Rojas Hermanos",
+   "a": "REF FT2231-0915 /BNF/ KAYALAR UN SANAYI AS",
+   "b": "Kayalar Yem Sanayi A.Ş.",
    "verdict": "different",
-   "nature": "trap-family-different-business"
+   "nature": "residue-reference-near-name"
   },
   {
-   "a": "Transportes Zapata e Hijos",
-   "b": "Importaciones Zapata e Hijos",
+   "a": "CONSIGNEE: TOV ZERNOVA HAVAN, MYKOLAIV",
+   "b": "TOV Zernova Hvylia",
    "verdict": "different",
-   "nature": "trap-family-different-business"
+   "nature": "residue-label-near-name"
   },
   {
-   "a": "Ōnishi Denki Co., Ltd.",
-   "b": "Ōnishi Denki Kōji Co., Ltd.",
+   "a": "NOTIFY PARTY - Marinero Ship Agency SRL Constanta Romania",
+   "b": "Marinero Ship Agency Ltd, Varna Bulgaria",
    "verdict": "different",
-   "nature": "trap-activity-suffix"
+   "nature": "residue-other-country-entity"
   },
   {
-   "a": "MV Golden Manatee",
-   "b": "MV Golden Tapir",
+   "a": "VESSEL: MV KARA MARTI / IMO N/A",
+   "b": "KARA MARTILAR",
    "verdict": "different",
-   "nature": "trap-sister-ship"
+   "nature": "residue-vessel-plural"
   },
   {
-   "a": "MT Aries Gas",
-   "b": "MT Taurus Gas",
+   "a": "PER MV TAMAN ZARYA VOY 14",
+   "b": "TAMAN ZARYA 2",
    "verdict": "different",
-   "nature": "trap-sister-ship"
+   "nature": "residue-vessel-numbered"
   },
   {
-   "a": "Kōyō Maru No. 21",
-   "b": "Kōyō Maru No. 12",
+   "a": "LAIVANVARUSTAMO REPOLA OYVAASANKATU 3",
+   "b": "Laivanvarustamo Rapola Oy",
    "verdict": "different",
-   "nature": "trap-numbered-series"
+   "nature": "residue-address-near-name"
   },
   {
-   "a": "Daini Tsurumi Maru",
-   "b": "Daisan Tsurumi Maru",
+   "a": "KYLMAKONTTI PALVELUT OY",
+   "b": "Kylmäkuljetus Palvelut Oy",
    "verdict": "different",
-   "nature": "trap-dai-series"
+   "nature": "residue-uppercase-near-name"
   },
   {
-   "a": "Perla Negra II",
-   "b": "Perla Negra III",
+   "a": "SIA DAUGAVAS KRASTA LOGISTIKA RIGA LV-1045",
+   "b": "SIA Gaujas Krasta Loģistika",
    "verdict": "different",
-   "nature": "trap-roman-series"
+   "nature": "residue-address-near-name"
   },
   {
-   "a": "Camaronero Doña Elvira 4",
-   "b": "Camaronero Doña Elvira 5",
+   "a": "PAYEE: ANADOLUKAVAGI HUBUBAT SAN.TIC.A.S. ISTANBUL/TURKEY",
+   "b": "Anadoluhisarı Hububat San. ve Tic. A.Ş.",
    "verdict": "different",
-   "nature": "trap-numbered-series"
+   "nature": "residue-label-near-name"
   },
   {
-   "a": "Tug Poderoso",
-   "b": "Barge Poderoso",
+   "a": "1/POLTAVSKA ZERNOVA KOMPANIIA TOV 2/VUL. SHKILNA 7 3/UA/POLTAVA",
+   "b": "TOV Poltavska Zernova Asotsiatsiia",
    "verdict": "different",
-   "nature": "trap-tug-vs-barge"
+   "nature": "residue-swift-near-name"
   },
   {
-   "a": "Remolcador Titán del Canal",
-   "b": "Barcaza Titán del Canal",
+   "a": "OOO KALINOVYY PRlCHAL",
+   "b": "OOO Kalinovyy Pereval",
    "verdict": "different",
-   "nature": "trap-tug-vs-barge"
+   "nature": "residue-ocr-near-name"
   },
   {
-   "a": "MV Estrella de Belén",
-   "b": "Estrella de Belén Shipping, S.A.",
+   "a": "TOKATLIGIL DENIZCILIK A.S. (THE SELLER)",
+   "b": "Tokatlıoğlu Denizcilik A.Ş.",
    "verdict": "different",
-   "nature": "trap-vessel-vs-owner"
+   "nature": "residue-label-near-name"
   },
   {
-   "a": "Kōfuku Maru No. 18",
-   "b": "Kōfuku Kaiun Kabushiki Kaisha",
+   "a": "ATTN MR. KORHONEN / MERIVIRTA OY",
+   "b": "Merivarsi Oy",
    "verdict": "different",
-   "nature": "trap-vessel-vs-owner"
+   "nature": "residue-attention-near-name"
   },
   {
-   "a": "MT Nuevo Amanecer",
-   "b": "Nuevo Amanecer Ship Management Inc.",
+   "a": "KAARNATAIVAS OY, Y-TUNNUS 1234567-8",
+   "b": "Kaarnatalo Oy",
    "verdict": "different",
-   "nature": "trap-vessel-vs-manager"
+   "nature": "residue-registration-near-name"
   },
   {
-   "a": "Comercial Manzana Verde",
-   "b": "Comercial Manzano Verde",
+   "a": "can u check odessa grainlink tov asap",
+   "b": "TOV Odesa Grainline",
    "verdict": "different",
-   "nature": "trap-near-word-es"
+   "nature": "residue-chat-near-name"
   },
   {
-   "a": "Marisquería El Puerto",
-   "b": "Marisquería Los Puertos",
+   "a": "SHIPPER: SINOPLU SU ÜRÜNLERİ LTD. ŞTİ.",
+   "b": "Sinoplu Su Yolları Ltd. Şti.",
    "verdict": "different",
-   "nature": "trap-shop-plural"
+   "nature": "residue-label-near-name"
   },
   {
-   "a": "Panadería La Espiga",
-   "b": "Panadería Las Espigas",
+   "a": "LIMANTEPE GEMI KIRAL AMA VE TICARET A.S.",
+   "b": "Limantepe Gemi Kurtarma ve Ticaret A.Ş.",
    "verdict": "different",
-   "nature": "trap-shop-plural"
+   "nature": "residue-swift-near-name"
   },
   {
-   "a": "Padaria Pão Quente",
-   "b": "Padaria Pães Quentes",
+   "a": "LLC KOLKHURI TVIRTI, POTI, GEORGIA",
+   "b": "Imeruli Tvirti LLC",
    "verdict": "different",
-   "nature": "trap-shop-plural-pt"
+   "nature": "residue-address-near-name"
   },
   {
-   "a": "Sakura Shōji K.K.",
-   "b": "Sakurai Shōji K.K.",
+   "a": "SJÖGRIND LOGISTIK AB (PUBL) GOTEBORG SE",
+   "b": "Sjögrind Logistik Oy",
    "verdict": "different",
-   "nature": "trap-near-string-jp"
+   "nature": "residue-other-country-entity"
   },
   {
-   "a": "Hoshino Kaiun K.K.",
-   "b": "Hoshina Kaiun K.K.",
+   "a": "Valkeasaari Shpiping Oy",
+   "b": "Vallisaari Shipping Oy",
    "verdict": "different",
-   "nature": "trap-one-letter-sibling"
+   "nature": "residue-typo-near-name"
   },
   {
-   "a": "Tamura Kōgyō K.K.",
-   "b": "Tamura Kōgei K.K.",
+   "a": "KARADAGLI NAKLIYAT LTD STI (TR)",
+   "b": "Karadağlı Nakliyat SRL (RO)",
    "verdict": "different",
-   "nature": "trap-near-word-jp"
+   "nature": "residue-other-country-entity"
   },
   {
-   "a": "Naviera Corales, S.A.",
-   "b": "Naviera Corrales, S.A.",
+   "a": "Dunarea Verde Grain Logistics S.R.L. / Constanta Port Gate 7",
+   "b": "Dunarea Verde Grain Terminal S.R.L.",
    "verdict": "different",
-   "nature": "trap-near-word-es"
+   "nature": "residue-address-near-name"
   },
   {
-   "a": "Ferretería El Faro",
-   "b": "Ferretería El Foro",
+   "a": "PETROVSKAYA HLEBNAYA BAZA OOO M.P.",
+   "b": "OOO Petrovskaya Neftebaza",
    "verdict": "different",
-   "nature": "trap-one-letter-sibling"
+   "nature": "residue-ocr-near-name"
   },
   {
-   "a": "Barcaza BRV-12",
-   "b": "Barcaza BRV-21",
+   "a": "For and on behalf of AKSOYLAR CELIK DIS TICARET A.S.",
+   "b": "Aksaylar Çelik Dış Ticaret A.Ş.",
    "verdict": "different",
-   "nature": "trap-alnum-series"
+   "nature": "residue-signature-near-name"
   },
   {
-   "a": "Kabushiki Gaisha Morioka Tekkō",
-   "b": "Morioka Tekkō Hanbai K.K.",
+   "a": "TO THE ORDER OF KUMSALLAR HUBUBAT A.S.",
+   "b": "Kumsallı Hububat A.Ş.",
    "verdict": "different",
-   "nature": "trap-sales-subsidiary"
+   "nature": "residue-label-near-name"
   },
   {
-   "a": "Hosei Maru No. 3",
-   "b": "Hosei Maru No. 33",
+   "a": "59:/ACC 0042771 KIRMIZIGUL GIDA LTD STI",
+   "b": "Kırmızıgöl Gıda Ltd. Şti.",
    "verdict": "different",
-   "nature": "trap-numbered-series"
+   "nature": "residue-reference-near-name"
   },
   {
-   "a": "Gōdō Kaisha Nishida Kōmuten",
-   "b": "Nishida Kensetsu K.K.",
+   "a": "B/L: SHIPPED ON BOARD M/V SARI KAYA",
+   "b": "SARI KAYALAR",
    "verdict": "different",
-   "nature": "trap-komuten-kensetsu"
+   "nature": "residue-vessel-plural"
   },
   {
-   "a": "Corporación Marítima del Pacífico Central",
-   "b": "Corporación Marítima del Pacífico Sur",
+   "a": "M/V ÖZLEM ANA - OWNERS ACCOUNT",
+   "b": "Özlem Ana Denizcilik A.Ş.",
    "verdict": "different",
-   "nature": "trap-region-word"
+   "nature": "residue-vessel-vs-owner"
   },
   {
-   "a": "Duarte Pescados EIRELI",
-   "b": "Duarte Pescados e Frutos do Mar Ltda.",
+   "a": "uab vetrunges kroviniu ekspedijavimas",
+   "b": "UAB Vėtrungės Krovinių Terminalas",
    "verdict": "different",
-   "nature": "trap-added-words"
+   "nature": "residue-chat-near-name"
   },
   {
-   "a": "Ferretería El Tornillo",
-   "b": "Ferretería El Tornillo de Oro",
+   "a": "/NAME/KUZEYRUZGAR LOJISTIK VE DIS TIC ARET LTD STI",
+   "b": "Güneyrüzgar Lojistik ve Dış Ticaret Ltd. Şti.",
    "verdict": "different",
-   "nature": "trap-shop-added-words"
+   "nature": "residue-swift-near-name"
   }
  ]
 }
