@@ -98,7 +98,7 @@ export type NomPrepare = {
 
 const SANS_MARQUES: Marques = { pays: [], familles: [], designations: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
   coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, tamoul: false, thai: false, prive: false, majuscules: false, chat: false, abjad: "", cantonais: false,
-  lecture: "mandarin", priveInconnu: false, natifs: new Map(), filiation: "", succursale: "", typeNavire: "", slave: false };
+  lecture: "mandarin", priveInconnu: false, natifs: new Map(), filiation: "", filiationOrdre: "", succursale: "", typeNavire: "", slave: false };
 
 export function preparerNom(f: Frequences, nom: string, lecture: Lecture = "mandarin"): NomPrepare {
   const a = analyserEntite(nom, lecture);
@@ -160,6 +160,8 @@ export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesL
   if (formePlurielle(a, b) || formePlurielle(b, a)) {
     const court = a.length < b.length ? a : b;
     if (DICTIONNAIRE.has(court)) return pluriels && (pluriel(a, b) || pluriel(b, a)) ? 0.95 : 0.5;
+    /* dans un nom de navire, le pluriel de N'IMPORTE QUEL mot est une autre coque : « MTS Rijnkrekel », « MTS Rijnkrekels » (jeu 14) */
+    if (!pluriels) return 0.5;
   }
   if (gerondif(a, b) || gerondif(b, a)) return 0.95;
   if (abrege(a, b) || abrege(b, a)) return 0.9;
@@ -945,6 +947,8 @@ export function marquesEnConflit(a: Marques, b: Marques): boolean {
   /* deux filiations (« Bint » face à « Ibn »), deux types de navire (« Tug » face à « Barge »), une succursale
      d'un seul côté (« X - Penang Branch » face à « X (Penang) ») : le possible, jamais le fort (jeu 9) */
   if (a.filiation && b.filiation && a.filiation !== b.filiation) return true;
+  /* la filiation inversée : le fils de l'un est le père de l'autre (« Hakim Ben Youssef », « Youssef Ben Hakim », jeu 14) */
+  if (a.filiationOrdre && b.filiationOrdre && a.filiationOrdre !== b.filiationOrdre && a.filiationOrdre === b.filiationOrdre.split(">").reverse().join(">")) return true;
   if (a.typeNavire && b.typeNavire && a.typeNavire !== b.typeNavire) return true;
   if (!succursalesCompatibles(a.succursale, b.succursale)) return true;
   return (a.navire && b.societe) || (b.navire && a.societe);

@@ -102,6 +102,10 @@ const ANNOTATIONS: readonly RegExp[] = [
      Russia, port Rostov-on-Don », « , home port Astrakhan », « , port of registry Taganrog » (jeu 12, 28/09 : « T/H VOLNA
      DONA-2208 » face à « VOLNA DONA 2208, flag Russia, port Rostov-on-Don » à 0,599, cinq mots rares sans répondant) */
   /(?:,\s*(?:flag(?:ged)?|pavillon|bandera|(?:home\s*)?port(?:\s+of\s+registry)?|registry|homeport)\s*:?\s*[\p{L} .'-]{2,30}){1,3}\s*$/iu,
+  /* jeu 14 : le numéro ENI d'une barge du Rhin (huit chiffres), avec ou sans parenthèse ; « T.A.V. » (ter attentie van),
+     l'attention néerlandaise, et tout ce qui la suit */
+  /\s*\(?\s*ENI\s*:?\s*\d{8}\s*\)?\s*$/iu,
+  /\s+t\.?\s?a\.?\s?v\.?\s+.*$/iu,
   /* « Kenanga Pacific Sdn. Bhd. - Penang Branch » : la succursale après un tiret ; « Succursale de Genève », « Sucursal Lima » ;
      et le siège ou le bureau derrière une virgule ou un tiret (« , Head Office », « , Hauptsitz », « , Havengebied Kantoor ») :
      ce qu'ils nommaient, la variante le garde en mention (voir `mentionDeSuccursale`) */
@@ -206,6 +210,12 @@ const PAVILLONS: ReadonlySet<string> = new Set(["panama", "liberia", "marshall i
 /** Les ports, villes et quartiers du commerce, comme SIGNAL d'adresse derrière une forme (« … CO. BANDAR
  *  ABBAS », « … CO LLC DEIRA ») : ils ne s'ôtent jamais d'un nom par eux-mêmes. */
 const PORTS_ET_QUARTIERS: ReadonlySet<string> = new Set(["bandar", "kota", "jebel", "deira", "bur", "ras", "jlt", "musaffah",
+  /* les ports d'attache du Rhin, de la Meuse et de l'Escaut, écrits seuls derrière le nom d'une barge (jeu 14) */
+  "werkendam", "dordrecht", "rotterdam", "kampen", "zwijndrecht", "papendrecht", "sliedrecht", "hardinxveld", "nijmegen", "antwerpen",
+  "gent", "duisburg", "mannheim", "basel", "lobith", "millingen", "deventer", "zwolle", "maasbracht", "terneuzen", "vlissingen",
+  "moerdijk", "krimpen", "alblasserdam", "gorinchem", "tiel", "wanssum", "roermond", "venlo", "arnhem", "doesburg", "hasselt",
+  "meppel", "harlingen", "delfzijl", "groningen", "lemmer", "urk", "emmerich", "wesel", "koblenz", "ludwigshafen", "karlsruhe",
+  "kehl", "strasbourg", "mulhouse", "amsterdam", "utrecht", "den bosch", "hertogenbosch", "brugge", "liege", "luik", "namur",
   "riga", "hamina", "kotka", "helsinki", "turku", "tallinn", "klaipeda", "constanta", "poti", "batumi", "goteborg", "gothenburg", "stockholm",
   "oslo", "copenhagen", "aarhus", "gdansk", "gdynia", "varna", "burgas", "odesa", "odessa", "mykolaiv", "kherson", "izmail", "samsun",
   "trabzon", "novorossiysk", "rostov", "taganrog", "izmir",
@@ -357,6 +367,11 @@ export function variantesTypees(brut: string): VarianteTypee[] {
       (PORTS_ET_QUARTIERS.has(normaliser(ville)) && CODES_PAYS.has(code.toLowerCase()) ? "" : m));
     p = p.replace(/\s+[a-z]{2}-\d{4,5}\b.*$/iu, "").replace(/\s+\d{4,5}\s+[\p{L}-]{3,}\s+[a-z]{2}\s*$/iu, "");
     p = p.replace(/\s+\/\s*([\p{L}-]{3,})\b.*$/u, (m, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? "" : m));
+    /* le port d'attache écrit SEUL derrière une virgule ou un tiret (« Lekstern, Werkendam », « Dintelreiger - Rotterdam »,
+       jeu 14) : un port connu, rien d'autre ; entre parenthèses, seulement derrière UN mot (« IJsselkwak (Kampen) »), parce
+       que derrière une raison sociale la ville entre parenthèses est une filiale (« Quarnby Logistics (Shanghai) », jeu 11) */
+    p = p.replace(/\s*(?:,|\s[-\u2013]\s)\s*([\p{L}' -]{3,25}?)\s*$/u, (m, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? "" : m));
+    p = p.replace(/^(\S+)\s+\(([\p{L}' -]{3,25})\)\s*$/u, (m, seul: string, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? seul : m));
     /* une adresse derrière la forme juridique : « … FZE, Jebel Ali Free Zone, Dubai »,
        « … B.V., ROTTERDAM » ; ou, derrière un nom de navire, son port d'immatriculation en un
        ou deux mots : « SIROCCO MARINER, MONROVIA » ; ou une adresse reconnaissable à ses mots

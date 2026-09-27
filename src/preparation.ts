@@ -304,6 +304,12 @@ export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
      « Spedizioni » contre « Forwarding », « Zakłady Chemiczne » contre « Chemical Works »).
      « maritime » n'y est pas : c'est aussi un mot anglais, et « X Maritime » et « X Shipping »
      sont deux sociétés d'un même groupe */
+  /* néerlandais (jeu 14) : la maatschappij est la « company », qui ne pèse rien ; les composés en -maatschappij gardent leur
+     métier ; l'expéditeur, le marchand de fourrage, le loueur de grues */
+  maatschappij: "", transportmaatschappij: "transport", scheepvaartmaatschappij: "shipping", expeditiemaatschappij: "forwarding",
+  expeditiemij: "forwarding", veevoer: "feed", kraanverhuur: "crane hire", zuivelhandel: "dairy trading", logistiek: "logistics",
+  algemene: "general", internationale: "international", gebroeders: "brothers",
+  scheepsbenodigdheden: "ship supplies", cooperatieve: "cooperative", suddeutsche: "suddeutsche",
   /* turc */ kardesler: "brothers", nakliyat: "transport", tasimacilik: "transport", ticaret: "trading", sanayi: "industry",
   ithalati: "import", ihracati: "export",
   /* russe : les composés en -khim (хим, la chimie), que l'anglais rend -chem (jeu 13 : « Agrokhim » / « Agrochem ») */
@@ -541,6 +547,14 @@ export function regionDeRegistre(m: string): boolean {
 /* Des Map, jamais des objets littéraux : un nom listé contient « constructor » ou
    « toString », et `objet[mot]` rendait alors une fonction héritée (mesuré le 27/09 :
    « .split is not a function » au premier criblage des cinq listes). */
+/** Ce qui fait d'un nom un nom NÉERLANDAIS : une forme ou un mot du registre ; sous cette marque seulement, « Exp. » est
+ *  l'expeditie et non l'export, « Hand. » la handelsonderneming, « Alg. » algemene, « Int. » internationale (jeu 14). */
+const MARQUEURS_NEERLANDAIS: ReadonlySet<string> = new Set(["bv", "nv", "vof", "mij", "maatschappij", "handel", "handelsonderneming",
+  "scheepvaart", "expeditie", "gebroeders", "gebr", "weduwe", "wed", "zonen", "zn", "transportmaatschappij", "veevoer", "kraanverhuur",
+  "expeditiemij", "scheepsbenodigdheden", "zuivelhandel", "logistiek", "cooperatieve", "ua"]);
+const ABREVIATIONS_NEERLANDAISES: ReadonlyMap<string, string> = new Map(Object.entries({
+  exp: "forwarding", hand: "trading", alg: "general", scheepv: "shipping", int: "international", exped: "forwarding", handelsond: "trading",
+}));
 const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   intl: "international", bros: "brothers", mfg: "manufacturing", mgmt: "management",
   svcs: "services", assoc: "associates", st: "saint", capt: "captain", sta: "santa", sto: "santo",
@@ -549,6 +563,11 @@ const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   gle: "generale", gal: "general", fres: "freres", entreprises: "enterprises", entreprise: "enterprise", les: "",
   td: "trading house", nlle: "nouvelle", nouv: "nouvelle",
   hnos: "brothers", gebr: "brothers", hk: "hongkong",
+  /* néerlandais et allemand (jeu 14) : « Mij. » la maatschappij, « Transp. », « Internat. », « Wed. » la veuve, « Zn. » les fils,
+     « V.d. » van der, « Sueddt. » süddeutsche ; « Hvy » heavy (pas « Ind », qui est Industrial autant qu'Industry :
+     six paires perdues à la mesure du 28/09, le crédit d'abréviation par le début le lit déjà) */
+  mij: "", transp: "transport", internat: "international", wed: "weduwe", zn: "zonen", vd: "van der", sueddt: "suddeutsche",
+  hvy: "heavy",
   /* « Nig. Ltd », le suffixe du registre nigérian (CAC) : « Okafor Integrated Resources Nig. Ltd » (jeu 10) */
   nig: "nigeria",
   /* les abréviations d'un crédit documentaire et d'un registre (jeu 9) : « Gen Trdg », « Grp Hldgs », « JV », « PKS » */
@@ -776,6 +795,9 @@ function capitalesLuesOptiquement(nom: string): string {
 /** Préfixes et codes de type de navire, seulement EN TÊTE et seulement s'il reste un nom
  *  derrière : M/V, M/T, M/S, M/Y, S/Y, SS, FV, RV, LPG/C, LNG/C. */
 const PREFIXES_NAVIRE = new Set(["mv", "mt", "ms", "my", "sy", "ss", "mts", "fv", "rv", "tb", "lpgc", "lngc", "tug", "barge", "tugboat",
+  /* le Rhin et la Meuse (jeu 14) : TMS (Tankmotorschiff), GMS (Gütermotorschiff), MSV, la duwbak (barge poussée), le duwboot
+     (pousseur) et le sleepboot (remorqueur), écrits devant le nom ou entre parenthèses derrière */
+  "tms", "gms", "msv", "duwbak", "duwboot", "sleepboot",
   /* l'Asie du Sud-Est (jeu 9) : BG et TK (barge, tongkang), TB (tug boat), KM (kapal motor), LCT, SPOB */
   "bg", "tk", "km", "kmp", "klm", "lct", "spob", "mtug", "mfv",
   "tanker", "vessel", "roro", "ferry", "dredger", "trawler",
@@ -793,6 +815,7 @@ const PREFIXES_NAVIRE = new Set(["mv", "mt", "ms", "my", "sy", "ss", "mts", "fv"
  *  « Barcaza » est la barge, « Remolcador » et « Rebocador » le remorqueur (jeu 11 : « Tug Poderoso » face à
  *  « Barge Poderoso », deux coques ; face à « R/M Poderoso », la même). */
 const TYPES_NAVIRE: ReadonlyMap<string, string> = new Map([["tug", "tug"], ["tb", "tug"], ["tugboat", "tug"], ["mtug", "tug"],
+  ["duwbak", "barge"], ["duwboot", "tug"], ["sleepboot", "tug"],
   ["barge", "barge"], ["bg", "barge"], ["tk", "barge"], ["barcaza", "barge"], ["remolcador", "tug"], ["rebocador", "tug"]]);
 const PHRASES_NAVIRE = [" motor vessel ", " motor tanker ", " motor ship ", " motor yacht ",
   " sailing yacht ", " steam ship ", " lpg carrier ", " lng carrier ", " lpg tanker ", " fishing vessel ",
@@ -1025,6 +1048,8 @@ export type Marques = { pays: readonly string[]; familles: readonly string[]; na
   majuscules: boolean;
   /** la filiation écrite (« m » bin, ibn ; « f » bint, binti) : deux filiations sont deux personnes */
   filiation: string;
+  /** le nom avant et le nom après la particule (« hakim>youssef ») : inversés d'un nom à l'autre, deux personnes */
+  filiationOrdre: string;
   /** le nom porte « branch », « succursale », « head office » : ce que la mention NOMME (voir
    *  `mentionDeSuccursale`), « » sans mention ; d'un seul côté, ou deux mentions différentes, la paire se
    *  range au possible */
@@ -1267,6 +1292,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* le nom est japonais par ses kana, sa forme ou l'un de ses mots (la marque `japonais`, lue ici avant les tables :
      ses mots de métier se traduisent aussi sous le pli des deux romanisations, voir `traduction`) */
   const japonaisPresume = estJaponais(nom) || jetons(normaliser(plier(soude))).some((j) => MARQUEURS_JAPONAIS.has(j));
+  const neerlandais = jetons(normaliser(soude)).some((j) => MARQUEURS_NEERLANDAIS.has(j)) || ["hand", "scheepv", "exped", "handelsond"].some((j) => abreges.has(j));
   /* le nom est slave par son écriture, sa forme, un mot du commerce translittéré, un grade, le teplokhod ou un suffixe
      de nom propre (voir `Marques.slave`) : lue ici, avant les tables, parce que ses mots du commerce se traduisent sous
      le pli des romanisations du cyrillique et que « AT » en tête y est une forme */
@@ -1381,6 +1407,13 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     /* « Bou » (« Bou en Konstruksie ») n'est l'afrikaans « building » que sous une forme sud-africaine :
        ailleurs c'est l'arabe maghrébin « Abu » (« Bou Regreg ») */
     if (j === "bou" && sudAfricain) { traduits.add("building"); return ["building"]; }
+    /* les abréviations à point d'un nom néerlandais (jeu 14 : « Int. Exp. Mij. Zuidervliet B.V. », « Hand. Wijnbergen »,
+       « Alg. Transp. Mij. », « Scheepv. Mij. ») : « Exp. » y est l'expeditie, pas l'export ; « Hand. » la handelsonderneming */
+    if (neerlandais && abreges.has(j) && ABREVIATIONS_NEERLANDAISES.has(j)) {
+      const t = ABREVIATIONS_NEERLANDAISES.get(j)!;
+      for (const x of t.split(" ")) if (x !== "") { traduits.add(x); if (!sources.has(x)) sources.set(x, j); }
+      return t.split(" ");
+    }
     /* « San. » avec son point est « Sanayi » (jeu 13 : « Bafra Un San. A.Ş. ») ; sans point, « San » reste San Miguel */
     if (j === "san" && abreges.has(j)) { traduits.add("industry"); if (!sources.has("industry")) sources.set("industry", j); return ["industry"]; }
     /* L'ARTICLE COLLÉ d'un nom arabe (« Aldeeb », « Altejaria », « Almarai ») : « al » et le mot, que les tables lisent ensuite
@@ -1523,11 +1556,15 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const majuscules = !/\p{Ll}/u.test(nom) && /\p{Lu}/u.test(nom) && t.length >= 2;
   const filiation = tousLesMots.some((j) => FILIATION_M.has(j)) ? "m" : tousLesMots.some((j) => FILIATION_F.has(j)) ? "f" : "";
   const succursale = mentionDeSuccursale(soude);
+  /* la filiation ORDONNÉE : « Hakim Ben Youssef » est le fils de Youssef, « Youssef Ben Hakim » le fils de Hakim, deux personnes
+     dont les mots sont les mêmes (jeu 14, 28/09 : trois paires à 1,000) ; le nom avant et le nom après la particule */
+  const iFiliation = tousLesMots.findIndex((j) => FILIATION_M.has(j) || FILIATION_F.has(j));
+  const filiationOrdre = iFiliation > 0 && iFiliation < tousLesMots.length - 1 ? `${tousLesMots[iFiliation - 1]}>${tousLesMots[iFiliation + 1]}` : "";
   const chat = t.length >= 2 && !majuscules && (!/\p{Lu}/u.test(nom) || !/[.,()]/.test(nom));
   return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites, traduits, sources, sigles,
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
     hebreuOuGrec, indien, hispanique, tamoul, thai, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture !== "mandarin", lecture, priveInconnu,
-    natifs: rom.natifs, filiation, succursale, typeNavire, slave };
+    natifs: rom.natifs, filiation, filiationOrdre, succursale, typeNavire, slave };
 }
 
 /** Le texte d'une parenthèse NOMME-T-IL UNE SOCIÉTÉ : une forme juridique, et devant elle un nom qui n'est pas
