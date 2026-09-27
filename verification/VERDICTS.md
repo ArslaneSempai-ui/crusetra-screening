@@ -33,6 +33,8 @@ a verdict set is ever listed by any tool before it becomes training.
 | | | | | possible 0.80 | 173/200 [81-91 %] | 23/200 [8-17 %] |
 | 2026-09-28 | v17 fa808a1c / a91bf0c8 / ecritures bdd60326 | set #15 f44d2a17 (Abidjan customs broker and São Paulo bank brief by document: francophone West African registries, Brazilian and Argentine documents, Atlantic vessels, SWIFT fields in French and Portuguese, chat/OCR; Sonnet, written in five parts; corrected conventions unchanged; fifteen em-dashes in names replaced by hyphens blind, 22 pairs are accent variants of one pair with concordant verdicts; overlap with the fifteen training sets: 0 pairs, 0 names; 8 pairs identical but for case), becomes paires-entites-16.json | 200 + 200 | strong 0.81 | 171/200 [80-90 %] | 8/200 [2-8 %] |
 | | | | | possible 0.80 | 188/200 [90-97 %] | 35/200 [13-23 %] |
+| 2026-09-28 | v18 8dd86269 / a91bf0c8 / ecritures bdd60326 | set #16 482552a9 (Piraeus shipping agent and Almaty grain bank brief by document: Greek and Cypriot registries, Central Asian documents, Black Sea and Mediterranean vessels, SWIFT fields, chat/OCR and greeklish; Opus, written in five parts; corrected conventions unchanged, no em-dash; overlap with the sixteen training sets: 0 pairs, 0 names; 0 pairs identical but for case), becomes paires-entites-17.json | 200 + 200 | strong 0.81 | 93/200 [40-53 %] | 12/200 [3-10 %] |
+| | | | | possible 0.80 | 132/200 [59-72 %] | 38/200 [14-25 %] |
 
 v6 on set #3 at other thresholds: 0.70 found 182 with 52 false; 0.75 found 181 with 37; 0.85 found 162
 with 19; 0.90 found 153 with 11.
