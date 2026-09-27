@@ -1,9 +1,9 @@
 {
   "version": 1,
   "genre": "cascade-screening/counterparty-screening",
-  "emisLe": "2026-09-27T12:46:41.432Z",
+  "emisLe": "2026-09-27T14:21:30.089Z",
   "client": "Example Forwarding Inc. (invented)",
-  "commit": "33af32f",
+  "commit": "c6efda3",
   "fichier": {
     "nom": "contreparties-exemple.csv",
     "sha256": "fab131564c82ea6c859845e4cf53207059d66e0acb75d1603c5d12974f6cbf89",
@@ -126,87 +126,94 @@
           "sha256": "6138af41a7d670cb9528818bc8def3e2c39ff2cd4042af0a8495f1f644291562",
           "match": 200,
           "different": 200
+        },
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "authored on 2026-09-27 by a separate agent (a Hamburg customs broker and Lagos trade-finance desk brief, organised by document: customs declarations, letters of credit, African and European registry extracts, bills of lading, invoices and chat; a sixth model) that never saw the matcher nor any other pair set, as blind test set #9 (sha256 47ec8944…); every name invented; no client data, no list data; overlap with the nine earlier training sets: 0 pairs, 0 names; 11 pairs identical but for case (6 match, 5 different). It judged method v11 once (entites.ts 77bac960…, cribler.ts ccee90bc…, ecritures.ts 4348bc88…): strong 0.81 found 104/200 [45-59 %] with 39/200 false alerts [15-26 %]; possible 0.80 found 163/200 [76-86 %] with 78/200 [33-46 %]. Studied afterwards and promoted to training set 10 on 2026-09-27, so it no longer measures anything held out.",
+          "sha256": "e56ebcabbb3b628bdde221684420bf945529603c5850f25e091fb78c95282b90",
+          "match": 200,
+          "different": 200
         }
       ],
       "fort": {
         "rappel": {
-          "succes": 1284,
-          "n": 1370,
-          "taux": 0.9372262773722628,
-          "bas": 0.9231193213492149,
-          "haut": 0.9488880483504653
+          "succes": 1454,
+          "n": 1570,
+          "taux": 0.9261146496815287,
+          "bas": 0.9121090500669681,
+          "haut": 0.9380400373634316
         },
         "fauxPositifs": {
-          "succes": 6,
-          "n": 1370,
-          "taux": 0.004379562043795621,
-          "bas": 0.0020086641958977345,
-          "haut": 0.00952221389077543
+          "succes": 20,
+          "n": 1570,
+          "taux": 0.012738853503184714,
+          "bas": 0.008261395171090365,
+          "haut": 0.019595029516120847
         }
       },
       "possible": {
         "rappel": {
-          "succes": 1324,
-          "n": 1370,
-          "taux": 0.9664233576642336,
-          "bas": 0.9555046993857128,
-          "haut": 0.9747335464207907
+          "succes": 1510,
+          "n": 1570,
+          "taux": 0.9617834394904459,
+          "bas": 0.951117474787725,
+          "haut": 0.9701950639074016
         },
         "fauxPositifs": {
-          "succes": 292,
-          "n": 1370,
-          "taux": 0.21313868613138687,
-          "bas": 0.19227048218056014,
-          "haut": 0.23561116006990018
+          "succes": 369,
+          "n": 1570,
+          "taux": 0.23503184713375797,
+          "bas": 0.21471975839391994,
+          "haut": 0.25663746078239363
         }
       }
     },
     "verdict": {
       "jeu": {
         "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
-        "provenance": "blind test set #9, authored on 2026-09-27 by a separate agent (a Hamburg customs broker and Lagos trade-finance desk brief, organised by document) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
-        "sha256": "47ec89446b0a189820a3ea6df7f1d7bdfa5193755bd3eb22d9249f68e83ea992",
+        "provenance": "blind test set #10, authored on 2026-09-27 by a separate agent (a Tokyo trading house, Panama registry and Mexico customs brief, organised by error source, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
+        "sha256": "985eb7c1588e2953a90bc327c7915bda211e8c4768e0bc722dd5a29d87464fbd",
         "match": 200,
         "different": 200
       },
       "fort": {
         "rappel": {
-          "succes": 104,
+          "succes": 128,
           "n": 200,
-          "taux": 0.52,
-          "bas": 0.4510366005581654,
-          "haut": 0.5882095592051018
+          "taux": 0.64,
+          "bas": 0.5714139956562682,
+          "haut": 0.7033091226866021
         },
         "fauxPositifs": {
-          "succes": 39,
+          "succes": 6,
           "n": 200,
-          "taux": 0.195,
-          "bas": 0.14605441564505764,
-          "haut": 0.25544164796511815
+          "taux": 0.03,
+          "bas": 0.013820125830748327,
+          "haut": 0.06389511973247333
         }
       },
       "possible": {
         "rappel": {
-          "succes": 163,
+          "succes": 179,
           "n": 200,
-          "taux": 0.815,
-          "bas": 0.7554281794988185,
-          "haut": 0.8626988367726394
+          "taux": 0.895,
+          "bas": 0.8448186177864638,
+          "haut": 0.9302930375380627
         },
         "fauxPositifs": {
-          "succes": 78,
+          "succes": 45,
           "n": 200,
-          "taux": 0.39,
-          "bas": 0.325082297194914,
-          "haut": 0.45906382410711677
+          "taux": 0.225,
+          "bas": 0.17262283786915622,
+          "haut": 0.28774246538592035
         }
       }
     }
   },
   "totaux": {
     "lignes": 30,
-    "forts": 10,
-    "possibles": 1,
+    "forts": 9,
+    "possibles": 2,
     "sansCorrespondance": 19
   },
   "resultats": [
@@ -438,7 +445,7 @@
       "ref": "C-019",
       "type": "entity",
       "pays": "MT",
-      "statut": "strong",
+      "statut": "possible",
       "candidats": [
         {
           "source": "OFAC",
@@ -447,8 +454,9 @@
             "15122"
           ],
           "nomListe": "PROTON PETROCHEMICALS SHIPPING LIMITED",
+          "alias": "PROTON SHIPPING CO",
           "type": "entity",
-          "score": 0.965,
+          "score": 0.8,
           "par": "name"
         }
       ],
@@ -715,5 +723,5 @@
     "At most 5 candidates are shown per name, highest score first; the count of the others is given.",
     "The rates quoted first come from 200 matching pairs and 200 hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties."
   ],
-  "empreinte": "cc6552029c702c06"
+  "empreinte": "a64fdcfcd641310e"
 }
