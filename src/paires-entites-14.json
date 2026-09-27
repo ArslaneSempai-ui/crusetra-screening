@@ -1,0 +1,2407 @@
+{
+  "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+  "provenance": "authored on 2026-09-28 by a separate agent (a Rotterdam customs broker and Dubai free-zone bank brief, organised by trap family: Benelux and Gulf forms, Arabic and Persian romanisations, Rhine barges and Gulf tankers, EDI and SWIFT residues, chat and OCR; explicit verdict conventions, corrected so that one letter changed in a company name is the same name misspelt except in a vessel name; Opus) that never saw the matcher nor any other pair set, as blind test set #13 (sha256 79a6a291…); every name invented; no client data, no list data; overlap with the thirteen earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v15 (entites.ts ea838aa2…, cribler.ts 292e9ddb…, ecritures.ts bdd60326…): strong 0.81 found 120/200 [53-67 %] with 16/200 false alerts [5-13 %]; possible 0.80 found 155/200 [71-83 %] with 59/200 [24-36 %]. Studied afterwards and promoted to training set 14 on 2026-09-28, so it no longer measures anything held out.",
+  "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+  "paires": [
+    {
+      "a": "Kempenvaart BV",
+      "b": "Kempenhaven BV",
+      "verdict": "different",
+      "nature": "form-other-word-in-name"
+    },
+    {
+      "a": "Rijnvaart Coöperatie Oostwaard U.A.",
+      "b": "Rijnvaart Coöperatie Westwaard U.A.",
+      "verdict": "different",
+      "nature": "form-other-compass-word"
+    },
+    {
+      "a": "Durrat Al Hadeel Trading S.P.C.",
+      "b": "Durrat Al Hadeel Trading SPC (C.R. No. 118842-1)",
+      "verdict": "match",
+      "nature": "form-commercial-registration-residue"
+    },
+    {
+      "a": "Qasr Almas General Trading L.L.C.",
+      "b": "Qasr Almas General Trading (Oman) L.L.C.",
+      "verdict": "different",
+      "nature": "form-foreign-subsidiary"
+    },
+    {
+      "a": "Ghaymat Sahil Trading W.L.L.",
+      "b": "Ghaymat Sahil Contracting W.L.L.",
+      "verdict": "different",
+      "nature": "form-other-activity-word"
+    },
+    {
+      "a": "Dekkerhuis Agro N.V.",
+      "b": "Dekkerhuis Aqua N.V.",
+      "verdict": "different",
+      "nature": "form-other-activity-word"
+    },
+    {
+      "a": "Nasmat Tarfa Shipping FZ-LLC",
+      "b": "Nasmat Tarfa Chartering FZ-LLC",
+      "verdict": "different",
+      "nature": "form-other-activity-word"
+    },
+    {
+      "a": "Vennekamp Bunkerdiensten C.V.",
+      "b": "Vennekamp Bunkerdiensten Beheer B.V.",
+      "verdict": "different",
+      "nature": "form-partnership-versus-its-general-partner"
+    },
+    {
+      "a": "Sadeem Crescent Marine F.Z.E.",
+      "b": "Sadeem Crescent Marine Free Zone Establishment",
+      "verdict": "match",
+      "nature": "form-fze-spelled-out"
+    },
+    {
+      "a": "Oudelande Tankopslag B.V.",
+      "b": "Oudelande Tankreiniging B.V.",
+      "verdict": "different",
+      "nature": "form-other-activity-word"
+    },
+    {
+      "a": "Dekkerhuis Agro N.V.",
+      "b": "Dekkerhuis Agro N.V. Dubai Representative Office",
+      "verdict": "match",
+      "nature": "form-representative-office"
+    },
+    {
+      "a": "Kempenvaart BV",
+      "b": "Kempenvaart BV (KBO 0712.448.391)",
+      "verdict": "match",
+      "nature": "form-belgian-registry-residue"
+    },
+    {
+      "a": "Terbraak Logistiek B.V.",
+      "b": "Terbraak Logistics B.V.",
+      "verdict": "match",
+      "nature": "form-activity-word-translated"
+    },
+    {
+      "a": "Sadeem Crescent Marine FZE",
+      "b": "Sadeem Crescent Marine F.Z.E. (Jebel Ali Free Zone)",
+      "verdict": "match",
+      "nature": "form-free-zone-named-after-form"
+    },
+    {
+      "a": "Rimal Al Khaleej Trading (L.L.C.)",
+      "b": "Rimal Al Khaleej Trading Limited Liability Company",
+      "verdict": "match",
+      "nature": "form-llc-spelled-out"
+    },
+    {
+      "a": "Vlasbloem Handelmaatschappij B.V.",
+      "b": "Vlasbloem Holding B.V.",
+      "verdict": "different",
+      "nature": "form-holding-versus-operating-company"
+    },
+    {
+      "a": "Terbraak Logistiek B.V.",
+      "b": "Terbraak Logistiek V.O.F.",
+      "verdict": "different",
+      "nature": "form-bv-versus-vof"
+    },
+    {
+      "a": "Barq Al Wadi Est.",
+      "b": "Barq Al Sahil Est.",
+      "verdict": "different",
+      "nature": "form-other-word-in-name"
+    },
+    {
+      "a": "Stichting Havenfonds Waalstroom",
+      "b": "Stg. Havenfonds Waalstroom",
+      "verdict": "match",
+      "nature": "form-stichting-abbreviated"
+    },
+    {
+      "a": "Stichting Havenfonds Waalstroom",
+      "b": "Havenfonds Waalstroom B.V.",
+      "verdict": "different",
+      "nature": "form-stichting-versus-company"
+    },
+    {
+      "a": "Burj Sanad Lubricants FZCO",
+      "b": "Burj Sanad Lubricants L.L.C.",
+      "verdict": "different",
+      "nature": "form-free-zone-versus-mainland"
+    },
+    {
+      "a": "Dekkerhuis Agro N.V.",
+      "b": "Naamloze Vennootschap Dekkerhuis Agro",
+      "verdict": "match",
+      "nature": "form-nv-spelled-out-in-front"
+    },
+    {
+      "a": "Scheldemond Expeditie NV",
+      "b": "Scheldemond Expeditie NV/SA",
+      "verdict": "match",
+      "nature": "form-belgian-bilingual-form"
+    },
+    {
+      "a": "Vennekamp Bunkerdiensten C.V.",
+      "b": "Vennekamp Bunkerdiensten Limited Partnership",
+      "verdict": "match",
+      "nature": "form-legal-form-translated"
+    },
+    {
+      "a": "Durrat Al Hadeel Trading S.P.C.",
+      "b": "Durrat Al Hadeel Trading Est.",
+      "verdict": "different",
+      "nature": "form-spc-versus-establishment"
+    },
+    {
+      "a": "Brakelmeer Shipping B.V.",
+      "b": "Brakelmeer Shipping DMCC",
+      "verdict": "different",
+      "nature": "form-foreign-subsidiary"
+    },
+    {
+      "a": "Barq Al Wadi Est.",
+      "b": "Barq Al Wadi Trading L.L.C.",
+      "verdict": "different",
+      "nature": "form-establishment-versus-llc"
+    },
+    {
+      "a": "Burj Sanad Lubricants FZCO (JAFZA)",
+      "b": "Burj Sanad Lubricants F.Z.C.O., Jebel Ali Free Zone",
+      "verdict": "match",
+      "nature": "form-free-zone-abbreviation-expanded"
+    },
+    {
+      "a": "Durrat Al Hadeel Trading S.P.C.",
+      "b": "Durrat Al Hadeel Trading W.L.L.",
+      "verdict": "different",
+      "nature": "form-spc-versus-wll"
+    },
+    {
+      "a": "Oudelande Tankopslag B.V.",
+      "b": "Oudelande Tankopslag B.V. in liquidatie",
+      "verdict": "match",
+      "nature": "form-status-suffix"
+    },
+    {
+      "a": "Hoogerwaard Scheepvaart B.V.",
+      "b": "Hoogerwaard Scheepvaart Besloten Vennootschap met beperkte aansprakelijkheid",
+      "verdict": "match",
+      "nature": "form-bv-full-statutory-form"
+    },
+    {
+      "a": "Qasr Almas General Trading L.L.C.",
+      "b": "Qasr Almas Foodstuff Trading L.L.C.",
+      "verdict": "different",
+      "nature": "form-other-activity-word"
+    },
+    {
+      "a": "Qasr Almas General Trading L.L.C.",
+      "b": "Qasr Almas Gen. Trdg. L.L.C.",
+      "verdict": "match",
+      "nature": "form-activity-words-abbreviated"
+    },
+    {
+      "a": "Brinkgreve Cargadoors V.O.F.",
+      "b": "Brinkgreve Cargadoors C.V.",
+      "verdict": "different",
+      "nature": "form-vof-versus-cv"
+    },
+    {
+      "a": "Wahat Al Nakheel Commodities DMCC",
+      "b": "Wahat Al Nakheel Commodities FZE (JAFZA)",
+      "verdict": "different",
+      "nature": "form-free-zone-twin"
+    },
+    {
+      "a": "Hoogerwaard Scheepvaart B.V.",
+      "b": "Hoogerwaard Scheepvaart Curaçao N.V.",
+      "verdict": "different",
+      "nature": "form-foreign-subsidiary"
+    },
+    {
+      "a": "Nasmat Tarfa Shipping FZ-LLC",
+      "b": "Nasmat Tarfa Shipping FZ-LLC (RAKEZ Licence 5012287)",
+      "verdict": "match",
+      "nature": "form-licence-number-residue"
+    },
+    {
+      "a": "Kromhoutsluis Veem B.V.",
+      "b": "Kromhoutsluis Vastgoed B.V.",
+      "verdict": "different",
+      "nature": "form-other-activity-word"
+    },
+    {
+      "a": "Brakelmeer Shipping B.V.",
+      "b": "Brakelmeer Shipping (Belgium) NV",
+      "verdict": "different",
+      "nature": "form-foreign-subsidiary"
+    },
+    {
+      "a": "Kromhoutsluis Veem B.V.",
+      "b": "Kromhoutsluis Veem Besloten Vennootschap",
+      "verdict": "match",
+      "nature": "form-bv-spelled-out"
+    },
+    {
+      "a": "Moselkai Invest S.à r.l.",
+      "b": "Moselkai Invest B.V.",
+      "verdict": "different",
+      "nature": "form-sarl-versus-bv"
+    },
+    {
+      "a": "Durrat Al Hadeel Trading S.P.C.",
+      "b": "Durrat Al Hadeel Trading Single Person Company",
+      "verdict": "match",
+      "nature": "form-spc-spelled-out"
+    },
+    {
+      "a": "Moselkai Invest S.à r.l.",
+      "b": "Moselkai Invest SARL",
+      "verdict": "match",
+      "nature": "form-luxembourg-form-variant"
+    },
+    {
+      "a": "Burj Sanad Lubricants FZCO",
+      "b": "Burj Sanad Lubricants Free Zone Company",
+      "verdict": "match",
+      "nature": "form-fzco-spelled-out"
+    },
+    {
+      "a": "Burj Sanad Lubricants FZCO",
+      "b": "Burj Sanad Bitumen FZCO",
+      "verdict": "different",
+      "nature": "form-other-activity-word"
+    },
+    {
+      "a": "Brakelmeer Shipping B.V.",
+      "b": "Brakelmeer Shipping B.V. - Dubai Branch",
+      "verdict": "match",
+      "nature": "form-branch-same-legal-person"
+    },
+    {
+      "a": "Qasr Almas General Trading LLC",
+      "b": "Qasr Almas General Trading L.L.C. - Abu Dhabi Branch",
+      "verdict": "match",
+      "nature": "form-branch-same-legal-person"
+    },
+    {
+      "a": "Scheldemond Expeditie NV",
+      "b": "Scheldemond Expeditie B.V.",
+      "verdict": "different",
+      "nature": "form-nv-versus-bv"
+    },
+    {
+      "a": "Qasr Almas General Trading L.L.C.",
+      "b": "QASR ALMAS GENERAL TRADING LLC TRADE LICENCE NO. 771934",
+      "verdict": "match",
+      "nature": "form-licence-number-residue"
+    },
+    {
+      "a": "Sadeem Crescent Marine FZE",
+      "b": "Sadeem Crescent Marine FZE - Sharjah Branch",
+      "verdict": "match",
+      "nature": "form-branch-same-legal-person"
+    },
+    {
+      "a": "Nasmat Tarfa Shipping FZ-LLC",
+      "b": "Nasmat Tarfa Shipping Free Zone Limited Liability Company",
+      "verdict": "match",
+      "nature": "form-fz-llc-spelled-out"
+    },
+    {
+      "a": "Scheldemond Expeditie NV",
+      "b": "Scheldemond Expédition SA",
+      "verdict": "match",
+      "nature": "form-belgian-dutch-french-name"
+    },
+    {
+      "a": "Muassasat Barq Al Wadi",
+      "b": "Barq Al Wadi Est.",
+      "verdict": "match",
+      "nature": "form-arabic-form-word-translated"
+    },
+    {
+      "a": "Brinkgreve Cargadoors V.O.F.",
+      "b": "Brinkgreve Cargadoors General Partnership",
+      "verdict": "match",
+      "nature": "form-legal-form-translated"
+    },
+    {
+      "a": "Kromhoutsluis Veem B.V.",
+      "b": "Kromhoutsluis Veem N.V.",
+      "verdict": "different",
+      "nature": "form-bv-versus-nv"
+    },
+    {
+      "a": "Kromhoutsluis Veem B.V. i.o.",
+      "b": "Kromhoutsluis Veem B.V.",
+      "verdict": "match",
+      "nature": "form-in-formation-suffix"
+    },
+    {
+      "a": "Ghaymat Sahil Trading W.L.L.",
+      "b": "Ghaymat Sahil Trading Company With Limited Liability",
+      "verdict": "match",
+      "nature": "form-wll-spelled-out"
+    },
+    {
+      "a": "Vlasbloem Handelmaatschappij BV",
+      "b": "Vlasbloem Handelmaatschappij B.V. (KvK 24381906)",
+      "verdict": "match",
+      "nature": "form-kvk-number-residue"
+    },
+    {
+      "a": "Oudelande Tankopslag B.V.",
+      "b": "Stichting Oudelande Tankopslag",
+      "verdict": "different",
+      "nature": "form-stichting-versus-company"
+    },
+    {
+      "a": "Barq Al Wadi Est.",
+      "b": "Barq Al Wadi Establishment",
+      "verdict": "match",
+      "nature": "form-est-spelled-out"
+    },
+    {
+      "a": "Stichting Administratiekantoor Vlasbloem",
+      "b": "Vlasbloem Handelmaatschappij B.V.",
+      "verdict": "different",
+      "nature": "form-stichting-versus-company"
+    },
+    {
+      "a": "Sadeem Crescent Marine FZE",
+      "b": "Sadeem Crescent Marine Services L.L.C.",
+      "verdict": "different",
+      "nature": "form-free-zone-versus-mainland"
+    },
+    {
+      "a": "Terbraak Logistiek Venlo B.V.",
+      "b": "Terbraak Logistiek Venray B.V.",
+      "verdict": "different",
+      "nature": "form-other-place-name"
+    },
+    {
+      "a": "Hoogerwaard Scheepvaart B.V.",
+      "b": "Hoogerwaard Scheepvaart B.V., bijkantoor Antwerpen",
+      "verdict": "match",
+      "nature": "form-branch-same-legal-person"
+    },
+    {
+      "a": "Ghaymat Sahil Trading W.L.L.",
+      "b": "Ghaymat Sahil Trading S.P.C.",
+      "verdict": "different",
+      "nature": "form-spc-versus-wll"
+    },
+    {
+      "a": "Moselkai Invest S.à r.l.",
+      "b": "Moselkai Invest S.A.",
+      "verdict": "different",
+      "nature": "form-sarl-versus-sa"
+    },
+    {
+      "a": "Ghaymat Sahil Trading W.L.L.",
+      "b": "Ghaymat Sahil Trading Co. W.L.L. - Doha Branch",
+      "verdict": "match",
+      "nature": "form-branch-same-legal-person"
+    },
+    {
+      "a": "Brinkgreve Cargadoors V.O.F.",
+      "b": "Vennootschap onder firma Brinkgreve Cargadoors",
+      "verdict": "match",
+      "nature": "form-vof-spelled-out-in-front"
+    },
+    {
+      "a": "Sleeuwenhoek Transport B.V.",
+      "b": "Sleeuwenhoek Transport GmbH",
+      "verdict": "different",
+      "nature": "form-foreign-subsidiary"
+    },
+    {
+      "a": "Scheldemond Expeditie NV",
+      "b": "Scheldemond Stuwadoring NV",
+      "verdict": "different",
+      "nature": "form-other-activity-word"
+    },
+    {
+      "a": "Wahat Al Nakheel Commodities DMCC",
+      "b": "Wahat Al Nakheel Commodities Pte. Ltd.",
+      "verdict": "different",
+      "nature": "form-foreign-subsidiary"
+    },
+    {
+      "a": "Hoogerwaard Scheepvaart B.V.",
+      "b": "Hoogerwaard Scheepvaart Beheer B.V.",
+      "verdict": "different",
+      "nature": "form-holding-versus-operating-company"
+    },
+    {
+      "a": "Sleeuwenhoek Transport B.V.",
+      "b": "Sleeuwenhoek Transport BV h.o.d.n. Sleeuwenhoek Koeltransport",
+      "verdict": "match",
+      "nature": "form-trading-as-residue"
+    },
+    {
+      "a": "Sadeem Crescent Marine FZE",
+      "b": "Sadeem Crescent Marine FZCO",
+      "verdict": "different",
+      "nature": "form-fze-versus-fzco"
+    },
+    {
+      "a": "Nasmat Tarfa Shipping FZ-LLC",
+      "b": "Nasmat Tarfa Shipping DMCC",
+      "verdict": "different",
+      "nature": "form-free-zone-twin"
+    },
+    {
+      "a": "Wahat Al Nakheel Commodities DMCC",
+      "b": "Wahat Al Nakheel Commodities D.M.C.C. (Licence No. DMCC-418273)",
+      "verdict": "match",
+      "nature": "form-licence-number-residue"
+    },
+    {
+      "a": "Vlasbloem Handelmaatschappij B.V.",
+      "b": "Vlasbloem Handelmaatschappij B.V. (DMCC Branch)",
+      "verdict": "match",
+      "nature": "form-free-zone-branch-of-dutch-company"
+    },
+    {
+      "a": "Vennekamp Bunkerdiensten C.V.",
+      "b": "Commanditaire Vennootschap Vennekamp Bunkerdiensten",
+      "verdict": "match",
+      "nature": "form-cv-spelled-out-in-front"
+    },
+    {
+      "a": "Rijnvaart Coöperatie Oostwaard U.A.",
+      "b": "Cooperatie Rijnvaart Oostwaard UA",
+      "verdict": "match",
+      "nature": "form-cooperative-word-order"
+    },
+    {
+      "a": "Brinkgreve Cargadoors V.O.F.",
+      "b": "Brinkgreve Stuwadoors V.O.F.",
+      "verdict": "different",
+      "nature": "form-other-activity-word"
+    },
+    {
+      "a": "Abdullah bin Salem Al Ketbi Est.",
+      "b": "Abdullah bin Salman Al Ketbi Est.",
+      "verdict": "different",
+      "nature": "roman-other-patronym"
+    },
+    {
+      "a": "Rachid Bennani Transports",
+      "b": "Rashid Bennani Transports",
+      "verdict": "match",
+      "nature": "roman-french-ch-versus-sh"
+    },
+    {
+      "a": "Seyed Hashem Mousavi Exports",
+      "b": "Seyed Kazem Mousavi Exports",
+      "verdict": "different",
+      "nature": "roman-other-given-name"
+    },
+    {
+      "a": "Said Ben Hamdane et Fils",
+      "b": "Saeed bin Hamdan & Sons",
+      "verdict": "match",
+      "nature": "roman-ben-bin-and-translation"
+    },
+    {
+      "a": "Hosseini Kashani Trading Co.",
+      "b": "Husaini Kashani Trading Co.",
+      "verdict": "match",
+      "nature": "roman-persian-vowel-variant"
+    },
+    {
+      "a": "Mohammed Al Hattami Trading",
+      "b": "Mohammed Al Hashimi Trading",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Walid Al Sayegh Jewellers",
+      "b": "Waleed Alsayegh Jewellers",
+      "verdict": "match",
+      "nature": "roman-gulf-ee-and-glued-article"
+    },
+    {
+      "a": "Husain Al Lawati Trading",
+      "b": "Hussain Allawati Trading",
+      "verdict": "match",
+      "nature": "roman-glued-article-and-doubled-consonant"
+    },
+    {
+      "a": "Toufic Haddad Est.",
+      "b": "Tawfiq Haddad Establishment",
+      "verdict": "match",
+      "nature": "roman-levantine-french-spelling"
+    },
+    {
+      "a": "Kourosh Mirzaei Trading",
+      "b": "Kurosh Mirzayi Trading",
+      "verdict": "match",
+      "nature": "roman-persian-vowel-variant"
+    },
+    {
+      "a": "Djebbar Frères Import Export",
+      "b": "Jabbar Brothers Import Export",
+      "verdict": "match",
+      "nature": "roman-french-dj-and-translation"
+    },
+    {
+      "a": "Ja'fari & Partners Freight",
+      "b": "Djafari and Partners Freight",
+      "verdict": "match",
+      "nature": "roman-persian-french-dj-variant"
+    },
+    {
+      "a": "Abou Samra Frères",
+      "b": "Abu Samra Brothers",
+      "verdict": "match",
+      "nature": "roman-levantine-abou-and-translation"
+    },
+    {
+      "a": "Yousef Al Kharrazi General Trading",
+      "b": "Younes Al Kharrazi General Trading",
+      "verdict": "different",
+      "nature": "roman-other-given-name"
+    },
+    {
+      "a": "Mohamed Lamine Ould Brahim Transit",
+      "b": "Muhammad al-Amin wuld Ibrahim Transit",
+      "verdict": "match",
+      "nature": "roman-maghreb-contracted-forms"
+    },
+    {
+      "a": "Muhammad Aslam Butt Sports",
+      "b": "Muhammad Aslam Bhatti Sports",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Sidi Mohamed Ould Ahmed Transport",
+      "b": "Sidi Ahmed Ould Mohamed Transport",
+      "verdict": "different",
+      "nature": "roman-filiation-swapped"
+    },
+    {
+      "a": "Rahimi Tabriz Carpet House",
+      "b": "Rahmani Tabriz Carpet House",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Seyed Hashem Mousavi Exports",
+      "b": "Sayyed Hashem Musavi Exports",
+      "verdict": "match",
+      "nature": "roman-persian-seyed-variant"
+    },
+    {
+      "a": "Abderrahmane Belkacem Négoce",
+      "b": "Abdelrahmane Belkacem Negoce",
+      "verdict": "match",
+      "nature": "roman-sun-letter-assimilation"
+    },
+    {
+      "a": "Youssef Chaouki Négoce",
+      "b": "Yusuf Shawqi Trading",
+      "verdict": "match",
+      "nature": "roman-maghreb-french-versus-gulf-english"
+    },
+    {
+      "a": "Farhad Karimzadeh Dried Fruits",
+      "b": "Farhad Karim Zadeh Dried Fruits",
+      "verdict": "match",
+      "nature": "roman-persian-zadeh-split"
+    },
+    {
+      "a": "Mahmoud Abou Zeid Import",
+      "b": "Mahmud Abu Zayd Import",
+      "verdict": "match",
+      "nature": "roman-levantine-versus-scholarly"
+    },
+    {
+      "a": "Obaid bin Sultan Al Ketbi Contracting",
+      "b": "Ubaid ibn Sultan Al-Kitbi Contracting",
+      "verdict": "match",
+      "nature": "roman-bin-ibn-and-vowels"
+    },
+    {
+      "a": "Tariq Al Muhairi Contracting",
+      "b": "Tarek El Mheiri Holding",
+      "verdict": "different",
+      "nature": "roman-same-person-other-company"
+    },
+    {
+      "a": "Georges El Khoury et Fils",
+      "b": "Georges El Khouri Frères",
+      "verdict": "different",
+      "nature": "roman-sons-versus-brothers"
+    },
+    {
+      "a": "Hassan Al Obaidli Shipping",
+      "b": "Hussein Al Obaidli Shipping",
+      "verdict": "different",
+      "nature": "roman-other-given-name"
+    },
+    {
+      "a": "Farhad Karimzadeh Dried Fruits",
+      "b": "Farhad Rahimzadeh Dried Fruits",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Nasser Al Mazrouei General Trading",
+      "b": "Nasir Al-Mazroui General Trading",
+      "verdict": "match",
+      "nature": "roman-gulf-vowel-and-hyphen"
+    },
+    {
+      "a": "Muhammad Aslam Butt Sports",
+      "b": "Mohd. Aslam Butt Sports",
+      "verdict": "match",
+      "nature": "roman-mohammed-abbreviated-mohd"
+    },
+    {
+      "a": "Al Makki Dates Trading",
+      "b": "Al Madani Dates Trading",
+      "verdict": "different",
+      "nature": "roman-other-place-derived-name"
+    },
+    {
+      "a": "Tariq Al Muhairi Contracting",
+      "b": "Tarek El Mheiri Contracting",
+      "verdict": "match",
+      "nature": "roman-gulf-family-name-variant"
+    },
+    {
+      "a": "Ghasemi Tabrizi Carpet Export",
+      "b": "Qasemi Tabrizi Carpet Export",
+      "verdict": "match",
+      "nature": "roman-persian-gh-q-variant"
+    },
+    {
+      "a": "Rachid Bennani Transports",
+      "b": "Rachid Bennis Transports",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Fouad Chammas Trading",
+      "b": "Fuad Shammas Trading",
+      "verdict": "match",
+      "nature": "roman-french-ch-versus-sh"
+    },
+    {
+      "a": "Hekmat Zoghbi & Co.",
+      "b": "Hikmat Zughbi and Company",
+      "verdict": "match",
+      "nature": "roman-levantine-vowel-variant"
+    },
+    {
+      "a": "Al-Khaddouri Marine Services",
+      "b": "El Khadouri Marine Services",
+      "verdict": "match",
+      "nature": "roman-article-and-doubled-consonant"
+    },
+    {
+      "a": "Sheikh Iqbal Textile Mills",
+      "b": "Sheikh Iqbal Textile Traders",
+      "verdict": "different",
+      "nature": "roman-same-person-other-company"
+    },
+    {
+      "a": "Abdelkarim Tahar Logistique",
+      "b": "Abdelhakim Tahar Logistique",
+      "verdict": "different",
+      "nature": "roman-other-given-name"
+    },
+    {
+      "a": "Saif Al Qubaisi Transport",
+      "b": "Saif Alqobaisi Transport",
+      "verdict": "match",
+      "nature": "roman-glued-article-and-vowel"
+    },
+    {
+      "a": "Abdelkarim Tahar Logistique",
+      "b": "Abdul Kareem Taher Logistics",
+      "verdict": "match",
+      "nature": "roman-abdel-abdul-and-translation"
+    },
+    {
+      "a": "Nour Eddine Tazi Textiles",
+      "b": "Nureddin Tazi Textiles",
+      "verdict": "match",
+      "nature": "roman-sun-letter-assimilation-glued"
+    },
+    {
+      "a": "Ali Reza Ghaznavi Trading",
+      "b": "Ali Akbar Ghaznavi Trading",
+      "verdict": "different",
+      "nature": "roman-other-compound-given-name"
+    },
+    {
+      "a": "Hakim Ben Youssef Import",
+      "b": "Youssef Ben Hakim Import",
+      "verdict": "different",
+      "nature": "roman-filiation-swapped"
+    },
+    {
+      "a": "Fouad Chammas Trading",
+      "b": "Fouad Chamoun Trading",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Chaudhry Anwar Rice Exporters",
+      "b": "Chaudhry Akhtar Rice Exporters",
+      "verdict": "different",
+      "nature": "roman-other-given-name"
+    },
+    {
+      "a": "Mustafa Kamal Qureshi Exports",
+      "b": "Mustapha Kamal Kureishi Exports",
+      "verdict": "match",
+      "nature": "roman-urdu-q-k-variant"
+    },
+    {
+      "a": "Etablissements Abdelkader El Ouazzani",
+      "b": "Abdul Qadir Al Wazzani Establishment",
+      "verdict": "match",
+      "nature": "roman-maghreb-french-versus-gulf-english"
+    },
+    {
+      "a": "Saif Al Qubaisi Transport",
+      "b": "Saif Alqobaisi Tourism",
+      "verdict": "different",
+      "nature": "roman-same-person-other-company"
+    },
+    {
+      "a": "Qassim Al Zaabi Marine",
+      "b": "Kassem Al Zaabi Marine",
+      "verdict": "match",
+      "nature": "roman-levantine-qassim-kassem"
+    },
+    {
+      "a": "Abdallah Ben Aïssa Import",
+      "b": "Abdullah bin Aissa Import",
+      "verdict": "match",
+      "nature": "roman-ben-bin-and-diaeresis"
+    },
+    {
+      "a": "Benslimane Frères",
+      "b": "Bensalem Frères",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Mohammed Al Hattami Trading",
+      "b": "Muhammad Alhattami Trading",
+      "verdict": "match",
+      "nature": "roman-mohammed-spelling-and-glued-article"
+    },
+    {
+      "a": "Nasser Al Mazrouei General Trading",
+      "b": "Nasser Al Marzouqi General Trading",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Mohammad Reza Khosravi Trading",
+      "b": "Mohamadreza Khosravi Trading",
+      "verdict": "match",
+      "nature": "roman-persian-compound-name-glued"
+    },
+    {
+      "a": "Al Shamsi Building Materials",
+      "b": "Al Shehhi Building Materials",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Abu Samra Brothers",
+      "b": "Abu Salha Brothers",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Sheikh Iqbal Textile Mills",
+      "b": "Shaikh Iqbal Textile Mills",
+      "verdict": "match",
+      "nature": "roman-sheikh-shaikh"
+    },
+    {
+      "a": "Tawfiq Haddad Establishment",
+      "b": "Tawfiq Hammad Establishment",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Mohammadi Freight Forwarding",
+      "b": "Mohammadzadeh Freight Forwarding",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Kourosh Mirzaei Trading",
+      "b": "Kourosh Mirzakhani Trading",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Georges El Khoury et Fils",
+      "b": "George Khoury and Sons",
+      "verdict": "match",
+      "nature": "roman-levantine-article-dropped"
+    },
+    {
+      "a": "Saeed bin Hamdan Al Qaddouri Trading",
+      "b": "Hamdan bin Saeed Al Qaddouri Trading",
+      "verdict": "different",
+      "nature": "roman-filiation-swapped"
+    },
+    {
+      "a": "Omar Ben Aissa Transports",
+      "b": "Omar Ben Moussa Transports",
+      "verdict": "different",
+      "nature": "roman-other-patronym"
+    },
+    {
+      "a": "Hosseini Brothers Shipping",
+      "b": "Hassani Brothers Shipping",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Ibrahim Al Hawsani Est.",
+      "b": "Ebrahim Alhosani Establishment",
+      "verdict": "match",
+      "nature": "roman-gulf-family-name-variant"
+    },
+    {
+      "a": "Chaudhry Anwar Rice Exporters",
+      "b": "Choudhary Anwar Rice Exporters",
+      "verdict": "match",
+      "nature": "roman-urdu-chaudhry-variant"
+    },
+    {
+      "a": "Mahmoud El Ouazzani et Fils",
+      "b": "Mohamed El Ouazzani et Fils",
+      "verdict": "different",
+      "nature": "roman-other-given-name"
+    },
+    {
+      "a": "Jassim Al Kuwari Trading",
+      "b": "Jassim Al Kaabi Trading",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Al Baghdadi Brothers Trading",
+      "b": "Al Basrawi Brothers Trading",
+      "verdict": "different",
+      "nature": "roman-other-place-derived-name"
+    },
+    {
+      "a": "Abdelaziz Chraibi Import",
+      "b": "Abdelmajid Chraibi Import",
+      "verdict": "different",
+      "nature": "roman-other-given-name"
+    },
+    {
+      "a": "Pervez Akhtar Bhatti Leather",
+      "b": "Parvez Akhtar Butt Leather",
+      "verdict": "different",
+      "nature": "roman-variant-given-name-other-family-name"
+    },
+    {
+      "a": "Siddiqui Surgical Instruments",
+      "b": "Siddiqi Surgical Instruments",
+      "verdict": "match",
+      "nature": "roman-urdu-vowel-variant"
+    },
+    {
+      "a": "Abdulrahman Al Hawsani Est.",
+      "b": "Abdulrahim Al Hawsani Est.",
+      "verdict": "different",
+      "nature": "roman-other-given-name"
+    },
+    {
+      "a": "Ouahbi Lahlou Négoce",
+      "b": "Wahbi Lahlou Negoce",
+      "verdict": "match",
+      "nature": "roman-french-ou-versus-w"
+    },
+    {
+      "a": "Hamid Reza Tehrani Trading",
+      "b": "Hamid Reza Tabrizi Trading",
+      "verdict": "different",
+      "nature": "roman-other-place-derived-name"
+    },
+    {
+      "a": "Alfarouk Shipping Agency",
+      "b": "Al Farooq Shipping Agency",
+      "verdict": "match",
+      "nature": "roman-glued-article-and-vowel"
+    },
+    {
+      "a": "Qassim Al Zaabi Marine",
+      "b": "Qassim Al Zarooni Marine",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "El Ouafi Négoce International",
+      "b": "El Oufir Négoce International",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Yasser Al Omari Est.",
+      "b": "Yasser Al Ameri Est.",
+      "verdict": "different",
+      "nature": "roman-other-family-name"
+    },
+    {
+      "a": "Maha Gulf 3",
+      "b": "Maha Gulf 8",
+      "verdict": "different",
+      "nature": "hull-fleet-number-changed"
+    },
+    {
+      "a": "Barq Al Hadeel IMO 9366044",
+      "b": "Barq Al Hadeel 3",
+      "verdict": "different",
+      "nature": "hull-numeral-added"
+    },
+    {
+      "a": "Vlietzwaluw",
+      "b": "Vlietreiger",
+      "verdict": "different",
+      "nature": "hull-other-word"
+    },
+    {
+      "a": "Amerbaars (ex Gouwezeef)",
+      "b": "Gouwezeef",
+      "verdict": "match",
+      "nature": "hull-former-name-alias"
+    },
+    {
+      "a": "Sadeem Al Qurm",
+      "b": "SADEEM AL QURM IMO 9455218",
+      "verdict": "match",
+      "nature": "hull-imo-residue"
+    },
+    {
+      "a": "Sadeem Al Qurm (ex Wadi Sahab)",
+      "b": "Wadi Sahab",
+      "verdict": "match",
+      "nature": "hull-former-name-alias"
+    },
+    {
+      "a": "Stroomkracht 4",
+      "b": "Stroomkracht-4",
+      "verdict": "match",
+      "nature": "hull-numeral-hyphenated"
+    },
+    {
+      "a": "M.T. Barq Al Hadeel, Panama",
+      "b": "Barq Al Hadeel",
+      "verdict": "match",
+      "nature": "hull-flag-after-name"
+    },
+    {
+      "a": "Rijnkrekel",
+      "b": "Rijnkrekel II",
+      "verdict": "different",
+      "nature": "hull-numeral-added"
+    },
+    {
+      "a": "Merwedekoet, Dordrecht",
+      "b": "Merwedekoet 3",
+      "verdict": "different",
+      "nature": "hull-numeral-added"
+    },
+    {
+      "a": "TMS Waalpluvier ENI 02331457",
+      "b": "Waalpluvier",
+      "verdict": "match",
+      "nature": "hull-prefix-and-eni-residue"
+    },
+    {
+      "a": "Hadeel Pearl",
+      "b": "Hadeel Pearls",
+      "verdict": "different",
+      "nature": "hull-plural"
+    },
+    {
+      "a": "Barq Al Hadeel",
+      "b": "Burj Al Hadeel",
+      "verdict": "different",
+      "nature": "hull-other-word"
+    },
+    {
+      "a": "Dintelreiger",
+      "b": "Dintelreigers",
+      "verdict": "different",
+      "nature": "hull-plural"
+    },
+    {
+      "a": "Stroomkracht 4",
+      "b": "Duwboot Stroomkracht IV",
+      "verdict": "match",
+      "nature": "hull-pusher-tug-prefix-and-roman-numeral"
+    },
+    {
+      "a": "Dintelreiger",
+      "b": "Dintel Reiger",
+      "verdict": "match",
+      "nature": "hull-split-compound"
+    },
+    {
+      "a": "Spaarnemeeuw",
+      "b": "MS Spaarnemeeuw",
+      "verdict": "match",
+      "nature": "hull-inland-type-prefix"
+    },
+    {
+      "a": "Barq Al Hadeel",
+      "b": "Barq Al Hadeel IMO 9366044",
+      "verdict": "match",
+      "nature": "hull-imo-residue"
+    },
+    {
+      "a": "Rijnreus 7",
+      "b": "Rijnreus 71",
+      "verdict": "different",
+      "nature": "hull-fleet-number-changed"
+    },
+    {
+      "a": "Merwedekoet",
+      "b": "Merwedekoet ENI 02327754",
+      "verdict": "match",
+      "nature": "hull-eni-residue"
+    },
+    {
+      "a": "Dintelreiger - Rotterdam",
+      "b": "Dintelmeeuw - Rotterdam",
+      "verdict": "different",
+      "nature": "hull-other-word"
+    },
+    {
+      "a": "Sahm Al Bahr",
+      "b": "Sahm Al Nahr",
+      "verdict": "different",
+      "nature": "hull-one-letter-changed"
+    },
+    {
+      "a": "TMS Waalpluvier ENI 02331457",
+      "b": "TMS Waalpluvier II",
+      "verdict": "different",
+      "nature": "hull-numeral-added"
+    },
+    {
+      "a": "Merwedekoet, Dordrecht",
+      "b": "MTS Merwedekoet",
+      "verdict": "match",
+      "nature": "hull-port-of-registry-after-name"
+    },
+    {
+      "a": "Nahr Al Khair 2",
+      "b": "NAHR AL KHAIR 2 IMO 9290113",
+      "verdict": "match",
+      "nature": "hull-imo-residue"
+    },
+    {
+      "a": "MT Gulf Mahara (ex Hadeel Pearl)",
+      "b": "Hadeel Pearl",
+      "verdict": "match",
+      "nature": "hull-former-name-alias"
+    },
+    {
+      "a": "Sahm Al Bahr",
+      "b": "M/T SAHM AL BAHR, Fujairah",
+      "verdict": "match",
+      "nature": "hull-port-of-registry-after-name"
+    },
+    {
+      "a": "Zahrat Al Qurm",
+      "b": "Zahrat Alqurm",
+      "verdict": "match",
+      "nature": "hull-glued-article"
+    },
+    {
+      "a": "Wafrat Al Najm",
+      "b": "Wafrat Al Nujum",
+      "verdict": "different",
+      "nature": "hull-plural"
+    },
+    {
+      "a": "Sahil Tanker 12",
+      "b": "Sahil Tanker 21",
+      "verdict": "different",
+      "nature": "hull-fleet-number-changed"
+    },
+    {
+      "a": "MTS Rijnkrekel",
+      "b": "MTS Rijnkrekels",
+      "verdict": "different",
+      "nature": "hull-plural"
+    },
+    {
+      "a": "Stroomkracht 4",
+      "b": "Stroomkracht 14",
+      "verdict": "different",
+      "nature": "hull-fleet-number-changed"
+    },
+    {
+      "a": "MTS Oude Maasvink",
+      "b": "Oude Maasvink, Zwijndrecht",
+      "verdict": "match",
+      "nature": "hull-port-of-registry-after-name"
+    },
+    {
+      "a": "Qamar Al Khaleej",
+      "b": "Qamar Al Khaleej II",
+      "verdict": "different",
+      "nature": "hull-numeral-added"
+    },
+    {
+      "a": "Sahm Al Bahr",
+      "b": "Sahm Al Bahr II",
+      "verdict": "different",
+      "nature": "hull-numeral-added"
+    },
+    {
+      "a": "Amerbaars",
+      "b": "Amerbaarzen",
+      "verdict": "different",
+      "nature": "hull-plural"
+    },
+    {
+      "a": "Hiltje Geertruida",
+      "b": "HILTJE GEERTRUIDA ENI 02316642",
+      "verdict": "match",
+      "nature": "hull-eni-residue"
+    },
+    {
+      "a": "Dintelreiger - Rotterdam",
+      "b": "Dintelreiger",
+      "verdict": "match",
+      "nature": "hull-port-of-registry-after-name"
+    },
+    {
+      "a": "Duwboot Stroomkracht IV",
+      "b": "Duwboot Stroomkracht VI",
+      "verdict": "different",
+      "nature": "hull-fleet-number-changed"
+    },
+    {
+      "a": "Qamar Al Khaleej (ex Rimal Star)",
+      "b": "Rimal Star",
+      "verdict": "match",
+      "nature": "hull-former-name-alias"
+    },
+    {
+      "a": "Sahil Tanker 12",
+      "b": "Sahil Tanker XII",
+      "verdict": "match",
+      "nature": "hull-arabic-versus-roman-numeral"
+    },
+    {
+      "a": "Rijnkrekel",
+      "b": "MTS RIJNKREKEL (ex Noordgouw)",
+      "verdict": "match",
+      "nature": "hull-current-name-with-former-name"
+    },
+    {
+      "a": "Waalpluvier",
+      "b": "Waalpluviers",
+      "verdict": "different",
+      "nature": "hull-plural"
+    },
+    {
+      "a": "Maha Gulf 3",
+      "b": "M/T Maha Gulf III",
+      "verdict": "match",
+      "nature": "hull-arabic-versus-roman-numeral"
+    },
+    {
+      "a": "M/T Wafrat Al Najm",
+      "b": "Wafrat Al Najm (IMO 9388142)",
+      "verdict": "match",
+      "nature": "hull-prefix-and-imo-residue"
+    },
+    {
+      "a": "Lekstern",
+      "b": "Lekstern, Werkendam",
+      "verdict": "match",
+      "nature": "hull-port-of-registry-after-name"
+    },
+    {
+      "a": "Rijnreus 7 (duwboot)",
+      "b": "Rijnreus 7",
+      "verdict": "match",
+      "nature": "hull-pusher-tug-type-residue"
+    },
+    {
+      "a": "Maha Gulf 7",
+      "b": "Maha Gulf 17",
+      "verdict": "different",
+      "nature": "hull-fleet-number-changed"
+    },
+    {
+      "a": "Vlietzwaluw",
+      "b": "TMS Waalpluvier ex Vlietzwaluw",
+      "verdict": "match",
+      "nature": "hull-former-name-alias"
+    },
+    {
+      "a": "Gulf Mahara",
+      "b": "Gulf Manara",
+      "verdict": "different",
+      "nature": "hull-one-letter-changed"
+    },
+    {
+      "a": "Spaarnemeeuw",
+      "b": "Spaarnemeeuwen",
+      "verdict": "different",
+      "nature": "hull-plural"
+    },
+    {
+      "a": "MS Hiltje Geertruida (ex Amstelgors)",
+      "b": "Amstelgors",
+      "verdict": "match",
+      "nature": "hull-former-name-alias"
+    },
+    {
+      "a": "Hiltje Geertruida",
+      "b": "Aaltje Geertruida",
+      "verdict": "different",
+      "nature": "hull-other-given-name-in-hull-name"
+    },
+    {
+      "a": "Gulf Mahara IMO 9503371",
+      "b": "Gulf Mahara 2",
+      "verdict": "different",
+      "nature": "hull-numeral-added"
+    },
+    {
+      "a": "Merwedekoet",
+      "b": "Merwedeboot",
+      "verdict": "different",
+      "nature": "hull-one-letter-changed"
+    },
+    {
+      "a": "Qamar Al Khaleej ex-Rimal Star",
+      "b": "QAMAR AL KHALEEJ",
+      "verdict": "match",
+      "nature": "hull-current-name-with-former-name"
+    },
+    {
+      "a": "Lekstern",
+      "b": "Lekstern 2",
+      "verdict": "different",
+      "nature": "hull-numeral-added"
+    },
+    {
+      "a": "MT Sahm Al Bahr IMO 9412257",
+      "b": "SAHM AL BAHR",
+      "verdict": "match",
+      "nature": "hull-prefix-and-imo-residue"
+    },
+    {
+      "a": "Amstelgors",
+      "b": "Amstelgors II",
+      "verdict": "different",
+      "nature": "hull-numeral-added"
+    },
+    {
+      "a": "MV Gulf Mahara",
+      "b": "Gulf Mahara IMO 9503371",
+      "verdict": "match",
+      "nature": "hull-prefix-and-imo-residue"
+    },
+    {
+      "a": "Nour Al Mafazat",
+      "b": "M/T Nour Al Mafazat (ex Tarfa Breeze)",
+      "verdict": "match",
+      "nature": "hull-current-name-with-former-name"
+    },
+    {
+      "a": "Qamar Al Khaleej (ex Rimal Star)",
+      "b": "Rimal Stars",
+      "verdict": "different",
+      "nature": "hull-former-name-plural"
+    },
+    {
+      "a": "Maha Gulf VII",
+      "b": "Maha Gulf VIII",
+      "verdict": "different",
+      "nature": "hull-fleet-number-changed"
+    },
+    {
+      "a": "Sadeem Al Qurm",
+      "b": "Sadeem Al Bahr",
+      "verdict": "different",
+      "nature": "hull-other-word"
+    },
+    {
+      "a": "Wafrat Al Najm",
+      "b": "WAFRAT AL-NAJM",
+      "verdict": "match",
+      "nature": "hull-hyphenated-article"
+    },
+    {
+      "a": "Nour Al Mafazat",
+      "b": "Nour Al Mafazat 2",
+      "verdict": "different",
+      "nature": "hull-numeral-added"
+    },
+    {
+      "a": "Rijnreus 7 (duwboot)",
+      "b": "Rijnreus 8",
+      "verdict": "different",
+      "nature": "hull-fleet-number-changed"
+    },
+    {
+      "a": "Maha Gulf 7",
+      "b": "Maha Gulf VII",
+      "verdict": "match",
+      "nature": "hull-arabic-versus-roman-numeral"
+    },
+    {
+      "a": "IJsselkwak",
+      "b": "Amstelkwak",
+      "verdict": "different",
+      "nature": "hull-other-word"
+    },
+    {
+      "a": "Zahrat Al Qurm",
+      "b": "Zahrat Al Qarn",
+      "verdict": "different",
+      "nature": "hull-other-word"
+    },
+    {
+      "a": "Qamar Al Khaleej",
+      "b": "M.T. Qamar Al Khaleej",
+      "verdict": "match",
+      "nature": "hull-seagoing-type-prefix"
+    },
+    {
+      "a": "Waalpluvier (ex Vlietzwaluw)",
+      "b": "TMS Waalpluvier",
+      "verdict": "match",
+      "nature": "hull-current-name-with-former-name"
+    },
+    {
+      "a": "GMS IJsselkwak",
+      "b": "IJsselkwak (Kampen)",
+      "verdict": "match",
+      "nature": "hull-port-of-registry-after-name"
+    },
+    {
+      "a": "Wadi Sahab",
+      "b": "Wadi Sahal",
+      "verdict": "different",
+      "nature": "hull-one-letter-changed"
+    },
+    {
+      "a": "Nahr Al Khair 1",
+      "b": "Nahr Al Khair 2",
+      "verdict": "different",
+      "nature": "hull-sister-ship-number"
+    },
+    {
+      "a": "Zahrat Al Qurm",
+      "b": "Zahrat Al Qurm 2",
+      "verdict": "different",
+      "nature": "hull-numeral-added"
+    },
+    {
+      "a": "Duwbak Rijnreus 71",
+      "b": "Rijnreus 71",
+      "verdict": "match",
+      "nature": "hull-pushed-barge-prefix"
+    },
+    {
+      "a": "Oude Maasvink",
+      "b": "Nieuwe Maasvink",
+      "verdict": "different",
+      "nature": "hull-other-word"
+    },
+    {
+      "a": "MTS Rijnkrekel",
+      "b": "Rijnkrekel",
+      "verdict": "match",
+      "nature": "hull-inland-type-prefix"
+    },
+    {
+      "a": "GMS Lekstern",
+      "b": "Lekstern (ENI 02325518)",
+      "verdict": "match",
+      "nature": "hull-prefix-and-eni-residue"
+    },
+    {
+      "a": "BY ORDER OF KUIPERSVEER HANDEL EN TRANSPORT BV",
+      "b": "Kuipersveer Handel & Transport B.V.",
+      "verdict": "match",
+      "nature": "edi-payment-narrative-prefix"
+    },
+    {
+      "a": "KUIPERSVEER HANDEL + TRANSPORT BV",
+      "b": "Kuipersveer Handel & Transport N.V.",
+      "verdict": "different",
+      "nature": "edi-bv-versus-nv"
+    },
+    {
+      "a": "NAD+CZ+++OMMERZIJL VEEVOEDERS BV+INDUSTRIEWEG 41+OMMEN++7731TK+NL'",
+      "b": "Ommerzijl Veetransport B.V.",
+      "verdict": "different",
+      "nature": "edi-edifact-other-activity-word"
+    },
+    {
+      "a": "BY ORDER OF KUIPERSVEER HANDEL EN TRANSPORT BV",
+      "b": "Kuipersveer Handel en Tuinbouw B.V.",
+      "verdict": "different",
+      "nature": "edi-other-activity-word"
+    },
+    {
+      "a": "NAD+CA+++BROUWERSHAVEN MARITIME SUPPLIES BV'",
+      "b": "Brouwershaven Maritime Supplies Ltd",
+      "verdict": "different",
+      "nature": "edi-foreign-subsidiary"
+    },
+    {
+      "a": "/0012998871\n1/FANAR AL RAMLAH SHIPPING SERVICES\n1/L.L.C.\n2/PORT RASHID ROAD\n3/AE/DUBAI",
+      "b": "Fanar Al Ramlah Marine Services L.L.C.",
+      "verdict": "different",
+      "nature": "edi-mt103-other-activity-word"
+    },
+    {
+      "a": "NAD+SU+++DIJKGRAAF-VELTKAMP AGRARISCHE HANDE:L BV+POLDERWEG 7+DRONTEN++8251PA+NL'",
+      "b": "Dijkgraaf-Veltkamp Agrarische Loonwerken B.V.",
+      "verdict": "different",
+      "nature": "edi-edifact-other-activity-word"
+    },
+    {
+      "a": "ETS FERHAT OULMANE",
+      "b": "Ets Ferhat Ouchene",
+      "verdict": "different",
+      "nature": "edi-other-family-name"
+    },
+    {
+      "a": "GEBROEDERS TJALLINGII SCHEEPSBENODI",
+      "b": "Gebroeders Tjallingii Scheepsbouw B.V.",
+      "verdict": "different",
+      "nature": "edi-truncation-incompatible"
+    },
+    {
+      "a": "COOPERATIEVE ZUIVELHANDEL TERPENLAND UA",
+      "b": "Coöperatieve Veehandel Terpenland U.A.",
+      "verdict": "different",
+      "nature": "edi-other-activity-word"
+    },
+    {
+      "a": "STE TLEMCENIENNE DE TRANSIT BENKHELIFA",
+      "b": "Société Tlemcénienne de Transit Benkhelifa S.A.R.L.",
+      "verdict": "match",
+      "nature": "edi-ste-abbreviation-form-dropped"
+    },
+    {
+      "a": "STE TLEMCENIENNE DE TRANSIT BENKHELIFA",
+      "b": "Société Tlemcénienne de Transport Benkhelifa",
+      "verdict": "different",
+      "nature": "edi-transit-versus-transport"
+    },
+    {
+      "a": "/0019004455\nHAYAT AL SAHRA TRADING EST.\nPO BOX 1187\nSHARJAH AE",
+      "b": "Hayat Al Sahra Trading L.L.C.",
+      "verdict": "different",
+      "nature": "edi-establishment-versus-llc"
+    },
+    {
+      "a": "FANAR AL RAMLAH SHIPPING SERVICES LLCPORT RASHID DUBAI",
+      "b": "Fanar Al Ramlah Shipping Services FZE",
+      "verdict": "different",
+      "nature": "edi-mainland-versus-free-zone"
+    },
+    {
+      "a": "NOTIFY: SAWAHIL KHOR FAKKAN SHIP CHANDLERS (LLC) KHOR FAKKAN PORT",
+      "b": "Sawahil Khor Fakkan Ship Chandlers L.L.C.",
+      "verdict": "match",
+      "nature": "edi-manifest-notify-line"
+    },
+    {
+      "a": "RHEIN-MAAS UMSCHLAGGES. DUSSELHOFF MBH",
+      "b": "Rhein-Maas Umschlaggesellschaft Düsselhoff GmbH & Co. KG",
+      "verdict": "different",
+      "nature": "edi-gmbh-versus-kg"
+    },
+    {
+      "a": "SCHEEPSBEVRACHTINGSKANTOOR HOLLANDS CH DIEP BV",
+      "b": "Scheepsbevrachtingskantoor Hollandsch Diep B.V.",
+      "verdict": "match",
+      "nature": "edi-line-cut-mid-word-joined-with-space"
+    },
+    {
+      "a": "NAJMAT AL SHARQ AUTO SPARE PARTS TRADING LLC AL QUOZ IND AREA 3 DUBAI UAE",
+      "b": "Najmat Al Sharq Auto Spare Parts Trading L.L.C.",
+      "verdict": "match",
+      "nature": "edi-address-glued-to-name"
+    },
+    {
+      "a": "NAD+CN+++MAJLIS AL TUJJAR GENERAL TRADING LL:C+SHOP 4 NAIF ROAD+DUBAI++00000+AE'",
+      "b": "Majlis Al Tujjar Electronics Trading L.L.C.",
+      "verdict": "different",
+      "nature": "edi-edifact-other-activity-word"
+    },
+    {
+      "a": "VAN RIEMSDIJK-OMMEREN INTERNATIONAL",
+      "b": "Van Riemsdijk-Ommeren Binnenlandse Expeditie B.V.",
+      "verdict": "different",
+      "nature": "edi-truncation-incompatible"
+    },
+    {
+      "a": "GEBR TJALLINGII SCHEEPSBENODIGDHEDEN",
+      "b": "Gebroeders Tjallingii Scheepsbenodigdheden B.V.",
+      "verdict": "match",
+      "nature": "edi-abbreviation-in-export"
+    },
+    {
+      "a": "SAWAHIL KHOR FAKKAN SHIP CHANDLERS L L C",
+      "b": "Sawahil Khor Fakkan Ship Chandlers L.L.C.",
+      "verdict": "match",
+      "nature": "edi-legal-form-dots-to-spaces"
+    },
+    {
+      "a": "NAD+CZ+++TRANSPORTBEDRIJF LIEVENSE ?'S-HEEREN:HOEK BV+DORPSSTRAAT 9+?'S-HEERENHOEK++4453AB+NL'",
+      "b": "Transportbedrijf Lievense 's-Gravendeel B.V.",
+      "verdict": "different",
+      "nature": "edi-other-place-name"
+    },
+    {
+      "a": "QASR AL DANA MARINE ENGG FZE",
+      "b": "Qasr Al Dana Marine Engineering FZ-LLC",
+      "verdict": "different",
+      "nature": "edi-fze-versus-fz-llc"
+    },
+    {
+      "a": "CNEE NOORDELIJKE GRAANOVERSLAG EEMSMOND BV DELFZIJL NL",
+      "b": "Noordelijke Graanoverslag Eemsmond B.V.",
+      "verdict": "match",
+      "nature": "edi-manifest-consignee-line"
+    },
+    {
+      "a": "NAD+CZ+++TRANSPORTBEDRIJF LIEVENSE ?'S-HEEREN:HOEK BV+DORPSSTRAAT 9+?'S-HEERENHOEK++4453AB+NL'",
+      "b": "Transportbedrijf Lievense 's-Heerenhoek B.V.",
+      "verdict": "match",
+      "nature": "edi-edifact-escape-and-component-split"
+    },
+    {
+      "a": "RIYAH AL OUD PERFUMES TRADING L.L.C.\nSHOP 12 GOLD SOUK\nDEIRA",
+      "b": "Riyah Al Ward Perfumes Trading LLC",
+      "verdict": "different",
+      "nature": "edi-other-word-in-name"
+    },
+    {
+      "a": "SAWAHIL KHOR FAKKAN SHIP CHANDLERS L L C",
+      "b": "Sawahil Khor Fakkan Ship Repairs L.L.C.",
+      "verdict": "different",
+      "nature": "edi-other-activity-word"
+    },
+    {
+      "a": "/0012998871\n1/FANAR AL RAMLAH SHIPPING SERVICES\n1/L.L.C.\n2/PORT RASHID ROAD\n3/AE/DUBAI",
+      "b": "Fanar Al Ramlah Shipping Services L.L.C.",
+      "verdict": "match",
+      "nature": "edi-mt103-59f-structured-lines"
+    },
+    {
+      "a": "ETS FERHAT OULMANE",
+      "b": "Etablissements Ferhat Oulmane",
+      "verdict": "match",
+      "nature": "edi-ets-abbreviation-uppercase"
+    },
+    {
+      "a": "WEIDENHOF CHEMICALS TRADING FZE          AE",
+      "b": "Weidenhof Chemicals Trading F.Z.E.",
+      "verdict": "match",
+      "nature": "edi-fixed-width-padding"
+    },
+    {
+      "a": "VAN RIEMSDIJK-OMMEREN INTERNATIONAL",
+      "b": "Van Riemsdijk-Ommeren Internationale Expeditie B.V.",
+      "verdict": "match",
+      "nature": "edi-name-truncated-at-35"
+    },
+    {
+      "a": "KUIPERSVEER HANDEL + TRANSPORT BV",
+      "b": "Kuipersveer Handel & Transport B.V.",
+      "verdict": "match",
+      "nature": "edi-swift-charset-ampersand"
+    },
+    {
+      "a": "SOCIETE TLEMCENIENNE DE TRANSIT BENKHELIFA SARL",
+      "b": "Société Tlemcénienne de Transit Benkhelifa S.A.R.L.",
+      "verdict": "match",
+      "nature": "edi-uppercase-export-without-diacritics"
+    },
+    {
+      "a": "DIJKGRAAF VELTKAMP AGRARISCHE HANDEL",
+      "b": "Dijkgraaf-Veltman Agrarische Handel B.V.",
+      "verdict": "different",
+      "nature": "edi-other-family-name"
+    },
+    {
+      "a": "HAYAT AL SAHRA TRADING EST",
+      "b": "Hayat Al Sahra Trading Establishment",
+      "verdict": "match",
+      "nature": "edi-uppercase-export-abbreviated-form"
+    },
+    {
+      "a": "NAJMAT AL SHARQ AUTO SPARE PARTS TRADING LLC AL QUOZ IND AREA 3 DUBAI UAE",
+      "b": "Najmat Al Gharb Auto Spare Parts Trading L.L.C.",
+      "verdict": "different",
+      "nature": "edi-other-compass-word"
+    },
+    {
+      "a": "/7710046632\nZUIDWIJK KOEL- EN VRIESHUIZEN BV\nHAVENWEG 3\n3133 KD VLAARDINGEN",
+      "b": "Zuidwijk Koel- en Vrieshuizen B.V.",
+      "verdict": "match",
+      "nature": "edi-mt103-59-beneficiary-block"
+    },
+    {
+      "a": "QASR AL DANA MARINE ENGG FZE",
+      "b": "Qasr Al Dana Marine Engineering FZE",
+      "verdict": "match",
+      "nature": "edi-swift-abbreviations"
+    },
+    {
+      "a": "MAJLIS AL TUJJAR GEN TRDG LLC DEIRA DUBAI",
+      "b": "Majlis Al Ummal Gen Trdg LLC",
+      "verdict": "different",
+      "nature": "edi-other-word-in-name"
+    },
+    {
+      "a": "GEBROEDERS TJALLINGII SCHEEPSBENODI",
+      "b": "Gebroeders Tjallingii Scheepsbenodigdheden B.V.",
+      "verdict": "match",
+      "nature": "edi-name-truncated-at-35"
+    },
+    {
+      "a": "TAMR AL WADI DATES FACTORY LLC",
+      "b": "Tamr Al Nakheel Dates Factory LLC",
+      "verdict": "different",
+      "nature": "edi-other-word-in-name"
+    },
+    {
+      "a": "NAD+SU+++DIJKGRAAF-VELTKAMP AGRARISCHE HANDE:L BV+POLDERWEG 7+DRONTEN++8251PA+NL'",
+      "b": "Dijkgraaf-Veltkamp Agrarische Handel B.V.",
+      "verdict": "match",
+      "nature": "edi-edifact-component-split-at-35"
+    },
+    {
+      "a": "RHEIN-MAAS UMSCHLAGGES. DUSSELHOFF MBH",
+      "b": "Rhein-Maas Umschlaggesellschaft Düsselhoff mbH",
+      "verdict": "match",
+      "nature": "edi-umlaut-dropped-and-abbreviated"
+    },
+    {
+      "a": "NOTIFY: SAWAHIL KHOR FAKKAN SHIP CHANDLERS (LLC) KHOR FAKKAN PORT",
+      "b": "Sawahil Fujairah Ship Chandlers L.L.C.",
+      "verdict": "different",
+      "nature": "edi-other-place-name"
+    },
+    {
+      "a": "MAJLIS AL TUJJAR GEN TRDG LLC DEIRA DUBAI",
+      "b": "Majlis Al Tujjar General Trading L.L.C.",
+      "verdict": "match",
+      "nature": "edi-swift-abbreviations-with-address"
+    },
+    {
+      "a": "FANAR AL RAMLAH SHIPPING SERVICES LLCPORT RASHID DUBAI",
+      "b": "Fanar Al Ramlah Shipping Services L.L.C.",
+      "verdict": "match",
+      "nature": "edi-address-glued-without-space"
+    },
+    {
+      "a": "NAD+CA+++BROUWERSHAVEN MARITIME SUPPLIES BV'",
+      "b": "Brouwershaven Maritime Supplies B.V.",
+      "verdict": "match",
+      "nature": "edi-edifact-nad-segment"
+    },
+    {
+      "a": "/0031552090\nTAMR AL WADI DATES FACTORY L.L.C. P\n.O. BOX 8817 AL AIN UAE",
+      "b": "Tamr Al Wadi Dates Factory L.L.C.",
+      "verdict": "match",
+      "nature": "edi-mt103-50k-line-cut"
+    },
+    {
+      "a": "AL KHAWANEEJ BLDG MAT TRDG LLC",
+      "b": "Al Khawaneej Building Contracting L.L.C.",
+      "verdict": "different",
+      "nature": "edi-abbreviation-other-activity-words"
+    },
+    {
+      "a": "WEIDENHOF CHEMICALS TRADING FZE          AE",
+      "b": "Weidenhof Plastics Trading FZE",
+      "verdict": "different",
+      "nature": "edi-other-activity-word"
+    },
+    {
+      "a": "/7710046632\nZUIDWIJK KOEL- EN VRIESHUIZEN BV\nHAVENWEG 3\n3133 KD VLAARDINGEN",
+      "b": "Zuidwijk Koel- en Vriestransport B.V.",
+      "verdict": "different",
+      "nature": "edi-mt103-other-activity-word"
+    },
+    {
+      "a": "/0019004455\nHAYAT AL SAHRA TRADING EST.\nPO BOX 1187\nSHARJAH AE",
+      "b": "Hayat Al Sahra Trading Est.",
+      "verdict": "match",
+      "nature": "edi-mt103-50k-ordering-customer"
+    },
+    {
+      "a": "COÖPERATIEVE ZUIVELHANDEL TERPENLAND U.A. T.A.V. CREDITEURENADMINISTRATIE",
+      "b": "Coöperatieve Zuivelhandel Terpenland U.A.",
+      "verdict": "match",
+      "nature": "edi-attention-line-residue"
+    },
+    {
+      "a": "RHEIN-MAAS UMSCHLAGGESELLSCHAFT DUESSELHOFF MBH",
+      "b": "Rhein-Maas Umschlaggesellschaft Duisberg mbH",
+      "verdict": "different",
+      "nature": "edi-other-family-name"
+    },
+    {
+      "a": "ETS. FERHAT OULMANE, ZONE INDUSTRIELLE, BEJAIA",
+      "b": "Établissements Mourad Oulmane",
+      "verdict": "different",
+      "nature": "edi-other-given-name"
+    },
+    {
+      "a": "/0048117263\nM/S SANABIL AL RAWDA FOODSTUFF TRAD\nING LLC PO BOX 55123 DUBAI UAE",
+      "b": "Sanabil Al Rawda Foodstuff Trading L.L.C.",
+      "verdict": "match",
+      "nature": "edi-mt103-50k-line-cut-mid-word"
+    },
+    {
+      "a": "DIJKGRAAF VELTKAMP AGRARISCHE HANDEL",
+      "b": "Dijkgraaf-Veltkamp Agrarische Handel B.V.",
+      "verdict": "match",
+      "nature": "edi-hyphen-and-form-dropped"
+    },
+    {
+      "a": "CNEE NOORDELIJKE GRAANOVERSLAG EEMSMOND BV DELFZIJL NL",
+      "b": "Zuidelijke Graanoverslag Eemsmond B.V.",
+      "verdict": "different",
+      "nature": "edi-other-compass-word"
+    },
+    {
+      "a": "SHIPPER: WEIDENHOF CHEMICALS TRADING FZE, P.O. BOX 262410, JEBEL ALI, DUBAI",
+      "b": "Weidenhof Chemicals Trading FZCO",
+      "verdict": "different",
+      "nature": "edi-manifest-other-registration"
+    },
+    {
+      "a": "BROUWERSHAVEN MARITIME SUPPLIES BV ATTN ACCOUNTS PAYABLE",
+      "b": "Brouwershaven Maritime Services B.V.",
+      "verdict": "different",
+      "nature": "edi-other-activity-word"
+    },
+    {
+      "a": "AL KHAWANEEJ BLDG MAT TRDG LLC",
+      "b": "Al Khawaneej Building Materials Trading L.L.C.",
+      "verdict": "match",
+      "nature": "edi-swift-abbreviations"
+    },
+    {
+      "a": "RIYAH AL OUD PERFUMES TRADING L.L.C.\nSHOP 12 GOLD SOUK\nDEIRA",
+      "b": "Riyah Al Oud Perfumes Trading LLC",
+      "verdict": "match",
+      "nature": "edi-multi-line-address-block"
+    },
+    {
+      "a": "ZUIDWIJK KOEL EN VRIESHUIZEN",
+      "b": "Zuidwijk Koel- en Vrieshuizen B.V.",
+      "verdict": "match",
+      "nature": "edi-hyphen-and-form-dropped"
+    },
+    {
+      "a": "/0048117263\nM/S SANABIL AL RAWDA FOODSTUFF TRAD\nING LLC PO BOX 55123 DUBAI UAE",
+      "b": "Sanabil Al Rawda Bakery L.L.C.",
+      "verdict": "different",
+      "nature": "edi-mt103-other-activity-words"
+    },
+    {
+      "a": "TAMR AL WADI DATES FACTORY LLC",
+      "b": "Tamr Al Wadi Dates Factory L.L.C. - Al Ain",
+      "verdict": "match",
+      "nature": "edi-city-suffix"
+    },
+    {
+      "a": "COOPERATIEVE ZUIVELHANDEL TERPENLAND UA",
+      "b": "Coöperatieve Zuivelhandel Terpenland U.A.",
+      "verdict": "match",
+      "nature": "edi-uppercase-export-without-diacritics"
+    },
+    {
+      "a": "ZUIDWIJK KOEL EN VRIESHUIZEN",
+      "b": "Noordwijk Koel- en Vrieshuizen B.V.",
+      "verdict": "different",
+      "nature": "edi-other-place-name"
+    },
+    {
+      "a": "/0031552090\nTAMR AL WADI DATES FACTORY L.L.C. P\n.O. BOX 8817 AL AIN UAE",
+      "b": "Tamr Al Wadi Dates Trading L.L.C.",
+      "verdict": "different",
+      "nature": "edi-factory-versus-trading"
+    },
+    {
+      "a": "NAD+CN+++MAJLIS AL TUJJAR GENERAL TRADING LL:C+SHOP 4 NAIF ROAD+DUBAI++00000+AE'",
+      "b": "Majlis Al Tujjar General Trading L.L.C.",
+      "verdict": "match",
+      "nature": "edi-edifact-component-split-at-35"
+    },
+    {
+      "a": "RHEIN-MAAS UMSCHLAGGESELLSCHAFT DUESSELHOFF MBH",
+      "b": "Rhein-Maas Umschlaggesellschaft Düsselhoff mbH",
+      "verdict": "match",
+      "nature": "edi-umlaut-transliterated"
+    },
+    {
+      "a": "NAD+CZ+++OMMERZIJL VEEVOEDERS BV+INDUSTRIEWEG 41+OMMEN++7731TK+NL'",
+      "b": "Ommerzijl Veevoeders B.V.",
+      "verdict": "match",
+      "nature": "edi-edifact-nad-segment"
+    },
+    {
+      "a": "SOCIETE TLEMCENIENNE DE TRANSIT BENKHELIFA SARL",
+      "b": "Société Oranaise de Transit Benkhelifa S.A.R.L.",
+      "verdict": "different",
+      "nature": "edi-other-place-word"
+    },
+    {
+      "a": "COÖPERATIEVE ZUIVELHANDEL TERPENLAND U.A. T.A.V. CREDITEURENADMINISTRATIE",
+      "b": "Zuivelhandel Terpenland B.V.",
+      "verdict": "different",
+      "nature": "edi-cooperative-versus-bv"
+    },
+    {
+      "a": "ETS. FERHAT OULMANE, ZONE INDUSTRIELLE, BEJAIA",
+      "b": "Établissements Ferhat Oulmane",
+      "verdict": "match",
+      "nature": "edi-address-glued-to-name"
+    },
+    {
+      "a": "SCHEEPSBEVRACHTINGSKANTOOR HOLLANDS CH DIEP BV",
+      "b": "Scheepsbevrachtingskantoor Hollandsche IJssel B.V.",
+      "verdict": "different",
+      "nature": "edi-line-cut-other-place-name"
+    },
+    {
+      "a": "BROUWERSHAVEN MARITIME SUPPLIES BV ATTN ACCOUNTS PAYABLE",
+      "b": "Brouwershaven Maritime Supplies B.V.",
+      "verdict": "match",
+      "nature": "edi-attention-line-residue"
+    },
+    {
+      "a": "SHIPPER: WEIDENHOF CHEMICALS TRADING FZE, P.O. BOX 262410, JEBEL ALI, DUBAI",
+      "b": "Weidenhof Chemicals Trading FZE",
+      "verdict": "match",
+      "nature": "edi-manifest-shipper-line"
+    },
+    {
+      "a": "GEBR TJALLINGII SCHEEPSBENODIGDHEDEN",
+      "b": "Gebr. Tjallingii Scheepsreparaties",
+      "verdict": "different",
+      "nature": "edi-other-activity-word"
+    },
+    {
+      "a": "HAYAT AL SAHRA TRADING EST",
+      "b": "Hayat Al Bahr Trading Est.",
+      "verdict": "different",
+      "nature": "edi-other-word-in-name"
+    },
+    {
+      "a": "Hand. Wijnbergen-Posthuma",
+      "b": "Handelsonderneming Wijnbergen-Posthuma",
+      "verdict": "match",
+      "nature": "chat-dutch-abbreviations"
+    },
+    {
+      "a": "sha7een bahri marine services",
+      "b": "Shaheen Bahri Marine Services",
+      "verdict": "match",
+      "nature": "chat-arabizi-7-for-h"
+    },
+    {
+      "a": "PERNlSSER K0ELVEEM B.V.",
+      "b": "Pernisser Koelveem B.V.",
+      "verdict": "match",
+      "nature": "chat-ocr-digit-and-letter-confusion"
+    },
+    {
+      "a": "Kleinhekkingg Veevoer B.V.",
+      "b": "Kleinhekking Veevoer B.V.",
+      "verdict": "match",
+      "nature": "chat-doubled-letter"
+    },
+    {
+      "a": "Internat. Expeditiemij. Zuidervliet",
+      "b": "Internat. Bevrachtingsmij. Zuidervliet",
+      "verdict": "different",
+      "nature": "chat-dutch-abbreviation-other-activity"
+    },
+    {
+      "a": "Pernisser Koelveem",
+      "b": "Pernisser Koelvervoer B.V.",
+      "verdict": "different",
+      "nature": "chat-other-activity-word"
+    },
+    {
+      "a": "Scheepv. Mij. Oostervliet",
+      "b": "Scheepsbouw Mij. Oostervliet",
+      "verdict": "different",
+      "nature": "chat-dutch-abbreviation-other-activity"
+    },
+    {
+      "a": "Tariq Al Suwaidi Tyers",
+      "b": "Tariq Al Suwaidi Tyres",
+      "verdict": "match",
+      "nature": "chat-transposed-letters"
+    },
+    {
+      "a": "Int. Exp. Mij. Zuidervliet B.V.",
+      "b": "Internationale Expeditie Maatschappij Zuidervliet B.V.",
+      "verdict": "match",
+      "nature": "chat-dutch-abbreviations"
+    },
+    {
+      "a": "6ariq al suwaidi tyres",
+      "b": "Tariq Al Suwaidi Tyres",
+      "verdict": "match",
+      "nature": "chat-arabizi-6-for-t"
+    },
+    {
+      "a": "BURJ AL RIMAL TILES TRADlNG L.L.C",
+      "b": "Burj Al Rimal Tiles Trading L.L.C.",
+      "verdict": "match",
+      "nature": "chat-ocr-l-for-i"
+    },
+    {
+      "a": "Alg. Transp. Mij. Noordervliet",
+      "b": "Algemene Transportmaatschappij Noordervliet",
+      "verdict": "match",
+      "nature": "chat-dutch-abbreviations"
+    },
+    {
+      "a": "Shaheen Bahri Marine Srvcs",
+      "b": "Shaheen Bahri Aviation Services",
+      "verdict": "different",
+      "nature": "chat-other-activity-word"
+    },
+    {
+      "a": "Scheepv. Mij. Oostervliet",
+      "b": "Scheepvaartmaatschappij Oostervliet",
+      "verdict": "match",
+      "nature": "chat-dutch-abbreviations"
+    },
+    {
+      "a": "Ra2ed Al Nuaimat Cargo",
+      "b": "Raed Al Nuaimat Cargo",
+      "verdict": "match",
+      "nature": "chat-arabizi-2-for-hamza"
+    },
+    {
+      "a": "Hoombeek Transport B.V.",
+      "b": "Hoornbeek Transport B.V.",
+      "verdict": "match",
+      "nature": "chat-ocr-rn-read-as-m"
+    },
+    {
+      "a": "3abdulla al 9ayegh pearl jewellery",
+      "b": "Abdullah Al Sabbagh Pearl Jewellery",
+      "verdict": "different",
+      "nature": "chat-arabizi-other-family-name"
+    },
+    {
+      "a": "khalfan muhannadi autoparts",
+      "b": "Khalfan Al Muhannadi Auto Parts",
+      "verdict": "match",
+      "nature": "chat-lowercase-article-dropped"
+    },
+    {
+      "a": "KLEINHEKKINQ VEEVOER B.V.",
+      "b": "Kleinhekking Veevervoer B.V.",
+      "verdict": "different",
+      "nature": "chat-ocr-other-activity-word"
+    },
+    {
+      "a": "KLEINHEKKINQ VEEVOER B.V.",
+      "b": "Kleinhekking Veevoer B.V.",
+      "verdict": "match",
+      "nature": "chat-ocr-g-read-as-q"
+    },
+    {
+      "a": "BURJ AL RIMAL TILES TRADlNG L.L.C",
+      "b": "Burj Al Rimal Tiles Factory L.L.C.",
+      "verdict": "different",
+      "nature": "chat-trading-versus-factory"
+    },
+    {
+      "a": "What Al Rimal Trading",
+      "b": "Wahat Al Rimal Trading",
+      "verdict": "match",
+      "nature": "chat-autocorrect-one-letter"
+    },
+    {
+      "a": "sa3eed al rumaithi ship supplies",
+      "b": "Saad Al Rumaithi Ship Supplies",
+      "verdict": "different",
+      "nature": "chat-arabizi-other-given-name"
+    },
+    {
+      "a": "Int. Exp. Mij. Zuidervliet B.V.",
+      "b": "Int. Exp. Mij. Noordervliet B.V.",
+      "verdict": "different",
+      "nature": "chat-other-compass-word"
+    },
+    {
+      "a": "AL RUMAITH1 TRAD1NG EST.",
+      "b": "Al Rumaithi Travel Est.",
+      "verdict": "different",
+      "nature": "chat-ocr-other-activity-word"
+    },
+    {
+      "a": "sha7een bahri marine services",
+      "b": "Shaheen Bahri Marine Engineering",
+      "verdict": "different",
+      "nature": "chat-arabizi-other-activity-word"
+    },
+    {
+      "a": "Shaheen Bahri Marine Srvcs",
+      "b": "Shaheen Bahri Marine Services",
+      "verdict": "match",
+      "nature": "chat-abbreviation"
+    },
+    {
+      "a": "HoornbeekTransportBV",
+      "b": "Hoornbeek Transport B.V.",
+      "verdict": "match",
+      "nature": "chat-missing-spaces"
+    },
+    {
+      "a": "Ra'ed Al-Nuaimat Cargo",
+      "b": "Ra2ed Al Nuaimat Cargo",
+      "verdict": "match",
+      "nature": "chat-arabizi-versus-apostrophe"
+    },
+    {
+      "a": "Gebr. Kleinhekking Transp.",
+      "b": "Gebroeders Kleinhekking Transport",
+      "verdict": "match",
+      "nature": "chat-dutch-abbreviations"
+    },
+    {
+      "a": "Mo7ammed Sa3eed Al Hattali Trading",
+      "b": "Mohammed Saeed Al Hattali Trading",
+      "verdict": "match",
+      "nature": "chat-arabizi-mixed-digits"
+    },
+    {
+      "a": "5alfan Al Muhannadi Auto Parts",
+      "b": "Khalfan Al Muhannadi Auto Parts",
+      "verdict": "match",
+      "nature": "chat-arabizi-5-for-kh"
+    },
+    {
+      "a": "AL RUMAITH1 TRAD1NG EST.",
+      "b": "Al Rumaithi Trading Est.",
+      "verdict": "match",
+      "nature": "chat-ocr-1-for-i"
+    },
+    {
+      "a": "DarAlHamdanGeneralTrading",
+      "b": "Dar Al Hamdan General Trading",
+      "verdict": "match",
+      "nature": "chat-missing-spaces"
+    },
+    {
+      "a": "Stempel: Wijnbergen-Posthuma Handelsonderneming Harlingen",
+      "b": "Wijnbergen-Posthuma Scheepswerf Harlingen",
+      "verdict": "different",
+      "nature": "chat-stamp-other-activity-word"
+    },
+    {
+      "a": "3abdulla al 9ayegh pearl jewellery",
+      "b": "Abdullah Al Sayegh Pearl Jewellery",
+      "verdict": "match",
+      "nature": "chat-arabizi-3-and-9"
+    },
+    {
+      "a": "Alg. Transp. Mij. Noordervliet",
+      "b": "Alg. Handelsmij. Noordervliet",
+      "verdict": "different",
+      "nature": "chat-dutch-abbreviation-other-activity"
+    },
+    {
+      "a": "Dar Al 7amdan General Trading",
+      "b": "Dar Al Hamrani General Trading",
+      "verdict": "different",
+      "nature": "chat-arabizi-other-family-name"
+    },
+    {
+      "a": "Ra'ed Al-Nuaimat Cargo",
+      "b": "Ra'ed Al-Nuaimat Couriers",
+      "verdict": "different",
+      "nature": "chat-other-activity-word"
+    },
+    {
+      "a": "Dar Al 7amdan General Trading",
+      "b": "Dar Al Hamdan General Trading",
+      "verdict": "match",
+      "nature": "chat-arabizi-7-for-h"
+    },
+    {
+      "a": "Burj Al Rival Tiles Trading",
+      "b": "Burj Al Rimal Tiles Contracting",
+      "verdict": "different",
+      "nature": "chat-autocorrect-other-activity-word"
+    },
+    {
+      "a": "Burj Al Rival Tiles Trading",
+      "b": "Burj Al Rimal Tiles Trading",
+      "verdict": "match",
+      "nature": "chat-autocorrect-one-letter"
+    },
+    {
+      "a": "Barakat Al Sahil Foodstuf Trading",
+      "b": "Barakat Al Shamal Foodstuff Trading",
+      "verdict": "different",
+      "nature": "chat-other-word-in-name"
+    },
+    {
+      "a": "5alfan Al Muhannadi Auto Parts",
+      "b": "Khalfan Al Muhairi Auto Parts",
+      "verdict": "different",
+      "nature": "chat-arabizi-other-family-name"
+    },
+    {
+      "a": "khalfan muhannadi autoparts",
+      "b": "Khalfan Al Muhannadi Autoglass",
+      "verdict": "different",
+      "nature": "chat-other-activity-word"
+    },
+    {
+      "a": "Al 3'ubaiba Cargo",
+      "b": "Al Ghurfa Cargo",
+      "verdict": "different",
+      "nature": "chat-arabizi-other-word"
+    },
+    {
+      "a": "PERNlSSER K0ELVEEM B.V.",
+      "b": "Pernisser Graanveem B.V.",
+      "verdict": "different",
+      "nature": "chat-ocr-other-activity-word"
+    },
+    {
+      "a": "Stempel: Wijnbergen-Posthuma Handelsonderneming Harlingen",
+      "b": "Handelsonderneming Wijnbergen-Posthuma",
+      "verdict": "match",
+      "nature": "chat-stamp-text-reordered"
+    },
+    {
+      "a": "Kleinhekking Veevoer B.V.",
+      "b": "Kleinhekkink Veevoer B.V.",
+      "verdict": "match",
+      "nature": "chat-one-letter-in-surname"
+    },
+    {
+      "a": "Kleinhekkink Veevoer B.V.",
+      "b": "Kleinhekking Veevoer Holding B.V.",
+      "verdict": "different",
+      "nature": "chat-typo-and-holding"
+    },
+    {
+      "a": "ABDULLAH AL SAYEGH PEARL JEVVELLERY",
+      "b": "Abdullah Al Sayegh Pearl Jewellery",
+      "verdict": "match",
+      "nature": "chat-ocr-w-read-as-vv"
+    },
+    {
+      "a": "Hoornbeek Transprot B.V.",
+      "b": "Hoornbeek Import B.V.",
+      "verdict": "different",
+      "nature": "chat-typo-other-activity-word"
+    },
+    {
+      "a": "Veldbreak Transport B.V.",
+      "b": "Veldkamp Transport B.V.",
+      "verdict": "different",
+      "nature": "chat-other-family-name"
+    },
+    {
+      "a": "HoornbeekTransportBV",
+      "b": "Hoornbeek Transport N.V.",
+      "verdict": "different",
+      "nature": "chat-missing-spaces-other-legal-form"
+    },
+    {
+      "a": "Gebr. Kleinhekking Transp.",
+      "b": "Wed. Kleinhekking Transp.",
+      "verdict": "different",
+      "nature": "chat-brothers-versus-widow"
+    },
+    {
+      "a": "DarAlHamdanGeneralTrading",
+      "b": "Dar Al Hamdan General Contracting",
+      "verdict": "different",
+      "nature": "chat-missing-spaces-other-activity-word"
+    },
+    {
+      "a": "6ariq al suwaidi tyres",
+      "b": "Tariq Al Suwaidi Tiles",
+      "verdict": "different",
+      "nature": "chat-arabizi-other-activity-word"
+    },
+    {
+      "a": "Tariq Al Suwaidi Tyers",
+      "b": "Tariq Al Suwaidi Tailoring",
+      "verdict": "different",
+      "nature": "chat-typo-other-activity-word"
+    },
+    {
+      "a": "sa3eed al rumaithi ship supplies",
+      "b": "Saeed Al Rumaithi Ship Supplies",
+      "verdict": "match",
+      "nature": "chat-arabizi-3-for-ain"
+    },
+    {
+      "a": "Dar Al Hamdan Genral Trading",
+      "b": "Dar Al Hamdan General Trading",
+      "verdict": "match",
+      "nature": "chat-dropped-letter"
+    },
+    {
+      "a": "What Al Rimal Trading",
+      "b": "Wahat Al Nakheel Trading",
+      "verdict": "different",
+      "nature": "chat-autocorrect-other-word"
+    },
+    {
+      "a": "Barakat Al Sahil Foodstuf Trading",
+      "b": "Barakat Al Sahil Foodstuff Trading",
+      "verdict": "match",
+      "nature": "chat-dropped-letter"
+    },
+    {
+      "a": "dar al 7amdan gen trdg",
+      "b": "Dar Al Hamdan General Trading",
+      "verdict": "match",
+      "nature": "chat-arabizi-and-abbreviations"
+    },
+    {
+      "a": "Dar Al Hamdan Genral Trading",
+      "b": "Dar Al Hamdani Garments Trading",
+      "verdict": "different",
+      "nature": "chat-other-activity-and-nisba"
+    },
+    {
+      "a": "Pernisser Koelveem",
+      "b": "Pernisser Koelveem B.V.",
+      "verdict": "match",
+      "nature": "chat-legal-form-omitted"
+    },
+    {
+      "a": "ABDULLAH AL SAYEGH PEARL JEVVELLERY",
+      "b": "Abdullah Al Sayed Pearl Jewellery",
+      "verdict": "different",
+      "nature": "chat-ocr-other-family-name"
+    },
+    {
+      "a": "Mohammmed Saeed Al Hattali Trading",
+      "b": "Mohammed Saeed Al Hattali Trading",
+      "verdict": "match",
+      "nature": "chat-doubled-letter"
+    },
+    {
+      "a": "Hand. Wijnbergen-Posthuma",
+      "b": "Hand. Wijnbergen-Postma",
+      "verdict": "different",
+      "nature": "chat-other-family-name"
+    },
+    {
+      "a": "Wed. J. Veldbraak & Zn.",
+      "b": "Weduwe J. Veldbraak en Zonen",
+      "verdict": "match",
+      "nature": "chat-dutch-abbreviations"
+    },
+    {
+      "a": "Mohammmed Saeed Al Hattali Trading",
+      "b": "Mohammed Saeed Al Hattali Contracting",
+      "verdict": "different",
+      "nature": "chat-doubled-letter-other-activity-word"
+    },
+    {
+      "a": "Al 3'ubaiba Cargo",
+      "b": "Al Ghubaiba Cargo",
+      "verdict": "match",
+      "nature": "chat-arabizi-3-apostrophe-for-gh"
+    },
+    {
+      "a": "Mo7ammed Sa3eed Al Hattali Trading",
+      "b": "Mahmoud Saeed Al Hattali Trading",
+      "verdict": "different",
+      "nature": "chat-arabizi-other-given-name"
+    },
+    {
+      "a": "Hoornbeek Transprot B.V.",
+      "b": "Hoornbeek Transport B.V.",
+      "verdict": "match",
+      "nature": "chat-transposed-letters"
+    },
+    {
+      "a": "Wed. J. Veldbraak & Zn.",
+      "b": "Gebr. Veldbraak",
+      "verdict": "different",
+      "nature": "chat-widow-versus-brothers"
+    },
+    {
+      "a": "Veldbreak Transport B.V.",
+      "b": "Veldbraak Transport B.V.",
+      "verdict": "match",
+      "nature": "chat-autocorrect-one-letter"
+    },
+    {
+      "a": "Hoombeek Transport B.V.",
+      "b": "Hoornbeek Tuinbouw B.V.",
+      "verdict": "different",
+      "nature": "chat-ocr-other-activity-word"
+    },
+    {
+      "a": "Ra2ed Al Nuaimat Cargo",
+      "b": "Rashed Al Nuaimat Cargo",
+      "verdict": "different",
+      "nature": "chat-arabizi-other-given-name"
+    },
+    {
+      "a": "Internat. Expeditiemij. Zuidervliet",
+      "b": "Internationale Expeditie Maatschappij Zuidervliet B.V.",
+      "verdict": "match",
+      "nature": "chat-dutch-abbreviations-glued"
+    },
+    {
+      "a": "dar al 7amdan gen trdg",
+      "b": "Dar Al Hamad General Trading",
+      "verdict": "different",
+      "nature": "chat-arabizi-other-family-name"
+    },
+    {
+      "a": "Kleinhekkingg Veevoer B.V.",
+      "b": "Kleinhekking Kunstmest B.V.",
+      "verdict": "different",
+      "nature": "chat-other-activity-word"
+    }
+  ]
+}
