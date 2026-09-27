@@ -1,0 +1,2407 @@
+{
+  "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+  "provenance": "authored on 2026-09-28 by a separate agent (a Mumbai trade-finance desk and Australian exporter brief, organised by document: Indian registry invoices, AU/NZ documents, bulk vessels, SWIFT MT700 fields, chat; explicit verdict conventions; Sonnet) that never saw the matcher nor any other pair set, as blind test set #12 (sha256 3bc2d0f0…); every name invented; no client data, no list data; overlap with the twelve earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v14 (entites.ts 3b94f68d…, cribler.ts a85e7c3c…, ecritures.ts aec60a13…): strong 0.81 found 149/200 [68-80 %] with 34/200 false alerts [12-23 %]; possible 0.80 found 187/200 [89-96 %] with 72/200 [30-43 %]. Studied afterwards and promoted to training set 13 on 2026-09-28, so it no longer measures anything held out.",
+  "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+  "paires": [
+    {
+      "a": "Ramesh Kumar Sharma Pvt. Ltd.",
+      "b": "Ramesh Kumar Sharma Private Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Deccan Agro Traders Pvt. Ltd.",
+      "b": "Deccan Agro Traders Private Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Konkan Spice Exports Pvt. Ltd.",
+      "b": "Konkan Spice Exports Private Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Bhatt & Vyas Associates LLP",
+      "b": "Bhatt & Vyas Associates Limited Liability Partnership",
+      "verdict": "match",
+      "nature": "llp-fullform"
+    },
+    {
+      "a": "Sundaram Textile Mills LLP",
+      "b": "Sundaram Textile Mills Limited Liability Partnership",
+      "verdict": "match",
+      "nature": "llp-fullform"
+    },
+    {
+      "a": "Chopra Bros. Enterprises",
+      "b": "Chopra Brothers Enterprises",
+      "verdict": "match",
+      "nature": "bros-brothers"
+    },
+    {
+      "a": "Malhotra Bros. Trading Co.",
+      "b": "Malhotra Brothers Trading Co.",
+      "verdict": "match",
+      "nature": "bros-brothers"
+    },
+    {
+      "a": "Gupta & Sons Industries",
+      "b": "Gupta And Sons Industries",
+      "verdict": "match",
+      "nature": "amp-and"
+    },
+    {
+      "a": "Khanna & Sons Traders",
+      "b": "Khanna And Sons Traders",
+      "verdict": "match",
+      "nature": "amp-and"
+    },
+    {
+      "a": "Shri Dinesh Chandra Joshi Traders",
+      "b": "Dinesh Chandra Joshi Traders",
+      "verdict": "match",
+      "nature": "honorific-drop"
+    },
+    {
+      "a": "Shri Mahesh Bhai Patel Exports",
+      "b": "Mahesh Bhai Patel Exports",
+      "verdict": "match",
+      "nature": "honorific-drop"
+    },
+    {
+      "a": "M/s Trivedi Trading Company",
+      "b": "Trivedi Trading Company",
+      "verdict": "match",
+      "nature": "ms-prefix-drop"
+    },
+    {
+      "a": "M/s Nilesh Doshi & Co.",
+      "b": "Nilesh Doshi & Co.",
+      "verdict": "match",
+      "nature": "ms-prefix-drop"
+    },
+    {
+      "a": "Kulkarni Agro Industries (GSTIN 27AABCK1234M1ZP)",
+      "b": "Kulkarni Agro Industries",
+      "verdict": "match",
+      "nature": "gstin-residue"
+    },
+    {
+      "a": "Deshpande Textiles Pvt. Ltd. GSTIN 27AAECD5678N1Z3",
+      "b": "Deshpande Textiles Pvt. Ltd.",
+      "verdict": "match",
+      "nature": "gstin-residue"
+    },
+    {
+      "a": "Godavari Rice Mills Pvt. Ltd. [CIN U15122MH2010PTC201345]",
+      "b": "Godavari Rice Mills Pvt. Ltd.",
+      "verdict": "match",
+      "nature": "cin-residue"
+    },
+    {
+      "a": "Saraswati Engg. Works Pvt. Ltd. CIN: U29100GJ2015PTC083456",
+      "b": "Saraswati Engg. Works Pvt. Ltd.",
+      "verdict": "match",
+      "nature": "cin-residue"
+    },
+    {
+      "a": "Anil Agarwal & Sons",
+      "b": "Anil Agrawal & Sons",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "S. Mukherjee Exports",
+      "b": "S. Mukherji Exports",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Bandyopadhyay Trading House",
+      "b": "Banerjee Trading House",
+      "verdict": "match",
+      "nature": "bengali-surname-anglicisation"
+    },
+    {
+      "a": "Chatterjee Iron & Steel Traders",
+      "b": "Chattopadhyay Iron & Steel Traders",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "R. Chakraborty & Sons",
+      "b": "R. Chakravarty & Sons",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Choudhury Jute Exports",
+      "b": "Chowdhury Jute Exports",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Kapoor Woollen Mills Pvt. Ltd.",
+      "b": "Kapur Woollen Mills Pvt. Ltd.",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Sanghvi Diamond Exports",
+      "b": "Sanghavi Diamond Exports",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Tiwari Grain Traders",
+      "b": "Tripathi Grain Traders",
+      "verdict": "match",
+      "nature": "surname-derivation-variant"
+    },
+    {
+      "a": "Rathore Marble Industries",
+      "b": "Rathod Marble Industries",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Iyer & Subramaniam Exports",
+      "b": "Iyar & Subramaniam Exports",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Nair Coir Industries",
+      "b": "Nayar Coir Industries",
+      "verdict": "match",
+      "nature": "surname-romanization"
+    },
+    {
+      "a": "Rajkot Engg. Works (Gujarat)",
+      "b": "Rajkot Engg. Works",
+      "verdict": "match",
+      "nature": "state-descriptor-drop"
+    },
+    {
+      "a": "Coimbatore Pump Industries, Tamil Nadu",
+      "b": "Coimbatore Pump Industries",
+      "verdict": "match",
+      "nature": "state-descriptor-drop"
+    },
+    {
+      "a": "Patel-Desai Traders",
+      "b": "Patel Desai Traders",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "N.K. Bansal & Co.",
+      "b": "N K Bansal and Co",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Vikram Steel Pvt. Ltd. – Ludhiana Branch",
+      "b": "Vikram Steel Pvt. Ltd. (Regd. Office: Ludhiana)",
+      "verdict": "match",
+      "nature": "branch-of-head-office"
+    },
+    {
+      "a": "Ganesh Oil Mills Pvt. Ltd., Nagpur Branch Office",
+      "b": "Ganesh Oil Mills Pvt. Ltd.",
+      "verdict": "match",
+      "nature": "branch-of-head-office"
+    },
+    {
+      "a": "Kumar, Rakesh Traders",
+      "b": "Rakesh Kumar Traders",
+      "verdict": "match",
+      "nature": "name-order-inversion"
+    },
+    {
+      "a": "Yadav & Sons Enterprises",
+      "b": "Yadav And Sons Enterprises",
+      "verdict": "match",
+      "nature": "amp-and"
+    },
+    {
+      "a": "Saxena Bros. Industries",
+      "b": "Saxena Brothers Industries",
+      "verdict": "match",
+      "nature": "bros-brothers"
+    },
+    {
+      "a": "M/s. Harish Chandra Vyas",
+      "b": "Harish Chandra Vyas",
+      "verdict": "match",
+      "nature": "ms-prefix-drop"
+    },
+    {
+      "a": "Modi Plastics Pvt. Ltd. (GST No. 24AAACM9988K1ZQ)",
+      "b": "Modi Plastics Pvt. Ltd.",
+      "verdict": "match",
+      "nature": "gstin-residue"
+    },
+    {
+      "a": "Deccan Agro Traders Pvt. Ltd.",
+      "b": "Deccan Agro Exports Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "entity-suffix-changed"
+    },
+    {
+      "a": "Konkan Spice Traders Pvt. Ltd.",
+      "b": "Konkan Spice Enterprises Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "entity-suffix-changed"
+    },
+    {
+      "a": "Gupta & Sons Industries",
+      "b": "Gupta & Sons Trading Co.",
+      "verdict": "different",
+      "nature": "entity-suffix-changed"
+    },
+    {
+      "a": "Ramesh Kumar Sharma Pvt. Ltd.",
+      "b": "Rakesh Kumar Sharma Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "different-first-name-same-surname"
+    },
+    {
+      "a": "Suresh Chandra Joshi Traders",
+      "b": "Dinesh Chandra Joshi Traders",
+      "verdict": "different",
+      "nature": "different-first-name-same-surname"
+    },
+    {
+      "a": "Mahesh Bhai Patel Exports",
+      "b": "Naresh Bhai Patel Exports",
+      "verdict": "different",
+      "nature": "different-first-name-same-surname"
+    },
+    {
+      "a": "Nilesh Doshi & Co.",
+      "b": "Nilesh Dosi & Co.",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Trivedi Trading Company",
+      "b": "Triveni Trading Company",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Kulkarni Agro Industries",
+      "b": "Kulkani Agro Industries",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Deshpande Textiles Pvt. Ltd.",
+      "b": "Deshmukh Textiles Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Bhagwati Rice Mills Pvt. Ltd.",
+      "b": "Bhagirathi Rice Mills Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Saraswati Engg. Works Pvt. Ltd.",
+      "b": "Saraswat Engg. Works Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Chandiramani Textile Traders",
+      "b": "Chandnani Textile Traders",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Vaswani Export House",
+      "b": "Advani Export House",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Thakkar Chemicals Pvt. Ltd.",
+      "b": "Thakur Chemicals Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Khanna & Sons Traders",
+      "b": "Khanna & Co. Traders",
+      "verdict": "different",
+      "nature": "sons-vs-co"
+    },
+    {
+      "a": "Yadav & Sons Enterprises",
+      "b": "Yadav & Bros. Enterprises",
+      "verdict": "different",
+      "nature": "sons-vs-co"
+    },
+    {
+      "a": "Rajkot Engg. Works",
+      "b": "Rajkot Engg. Work",
+      "verdict": "different",
+      "nature": "generic-word-plural"
+    },
+    {
+      "a": "Coimbatore Pump Industries",
+      "b": "Coimbatore Pump Industry",
+      "verdict": "different",
+      "nature": "generic-word-plural"
+    },
+    {
+      "a": "Saraswati Mfg. Co.",
+      "b": "Saraswati Mktg. Co.",
+      "verdict": "different",
+      "nature": "abbreviation-collision"
+    },
+    {
+      "a": "Konkan Engg. Enterprises",
+      "b": "Konkan Exp. Enterprises",
+      "verdict": "different",
+      "nature": "abbreviation-collision"
+    },
+    {
+      "a": "Nashik Onion Traders Pvt. Ltd.",
+      "b": "Nagpur Onion Traders Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Ludhiana Cycle Industries",
+      "b": "Jalandhar Cycle Industries",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Bansal Home Traders",
+      "b": "Barsal Home Traders",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Goyal Cotton Exports",
+      "b": "Goyel Cotton Exports",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Mittal Steel Traders",
+      "b": "Mital Steel Traders",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Chauhan Agro Exports",
+      "b": "Chavan Agro Exports",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Rathore Marble Industries",
+      "b": "Rathi Marble Industries",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Subramaniam Coir Exports",
+      "b": "Sundaram Coir Exports",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Iyer & Subramaniam Exports",
+      "b": "Iyer & Krishnan Exports",
+      "verdict": "different",
+      "nature": "different-first-name-same-surname"
+    },
+    {
+      "a": "Shri Ramesh Traders",
+      "b": "Shri Rajesh Traders",
+      "verdict": "different",
+      "nature": "different-first-name-same-surname"
+    },
+    {
+      "a": "Modi Plastics Pvt. Ltd.",
+      "b": "Modani Plastics Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Pandya Ceramics Pvt. Ltd.",
+      "b": "Pandey Ceramics Pvt. Ltd.",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Doshi Bullion Traders",
+      "b": "Joshi Bullion Traders",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "N.K. Bansal & Co.",
+      "b": "S.K. Bansal & Co.",
+      "verdict": "different",
+      "nature": "different-first-name-same-surname"
+    },
+    {
+      "a": "Saxena Bros. Industries",
+      "b": "Saxena Bros. Traders",
+      "verdict": "different",
+      "nature": "entity-suffix-changed"
+    },
+    {
+      "a": "Chopra Bros. Enterprises",
+      "b": "Chopra Bro. Enterprise",
+      "verdict": "different",
+      "nature": "abbreviation-truncation"
+    },
+    {
+      "a": "Rajkot Engg. Works (Gujarat)",
+      "b": "Rajkot Engg. Works (Maharashtra)",
+      "verdict": "different",
+      "nature": "state-descriptor-changed"
+    },
+    {
+      "a": "Malhotra Bros. Trading Co.",
+      "b": "Kalhotra Bros. Trading Co.",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Sanghvi Diamond Exports",
+      "b": "Sanghvi Diamond Traders",
+      "verdict": "different",
+      "nature": "entity-suffix-changed"
+    },
+    {
+      "a": "Whitfield Mining Pty Ltd",
+      "b": "Whitfield Mining Pty. Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Kennedy Grain Co Pty Ltd",
+      "b": "Kennedy Grain Co Proprietary Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Sinclair Pastoral Pty Ltd",
+      "b": "Sinclair Pastoral Proprietary Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Fletcher Bulk Handling Pty Ltd",
+      "b": "Fletcher Bulk Handling Pty. Ltd.",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Manawatu Wool Exports Limited",
+      "b": "Manawatu Wool Exports NZ Limited",
+      "verdict": "match",
+      "nature": "nz-limited-suffix"
+    },
+    {
+      "a": "Otorohanga Dairy Traders Limited",
+      "b": "Otorohanga Dairy Traders NZ Limited",
+      "verdict": "match",
+      "nature": "nz-limited-suffix"
+    },
+    {
+      "a": "Blackwood Family Trust",
+      "b": "Blackwood as Trustee for Blackwood Family Trust",
+      "verdict": "match",
+      "nature": "trust-trustee"
+    },
+    {
+      "a": "Carmichael Grazing Trust",
+      "b": "The Trustee for Carmichael Grazing Trust",
+      "verdict": "match",
+      "nature": "trust-trustee"
+    },
+    {
+      "a": "Beaumont Iron Ore Pty Ltd (ABN 45 123 456 789)",
+      "b": "Beaumont Iron Ore Pty Ltd",
+      "verdict": "match",
+      "nature": "abn-residue"
+    },
+    {
+      "a": "Lockhart Coal Pty Ltd ACN 098 765 432",
+      "b": "Lockhart Coal Pty Ltd",
+      "verdict": "match",
+      "nature": "acn-residue"
+    },
+    {
+      "a": "Winslow Exports Pty Ltd trading as Pilbara Bulk Traders",
+      "b": "Winslow Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "trading-as-dropped"
+    },
+    {
+      "a": "Pemberton Grain Handling Pty Ltd t/a Wheatbelt Grain Co",
+      "b": "Pemberton Grain Handling Pty Ltd",
+      "verdict": "match",
+      "nature": "trading-as-dropped"
+    },
+    {
+      "a": "McAllister & Sons Pty Ltd",
+      "b": "McAllister and Sons Pty Ltd",
+      "verdict": "match",
+      "nature": "amp-and"
+    },
+    {
+      "a": "O'Doyle Grazing Co Pty Ltd",
+      "b": "O Doyle Grazing Co Pty Ltd",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Harrington Mining Pty Ltd – Newcastle Office",
+      "b": "Harrington Mining Pty Ltd (Registered Office: Perth)",
+      "verdict": "match",
+      "nature": "branch-of-head-office"
+    },
+    {
+      "a": "Radcliffe Agri Exports Pty Ltd, Gladstone Branch",
+      "b": "Radcliffe Agri Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "branch-of-head-office"
+    },
+    {
+      "a": "Whakatāne Timber Exports Limited",
+      "b": "Whakatane Timber Exports Limited",
+      "verdict": "match",
+      "nature": "maori-macron-variant"
+    },
+    {
+      "a": "Māori Bay Wool Traders Limited",
+      "b": "Maori Bay Wool Traders Limited",
+      "verdict": "match",
+      "nature": "maori-macron-variant"
+    },
+    {
+      "a": "Nullamurra Station Pty Ltd",
+      "b": "Nullamurra Stn Pty Ltd",
+      "verdict": "match",
+      "nature": "station-abbreviation"
+    },
+    {
+      "a": "Kalyeeda Downs Pty Ltd",
+      "b": "Kalyeeda Downs Proprietary Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Boorala Pastoral Co Pty Ltd (WA)",
+      "b": "Boorala Pastoral Co Pty Ltd",
+      "verdict": "match",
+      "nature": "state-descriptor-drop"
+    },
+    {
+      "a": "Fleurieu Grain Traders Pty Ltd, South Australia",
+      "b": "Fleurieu Grain Traders Pty Ltd",
+      "verdict": "match",
+      "nature": "state-descriptor-drop"
+    },
+    {
+      "a": "Farrell Shipping Agencies Pty Ltd A.C.N. 111 222 333",
+      "b": "Farrell Shipping Agencies Pty Ltd",
+      "verdict": "match",
+      "nature": "acn-residue"
+    },
+    {
+      "a": "Callahan Wheat Traders Pty Ltd A.B.N. 22 333 444 555",
+      "b": "Callahan Wheat Traders Pty Ltd",
+      "verdict": "match",
+      "nature": "abn-residue"
+    },
+    {
+      "a": "Sullivan Coal Handling Pty Ltd",
+      "b": "Sullivan Coal Handling Proprietary Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Mitchell Iron & Steel Pty Ltd",
+      "b": "Mitchell Iron & Steel Pty. Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Waikato Farm Produce Limited",
+      "b": "Waikato Farm Produce NZ Ltd",
+      "verdict": "match",
+      "nature": "nz-limited-suffix"
+    },
+    {
+      "a": "Taranaki Wool Brokers Limited",
+      "b": "Taranaki Wool Brokers New Zealand Limited",
+      "verdict": "match",
+      "nature": "nz-limited-suffix"
+    },
+    {
+      "a": "Anderson & Kennedy Pastoral Pty Ltd",
+      "b": "Anderson and Kennedy Pastoral Pty Ltd",
+      "verdict": "match",
+      "nature": "amp-and"
+    },
+    {
+      "a": "Winslow Family Trust",
+      "b": "The Trustee for the Winslow Family Trust",
+      "verdict": "match",
+      "nature": "trust-trustee"
+    },
+    {
+      "a": "Sinclair Holdings Pty Ltd t/a Riverina Grain Co",
+      "b": "Sinclair Holdings Pty Ltd",
+      "verdict": "match",
+      "nature": "trading-as-dropped"
+    },
+    {
+      "a": "Wirralong Downs Pty Ltd",
+      "b": "Wirra-long Downs Pty Ltd",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Kennedy Grain Co Pty Ltd, Port Hedland Terminal",
+      "b": "Kennedy Grain Co Pty Ltd",
+      "verdict": "match",
+      "nature": "branch-of-head-office"
+    },
+    {
+      "a": "Yorke Peninsula Grain Traders Pty Ltd (SA)",
+      "b": "Yorke Peninsula Grain Traders Pty Ltd",
+      "verdict": "match",
+      "nature": "state-descriptor-drop"
+    },
+    {
+      "a": "Ōtorohanga Dairy Traders Limited",
+      "b": "Otorohanga Dairy Traders Limited",
+      "verdict": "match",
+      "nature": "maori-macron-variant"
+    },
+    {
+      "a": "Blackwood Cattle Co Pty Ltd (ACN: 076 543 210)",
+      "b": "Blackwood Cattle Co Pty Ltd",
+      "verdict": "match",
+      "nature": "acn-residue"
+    },
+    {
+      "a": "Boorala Station Pty Ltd",
+      "b": "Boorala Stn Pty Ltd",
+      "verdict": "match",
+      "nature": "station-abbreviation"
+    },
+    {
+      "a": "Doyle Freight Forwarding Pty Ltd",
+      "b": "Doyle Freight Forwarding Proprietary Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Carmichael Exports Pty Ltd trading as Gascoyne Livestock Traders",
+      "b": "Carmichael Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "trading-as-dropped"
+    },
+    {
+      "a": "Henderson Bulk Grain Pty Ltd",
+      "b": "Henderson Bulk Grain Pty. Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Whitfield Mining Pty Ltd",
+      "b": "Whitfield Mining NZ Limited",
+      "verdict": "different",
+      "nature": "different-country-subsidiary"
+    },
+    {
+      "a": "Manawatu Wool Exports Limited",
+      "b": "Manawatu Wool Exports Pty Ltd",
+      "verdict": "different",
+      "nature": "different-country-subsidiary"
+    },
+    {
+      "a": "Taranaki Wool Brokers Limited",
+      "b": "Taranaki Wool Brokers Australia Pty Ltd",
+      "verdict": "different",
+      "nature": "different-country-subsidiary"
+    },
+    {
+      "a": "Sinclair Pastoral Pty Ltd",
+      "b": "Sinclare Pastoral Pty Ltd",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Kennedy Grain Co Pty Ltd",
+      "b": "Kennedey Grain Co Pty Ltd",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "Harrington Mining Pty Ltd",
+      "b": "Harringay Mining Pty Ltd",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Radcliffe Agri Exports Pty Ltd",
+      "b": "Ratcliffe Agri Exports Pty Ltd",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Lockhart Coal Pty Ltd",
+      "b": "Lockheart Coal Pty Ltd",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Pemberton Grain Handling Pty Ltd",
+      "b": "Emberton Grain Handling Pty Ltd",
+      "verdict": "different",
+      "nature": "dropped-letter-different-entity"
+    },
+    {
+      "a": "Beaumont Iron Ore Pty Ltd",
+      "b": "Beaumont Iron Ore Ltd",
+      "verdict": "different",
+      "nature": "proprietary-vs-public-ltd"
+    },
+    {
+      "a": "Mitchell Iron & Steel Pty Ltd",
+      "b": "Mitchell Iron & Steel Ltd",
+      "verdict": "different",
+      "nature": "proprietary-vs-public-ltd"
+    },
+    {
+      "a": "Nullamurra Station Pty Ltd",
+      "b": "Nullamurra Downs Pty Ltd",
+      "verdict": "different",
+      "nature": "different-station-name"
+    },
+    {
+      "a": "Kalyeeda Downs Pty Ltd",
+      "b": "Kalyeeda Station Pty Ltd",
+      "verdict": "different",
+      "nature": "different-station-name"
+    },
+    {
+      "a": "Boorala Station Pty Ltd",
+      "b": "Boorala Plains Pty Ltd",
+      "verdict": "different",
+      "nature": "different-station-name"
+    },
+    {
+      "a": "Wirralong Downs Pty Ltd",
+      "b": "Wirralong Station Pty Ltd",
+      "verdict": "different",
+      "nature": "different-station-name"
+    },
+    {
+      "a": "Whakatāne Timber Exports Limited",
+      "b": "Whakatipu Timber Exports Limited",
+      "verdict": "different",
+      "nature": "different-maori-place"
+    },
+    {
+      "a": "Otorohanga Dairy Traders Limited",
+      "b": "Otorohanga Dairy Producers Limited",
+      "verdict": "different",
+      "nature": "different-generic-word"
+    },
+    {
+      "a": "Yorke Peninsula Grain Traders Pty Ltd",
+      "b": "Eyre Peninsula Grain Traders Pty Ltd",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Fleurieu Grain Traders Pty Ltd",
+      "b": "Flinders Grain Traders Pty Ltd",
+      "verdict": "different",
+      "nature": "different-place-name"
+    },
+    {
+      "a": "Blackwood Family Trust",
+      "b": "Blackwood Unit Trust",
+      "verdict": "different",
+      "nature": "different-trust-instrument"
+    },
+    {
+      "a": "Carmichael Grazing Trust",
+      "b": "Carmichael Cattle Trust",
+      "verdict": "different",
+      "nature": "different-trust-instrument"
+    },
+    {
+      "a": "The Trustee for the Winslow Family Trust",
+      "b": "The Trustee for the Winslow Livestock Trust",
+      "verdict": "different",
+      "nature": "different-trust-instrument"
+    },
+    {
+      "a": "Sullivan Coal Handling Pty Ltd",
+      "b": "Sullivan Coal Handlers Pty Ltd",
+      "verdict": "different",
+      "nature": "generic-word-plural"
+    },
+    {
+      "a": "Fletcher Bulk Handling Pty Ltd",
+      "b": "Fletcher Bulk Handlers Pty Ltd",
+      "verdict": "different",
+      "nature": "generic-word-plural"
+    },
+    {
+      "a": "Sinclair Holdings Pty Ltd",
+      "b": "Sinclair Holdings (No. 2) Pty Ltd",
+      "verdict": "different",
+      "nature": "numbered-holding-entity"
+    },
+    {
+      "a": "Beaumont Iron Ore Pty Ltd",
+      "b": "Beaumont Iron Ore (No. 2) Pty Ltd",
+      "verdict": "different",
+      "nature": "numbered-holding-entity"
+    },
+    {
+      "a": "Winslow Exports Pty Ltd trading as Pilbara Bulk Traders",
+      "b": "Ashworth Exports Pty Ltd trading as Pilbara Bulk Traders",
+      "verdict": "different",
+      "nature": "same-trading-name-different-owner"
+    },
+    {
+      "a": "Pemberton Grain Handling Pty Ltd t/a Wheatbelt Grain Co",
+      "b": "Doyle Grain Handling Pty Ltd t/a Wheatbelt Grain Co",
+      "verdict": "different",
+      "nature": "same-trading-name-different-owner"
+    },
+    {
+      "a": "Farrell Shipping Agencies Pty Ltd",
+      "b": "Farrell Shipping Agents Pty Ltd",
+      "verdict": "different",
+      "nature": "different-generic-word"
+    },
+    {
+      "a": "Callahan Wheat Traders Pty Ltd",
+      "b": "Callahan Wheat Exporters Pty Ltd",
+      "verdict": "different",
+      "nature": "different-generic-word"
+    },
+    {
+      "a": "McAllister & Sons Pty Ltd",
+      "b": "McAlister & Sons Pty Ltd",
+      "verdict": "different",
+      "nature": "one-letter-changed"
+    },
+    {
+      "a": "O'Doyle Grazing Co Pty Ltd",
+      "b": "O'Boyle Grazing Co Pty Ltd",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Ashworth Grazing Pty Ltd",
+      "b": "Ashforth Grazing Pty Ltd",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Sinclair Pastoral Pty Ltd",
+      "b": "St Clair Pastoral Pty Ltd",
+      "verdict": "different",
+      "nature": "similar-surname-different-family"
+    },
+    {
+      "a": "Kennedy Grain Co Pty Ltd, Port Hedland Terminal",
+      "b": "Kennedy Grain Co (Port Hedland) Pty Ltd",
+      "verdict": "different",
+      "nature": "subsidiary-vs-branch"
+    },
+    {
+      "a": "Radcliffe Agri Exports Pty Ltd, Gladstone Branch",
+      "b": "Radcliffe Agri Exports (Gladstone) Pty Ltd",
+      "verdict": "different",
+      "nature": "subsidiary-vs-branch"
+    },
+    {
+      "a": "Blackwood Cattle Co Pty Ltd",
+      "b": "Blackwood Cattle Corp Pty Ltd",
+      "verdict": "different",
+      "nature": "different-generic-word"
+    },
+    {
+      "a": "Boorala Pastoral Co Pty Ltd (WA)",
+      "b": "Boorala Pastoral Co Pty Ltd (NT)",
+      "verdict": "different",
+      "nature": "state-of-registration-differs"
+    },
+    {
+      "a": "Doyle Freight Forwarding Pty Ltd",
+      "b": "Doyle Freight Brokers Pty Ltd",
+      "verdict": "different",
+      "nature": "different-generic-word"
+    },
+    {
+      "a": "Mitchell Iron & Steel Pty Ltd",
+      "b": "Mitchell Iron & Metals Pty Ltd",
+      "verdict": "different",
+      "nature": "different-generic-word"
+    },
+    {
+      "a": "MV Southern Fortune",
+      "b": "Southern Fortune",
+      "verdict": "match",
+      "nature": "mv-prefix-drop"
+    },
+    {
+      "a": "MV Pacific Harmony",
+      "b": "Pacific Harmony",
+      "verdict": "match",
+      "nature": "mv-prefix-drop"
+    },
+    {
+      "a": "Ocean Pioneer (ex-Cape Diamond)",
+      "b": "Cape Diamond",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Star Voyager (ex-Southern Glory)",
+      "b": "Southern Glory",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Pacific Endeavour (ex-Grand Wheatland)",
+      "b": "Grand Wheatland",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Cape Bellona IMO 9456123",
+      "b": "Cape Bellona",
+      "verdict": "match",
+      "nature": "imo-residue"
+    },
+    {
+      "a": "Ocean Resolute IMO 9312456",
+      "b": "Ocean Resolute",
+      "verdict": "match",
+      "nature": "imo-residue"
+    },
+    {
+      "a": "MV Nautilus Trader (Call Sign VRDX7)",
+      "b": "MV Nautilus Trader",
+      "verdict": "match",
+      "nature": "call-sign-residue"
+    },
+    {
+      "a": "Cape-Hedland",
+      "b": "Cape Hedland",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Sino Iron I",
+      "b": "Sino Iron 1",
+      "verdict": "match",
+      "nature": "numeral-notation-variant"
+    },
+    {
+      "a": "Golden Wattle Bulk Carriers Pty Ltd",
+      "b": "Golden Wattle Bulk Carriers Proprietary Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Trans-Pacific Grain Logistics Co., Ltd.",
+      "b": "Trans-Pacific Grain Logistics Company Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Hai Yang Shun Feng",
+      "b": "Haiyang Shunfeng",
+      "verdict": "match",
+      "nature": "romanization-vessel-name"
+    },
+    {
+      "a": "Kwang Myong Ho",
+      "b": "Gwangmyeong Ho",
+      "verdict": "match",
+      "nature": "romanization-vessel-name"
+    },
+    {
+      "a": "Fuji Maru",
+      "b": "Fuji-Maru",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Hedland Trader Shipping K.K.",
+      "b": "Hedland Trader Shipping Kabushiki Kaisha",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Pilbara Ore Chartering Pte Ltd, Singapore Branch",
+      "b": "Pilbara Ore Chartering Pte Ltd",
+      "verdict": "match",
+      "nature": "branch-of-head-office"
+    },
+    {
+      "a": "MV Coral Horizon",
+      "b": "Coral Horizon",
+      "verdict": "match",
+      "nature": "mv-prefix-drop"
+    },
+    {
+      "a": "MV Iron Duchess",
+      "b": "Iron Duchess",
+      "verdict": "match",
+      "nature": "mv-prefix-drop"
+    },
+    {
+      "a": "Wheatland Glory (ex-Pacific Sower)",
+      "b": "Pacific Sower",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Southern Endeavour (ex-Ocean Wattle)",
+      "b": "Ocean Wattle",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Pacific Wool Carrier IMO 9587234",
+      "b": "Pacific Wool Carrier",
+      "verdict": "match",
+      "nature": "imo-residue"
+    },
+    {
+      "a": "M/V Coal Duchess",
+      "b": "MV Coal Duchess",
+      "verdict": "match",
+      "nature": "abbreviation-mv-ms"
+    },
+    {
+      "a": "M.V. Grain Empress",
+      "b": "MV Grain Empress",
+      "verdict": "match",
+      "nature": "abbreviation-mv-ms"
+    },
+    {
+      "a": "Kimberley Tow (Tug)",
+      "b": "Kimberley Tow",
+      "verdict": "match",
+      "nature": "tug-barge-suffix-drop"
+    },
+    {
+      "a": "Newcastle Bulker",
+      "b": "Newcastle-Bulker",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Northern Iron Trading Corp.",
+      "b": "Northern Iron Trading Corporation",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Gladstone Coal Exports Pty Ltd",
+      "b": "Gladstone Coal Exports Proprietary Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Chun Feng Hao",
+      "b": "Chunfeng Hao",
+      "verdict": "match",
+      "nature": "romanization-vessel-name"
+    },
+    {
+      "a": "Dae Han Ho",
+      "b": "Daehan Ho",
+      "verdict": "match",
+      "nature": "romanization-vessel-name"
+    },
+    {
+      "a": "Ocean Prosperity (Call Sign 3FQC9)",
+      "b": "Ocean Prosperity",
+      "verdict": "match",
+      "nature": "call-sign-residue"
+    },
+    {
+      "a": "MV Cape Ningaloo",
+      "b": "Cape Ningaloo",
+      "verdict": "match",
+      "nature": "mv-prefix-drop"
+    },
+    {
+      "a": "Iron Empress (ex-Southern Wattle)",
+      "b": "Southern Wattle",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Grand Coal Trader IMO 9601178",
+      "b": "Grand Coal Trader",
+      "verdict": "match",
+      "nature": "imo-residue"
+    },
+    {
+      "a": "East Asia Bulk Chartering Co Ltd",
+      "b": "East Asia Bulk Chartering Company Limited",
+      "verdict": "match",
+      "nature": "suffix-abbreviation"
+    },
+    {
+      "a": "Cape St George",
+      "b": "Cape St. George",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Wattle Star II",
+      "b": "Wattle Star 2",
+      "verdict": "match",
+      "nature": "numeral-notation-variant"
+    },
+    {
+      "a": "MV Perth Voyager",
+      "b": "Perth Voyager",
+      "verdict": "match",
+      "nature": "mv-prefix-drop"
+    },
+    {
+      "a": "Kaiyo Maru No. 8",
+      "b": "Kaiyo Maru No.8",
+      "verdict": "match",
+      "nature": "punctuation-spacing"
+    },
+    {
+      "a": "Coral Pioneer (ex-Newcastle Wattle)",
+      "b": "Newcastle Wattle",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Sino Iron I",
+      "b": "Sino Iron II",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "Wattle Star II",
+      "b": "Wattle Star III",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "Kaiyo Maru No. 8",
+      "b": "Kaiyo Maru No. 9",
+      "verdict": "different",
+      "nature": "numeral-changed"
+    },
+    {
+      "a": "Cape Bellona",
+      "b": "Cape Bollona",
+      "verdict": "different",
+      "nature": "one-letter-changed-vessel"
+    },
+    {
+      "a": "Ocean Resolute",
+      "b": "Ocean Resolve",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Coral Horizon",
+      "b": "Coral Horizan",
+      "verdict": "different",
+      "nature": "one-letter-changed-vessel"
+    },
+    {
+      "a": "Iron Duchess",
+      "b": "Iron Duchesse",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Pacific Wool Carrier",
+      "b": "Pacific Wool Carriers",
+      "verdict": "different",
+      "nature": "plural-vessel-name"
+    },
+    {
+      "a": "Grand Coal Trader",
+      "b": "Grand Coal Traders",
+      "verdict": "different",
+      "nature": "plural-vessel-name"
+    },
+    {
+      "a": "Southern Fortune",
+      "b": "Southern Fortitude",
+      "verdict": "different",
+      "nature": "sister-ship-different-hull"
+    },
+    {
+      "a": "Pacific Harmony",
+      "b": "Pacific Harvest",
+      "verdict": "different",
+      "nature": "sister-ship-different-hull"
+    },
+    {
+      "a": "Cape Ningaloo",
+      "b": "Cape Naturaliste",
+      "verdict": "different",
+      "nature": "sister-ship-different-hull"
+    },
+    {
+      "a": "Perth Voyager",
+      "b": "Perth Navigator",
+      "verdict": "different",
+      "nature": "sister-ship-different-hull"
+    },
+    {
+      "a": "MV Nautilus Trader",
+      "b": "MV Nautilus Voyager",
+      "verdict": "different",
+      "nature": "sister-ship-different-hull"
+    },
+    {
+      "a": "Ocean Prosperity",
+      "b": "Ocean Serenity",
+      "verdict": "different",
+      "nature": "sister-ship-different-hull"
+    },
+    {
+      "a": "Golden Wattle Bulk Carriers Pty Ltd",
+      "b": "Golden Wattle Bulk Chartering Pty Ltd",
+      "verdict": "different",
+      "nature": "different-charterer-similar-name"
+    },
+    {
+      "a": "Trans-Pacific Grain Logistics Co., Ltd.",
+      "b": "Trans-Pacific Grain Trading Co., Ltd.",
+      "verdict": "different",
+      "nature": "different-charterer-similar-name"
+    },
+    {
+      "a": "Northern Iron Trading Corp.",
+      "b": "Northern Iron Trading Corp. (China)",
+      "verdict": "different",
+      "nature": "country-subsidiary-suffix"
+    },
+    {
+      "a": "East Asia Bulk Chartering Co Ltd",
+      "b": "East Asia Bulk Chartering (HK) Co Ltd",
+      "verdict": "different",
+      "nature": "country-subsidiary-suffix"
+    },
+    {
+      "a": "Hai Yang Shun Feng",
+      "b": "Hai Yang Shun Fu",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Kwang Myong Ho",
+      "b": "Kwang Myong Sung Ho",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Fuji Maru",
+      "b": "Fuji Maru No. 2",
+      "verdict": "different",
+      "nature": "numbered-fleet-entry"
+    },
+    {
+      "a": "Dae Han Ho",
+      "b": "Dae Han Ho 2",
+      "verdict": "different",
+      "nature": "numbered-fleet-entry"
+    },
+    {
+      "a": "Kimberley Tow (Tug)",
+      "b": "Kimberley Tow (Barge)",
+      "verdict": "different",
+      "nature": "tug-barge-distinct"
+    },
+    {
+      "a": "Pilbara Pusher (Tug)",
+      "b": "Pilbara Pusher (Barge)",
+      "verdict": "different",
+      "nature": "tug-barge-distinct"
+    },
+    {
+      "a": "Ocean Prosperity (Call Sign 3FQC9)",
+      "b": "Ocean Prospect (Call Sign 3FQD2)",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Cape Bellona IMO 9456123",
+      "b": "Cape Bellatrix IMO 9456987",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Newcastle Bulker",
+      "b": "Gladstone Bulker",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Wattle Star II",
+      "b": "Banksia Star II",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Grand Wheatland",
+      "b": "Grand Wattleland",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Southern Glory",
+      "b": "Southern Grace",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Pacific Sower",
+      "b": "Pacific Rower",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Ocean Wattle",
+      "b": "Ocean Willow",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Pilbara Ore Chartering Pte Ltd",
+      "b": "Pilbara Iron Chartering Pte Ltd",
+      "verdict": "different",
+      "nature": "different-charterer-similar-name"
+    },
+    {
+      "a": "Hedland Trader Shipping K.K.",
+      "b": "Hedland Traders Shipping K.K.",
+      "verdict": "different",
+      "nature": "different-charterer-similar-name"
+    },
+    {
+      "a": "Gladstone Coal Exports Pty Ltd",
+      "b": "Gladstone Coke Exports Pty Ltd",
+      "verdict": "different",
+      "nature": "different-shipper-similar-name"
+    },
+    {
+      "a": "Coral Pioneer",
+      "b": "Coral Pilgrim",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Iron Empress",
+      "b": "Iron Princess",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Chun Feng Hao",
+      "b": "Chun Feng Er Hao",
+      "verdict": "different",
+      "nature": "numbered-fleet-entry"
+    },
+    {
+      "a": "Coal Duchess",
+      "b": "Coal Marchioness",
+      "verdict": "different",
+      "nature": "different-vessel-name"
+    },
+    {
+      "a": "Ranjit Cotton Traders Pvt. Ltd.",
+      "b": "RANJIT COTTON TRADERS PVT LTD",
+      "verdict": "match",
+      "nature": "uppercase-export"
+    },
+    {
+      "a": "Blackwood Cattle Co Pty Ltd",
+      "b": "FIELD 59: BLACKWOOD CATTLE CO PTY LTD",
+      "verdict": "match",
+      "nature": "uppercase-export"
+    },
+    {
+      "a": "FIELD 59: /12345\nGOLDEN WATTLE BULK CARRIERS PTY\nLTD, 14 MILL STREET, PERTH WA",
+      "b": "Golden Wattle Bulk Carriers Pty Ltd, 14 Mill Street, Perth WA",
+      "verdict": "match",
+      "nature": "field59-linewrap"
+    },
+    {
+      "a": "GLADSTONE COAL EX\nPORTS PTY LTD",
+      "b": "GLADSTONE COAL EXPORTS PTY LTD",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "TRANS-PACI\nFIC GRAIN LOGISTICS CO LTD",
+      "b": "TRANS-PACIFIC GRAIN LOGISTICS CO LTD",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "NORTHERN IRON TRADING CORP12 DOCK ROAD NEWCASTLE NSW",
+      "b": "Northern Iron Trading Corp, 12 Dock Road, Newcastle NSW",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "SANGHVI DIAMOND EXPORTS204 ZAVERI BAZAAR MUMBAI",
+      "b": "Sanghvi Diamond Exports, 204 Zaveri Bazaar, Mumbai",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "FIELD 50: KENNEDY GRAIN CO PTY LTD",
+      "b": "Kennedy Grain Co Pty Ltd",
+      "verdict": "match",
+      "nature": "field50-applicant-uppercase"
+    },
+    {
+      "a": "FIELD 59: /987654321\nHARRINGTON MINING PTY LTD",
+      "b": "Harrington Mining Pty Ltd",
+      "verdict": "match",
+      "nature": "field59-linewrap"
+    },
+    {
+      "a": "OUR REF LC/MUM/0453 KULKARNI AGRO INDUSTRIES",
+      "b": "Kulkarni Agro Industries",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "YOUR REF SYD-88213 BEAUMONT IRON ORE PTY LTD",
+      "b": "Beaumont Iron Ore Pty Ltd",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "MALHOTRA BROS TRAD\nING CO",
+      "b": "Malhotra Bros Trading Co",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "OTOROHANGA DAIR\nY TRADERS NZ LIMITED",
+      "b": "Otorohanga Dairy Traders NZ Limited",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "MCALLISTER SONS PTY LTDUNIT 4 12 PORT ROAD FREMANTLE",
+      "b": "McAllister & Sons Pty Ltd, Unit 4/12 Port Road, Fremantle",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "Deshpande Textiles Pvt. Ltd.",
+      "b": "DESHPANDE TEXTILES PVT LTD",
+      "verdict": "match",
+      "nature": "uppercase-export"
+    },
+    {
+      "a": "APPLICANT REF AUS0099 CALLAHAN WHEAT TRADERS PTY LTD",
+      "b": "Callahan Wheat Traders Pty Ltd",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "59: LOCKHART COAL PTY\nLTD, 5 WHARF ST, GLADSTONE QLD",
+      "b": "Lockhart Coal Pty Ltd, 5 Wharf St, Gladstone QLD",
+      "verdict": "match",
+      "nature": "field59-linewrap"
+    },
+    {
+      "a": "EAST ASIA BULK CHAR\nTERING CO LTD",
+      "b": "East Asia Bulk Chartering Co Ltd",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "FARRELL SHIPPING AGENCIES PTY LTDLEVEL 3 88 ST GEORGES TCE PERTH",
+      "b": "Farrell Shipping Agencies Pty Ltd, Level 3/88 St Georges Tce, Perth",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "Chopra Bros. Enterprises",
+      "b": "CHOPRA BROS ENTERPRISES",
+      "verdict": "match",
+      "nature": "uppercase-export"
+    },
+    {
+      "a": "DOC CREDIT NO IN0072 SARASWATI ENGG WORKS PVT LTD",
+      "b": "Saraswati Engg Works Pvt Ltd",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "FIELD 50: /9988776\nPILBARA ORE CHARTERING PTE LTD",
+      "b": "Pilbara Ore Chartering Pte Ltd",
+      "verdict": "match",
+      "nature": "field50-applicant-uppercase"
+    },
+    {
+      "a": "WHITFIELD MIN\nING PTY LTD",
+      "b": "Whitfield Mining Pty Ltd",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "RADCLIFFE AGRI EXPO\nRTS PTY LTD",
+      "b": "Radcliffe Agri Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "GODAVARI RICE MILLS PVT LTDPLOT 22 MIDC NASHIK",
+      "b": "Godavari Rice Mills Pvt Ltd, Plot 22, MIDC, Nashik",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "Fletcher Bulk Handling Pty Ltd",
+      "b": "FIELD 59: FLETCHER BULK HANDLING PTY LTD",
+      "verdict": "match",
+      "nature": "uppercase-export"
+    },
+    {
+      "a": "SWIFT REF MB2209X MODI PLASTICS PVT LTD",
+      "b": "Modi Plastics Pvt Ltd",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "59: /55123\nWINSLOW EXPORTS PTY LTD, 9 JETTY\nRD FREMANTLE",
+      "b": "Winslow Exports Pty Ltd, 9 Jetty Rd, Fremantle",
+      "verdict": "match",
+      "nature": "field59-linewrap"
+    },
+    {
+      "a": "SULLIVAN COAL HAND\nLING PTY LTD",
+      "b": "Sullivan Coal Handling Pty Ltd",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "COIMBATORE PUMP INDUSTRIES44 GANAPATHY ROAD COIMBATORE",
+      "b": "Coimbatore Pump Industries, 44 Ganapathy Road, Coimbatore",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "Doyle Freight Forwarding Pty Ltd",
+      "b": "FIELD 59: DOYLE FREIGHT FORWARDING PTY LTD",
+      "verdict": "match",
+      "nature": "uppercase-export"
+    },
+    {
+      "a": "L/C NO GLD-3345 GLADSTONE COAL EXPORTS PTY LTD",
+      "b": "Gladstone Coal Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "TRIVEDI TRADING COM\nPANY",
+      "b": "Trivedi Trading Company",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "FIELD 50: SUNDARAM TEXTILE MILLS LLP",
+      "b": "Sundaram Textile Mills LLP",
+      "verdict": "match",
+      "nature": "field50-applicant-uppercase"
+    },
+    {
+      "a": "MITCHELL IRON STEEL PTY LTD7 RAILWAY TCE PORT HEDLAND",
+      "b": "Mitchell Iron & Steel Pty Ltd, 7 Railway Tce, Port Hedland",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "Yadav & Sons Enterprises",
+      "b": "YADAV SONS ENTERPRISES",
+      "verdict": "match",
+      "nature": "uppercase-export"
+    },
+    {
+      "a": "ADVISING BANK REF PER5567 CARMICHAEL EXPORTS PTY LTD",
+      "b": "Carmichael Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "bank-ref-residue"
+    },
+    {
+      "a": "59: DESHPANDE TEXTILES\nPVT LTD, GAT 112 MIDC AURANGABAD",
+      "b": "Deshpande Textiles Pvt Ltd, Gat 112, MIDC, Aurangabad",
+      "verdict": "match",
+      "nature": "field59-linewrap"
+    },
+    {
+      "a": "CHATTERJEE IRON STE\nEL TRADERS",
+      "b": "Chatterjee Iron & Steel Traders",
+      "verdict": "match",
+      "nature": "4x35-cut-word-split"
+    },
+    {
+      "a": "BOORALA PASTORAL CO PTY LTDRMB 4102 MERREDIN WA",
+      "b": "Boorala Pastoral Co Pty Ltd, RMB 4102, Merredin WA",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "GOLDEN WATTLE BULK CARRIERS PTY\nLTD",
+      "b": "GOLDEN WATTLE BULK CHARTERING PTY\nLTD",
+      "verdict": "different",
+      "nature": "linewrap-hides-suffix-change"
+    },
+    {
+      "a": "GLADSTONE COAL EX\nPORTS PTY LTD",
+      "b": "GLADSTONE COAL IM\nPORTS PTY LTD",
+      "verdict": "different",
+      "nature": "linewrap-hides-prefix-change"
+    },
+    {
+      "a": "SANGHVI DIAMOND EXPORTS204 ZAVERI BAZAAR MUMBAI",
+      "b": "SANGHVI DIAMOND TRADERS204 ZAVERI BAZAAR MUMBAI",
+      "verdict": "different",
+      "nature": "glued-address-different-name"
+    },
+    {
+      "a": "FIELD 50: KENNEDY GRAIN CO PTY LTD",
+      "b": "FIELD 59: KENNEDY GRAIN CORP PTY LTD",
+      "verdict": "different",
+      "nature": "different-party-different-entity"
+    },
+    {
+      "a": "OUR REF LC/MUM/0453 KULKARNI AGRO INDUSTRIES",
+      "b": "OUR REF LC/MUM/0453 KULKARNI AGRO ENTERPRISES",
+      "verdict": "different",
+      "nature": "bank-ref-different-entity"
+    },
+    {
+      "a": "HARRINGTON MINING PTY LTD",
+      "b": "HARRINGDON MINING PTY LTD",
+      "verdict": "different",
+      "nature": "uppercase-hides-letter-change"
+    },
+    {
+      "a": "MALHOTRA BROS TRAD\nING CO",
+      "b": "MALHOTRA BROS TRAD\nERS CO",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-letter-change"
+    },
+    {
+      "a": "OTOROHANGA DAIR\nY TRADERS NZ LIMITED",
+      "b": "OTOROHANGA DAIR\nY PRODUCERS NZ LIMITED",
+      "verdict": "different",
+      "nature": "linewrap-hides-different-word"
+    },
+    {
+      "a": "MCALLISTER SONS PTY LTDUNIT 4 12 PORT ROAD FREMANTLE",
+      "b": "MCALISTER SONS PTY LTDUNIT 4 12 PORT ROAD FREMANTLE",
+      "verdict": "different",
+      "nature": "glued-address-different-firm"
+    },
+    {
+      "a": "APPLICANT REF AUS0099 CALLAHAN WHEAT TRADERS PTY LTD",
+      "b": "APPLICANT REF AUS0099 CALLAHAN WOOL TRADERS PTY LTD",
+      "verdict": "different",
+      "nature": "bank-ref-different-entity"
+    },
+    {
+      "a": "LOCKHART COAL PTY\nLTD",
+      "b": "LOCKHEART COAL PTY\nLTD",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-letter-change"
+    },
+    {
+      "a": "EAST ASIA BULK CHAR\nTERING CO LTD",
+      "b": "EAST ASIA BULK BRO\nKERING CO LTD",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-word-change"
+    },
+    {
+      "a": "FARRELL SHIPPING AGENCIES PTY LTDLEVEL 3 88 ST GEORGES TCE PERTH",
+      "b": "FERRELL SHIPPING AGENCIES PTY LTDLEVEL 3 88 ST GEORGES TCE PERTH",
+      "verdict": "different",
+      "nature": "glued-address-different-firm"
+    },
+    {
+      "a": "CHOPRA BROS ENTERPRISES",
+      "b": "CHOPRA BROS INDUSTRIES",
+      "verdict": "different",
+      "nature": "uppercase-hides-word-change"
+    },
+    {
+      "a": "DOC CREDIT NO IN0072 SARASWATI ENGG WORKS PVT LTD",
+      "b": "DOC CREDIT NO IN0072 SARASWAT ENGG WORKS PVT LTD",
+      "verdict": "different",
+      "nature": "bank-ref-different-entity"
+    },
+    {
+      "a": "FIELD 50: /9988776\nPILBARA ORE CHARTERING PTE LTD",
+      "b": "FIELD 50: /9988776\nPILBARA IRON CHARTERING PTE LTD",
+      "verdict": "different",
+      "nature": "field50-hides-letter-change"
+    },
+    {
+      "a": "WHITFIELD MIN\nING PTY LTD",
+      "b": "WHITFELD MIN\nING PTY LTD",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-letter-change"
+    },
+    {
+      "a": "RADCLIFFE AGRI EXPO\nRTS PTY LTD",
+      "b": "RADCLIFFE AGRI IMPO\nRTS PTY LTD",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-prefix-change"
+    },
+    {
+      "a": "GODAVARI RICE MILLS PVT LTDPLOT 22 MIDC NASHIK",
+      "b": "GODAVARI RICE TRADERS PVT LTDPLOT 22 MIDC NASHIK",
+      "verdict": "different",
+      "nature": "glued-address-different-name"
+    },
+    {
+      "a": "FLETCHER BULK HANDLING PTY LTD",
+      "b": "FLETCHER BULK HANDLING PTV LTD",
+      "verdict": "different",
+      "nature": "keying-error-suffix"
+    },
+    {
+      "a": "SWIFT REF MB2209X MODI PLASTICS PVT LTD",
+      "b": "SWIFT REF MB2209X MODANI PLASTICS PVT LTD",
+      "verdict": "different",
+      "nature": "bank-ref-different-entity"
+    },
+    {
+      "a": "WINSLOW EXPORTS PTY LTD, 9 JETTY\nRD FREMANTLE",
+      "b": "WINSLOW IMPORTS PTY LTD, 9 JETTY\nRD FREMANTLE",
+      "verdict": "different",
+      "nature": "linewrap-hides-different-place"
+    },
+    {
+      "a": "SULLIVAN COAL HAND\nLING PTY LTD",
+      "b": "SULLIVAN COAL HAND\nLERS PTY LTD",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-word-change"
+    },
+    {
+      "a": "COIMBATORE PUMP INDUSTRIES44 GANAPATHY ROAD COIMBATORE",
+      "b": "COIMBATORE PUMP ENTERPRISES44 GANAPATHY ROAD COIMBATORE",
+      "verdict": "different",
+      "nature": "glued-address-different-firm"
+    },
+    {
+      "a": "DOYLE FREIGHT FORWARDING PTY LTD",
+      "b": "DOYCE FREIGHT FORWARDING PTY LTD",
+      "verdict": "different",
+      "nature": "uppercase-hides-letter-change"
+    },
+    {
+      "a": "L/C NO GLD-3345 GLADSTONE COAL EXPORTS PTY LTD",
+      "b": "L/C NO GLD-3345 GLADSTONE COKE EXPORTS PTY LTD",
+      "verdict": "different",
+      "nature": "bank-ref-different-entity"
+    },
+    {
+      "a": "TRIVEDI TRADING COM\nPANY",
+      "b": "TRIVENI TRADING COM\nPANY",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-letter-change"
+    },
+    {
+      "a": "FIELD 50: SUNDARAM TEXTILE MILLS LLP",
+      "b": "FIELD 50: SUNDARAM TEXTILE MILLS LTD",
+      "verdict": "different",
+      "nature": "field50-different-entity-type"
+    },
+    {
+      "a": "MITCHELL IRON STEEL PTY LTD7 RAILWAY TCE PORT HEDLAND",
+      "b": "MITCHELL IRON METALS PTY LTD7 RAILWAY TCE PORT HEDLAND",
+      "verdict": "different",
+      "nature": "glued-address-different-firm"
+    },
+    {
+      "a": "YADAV SONS ENTERPRISES",
+      "b": "YADAV SONS INDUSTRIES",
+      "verdict": "different",
+      "nature": "uppercase-hides-word-change"
+    },
+    {
+      "a": "ADVISING BANK REF PER5567 CARMICHAEL EXPORTS PTY LTD",
+      "b": "ADVISING BANK REF PER5567 CARMICHAEL EXPRESS PTY LTD",
+      "verdict": "different",
+      "nature": "bank-ref-different-entity"
+    },
+    {
+      "a": "DESHPANDE TEXTILES\nPVT LTD, GAT 112 MIDC AURANGABAD",
+      "b": "DESHMUKH TEXTILES\nPVT LTD, GAT 112 MIDC AURANGABAD",
+      "verdict": "different",
+      "nature": "linewrap-hides-letter-change"
+    },
+    {
+      "a": "TASMAN COAL SHIP\nPING CO LTD",
+      "b": "TASMAN COAL SHIP\nPING CORP LTD",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-word-change"
+    },
+    {
+      "a": "BOORALA PASTORAL CO PTY LTDRMB 4102 MERREDIN WA",
+      "b": "BOOROOLOOLA PASTORAL CO PTY LTDRMB 4102 MERREDIN WA",
+      "verdict": "different",
+      "nature": "glued-address-different-firm"
+    },
+    {
+      "a": "RAMESH KUMAR SHARMA PVT LTD",
+      "b": "RAKESH KUMAR SHARMA PVT LTD",
+      "verdict": "different",
+      "nature": "uppercase-hides-firstname-change"
+    },
+    {
+      "a": "IRREVOCABLE LC REF KOL/771 BANERJEE TRADING HOUSE",
+      "b": "IRREVOCABLE LC REF KOL/771 BHATTACHARJEE TRADING HOUSE",
+      "verdict": "different",
+      "nature": "bank-ref-different-entity"
+    },
+    {
+      "a": "EAST COAST GRAIN TERM\nINAL PTY LTD",
+      "b": "WEST COAST GRAIN TERM\nINAL PTY LTD",
+      "verdict": "different",
+      "nature": "4x35-cut-hides-place-change"
+    },
+    {
+      "a": "PACIFIC RIM SHIPPING (NO 1) PTY\nLTD",
+      "b": "PACIFIC RIM SHIPPING (NO 2) PTY\nLTD",
+      "verdict": "different",
+      "nature": "linewrap-hides-numeral-change"
+    },
+    {
+      "a": "NEWCASTLE BULK TERMINAL CO PTY LTD9 WHARF ROAD NEWCASTLE",
+      "b": "NEWCASTLE BULK TERMINALS PTY LTD9 WHARF ROAD NEWCASTLE",
+      "verdict": "different",
+      "nature": "glued-address-different-firm"
+    },
+    {
+      "a": "PORT HEDLAND ORE HANDLING PTY LTD",
+      "b": "PORT HEDLAND ORE HANDLERS PTY LTD",
+      "verdict": "different",
+      "nature": "uppercase-hides-word-change"
+    },
+    {
+      "a": "RameshTradersPvtLtd",
+      "b": "Ramesh Traders Pvt Ltd",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "Malhotraa Bros Enterprises",
+      "b": "Malhotra Bros Enterprises",
+      "verdict": "match",
+      "nature": "doubled-letter-ocr"
+    },
+    {
+      "a": "Saraswati Engg Works",
+      "b": "Saraswati Engineering Works",
+      "verdict": "match",
+      "nature": "abbreviation-engg"
+    },
+    {
+      "a": "Konkan Mfg Co",
+      "b": "Konkan Manufacturing Co",
+      "verdict": "match",
+      "nature": "abbreviation-mfg"
+    },
+    {
+      "a": "Deshpande Pvt Ltd",
+      "b": "Deshpande Private Limited",
+      "verdict": "match",
+      "nature": "abbreviation-pvt"
+    },
+    {
+      "a": "Gladstone Intl Traders",
+      "b": "Gladstone International Traders",
+      "verdict": "match",
+      "nature": "abbreviation-intl"
+    },
+    {
+      "a": "Doyle Enterp Pty Ltd",
+      "b": "Doyle Enterprises Pty Ltd",
+      "verdict": "match",
+      "nature": "abbreviation-enterp"
+    },
+    {
+      "a": "Ramesh Traders pvt ltd mumbai",
+      "b": "Ramesh Traders Pvt Ltd, Mumbai",
+      "verdict": "match",
+      "nature": "whatsapp-shorthand"
+    },
+    {
+      "a": "Kennedy Grain Co Put Ltd",
+      "b": "Kennedy Grain Co Pty Ltd",
+      "verdict": "match",
+      "nature": "autocorrect-typo"
+    },
+    {
+      "a": "Harrington Miming Pty Ltd",
+      "b": "Harrington Mining Pty Ltd",
+      "verdict": "match",
+      "nature": "autocorrect-typo"
+    },
+    {
+      "a": "GladstoneCoalExportsPtyLtd",
+      "b": "Gladstone Coal Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "S A R A S W A T I  T R A D E R S",
+      "b": "Saraswati Traders",
+      "verdict": "match",
+      "nature": "scanned-stamp-caps-spacing"
+    },
+    {
+      "a": "Whitfieid Mining Pty Ltd",
+      "b": "Whitfield Mining Pty Ltd",
+      "verdict": "match",
+      "nature": "ocr-letter-confusion"
+    },
+    {
+      "a": "Beaumont Iron 0re Pty Ltd",
+      "b": "Beaumont Iron Ore Pty Ltd",
+      "verdict": "match",
+      "nature": "ocr-letter-confusion"
+    },
+    {
+      "a": "Chopraa Bros Enterprises",
+      "b": "Chopra Bros Enterprises",
+      "verdict": "match",
+      "nature": "doubled-letter-ocr"
+    },
+    {
+      "a": "sanghvi diamnd exp mumbai pls confirm order",
+      "b": "Sanghvi Diamond Exports, Mumbai",
+      "verdict": "match",
+      "nature": "whatsapp-shorthand"
+    },
+    {
+      "a": "Coimbatore Engg Industries",
+      "b": "Coimbatore Engineering Industries",
+      "verdict": "match",
+      "nature": "abbreviation-engg"
+    },
+    {
+      "a": "KulkarniAgroIndustries",
+      "b": "Kulkarni Agro Industries",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "Fletcher Bull Handling Pty Ltd",
+      "b": "Fletcher Bulk Handling Pty Ltd",
+      "verdict": "match",
+      "nature": "autocorrect-typo"
+    },
+    {
+      "a": "Callahan VVheat Traders Pty Ltd",
+      "b": "Callahan Wheat Traders Pty Ltd",
+      "verdict": "match",
+      "nature": "ocr-letter-confusion"
+    },
+    {
+      "a": "Godavari Mfg Industries",
+      "b": "Godavari Manufacturing Industries",
+      "verdict": "match",
+      "nature": "abbreviation-mfg"
+    },
+    {
+      "a": "modi plastics pvt ltd order confirmed",
+      "b": "Modi Plastics Pvt Ltd",
+      "verdict": "match",
+      "nature": "whatsapp-shorthand"
+    },
+    {
+      "a": "M A L H O T R A  B R O S",
+      "b": "Malhotra Bros",
+      "verdict": "match",
+      "nature": "scanned-stamp-caps-spacing"
+    },
+    {
+      "a": "Sullivann Coal Handling Pty Ltd",
+      "b": "Sullivan Coal Handling Pty Ltd",
+      "verdict": "match",
+      "nature": "doubled-letter-ocr"
+    },
+    {
+      "a": "Cape HedlandBulkCarriers",
+      "b": "Cape Hedland Bulk Carriers",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "Trivedi Trading Co Pvt Ltd",
+      "b": "Trivedi Trading Co Private Limited",
+      "verdict": "match",
+      "nature": "abbreviation-pvt"
+    },
+    {
+      "a": "Doyle Freight Fwd Pty Ltd",
+      "b": "Doyle Freight Forwarding Pty Ltd",
+      "verdict": "match",
+      "nature": "autocorrect-typo"
+    },
+    {
+      "a": "Farreli Shipping Agencies",
+      "b": "Farrell Shipping Agencies",
+      "verdict": "match",
+      "nature": "ocr-letter-confusion"
+    },
+    {
+      "a": "pilbara ore chartering sg office confirm bl",
+      "b": "Pilbara Ore Chartering Pte Ltd, Singapore",
+      "verdict": "match",
+      "nature": "whatsapp-shorthand"
+    },
+    {
+      "a": "Perth Intl Freight Co",
+      "b": "Perth International Freight Co",
+      "verdict": "match",
+      "nature": "abbreviation-intl"
+    },
+    {
+      "a": "Kennedyy Grain Co Pty Ltd",
+      "b": "Kennedy Grain Co Pty Ltd",
+      "verdict": "match",
+      "nature": "doubled-letter-ocr"
+    },
+    {
+      "a": "OtorohangaDairyTradersNZLtd",
+      "b": "Otorohanga Dairy Traders NZ Ltd",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "Yadav Sons Enterp",
+      "b": "Yadav Sons Enterprises",
+      "verdict": "match",
+      "nature": "abbreviation-enterp"
+    },
+    {
+      "a": "G L A D S T O N E  C O A L",
+      "b": "Gladstone Coal",
+      "verdict": "match",
+      "nature": "scanned-stamp-caps-spacing"
+    },
+    {
+      "a": "Radcliffe Agri Experts Pty Ltd",
+      "b": "Radcliffe Agri Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "autocorrect-typo"
+    },
+    {
+      "a": "Mitcheli Iron & Steel Pty Ltd",
+      "b": "Mitchell Iron & Steel Pty Ltd",
+      "verdict": "match",
+      "nature": "ocr-letter-confusion"
+    },
+    {
+      "a": "boorala pastoral co merredin wa confirm shipment",
+      "b": "Boorala Pastoral Co Pty Ltd, Merredin WA",
+      "verdict": "match",
+      "nature": "whatsapp-shorthand"
+    },
+    {
+      "a": "Rajkot Engg Works",
+      "b": "Rajkot Engineering Works",
+      "verdict": "match",
+      "nature": "abbreviation-engg"
+    },
+    {
+      "a": "Lockhartt Coal Pty Ltd",
+      "b": "Lockhart Coal Pty Ltd",
+      "verdict": "match",
+      "nature": "doubled-letter-ocr"
+    },
+    {
+      "a": "CarmichaelExportsPtyLtd",
+      "b": "Carmichael Exports Pty Ltd",
+      "verdict": "match",
+      "nature": "missing-spaces"
+    },
+    {
+      "a": "Kennedy Grain Co Put Ltd",
+      "b": "Kennedy Bean Co Put Ltd",
+      "verdict": "different",
+      "nature": "autocorrect-different-firm"
+    },
+    {
+      "a": "sanghvi diamnd exp mumbai",
+      "b": "sanghvi diamnd imp mumbai",
+      "verdict": "different",
+      "nature": "whatsapp-different-firm"
+    },
+    {
+      "a": "KulkarniAgroIndustries",
+      "b": "KulkarniAgroEnterprises",
+      "verdict": "different",
+      "nature": "missing-spaces-different-firm"
+    },
+    {
+      "a": "Chopraa Bros Enterprises",
+      "b": "Chhabraa Bros Enterprises",
+      "verdict": "different",
+      "nature": "doubled-letter-different-firm"
+    },
+    {
+      "a": "Whitfieid Mining Pty Ltd",
+      "b": "Whitfieid Milling Pty Ltd",
+      "verdict": "different",
+      "nature": "ocr-confusion-different-firm"
+    },
+    {
+      "a": "Beaumont Iron 0re Pty Ltd",
+      "b": "Beaumont Iron 0xide Pty Ltd",
+      "verdict": "different",
+      "nature": "ocr-confusion-different-firm"
+    },
+    {
+      "a": "Saraswati Engg Works",
+      "b": "Saraswati Enterp Works",
+      "verdict": "different",
+      "nature": "abbreviation-collision-different-firm"
+    },
+    {
+      "a": "Konkan Mfg Co",
+      "b": "Konkan Mktg Co",
+      "verdict": "different",
+      "nature": "abbreviation-collision-different-firm"
+    },
+    {
+      "a": "modi plastics pvt ltd order confirmed",
+      "b": "moody plastics pvt ltd order confirmed",
+      "verdict": "different",
+      "nature": "whatsapp-different-firm"
+    },
+    {
+      "a": "RameshTradersPvtLtd",
+      "b": "RajeshTradersPvtLtd",
+      "verdict": "different",
+      "nature": "missing-spaces-different-firm"
+    },
+    {
+      "a": "GladstoneCoalExportsPtyLtd",
+      "b": "GladstoneCokeExportsPtyLtd",
+      "verdict": "different",
+      "nature": "missing-spaces-different-firm"
+    },
+    {
+      "a": "OtorohangaDairyTradersNZLtd",
+      "b": "OtorohangaDairyProducersNZLtd",
+      "verdict": "different",
+      "nature": "missing-spaces-different-firm"
+    },
+    {
+      "a": "CarmichaelExportsPtyLtd",
+      "b": "CarnochaelExportsPtyLtd",
+      "verdict": "different",
+      "nature": "missing-spaces-different-firm"
+    },
+    {
+      "a": "Malhotraa Bros Enterprises",
+      "b": "Malhotraa Bros Industries",
+      "verdict": "different",
+      "nature": "doubled-letter-different-firm"
+    },
+    {
+      "a": "Sullivann Coal Handling Pty Ltd",
+      "b": "Sullivann Coal Handlers Pty Ltd",
+      "verdict": "different",
+      "nature": "doubled-letter-different-firm"
+    },
+    {
+      "a": "Kennedyy Grain Co Pty Ltd",
+      "b": "Kennedyy Bean Co Pty Ltd",
+      "verdict": "different",
+      "nature": "doubled-letter-different-firm"
+    },
+    {
+      "a": "Lockhartt Coal Pty Ltd",
+      "b": "Lockheartt Coal Pty Ltd",
+      "verdict": "different",
+      "nature": "doubled-letter-different-firm"
+    },
+    {
+      "a": "Coimbatore Engg Industries",
+      "b": "Coimbatore Engg Enterprises",
+      "verdict": "different",
+      "nature": "abbreviation-collision-different-firm"
+    },
+    {
+      "a": "Rajkot Engg Works",
+      "b": "Rajkot Engg Traders",
+      "verdict": "different",
+      "nature": "abbreviation-collision-different-firm"
+    },
+    {
+      "a": "Godavari Mfg Industries",
+      "b": "Godavari Mfg Traders",
+      "verdict": "different",
+      "nature": "abbreviation-collision-different-firm"
+    },
+    {
+      "a": "Deshpande Pvt Ltd",
+      "b": "Deshmukh Pvt Ltd",
+      "verdict": "different",
+      "nature": "abbreviation-different-firm"
+    },
+    {
+      "a": "Trivedi Trading Co Pvt Ltd",
+      "b": "Trivedi Trading Corp Pvt Ltd",
+      "verdict": "different",
+      "nature": "abbreviation-different-firm"
+    },
+    {
+      "a": "Gladstone Intl Traders",
+      "b": "Gladstone Intl Exporters",
+      "verdict": "different",
+      "nature": "abbreviation-different-firm"
+    },
+    {
+      "a": "Perth Intl Freight Co",
+      "b": "Perth Intl Cargo Co",
+      "verdict": "different",
+      "nature": "abbreviation-different-firm"
+    },
+    {
+      "a": "Doyle Enterp Pty Ltd",
+      "b": "Doyle Enterp NL",
+      "verdict": "different",
+      "nature": "different-entity-type"
+    },
+    {
+      "a": "Yadav Sons Enterp",
+      "b": "Yaduv Sons Enterp",
+      "verdict": "different",
+      "nature": "abbreviation-different-firm"
+    },
+    {
+      "a": "Harrington Miming Pty Ltd",
+      "b": "Harringdon Miming Pty Ltd",
+      "verdict": "different",
+      "nature": "autocorrect-different-firm"
+    },
+    {
+      "a": "Radcliffe Agri Experts Pty Ltd",
+      "b": "Ratcliffe Agri Experts Pty Ltd",
+      "verdict": "different",
+      "nature": "autocorrect-different-firm"
+    },
+    {
+      "a": "Mitcheli Iron & Steel Pty Ltd",
+      "b": "Mitcheli Iron & Metal Pty Ltd",
+      "verdict": "different",
+      "nature": "ocr-confusion-different-firm"
+    },
+    {
+      "a": "Farreli Shipping Agencies",
+      "b": "Farreli Shipping Agents",
+      "verdict": "different",
+      "nature": "ocr-confusion-different-firm"
+    },
+    {
+      "a": "Callahan VVheat Traders Pty Ltd",
+      "b": "Callahan VVool Traders Pty Ltd",
+      "verdict": "different",
+      "nature": "ocr-confusion-different-firm"
+    },
+    {
+      "a": "boorala pastoral co merredin wa confirm shipment",
+      "b": "booralla pastoral co merredin wa confirm shipment",
+      "verdict": "different",
+      "nature": "whatsapp-different-firm"
+    },
+    {
+      "a": "pilbara ore chartering sg office confirm bl",
+      "b": "pilbara iron chartering sg office confirm bl",
+      "verdict": "different",
+      "nature": "whatsapp-different-firm"
+    },
+    {
+      "a": "sanghvi diamnd exp mumbai pls confirm order",
+      "b": "sanghvi diamond trdrs mumbai pls confirm order",
+      "verdict": "different",
+      "nature": "whatsapp-different-firm"
+    },
+    {
+      "a": "S A R A S W A T I  T R A D E R S",
+      "b": "S A R A S W A T  T R A D E R S",
+      "verdict": "different",
+      "nature": "scanned-stamp-different-firm"
+    },
+    {
+      "a": "M A L H O T R A  B R O S",
+      "b": "M A L H O T A  B R O S",
+      "verdict": "different",
+      "nature": "scanned-stamp-different-firm"
+    },
+    {
+      "a": "G L A D S T O N E  C O A L",
+      "b": "G L A D S T O N  C O A L",
+      "verdict": "different",
+      "nature": "scanned-stamp-different-firm"
+    },
+    {
+      "a": "Cape HedlandBulkCarriers",
+      "b": "Cape NewcastleBulkCarriers",
+      "verdict": "different",
+      "nature": "missing-spaces-different-firm"
+    },
+    {
+      "a": "Doyle Freight Fwd Pty Ltd",
+      "b": "Boyle Freight Fwd Pty Ltd",
+      "verdict": "different",
+      "nature": "autocorrect-different-firm"
+    },
+    {
+      "a": "Perth Intl Freight Co",
+      "b": "Perth Ind Freight Co",
+      "verdict": "different",
+      "nature": "abbreviation-collision-different-firm"
+    }
+  ]
+}
