@@ -154,3 +154,23 @@ test("l'export tableur : une ligne par candidat, et aucune formule exécutable",
   assert.ok(lignes[1]!.includes('"Acme, Inc"'), "une virgule se cite");
   assert.ok(lignes[2]!.includes("'@SUM(A1)"));
 });
+
+test("tour 5 : l'index retrouve à lui seul le 1 lu optiquement, la civilité soudée dans les deux sens, et la faute d'un clavardage", () => {
+  const e: EntreeListe[] = [
+    { source: "OFAC", id: "1", nom: "Kemuning", alias: [], type: "vessel" },
+    { source: "OFAC", id: "2", nom: "Sri Pelangi", alias: [], type: "entity" },
+    { source: "OFAC", id: "3", nom: "Shreeganesh", alias: [], type: "entity" },
+    { source: "OFAC", id: "4", nom: "Seng Alpha", alias: [], type: "entity" },
+  ];
+  const fx = frequencesDe(e.map((x) => [x.nom]));
+  const ix = new Index(fx, e, 0.74);
+  /* chaque requête ne partage avec sa chaîne listée que le mot que la règle nouvelle relie */
+  for (const [nom, k] of [["KEMUN1NG", 0], ["sripelangi", 1], ["Shree Ganesh", 2], ["Send Beta", 3]] as const) {
+    assert.ok(ix.candidats(preparerNom(fx, nom), nom).includes(k), `${nom} doit retrouver « ${e[k]!.nom} »`);
+  }
+  for (const nom of ["KEMUN1NG", "sripelangi", "Shree Ganesh"]) {
+    const rapide = cribler({ ligne: 2, nom }, ix, seuils), exhaustif = cribler({ ligne: 2, nom }, ix, seuils, true);
+    assert.deepEqual(rapide, exhaustif, nom);
+    assert.notEqual(rapide.statut, "no-match", nom);
+  }
+});

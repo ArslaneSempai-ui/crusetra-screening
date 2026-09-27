@@ -36,11 +36,11 @@ import type { Cellule } from "./measure.ts";
 import {
   frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD, sembleCoupe,
   variationVocalique, voyelleEpenthetique, squeletteLongue, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
-  CHEMINS_APPRENTISSAGE, lecturesDe, pliCantonais, pluriel,
-  CHEMIN_VERDICT, RAPPEL_MIN, BLOC_MIN, LONGUEUR_CHAMP,
-  type Frequences, type NomPrepare, type Reglage, type JeuMesure,
+  CHEMINS_APPRENTISSAGE, lecturesDe, pliCantonais, pluriel, CHEMIN_VERDICT, RAPPEL_MIN, BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare,
+  type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme,
 } from "./entites.ts";
 import { cleAbjad, cleAbjadSansTa, type Abjad } from "./ecritures.ts";
+import { distanceOsa } from "./matchers/damerau.ts";
 
 /** Au plus autant de candidats montrés par nom ; le compte des autres est donné. */
 export const CANDIDATS_MONTRES = 5;
@@ -274,7 +274,7 @@ export class Index {
             /* la voyelle longue écrite ee (« naseem ») : rangé aussi sous son squelette lu i (voir squeletteLongue) */
             if (mot.includes("ee")) ranger(this.parSq, squeletteLongue(mot), m);
             ranger(this.parRepli, m.repli, m);
-            if (mot.includes(PERDU)) ranger(this.parLongueurPerdu, String(mot.length), m);
+            if (porteUnJalon(mot)) ranger(this.parLongueurPerdu, String(mot.length), m);
             for (const mode of ["a", "h"]) {
               const c = cleAbjad(mot, mode === "h");
               if (c.length >= 3) ranger(this.parCleAbjad, `${mode}|${c}`, m);
@@ -341,9 +341,10 @@ export class Index {
        les initiales si c'est l'initiale qui manque), et les mots listés qui en portent une
        se comparent au mot demandé */
     const jalons = mot.split(PERDU).length - 1;
-    if (jalons > 0) {
-      /* une lettre-jalon vaut une lettre, ou deux quand la lettre perdue se plie en deux (æ) */
-      for (const c of mot[0] === PERDU ? [...INITIALES] : [mot[0]!]) for (let L = mot.length; L <= mot.length + jalons; L++) {
+    if (porteUnJalon(mot)) {
+      /* une lettre-jalon vaut une lettre, ou deux quand la lettre perdue se plie en deux (æ) ; le
+         jalon du 1 lu optiquement (LU_UN) ne vaut qu'un i ou un l, en tête comme ailleurs */
+      for (const c of mot[0] === PERDU ? [...INITIALES] : mot[0] === LU_UN ? ["i", "l"] : [mot[0]!]) for (let L = mot.length; L <= mot.length + jalons; L++) {
         for (const m of this.parInitialeLongueur.get(c + L) ?? []) if (lettrePerdue(mot, m.mot)) retenus.add(m);
       }
     }
@@ -399,6 +400,16 @@ export class Index {
           if (voyelleEpenthetique(sq, m.sq) && !tousDeuxAnglais(mot, m.mot)) retenus.add(m);
         }
       }
+      /* la faute d'un clavardage (mêmes règles que le score) : même initiale, une lettre près, un seul
+         des deux mots au dictionnaire ; la marque chat et la langue se vérifient au score */
+      if (mot.length >= 4) {
+        const anglais = lemme(mot) !== undefined;
+        for (let L = mot.length - 1; L <= mot.length + 1; L++) {
+          for (const m of this.parInitialeLongueur.get(mot[0]! + L) ?? []) {
+            if (m.mot.length >= 4 && (lemme(m.mot) !== undefined) !== anglais && distanceOsa(mot, m.mot) === 1) retenus.add(m);
+          }
+        }
+      }
     }
     /* la distance d'édition, sur le mot et sur son squelette : l'écart de longueur est borné
        par (1 − t) × la plus grande longueur, et l'initiale est la même tant que
@@ -441,6 +452,11 @@ export class Index {
     const coupe = estCoupe(brut);
     q.mots.forEach((m, i) => {
       for (const k of this.nomsParMot(m, q.squelettes[i]!, q.replis[i]!, i === q.mots.length - 1, coupe, q.abreges[i]!, q.marques.abjad, q.marques.cantonais)) retenus.add(k);
+      /* une civilité que la requête soude au mot suivant (« sripelangi »), ou qu'elle écrit à part
+         quand une chaîne listée la soude : mêmes règles que le score, qui vérifie que l'autre côté
+         l'a écrite ; ici on retient large */
+      for (const c of CIVILITES) if (m.startsWith(c) && m.length >= c.length + 4) for (const k of this.vocabulaire.get(m.slice(c.length))?.noms ?? []) retenus.add(k);
+      for (const c of q.civilites) for (const k of this.vocabulaire.get(c + m)?.noms ?? []) retenus.add(k);
     });
     /* le bloc, sur le bloc brut puis sur celui des squelettes. Pour chaque longueur de bloc
        listé dans la bande, le lemme dit combien de bigrammes doivent être partagés ; par le
