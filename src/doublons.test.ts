@@ -13,7 +13,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const SCRIPT = fileURLToPath(new URL("../scripts/doublons.mjs", import.meta.url));
-const lancer = (...args: string[]) => spawnSync("node", [SCRIPT, ...args], { encoding: "utf8" });
+const lancer = (...args: string[]) => spawnSync(process.execPath, [SCRIPT, ...args], { encoding: "utf8" });
 const dossier = mkdtempSync(join(tmpdir(), "doublons-"));
 const fixture = (nom: string, texte: string): string => { const f = join(dossier, nom); writeFileSync(f, texte); return f; };
 

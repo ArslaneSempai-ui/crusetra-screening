@@ -7,7 +7,7 @@
 set -u
 round=${1:?round, in words (e.g. twelve)} ; commit=${2:?commit of the matcher replayed (short sha)}
 depot=${0:A:h:h}
-licencie=${LICENCIE:-/Users/arslanechr/Documents/cascade-licencie}
+licencie=${LICENCIE:-${depot:h}/cascade-licencie}   # le dépôt licencié vit à côté de celui-ci
 fixture=$licencie/src/fixtures/criblage-exemple.json
 releve=exemple/contreparties-exemple.screening.json
 cosign="Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"

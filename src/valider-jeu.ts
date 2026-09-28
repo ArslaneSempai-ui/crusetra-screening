@@ -15,6 +15,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { CHEMINS_APPRENTISSAGE } from "./entites.ts";
 
@@ -29,7 +30,11 @@ export type Nom = { a: string; b: string };
 
 export const CLES_ATTENDUES = ["quoi", "provenance", "avertissement", "paires"] as const;
 export const ATTENDU = { paires: 400, match: 200, different: 200 } as const;
-export const DOSSIER_JEUX_AVEUGLES = "/Users/arslanechr/Documents/jeux-aveugles";
+/** Les jeux aveugles vivent À CÔTÉ du dépôt, jamais dedans (un jeu aveugle commis n'est plus aveugle) ;
+ *  CASCADE_JEUX_AVEUGLES les déplace. Aucun chemin de poste ici : le dépôt est public, et un autre poste
+ *  doit pouvoir rejouer la promotion (sans-chemin-machine.test.ts le tient). */
+export const DOSSIER_JEUX_AVEUGLES = process.env.CASCADE_JEUX_AVEUGLES
+  ?? fileURLToPath(new URL("../../jeux-aveugles", import.meta.url));
 export const CADRATIN = "\u2014";
 export const PHRASE_CADRATINS = "Em dashes inside names were replaced by hyphens before the verdict, blind.";
 
