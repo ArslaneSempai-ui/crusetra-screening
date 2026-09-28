@@ -47,6 +47,8 @@ a verdict set is ever listed by any tool before it becomes training.
 | | | | | possible 0.80 | 117/200 [52-65 %] | 26/200 [9-18 %] |
 | 2026-09-28 | v23 29f57a26 / 8a0d336c / ecritures 26b17532 | set #22 ae024eaa (Bangkok and Yangon brief: Thai, Burmese, Khmer, Lao and Vietnamese scripts and their romanisations; overlap with the twenty-one training sets: 0 pairs, 0 names; 0 pairs identical but for case), becomes paires-entites-22.json; the realistic set #20 is put back in place as the verdict file after the judgment | 200 + 200 | strong 0.81 | 87/200 [37-50 %] | 7/200 [2-7 %] |
 | | | | | possible 0.80 | 109/200 [48-61 %] | 31/200 [11-21 %] |
+| 2026-09-28 | v24 1e8cbea2 / ac3c1b11 / ecritures 9496c409 | set #23 34910ccd (Gdańsk and Riga brief: Polish, Lithuanian, Latvian, Estonian, Ukrainian and Belarusian, Cyrillic and romanisations; last set of the programme; overlap with the twenty-two training sets: 0 pairs, 0 names; 0 pairs identical but for case), becomes paires-entites-23.json; the realistic set #20 is put back in place as the verdict file after the judgment | 200 + 200 | strong 0.81 | 102/200 [44-58 %] | 6/200 [1-6 %] |
+| | | | | possible 0.80 | 149/200 [68-80 %] | 25/200 [9-18 %] |
 
 v6 on set #3 at other thresholds: 0.70 found 182 with 52 false; 0.75 found 181 with 37; 0.85 found 162
 with 19; 0.90 found 153 with 11.
