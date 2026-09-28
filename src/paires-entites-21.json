@@ -1,0 +1,2407 @@
+{
+  "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+  "provenance": "blind test set #21, authored on 2026-09-28 by a separate agent (a Haifa freight forwarder and Tbilisi bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the 21 earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v22 (entites.ts 201d5159…, cribler.ts 0f773c96…, ecritures.ts 11eb0dba…): strong 0.81 found 94/200 [40-54 %] with 5/200 false alerts [1-6 %]; possible 0.80 found 117/200 [52-65 %] with 26/200 [9-18 %]. Studied afterwards and promoted to training set 21 on 2026-09-28, so it no longer measures anything held out.",
+  "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+  "paires": [
+    {
+      "a": "Mansour Olive Press Kafr Kanna Ltd",
+      "b": "Mansour Olive Press Kafr Manda Ltd",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Tzipori Spices Ltd",
+      "b": "Tzipori Sweets Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Rabinovich Medical Logistics Ltd",
+      "b": "Rabinovich Medical Laboratories Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "גולן מערכות קירור בע\"מ",
+      "b": "גולנ מערכות קירור בע\"מ",
+      "verdict": "match",
+      "nature": "final-letter"
+    },
+    {
+      "a": "האחים חדאד חומרי בניין בע\"מ",
+      "b": "Haddad Brothers Building Materials Ltd",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Gurevich Precision Parts Ltd",
+      "b": "Gorelik Precision Parts Ltd",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Tirat Carmel Plastics Ltd",
+      "b": "Tirat Zvi Plastics Ltd",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "נחמיאס תוצרת טרייה בע\"מ",
+      "b": "Nakhmias Fresh Produce Ltd",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "שמרון אריזות בע\"מ ח.פ. 513904826",
+      "b": "Shomron Packaging Ltd",
+      "verdict": "match",
+      "nature": "reg-number"
+    },
+    {
+      "a": "Nachmias Fresh Produce Ltd",
+      "b": "Nachmias Frozen Produce Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Levitsky Packaging Solutions Ltd",
+      "b": "Levitskiy Packaging Solutions Ltd",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Bracha Textiles Ltd",
+      "b": "Bracha Tiles Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Khoury Stone Works Ltd",
+      "b": "Khouri Stone Works Limited",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Rabinovich Medical Logistics Ltd",
+      "b": "Rabinowitz Medical Logistics Ltd",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "גורביץ' חלקים מדויקים בע\"מ",
+      "b": "Gurevich Precision Parts Ltd",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Golan Cooling Systems Ltd ח.פ. 514736209",
+      "b": "Golan Cooling Systems Ltd",
+      "verdict": "match",
+      "nature": "reg-number"
+    },
+    {
+      "a": "Zilberman Metals Ltd",
+      "b": "Zilbershtein Metals Ltd",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Haddad Bros. Building Materials Ltd",
+      "b": "Hadad Brothers Building Materials Ltd",
+      "verdict": "match",
+      "nature": "abbreviation"
+    },
+    {
+      "a": "צור אמיתי לוגיסטיקה בע\"מ",
+      "b": "Tzur Amitai Logistics Ltd",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "מעגן סוכנויות ספנות (1998) בע\"מ",
+      "b": "Ma'agan Shipping Agencies (1998) Ltd",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "ח'ורי עבודות אבן בע\"מ",
+      "b": "Khoury Stone Works Ltd",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Zilberman Metals Ltd",
+      "b": "Zilberman Plastics Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "צור אמיתי לוגיסטיקה בע\"מ",
+      "b": "צור אביטל לוגיסטיקה בע\"מ",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Rachamim Ohayon Import & Marketing Ltd",
+      "b": "Rakhamim Ohayon Import and Marketing Ltd",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Or Hagalim Seafood Ltd",
+      "b": "Or Hayam Seafood Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "אלקיים עצים בע\"מ",
+      "b": "אלקיימ עצים בע\"מ",
+      "verdict": "match",
+      "nature": "final-letter"
+    },
+    {
+      "a": "Zilberman Metals Ltd",
+      "b": "Silberman Metals Limited",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Nahariya Marine Supplies Ltd",
+      "b": "Netanya Marine Supplies Ltd",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Mansour Olive Press Kafr Kanna Ltd",
+      "b": "Mansur Olive Press Kafr Kana Ltd",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Voronov Industrial Coatings Ltd",
+      "b": "Voronoff Industrial Coatings Ltd",
+      "verdict": "match",
+      "nature": "romanisation-old"
+    },
+    {
+      "a": "Tzur Amitai Logistics Ltd, Ashdod Branch",
+      "b": "Tzur Amitai Logistics Ltd",
+      "verdict": "match",
+      "nature": "branch"
+    },
+    {
+      "a": "Barzilai Refrigeration and Storage Ltd",
+      "b": "Bar-Ilan Refrigeration and Storage Ltd",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Bracha Textiles Ltd",
+      "b": "Brakha Textiles Ltd",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Ashdod Tank Cleaning Ltd",
+      "b": "Ashkelon Tank Cleaning Ltd",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Tzipori Spices Ltd",
+      "b": "Zippori Spices Limited",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Yitzhak Ben Ami Electric Ltd",
+      "b": "Itzhak Ben-Ami Electric Ltd",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Shaltiel Hovalot Ltd",
+      "b": "Shaltiel Hovalot Yam Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Rachamim Ohayon Import and Marketing Ltd",
+      "b": "Rachamim Ohana Import and Marketing Ltd",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "רחמים אוחיון יבוא ושיווק בע\"מ",
+      "b": "Rachamim Ohayon Import and Marketing Ltd",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Ma'agan Shipping Agencies (1998) Ltd",
+      "b": "Ma'agan Chartering Agencies (1998) Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Yitzhak Ben Ami Electric Ltd",
+      "b": "Yitzhak Ben Haim Electric Ltd",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Amitai Ben Dror Engineering Ltd",
+      "b": "Amitai Ben Dov Engineering Ltd",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Tzur Amitai Logistics Ltd",
+      "b": "Tzur Amitai Logistics (Cyprus) Ltd",
+      "verdict": "different",
+      "nature": "other-country"
+    },
+    {
+      "a": "בע\"מ ברזילי קירור ואחסון",
+      "b": "ברזילי קירור ואחסון בע\"מ",
+      "verdict": "match",
+      "nature": "legal-form-position"
+    },
+    {
+      "a": "Khoury Stone Works Ltd",
+      "b": "Makhoul Stone Works Ltd",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Nachmias Fresh Produce Ltd",
+      "b": "Nahmias Fresh Produce Ltd",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "מנסור בית בד כפר כנא בע\"מ",
+      "b": "Mansour Olive Press Kafr Kanna Ltd",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "רחמים אוחיון יבוא ושיווק בע\"מ",
+      "b": "רחמים אוחיון יצוא ושיווק בע\"מ",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Khoury Stone Works Ltd",
+      "b": "Khoury Steel Works Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "יצחק בן עמי חשמל בע\"מ",
+      "b": "Yitzhak Ben Ami Electric Ltd",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "אור הגלים פירות ים בע\"מ",
+      "b": "Or Hagalim Seafood Ltd",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Tzemach Irrigation Ltd",
+      "b": "Tsemakh Irrigation Ltd",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "גולן מערכות קירור בע\"מ",
+      "b": "גלעד מערכות קירור בע\"מ",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Voronov Industrial Coatings Ltd",
+      "b": "Voronin Industrial Coatings Ltd",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Kiryat Ata Cargo Terminal Ltd",
+      "b": "Kiryat Gat Cargo Terminal Ltd",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Tzur Amitai Logistics Ltd",
+      "b": "Tsur Amitai Logistics Limited",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "ברזילי קירור ואחסון בע\"מ",
+      "b": "ברזילי הובלה ואחסון בע\"מ",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Levitsky Packaging Solutions Ltd",
+      "b": "Lipetsky Packaging Solutions Ltd",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Gurevich Precision Parts Ltd",
+      "b": "Gurevich Precision Tools Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "זילברמן מתכות בע\"מ",
+      "b": "זלברמן מתכות בע\"מ",
+      "verdict": "match",
+      "nature": "vowel-letters"
+    },
+    {
+      "a": "Golan Cooling Systems Ltd",
+      "b": "Golan Heating Systems Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Shomron Packaging Ltd",
+      "b": "Sharon Packaging Ltd",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "ציפורי תבלינים בע\"מ",
+      "b": "צפורי תבלינים בע\"מ",
+      "verdict": "match",
+      "nature": "vowel-letters"
+    },
+    {
+      "a": "Barzilai Refrigeration and Storage Ltd",
+      "b": "Barzilay Refrigeration & Storage Ltd",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "האחים חדאד חומרי בניין בע\"מ",
+      "b": "האחים חמדאן חומרי בניין בע\"מ",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "ציפורי תבלינים בע\"מ",
+      "b": "ציפורי תמרים בע\"מ",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Shaltiel Hovalot Ltd",
+      "b": "Shaltiel Transport Limited",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "שאלתיאל הובלות בע\"מ",
+      "b": "Shaltiel Hovalot Ltd",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "Elkayam Timber Ltd",
+      "b": "Elkayan Timber Ltd",
+      "verdict": "match",
+      "nature": "misspelling"
+    },
+    {
+      "a": "Elkayam Timber Ltd",
+      "b": "Elkabetz Timber Ltd",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Tzemach Irrigation Ltd",
+      "b": "Tzomet Irrigation Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "לויצקי פתרונות אריזה בע\"מ",
+      "b": "Levitski Packaging Solutions Ltd",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Chaim Shapiro Metal Works Ltd",
+      "b": "Moshe Shapiro Metal Works Ltd",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "לויצקי פתרונות אריזה בע\"מ",
+      "b": "לויצקי פתרונות תאורה בע\"מ",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Chaim Shapiro Metal Works Ltd",
+      "b": "Haim Shapiro Metal Works Ltd",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Ma'agan Shipping Agencies (1998) Ltd",
+      "b": "Ma'agan Shipping Agencies (Hellas) Ltd",
+      "verdict": "different",
+      "nature": "other-country"
+    },
+    {
+      "a": "רבינוביץ' לוגיסטיקה רפואית בע\"מ",
+      "b": "Rabinovich Medical Logistics Ltd",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "שאלתיאל הובלות בע\"מ",
+      "b": "שאלתיאל הסעות בע\"מ",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Haddad Brothers Building Materials Ltd",
+      "b": "Haddad Brothers Building Contractors Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Gurevich Precision Parts Ltd",
+      "b": "Gurevitch Precision Parts Ltd",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Ghazaryan Agro CJSC",
+      "b": "Kazaryan Agro CJSC",
+      "verdict": "match",
+      "nature": "romanisation-old"
+    },
+    {
+      "a": "Kutaisi Cargo Terminal LLC",
+      "b": "Kobuleti Cargo Terminal LLC",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Hovhannisyan Textile OJSC",
+      "b": "Hovhannisyan Textile Georgia LLC",
+      "verdict": "different",
+      "nature": "other-country"
+    },
+    {
+      "a": "Ijevan Timber CJSC",
+      "b": "Yerevan Timber CJSC",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Tsaturyan Shin LLC",
+      "b": "Mnatsakanyan Shin LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "«Ծատուրյան Շին» ՍՊԸ",
+      "b": "Tsaturyan Shin LLC",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "Chobanyan Kat LLC",
+      "b": "Chilingaryan Kat LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Chobanyan Kat LLC",
+      "b": "Chobanyan Milk LLC",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "შპს კვინიკაძე მეტალი",
+      "b": "Kvinikadze Metali LLC",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "Lomidze and Brothers LLC",
+      "b": "Lomidze and Partners LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Mtskheta Building LLC",
+      "b": "Mtskheta Bottling LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "«Ջանոյան Էքսպրես» ՍՊԸ",
+      "b": "Janoyan Express LLC",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "Lomidze Bros Ltd",
+      "b": "Lomidze and Brothers LLC",
+      "verdict": "match",
+      "nature": "abbreviation"
+    },
+    {
+      "a": "Kvinikadze Metal LLC ID 405236981",
+      "b": "Kvinikadze Metali LLC",
+      "verdict": "match",
+      "nature": "reg-number"
+    },
+    {
+      "a": "Hakobyan Trans LLC",
+      "b": "Hakobyan Tour LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Gogoberidze Trade LLC",
+      "b": "Ghoghoberidze Trade LLC",
+      "verdict": "match",
+      "nature": "romanisation-old"
+    },
+    {
+      "a": "შპს წყალტუბოს ხილი",
+      "b": "Tskaltubo Fruit LLC",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "შპს ციკლაური ღვინო",
+      "b": "Tsiklauri Ghvino LLC",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "Melkonyan Consult LLC",
+      "b": "Melikyan Consult LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Hakobyan Trans LLC",
+      "b": "Harutyunyan Trans LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Chobanyan Kat LLC",
+      "b": "Chobanyan Hats LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Melkonyan Consult LLC",
+      "b": "Melkonyan Construct LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Beridze Logistics JSC",
+      "b": "Bakradze Logistics JSC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "შპს მცხეთა ბილდინგი",
+      "b": "Mtskheta Building LLC",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Chanturia Trans LLC",
+      "b": "Tchanturia Trans Ltd",
+      "verdict": "match",
+      "nature": "romanisation-old"
+    },
+    {
+      "a": "Tsiklauri Wine LLC",
+      "b": "Tsiklauri Wood LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Beridze Logistics JSC",
+      "b": "Beridze Logistics Azerbaijan LLC",
+      "verdict": "different",
+      "nature": "other-country"
+    },
+    {
+      "a": "Melkonian Consult LLC",
+      "b": "Melkonyan Consult LLC",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "სს ბერიძე ლოჯისტიკი",
+      "b": "Beridze Logistics JSC",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "«Խաչատրյան և Որդիներ» ՍՊԸ",
+      "b": "Khachatryan and Sons LLC",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Ghazaryan Agro CJSC",
+      "b": "Ghazaryan Auto CJSC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "შპს კვინიკაძე მეტალი",
+      "b": "შპს კიკნაძე მეტალი",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "შპს ჭანტურია ტრანსი",
+      "b": "შპს ჭავჭავაძე ტრანსი",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "«Մելքոնյան Կոնսալթ» ՍՊԸ ՀՎՀՀ 02581473",
+      "b": "Melkonyan Consult LLC",
+      "verdict": "match",
+      "nature": "reg-number"
+    },
+    {
+      "a": "Tsiklauri Ghvino LLC",
+      "b": "Tsitsishvili Ghvino LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Gyumri Metagh LLC",
+      "b": "Gyumri Metal LLC",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "«Հովհաննիսյան Տեքստիլ» ԲԲԸ",
+      "b": "Hovhannisyan Textile OJSC",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "Caturyan Shin LLC",
+      "b": "Tsaturyan Shin LLC",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Melkonyan Consult LLC, Gyumri Branch",
+      "b": "Melkonian Consult LLC",
+      "verdict": "match",
+      "nature": "branch"
+    },
+    {
+      "a": "Janoyan Express LLC",
+      "b": "Jhangiryan Express LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Djanoyan Express LLC",
+      "b": "Dzhanoyan Express LLC",
+      "verdict": "match",
+      "nature": "romanisation-old"
+    },
+    {
+      "a": "Kvinikadze Metali LLC",
+      "b": "Kvinikadze Mebeli LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Khachatryan & Sons LLC",
+      "b": "Xachatryan and Sons LLC",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Zugdidi Hazelnut Export LLC",
+      "b": "Zestaponi Hazelnut Export LLC",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Gyumri Metagh LLC",
+      "b": "Gyumri Meghu LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Oganesyan Textile OJSC",
+      "b": "Hovhannisyan Textile OJSC",
+      "verdict": "match",
+      "nature": "romanisation-old"
+    },
+    {
+      "a": "Janoyan Express LLC",
+      "b": "Janoyan Export LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Ch'ant'uria Trans LLC",
+      "b": "Chanturia Trans LLC",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Tskaltubo Fruit LLC",
+      "b": "Tskaltubo Fish LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Chkhaidze Agro Ltd",
+      "b": "Chkhartishvili Agro Ltd",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Ghazaryan Agro CJSC",
+      "b": "Ghukasyan Agro CJSC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Khachatryan and Sons LLC",
+      "b": "Khachatrian and Sons Ltd",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Ghoghoberidze Trade LLC",
+      "b": "Ghoghoberidze Trade (Armenia) LLC",
+      "verdict": "different",
+      "nature": "other-country"
+    },
+    {
+      "a": "Ashtarak Wine Cellar CJSC",
+      "b": "Artashat Wine Cellar CJSC",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Lomidze and Brothers LLC",
+      "b": "Lordkipanidze and Brothers LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Djaparidze & Co. LLC",
+      "b": "Japaridze and Company LLC",
+      "verdict": "match",
+      "nature": "romanisation-old"
+    },
+    {
+      "a": "Mcxeta Bildingi LLC",
+      "b": "Mtskheta Building LLC",
+      "verdict": "match",
+      "nature": "romanisation-old"
+    },
+    {
+      "a": "Tskaltubos Khili LLC",
+      "b": "Ts'q'alt'ubos Khili LLC",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "შპს ლომიძე და ძმები",
+      "b": "Lomidze and Brothers LLC",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "შპს „ჩხაიძე აგრო“",
+      "b": "LLC Chkhaidze Agro",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "Rustavi Tile Works LLC",
+      "b": "Rustaveli Tile Works LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "«Չոբանյան Կաթ» ՍՊԸ",
+      "b": "Chobanyan Kat LLC",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "Mtskheta Building LLC",
+      "b": "Mestia Building LLC",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Khachatryan and Sons LLC",
+      "b": "Khachikyan and Sons LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Japaridze and Company LLC",
+      "b": "Jajanidze and Company LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Tskaltubo Fruit LLC",
+      "b": "Tsalenjikha Fruit LLC",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Hakobyan Trans LLC",
+      "b": "Akopyan Trans LLC",
+      "verdict": "match",
+      "nature": "romanisation-old"
+    },
+    {
+      "a": "«Գյումրի Մետաղ» ՍՊԸ",
+      "b": "Gyumri Metal LLC",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Beridze Logistics JSC, Batumi Branch",
+      "b": "Beridze Logistics JSC",
+      "verdict": "match",
+      "nature": "branch"
+    },
+    {
+      "a": "Chanturia Trans LLC",
+      "b": "Chanturia Travel LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "«Ղազարյան Ագրո» ՓԲԸ",
+      "b": "Ghazaryan Agro CJSC",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "Khachatryan and Sons LLC",
+      "b": "Khachatryan and Partners LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Hovhannisyan Textile OJSC",
+      "b": "Hovsepyan Textile OJSC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Tsiklauri Gvino LLC",
+      "b": "Tsiklauri Wine LLC",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "«Հակոբյան Տրանս» ՍՊԸ",
+      "b": "«Հակոբջանյան Տրանս» ՍՊԸ",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "შპს ჭანტურია ტრანსი",
+      "b": "Chanturia Trans LLC",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "Gyumri Metal LLC",
+      "b": "Gavar Metal LLC",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "«Հակոբյան Տրանս» ՍՊԸ",
+      "b": "Hakobyan Trans LLC",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "შპს ღოღობერიძე ტრეიდი ს/კ 404871236",
+      "b": "Ghoghoberidze Trade LLC",
+      "verdict": "match",
+      "nature": "reg-number"
+    },
+    {
+      "a": "შპს ჯაფარიძე და კომპანია",
+      "b": "Japaridze and Company LLC",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Pesteh Dasht-e Kerman",
+      "b": "Pesteh Dasht-e Kermanshah",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Tehrani Saffron House",
+      "b": "Tabrizi Saffron House",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "الحمادي للأدوات الصحية ذ.م.م",
+      "b": "Al Hammadi Sanitary Ware L.L.C.",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Shirazi Rosewater Co.",
+      "b": "Shirvani Rosewater Co.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Mehrab Yazd Tile & Ceramic Co.",
+      "b": "Kashi va Seramik-e Mehrab-e Yazd",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "خشکبار نیکپور",
+      "b": "خشكبار نيكپور",
+      "verdict": "match",
+      "nature": "persian-arabic-letters"
+    },
+    {
+      "a": "Al Obaidly Spare Parts WLL",
+      "b": "Al-Obaidli Spare Parts W.L.L.",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Dar Al Rayhan Perfumes LLC",
+      "b": "Dar Al Reem Perfumes LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Al Balushi Textiles LLC",
+      "b": "Al Balushi Tiles LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Nasim-e Shomal Trading Co. PJS",
+      "b": "Nasim Shomal Trading Company (Sahami Khas)",
+      "verdict": "match",
+      "nature": "legal-form"
+    },
+    {
+      "a": "Nasim Shomal Trading Co.",
+      "b": "Nasim Jonub Trading Co.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "الشامسي للتجارة العامة ذ.م.م",
+      "b": "Al Shamsi General Trading L.L.C.",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "شرکت پسته دشت کرمان (سهامی خاص) شماره ثبت 48213",
+      "b": "Pesteh Dasht-e Kerman PJSC",
+      "verdict": "match",
+      "nature": "reg-number"
+    },
+    {
+      "a": "Nikpour Dried Fruits Co.",
+      "b": "Nikpoor Dried Fruit Company",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "الحارثي لتجارة التمور",
+      "b": "Al Harthy Dates Trading",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Al Shamsi General Trading L.L.C.",
+      "b": "Alshamsi Gen. Trading LLC",
+      "verdict": "match",
+      "nature": "abbreviation"
+    },
+    {
+      "a": "شرکت بازرگانی نسیم شمال (سهامی خاص)",
+      "b": "Nasim Shomal Trading Company (Private Joint Stock)",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Saeed Humaid Foodstuff Est.",
+      "b": "Saeed Humaid Foodstuff (Oman) LLC",
+      "verdict": "different",
+      "nature": "other-country"
+    },
+    {
+      "a": "Sotoudeh Bam Dates",
+      "b": "Soltani Bam Dates",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Al Harthy Dates Trading",
+      "b": "Al-Harthi Dates Trading Co.",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Yazdi Confectionery Co.",
+      "b": "Yazdani Confectionery Co.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Abdulla Qasim Al Zarooni Trading",
+      "b": "Abdulla Hashim Al Zarooni Trading",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Sadeghpour Handwoven Carpets, National ID 10861234571",
+      "b": "Sadeghpour Handwoven Carpets",
+      "verdict": "match",
+      "nature": "reg-number"
+    },
+    {
+      "a": "Kerman Plain Pistachio Co.",
+      "b": "Kerman Plain Almond Co.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "خشکبار نیکپور",
+      "b": "Khoshkbar-e Nikpour",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "Kuhrang Medicinal Herbs",
+      "b": "Kuhdasht Medicinal Herbs",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "البلوشي للأقمشة ش.م.م",
+      "b": "Al Balushi Textiles LLC",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Zaferan Talayi Kavir Co.",
+      "b": "Kavir Golden Saffron Co.",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "Al Obaidly Spare Parts WLL",
+      "b": "Al Khulaifi Spare Parts WLL",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "بن حمدان للمقاولات",
+      "b": "Bin Hamdan Contracting",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "شرکت بازرگانی نسیم شمال",
+      "b": "شرکت بازرگانی نسیم شرق",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "العبيدلي لقطع الغيار ذ.م.م",
+      "b": "Al Obaidly Spare Parts W.L.L.",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Sohar Rice Trading LLC",
+      "b": "Sharjah Rice Trading LLC",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Dar Al Rayhan Perfumes LLC",
+      "b": "Dar Al Rayhan Printing LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Abdullah Gasim Alzarouni Trading",
+      "b": "Abdulla Qasim Al Zarooni Trading",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "البلوشي للأقمشة",
+      "b": "البلوشي للأغذية",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Mehrab Yazd Tile and Ceramic Co.",
+      "b": "Mehrab Ardakan Tile and Ceramic Co.",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Sotudeh Dates of Bam",
+      "b": "Sotoudeh Bam Dates",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Pesteh Dasht Kerman Co.",
+      "b": "Kerman Plain Pistachio Co.",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "زعفران طلایی کویر",
+      "b": "Zafaran Talaei Kavir",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "Barzegar Esfahan Textiles",
+      "b": "Barzegar Kashan Textiles",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Al Balushi Textiles LLC",
+      "b": "Al Baloushi Textiles L.L.C.",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Al Shamsi General Trading L.L.C.",
+      "b": "Al Shamali General Trading L.L.C.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Al Harthy Dates Trading",
+      "b": "Al Hajri Dates Trading",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "کاشی و سرامیک محراب یزد (سهامی خاص)",
+      "b": "Mehrab Yazd Tile and Ceramic Co.",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "الشامسي للتجارة العامة ذ.م.م",
+      "b": "الشامسي للمقاولات العامة ذ.م.م",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Barzegar Esfahan Textiles",
+      "b": "Bazargan Esfahan Textiles",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "پسته دشت کرمان",
+      "b": "Pesteh Dasht-e Kerman",
+      "verdict": "match",
+      "nature": "script"
+    },
+    {
+      "a": "Sadeghpour Handwoven Carpets",
+      "b": "Sadeqpur Hand-Woven Carpets",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Nikpour Dried Fruits Co.",
+      "b": "Nikzad Dried Fruits Co.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "فرش دستباف صادقپور",
+      "b": "Sadeghpour Handwoven Carpets",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "خشکبار نیکپور",
+      "b": "خشکبار نیکبخت",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Al Harthy Dates Trading",
+      "b": "Al Harthy Dates Packing",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "مؤسسة سعيد حميد للمواد الغذائية",
+      "b": "Saeed Humaid Foodstuff Est.",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Zafaran Talaei Kavir",
+      "b": "Zafaran Talaei Kashan",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Al Balushi Textiles LLC",
+      "b": "Al Barwani Textiles LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Saeed Humaid Foodstuff Establishment",
+      "b": "Said Hmeid Foodstuffs Est.",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Al Hammadi Sanitary Ware LLC",
+      "b": "Al Hammadi Sanitary Ware (Bahrain) W.L.L.",
+      "verdict": "different",
+      "nature": "other-country"
+    },
+    {
+      "a": "Al Hammadi Sanitary Ware LLC",
+      "b": "Al Hamadani Sanitary Ware LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "نساجی برزگر اصفهان",
+      "b": "Barzegar Esfahan Textiles",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Nasim-e Shomal Trading",
+      "b": "Nasim-e Sahar Trading",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Koohrang Medicinal Herbs Co.",
+      "b": "Kuhrang Medicinal Herbs Co.",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Al Hammadi Sanitary Ware LLC, Sharjah Branch",
+      "b": "Al Hammadi Sanitary Ware LLC",
+      "verdict": "match",
+      "nature": "branch"
+    },
+    {
+      "a": "عبدالله قاسم الزرعوني للتجارة",
+      "b": "Abdulla Qasim Al Zarooni Trading",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Nasim Shamal Trading Co.",
+      "b": "Nasim Shomal Trading Co.",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Barzegar Esfahan Textiles",
+      "b": "Barzegar Isfahan Textile Co.",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Mehrab Yazd Tile & Ceramic Co.",
+      "b": "Mehrab Yazd Glass & Ceramic Co.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Sherkat-e Bazargani-ye Nasim-e Shomal",
+      "b": "Sherkate Bazargani Nasim Shomal",
+      "verdict": "match",
+      "nature": "ezafe"
+    },
+    {
+      "a": "Abdulla Qasim Al Zarooni Trading",
+      "b": "Abdulla Qasim Al Zaabi Trading",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Dar Al Rayhan Perfumes LLC",
+      "b": "Dar El Raihan Perfumes L.L.C.",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Al Obaidly Spare Parts WLL",
+      "b": "Al Obaidly Sports WLL",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "خرمای ستوده بم",
+      "b": "Sotoudeh Bam Dates",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Bin Hamdan Contracting Est.",
+      "b": "Ben Hamdan Contracting Establishment",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Al Shamsi General Trading LLC",
+      "b": "Al Shamsi Building Materials Trading LLC",
+      "verdict": "different",
+      "nature": "two-words"
+    },
+    {
+      "a": "Saeed Humaid Foodstuff Est.",
+      "b": "Saeed Hilal Foodstuff Est.",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Sotoudeh Bam Dates",
+      "b": "Sotoudeh Jiroft Dates",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Bin Hamdan Contracting",
+      "b": "Bin Hamad Contracting",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "فرش دستباف صادقپور",
+      "b": "فرش ماشینی صادقپور",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "گیاهان دارویی کوهرنگ",
+      "b": "Kuhrang Medicinal Herbs",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "Sadeghpour Handwoven Carpets",
+      "b": "Sadeghzadeh Handwoven Carpets",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "ENGURI GLORY",
+      "b": "ENGURI GLORIA",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "GURIA SPIRIT",
+      "b": "GURIA SPIRITS",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "Zohar Bay Shipping Ltd, Haifa Branch",
+      "b": "Zohar Bay Shipping Limited",
+      "verdict": "match",
+      "nature": "branch"
+    },
+    {
+      "a": "זוהר ביי",
+      "b": "זוהר ריי",
+      "verdict": "different",
+      "nature": "vessel-letter"
+    },
+    {
+      "a": "M/V MZIURI (Batumi)",
+      "b": "მზიური",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "ZOHAR BAY",
+      "b": "ZOHAR RAY",
+      "verdict": "different",
+      "nature": "vessel-letter"
+    },
+    {
+      "a": "ACHARA BRIDGE",
+      "b": "ACHARA BRIDGES",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "KOLKHETI FEEDER 4",
+      "b": "KOLKHETI FEEDER IV",
+      "verdict": "match",
+      "nature": "numeral-notation"
+    },
+    {
+      "a": "MT KHOBI LADY",
+      "b": "ხობი ლედი",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "MT MTKVARI BREEZE, Batumi",
+      "b": "Mtkvari Breeze",
+      "verdict": "match",
+      "nature": "port-suffix"
+    },
+    {
+      "a": "OFIRA SUNRISE (ex-GILBOA SUNRISE)",
+      "b": "GILBOA SUNRISE",
+      "verdict": "match",
+      "nature": "ex-name"
+    },
+    {
+      "a": "GONIO PEARL",
+      "b": "GONIO AMBER",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "MT GURIA SPIRIT (ex-AEGEAN LILY)",
+      "b": "AEGEAN LILY",
+      "verdict": "match",
+      "nature": "ex-name"
+    },
+    {
+      "a": "GURIA SPIRIT",
+      "b": "გურია სპირიტი",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "KINNERET DAWN",
+      "b": "כנרת דון",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "KINNERET DAWN, Haifa",
+      "b": "Kinneret Dawn",
+      "verdict": "match",
+      "nature": "port-suffix"
+    },
+    {
+      "a": "CHOROKHI PRIDE",
+      "b": "ჭოროხი პრაიდი",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "ARBEL EXPRESS (ex-SARONIC EXPRESS)",
+      "b": "SARONIC EXPRESS",
+      "verdict": "match",
+      "nature": "ex-name"
+    },
+    {
+      "a": "EUXINE PORTER",
+      "b": "M/V EUXINE PORTER Batumi",
+      "verdict": "match",
+      "nature": "port-suffix"
+    },
+    {
+      "a": "NAHAL SOREK",
+      "b": "NAHAL OREN",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "KOLKHETI FEEDER 6 (Poti)",
+      "b": "Kolkheti Feeder 6",
+      "verdict": "match",
+      "nature": "port-suffix"
+    },
+    {
+      "a": "Kolkheti Feeder Lines LLC",
+      "b": "შპს კოლხეთი ფიდერ ლაინზი",
+      "verdict": "match",
+      "nature": "company-script"
+    },
+    {
+      "a": "NAHAL SOREK",
+      "b": "נחל שורק",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "GALIM SHUTTLE 3 (Ashdod)",
+      "b": "Galim Shuttle 3",
+      "verdict": "match",
+      "nature": "port-suffix"
+    },
+    {
+      "a": "ZOHAR BAY",
+      "b": "זוהר ביי",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "KHOBI LADY",
+      "b": "KHOBI LADY II",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "YARKON STAR",
+      "b": "ירקון סטאר",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "HADAR HACARMEL",
+      "b": "HADAR HAGALIL",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "ARBEL EXPRESS (ex-SARONIC EXPRESS)",
+      "b": "SARONIC EXPRESS II",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "LEAH MARIE",
+      "b": "LEAH MARIA",
+      "verdict": "different",
+      "nature": "vessel-letter"
+    },
+    {
+      "a": "KOLKHETI FEEDER 4",
+      "b": "KOLKHETI FEEDER 7",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "ENGURI GLORY",
+      "b": "ენგური გლორი",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "RIONI TRADER",
+      "b": "რიონი ტრეიდერი",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "EUXINE PORTER",
+      "b": "EUXINE PORTERS",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "ARBEL EXPRESS",
+      "b": "ארבל אקספרס",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "YARKON STAR",
+      "b": "YARDEN STAR",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "ACHARA BRIDGE",
+      "b": "აჭარა ბრიჯი",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "ANAKLIA DREAM",
+      "b": "ANAKLIA DREAMER",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "KOLKHETI FEEDER 6",
+      "b": "KOLKHETI FEEDER 16",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "NAHAL SOREK (ex LIMASSOL HAVEN)",
+      "b": "LIMASSOL HAVEN",
+      "verdict": "match",
+      "nature": "ex-name"
+    },
+    {
+      "a": "Galim Shuttle Lines Ltd",
+      "b": "גלים שאטל ליינס בע\"מ",
+      "verdict": "match",
+      "nature": "company-script"
+    },
+    {
+      "a": "GALIM SHUTTLE 3",
+      "b": "GALIM SHUTTLE 8",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "SUPSA LIGHT",
+      "b": "SUPSA NIGHT",
+      "verdict": "different",
+      "nature": "vessel-letter"
+    },
+    {
+      "a": "MTKVARI BREEZE",
+      "b": "MTKVARI BREEZE 2",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "KINNERET DAWN",
+      "b": "M/V Kinneret Dawn",
+      "verdict": "match",
+      "nature": "vessel-prefix"
+    },
+    {
+      "a": "POTI VOYAGER",
+      "b": "POTI NAVIGATOR",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "Euxine Ro-Ro Services JSC",
+      "b": "Euxine Roro Services Joint Stock Company",
+      "verdict": "match",
+      "nature": "legal-form"
+    },
+    {
+      "a": "ENGURI GLORY (ex-MARMARA GLORY)",
+      "b": "MARMARA GLORY",
+      "verdict": "match",
+      "nature": "ex-name"
+    },
+    {
+      "a": "ARBEL EXPRESS",
+      "b": "ARBEL EMPRESS",
+      "verdict": "different",
+      "nature": "vessel-letter"
+    },
+    {
+      "a": "KINNERET DAWN",
+      "b": "KINNERET DAWN II",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "ירקון סטאר",
+      "b": "ירקון סטארס",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "Galim Shuttle Lines Ltd",
+      "b": "Galim Shuttle Lines (Cyprus) Ltd",
+      "verdict": "different",
+      "nature": "other-country"
+    },
+    {
+      "a": "MZIURI",
+      "b": "MZIURI 2",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "OFIRA SUNRISE (ex-GILBOA SUNRISE)",
+      "b": "Ofira Sunrise",
+      "verdict": "match",
+      "nature": "ex-name"
+    },
+    {
+      "a": "RO-RO ACHARA BRIDGE (Poti)",
+      "b": "Achara Bridge",
+      "verdict": "match",
+      "nature": "port-suffix"
+    },
+    {
+      "a": "OFIRA SUNRISE",
+      "b": "OFIRA SUNSET",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "რიონი ტრეიდერი",
+      "b": "რიონი ტრეიდერი 2",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "MV RIONI TRADER (Poti)",
+      "b": "Rioni Trader",
+      "verdict": "match",
+      "nature": "port-suffix"
+    },
+    {
+      "a": "CHOROKHI PRIDE (ex-TRAKYA PRIDE)",
+      "b": "TRAKYA PRIDE",
+      "verdict": "match",
+      "nature": "ex-name"
+    },
+    {
+      "a": "SHFELA FEEDER 21",
+      "b": "SHFELA FEEDER 12",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "SUPSA LIGHT",
+      "b": "სუფსა ლაითი",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "CHOROKHI PRIDE",
+      "b": "CHOROKHI BRIDE",
+      "verdict": "different",
+      "nature": "vessel-letter"
+    },
+    {
+      "a": "Kolkheti Feeder Lines LLC",
+      "b": "Kolkheti Tanker Lines LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "MTKVARI BREEZE",
+      "b": "მტკვარი ბრიზი",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "MV ZOHAR BAY Ashdod",
+      "b": "Zohar Bay",
+      "verdict": "match",
+      "nature": "port-suffix"
+    },
+    {
+      "a": "ენგური გლორი",
+      "b": "ენგური გლორია",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "BATUMI HORIZON",
+      "b": "BATUMI HORIZONS",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "ENGURI GLORY (ex-MARMARA GLORY)",
+      "b": "MARMARA GLORY 2",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "RIONI TRADER",
+      "b": "RIONI TRADERS",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "CHOROKHI PRIDE (ex-TRAKYA PRIDE)",
+      "b": "TRAKYA PRINCE",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "אופירה סאנרייז",
+      "b": "OFIRA SUNRISE",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "Zohar Bay Shipping Ltd",
+      "b": "Zohar Bay Chartering Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "კოლხეთი ფიდერი 4",
+      "b": "KOLKHETI FEEDER 4",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "KINNERET DAWN, Haifa",
+      "b": "KINNERET DAWN II, Ashdod",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "OFIRA SUNRISE (ex-GILBOA SUNRISE)",
+      "b": "GILBOA SUNSET",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "Euxine Ro-Ro Services JSC",
+      "b": "Euxine Reefer Services JSC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "MT GURIA SPIRIT (ex-AEGEAN LILY)",
+      "b": "AEGEAN LILAC",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "HADAR HACARMEL",
+      "b": "הדר הכרמל",
+      "verdict": "match",
+      "nature": "vessel-script"
+    },
+    {
+      "a": "KHOBI LADY (ex-SEVASTI LADY)",
+      "b": "SEVASTI LADY",
+      "verdict": "match",
+      "nature": "ex-name"
+    },
+    {
+      "a": "M/T YARKON STAR, Haifa",
+      "b": "Yarkon Star",
+      "verdict": "match",
+      "nature": "port-suffix"
+    },
+    {
+      "a": "TEVOSYAN AGRO TRA DE LLC",
+      "b": "Tevosyan Agro Trade LLC",
+      "verdict": "match",
+      "nature": "line-cut"
+    },
+    {
+      "a": "LCHASHEN FISH PROCESSING CJSC",
+      "b": "LCHASHEN MILK PROCESSING CJSC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "hevrat dovrat plastik",
+      "b": "Dvora Plastics Ltd",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "AVETI5YAN PHARM LLC",
+      "b": "AVETISYAN CHEM LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "LCHASHEN FISH PROCESSING CJSC14 NAIRI STR GAVAR AM",
+      "b": "Lchashen Fish Processing CJSC",
+      "verdict": "match",
+      "nature": "glued-address"
+    },
+    {
+      "a": "שטרן מזון כשר בע\"מ",
+      "b": "Shtern Kosher Foods Ltd",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "LCHASHEN FISH PROCESSING CJSC14 NAIRI STR GAVAR AM",
+      "b": "LCHASHEN FISH FARMING CJSC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "TEVOSYAN AGRO TRADE LLC",
+      "b": "TEVANYAN AGRO TRADE LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "AVETISYAN PHARM LLC ARMENIA",
+      "b": "Avetisyan Pharm LLC",
+      "verdict": "match",
+      "nature": "glued-address"
+    },
+    {
+      "a": "BO KIKNAVELIDZE WINE CELLARS",
+      "b": "KIKNAVELIDZE WINE BAR LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Tevossyan Aggro Trade",
+      "b": "Tevosyan Agro Trade LLC",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "NAKHMANOVICH COLD CHAIN LTD",
+      "b": "NAKHIMOVICH COLD CHAIN LTD",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "MAMISTVALOV TEXTILES LTD HAIFA",
+      "b": "Mamistvalov Textiles Ltd",
+      "verdict": "match",
+      "nature": "glued-address"
+    },
+    {
+      "a": "/0012345678 GIDEON PELEG FWD LTD",
+      "b": "GIDEON PELEG FOODS LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Stern Kosher Foods Ltd",
+      "b": "Sterling Kosher Foods Ltd",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "KAVKASIONI NUT EXPORT LLC",
+      "b": "KAVKASIONI NUT IMPORT LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "MAMISTVALOV TEXTILES LTD",
+      "b": "MAMISTVALOV TECHNICAL LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "shps kavkasioni nut export",
+      "b": "Kavkasioni Tea Export LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "דוברת פלסטיק בע\"מ",
+      "b": "דוברת פרזול בע\"מ",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Kiknavelidzze Wine Cellarss",
+      "b": "Kiknavelidze Vine Nursery LLC",
+      "verdict": "different",
+      "nature": "two-words"
+    },
+    {
+      "a": "AL SUWAIDI MARINE SUPPL IES LLC",
+      "b": "Al Suwaidi Marine Supplies L.L.C.",
+      "verdict": "match",
+      "nature": "line-cut"
+    },
+    {
+      "a": "Samegrelo Hzlnt Co",
+      "b": "Samegrelo Hazelnut Company LLC",
+      "verdict": "match",
+      "nature": "abbreviation"
+    },
+    {
+      "a": "Kobaidze Logistic LLC",
+      "b": "Kobaidze Logistics LLC",
+      "verdict": "match",
+      "nature": "autocorrect"
+    },
+    {
+      "a": "tevosyan agro treyd",
+      "b": "Tevosyan Aqua Trade LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "lchashen dzkan veramshakum",
+      "b": "Lchashen Fish Processing CJSC",
+      "verdict": "match",
+      "nature": "chat-translit"
+    },
+    {
+      "a": "BEN SHUSHAN AGRO EXPORT LTD",
+      "b": "BEN SHIMON AGRO EXPORT LTD",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "BenShushan AgroExport",
+      "b": "Ben Shushan Agro Export Ltd",
+      "verdict": "match",
+      "nature": "missing-space"
+    },
+    {
+      "a": "/40702810 TEVOSYAN AGRO TRADE LLC",
+      "b": "Tevosyan Agro Trade LLC",
+      "verdict": "match",
+      "nature": "bank-ref"
+    },
+    {
+      "a": "KOBAIDZE LOGISTICS LLC",
+      "b": "KOBAIDZE LOGISTICS ARMENIA LLC",
+      "verdict": "different",
+      "nature": "other-country"
+    },
+    {
+      "a": "דוכרת פלסטיק בע\"מ",
+      "b": "דוברת פלסטיק בע\"מ",
+      "verdict": "match",
+      "nature": "ocr-stamp"
+    },
+    {
+      "a": "KIKNAVELIDZE WINE CELLARS LLC",
+      "b": "შპს კიკნაველიძის ღვინის მარნები",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "BEN SHUSHAN AGRO EXPORT LTD REF LC2609/4471",
+      "b": "BEN SHUSHAN AUTO EXPORT LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "SHTERN KOSHER FOODS LTD",
+      "b": "Stern Kosher Foods Ltd",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "Samegrelo Hzlnt Co",
+      "b": "Samegrelo Walnut Company LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "AL SUWAIDI MARINE SUPPL IES LLC",
+      "b": "AL SUWAIDI MARINE SERVICES LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "AlSuwaidiMarineSupplies",
+      "b": "Al Shehhi Marine Supplies LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "tevosyan agro treyd",
+      "b": "Tevosyan Agro Trade LLC",
+      "verdict": "match",
+      "nature": "chat-translit"
+    },
+    {
+      "a": "AVETI5YAN PHARM LLC",
+      "b": "Avetisyan Pharm LLC",
+      "verdict": "match",
+      "nature": "ocr-stamp"
+    },
+    {
+      "a": "DOVRAT PLASTICS LTD",
+      "b": "דוברת פלסטיק בע\"מ",
+      "verdict": "match",
+      "nature": "script-translation"
+    },
+    {
+      "a": "LCHASHEN FISH PROCESSING CJSC",
+      "b": "LUSAKERT FISH PROCESSING CJSC",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "SAMEGRELO HAZELNUT CO LLC",
+      "b": "SAMEGRELO HAZELNUT TURKIYE LTD STI",
+      "verdict": "different",
+      "nature": "other-country"
+    },
+    {
+      "a": "BEN SHUSHAN AGRO EXPORT LTD REF LC2609/4471",
+      "b": "Ben Shushan Agro Export Ltd",
+      "verdict": "match",
+      "nature": "bank-ref"
+    },
+    {
+      "a": "Dove rat plastics",
+      "b": "Dovrat Packaging Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Dove rat plastics",
+      "b": "Dovrat Plastics Ltd",
+      "verdict": "match",
+      "nature": "autocorrect"
+    },
+    {
+      "a": "SHTERN KOSHER FOODS LTD",
+      "b": "SHTERN KOSHER WINES LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "KAVKASIONINUT EXPORT LLC",
+      "b": "Kavkasioni Nut Export LLC",
+      "verdict": "match",
+      "nature": "line-cut"
+    },
+    {
+      "a": "AL SUWAIDI MARINE SUPPLIES LLC PO BOX 41277 DUBAI",
+      "b": "Al Suwaidi Marine Supplies LLC",
+      "verdict": "match",
+      "nature": "glued-address"
+    },
+    {
+      "a": "G1DEON PELEG FORWARDING LTD",
+      "b": "Gideon Peleg Forwarding Ltd",
+      "verdict": "match",
+      "nature": "ocr-stamp"
+    },
+    {
+      "a": "SAMEGRELO HAZELNUT CO LLC",
+      "b": "Samegrelo Hazelnut Company LLC",
+      "verdict": "match",
+      "nature": "abbreviation"
+    },
+    {
+      "a": "GIDEON PELEG FORWA RDING LTD",
+      "b": "GIDEON PELEG FARMING LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "grigolia kargo",
+      "b": "GRIGOLIA CARGO LLC",
+      "verdict": "match",
+      "nature": "chat-translit"
+    },
+    {
+      "a": "GIDEON PELEG FORWARDING LTD",
+      "b": "GIDEON PELEG FORWARDING CYPRUS LTD",
+      "verdict": "different",
+      "nature": "other-country"
+    },
+    {
+      "a": "shps kavkasioni nut export",
+      "b": "Kavkasioni Nut Export LLC",
+      "verdict": "match",
+      "nature": "chat-translit"
+    },
+    {
+      "a": "gideon peleg forwarding",
+      "b": "Gideon Peleg Forwarding Ltd",
+      "verdict": "match",
+      "nature": "chat-no-legal-form"
+    },
+    {
+      "a": "KAVKASIONI NUT EXPORT LLC",
+      "b": "KAZBEGI NUT EXPORT LLC",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "NAKHMANOVICH COLD CHAIN LTD",
+      "b": "Nachmanovich Cold Chain Ltd",
+      "verdict": "match",
+      "nature": "romanisation"
+    },
+    {
+      "a": "AlSuwaidiMarineSupplies",
+      "b": "Al Suwaidi Marine Supplies LLC",
+      "verdict": "match",
+      "nature": "missing-space"
+    },
+    {
+      "a": "AVETISYAN PHARM LLC",
+      "b": "AVAGYAN PHARM LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Nakhrnanovich Cold Chain Ltd",
+      "b": "Nakhmanovich Cold Storage Ltd",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "1/KOBAIDZE LOGISTICS LLC 2/12 GORGASALI ST 3/GE/BATUMI",
+      "b": "Kobaidze Logistics LLC",
+      "verdict": "match",
+      "nature": "glued-address"
+    },
+    {
+      "a": "Kiknavelidzze Wine Cellarss",
+      "b": "Kiknavelidze Wine Cellars LLC",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "Kobaidze Logistic LLC",
+      "b": "Kobalava Logistics LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "KIKNAVELIDZE WINE CELLARS LLC",
+      "b": "KIKNADZE WINE CELLARS LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "GRIGOLIA CARGO LLC",
+      "b": "GRIGALASHVILI CARGO LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "mamistvalov tekstil",
+      "b": "Mamistvalov Textiles Ltd",
+      "verdict": "match",
+      "nature": "chat-translit"
+    },
+    {
+      "a": "BO KIKNAVELIDZE WINE CELLARS",
+      "b": "Kiknavelidze Wine Cellars LLC",
+      "verdict": "match",
+      "nature": "bank-ref"
+    },
+    {
+      "a": "hevrat ben shushan agro export baam",
+      "b": "Ben Shushan Agro Export Ltd",
+      "verdict": "match",
+      "nature": "chat-translit"
+    },
+    {
+      "a": "/0012345678 GIDEON PELEG FWD LTD",
+      "b": "Gideon Peleg Forwarding Ltd",
+      "verdict": "match",
+      "nature": "abbreviation"
+    },
+    {
+      "a": "Nakhrnanovich Cold Chain Ltd",
+      "b": "Nakhmanovich Cold Chain Ltd",
+      "verdict": "match",
+      "nature": "ocr-stamp"
+    },
+    {
+      "a": "SAMEGRELO HAZELNUT CO LLC",
+      "b": "SAMTSKHE HAZELNUT CO LLC",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "grigolia kargo",
+      "b": "Grigolia Garage LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "hevrat dovrat plastik",
+      "b": "Dovrat Plastics Ltd",
+      "verdict": "match",
+      "nature": "chat-translit"
+    },
+    {
+      "a": "GIDEON PELEG FORWARDING LTD",
+      "b": "GIDEON PERETZ FORWARDING LTD",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "KOBA1DZE LOG1STICS LLC",
+      "b": "KOBAIDZE LOGISTICS LLC",
+      "verdict": "match",
+      "nature": "ocr-stamp"
+    },
+    {
+      "a": "GIDEON PELEG FORWARDING LTD",
+      "b": "GIDEON PELEG FORWA RDING LTD",
+      "verdict": "match",
+      "nature": "line-cut"
+    },
+    {
+      "a": "1/KOBAIDZE LOGISTICS LLC 2/12 GORGASALI ST 3/GE/BATUMI",
+      "b": "KOBAIDZE TRAVEL LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "AL SUWAIDI MARINE SUPPLIES LLC",
+      "b": "AL SUWAIDI MEDICAL SUPPLIES LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Grigolia Cargo LLC, Poti Branch",
+      "b": "GRIGOLIA CARGO LLC",
+      "verdict": "match",
+      "nature": "branch"
+    },
+    {
+      "a": "DOVRAT PLASTICS LTD",
+      "b": "DOVRAT PLANTS LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "G1DEON PELEG FORWARDING LTD",
+      "b": "GIDEON PALTIEL FORWARDING LTD",
+      "verdict": "different",
+      "nature": "other-surname"
+    }
+  ]
+}
