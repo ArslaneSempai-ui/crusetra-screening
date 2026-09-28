@@ -629,6 +629,9 @@ export const REGISTRES: readonly RegExp[] = [
      fiscal, huit chiffres), le ს/კ géorgien (code d'identification, neuf), le ח.פ. israélien (numéro de société, neuf), le
      شماره ثبت et le شناسه ملی iraniens, en queue du nom */
   /[\s,;(]+(?:հվհհ|հվՀՀ|ս\/կ|ს\/კ|ს\.კ\.|ח\.?\s?פ\.?|ע\.?\s?מ\.?|شماره\s+ثبت|شناسه\s+ملی)\s*:?\s*\d{5,12}\s*\)?\s*$/giu,
+  /* le registre thaï (เลขทะเบียน, treize chiffres ; เลขประจำตัวผู้เสียภาษี le numéro fiscal) et le « Company Registration No. » birman
+     derrière la forme (jeu 22) */
+  /[\s,;(]+(?:เลขทะเบียน(?:นิติบุคคล)?|เลขประจำตัวผู้เสียภาษี(?:อากร)?|company\s+registration\s+(?:no\.?|number)|reg\.?\s*no\.?)\s*:?\s*\d{6,15}\s*\)?\s*$/giu,
   /[\s,;(]+(?:бин|иин|инн|огрн|кпп|окпо|стир|бсн|жсн|bin|iin|inn|ogrn|kpp|okpo|stir|bsn|zhsn)\s*(?:№|no\.?|:)?\s*\d{8,15}(?:\s*\/\s*\d{6,12})?\s*\)?\s*$/giu,
   /^\s*(?:бин|иин|инн|огрн|стир|бсн|жсн|bin|iin|inn|ogrn|stir|bsn|zhsn)\s*(?:№|no\.?|:)?\s*\d{8,15}\s+/giu,
   /* le numéro d'enregistrement d'entreprise coréen (사업자등록번호, 000-00-00000), devant ou derrière le nom, entre parenthèses ou non
@@ -969,6 +972,8 @@ function ocr(j: string): string {
   /* un seul 1, 0 ou 5 à la fin d'un mot d'au moins quatre lettres est un l, un o, un s mal lus
      (« Trai1 ») ; deux chiffres ou plus sont un numéro (« TCB1207 ») */
   if (/^\p{L}{4,}[105]$/u.test(j)) return enLettres(j);
+  /* « 5RI THANA » (jeu 22) : un 5 en tête d'un mot de trois lettres au moins, en capitales, est un S mal lu */
+  if (/^5\p{Lu}{2,}$/u.test(j)) return "S" + j.slice(1);
   /* « A1i » (jeu 15) : un 1 entre deux lettres d'un mot de trois, un nom court mal lu, jamais un numéro */
   if (/^\p{L}1\p{L}$/u.test(j)) return enLettres(j);
   /* « Font4nelli » (jeu 16) : un 4 seul entre deux suites de lettres est un a mal lu */
