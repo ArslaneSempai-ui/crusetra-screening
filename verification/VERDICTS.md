@@ -39,6 +39,8 @@ a verdict set is ever listed by any tool before it becomes training.
 | | | | | possible 0.80 | 181/200 [86-94 %] | 48/200 [19-30 %] |
 | 2026-09-28 | v20 7e7a32c7 / 0f773c96 / ecritures bdd60326 | set #18 2d19fd26 (Osaka trading house and Busan bank brief by document: Japanese registries in kanji, kana and two romanisations, Korean documents in hangul, hanja and two romanisations, East Asian vessels, SWIFT fields, chat/OCR; Opus, written in five parts in advance; corrected conventions unchanged, no em-dash; overlap with the eighteen training sets: 0 pairs, 0 names; 0 pairs identical but for case), becomes paires-entites-19.json | 200 + 200 | strong 0.81 | 95/200 [41-54 %] | 9/200 [2-8 %] |
 | | | | | possible 0.80 | 125/200 [56-69 %] | 45/200 [17-29 %] |
+| 2026-09-28 | v21 ffa68382 / 0f773c96 / ecritures 11eb0dba | set #19 49960aa0 (Houston and Toronto brief, North American English; overlap with the nineteen training sets: 0 pairs and 2 names by npm run verdict, 1 pair by valider-jeu; 0 pairs identical but for case), becomes paires-entites-20.json | 200 + 200 | strong 0.81 | 160/200 [74-85 %] | 10/200 [3-9 %] |
+| | | | | possible 0.80 | 186/200 [89-96 %] | 34/200 [12-23 %] |
 
 v6 on set #3 at other thresholds: 0.70 found 182 with 52 false; 0.75 found 181 with 37; 0.85 found 162
 with 19; 0.90 found 153 with 11.
