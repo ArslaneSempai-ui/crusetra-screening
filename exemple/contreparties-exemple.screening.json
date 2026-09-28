@@ -1,9 +1,9 @@
 {
   "version": 1,
   "genre": "cascade-screening/counterparty-screening",
-  "emisLe": "2026-09-27T23:23:51.446Z",
+  "emisLe": "2026-09-28T01:38:23.118Z",
   "client": "Example Forwarding Inc. (invented)",
-  "commit": "b5a570a",
+  "commit": "16e1963",
   "fichier": {
     "nom": "contreparties-exemple.csv",
     "sha256": "fab131564c82ea6c859845e4cf53207059d66e0acb75d1603c5d12974f6cbf89",
@@ -196,79 +196,86 @@
           "sha256": "695ca14ed378b378c6c2e82135dc901e47be327e8dc3b56b31690a6bdbb9fc48",
           "match": 200,
           "different": 200
+        },
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "blind test set #19, authored on 2026-09-29 by a separate agent (a Houston freight forwarder and Toronto bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the nineteen earlier training sets: 1 pair, 1 name. Judged once by the judge session on method v21 (entites.ts ffa68382…, cribler.ts 0f773c96…, ecritures.ts 11eb0dba…): strong 0.81 found 160/200 [74-85 %] with 10/200 false alerts [3-9 %]; possible 0.80 found 186/200 [89-96 %] with 34/200 [12-23 %]. Studied afterwards and promoted to training set 20 on 2026-09-28, so it no longer measures anything held out.",
+          "sha256": "8e0e8515e9722e388304a068284bb3e745166618aa3dc9ec1aa0b8127db6fdaa",
+          "match": 200,
+          "different": 200
         }
       ],
       "fort": {
         "rappel": {
-          "succes": 3050,
-          "n": 3370,
-          "taux": 0.9050445103857567,
-          "bas": 0.89468045854762,
-          "haut": 0.9144861603001648
+          "succes": 3297,
+          "n": 3570,
+          "taux": 0.9235294117647059,
+          "bas": 0.9143493995009366,
+          "haut": 0.9317989020913893
         },
         "fauxPositifs": {
-          "succes": 103,
-          "n": 3370,
-          "taux": 0.03056379821958457,
-          "bas": 0.025265368947973082,
-          "haut": 0.03693126766946622
+          "succes": 112,
+          "n": 3570,
+          "taux": 0.03137254901960784,
+          "bas": 0.026138795329870977,
+          "haut": 0.037613778371213026
         }
       },
       "possible": {
         "rappel": {
-          "succes": 3257,
-          "n": 3370,
-          "taux": 0.9664688427299704,
-          "bas": 0.9598400053065139,
-          "haut": 0.9720353974984075
+          "succes": 3511,
+          "n": 3570,
+          "taux": 0.9834733893557422,
+          "bas": 0.9787416504771809,
+          "haut": 0.9871657361288735
         },
         "fauxPositifs": {
-          "succes": 768,
-          "n": 3370,
-          "taux": 0.22789317507418397,
-          "bas": 0.21404500125420114,
-          "haut": 0.24236101377626143
+          "succes": 802,
+          "n": 3570,
+          "taux": 0.2246498599439776,
+          "bas": 0.21125935215232472,
+          "haut": 0.23863232743414603
         }
       }
     },
     "verdict": {
       "jeu": {
         "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
-        "provenance": "blind test set #18, authored on 2026-09-29 by a separate agent (an Osaka trading house and Busan bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
-        "sha256": "2d19fd26228101d1a9595c2f91f54fd6ff34b8b9458902284ed49c247850bc3d",
-        "match": 200,
+        "provenance": "realistic set #20, authored on 2026-09-29 by a separate agent (an Antwerp forwarder's quarter of counterparties, at the natural difficulty of ordinary documents, with 200 realistic distinct-counterparty negatives) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
+        "sha256": "2054c1248c3977a3146c91a727f887b0aa2154e3e991c937891923890b8b526b",
+        "match": 400,
         "different": 200
       },
       "fort": {
         "rappel": {
-          "succes": 95,
-          "n": 200,
-          "taux": 0.475,
-          "bas": 0.4069150074009861,
-          "haut": 0.54402729289493
+          "succes": 332,
+          "n": 400,
+          "taux": 0.83,
+          "bas": 0.7900900795523471,
+          "haut": 0.8636315776518637
         },
         "fauxPositifs": {
-          "succes": 9,
+          "succes": 0,
           "n": 200,
-          "taux": 0.045,
-          "bas": 0.023852271724704166,
-          "haut": 0.08329759366096785
+          "taux": 0,
+          "bas": 0,
+          "haut": 0.018846005918320894
         }
       },
       "possible": {
         "rappel": {
-          "succes": 125,
-          "n": 200,
-          "taux": 0.625,
-          "bas": 0.5561417515728713,
-          "haut": 0.6891467469475485
+          "succes": 355,
+          "n": 400,
+          "taux": 0.8875,
+          "bas": 0.8527757236239129,
+          "haut": 0.9148519799113346
         },
         "fauxPositifs": {
-          "succes": 45,
+          "succes": 0,
           "n": 200,
-          "taux": 0.225,
-          "bas": 0.17262283786915622,
-          "haut": 0.28774246538592035
+          "taux": 0,
+          "bas": 0,
+          "haut": 0.018846005918320894
         }
       }
     }
@@ -784,7 +791,7 @@
     "Ownership is not screened. Under OFAC's 50 Percent Rule, an entity owned 50 % or more, directly or indirectly, by one or more blocked persons is itself blocked even when it appears on no list; no name screening can see that.",
     "The type and country columns are carried into the report, not used to filter: a counterparty listed under another type or country is still shown.",
     "At most 5 candidates are shown per name, highest score first; the count of the others is given.",
-    "The rates quoted first come from 200 matching pairs and 200 hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties."
+    "The rates quoted first come from 400 matching pairs and 200 hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties."
   ],
-  "empreinte": "ef2cb299c5486bcd"
+  "empreinte": "de5524dd413af65a"
 }
