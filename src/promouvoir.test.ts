@@ -43,6 +43,9 @@ test("promouvoir : la phrase du juge est, mot pour mot, celle de la provenance d
   assert.ok(seize.provenance.toLowerCase().includes("overlap with the fifteen earlier training sets: 0 pairs, 0 names"));
   assert.ok(seize.provenance.endsWith(" " + jugement), `attendu en fin de provenance :\n${jugement}\nlu :\n${seize.provenance.slice(-jugement!.length - 1)}`);
   assert.ok(phrase.includes("fa808a1c…"), "les points de suspension sont U+2026");
+  const unePaire = phraseDuJuge(19, j, "2026-09-28", { paires: 1, noms: 1 });
+  assert.ok(unePaire.startsWith("Overlap with the nineteen earlier training sets: 1 pair, 1 name. Judged once"), unePaire);
+  assert.ok(phraseDuJuge(19, j, "2026-09-28", { paires: 2, noms: 3 }).startsWith("Overlap with the nineteen earlier training sets: 2 pairs, 3 names."));
   assert.ok(!phrase.includes("..."));
   assert.ok(!phrase.includes("\u2014"));
 });

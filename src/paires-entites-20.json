@@ -1,0 +1,2407 @@
+{
+  "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+  "provenance": "blind test set #19, authored on 2026-09-29 by a separate agent (a Houston freight forwarder and Toronto bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the nineteen earlier training sets: 1 pair, 1 name. Judged once by the judge session on method v21 (entites.ts ffa68382…, cribler.ts 0f773c96…, ecritures.ts 11eb0dba…): strong 0.81 found 160/200 [74-85 %] with 10/200 false alerts [3-9 %]; possible 0.80 found 186/200 [89-96 %] with 34/200 [12-23 %]. Studied afterwards and promoted to training set 20 on 2026-09-28, so it no longer measures anything held out.",
+  "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+  "paires": [
+    {
+      "a": "Okonkwo Steel Fabricators, Inc.",
+      "b": "Okonkwo Steel Fabricators Incorporated",
+      "verdict": "match",
+      "nature": "inc-vs-incorporated"
+    },
+    {
+      "a": "Pham Brothers Seafood LLC",
+      "b": "Pham Bros. Seafood, L.L.C.",
+      "verdict": "match",
+      "nature": "bros-and-llc-punctuation"
+    },
+    {
+      "a": "The Halvorsen Grain Company",
+      "b": "Halvorsen Grain Co.",
+      "verdict": "match",
+      "nature": "the-prefix-and-co-abbrev"
+    },
+    {
+      "a": "Castellano & Sons Masonry Corp.",
+      "b": "Castellano and Sons Masonry Corporation",
+      "verdict": "match",
+      "nature": "ampersand-and-corp-expanded"
+    },
+    {
+      "a": "Whitcomb Pipeline Services LP",
+      "b": "Whitcomb Pipeline Services, L.P.",
+      "verdict": "match",
+      "nature": "lp-punctuation"
+    },
+    {
+      "a": "Nakamura Precision Tooling Inc. (EIN 76-0448213)",
+      "b": "Nakamura Precision Tooling Inc",
+      "verdict": "match",
+      "nature": "ein-residue"
+    },
+    {
+      "a": "Delacroix Cane Haulers LLC, TX SOS File No. 0801927744",
+      "b": "Delacroix Cane Haulers LLC",
+      "verdict": "match",
+      "nature": "state-file-number-residue"
+    },
+    {
+      "a": "Radoslavov Marine Electric Inc.",
+      "b": "Radoslavof Marine Electric Inc.",
+      "verdict": "match",
+      "nature": "proper-name-misspelt"
+    },
+    {
+      "a": "Greenbriar Poultry Farms Inc.",
+      "b": "Greenbrier Poultry Farms Inc.",
+      "verdict": "match",
+      "nature": "proper-name-misspelt"
+    },
+    {
+      "a": "Ruiz-Montalvo Trucking LLC d/b/a RM Xpress",
+      "b": "Ruiz-Montalvo Trucking LLC",
+      "verdict": "match",
+      "nature": "dba-dropped"
+    },
+    {
+      "a": "Sabine Bend Holdings LLC d/b/a Pelican Point Marina",
+      "b": "Pelican Point Marina",
+      "verdict": "match",
+      "nature": "dba-trade-name-alone"
+    },
+    {
+      "a": "Szymanski Tool & Die Co.",
+      "b": "SZYMANSKI TOOL AND DIE CO",
+      "verdict": "match",
+      "nature": "case-and-ampersand"
+    },
+    {
+      "a": "O'Malley Roofing & Sheet Metal Inc.",
+      "b": "OMalley Roofing & Sheet Metal Inc.",
+      "verdict": "match",
+      "nature": "apostrophe-dropped"
+    },
+    {
+      "a": "Tri-County Propane Distributors Inc.",
+      "b": "Tricounty Propane Distributors Inc.",
+      "verdict": "match",
+      "nature": "hyphen-dropped"
+    },
+    {
+      "a": "Three Forks Cattle Company LLC",
+      "b": "3 Forks Cattle Co. LLC",
+      "verdict": "match",
+      "nature": "numeral-spelled-out"
+    },
+    {
+      "a": "St. Bernard Oilfield Rentals LLC",
+      "b": "Saint Bernard Oilfield Rentals LLC",
+      "verdict": "match",
+      "nature": "saint-abbrev"
+    },
+    {
+      "a": "Vasquez Produce Distributors Inc., Laredo Branch",
+      "b": "Vasquez Produce Distributors Inc.",
+      "verdict": "match",
+      "nature": "branch-of-same-entity"
+    },
+    {
+      "a": "Aldridge, Feinberg & Okoro LLP",
+      "b": "Aldridge Feinberg & Okoro, LLP",
+      "verdict": "match",
+      "nature": "comma-punctuation"
+    },
+    {
+      "a": "Big Thicket Lumber Co., Inc.",
+      "b": "Big Thicket Lumber Company Inc.",
+      "verdict": "match",
+      "nature": "co-and-inc-expanded"
+    },
+    {
+      "a": "Kowalczyk Mfg. Corp.",
+      "b": "Kowalczyk Manufacturing Corp.",
+      "verdict": "match",
+      "nature": "mfg-abbrev"
+    },
+    {
+      "a": "Bui & Tran Nail Supply Inc.",
+      "b": "Bui and Tran Nail Supply, Inc.",
+      "verdict": "match",
+      "nature": "ampersand-and-comma"
+    },
+    {
+      "a": "Harrelson Bros Paving LLC",
+      "b": "Harrelson Brothers Paving LLC",
+      "verdict": "match",
+      "nature": "bros-expanded"
+    },
+    {
+      "a": "Cheng Family Restaurants Inc.",
+      "b": "Cheng Family Restaurants, Incorporated",
+      "verdict": "match",
+      "nature": "inc-vs-incorporated"
+    },
+    {
+      "a": "Mbeki-Sandoval Environmental Services LLC",
+      "b": "Mbeki Sandoval Environmental Services LLC",
+      "verdict": "match",
+      "nature": "hyphen-to-space"
+    },
+    {
+      "a": "Fitzwilliam Cold Storage Inc.",
+      "b": "Fitzwiliam Cold Storage Inc.",
+      "verdict": "match",
+      "nature": "proper-name-misspelt"
+    },
+    {
+      "a": "Petrakis Diner Supply Co.",
+      "b": "Petrakis Diner Supply Company",
+      "verdict": "match",
+      "nature": "co-expanded"
+    },
+    {
+      "a": "Lundqvist Hydraulics Inc., a Delaware corporation",
+      "b": "Lundqvist Hydraulics Inc.",
+      "verdict": "match",
+      "nature": "state-of-incorporation-residue"
+    },
+    {
+      "a": "Yellowhorse Construction LLC",
+      "b": "Yellow Horse Construction L.L.C.",
+      "verdict": "match",
+      "nature": "compound-split-and-llc-punctuation"
+    },
+    {
+      "a": "Abernathy & Daughters Funeral Home Inc.",
+      "b": "Abernathy & Daughters Funeral Home, Inc",
+      "verdict": "match",
+      "nature": "punctuation-only"
+    },
+    {
+      "a": "Gulf Coast Valve Repair, LLC (Texas)",
+      "b": "Gulf Coast Valve Repair LLC",
+      "verdict": "match",
+      "nature": "jurisdiction-residue"
+    },
+    {
+      "a": "Rosenzweig Textile Importers Inc.",
+      "b": "Rosensweig Textile Importers Inc.",
+      "verdict": "match",
+      "nature": "proper-name-misspelt"
+    },
+    {
+      "a": "Ngata Pacific Foods LLC",
+      "b": "NGATA PACIFIC FOODS L.L.C.",
+      "verdict": "match",
+      "nature": "case-and-punctuation"
+    },
+    {
+      "a": "Cavanaugh Auto Salvage Corp.",
+      "b": "Cavanaugh Auto Salvage Corporation",
+      "verdict": "match",
+      "nature": "corp-expanded"
+    },
+    {
+      "a": "Delgadillo Mobile Home Movers LP",
+      "b": "Delgadillo Mobile Home Movers Limited Partnership",
+      "verdict": "match",
+      "nature": "lp-expanded"
+    },
+    {
+      "a": "Fairweather Crop Dusting Inc. d/b/a Fairweather Aviation",
+      "b": "Fairweather Aviation",
+      "verdict": "match",
+      "nature": "dba-trade-name-alone"
+    },
+    {
+      "a": "Wieczorek Machine Works Inc.",
+      "b": "Wieczorek Machine Works Inc (EIN 38-1177920)",
+      "verdict": "match",
+      "nature": "ein-residue"
+    },
+    {
+      "a": "MacAllister & Boudreaux Marine Surveyors LLC",
+      "b": "McAllister & Boudreaux Marine Surveyors LLC",
+      "verdict": "match",
+      "nature": "mac-mc-variant"
+    },
+    {
+      "a": "Sunflower Prairie Ethanol Co-op",
+      "b": "Sunflower Prairie Ethanol Cooperative",
+      "verdict": "match",
+      "nature": "coop-expanded"
+    },
+    {
+      "a": "Iyer & Associates Structural Engineers Inc.",
+      "b": "Iyer & Assoc. Structural Engineers Inc.",
+      "verdict": "match",
+      "nature": "assoc-abbrev"
+    },
+    {
+      "a": "Bracamonte Enterprises, Inc.",
+      "b": "Bracamonte Enterprises Inc., Harlingen, Texas",
+      "verdict": "match",
+      "nature": "address-residue"
+    },
+    {
+      "a": "Okonkwo Steel Fabricators Inc.",
+      "b": "Okonkwo Steel Erectors Inc.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Pham Bros. Seafood LLC",
+      "b": "Pham & Sons Seafood LLC",
+      "verdict": "different",
+      "nature": "bros-vs-sons"
+    },
+    {
+      "a": "Halvorsen Grain Co.",
+      "b": "Halvorsen Grape Co.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Castellano & Sons Masonry Corp.",
+      "b": "Castellano & Daughters Masonry Corp.",
+      "verdict": "different",
+      "nature": "sons-vs-daughters"
+    },
+    {
+      "a": "Whitcomb Pipeline Services LP",
+      "b": "Whitcomb Pipeline Services Inc.",
+      "verdict": "different",
+      "nature": "other-legal-form"
+    },
+    {
+      "a": "Nakamura Precision Tooling Inc.",
+      "b": "Nakamura Precision Tooling Canada Ltd.",
+      "verdict": "different",
+      "nature": "foreign-subsidiary"
+    },
+    {
+      "a": "Delacroix Cane Haulers LLC",
+      "b": "Delacroix Crane Haulers LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Radoslavov Marine Electric Inc.",
+      "b": "Radoslavov Mining Electric Inc.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Greenbrier Poultry Farms Inc.",
+      "b": "Greenbrier Poultry Foods Inc.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Ruiz-Montalvo Trucking LLC",
+      "b": "Ruiz-Montalvo Trucking Holdings LLC",
+      "verdict": "different",
+      "nature": "holding-vs-operating"
+    },
+    {
+      "a": "Sullivan Roofing & Sheet Metal Inc.",
+      "b": "Callahan Roofing & Sheet Metal Inc.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Szymanski Tool & Die Co.",
+      "b": "Sokolowski Tool & Die Co.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "O'Malley Towing Inc.",
+      "b": "O'Malley Tooling Inc.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Tri-County Propane Distributors Inc.",
+      "b": "Tri-Parish Propane Distributors Inc.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Three Forks Cattle Co.",
+      "b": "Two Forks Cattle Co.",
+      "verdict": "different",
+      "nature": "other-numeral"
+    },
+    {
+      "a": "St. Bernard Oilfield Rentals LLC",
+      "b": "St. Bernard Oilfield Services LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Vasquez Produce Distributors Inc.",
+      "b": "Marquez Produce Distributors Inc.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Aldridge, Feinberg & Okoro LLP",
+      "b": "Aldridge, Feinberg & Okafor LLP",
+      "verdict": "different",
+      "nature": "other-partner-surname"
+    },
+    {
+      "a": "Big Thicket Lumber Co.",
+      "b": "Big Thicket Timber Co.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Kowalczyk Manufacturing Corp.",
+      "b": "Kowalski Manufacturing Corp.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Bui & Tran Nail Supply Inc.",
+      "b": "Bui & Truong Nail Supply Inc.",
+      "verdict": "different",
+      "nature": "other-partner-surname"
+    },
+    {
+      "a": "Harrelson Brothers Paving LLC",
+      "b": "Harrison Brothers Paving LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Cheng Family Restaurants Inc.",
+      "b": "Cheng Family Bakeries Inc.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Mbeki-Sandoval Environmental Services LLC",
+      "b": "Mbeki-Sandoval Environmental Services de México, S.A. de C.V.",
+      "verdict": "different",
+      "nature": "foreign-subsidiary"
+    },
+    {
+      "a": "Fitzwilliam Cold Storage Inc.",
+      "b": "Fitzpatrick Cold Storage Inc.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Petrakis Diner Supply Co.",
+      "b": "Petridis Diner Supply Co.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Lundqvist Hydraulics Inc.",
+      "b": "Lundqvist Hydraulics (UK) Ltd.",
+      "verdict": "different",
+      "nature": "foreign-subsidiary"
+    },
+    {
+      "a": "Yellowhorse Construction LLC",
+      "b": "Yellowhorse Concrete LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Abernathy & Daughters Funeral Home Inc.",
+      "b": "Abercrombie & Daughters Funeral Home Inc.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Gulf Coast Valve Repair LLC",
+      "b": "Gulf Coast Vault Repair LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Rosenzweig Textile Importers Inc.",
+      "b": "Rosenzweig Textile Exporters Inc.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Ngata Pacific Foods LLC",
+      "b": "Ngata Atlantic Foods LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Cavanaugh Auto Salvage Corp.",
+      "b": "Cavanaugh Auto Storage Corp.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Delgadillo Mobile Home Movers LP",
+      "b": "Delgadillo Mobile Home Makers LP",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Fairweather Crop Dusting Inc.",
+      "b": "Fairweather Crop Dusting LLC",
+      "verdict": "different",
+      "nature": "other-legal-form"
+    },
+    {
+      "a": "Wieczorek Machine Works Inc.",
+      "b": "Wieczorek Machine Works GmbH",
+      "verdict": "different",
+      "nature": "foreign-subsidiary"
+    },
+    {
+      "a": "West Texas Pump & Supply Co.",
+      "b": "East Texas Pump & Supply Co.",
+      "verdict": "different",
+      "nature": "other-direction"
+    },
+    {
+      "a": "Pier 21 Seafood Market Inc.",
+      "b": "Pier 19 Seafood Market Inc.",
+      "verdict": "different",
+      "nature": "other-numeral"
+    },
+    {
+      "a": "Port Arthur Marine Fuel Co.",
+      "b": "Port Allen Marine Fuel Co.",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Lake Charles Pallet Co. LLC",
+      "b": "Lake Charles Pellet Co. LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Sabourin Forest Products Ltd.",
+      "b": "Produits forestiers Sabourin Ltée",
+      "verdict": "match",
+      "nature": "bilingual-translation"
+    },
+    {
+      "a": "Les Aciers Beauport Inc. / Beauport Steel Inc.",
+      "b": "Beauport Steel Inc.",
+      "verdict": "match",
+      "nature": "bilingual-double-name"
+    },
+    {
+      "a": "2718281 Ontario Inc. o/a Maple Ridge Landscaping",
+      "b": "2718281 Ontario Inc.",
+      "verdict": "match",
+      "nature": "operating-name-residue"
+    },
+    {
+      "a": "9384-2210 Québec Inc.",
+      "b": "9384 2210 Quebec Inc",
+      "verdict": "match",
+      "nature": "numbered-accent-and-hyphen-dropped"
+    },
+    {
+      "a": "Thibodeau Transport Inc. (BN 812345678 RC0001)",
+      "b": "Thibodeau Transport Inc.",
+      "verdict": "match",
+      "nature": "business-number-residue"
+    },
+    {
+      "a": "Boulangerie Lévesque Inc.",
+      "b": "BOULANGERIE LEVESQUE INC, 2200 RUE ST-JEAN, QUEBEC QC",
+      "verdict": "match",
+      "nature": "accent-case-and-address"
+    },
+    {
+      "a": "Gagnon et Bérubé, S.E.N.C.",
+      "b": "Gagnon & Bérubé SENC",
+      "verdict": "match",
+      "nature": "senc-punctuation-and-ampersand"
+    },
+    {
+      "a": "Kowalchuk Grain Handling Limited",
+      "b": "Kowalchuk Grain Handling Ltd.",
+      "verdict": "match",
+      "nature": "ltd-vs-limited"
+    },
+    {
+      "a": "Fromagerie des Cantons Ltée",
+      "b": "Fromagerie des Cantons Limitée",
+      "verdict": "match",
+      "nature": "ltee-vs-limitee"
+    },
+    {
+      "a": "Les Entreprises Roussel Inc.",
+      "b": "Entreprises Roussel Inc.",
+      "verdict": "match",
+      "nature": "les-prefix-dropped"
+    },
+    {
+      "a": "Compagnie de navigation du Saguenay Inc.",
+      "b": "Cie de Navigation du Saguenay Inc.",
+      "verdict": "match",
+      "nature": "cie-abbrev"
+    },
+    {
+      "a": "The Lakehead Grain Terminal Company Ltd.",
+      "b": "Lakehead Grain Terminal Co. Ltd.",
+      "verdict": "match",
+      "nature": "the-prefix-and-co-abbrev"
+    },
+    {
+      "a": "Pêcheries Arsenault et Fils Inc.",
+      "b": "Pecheries Arsenault & Fils Inc.",
+      "verdict": "match",
+      "nature": "accent-and-ampersand"
+    },
+    {
+      "a": "MacPhail Marine Salvage Corp.",
+      "b": "MacPhail Marine Salvage Corporation",
+      "verdict": "match",
+      "nature": "corp-expanded"
+    },
+    {
+      "a": "Trembley Excavation Inc.",
+      "b": "Tremblay Excavation Inc.",
+      "verdict": "match",
+      "nature": "proper-name-misspelt"
+    },
+    {
+      "a": "Portes et Fenêtres Bourassa Inc.",
+      "b": "Bourassa Windows and Doors Inc.",
+      "verdict": "match",
+      "nature": "bilingual-translation"
+    },
+    {
+      "a": "1417790 Alberta Ltd.",
+      "b": "1417790 Alberta Limited",
+      "verdict": "match",
+      "nature": "numbered-ltd-vs-limited"
+    },
+    {
+      "a": "Sidhu Brothers Trucking Ltd.",
+      "b": "Sidhu Bros Trucking Ltd",
+      "verdict": "match",
+      "nature": "bros-abbrev"
+    },
+    {
+      "a": "Nakashima-Pelletier Consulting Inc. (Ontario Corporation No. 002187733)",
+      "b": "Nakashima-Pelletier Consulting Inc.",
+      "verdict": "match",
+      "nature": "ontario-corp-number-residue"
+    },
+    {
+      "a": "Ferme Laitière St-Ambroise Inc.",
+      "b": "Ferme Laitiere Saint-Ambroise Inc.",
+      "verdict": "match",
+      "nature": "saint-abbrev-and-accent"
+    },
+    {
+      "a": "Wabigoon Forest Services Ltd., Kenora Branch",
+      "b": "Wabigoon Forest Services Ltd.",
+      "verdict": "match",
+      "nature": "branch-of-same-entity"
+    },
+    {
+      "a": "Société immobilière Desmarchais Inc.",
+      "b": "Societe Immobiliere Desmarchais inc. (Montreal)",
+      "verdict": "match",
+      "nature": "accent-case-and-city-residue"
+    },
+    {
+      "a": "Okafor & Castonguay Avocats S.E.N.C.R.L.",
+      "b": "Okafor et Castonguay, avocats, s.e.n.c.r.l.",
+      "verdict": "match",
+      "nature": "sencrl-punctuation-and-case"
+    },
+    {
+      "a": "Groupe Vachon-Lemieux Inc.",
+      "b": "Groupe Vachon Lemieux Inc.",
+      "verdict": "match",
+      "nature": "hyphen-to-space"
+    },
+    {
+      "a": "Fundy Shore Tidal Power Corp.",
+      "b": "Fundy Shore Tidal Power Corporation",
+      "verdict": "match",
+      "nature": "corp-expanded"
+    },
+    {
+      "a": "Toitures Chiasson Ltée",
+      "b": "Chiasson Roofing Ltd.",
+      "verdict": "match",
+      "nature": "bilingual-translation"
+    },
+    {
+      "a": "Northern Sask. Outfitters Ltd.",
+      "b": "Northern Saskatchewan Outfitters Ltd.",
+      "verdict": "match",
+      "nature": "province-abbrev"
+    },
+    {
+      "a": "Distribution alimentaire Gauthier Inc.",
+      "b": "Gauthier Food Distribution Inc.",
+      "verdict": "match",
+      "nature": "bilingual-translation"
+    },
+    {
+      "a": "Wong & Bhattacharya Dental Corp.",
+      "b": "Wong and Bhattacharya Dental Corporation",
+      "verdict": "match",
+      "nature": "ampersand-and-corp-expanded"
+    },
+    {
+      "a": "Les Placements Ouimet Inc.",
+      "b": "Placements Ouimet inc.",
+      "verdict": "match",
+      "nature": "les-prefix-and-case"
+    },
+    {
+      "a": "Rivière-du-Loup Cartage Ltd.",
+      "b": "Riviere du Loup Cartage Ltd.",
+      "verdict": "match",
+      "nature": "accent-and-hyphen"
+    },
+    {
+      "a": "Atelier d'usinage Bergevin Inc.",
+      "b": "Atelier d'Usinage Bergevin Inc. (NEQ 1172233458)",
+      "verdict": "match",
+      "nature": "neq-residue"
+    },
+    {
+      "a": "Fjeldstad Potash Services Ltd.",
+      "b": "Fjelstad Potash Services Ltd.",
+      "verdict": "match",
+      "nature": "proper-name-misspelt"
+    },
+    {
+      "a": "Canadian Prairie Pulse Exporters Inc.",
+      "b": "Cdn. Prairie Pulse Exporters Inc.",
+      "verdict": "match",
+      "nature": "cdn-abbrev"
+    },
+    {
+      "a": "Manufacture de meubles Beaulieu Ltée",
+      "b": "Beaulieu Furniture Manufacturing Ltd.",
+      "verdict": "match",
+      "nature": "bilingual-translation"
+    },
+    {
+      "a": "3-D Prototypage Lachance Inc.",
+      "b": "3D Prototypage Lachance Inc.",
+      "verdict": "match",
+      "nature": "hyphen-in-numeral"
+    },
+    {
+      "a": "O'Leary Seafoods Ltd.",
+      "b": "O Leary Seafoods Ltd.",
+      "verdict": "match",
+      "nature": "apostrophe-to-space"
+    },
+    {
+      "a": "Coopérative agricole de la Beauce",
+      "b": "Coop. Agricole de la Beauce",
+      "verdict": "match",
+      "nature": "coop-abbrev-and-accent"
+    },
+    {
+      "a": "Mohawk Trail Aggregates Inc.",
+      "b": "Mohawk Trail Aggregates, Inc.",
+      "verdict": "match",
+      "nature": "comma-punctuation"
+    },
+    {
+      "a": "8552031 Canada Inc.",
+      "b": "8552031 CANADA INC. (BN 845221903 RC0001)",
+      "verdict": "match",
+      "nature": "numbered-case-and-business-number"
+    },
+    {
+      "a": "Sabourin Forest Products Ltd.",
+      "b": "Produits laitiers Sabourin Ltée",
+      "verdict": "different",
+      "nature": "translation-other-word"
+    },
+    {
+      "a": "Beauport Steel Inc.",
+      "b": "Beauport Steel USA Inc.",
+      "verdict": "different",
+      "nature": "foreign-subsidiary"
+    },
+    {
+      "a": "2718281 Ontario Inc.",
+      "b": "2718218 Ontario Inc.",
+      "verdict": "different",
+      "nature": "numbered-digits-transposed"
+    },
+    {
+      "a": "9384-2210 Québec Inc.",
+      "b": "9384-2201 Québec Inc.",
+      "verdict": "different",
+      "nature": "numbered-digits-transposed"
+    },
+    {
+      "a": "Thibodeau Transport Inc.",
+      "b": "Gestion Thibodeau Inc.",
+      "verdict": "different",
+      "nature": "holding-vs-operating"
+    },
+    {
+      "a": "Boulangerie Lévesque Inc.",
+      "b": "Boucherie Lévesque Inc.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Gagnon et Bérubé, S.E.N.C.",
+      "b": "Gagnon et Bérubé Inc.",
+      "verdict": "different",
+      "nature": "partnership-vs-corporation"
+    },
+    {
+      "a": "Kowalchuk Grain Handling Ltd.",
+      "b": "Kowalchuk Grain Hauling Ltd.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Fromagerie des Cantons Ltée",
+      "b": "Fromagerie des Collines Ltée",
+      "verdict": "different",
+      "nature": "other-place-word"
+    },
+    {
+      "a": "Les Entreprises Roussel Inc.",
+      "b": "Les Placements Roussel Inc.",
+      "verdict": "different",
+      "nature": "holding-vs-operating"
+    },
+    {
+      "a": "Compagnie de navigation du Saguenay Inc.",
+      "b": "Compagnie de navigation du Saint-Laurent Inc.",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Lakehead Grain Terminal Co. Ltd.",
+      "b": "Lakehead Grain Elevator Co. Ltd.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Pêcheries Arsenault et Fils Inc.",
+      "b": "Pêcheries Arsenault Frères Inc.",
+      "verdict": "different",
+      "nature": "fils-vs-freres"
+    },
+    {
+      "a": "MacPhail Marine Salvage Corp.",
+      "b": "MacPhee Marine Salvage Corp.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Pavage Tremblay Inc.",
+      "b": "Lavage Tremblay Inc.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Portes et Fenêtres Bourassa Inc.",
+      "b": "Portes et Fenêtres Bourgeois Inc.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "1417790 Alberta Ltd.",
+      "b": "1417790 Ontario Ltd.",
+      "verdict": "different",
+      "nature": "numbered-other-province"
+    },
+    {
+      "a": "Sidhu Brothers Trucking Ltd.",
+      "b": "Sandhu Brothers Trucking Ltd.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Nakashima-Pelletier Consulting Inc.",
+      "b": "Nakashima-Poirier Consulting Inc.",
+      "verdict": "different",
+      "nature": "other-partner-surname"
+    },
+    {
+      "a": "Ferme Laitière St-Ambroise Inc.",
+      "b": "Ferme Laitière St-Anselme Inc.",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Wabigoon Forest Services Ltd.",
+      "b": "Wabigoon Forest Products Ltd.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Société immobilière Desmarchais Inc.",
+      "b": "Société mobilière Desmarchais Inc.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Okafor & Castonguay Avocats S.E.N.C.R.L.",
+      "b": "Okafor & Castonguay Comptables S.E.N.C.R.L.",
+      "verdict": "different",
+      "nature": "other-profession-word"
+    },
+    {
+      "a": "Groupe Vachon-Lemieux Inc.",
+      "b": "Groupe Vachon-Lemire Inc.",
+      "verdict": "different",
+      "nature": "other-partner-surname"
+    },
+    {
+      "a": "Fundy Shore Tidal Power Corp.",
+      "b": "Fundy Shore Wind Power Corp.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Toitures Chiasson Ltée",
+      "b": "Toitures Charron Ltée",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Northern Saskatchewan Outfitters Ltd.",
+      "b": "Northern Manitoba Outfitters Ltd.",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Gauthier Food Distribution Inc.",
+      "b": "Gaudreau Food Distribution Inc.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Wong & Bhattacharya Dental Corp.",
+      "b": "Wong & Bhattacharya Medical Corp.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Les Placements Ouimet Inc.",
+      "b": "Les Placements Ouellet Inc.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Rivière-du-Loup Cartage Ltd.",
+      "b": "Rivière-du-Nord Cartage Ltd.",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Atelier d'usinage Bergevin Inc.",
+      "b": "Atelier d'usinage Bergeron Inc.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Fjeldstad Potash Services Ltd.",
+      "b": "Fjeldstad Peat Services Ltd.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Canadian Prairie Pulse Exporters Inc.",
+      "b": "Canadian Prairie Pulse Importers Inc.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Beaulieu Furniture Manufacturing Ltd.",
+      "b": "Beaulieu Furniture Manufacturing (US) Inc.",
+      "verdict": "different",
+      "nature": "foreign-subsidiary"
+    },
+    {
+      "a": "3D Prototypage Lachance Inc.",
+      "b": "3D Prototypage Lachapelle Inc.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "O'Leary Seafoods Ltd.",
+      "b": "O'Reilly Seafoods Ltd.",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Coopérative agricole de la Beauce",
+      "b": "Coopérative forestière de la Beauce",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Mohawk Trail Aggregates Inc.",
+      "b": "Mohawk Trail Asphalt Inc.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "8552031 Canada Inc.",
+      "b": "8552013 Canada Inc.",
+      "verdict": "different",
+      "nature": "numbered-digits-transposed"
+    },
+    {
+      "a": "M/V Cameron Chief",
+      "b": "Cameron Chief",
+      "verdict": "match",
+      "nature": "mv-prefix-residue"
+    },
+    {
+      "a": "Bayou Sprinter, Houston",
+      "b": "M/V Bayou Sprinter",
+      "verdict": "match",
+      "nature": "port-of-registry-residue"
+    },
+    {
+      "a": "Grand Marais Trader (ex Keweenaw Spirit)",
+      "b": "Keweenaw Spirit",
+      "verdict": "match",
+      "nature": "former-name-alias"
+    },
+    {
+      "a": "Grand Marais Trader (ex Keweenaw Spirit)",
+      "b": "M/V Grand Marais Trader",
+      "verdict": "match",
+      "nature": "current-name-with-ex-residue"
+    },
+    {
+      "a": "ATB Sabine Ranger",
+      "b": "Sabine Ranger",
+      "verdict": "match",
+      "nature": "atb-prefix-residue"
+    },
+    {
+      "a": "T/B GCT 218",
+      "b": "GCT-218",
+      "verdict": "match",
+      "nature": "barge-prefix-and-hyphen"
+    },
+    {
+      "a": "HMB 3104",
+      "b": "HMB3104",
+      "verdict": "match",
+      "nature": "fleet-number-spacing"
+    },
+    {
+      "a": "Fourchon Flyer II",
+      "b": "Fourchon Flyer 2",
+      "verdict": "match",
+      "nature": "roman-vs-arabic"
+    },
+    {
+      "a": "M/V TERREBONNE PRIDE",
+      "b": "Terrebonne Pride",
+      "verdict": "match",
+      "nature": "case-and-mv-prefix"
+    },
+    {
+      "a": "Nipigon Bay Carrier, Thunder Bay",
+      "b": "Nipigon Bay Carrier",
+      "verdict": "match",
+      "nature": "port-of-registry-residue"
+    },
+    {
+      "a": "OSV Calcasieu Pass Supplier",
+      "b": "M/V Calcasieu Pass Supplier",
+      "verdict": "match",
+      "nature": "type-prefix-vs-mv"
+    },
+    {
+      "a": "Capt. Elias Fontenot",
+      "b": "Captain Elias Fontenot",
+      "verdict": "match",
+      "nature": "capt-abbrev"
+    },
+    {
+      "a": "St. Clair Voyager",
+      "b": "Saint Clair Voyager",
+      "verdict": "match",
+      "nature": "saint-abbrev"
+    },
+    {
+      "a": "Marie & Louis",
+      "b": "Marie and Louis",
+      "verdict": "match",
+      "nature": "ampersand"
+    },
+    {
+      "a": "F/V Señor Pescador",
+      "b": "Senor Pescador",
+      "verdict": "match",
+      "nature": "accent-dropped-and-fv-prefix"
+    },
+    {
+      "a": "GCT #221",
+      "b": "GCT 221",
+      "verdict": "match",
+      "nature": "hash-number"
+    },
+    {
+      "a": "Lakehead No. 7",
+      "b": "Lakehead 7",
+      "verdict": "match",
+      "nature": "no-abbrev-dropped"
+    },
+    {
+      "a": "Michipicoten Sun (ex Whitefish Bay Sun)",
+      "b": "Whitefish Bay Sun",
+      "verdict": "match",
+      "nature": "former-name-alias"
+    },
+    {
+      "a": "M.V. Ojibway Trader",
+      "b": "MV Ojibway Trader, Thunder Bay",
+      "verdict": "match",
+      "nature": "mv-punctuation-and-port"
+    },
+    {
+      "a": "Tank Barge LMT 7, Wilmington",
+      "b": "LMT 7",
+      "verdict": "match",
+      "nature": "type-and-port-residue"
+    },
+    {
+      "a": "Marquette Steward (ON 1287744)",
+      "b": "Marquette Steward",
+      "verdict": "match",
+      "nature": "official-number-residue"
+    },
+    {
+      "a": "Sabine 250 (Hull 118)",
+      "b": "Barge Sabine 250",
+      "verdict": "match",
+      "nature": "hull-number-residue"
+    },
+    {
+      "a": "Miss Adeline",
+      "b": "MISS ADELINE, Houston TX",
+      "verdict": "match",
+      "nature": "case-and-port"
+    },
+    {
+      "a": "F/V Mr. Thanh",
+      "b": "Mr Thanh",
+      "verdict": "match",
+      "nature": "fv-prefix-and-punctuation"
+    },
+    {
+      "a": "Superior Harvester (ex Duluth Harvester, ex Iron Range Harvester)",
+      "b": "Iron Range Harvester",
+      "verdict": "match",
+      "nature": "second-former-name-alias"
+    },
+    {
+      "a": "ATB tug Atchafalaya Ranger",
+      "b": "Atchafalaya Ranger",
+      "verdict": "match",
+      "nature": "atb-tug-prefix"
+    },
+    {
+      "a": "Terrebonne Pride, US flag",
+      "b": "M/V Terrebonne Pride",
+      "verdict": "match",
+      "nature": "flag-residue"
+    },
+    {
+      "a": "Bois Blanc Islander III",
+      "b": "Bois Blanc Islander 3",
+      "verdict": "match",
+      "nature": "roman-vs-arabic"
+    },
+    {
+      "a": "M/V Lady Genevieve",
+      "b": "Lady Genevieve",
+      "verdict": "match",
+      "nature": "mv-prefix-residue"
+    },
+    {
+      "a": "Manitou Passage Trader (ex Grand Traverse Trader)",
+      "b": "Grand Traverse Trader",
+      "verdict": "match",
+      "nature": "former-name-alias"
+    },
+    {
+      "a": "MTC 8801 (ex LMT 22)",
+      "b": "LMT 22",
+      "verdict": "match",
+      "nature": "barge-former-name-alias"
+    },
+    {
+      "a": "Point Comfort Runner, official no. 1301122",
+      "b": "M/V Point Comfort Runner",
+      "verdict": "match",
+      "nature": "official-number-and-prefix"
+    },
+    {
+      "a": "Tug Calcasieu Ranger, Houston",
+      "b": "Calcasieu Ranger",
+      "verdict": "match",
+      "nature": "type-and-port-residue"
+    },
+    {
+      "a": "Lady Hortense (ex Miss Hortense)",
+      "b": "Miss Hortense",
+      "verdict": "match",
+      "nature": "former-name-alias"
+    },
+    {
+      "a": "Twin Ports Trader",
+      "b": "Twin Ports Trader, Duluth",
+      "verdict": "match",
+      "nature": "port-of-registry-residue"
+    },
+    {
+      "a": "M/V O'Neal Provider",
+      "b": "M/V ONeal Provider",
+      "verdict": "match",
+      "nature": "apostrophe-dropped"
+    },
+    {
+      "a": "Georgian Bay Pioneer",
+      "b": "GEORGIAN BAY PIONEER (ON 1188220)",
+      "verdict": "match",
+      "nature": "case-and-official-number"
+    },
+    {
+      "a": "Bayou Lafourche Express",
+      "b": "Bayou La Fourche Express",
+      "verdict": "match",
+      "nature": "compound-place-spacing"
+    },
+    {
+      "a": "Tug Rosalind Marie (ex Rosalind M.)",
+      "b": "Rosalind M.",
+      "verdict": "match",
+      "nature": "former-name-alias"
+    },
+    {
+      "a": "OSV Fourchon Flyer 4",
+      "b": "Fourchon Flyer IV",
+      "verdict": "match",
+      "nature": "roman-vs-arabic"
+    },
+    {
+      "a": "Cameron Chief",
+      "b": "Cameron Champion",
+      "verdict": "different",
+      "nature": "sister-ship-other-word"
+    },
+    {
+      "a": "Bayou Sprinter",
+      "b": "Bayou Sprinters",
+      "verdict": "different",
+      "nature": "plural"
+    },
+    {
+      "a": "Grand Marais Trader (ex Keweenaw Spirit)",
+      "b": "Keweenaw Star",
+      "verdict": "different",
+      "nature": "ex-name-vs-other-vessel"
+    },
+    {
+      "a": "Grand Marais Trader",
+      "b": "Grand Marais Trader II",
+      "verdict": "different",
+      "nature": "numeral-added"
+    },
+    {
+      "a": "Sabine Ranger",
+      "b": "Sabine 250",
+      "verdict": "different",
+      "nature": "atb-tug-vs-barge"
+    },
+    {
+      "a": "GCT 218",
+      "b": "GCT 219",
+      "verdict": "different",
+      "nature": "fleet-number-other"
+    },
+    {
+      "a": "HMB 3104",
+      "b": "HMB 3140",
+      "verdict": "different",
+      "nature": "fleet-number-transposed"
+    },
+    {
+      "a": "Fourchon Flyer II",
+      "b": "Fourchon Flyer III",
+      "verdict": "different",
+      "nature": "roman-numeral-other"
+    },
+    {
+      "a": "Terrebonne Pride",
+      "b": "Terrebonne Prize",
+      "verdict": "different",
+      "nature": "one-letter-other-word"
+    },
+    {
+      "a": "Nipigon Bay Carrier",
+      "b": "Nipigon Bay Courier",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Calcasieu Pass Supplier",
+      "b": "Calcasieu Pass Supplier 2",
+      "verdict": "different",
+      "nature": "numeral-added"
+    },
+    {
+      "a": "Capt. Elias Fontenot",
+      "b": "Capt. Elijah Fontenot",
+      "verdict": "different",
+      "nature": "other-first-name"
+    },
+    {
+      "a": "St. Clair Voyager",
+      "b": "St. Clair Voyageur",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Marie & Louis",
+      "b": "Marie & Louise",
+      "verdict": "different",
+      "nature": "one-letter-added"
+    },
+    {
+      "a": "Señor Pescador",
+      "b": "Señora Pescadora",
+      "verdict": "different",
+      "nature": "gender-variant-other-name"
+    },
+    {
+      "a": "GCT 221",
+      "b": "GCM 221",
+      "verdict": "different",
+      "nature": "fleet-prefix-other"
+    },
+    {
+      "a": "Lakehead No. 7",
+      "b": "Lakehead No. 17",
+      "verdict": "different",
+      "nature": "fleet-number-other"
+    },
+    {
+      "a": "Michipicoten Sun",
+      "b": "Michipicoten Son",
+      "verdict": "different",
+      "nature": "one-letter-other-word"
+    },
+    {
+      "a": "Ojibway Trader",
+      "b": "Ojibway Traveler",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "LMT 7",
+      "b": "LMT 71",
+      "verdict": "different",
+      "nature": "fleet-number-other"
+    },
+    {
+      "a": "Marquette Steward",
+      "b": "Marquette Stewart",
+      "verdict": "different",
+      "nature": "one-letter-other-word"
+    },
+    {
+      "a": "Sabine 250",
+      "b": "Sabine 205",
+      "verdict": "different",
+      "nature": "barge-number-transposed"
+    },
+    {
+      "a": "Miss Adeline",
+      "b": "Miss Adelaide",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Mr. Thanh",
+      "b": "Mr. Thinh",
+      "verdict": "different",
+      "nature": "one-letter-other-name"
+    },
+    {
+      "a": "Superior Harvester",
+      "b": "Superior Harvest",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Atchafalaya Ranger",
+      "b": "Atchafalaya Rangers",
+      "verdict": "different",
+      "nature": "plural"
+    },
+    {
+      "a": "Terrebonne Pride",
+      "b": "Lafourche Pride",
+      "verdict": "different",
+      "nature": "sister-ship-other-place"
+    },
+    {
+      "a": "Bois Blanc Islander III",
+      "b": "Bois Blanc Islander IV",
+      "verdict": "different",
+      "nature": "roman-numeral-other"
+    },
+    {
+      "a": "Lady Genevieve",
+      "b": "Lady Guinevere",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Manitou Passage Trader",
+      "b": "Manistee Passage Trader",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "MTC 8801",
+      "b": "MTC 8810",
+      "verdict": "different",
+      "nature": "fleet-number-transposed"
+    },
+    {
+      "a": "Point Comfort Runner",
+      "b": "Port Comfort Runner",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Calcasieu Ranger",
+      "b": "Calcasieu Rover",
+      "verdict": "different",
+      "nature": "sister-ship-other-word"
+    },
+    {
+      "a": "Miss Hortense",
+      "b": "Miss Hortensia",
+      "verdict": "different",
+      "nature": "other-name"
+    },
+    {
+      "a": "Twin Ports Trader",
+      "b": "Twin Ports Traders",
+      "verdict": "different",
+      "nature": "plural"
+    },
+    {
+      "a": "O'Neal Provider",
+      "b": "O'Neil Provider",
+      "verdict": "different",
+      "nature": "one-letter-other-name"
+    },
+    {
+      "a": "Georgian Bay Pioneer",
+      "b": "Thunder Bay Pioneer",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Bayou Lafourche Express",
+      "b": "Bayou Teche Express",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "Rosalind Marie",
+      "b": "Rosalind Maria",
+      "verdict": "different",
+      "nature": "one-letter-other-name"
+    },
+    {
+      "a": "Fourchon Flyer IV",
+      "b": "Fourchon Flyer VI",
+      "verdict": "different",
+      "nature": "roman-numeral-transposed"
+    },
+    {
+      "a": "KAMINSKI VALVE AND FITTING CORP",
+      "b": "Kaminski Valve & Fitting Corp.",
+      "verdict": "match",
+      "nature": "ampersand-uppercase"
+    },
+    {
+      "a": "BOUDREAUX OFFSHORE CAT",
+      "b": "Boudreaux Offshore Catering LLC",
+      "verdict": "match",
+      "nature": "ach-22-char-truncation"
+    },
+    {
+      "a": "/1/ACHTERBERG GRAIN MERCHANTS INCORPOR\n/1/ATED\n/2/1800 PORT RD\n/3/US/CORPUS CHRISTI TX 78402",
+      "b": "Achterberg Grain Merchants Incorporated",
+      "verdict": "match",
+      "nature": "mt103-line-cut-mid-word"
+    },
+    {
+      "a": "VILLANUEVA COLD CHAIN LOGISTICS LP 8900 LAWNDALE ST HOUSTON TX 77012",
+      "b": "Villanueva Cold Chain Logistics, L.P.",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "OYELARAN MEDICAL SUPPLY CO\n5500 ALMEDA RD\nHOUSTON TX 77004",
+      "b": "Oyelaran Medical Supply Company",
+      "verdict": "match",
+      "nature": "field59-address-lines"
+    },
+    {
+      "a": "{5000}D 0447120933 HRABOWSKI RAIL SERVICES INC 2101 MCCARTY ST HOUSTON TX",
+      "b": "Hrabowski Rail Services, Inc.",
+      "verdict": "match",
+      "nature": "fedwire-originator-tag"
+    },
+    {
+      "a": "REF PO 88213 DUQUESNE BAYOU SHRIMP PROCESSORS",
+      "b": "Duquesne Bayou Shrimp Processors Inc.",
+      "verdict": "match",
+      "nature": "po-reference-prefix"
+    },
+    {
+      "a": "FAROOQI TEXTILE TRADERS LLC DBA FTT FABRICS",
+      "b": "Farooqi Textile Traders LLC",
+      "verdict": "match",
+      "nature": "dba-residue"
+    },
+    {
+      "a": "LINDGREN ICE AND FUEL CO C/O LOCKBOX 3310",
+      "b": "Lindgren Ice & Fuel Co.",
+      "verdict": "match",
+      "nature": "care-of-residue"
+    },
+    {
+      "a": "ENTREPOTS FRIGORIFIQUES BILODEAU LTEE 900 BOUL INDUSTRIEL BOUCHERVILLE QC",
+      "b": "Entrepôts frigorifiques Bilodeau Ltée",
+      "verdict": "match",
+      "nature": "accents-stripped-and-address"
+    },
+    {
+      "a": "6120448 MANITOBA LTD O/A PRAIRIE SKY GREENHOUSES",
+      "b": "6120448 Manitoba Ltd.",
+      "verdict": "match",
+      "nature": "numbered-operating-name"
+    },
+    {
+      "a": "PTAK PRECISION CASTINGS CORP ATTN A/P",
+      "b": "Ptak Precision Castings Corporation",
+      "verdict": "match",
+      "nature": "attn-residue"
+    },
+    {
+      "a": "THE RAVENSWORTH TANK CLEANING COMPANY LLC",
+      "b": "Ravensworth Tank Cleaning Co. LLC",
+      "verdict": "match",
+      "nature": "the-prefix-and-co-abbrev"
+    },
+    {
+      "a": "TALLCHIEF ENERGY SERVICES L L C",
+      "b": "Tallchief Energy Services LLC",
+      "verdict": "match",
+      "nature": "llc-spaced"
+    },
+    {
+      "a": "WU+LIANG IMPORT EXPORT INC",
+      "b": "Wu & Liang Import Export Inc.",
+      "verdict": "match",
+      "nature": "plus-for-ampersand"
+    },
+    {
+      "a": "ZIELINSKI BROS SCRAP METAL INC/TX",
+      "b": "Zielinski Brothers Scrap Metal Inc.",
+      "verdict": "match",
+      "nature": "bros-and-slash-state"
+    },
+    {
+      "a": "SORENSEN DRYDOCK INC",
+      "b": "Sørensen Drydock Inc.",
+      "verdict": "match",
+      "nature": "nordic-letter-stripped"
+    },
+    {
+      "a": "/59/ /CA7788001122 COOPERATIVE LAITIERE VANDERMEER 300 RANG ST PIERRE ST HYACINTHE QC",
+      "b": "Vandermeer Dairy Cooperative",
+      "verdict": "match",
+      "nature": "field59-glued-translation"
+    },
+    {
+      "a": "MONTGOMERY REYES INSURANCE AGENCY",
+      "b": "Montgomery-Reyes Insurance Agency Inc.",
+      "verdict": "match",
+      "nature": "hyphen-and-suffix-dropped"
+    },
+    {
+      "a": "ST LAWRENCE RIGGING LTD",
+      "b": "Saint Lawrence Rigging Ltd.",
+      "verdict": "match",
+      "nature": "saint-abbrev-uppercase"
+    },
+    {
+      "a": "CARRASQUILLO REBAR PLACERS INC",
+      "b": "Carasquillo Rebar Placers Inc.",
+      "verdict": "match",
+      "nature": "proper-name-misspelt"
+    },
+    {
+      "a": "GERLACH AND WEISS SURVEYING LLP",
+      "b": "Gerlach & Weiss Surveying, L.L.P.",
+      "verdict": "match",
+      "nature": "ampersand-and-llp-punctuation"
+    },
+    {
+      "a": "HAUGLAND FISH CO LTD 44 WATER ST LUNENBURG NS",
+      "b": "Haugland Fish Company Ltd.",
+      "verdict": "match",
+      "nature": "co-abbrev-and-address"
+    },
+    {
+      "a": "NOWAK AND PIETERSE FREIGHT FWDRS LLC",
+      "b": "Nowak & Pieterse Freight Forwarders LLC",
+      "verdict": "match",
+      "nature": "fwdrs-abbrev"
+    },
+    {
+      "a": "/1/LES SERRES DUBUC INC\n/2/1450 CHEMIN DES PATRIOTES\n/3/CA/SAINT-OURS QC J0G 1P0",
+      "b": "Serres Dubuc Inc.",
+      "verdict": "match",
+      "nature": "mt103-lines-les-dropped"
+    },
+    {
+      "a": "BEN/ EKWUEME PIPE COATING CORP",
+      "b": "Ekwueme Pipe Coating Corp.",
+      "verdict": "match",
+      "nature": "ben-prefix"
+    },
+    {
+      "a": "ORIG:TRANSPORT LETOURNEAU INC",
+      "b": "Transport Létourneau Inc.",
+      "verdict": "match",
+      "nature": "orig-prefix-accent"
+    },
+    {
+      "a": "10552301 CANADA INC BN 733120552RC0001",
+      "b": "10552301 Canada Inc.",
+      "verdict": "match",
+      "nature": "numbered-uppercase-bn-residue"
+    },
+    {
+      "a": "CORMIER ET FILS PLOMBERIE INC",
+      "b": "Cormier & Fils Plomberie Inc.",
+      "verdict": "match",
+      "nature": "et-vs-ampersand-uppercase"
+    },
+    {
+      "a": "GRAND BEND BOAT WORKS LTD*GODERICH",
+      "b": "Grand Bend Boatworks Ltd.",
+      "verdict": "match",
+      "nature": "asterisk-city-and-compound"
+    },
+    {
+      "a": "ISHIKAWA BEARING DISTRIBUTORS INCOR",
+      "b": "Ishikawa Bearing Distributors Inc.",
+      "verdict": "match",
+      "nature": "35-char-cut"
+    },
+    {
+      "a": "QUINTANILLA PRODUCE BROKERS INC MCALLEN TX 78501 US",
+      "b": "Quintanilla Produce Brokers, Inc.",
+      "verdict": "match",
+      "nature": "address-glued"
+    },
+    {
+      "a": "METAUX RECYCLES SIROIS INC LAVAL QC",
+      "b": "Métaux recyclés Sirois Inc.",
+      "verdict": "match",
+      "nature": "accents-stripped-and-city"
+    },
+    {
+      "a": "FERREIRA STEVEDORING CO/ACCT 77120",
+      "b": "Ferreira Stevedoring Company",
+      "verdict": "match",
+      "nature": "account-residue"
+    },
+    {
+      "a": "OKOYE CONTAINER REPAIR LLC HOUSTON TX",
+      "b": "Okoye Container Repair, L.L.C.",
+      "verdict": "match",
+      "nature": "city-residue-llc-punctuation"
+    },
+    {
+      "a": "AL RASHID HALAL MEATS INC",
+      "b": "Al-Rashid Halal Meats Inc.",
+      "verdict": "match",
+      "nature": "hyphen-dropped-uppercase"
+    },
+    {
+      "a": "BEAUCHAMP RIG MOVERS LLC (LOUISIANA)",
+      "b": "BEAUCHAMP RIG MOVERS LLC",
+      "verdict": "match",
+      "nature": "jurisdiction-residue"
+    },
+    {
+      "a": "KUZNETSOV MARINE COATINGS INC/HOUSTON",
+      "b": "Kuznetsov Marine Coatings Inc.",
+      "verdict": "match",
+      "nature": "uppercase-and-slash-city"
+    },
+    {
+      "a": "/50K/ /0447120933\nWHITLOCK BARGE CLEANING CORP\n12000 BAY AREA BLVD\nPASADENA TX 77507",
+      "b": "Whitlock Barge Cleaning Corporation",
+      "verdict": "match",
+      "nature": "field50k-lines"
+    },
+    {
+      "a": "ABIODUN FREIGHT BROKERS LLC FFC INV 5521",
+      "b": "Abiodun Freight Brokers LLC",
+      "verdict": "match",
+      "nature": "ffc-invoice-residue"
+    },
+    {
+      "a": "KAMINSKI VALVE AND FITTING CORP",
+      "b": "KAMINSKI VALVE AND FLANGE CORP",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "BOUDREAUX OFFSHORE CATERING LLC",
+      "b": "THIBODEAUX OFFSHORE CATERING LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "ACHTERBERG GRAIN MERCHANTS INC 1800 PORT RD CORPUS CHRISTI TX",
+      "b": "ACHTERBERG GRAIN ELEVATORS INC 1800 PORT RD CORPUS CHRISTI TX",
+      "verdict": "different",
+      "nature": "other-word-same-address"
+    },
+    {
+      "a": "VILLANUEVA COLD CHAIN LOGISTICS LP",
+      "b": "VILLANUEVA COLD CHAIN LOGISTICS INC",
+      "verdict": "different",
+      "nature": "other-legal-form"
+    },
+    {
+      "a": "OYELARAN MEDICAL SUPPLY CO",
+      "b": "OYELARAN DENTAL SUPPLY CO",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "HRABOWSKI RAIL SERVICES INC",
+      "b": "HRABOWSKI RAIL SERVICES CANADA LTD",
+      "verdict": "different",
+      "nature": "foreign-subsidiary"
+    },
+    {
+      "a": "DUQUESNE BAYOU SHRIMP PROCESSORS INC",
+      "b": "DUQUESNE BAYOU SHRIMP PACKERS INC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "FAROOQI TEXTILE TRADERS LLC",
+      "b": "FAROOQI TEXTILE TRADING HOLDINGS LLC",
+      "verdict": "different",
+      "nature": "holding-vs-operating"
+    },
+    {
+      "a": "LINDGREN ICE AND FUEL CO",
+      "b": "LINDGREN ICE AND FEED CO",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "ENTREPOTS FRIGORIFIQUES BILODEAU LTEE",
+      "b": "ENTREPOTS FRIGORIFIQUES BEAULIEU LTEE",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "6120448 MANITOBA LTD",
+      "b": "6120484 MANITOBA LTD",
+      "verdict": "different",
+      "nature": "numbered-digits-transposed"
+    },
+    {
+      "a": "PTAK PRECISION CASTINGS CORP",
+      "b": "PTAK PRECISION COATINGS CORP",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "RAVENSWORTH TANK CLEANING LLC",
+      "b": "RAVENSWORTH TANK LEASING LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "TALLCHIEF ENERGY SERVICES LLC",
+      "b": "TALLCHIEF ENERGY PARTNERS LP",
+      "verdict": "different",
+      "nature": "two-words-and-legal-form"
+    },
+    {
+      "a": "WU AND LIANG IMPORT EXPORT INC",
+      "b": "WU AND LIN IMPORT EXPORT INC",
+      "verdict": "different",
+      "nature": "other-partner-surname"
+    },
+    {
+      "a": "ZIELINSKI BROS SCRAP METAL INC",
+      "b": "ZIELINSKI AND SONS SCRAP METAL INC",
+      "verdict": "different",
+      "nature": "bros-vs-sons"
+    },
+    {
+      "a": "SORENSEN DRYDOCK INC",
+      "b": "SORENSEN DRYDOCK MEXICO SA DE CV",
+      "verdict": "different",
+      "nature": "foreign-subsidiary"
+    },
+    {
+      "a": "VANDERMEER DAIRY COOPERATIVE",
+      "b": "VANDERMEER DAIRY FARMS INC",
+      "verdict": "different",
+      "nature": "coop-vs-corporation"
+    },
+    {
+      "a": "MONTGOMERY REYES INSURANCE AGENCY INC",
+      "b": "MONTGOMERY REYES INSURANCE BROKERS INC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "ST LAWRENCE RIGGING LTD",
+      "b": "ST CLAIR RIGGING LTD",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "CARRASQUILLO REBAR PLACERS INC",
+      "b": "CARRASQUILLO REBAR FABRICATORS INC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "GERLACH AND WEISS SURVEYING LLP",
+      "b": "GERLACH AND WEISS ENGINEERING LLP",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "HAUGLAND FISH CO LTD",
+      "b": "HAUGLAND FISH FARMS LTD",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "NOWAK AND PIETERSE FREIGHT FORWARDERS LLC",
+      "b": "NOWAK AND PIETERSE CUSTOMS BROKERS LLC",
+      "verdict": "different",
+      "nature": "two-words-different"
+    },
+    {
+      "a": "LES SERRES DUBUC INC",
+      "b": "LES SERRES DUBOIS INC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "EKWUEME PIPE COATING CORP",
+      "b": "EKWUEME PIPE CUTTING CORP",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "TRANSPORT LETOURNEAU INC",
+      "b": "TRANSPORT LETENDRE INC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "10552301 CANADA INC",
+      "b": "10552310 CANADA INC",
+      "verdict": "different",
+      "nature": "numbered-digits-transposed"
+    },
+    {
+      "a": "CORMIER ET FILS PLOMBERIE INC",
+      "b": "CORMIER FRERES PLOMBERIE INC",
+      "verdict": "different",
+      "nature": "fils-vs-freres"
+    },
+    {
+      "a": "GRAND BEND BOAT WORKS LTD",
+      "b": "GRAND BANKS BOAT WORKS LTD",
+      "verdict": "different",
+      "nature": "other-place"
+    },
+    {
+      "a": "ISHIKAWA BEARING DISTRIBUTORS INC",
+      "b": "ISHIKAWA BEARING DISTRIBUTORS DE MEXICO SA DE CV",
+      "verdict": "different",
+      "nature": "foreign-subsidiary"
+    },
+    {
+      "a": "QUINTANILLA PRODUCE BROKERS INC",
+      "b": "QUINTANILLA PRODUCE GROWERS INC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "METAUX RECYCLES SIROIS INC",
+      "b": "MATERIAUX RECYCLES SIROIS INC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "FERREIRA STEVEDORING CO",
+      "b": "FERREIRA STEVEDORING HOLDINGS CO",
+      "verdict": "different",
+      "nature": "holding-vs-operating"
+    },
+    {
+      "a": "OKOYE CONTAINER REPAIR LLC",
+      "b": "OKOYE CONTAINER RENTAL LLC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "AL RASHID HALAL MEATS INC",
+      "b": "AL RASHID HALAL MARKETS INC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "BEAUCHAMP RIG MOVERS LLC",
+      "b": "BEAUCHAMP RIG MOVERS LP",
+      "verdict": "different",
+      "nature": "other-legal-form"
+    },
+    {
+      "a": "KUZNETSOV MARINE COATINGS INC",
+      "b": "KUZNETSOV MARINE CASTINGS INC",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "WHITLOCK BARGE CLEANING CORP",
+      "b": "WHITLOCK TANK CLEANING CORP",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "ROSALIND FERREIRA",
+      "b": "FERREIRA STEVEDORING CO",
+      "verdict": "different",
+      "nature": "individual-vs-company"
+    },
+    {
+      "a": "Gbadamosi Intl Trading Co",
+      "b": "Gbadamosi International Trading Co.",
+      "verdict": "match",
+      "nature": "intl-abbrev"
+    },
+    {
+      "a": "Hollenbeck Mfg Co",
+      "b": "Hollenbeck Manufacturing Company",
+      "verdict": "match",
+      "nature": "mfg-abbrev"
+    },
+    {
+      "a": "Bayou Vista Cold Whse LLC",
+      "b": "Bayou Vista Cold Warehouse LLC",
+      "verdict": "match",
+      "nature": "whse-abbrev"
+    },
+    {
+      "a": "Espinoza Bros Tire & Wheel",
+      "b": "Espinoza Brothers Tire and Wheel",
+      "verdict": "match",
+      "nature": "bros-abbrev"
+    },
+    {
+      "a": "Pruitt & Assoc Land Surveyors",
+      "b": "Pruitt & Associates Land Surveyors",
+      "verdict": "match",
+      "nature": "assoc-abbrev"
+    },
+    {
+      "a": "Kirchner Distr Inc",
+      "b": "Kirchner Distributing Inc.",
+      "verdict": "match",
+      "nature": "distr-abbrev"
+    },
+    {
+      "a": "Sandoval Ent LLC",
+      "b": "Sandoval Enterprises LLC",
+      "verdict": "match",
+      "nature": "ent-abbrev"
+    },
+    {
+      "a": "Marchetti Pool Svcs Inc",
+      "b": "Marchetti Pool Services Inc.",
+      "verdict": "match",
+      "nature": "svcs-abbrev"
+    },
+    {
+      "a": "torkelson welding n fab",
+      "b": "Torkelson Welding & Fabrication",
+      "verdict": "match",
+      "nature": "chat-n-for-and"
+    },
+    {
+      "a": "ngoziadeyemi catering llc",
+      "b": "Ngozi Adeyemi Catering LLC",
+      "verdict": "match",
+      "nature": "missing-space"
+    },
+    {
+      "a": "Wojcik Auto Boddy",
+      "b": "Wojcik Auto Body",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "HoangPhucSeafoodWholesale",
+      "b": "Hoang Phuc Seafood Wholesale",
+      "verdict": "match",
+      "nature": "camelcase-no-spaces"
+    },
+    {
+      "a": "Blackfeather Ranch Suppy",
+      "b": "Blackfeather Ranch Supply",
+      "verdict": "match",
+      "nature": "dropped-letter"
+    },
+    {
+      "a": "Menendez Sheet Meta1 Works",
+      "b": "Menendez Sheet Metal Works",
+      "verdict": "match",
+      "nature": "ocr-1-for-l"
+    },
+    {
+      "a": "0strowski & Daughters Bakery",
+      "b": "Ostrowski & Daughters Bakery",
+      "verdict": "match",
+      "nature": "ocr-0-for-o"
+    },
+    {
+      "a": "kaur&gill truck repair",
+      "b": "Kaur & Gill Truck Repair",
+      "verdict": "match",
+      "nature": "missing-spaces-around-ampersand"
+    },
+    {
+      "a": "Delisle Marine Deisel",
+      "b": "Delisle Marine Diesel",
+      "verdict": "match",
+      "nature": "transposed-letters"
+    },
+    {
+      "a": "Rutherfordgrain & feed",
+      "b": "Rutherford Grain & Feed",
+      "verdict": "match",
+      "nature": "missing-space"
+    },
+    {
+      "a": "Chukwu Logistics Grp",
+      "b": "Chukwu Logistics Group",
+      "verdict": "match",
+      "nature": "grp-abbrev"
+    },
+    {
+      "a": "Vanterpol Charter Boats",
+      "b": "Vanterpool Charter Boats",
+      "verdict": "match",
+      "nature": "dropped-letter"
+    },
+    {
+      "a": "Papadakis Imp Exp",
+      "b": "Papadakis Import Export",
+      "verdict": "match",
+      "nature": "imp-exp-abbrev"
+    },
+    {
+      "a": "Leclerc Portes de garage",
+      "b": "Leclerc portes de garage inc",
+      "verdict": "match",
+      "nature": "case-and-suffix-added"
+    },
+    {
+      "a": "Yamaguchi Hydraulics Repalr",
+      "b": "Yamaguchi Hydraulics Repair",
+      "verdict": "match",
+      "nature": "ocr-l-for-i"
+    },
+    {
+      "a": "fontaine et freres excavation",
+      "b": "Fontaine & Frères Excavation",
+      "verdict": "match",
+      "nature": "accent-dropped-and-et-chat"
+    },
+    {
+      "a": "Big Cypress Airboat Tours",
+      "b": "big cypress air boat tours",
+      "verdict": "match",
+      "nature": "case-and-compound-split"
+    },
+    {
+      "a": "Steinmetz Tool Rental",
+      "b": "Steinrnetz Tool Rental",
+      "verdict": "match",
+      "nature": "ocr-rn-for-m"
+    },
+    {
+      "a": "Guidry Crawfsh Farms",
+      "b": "Guidry Crawfish Farms",
+      "verdict": "match",
+      "nature": "dropped-letter"
+    },
+    {
+      "a": "Nowicki Pallet Recycling",
+      "b": "Nowicki Pallet Recyc.",
+      "verdict": "match",
+      "nature": "truncated-word"
+    },
+    {
+      "a": "Ramaswamy Software Svcs",
+      "b": "Ramaswamy Software Services",
+      "verdict": "match",
+      "nature": "svcs-abbrev"
+    },
+    {
+      "a": "Ocampo Drywall & Paint",
+      "b": "ocampo drywall + paint",
+      "verdict": "match",
+      "nature": "plus-and-case"
+    },
+    {
+      "a": "Thorvaldsen Ship Chandlers",
+      "b": "Thorvaldsen Shipchandlers",
+      "verdict": "match",
+      "nature": "compound-joined"
+    },
+    {
+      "a": "Ijeoma Textiles",
+      "b": "Ijeoma Textilles",
+      "verdict": "match",
+      "nature": "doubled-letter"
+    },
+    {
+      "a": "Lachance Freight Lines",
+      "b": "La Chance Freight Lines",
+      "verdict": "match",
+      "nature": "space-inside-name"
+    },
+    {
+      "a": "Beckett-Oyelowo Architects",
+      "b": "Beckett Oyelowo Architects",
+      "verdict": "match",
+      "nature": "hyphen-dropped"
+    },
+    {
+      "a": "Salinas Bros. Concrete Pumping",
+      "b": "Salinas Bro's Concrete Pumping",
+      "verdict": "match",
+      "nature": "autocorrect-apostrophe"
+    },
+    {
+      "a": "Mueller Hide & Tallow Co.",
+      "b": "Muller Hide & Tallow Co",
+      "verdict": "match",
+      "nature": "dropped-letter"
+    },
+    {
+      "a": "trosclair oysterco",
+      "b": "Trosclair Oyster Co.",
+      "verdict": "match",
+      "nature": "missing-space"
+    },
+    {
+      "a": "Winterboume Cold Storage",
+      "b": "Winterbourne Cold Storage",
+      "verdict": "match",
+      "nature": "ocr-m-for-rn"
+    },
+    {
+      "a": "NAKAGAWA CERAMICS IMP0RT",
+      "b": "Nakagawa Ceramics Import",
+      "verdict": "match",
+      "nature": "ocr-0-for-o-uppercase"
+    },
+    {
+      "a": "Kovačević Stone Masons",
+      "b": "kovacevic stonemasons",
+      "verdict": "match",
+      "nature": "diacritics-and-compound-joined"
+    },
+    {
+      "a": "Gbadamosi Intl Trading Co",
+      "b": "Gbadamosi Intl Trucking Co",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Hollenbeck Mfg Co",
+      "b": "Hollenbeck Mfg Co of Canada Ltd",
+      "verdict": "different",
+      "nature": "foreign-subsidiary"
+    },
+    {
+      "a": "Bayou Vista Cold Whse LLC",
+      "b": "Bayou Vista Cold Whse Holdings LLC",
+      "verdict": "different",
+      "nature": "holding-vs-operating"
+    },
+    {
+      "a": "Espinoza Bros Tire & Wheel",
+      "b": "Espinoza & Sons Tire & Wheel",
+      "verdict": "different",
+      "nature": "bros-vs-sons"
+    },
+    {
+      "a": "Pruitt & Assoc Land Surveyors",
+      "b": "Pruitt & Assoc Land Developers",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Kirchner Distr Inc",
+      "b": "Kirchner Distr LLC",
+      "verdict": "different",
+      "nature": "other-legal-form"
+    },
+    {
+      "a": "Sandoval Ent LLC",
+      "b": "Salcedo Ent LLC",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Marchetti Pool Svcs Inc",
+      "b": "Marchetti Pest Svcs Inc",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "torkelson welding n fab",
+      "b": "torkelson welding n machining",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "ngozi adeyemi catering",
+      "b": "ngozi adebayo catering",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Wojcik Auto Body",
+      "b": "Wojcik Auto Glass",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Hoang Phuc Seafood Wholesale",
+      "b": "Hoang Phuc Seafood Restaurant",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Blackfeather Ranch Supply",
+      "b": "Blackfeather Ranch Realty",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Menendez Sheet Metal Works",
+      "b": "Mendoza Sheet Metal Works",
+      "verdict": "different",
+      "nature": "other-surname"
+    },
+    {
+      "a": "Ostrowski & Daughters Bakery",
+      "b": "Ostrowski & Sons Bakery",
+      "verdict": "different",
+      "nature": "sons-vs-daughters"
+    },
+    {
+      "a": "Kaur & Gill Truck Repair",
+      "b": "Kaur & Dhillon Truck Repair",
+      "verdict": "different",
+      "nature": "other-partner-surname"
+    },
+    {
+      "a": "Delisle Marine Diesel",
+      "b": "Delisle Marine Electric",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Rutherford Grain & Feed",
+      "b": "Rutherford Grain & Seed",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Chukwu Logistics Group",
+      "b": "Chukwu Logistics Group (UK) Ltd",
+      "verdict": "different",
+      "nature": "foreign-subsidiary"
+    },
+    {
+      "a": "Vanterpool Charter Boats",
+      "b": "Vanterpool Charter Buses",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Papadakis Import Export",
+      "b": "Papadakis Import Export Canada Inc",
+      "verdict": "different",
+      "nature": "foreign-subsidiary"
+    },
+    {
+      "a": "Leclerc Portes de garage",
+      "b": "Leclerc Portes et fenêtres",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Yamaguchi Hydraulics Repair",
+      "b": "Yamaguchi Hydraulics Rental",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Fontaine & Frères Excavation",
+      "b": "Fontaine & Fils Excavation",
+      "verdict": "different",
+      "nature": "freres-vs-fils"
+    },
+    {
+      "a": "Big Cypress Airboat Tours",
+      "b": "Big Cypress Airboat Rentals",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Steinmetz Tool Rental",
+      "b": "Steinmetz Tool & Die",
+      "verdict": "different",
+      "nature": "two-words-different"
+    },
+    {
+      "a": "Guidry Crawfish Farms",
+      "b": "Guidry Catfish Farms",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Nowicki Pallet Recycling",
+      "b": "Nowicki Plastic Recycling",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Ramaswamy Software Svcs",
+      "b": "Ramaswamy Staffing Svcs",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Ocampo Drywall & Paint",
+      "b": "Ocampo Drywall & Plaster",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Thorvaldsen Ship Chandlers",
+      "b": "Thorvaldsen Ship Brokers",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Ijeoma Textiles",
+      "b": "Ijeoma Textiles Nigeria Ltd",
+      "verdict": "different",
+      "nature": "foreign-subsidiary"
+    },
+    {
+      "a": "Lachance Freight Lines",
+      "b": "Lachance Freight Brokers",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Beckett-Oyelowo Architects",
+      "b": "Beckett-Oyelowo Engineers",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Salinas Bros. Concrete Pumping",
+      "b": "Salinas Bros. Concrete Cutting",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Mueller Hide & Tallow Co.",
+      "b": "Mueller Hide & Leather Co.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Trosclair Oyster Co.",
+      "b": "Trosclair Shrimp Co.",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "6120448 manitoba ltd",
+      "b": "6120446 manitoba ltd",
+      "verdict": "different",
+      "nature": "numbered-other-digit"
+    },
+    {
+      "a": "Nakagawa Ceramics Import",
+      "b": "Nakagawa Cosmetics Import",
+      "verdict": "different",
+      "nature": "other-word"
+    },
+    {
+      "a": "Kovačević Stone Masons",
+      "b": "Kovačević Stone Quarries",
+      "verdict": "different",
+      "nature": "other-word"
+    }
+  ]
+}
