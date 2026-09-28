@@ -60,7 +60,7 @@ export const FORMES = new Set([
   "sprl", "bvba", "srl", "spa", "sl", "slu", "sau", "bv", "nv", "vof", "oy", "oyj", "ab", "as",
   "asa", "aps", "kft", "zrt", "nyrt", "sro", "doo", "ad", "eood", "ood",
   /* Amérique latine ; « Lda » au Portugal, en Angola, au Mozambique (jeu 10) */ "ltda", "lda", "eireli", "cv", "sapi", "sac", "saa",
-  /* Russie et CEI */ "ooo", "oao", "zao", "pao", "ao", "jsc", "pjsc", "ojsc", "cjsc", "too",
+  /* Russie et CEI */ "ooo", "oao", "zao", "pao", "ao", "jsc", "pjsc", "ojsc", "cjsc", "pjs", "too",
   /* Asie centrale (tour 13, jeu 17) : la ЖШС kazakhe telle que la translittération l'écrit et sous ses trois latins (JShS, JŞS,
      JS'S : « jss » une fois l'apostrophe et la cédille parties), l'АҚ (AQ), la МЧЖ ouzbèke (MChJ), l'АЖ, la ЯТТ (l'entrepreneur
      ouzbek), l'ОсОО kirghize (OsOO) et la ЖЧК ; l'entrepreneur individuel ИП, ЖК et IE, en tête seulement (voir le filtre) */
@@ -138,6 +138,8 @@ const PHRASES = [
   " societe anonyme ", " societe a responsabilite limitee ", " societe par actions simplifiee ",
   /* le Québec et les États-Unis (jeu 20) : la société en nom collectif, le limited partnership écrit en toutes lettres */
   " societe en nom collectif ", " limited partnership ", " ltd part ", " ltd partnership ",
+  /* la société par actions iranienne romanisée (jeu 21) : sahami khas (privée), sahami am (publique) */
+  " sahami khas ", " sahami am ", " sherkat sahami khas ", " sherkat sahami am ",
   " sociedad anonima cerrada ", " sociedad anonima ", " soc anon ", " sociedad limitada ",
   " sociedad de responsabilidad limitada ",
   " sociedad anonima promotora de inversion de capital variable ", " sociedad anonima promotora de inversion ",
@@ -592,6 +594,10 @@ export const REGISTRES: readonly RegExp[] = [
   /* les numéros fiscaux d'Asie centrale, en tête ou en queue, en cyrillique ou en latin : le BIN et l'IIN kazakhs (douze chiffres),
      l'INN kirghize (quatorze), le STIR ouzbek (neuf), l'INN, l'OGRN et le KPP russes (jeu 17, tour 13 : « ТОО «Сарыөзек Астық
      Логистика» БИН 160240019875 » à 0,733, « ИНН 02511201910172 ОсОО «Талас Дан Азык» » à 0,800, le numéro d'un seul côté) */
+  /* les numéros de registre du Caucase, d'Israël et d'Iran en écriture native (jeu 21, tour 17) : le ՀՎՀՀ arménien (numéro
+     fiscal, huit chiffres), le ს/კ géorgien (code d'identification, neuf), le ח.פ. israélien (numéro de société, neuf), le
+     شماره ثبت et le شناسه ملی iraniens, en queue du nom */
+  /[\s,;(]+(?:հվհհ|հվՀՀ|ս\/կ|ს\/კ|ს\.კ\.|ח\.?\s?פ\.?|ע\.?\s?מ\.?|شماره\s+ثبت|شناسه\s+ملی)\s*:?\s*\d{5,12}\s*\)?\s*$/giu,
   /[\s,;(]+(?:бин|иин|инн|огрн|кпп|окпо|стир|бсн|жсн|bin|iin|inn|ogrn|kpp|okpo|stir|bsn|zhsn)\s*(?:№|no\.?|:)?\s*\d{8,15}(?:\s*\/\s*\d{6,12})?\s*\)?\s*$/giu,
   /^\s*(?:бин|иин|инн|огрн|стир|бсн|жсн|bin|iin|inn|ogrn|stir|bsn|zhsn)\s*(?:№|no\.?|:)?\s*\d{8,15}\s+/giu,
   /* le numéro d'enregistrement d'entreprise coréen (사업자등록번호, 000-00-00000), devant ou derrière le nom, entre parenthèses ou non
@@ -1164,7 +1170,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "free zone limited liability company"]);
   poser(["corp"], ["inc", "incorporated", "corp", "corporation", "corporacion", "corporacao", "plc", "public limited company", "ag", "se", "sa", "sas", "sasu",
     "spa", "sau", "nv", "oyj", "as", "asa", "zrt", "nyrt", "ad", "cv", "sapi", "sac", "saa", "oao", "zao", "pao", "ao", "jsc",
-    "pjsc", "ojsc", "cjsc", "prat", "pat", "ae", "joint stock company", "public joint stock company", "closed joint stock company",
+    "pjsc", "ojsc", "cjsc", "pjs", "sahami khas", "sahami am", "sherkat sahami khas", "sherkat sahami am", "prat", "pat", "ae", "joint stock company", "public joint stock company", "closed joint stock company",
     "open joint stock company", "aktsionernoe obshchestvo", "publichnoe aktsionernoe obshchestvo",
     "zakrytoe aktsionernoe obshchestvo", "otkrytoe aktsionernoe obshchestvo", "aktiengesellschaft", "societe anonyme",
     "societe par actions simplifiee", "sociedad anonima", "soc anon", "sociedad anonima cerrada", "sociedade anonima",

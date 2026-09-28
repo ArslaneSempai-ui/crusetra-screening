@@ -49,6 +49,7 @@ const PREFIXES: readonly RegExp[] = [
   /* « REF FT2231-0915 /BNF/ », « /NAME/ », « 1/ » du champ 50F structuré (jeu 12) */
   /* jeu 20 (Houston + Toronto) : l'étiquette Fedwire « {5000}D 0447120933 », le champ 59 avec son compte « /59/ /CA7788001122 »,
      « ORIG: », « REF PO 88213 » devant le nom */
+  /^\s*\/[a-z]{0,2}\d{7,}\s+(?=\p{L})/iu,
   /^\s*\{\d{4}\}[a-z]?\s*\d{6,}\s+/iu,
   /^\s*\/5[09][a-z]?\/\s*\/?[a-z]{0,2}\d{6,}\s+/iu,
   /^\s*orig(?:inator)?\s*:\s*/iu,
@@ -146,7 +147,11 @@ const ANNOTATIONS: readonly RegExp[] = [
   /* jeu 19 : l'adresse japonaise collée à la forme (« KAMITSURU BOEKI KK3-5-12 KITAHAMA CHUO-KU OSAKA »), et « ULSAN PLANT »,
      « Ulsan Branch » derrière une forme sans tiret ni virgule (le lieu puis le mot de l'établissement) */
   /(?<=\b(?:kk|k\.k\.|ltd|limited|inc|llc|gmbh|co\.?,?\s*ltd\.?)\.?)\s*\d+-\d+.*$/iu,
+  /* jeu 21 : l'adresse du Caucase derrière la forme, numéro puis rue puis ville et code (« CJSC 14 NAIRI STR GAVAR AM ») */
+  /(?<=\b(?:kk|ltd|limited|inc|llc|gmbh|cjsc|ojsc|jsc|pjsc|ooo|too|uab|sia|co\.?,?\s*ltd\.?)\.?)\s+\d{1,4}\s+[\p{L}' .-]*?\b(?:str|street|st|ul|ulitsa|ave|avenue|road|rd|blvd|boul|prospekt|pr|kucha|poghots|qucha)\b.*$/iu,
   /(?<=\b(?:co\.?,?\s*ltd\.?|ltd\.?|limited|inc\.?|corp\.?|k\.?k\.?|llc|gmbh|kabushiki\s+kaisha)\.?)\s+[\p{L}]{3,}\s+(?:branch|plant|factory|office|depot|warehouse)\s*$/iu,
+  /* jeu 21 : le pays nu derrière la forme, résidu d'adresse (« AVETISYAN PHARM LLC ARMENIA ») */
+  /(?<=\b(?:ltd|limited|llc|inc|cjsc|ojsc|jsc|pjsc|gmbh|sa|bv|nv|plc)\.?)\s+(?:armenia|georgia|israel|iran|turkey|azerbaijan|ukraine|romania|bulgaria|greece|cyprus|lebanon|egypt|jordan|moldova)\s*$/iu,
   /* et l'étiquette qu'une annotation antérieure laisse en queue (« DOC CREDIT », « REF LC ») */
   /\s+(?:doc(?:umentary)?\s+credit|(?:our\s+|your\s+)?ref(?:erence)?\.?(?:\s+(?:lc|dc|l\/c))?|lc|dc|l\/c)\s*$/iu,
   /* jeu 15 : le CNIC pakistanais, le PIN kényan, le TIN et le NTN entre parenthèses derrière le nom */
@@ -309,7 +314,10 @@ const PORTS_ET_QUARTIERS: ReadonlySet<string> = new Set(["bandar", "kota", "jebe
   "goderich", "wilmington", "montreal", "laval", "boucherville", "toronto", "thunder bay", "galveston", "corpus christi", "new orleans",
   "baton rouge", "beaumont", "jacksonville", "baltimore", "philadelphia", "tacoma", "oakland", "duluth", "cleveland", "detroit",
   "milwaukee", "sarnia", "sault ste marie", "prince rupert", "mississauga", "brampton", "saskatoon", "winnipeg", "halifax", "seattle",
-  "chicago", "boston", "miami", "tampa", "charleston", "norfolk", "st hyacinthe"]);
+  "chicago", "boston", "miami", "tampa", "charleston", "norfolk", "st hyacinthe",
+  /* la mer Noire, le Levant et le Caucase (jeu 21) */
+  "batumi", "poti", "kulevi", "supsa", "anaklia", "ashdod", "haifa", "eilat", "novorossiysk", "constanta", "varna", "burgas",
+  "trabzon", "samsun", "mersin", "iskenderun", "limassol", "beirut", "tartus", "latakia", "bandar abbas", "bushehr", "gavar"]);
 /** Les codes pays à deux lettres qu'un export colle derrière la ville. */
 const CODES_PAYS: ReadonlySet<string> = new Set(["fi", "se", "no", "dk", "ee", "lv", "lt", "pl", "de", "nl", "be", "fr", "es", "it", "pt", "ro",
   "bg", "gr", "tr", "ua", "ru", "ge", "us", "uk", "gb", "ie", "ch", "at", "cz", "sk", "hu", "sg", "my", "id", "th", "vn", "cn", "hk", "jp", "kr",
@@ -467,7 +475,7 @@ export function variantesTypees(brut: string): VarianteTypee[] {
   /* une adresse collée à la forme sans espace, champ 59 : « Company Limited45 Marina Road » (jeu 10) */
   /* le numéro de la rue est un nombre entier suivi d'une espace ou d'une ponctuation, jamais de lettres : « Sa3eed » n'est pas
      « S.A. » collé au 3 d'une adresse, c'est l'ayn de l'arabizi (jeu 14 ; voir arabizi.ts) */
-  brut = brut.replace(/\b(limited|ltd|plc|inc|llc|corp|gmbh|bv|nv|sa|sarl|lda|ltda|pty|bhd)\.?(?=\d+(?![\p{L}\d]))/giu, "$1 ");
+  brut = brut.replace(/\b(limited|ltd|plc|inc|llc|corp|gmbh|bv|nv|sa|sarl|lda|ltda|pty|bhd|cjsc|ojsc|pjsc|jsc|ooo|ltee)\.?(?=\d+(?![\p{L}\d]))/giu, "$1 ");
   const registre = numeroDeRegistre(brut);
   const partie = partieDuDocument(brut);
   const paysRegistre = paysDeRegistre(brut);
@@ -593,7 +601,10 @@ export function variantesTypees(brut: string): VarianteTypee[] {
        jeu 14) : un port connu, rien d'autre ; entre parenthèses, seulement derrière UN mot (« IJsselkwak (Kampen) »), parce
        que derrière une raison sociale la ville entre parenthèses est une filiale (« Quarnby Logistics (Shanghai) », jeu 11) */
     p = p.replace(/\s*(?:,|\s[-\u2013]\s)\s*([\p{L}' -]{3,25}?)\s*$/u, (m, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? "" : m));
-    p = p.replace(/^((?:(?:mv|mt|ms|msv|fv|tb|tug|barge|mts|tms|gms|m\.v\.|m\.t\.|m\/v|m\/t|m\/s|ferry|pctc)\s+\S+(?:\s+\S+)?|\S+))\s+\(([\p{L}' -]{3,25})\)\s*$/iu, (m, seul: string, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? seul : m));
+    /* jeu 21 : derrière un navire NUMÉROTÉ aussi (« KOLKHETI FEEDER 6 (Poti) », « GALIM SHUTTLE 3 (Ashdod) ») : le numéro de flotte est un signe de navire */
+    p = p.replace(/^((?:(?:mv|mt|ms|msv|fv|tb|tug|barge|mts|tms|gms|m\.v\.|m\.t\.|m\/v|m\/t|m\/s|ferry|pctc)\s+\S+(?:\s+\S+)?|[\p{L}'-]+(?:\s+[\p{L}'-]+){0,2}\s+\d{1,3}|\S+))\s+\(([\p{L}' -]{3,25})\)\s*$/iu, (m, seul: string, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? seul : m));
+    /* jeu 21 : le port NU derrière un navire PRÉFIXÉ de deux mots, en toute casse (« MV ZOHAR BAY Ashdod », « M/V EUXINE PORTER Batumi ») : le préfixe est le signe */
+    p = p.replace(/^((?:mv|mt|ms|msv|fv|tb|tug|barge|mts|tms|gms|m\.v\.|m\.t\.|m\/v|m\/t|m\/s|ferry|pctc)\s+[\p{L}'-]+\s+[\p{L}'-]+)\s+([\p{L}' -]{3,25}?)\s*$/iu, (m, tete: string, ville: string) => (PORTS_ET_QUARTIERS.has(normaliser(ville)) ? tete : m));
     /* le port d'attache derrière un nom de navire NU de deux ou trois mots, entre parenthèses ou nu (« Shirane Glory (Kobe) », « TAKANAMI STAR
        ULSAN », « EUNPA HO BUSAN », jeu 19) : aucun des mots n'est une forme ni un mot du commerce, sinon c'est une société et sa ville
        (« Quarnby Logistics (Shanghai) » reste une filiale) */
