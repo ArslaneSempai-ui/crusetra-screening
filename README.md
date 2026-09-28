@@ -57,7 +57,7 @@ reports are verified against the same public key, [`cle-publique.pem`](cle-publi
 with `npm run verify`.
 
 <!-- figures:tests -->
-**399 tests** across 46 files, counted from the sources rather than typed here.
+**401 tests** across 47 files, counted from the sources rather than typed here.
 <!-- /figures:tests -->
 
 ## Licence

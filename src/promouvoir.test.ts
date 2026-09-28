@@ -6,7 +6,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { aujourdhui, fichierDuJeu, insererChemin, ligneDuJuge, nombreEnLettres, phraseDuJuge, provenancePromue, type Juge } from "./promouvoir.ts";
+import { aujourdhui, fichierDuJeu, insererChemin, ligneDuJuge, nombreEnLettres, phraseDuJuge, prochainNumero, provenancePromue, type Juge } from "./promouvoir.ts";
 
 const REGISTRE = [
   "| date | method (entites / cribler) | held-out set (sha256) | pairs | strong level | found | false alerts |",
@@ -74,6 +74,11 @@ test("promouvoir : la ligne s'insère après celle du jeu N, une seule fois, et 
   assert.throws(() => insererChemin(source, 1), /already lists paires-entites-2.json/);
   assert.throws(() => insererChemin(source, 7), /no line for paires-entites-7.json/);
   assert.deepEqual([fichierDuJeu(1), fichierDuJeu(16)], ["paires-entites.json", "paires-entites-16.json"]);
+  /* le prochain numéro d'apprentissage est le dernier listé plus un : le jeu aveugle 21 devient le jeu d'apprentissage 21 */
+  assert.equal(prochainNumero(source), 3);
+  assert.equal(prochainNumero(readFileSync(new URL("./entites.ts", import.meta.url), "utf8")), 21);
+  const j21 = ligneDuJuge(REGISTRE, 15) as Juge;
+  assert.ok(phraseDuJuge(21, j21, "2026-09-28", { paires: 0, noms: 0 }, 21).includes("promoted to training set 21 on 2026-09-28"));
 });
 
 test("promouvoir : les nombres en lettres jusqu'à vingt, la date locale", () => {

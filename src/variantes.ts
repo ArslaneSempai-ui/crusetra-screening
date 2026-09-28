@@ -29,7 +29,7 @@ import { pliCantonais } from "./mots.ts";
 import { lemme } from "./mots.ts";
 import { plier } from "./preparation.ts";
 
-const ANNONCES = /[\s,;]*(?:\b(?:a[./]?\s?k[./]?\s?a\.?|f[./]?\s?k[./]?\s?a\.?|formerly(?:\s+known\s+as|\s+called)?|gi[aà](?=\s)|trasformata\s+(?:da|in)|già\s+denominata|gia\s+denominata|also\s+known\s+as|previously\s+(?:known\s+as|called)|now\s+trading\s+as|d[./]?\s?b[./]?\s?a\.?|doing\s+business\s+as|t\/a|trading\s+as|now\s+known\s+as|n\.?k\.?a\.?|antes|anciennement|vormals|ehemals|voorheen|anteriormente|dawniej)(?=[\s:,])|(?<=\p{L}[\s,]*)\bex[-.\s]+(?=\p{L})|(?<![\p{L}])(?:δ\.?\s?τ\.?|διακριτικ[οό]ς\s+τ[ίι]τλος)(?=[\s:,«"]))\s*:?\s*/giu;
+const ANNONCES = /[\s,;]*(?:\b(?:a[./]?\s?k[./]?\s?a\.?|f[./]?\s?k[./]?\s?a\.?|formerly(?:\s+known\s+as|\s+called)?|gi[aà](?=\s)|trasformata\s+(?:da|in)|già\s+denominata|gia\s+denominata|also\s+known\s+as|previously\s+(?:known\s+as|called)|now\s+trading\s+as|d[./]?\s?b[./]?\s?a\.?|doing\s+business\s+as|t\/a|trading\s+as|o\/a|operating\s+as|now\s+known\s+as|n\.?k\.?a\.?|antes|anciennement|vormals|ehemals|voorheen|anteriormente|dawniej)(?=[\s:,])|(?<=\p{L}[\s,]*)\bex[-.\s]+(?=\p{L})|(?<![\p{L}])(?:δ\.?\s?τ\.?|διακριτικ[οό]ς\s+τ[ίι]τλος)(?=[\s:,«"]))\s*:?\s*/giu;
 /** La même annonce, capturée : `split` rend alors les parties ET l'annonce qui les sépare, pour savoir
  *  laquelle est le nom actuel (voir `variantesTypees`). */
 const ANNONCES_CAPTUREE = new RegExp(`(${ANNONCES.source})`, ANNONCES.flags);
@@ -47,6 +47,12 @@ const PREFIXES: readonly RegExp[] = [
   /* l'étiquette d'un champ SWIFT collée au nom : « :50:BALOGUN VENTURES », « :59A:… » (jeu 10) */
   /^\s*:?\d{2}[a-z]?:\s*(?:\/(?:[a-z]{2,4}\s*)?[a-z0-9]{4,34}\s+)?/iu,
   /* « REF FT2231-0915 /BNF/ », « /NAME/ », « 1/ » du champ 50F structuré (jeu 12) */
+  /* jeu 20 (Houston + Toronto) : l'étiquette Fedwire « {5000}D 0447120933 », le champ 59 avec son compte « /59/ /CA7788001122 »,
+     « ORIG: », « REF PO 88213 » devant le nom */
+  /^\s*\{\d{4}\}[a-z]?\s*\d{6,}\s+/iu,
+  /^\s*\/5[09][a-z]?\/\s*\/?[a-z]{0,2}\d{6,}\s+/iu,
+  /^\s*orig(?:inator)?\s*:\s*/iu,
+  /^\s*ref\.?\s*(?:po|inv|so|order)\s*#?\s*\d{3,}\s+/iu,
   /^\s*ref\.?\s*[a-z0-9\-/]{4,}\s+(?:\/(?:bnf|ben|beneficiary)\/\s*)?/iu,
   /^\s*\/name\/\s*/iu,
   /^\s*1\/\s*/u,
@@ -111,7 +117,7 @@ const ANNOTATIONS: readonly RegExp[] = [
      « -BENEF », « -ACCT BENEF » ; et derrière un navire, son indicatif « CS:5NCT7 » et son
      immatriculation de pêche « (GHA-1893) » ; derrière une société, son numéro de registre
      « (RC 884213) », « (Reg. No. 2014/117230/07) », « (HRB 33871, Amtsgericht Köln) », « (KvK 05234871) » */
-  /\s+(?:ref(?:erence)?\.?|a\/c|acct\.?|account\s+no\.?)\s*:?\s*(?=[a-z0-9\-/]*\d)[a-z0-9\-/]{3,}\s*$/iu,
+  /[\s/]+(?:ref(?:erence)?\.?|a\/c|acct\.?|account\s+no\.?)\s*:?\s*(?=[a-z0-9\-/]*\d)[a-z0-9\-/]{3,}\s*$/iu,
   /\s*[-\u2013]\s*(?:acct\s+)?(?:benef(?:iciary)?|applicant|remitter|ordering\s+cust(?:omer)?|drawee|drawer|payee)\s*$/iu,
   /\s+(?:cs|c\/s|call\s*sign)\s*:?\s*[a-z0-9]{4,7}\s*$/iu,
   /\s*\(\s*[a-z]{2,3}-?\d{2,6}\s*\)\s*$/iu,
@@ -298,7 +304,12 @@ const PORTS_ET_QUARTIERS: ReadonlySet<string> = new Set(["bandar", "kota", "jebe
   "shanghai", "ningbo", "qingdao", "tianjin", "shenzhen", "guangzhou", "xiamen", "dalian", "fangcheng", "hongkong", "kaohsiung",
   "busan", "incheon", "tokyo", "yokohama", "kobe", "osaka", "rotterdam", "antwerp", "antwerpen", "hamburg", "bremen", "bremerhaven",
   "felixstowe", "southampton", "havre", "marseille", "genoa", "genova", "piraeus", "istanbul", "izmir", "mersin", "alexandria",
-  "lagos", "apapa", "tema", "abidjan", "mombasa", "durban", "santos", "houston", "newark", "savannah", "vancouver"]);
+  "lagos", "apapa", "tema", "abidjan", "mombasa", "durban", "santos", "houston", "newark", "savannah", "vancouver",
+  /* les Grands Lacs, le golfe du Mexique et le Québec (jeu 20) : des noms de villes qui ne sont pas des mots de nom */
+  "goderich", "wilmington", "montreal", "laval", "boucherville", "toronto", "thunder bay", "galveston", "corpus christi", "new orleans",
+  "baton rouge", "beaumont", "jacksonville", "baltimore", "philadelphia", "tacoma", "oakland", "duluth", "cleveland", "detroit",
+  "milwaukee", "sarnia", "sault ste marie", "prince rupert", "mississauga", "brampton", "saskatoon", "winnipeg", "halifax", "seattle",
+  "chicago", "boston", "miami", "tampa", "charleston", "norfolk", "st hyacinthe"]);
 /** Les codes pays à deux lettres qu'un export colle derrière la ville. */
 const CODES_PAYS: ReadonlySet<string> = new Set(["fi", "se", "no", "dk", "ee", "lv", "lt", "pl", "de", "nl", "be", "fr", "es", "it", "pt", "ro",
   "bg", "gr", "tr", "ua", "ru", "ge", "us", "uk", "gb", "ie", "ch", "at", "cz", "sk", "hu", "sg", "my", "id", "th", "vn", "cn", "hk", "jp", "kr",
@@ -381,9 +392,9 @@ const GENERIQUES: ReadonlySet<string> = new Set([...TRADUCTIONS.values()].flatMa
  *  contre & Co. KG, mesuré le 29/09). */
 const FORMES_A_CASSE: ReadonlySet<string> = new Set(["gmbh", "mbh", "kgaa", "gesmbh", "ggmbh", "ohg", "ekg", "sprl", "bvba", "cvba", "scrl", "sagl", "plc"]);
 /** Les mots de rue que l'adresse d'un export colle au nom, et les codes d'État ou de province qui suivent une ville. */
-const RUES = ["AVENIDA", "STRASSE", "STREET", "ROUTE", "CALLE", "ROAD", "RUA", "RUE", "ULITSA", "PROSPEKT", "KOCHASI", "UL"];
+const RUES = ["AVENIDA", "STRASSE", "STREET", "ROUTE", "CALLE", "ROAD", "RUA", "RUE", "ULITSA", "PROSPEKT", "KOCHASI", "UL", "BOULEVARD", "BOUL", "BLVD", "RANG", "CHEMIN", "HWY"];
 const CODES_ETATS: ReadonlySet<string> = new Set(["SP", "RJ", "PR", "SC", "RS", "MG", "BA", "PE", "CE", "ES", "GO", "PA", "AM", "MT", "MS",
-  "WA", "NSW", "QLD", "VIC", "SA", "TAS", "NT", "ACT", "ON", "QC", "BC", "AB"]);
+  "WA", "NSW", "QLD", "VIC", "SA", "TAS", "NT", "ACT", "ON", "QC", "BC", "AB", "MB", "SK", "NS", "NB", "TX", "LA", "OH", "MI", "IL", "NY", "NJ", "GA", "FL", "WI", "MN"]);
 /** Un nom en capitales dont le dernier mot porte une ville, un port ou une rue collés : « FRERESABIDJAN » rend « FRERES », « SCHMIDTRUA15 »
  *  rend « SCHMIDT », « TANAKASANTOS SP » rend « TANAKA » ; quatre lettres de nom au moins devant, la ville cinq au moins. */
 export function decollerLAdresse(s: string): string {
