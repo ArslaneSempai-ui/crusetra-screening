@@ -43,6 +43,7 @@ import { hokkienDe } from "./hokkien.ts";
 import { FORMES_KANJI, MOTS_KANJI, KANJI, numeralKanji, romajiNumeral } from "./kanji.ts";
 import { kana } from "./kana.ts";
 import { hanjaDe, teteCoreenne, assimilerCoreen } from "./hanja.ts";
+import { georgien, armenien } from "./caucase.ts";
 
 /** L'écriture dont un mot se compare sur ses consonnes : les deux abjads, et le thaï (voir
  *  `cleAbjad`), dont la lecture écrit des voyelles que le côté latin n'écrit pas pareil. */
@@ -139,16 +140,77 @@ const GENERIQUES_ARABES: ReadonlyMap<string, string> = new Map(Object.entries({
   "ساختمانی": "construction", "خدمات": "services", "پتروشیمی": "petrochemical", "البتروكيماوية": "petrochemical",
   "فولاد": "steel", "نفت": "oil", "توسعه": "development", "التنمية": "development", "أبناء": "sons", "ابناء": "sons",
   "إخوان": "brothers", "اخوان": "brothers", "وشركاه": "", "و": "",
+  /* les marchandises du Golfe que le nom anglais traduit (jeu 21, tour 17) : les articles sanitaires (الأدوات الصحية), les tissus
+     (الأقمشة), les dattes (التمور), les pièces de rechange sous leur préposition (لقطع الغيار, li + قطع الغيار), les denrées
+     (المواد الغذائية : « Foodstuff », le mot des raisons sociales du Golfe, jamais « food materials »), et la ش.م.م d'Oman */
+  "الأدوات الصحية": "sanitary ware", "للأدوات الصحية": "sanitary ware", "أدوات صحية": "sanitary ware", "الصحية": "sanitary", "صحية": "sanitary",
+  "الأدوات": "tools", "أدوات": "tools", "لقطع الغيار": "spare parts", "الأقمشة": "textiles", "أقمشة": "textiles", "للأقمشة": "textiles",
+  "التمور": "dates", "تمور": "dates", "للتمور": "dates", "شمم": "llc", "المواد الغذائية": "foodstuff", "للمواد الغذائية": "foodstuff",
+  "مواد غذائية": "foodstuff", "الحلويات": "sweets", "حلويات": "sweets", "المجوهرات": "jewellery", "مجوهرات": "jewellery", "الذهب والمجوهرات": "gold and jewellery",
 }).map(([k, v]) => [unifierLettres(k), v] as const));
 
-/** Hébreu : la forme (בע״מ, sans ses guillemets), le commerce, la famille. */
+/** LE PERSAN (jeu 21, tour 17) : les marchandises que le nom anglais traduit (پسته pistachio, زعفران saffron, کاشی tile, سرامیک
+ *  ceramic, فرش carpets, خرما dates, نساجی textiles), les qualificatifs (طلایی golden, دستباف handwoven, دارویی medicinal), les métiers.
+ *  À part des mots arabes, et lus MOT ENTIER seulement, sans l'article ni la préposition que `generiqueArabe` ôte : « الزعفران »
+ *  (Bayt Al Zaafaran, une maison d'épices du Golfe) reste un nom, comme son registre anglais l'écrit, et « زعفران » persan est le
+ *  safran de « Kavir Golden Saffron ». Ni کویر (Kavir) ni دشت (Dasht), que l'anglais garde comme des noms. */
+const GENERIQUES_PERSANS: ReadonlyMap<string, string> = new Map(Object.entries({
+  "کاشی": "tile", "سرامیک": "ceramic", "کاشی و سرامیک": "tile ceramic", "پسته": "pistachio", "زعفران": "saffron", "طلایی": "golden",
+  "طلائی": "golden", "فرش": "carpets", "فرش دستباف": "handwoven carpets", "دستباف": "handwoven", "گیاهان دارویی": "medicinal herbs",
+  "گیاهان": "herbs", "دارویی": "medicinal", "داروئی": "medicinal", "خرما": "dates", "خرمای": "dates", "نساجی": "textiles", "صادرات": "export",
+  "واردات": "import", "کشاورزی": "agriculture", "غذایی": "food", "مواد غذایی": "foodstuff", "لبنیات": "dairy", "میوه": "fruit", "خشکبار": "dried fruits",
+  "آجیل": "nuts", "عسل": "honey", "چای": "tea", "برنج": "rice", "روغن": "oil", "قند": "sugar", "شکر": "sugar", "شیرینی": "confectionery",
+  "نان": "bread", "گوشت": "meat", "ماهی": "fish", "میگو": "shrimp", "سنگ": "stone", "سیمان": "cement", "آجر": "brick", "شیشه": "glass",
+  "چرم": "leather", "کفش": "shoes", "پوشاک": "garments", "پارچه": "fabric", "قالی": "carpet", "گلیم": "kilim", "صنایع دستی": "handicrafts",
+  "معدن": "mine", "معدنی": "mineral", "فلز": "metal", "فلزات": "metals", "آهن": "iron", "چوب": "wood", "کاغذ": "paper", "شیمیایی": "chemical",
+  "پلاستیک": "plastic", "بسته بندی": "packaging", "داروسازی": "pharmaceutical", "پزشکی": "medical", "الکترونیک": "electronics", "برق": "electric",
+  "ماشین سازی": "machinery", "لوازم": "equipment", "قطعات": "parts", "خودرو": "automotive", "ساختمان": "building", "خدماتی": "services",
+  "بندر": "port", "کشتی": "ship", "گردشگری": "tourism", "هتل": "hotel", "بیمه": "insurance", "بانک": "bank", "عمران": "construction",
+  "فنی مهندسی": "engineering", "فنی": "technical",
+}).map(([k, v]) => [unifierLettres(k), v] as const));
+
+/** Hébreu : la forme (בע״מ, sans ses guillemets), le commerce, la famille, les marchandises que le nom anglais traduit (jeu 21,
+ *  tour 17 : אריזות packaging, הובלות transport, פלסטיק plastic, חלקים parts, בית בד olive press, פירות ים seafood), et les mots
+ *  anglais écrits en hébreu (אקספרס express, לוגיסטיקה logistics). L'article ה et la conjonction ו collés devant un mot de la
+ *  table se lisent dans `generiqueHebreu` (האחים : brothers, ושיווק : and marketing). Les clés de plusieurs mots avant les mots. */
 const GENERIQUES_HEBREUX: ReadonlyMap<string, string> = new Map(Object.entries({
   "בעמ": "ltd", "חברה": "company", "חברת": "company", "תעשיות": "industries", "תעשייה": "industry", "תעשיה": "industry",
-  "אחים": "brothers", "ובניו": "sons", "ובנו": "sons", "ושות": "", "מסחר": "trading", "סחר": "trade", "שיווק": "marketing",
+  "אחים": "brothers", "ובניו": "sons", "ובנו": "sons", "בניו": "sons", "ושות": "", "מסחר": "trading", "סחר": "trade", "שיווק": "marketing",
+  /* la filiation (בן, « Ben »), écrite en lettres pour prendre le chemin du côté latin, où « ben » devient « bin » (voir FILIATION_M) :
+     lue « bn », elle ne le rejoignait plus (« יצחק בן עמי חשמל » à 0,750 face à « Yitzhak Ben Ami Electric », tour 17) */
+  "בן": "ben", "בת": "bat",
   "ייצור": "production", "יצור": "production", "הנדסה": "engineering", "בנייה": "construction", "בניה": "construction",
-  "השקעות": "investments", "אחזקות": "holdings", "קבוצת": "group", "קבוצה": "group", "בינלאומי": "international",
-  "שירותים": "services", "לוגיסטיקה": "logistics", "ספנות": "shipping", "ימי": "marine", "טכנולוגיות": "technologies",
+  "השקעות": "investments", "אחזקות": "holdings", "קבוצת": "group", "קבוצה": "group", "בינלאומי": "international", "בינלאומית": "international",
+  "שירותים": "services", "לוגיסטיקה": "logistics", "ספנות": "shipping", "ימי": "marine", "טכנולוגיות": "technologies", "טכנולוגיה": "technology",
+  /* les marchandises et les métiers */ "אריזות": "packaging", "אריזה": "packaging", "הובלות": "transport", "הובלה": "transport", "יבוא": "import",
+  "יצוא": "export", "פלסטיק": "plastic", "פלסטיקה": "plastics", "חלקים": "parts", "מדויקים": "precision", "מדוייקים": "precision", "חומרי בניין": "building materials",
+  "חומרי בנין": "building materials", "חומרים": "materials", "עבודות": "works", "עבודות מתכת": "metal works", "אבן": "stone", "חשמל": "electric",
+  "בית בד": "olive press", "תוצרת": "produce", "טרייה": "fresh", "טריה": "fresh", "רפואית": "medical", "רפואי": "medical", "פירות ים": "seafood",
+  "פירות": "fruits", "ירקות": "vegetables", "סוכנויות": "agencies", "סוכנות": "agency", "מזון": "food", "כשר": "kosher", "פתרונות": "solutions",
+  "אקספרס": "express", "מתכת": "metal", "מתכות": "metals", "טקסטיל": "textiles", "מוצרי": "products", "מוצרים": "products", "השקיה": "irrigation",
+  "חקלאות": "agriculture", "חקלאי": "agricultural", "חקלאית": "agricultural", "דלק": "fuel", "אנרגיה": "energy", "בניין": "building", "בנין": "building",
+  "נדלן": "real estate", "ייעוץ": "consulting", "יעוץ": "consulting", "מחשבים": "computers", "תוכנה": "software", "רהיטים": "furniture",
+  "ביטוח": "insurance", "נכסים": "properties", "כללי": "general", "כללית": "general", "מעבדות": "laboratories", "מעבדה": "laboratory",
+  "הפצה": "distribution", "אספקה": "supply", "ציוד": "equipment", "כלים": "tools", "מכונות": "machinery", "רכב": "automotive", "תחבורה": "transport",
+  "מטענים": "cargo", "נמל": "port", "דיג": "fishing", "דגים": "fish", "בשר": "meat", "חלב": "dairy", "מאפיה": "bakery", "יין": "wine", "יינות": "wines",
+  "יקב": "winery", "יקבי": "winery", "שמן": "oil", "זית": "olive", "זיתים": "olives", "פרחים": "flowers", "משתלה": "nursery", "מלון": "hotel",
+  "תיירות": "tourism", "נסיעות": "travel", "בנק": "bank", "אופנה": "fashion", "ביגוד": "clothing", "הלבשה": "clothing", "נעליים": "shoes",
+  "עור": "leather", "זכוכית": "glass", "נייר": "paper", "דפוס": "printing", "גומי": "rubber", "כימיקלים": "chemicals", "תרופות": "pharmaceuticals",
+  "פארמה": "pharma", "קוסמטיקה": "cosmetics", "אלקטרוניקה": "electronics", "תקשורת": "communications", "אבטחה": "security", "ניקיון": "cleaning",
+  "אחזקה": "maintenance", "אדריכלות": "architecture", "קבלנות": "contracting", "קבלן": "contractor", "פיתוח": "development", "עץ": "timber",
+  "מפעלי": "works", "מפעל": "works", "מרכז": "center", "יצרני": "manufacturers", "פיננסים": "finance", "מימון": "finance", "יזמות": "ventures",
 }));
+/** Le mot générique qu'un mot hébreu porte sous son article ה ou sa conjonction ו collés : « האחים » (ha-achim) est
+ *  « brothers », « ושיווק » (ve-shivuk) « and marketing ». Un nom propre n'y passe pas : « הגליל » (HaGalil) reste entier,
+ *  comme le côté latin l'écrit, parce que seul un mot de la table confirme la lecture. */
+function generiqueHebreu(mot: string): string | undefined {
+  const direct = GENERIQUES_HEBREUX.get(mot);
+  if (direct !== undefined) return direct;
+  if (mot.length < 4) return undefined;
+  if (mot.startsWith("ו")) { const g = GENERIQUES_HEBREUX.get(mot.slice(1)); if (g !== undefined) return g === "" ? "and" : `and ${g}`; }
+  if (mot.startsWith("ה")) { const g = GENERIQUES_HEBREUX.get(mot.slice(1)); if (g !== undefined) return g; }
+  return undefined;
+}
 
 /** Sinogrammes, simplifiés et traditionnels : les formes (股份有限公司 avant 有限公司 avant 公司 :
  *  les clés se lisent de la plus longue à la plus courte), le vocabulaire du commerce, et les
@@ -699,12 +761,20 @@ const ARABE: ReadonlyMap<string, string> = new Map(Object.entries({
   "ع": "a", "غ": "gh", "ف": "f", "ق": "q", "ك": "k", "ل": "l", "م": "m", "ن": "n", "ه": "h", "ة": "a", "و": "w", "ي": "y",
   "ى": "a", "پ": "p", "چ": "ch", "ژ": "zh", "گ": "g", "ڤ": "v", "ھ": "h", "ە": "h", "ۀ": "h",
 }));
-/** Hébreu : consonnes seules, les finales avec leur forme ordinaire ; א et ע tombent. */
+/** Hébreu : consonnes seules, les finales avec leur forme ordinaire ; א et ע tombent. Le ח se lit kh, jamais ch : « ch » est aussi
+ *  le צ׳ des noms étrangers (Gurevich), et « יצחק » lu « ytschk » faisait un sch de son ts + ch (tour 17). */
 const HEBREU: ReadonlyMap<string, string> = new Map(Object.entries({
-  "א": "", "ב": "b", "ג": "g", "ד": "d", "ה": "h", "ו": "v", "ז": "z", "ח": "ch", "ט": "t", "י": "y", "כ": "k", "ך": "k",
+  "א": "", "ב": "b", "ג": "g", "ד": "d", "ה": "h", "ו": "v", "ז": "z", "ח": "kh", "ט": "t", "י": "y", "כ": "k", "ך": "kh",
   "ל": "l", "מ": "m", "ם": "m", "נ": "n", "ן": "n", "ס": "s", "ע": "", "פ": "p", "ף": "p", "צ": "ts", "ץ": "ts", "ק": "k",
   "ר": "r", "ש": "sh", "ת": "t",
 }));
+/** Les lettres hébraïques que le geresh (׳, ou l'apostrophe qui le remplace) fait sonner comme une lettre étrangère : ג׳ est j
+ *  (ג׳ורג׳ : George), צ׳ ch (גורביץ׳ : Gurevich, רבינוביץ׳ : Rabinovich), ז׳ zh (ז׳אק : Jacques), ת׳ th, ד׳ dh, ח׳ et כ׳ kh (ח׳ורי :
+ *  Khoury, le خ arabe), ו׳ w. */
+const GERESH_HEBREU: ReadonlyMap<string, string> = new Map(Object.entries({
+  "ג": "j", "צ": "ch", "ץ": "ch", "ז": "zh", "ת": "th", "ד": "dh", "ח": "kh", "כ": "kh", "ך": "kh", "ו": "w",
+}));
+const GERESH = /[׳'’]/;
 /** Les chiffres arabes orientaux et persans, en chiffres : un numéro de navire reste un numéro. */
 const CHIFFRES: ReadonlyMap<string, string> = new Map([..."٠١٢٣٤٥٦٧٨٩"].map((c, i) => [c, String(i)] as const)
   .concat([..."۰۱۲۳۴۵۶۷۸۹"].map((c, i) => [c, String(i)] as const)));
@@ -714,7 +784,9 @@ const CHIFFRES: ReadonlyMap<string, string> = new Map([..."٠١٢٣٤٥٦٧٨٩"
 function unifier(nom: string): string {
   return unifierLettres(nom).replace(/[\u064b-\u0652\u0670\u0640\u200c\u200d]/gu, (c) => (c === "\u200c" || c === "\u200d" ? " " : ""))
     .replace(/[۰-۹٠-٩]/gu, (c) => CHIFFRES.get(c) ?? c)
-    .replace(/(?<=[\u0590-\u05ff])[׳״'"’](?=[\u0590-\u05ff])/gu, "")
+    .replace(/(?<=[\u0590-\u05ff])[״"](?=[\u0590-\u05ff])/gu, "")
+    /* le geresh reste derrière une lettre dont il fait un digramme (voir GERESH_HEBREU) ; ailleurs il tombe (« בע'מ ») */
+    .replace(/(?<=[\u0590-\u05ff])(?<![גזצץתדחכךו])[׳'’](?=[\u0590-\u05ff])/gu, "")
     .replace(/(?<![\p{L}])[\u0600-\u06ff](?:\.\s?[\u0600-\u06ff](?![\p{L}]))+\.?/gu, (m) => m.replace(/[.\s]/g, ""));
 }
 
@@ -776,9 +848,12 @@ function generiqueArabe(mot: string): string | undefined {
   return undefined;
 }
 
+const CLES_PERSANES = alternative(GENERIQUES_PERSANS);
 function arabe(nom: string): string {
   return unifier(nom)
-    /* les clés de plusieurs mots d'abord (« حمل و نقل », « قطع الغيار ») : un mot seul les couperait */
+    /* les mots persans d'abord, entiers (voir GENERIQUES_PERSANS), puis les clés arabes de plusieurs mots (« حمل و نقل », « قطع الغيار ») :
+       un mot seul les couperait */
+    .replace(new RegExp(`(?<![\\p{L}])(?:${CLES_PERSANES.source})(?![\\p{L}])`, "gu"), (m) => ` ${GENERIQUES_PERSANS.get(m) ?? m} `)
     .replace(new RegExp(`(?<![\\p{L}])(?:${CLES_ARABES.source})(?![\\p{L}])`, "gu"), (m) => ` ${GENERIQUES_ARABES.get(m) ?? m} `)
     .replace(/[\u0600-\u06ff]+/gu, (mot) => {
       const generique = generiqueArabe(mot);
@@ -787,15 +862,50 @@ function arabe(nom: string): string {
          deviennent un mot : « الذهب » se lit « al dhahab » comme le côté latin l'écrit */
       if (mot.length > 3 && mot.startsWith("ال")) return `al ${motAbjad(mot.slice(2), ARABE, false)}`;
       if (mot.length > 3 && mot.startsWith("لل")) return `lil ${motAbjad(mot.slice(2), ARABE, false)}`;
+      /* le nom théophore soudé (« عبدالرحمن », « عبدالعزيز ») : « abd », « al » et le nom, comme le côté latin le scinde (voir
+         `scinderAbd`, quatre lettres au moins derrière l'article) ; « عبدالله » reste entier, comme « Abdullah » et « Abdulla » */
+      if (mot.length >= 8 && mot.startsWith("عبدال")) return `abd al ${motAbjad(mot.slice(5), ARABE, false)}`;
       return motAbjad(mot, ARABE, false);
     });
 }
 
 const CLES_HEBREUX = alternative(GENERIQUES_HEBREUX);
+/**
+ * Un mot hébreu, lettre à lettre. Le ו est une consonne (v) en tête de mot, devant un autre ו (le premier des deux : שיווק,
+ * shivuk) et devant un י (לויצקי : Levitski, jamais « loitski » ; tour 17) ; ailleurs il est la voyelle o ou u (דוברת : dobrt,
+ * אורות : orot). Le י est une consonne (y) en tête et devant un autre י, la voyelle i ailleurs. Le כ se lit k en tête de mot et kh
+ * ailleurs (ברכה : brakha, comme « Bracha » et « Brakha » l'écrivent), le ך toujours kh. Le ה final est une voyelle et tombe. Une
+ * lettre suivie d'un geresh se lit dans GERESH_HEBREU. Un « h » qui suivrait une lettre avec laquelle il formerait un digramme
+ * (t + ה) est séparé par un a, pour que la lecture des consonnes ne se trompe pas de lettre.
+ */
+function motHebreu(mot: string): string {
+  const lettres = [...mot];
+  let sortie = "";
+  for (let i = 0; i < lettres.length; i++) {
+    const c = lettres[i]!;
+    if (GERESH.test(c)) continue;
+    const geresh = GERESH.test(lettres[i + 1] ?? "");
+    let l = geresh ? GERESH_HEBREU.get(c) ?? HEBREU.get(c) : HEBREU.get(c);
+    if (l === undefined) { sortie += c; continue; }
+    if (!geresh && c === "ו") l = i === 0 || lettres[i + 1] === "ו" || lettres[i + 1] === "י" ? "v" : "o";
+    if (!geresh && c === "י") l = i === 0 || lettres[i + 1] === "י" ? "y" : "i";
+    /* le כ est kh sauf en tête du mot ou de son radical, derrière une lettre de préfixe (ה, ו, ב, ל, מ, ש : הכרמל, ha-Karmel) où l'article
+       le double et le durcit (« HADAR HACARMEL » perdu face à הדר הכרמל, mesuré le 28/09) */
+    if (!geresh && c === "כ" && i > 0 && !(i === 1 && "הובלמש".includes(lettres[0]!))) l = "kh";
+    if (c === "ה" && i === lettres.length - 1 && i > 0) l = "";
+    if (l === "h" && /[tdkszgcp]$/.test(sortie)) l = "ah";
+    sortie += l;
+  }
+  return sortie;
+}
 function hebreu(nom: string): string {
   return unifier(nom)
     .replace(new RegExp(`(?<![\\p{L}])(?:${CLES_HEBREUX.source})(?![\\p{L}])`, "gu"), (m) => ` ${GENERIQUES_HEBREUX.get(m) ?? m} `)
-    .replace(/[\u0590-\u05ff]+/gu, (mot) => motAbjad(mot, HEBREU, true));
+    .replace(/[\u0590-\u05ff]+(?:[׳'’][\u0590-\u05ff]*)*/gu, (mot) => {
+      const generique = generiqueHebreu(mot);
+      if (generique !== undefined) return ` ${generique} `;
+      return motHebreu(mot);
+    });
 }
 
 /**
@@ -812,16 +922,47 @@ function hebreu(nom: string): string {
  * la longueur qui vaut le crédit ; w replié sur b, « Rawabi » et « rwabi » de même (rp).
  */
 export function cleAbjad(mot: string, abjad: Abjad): string {
-  /* arabe et persan : v est و, dj est ج (voie arabe) ; hébreu : v et w sont ב, ch est ח ; thaï : le côté latin
+  return clePleine(mot, abjad).replace(/[aeiou]/g, "").replace(/(.)\1+/g, "$1");
+}
+/** LA CLÉ COURTE d'un mot de moins de trois consonnes (« Ben », « Ami », « Bay », « Tzur », « Yazd », « Khoury », « Haddad » dont le
+ *  double d se replie) : les mêmes consonnes que `cleAbjad`, et les voyelles que l'abjad ÉCRIT (ו et و : o et u, une classe ;
+ *  י et ي : i ; le aw anglais que l'hébreu écrit ו : « Dawn », דון), les autres retirées. Deux consonnes seules se rencontrent
+ *  trop ; deux consonnes et les mêmes voyelles longues sont un mot (tour 17, jeu 21 : « Or Hagalim » passait, « Tzur Amitai
+ *  Logistics » restait à 0,313, « Zohar Bay » à 0,564). Le score et l'index l'emploient ensemble (voir CREDIT_ABJAD). */
+export function cleAbjadVoyelles(mot: string, abjad: Abjad): string {
+  return clePleine(mot, abjad).replace(/(ou|oo|u)/g, "o").replace(/[ae]/g, "").replace(/(.)\1+/g, "$1");
+}
+/** Les consonnes d'un mot ramenées à leurs classes, voyelles encore en place : ce que les deux clés partagent. */
+function clePleine(mot: string, abjad: Abjad): string {
+  if (abjad === "hebreu") return cleHebraique(mot);
+  /* arabe et persan : v est و, dj est ج (voie arabe), x est ks (إكسبرس : Express) ; thaï : le côté latin
      écrit les aspirées avec ou sans h (Kenanga, Khenangka ; Pattaya, Phatthaya), จ s'écrit ch ou j et se lit t
      en finale (Rungroj, Rungrot) : kh, ph, th sont k, p, t, j est ch, et un ch final est t */
-  let m = abjad === "hebreu" ? mot.replace(/[vw]/g, "b").replace(/(?<!s)ch/g, "h")
-    : abjad === "thai" ? mot.replace(/[vw]/g, "b").replace(/kh/g, "k").replace(/ph/g, "p").replace(/th/g, "t").replace(/j/g, "ch").replace(/ch$/, "t")
-    : mot.replace(/v/g, "w").replace(/dj/g, "j");
-  m = m.replace(/(tsch|sch|tch|ch|sh)/g, "X").replace(/kh/g, "h").replace(/zh/g, "j").replace(/(th|dh)/g, "t").replace(/ph/g, "f")
+  let m = abjad === "thai" ? mot.replace(/[vw]/g, "b").replace(/kh/g, "k").replace(/ph/g, "p").replace(/th/g, "t").replace(/j/g, "ch").replace(/ch$/, "t")
+    : mot.replace(/x/g, "ks").replace(/v/g, "w").replace(/dj/g, "j")
+      /* le ه final d'Allah (عبدالله, نصرالله) que l'anglais écrit ou non (« Abdullah », « Abdulla ») : derrière un double l, il tombe
+         des deux côtés (jeu 21, tour 17 : « عبدالله قاسم الزرعوني » face à « Abdulla Qasim Al Zarooni » à 0,714) */
+      .replace(/(?<=ll[aeiou]?)h$/, "");
+  return m.replace(/(tsch|sch|tch|ch|sh)/g, "X").replace(/kh/g, "h").replace(/zh/g, "j").replace(/(th|dh)/g, "t").replace(/ph/g, "f")
     .replace(/gh/g, "k").replace(/ck/g, "k").replace(/(ts|tz|z)/g, "s").replace(/c(?=[ei])/g, "s").replace(/[cq]/g, "k")
-    .replace(/g/g, "k").replace(/b/g, "p").replace(/d/g, "t").replace(abjad === "hebreu" ? /[yj]/g : /y/g, "i");
-  return m.replace(/[aeiou]/g, "").replace(/(.)\1+/g, "$1");
+    .replace(/g/g, "k").replace(/b/g, "p").replace(/d/g, "t").replace(/y/g, "i");
+}
+/**
+ * LA CLÉ HÉBRAÏQUE d'un mot, celle que la lecture de l'écriture (`motHebreu`) et les graphies latines partagent (tour 17,
+ * jeu 21). Les lettres que l'hébreu écrit d'une seule lettre sont une classe : ב, ו et פ (b, v, w, p, f : « Dovrat » et דוברת,
+ * « Ofira » et אופירה) ; ח, כ et ה (ch, kh, h : « Chaim », « Haim » ; « Bracha », « Brakha ») ; צ, ז, ס et ש (ts, tz, z, s, sh :
+ * le שׂ se lit s, « Sorek » et שורק) ; ט et ת (t, th) ; ק, כ et ג (k, q, c, g) ; ד (d) ; י (y, j : une voyelle). Le ch de צ׳
+ * (« Gurevich », « Rabinovitch ») rejoint le ח, parce que la lecture l'écrit ch aussi ; sch et sh sont le ש. Le w après une
+ * voyelle et devant une consonne est la voyelle ו (« Dawn », דון : don ; le aw se lit o, « Brown », בראון), pas un ב. Le x est
+ * ks (« Express », אקספרס). Le y et le j se lisent AVANT que le ג׳ ne compte, parce que « Yosef » et « Josef » sont un même יוסף.
+ * Les voyelles restent en place ici : `cleAbjad` les retire, `cleAbjadVoyelles` garde celles que l'hébreu écrit.
+ */
+function cleHebraique(mot: string): string {
+  return mot.replace(/x/g, "ks").replace(/ph/g, "f").replace(/f/g, "p")
+    .replace(/aw(?![aeiou])/g, "o").replace(/(?<=[aeiou])w(?![aeiou])/g, "").replace(/[vw]/g, "b")
+    .replace(/(tsch|tch|sch|sh|ch|kh)/g, (d) => (d === "sch" || d === "sh" ? "X" : "h"))
+    .replace(/(th|dh)/g, "t").replace(/(ts|tz|z)/g, "s").replace(/c(?=[ei])/g, "s").replace(/[cq]/g, "k").replace(/g/g, "k")
+    .replace(/b/g, "p").replace(/d/g, "t").replace(/[yj]/g, "i").replace(/X/g, "s");
 }
 
 /** La clé d'un mot latin dont la finale « -at » ou « -et » peut être une ta marbuta (ة) lue en
@@ -866,6 +1007,9 @@ export function romaniser(nom: string, lecture: Lecture = "mandarin"): Romanise 
   else if (/[\u4e00-\u9fff]/u.test(t)) t = japonais(t);
   if (/[\u0590-\u05ff]/u.test(t)) t = hebreu(t);
   if (/[\u0600-\u06ff]/u.test(t)) t = arabe(t);
+  /* le géorgien (mkhedruli et mtavruli) et l'arménien, lus dans caucase.ts (tour 17, jeu 21) */
+  if (/[\u10a0-\u10ff\u1c90-\u1cbf]/u.test(t)) t = georgien(t);
+  if (/[\u0530-\u058f]/u.test(t)) t = armenien(t);
   if (/[\u0e00-\u0e7f]/u.test(t)) t = thai(t);
   if (/[\u0b80-\u0bff]/u.test(t)) t = tamoul(t);
   if (DEVANAGARI.test(t)) t = devanagari(t);

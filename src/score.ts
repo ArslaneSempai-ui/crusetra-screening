@@ -13,7 +13,7 @@ import { distanceOsa } from "./matchers/damerau.ts";
 import { preparer } from "./matchers/preparer.ts";
 import { translitterer } from "./matchers/translitteration.ts";
 import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, type Lecture } from "./ecritures.ts";
-import { cleAbjadVLuF } from "./ecritures.ts";
+import { cleAbjadVLuF, cleAbjadVoyelles } from "./ecritures.ts";
 import type { Marques } from "./preparation.ts";
 import type { Frequences } from "./mots.ts";
 import { analyserEntite } from "./preparation.ts";
@@ -575,7 +575,9 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
             || (hispanique && pliEnye(x) === pliEnye(y))
             /* le tamoul et son sanskrit (Lakshmi, லட்சுமி latchumi), sa sonorité non écrite */
             || (tamoul && pliTamoul(x) === pliTamoul(y))
-            || (hebreuOuGrec && (X.squelettes[i]!.replace(/X/g, "h") === Y.squelettes[j]!.replace(/X/g, "h") || pliIndien(x) === pliIndien(y))));
+            /* le ch et le kh d'un même ח (« Bracha », « Brakha »), le h final que le squelette mange après une voyelle et le X qu'il garde
+               (« Tsemakh » : sema, « Tzemach » : semaX ; tour 17, jeu 21) : les deux squelettes, X lu h et ce h final ôté */
+            || (hebreuOuGrec && (squeletteSansChet(X.squelettes[i]!) === squeletteSansChet(Y.squelettes[j]!) || pliIndien(x) === pliIndien(y))));
           if (equivalent) v = Math.max(v, CREDIT_ROMANISATION);
           /* et les mêmes kana valent un squelette égal (voir CREDIT_KANA) */
           if (pliJ) v = Math.max(v, CREDIT_KANA);
@@ -618,7 +620,13 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
             const memes = (kx.length >= 3 && kx === ky) || (abjad === "arabe"
               && ((ky.length >= 3 && cleAbjadSansTa(x) === ky) || (kx.length >= 3 && cleAbjadSansTa(y) === kx)
                 || (ky.length >= 3 && cleAbjadVLuF(x) === ky) || (kx.length >= 3 && cleAbjadVLuF(y) === kx)));
-            if (memes) { equivalent = true; v = Math.max(v, CREDIT_ABJAD); }
+            /* et la CLÉ COURTE d'un mot de moins de trois consonnes (« Ben », « Ami », « Bay », « Tzur », « Khoury », « Yazd »,
+               « Haddad ») : les mêmes consonnes ET les mêmes voyelles longues, celles que l'abjad écrit (voir `cleAbjadVoyelles`),
+               deux lettres au moins (tour 17, jeu 21 : « Tzur Amitai Logistics » restait à 0,313 face à צור אמיתי לוגיסטיקה, ses deux
+               noms de deux consonnes sans crédit) ; l'index range et cherche la même clé (cribler.ts) */
+            const courte = !memes && kx.length >= 1 && kx.length < 3 && kx === ky
+              && cleAbjadVoyelles(x, abjad).length >= 2 && cleAbjadVoyelles(x, abjad) === cleAbjadVoyelles(y, abjad);
+            if (memes || courte) { equivalent = true; v = Math.max(v, CREDIT_ABJAD); }
           }
           /* la voyelle longue ī écrite ee ou i : le même mot au squelette près (« Naseem », « Nasim » ;
              « Waleed », « Walid »), sous les marques arabe et indienne, et il vaut un squelette égal
@@ -1061,6 +1069,11 @@ export function qualificatifSoude(colle: string, radical: string, autres: readon
  * ou un navire (préfixe « M/V ») contre une société (forme juridique). Comme un numéro d'un seul côté, le conflit abaisse (× 0,8), il n'annule pas :
  * un groupe sanctionné ouvre des homonymes ailleurs, et le relecteur doit les voir.
  */
+/** Un squelette sous la marque hébraïque ou grecque : le X (ch, sh) lu h, et le h final d'un mot de quatre lettres au moins ôté,
+ *  parce que `squelette` ôte celui de « -ah » et garde le X de « -ach » (voir `scorePrepares`). */
+function squeletteSansChet(sq: string): string {
+  return sq.replace(/X/g, "h").replace(/(?<=.{3})h$/, "");
+}
 export function marquesEnConflit(a: Marques, b: Marques): boolean {
   if (a.pays.length && b.pays.length && !a.pays.some((p) => b.pays.includes(p))) return true;
   /* « X Pty Ltd » ou « X Sdn Bhd » face à « X Ltd » nu : la société privée et une autre

@@ -702,7 +702,10 @@ export function pliSlave(m: string): string {
   for (const [national, russe] of LIEUX_TURCIQUES) if (r === national || (national.length >= 5 && r.startsWith(national))) { r = russe + r.slice(national.length); break; }
   return r.replace(/dzh/g, "zh").replace(/q/g, "k").replace(/gh/g, "g").replace(/shch/g, "sc").replace(/tsch/g, "c").replace(/sch/g, "s").replace(/tch/g, "c").replace(/zh/g, "z").replace(/sh/g, "s")
     .replace(/ch/g, "c").replace(/ts/g, "c").replace(/kh/g, "h").replace(/x/g, "ks").replace(/w/g, "v")
-    .replace(/[yj]o/g, "e").replace(/[yj]/g, "i").replace(/ie/g, "e").replace(/(.)\1+/g, "$1");
+    .replace(/[yj]o/g, "e").replace(/[yj]/g, "i").replace(/ie/g, "e")
+    /* le -off de la transcription française d'un patronyme en -ов (« Voronoff », « Smirnoff ») : le -ov des documents d'aujourd'hui
+       (jeu 21, tour 17 : « Voronov Industrial Coatings Ltd » face à « Voronoff Industrial Coatings Ltd » à 0,722) */
+    .replace(/off$/, "ov").replace(/(.)\1+/g, "$1");
 }
 /**
  * LA ROMANISATION ALLEMANDE du cyrillique (Duden : ж et ш sch, ч tsch, х ch, ц z, в w, й j ; з s en tête et entre voyelles,
