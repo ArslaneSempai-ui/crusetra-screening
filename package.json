@@ -8,10 +8,11 @@
     "node": ">=24"
   },
   "scripts": {
-    "test": "tsc --noEmit && node src/readme.ts --check && node src/licences.ts --check && node --test src/*.test.ts src/*.test.mjs",
+    "test": "tsc --noEmit && node src/readme.ts --check && node src/licences.ts --check && node src/releve-entites.ts --check && node --test src/*.test.ts src/*.test.mjs",
     "measure:yours": "node src/your-alerts.ts",
     "optimise": "node src/optimise.ts",
     "figures": "node src/readme.ts",
+    "releve-entites": "node src/releve-entites.ts",
     "listes": "node src/listes.ts",
     "measure": "node src/measure.ts",
     "poids": "node src/poids.ts",

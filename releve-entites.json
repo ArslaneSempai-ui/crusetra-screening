@@ -1,0 +1,552 @@
+{
+  "version": 1,
+  "quoi": "the company and vessel name matcher of cascade-screening: the training cells, the realistic verdict every client report cites, the blind verdicts of the rounds and the two thousand-name books, frozen with their date and commit; sealed afterwards with npm run sceller",
+  "date": "2026-09-28",
+  "commit": "d0332ab",
+  "apprentissage": {
+    "jeux": 23,
+    "paires": 4170,
+    "pieges": 4170,
+    "fort": {
+      "seuil": 0.81,
+      "trouves": {
+        "succes": 3812,
+        "n": 4170,
+        "taux": 0.9141486810551559,
+        "bas": 0.9052599129084157,
+        "haut": 0.922275085065633
+      },
+      "fausses": {
+        "succes": 127,
+        "n": 4170,
+        "taux": 0.030455635491606715,
+        "bas": 0.02565670474608747,
+        "haut": 0.036118902646392406
+      }
+    },
+    "possible": {
+      "seuil": 0.8,
+      "trouves": {
+        "succes": 4061,
+        "n": 4170,
+        "taux": 0.9738609112709832,
+        "bas": 0.9685647548905189,
+        "haut": 0.9782847853507782
+      },
+      "fausses": {
+        "succes": 883,
+        "n": 4170,
+        "taux": 0.2117505995203837,
+        "bas": 0.19961847283823225,
+        "haut": 0.2244133351728816
+      }
+    }
+  },
+  "verdictRealiste": {
+    "jeu": 20,
+    "realiste": true,
+    "version": "v21",
+    "sha": "2054c124",
+    "entites": "ffa68382",
+    "cribler": "0f773c96",
+    "ecritures": "11eb0dba",
+    "fort": {
+      "seuil": "0.81",
+      "trouves": {
+        "n": 332,
+        "sur": 400,
+        "bas": 79,
+        "haut": 86
+      },
+      "fausses": {
+        "n": 0,
+        "sur": 200,
+        "bas": 0,
+        "haut": 2
+      }
+    },
+    "possible": {
+      "seuil": "0.80",
+      "trouves": {
+        "n": 355,
+        "sur": 400,
+        "bas": 85,
+        "haut": 91
+      },
+      "fausses": {
+        "n": 0,
+        "sur": 200,
+        "bas": 0,
+        "haut": 2
+      }
+    }
+  },
+  "verdictsAveugles": [
+    {
+      "jeu": 12,
+      "realiste": false,
+      "version": "v14",
+      "sha": "3bc2d0f0",
+      "entites": "3b94f68d",
+      "cribler": "a85e7c3c",
+      "ecritures": "aec60a13",
+      "fort": {
+        "seuil": "0.81",
+        "trouves": {
+          "n": 149,
+          "sur": 200,
+          "bas": 68,
+          "haut": 80
+        },
+        "fausses": {
+          "n": 34,
+          "sur": 200,
+          "bas": 12,
+          "haut": 23
+        }
+      },
+      "possible": {
+        "seuil": "0.80",
+        "trouves": {
+          "n": 187,
+          "sur": 200,
+          "bas": 89,
+          "haut": 96
+        },
+        "fausses": {
+          "n": 72,
+          "sur": 200,
+          "bas": 30,
+          "haut": 43
+        }
+      }
+    },
+    {
+      "jeu": 13,
+      "realiste": false,
+      "version": "v15",
+      "sha": "79a6a291",
+      "entites": "ea838aa2",
+      "cribler": "292e9ddb",
+      "ecritures": "bdd60326",
+      "fort": {
+        "seuil": "0.81",
+        "trouves": {
+          "n": 120,
+          "sur": 200,
+          "bas": 53,
+          "haut": 67
+        },
+        "fausses": {
+          "n": 16,
+          "sur": 200,
+          "bas": 5,
+          "haut": 13
+        }
+      },
+      "possible": {
+        "seuil": "0.80",
+        "trouves": {
+          "n": 155,
+          "sur": 200,
+          "bas": 71,
+          "haut": 83
+        },
+        "fausses": {
+          "n": 59,
+          "sur": 200,
+          "bas": 24,
+          "haut": 36
+        }
+      }
+    },
+    {
+      "jeu": 14,
+      "realiste": false,
+      "version": "v16",
+      "sha": "ee673be7",
+      "entites": "ebbd2990",
+      "cribler": "6ad910de",
+      "ecritures": "bdd60326",
+      "fort": {
+        "seuil": "0.81",
+        "trouves": {
+          "n": 141,
+          "sur": 200,
+          "bas": 64,
+          "haut": 76
+        },
+        "fausses": {
+          "n": 2,
+          "sur": 200,
+          "bas": 0,
+          "haut": 4
+        }
+      },
+      "possible": {
+        "seuil": "0.80",
+        "trouves": {
+          "n": 173,
+          "sur": 200,
+          "bas": 81,
+          "haut": 91
+        },
+        "fausses": {
+          "n": 23,
+          "sur": 200,
+          "bas": 8,
+          "haut": 17
+        }
+      }
+    },
+    {
+      "jeu": 15,
+      "realiste": false,
+      "version": "v17",
+      "sha": "f44d2a17",
+      "entites": "fa808a1c",
+      "cribler": "a91bf0c8",
+      "ecritures": "bdd60326",
+      "fort": {
+        "seuil": "0.81",
+        "trouves": {
+          "n": 171,
+          "sur": 200,
+          "bas": 80,
+          "haut": 90
+        },
+        "fausses": {
+          "n": 8,
+          "sur": 200,
+          "bas": 2,
+          "haut": 8
+        }
+      },
+      "possible": {
+        "seuil": "0.80",
+        "trouves": {
+          "n": 188,
+          "sur": 200,
+          "bas": 90,
+          "haut": 97
+        },
+        "fausses": {
+          "n": 35,
+          "sur": 200,
+          "bas": 13,
+          "haut": 23
+        }
+      }
+    },
+    {
+      "jeu": 16,
+      "realiste": false,
+      "version": "v18",
+      "sha": "482552a9",
+      "entites": "8dd86269",
+      "cribler": "a91bf0c8",
+      "ecritures": "bdd60326",
+      "fort": {
+        "seuil": "0.81",
+        "trouves": {
+          "n": 93,
+          "sur": 200,
+          "bas": 40,
+          "haut": 53
+        },
+        "fausses": {
+          "n": 12,
+          "sur": 200,
+          "bas": 3,
+          "haut": 10
+        }
+      },
+      "possible": {
+        "seuil": "0.80",
+        "trouves": {
+          "n": 132,
+          "sur": 200,
+          "bas": 59,
+          "haut": 72
+        },
+        "fausses": {
+          "n": 38,
+          "sur": 200,
+          "bas": 14,
+          "haut": 25
+        }
+      }
+    },
+    {
+      "jeu": 17,
+      "realiste": false,
+      "version": "v19",
+      "sha": "405f0cdf",
+      "entites": "42bd47ca",
+      "cribler": "66aac8b8",
+      "ecritures": "bdd60326",
+      "fort": {
+        "seuil": "0.81",
+        "trouves": {
+          "n": 169,
+          "sur": 200,
+          "bas": 79,
+          "haut": 89
+        },
+        "fausses": {
+          "n": 28,
+          "sur": 200,
+          "bas": 10,
+          "haut": 19
+        }
+      },
+      "possible": {
+        "seuil": "0.80",
+        "trouves": {
+          "n": 181,
+          "sur": 200,
+          "bas": 86,
+          "haut": 94
+        },
+        "fausses": {
+          "n": 48,
+          "sur": 200,
+          "bas": 19,
+          "haut": 30
+        }
+      }
+    },
+    {
+      "jeu": 18,
+      "realiste": false,
+      "version": "v20",
+      "sha": "2d19fd26",
+      "entites": "7e7a32c7",
+      "cribler": "0f773c96",
+      "ecritures": "bdd60326",
+      "fort": {
+        "seuil": "0.81",
+        "trouves": {
+          "n": 95,
+          "sur": 200,
+          "bas": 41,
+          "haut": 54
+        },
+        "fausses": {
+          "n": 9,
+          "sur": 200,
+          "bas": 2,
+          "haut": 8
+        }
+      },
+      "possible": {
+        "seuil": "0.80",
+        "trouves": {
+          "n": 125,
+          "sur": 200,
+          "bas": 56,
+          "haut": 69
+        },
+        "fausses": {
+          "n": 45,
+          "sur": 200,
+          "bas": 17,
+          "haut": 29
+        }
+      }
+    },
+    {
+      "jeu": 19,
+      "realiste": false,
+      "version": "v21",
+      "sha": "49960aa0",
+      "entites": "ffa68382",
+      "cribler": "0f773c96",
+      "ecritures": "11eb0dba",
+      "fort": {
+        "seuil": "0.81",
+        "trouves": {
+          "n": 160,
+          "sur": 200,
+          "bas": 74,
+          "haut": 85
+        },
+        "fausses": {
+          "n": 10,
+          "sur": 200,
+          "bas": 3,
+          "haut": 9
+        }
+      },
+      "possible": {
+        "seuil": "0.80",
+        "trouves": {
+          "n": 186,
+          "sur": 200,
+          "bas": 89,
+          "haut": 96
+        },
+        "fausses": {
+          "n": 34,
+          "sur": 200,
+          "bas": 12,
+          "haut": 23
+        }
+      }
+    },
+    {
+      "jeu": 21,
+      "realiste": false,
+      "version": "v22",
+      "sha": "a96afb13",
+      "entites": "201d5159",
+      "cribler": "0f773c96",
+      "ecritures": "11eb0dba",
+      "fort": {
+        "seuil": "0.81",
+        "trouves": {
+          "n": 94,
+          "sur": 200,
+          "bas": 40,
+          "haut": 54
+        },
+        "fausses": {
+          "n": 5,
+          "sur": 200,
+          "bas": 1,
+          "haut": 6
+        }
+      },
+      "possible": {
+        "seuil": "0.80",
+        "trouves": {
+          "n": 117,
+          "sur": 200,
+          "bas": 52,
+          "haut": 65
+        },
+        "fausses": {
+          "n": 26,
+          "sur": 200,
+          "bas": 9,
+          "haut": 18
+        }
+      }
+    },
+    {
+      "jeu": 22,
+      "realiste": false,
+      "version": "v23",
+      "sha": "ae024eaa",
+      "entites": "29f57a26",
+      "cribler": "8a0d336c",
+      "ecritures": "26b17532",
+      "fort": {
+        "seuil": "0.81",
+        "trouves": {
+          "n": 87,
+          "sur": 200,
+          "bas": 37,
+          "haut": 50
+        },
+        "fausses": {
+          "n": 7,
+          "sur": 200,
+          "bas": 2,
+          "haut": 7
+        }
+      },
+      "possible": {
+        "seuil": "0.80",
+        "trouves": {
+          "n": 109,
+          "sur": 200,
+          "bas": 48,
+          "haut": 61
+        },
+        "fausses": {
+          "n": 31,
+          "sur": 200,
+          "bas": 11,
+          "haut": 21
+        }
+      }
+    },
+    {
+      "jeu": 23,
+      "realiste": false,
+      "version": "v24",
+      "sha": "34910ccd",
+      "entites": "1e8cbea2",
+      "cribler": "ac3c1b11",
+      "ecritures": "9496c409",
+      "fort": {
+        "seuil": "0.81",
+        "trouves": {
+          "n": 102,
+          "sur": 200,
+          "bas": 44,
+          "haut": 58
+        },
+        "fausses": {
+          "n": 6,
+          "sur": 200,
+          "bas": 1,
+          "haut": 6
+        }
+      },
+      "possible": {
+        "seuil": "0.80",
+        "trouves": {
+          "n": 149,
+          "sur": 200,
+          "bas": 68,
+          "haut": 80
+        },
+        "fausses": {
+          "n": 25,
+          "sur": 200,
+          "bas": 9,
+          "haut": 18
+        }
+      }
+    }
+  ],
+  "livres": [
+    {
+      "fichier": "exemple/contreparties-mille.csv",
+      "sha256": "6bc5d6b290ed041ffa17423d45f3e0ee0163826d38c8c1bcc56a121180eb7963",
+      "releve": "exemple/contreparties-mille.screening.json",
+      "sceau": "ec006d36990b8840",
+      "commit": "5dc1c23",
+      "emisLe": "2026-09-28T01:46:19.802Z",
+      "lignes": 1000,
+      "forts": 2,
+      "possibles": 13,
+      "sansCorrespondance": 985,
+      "aveugle": false,
+      "note": "a Rotterdam forwarder's book; the abbreviation rule of 3eec970 was tightened from its first record, so its figure is not blind"
+    },
+    {
+      "fichier": "exemple/contreparties-mille-2.csv",
+      "sha256": "523054e1772d8016a7dc4ff0d17d0b4376ed363c20b5948da4fdd4032ce5bb75",
+      "releve": "exemple/contreparties-mille-2.screening.json",
+      "sceau": "08589317bf1d213a",
+      "commit": "9e18a1c",
+      "emisLe": "2026-09-28T05:57:51.930Z",
+      "lignes": 1000,
+      "forts": 3,
+      "possibles": 13,
+      "sansCorrespondance": 984,
+      "aveugle": true,
+      "note": "a Hamburg forwarder's book, written after that rule and never read before its single screening on the final matcher"
+    }
+  ],
+  "reserves": [
+    "A candidate is a name to be read by the client's compliance officer, never a match established: every figure here counts candidates, not findings.",
+    "The realistic set is a quarter of ordinary documents of one forwarder, written blind; it is the held-out set every client report cites first, and it was never used to choose a threshold.",
+    "The blind sets are trap populations, one per round; a population whose script the matcher had never read scores 40 to 55 % at the strong level on its round and gains about forty points the round after, so the last set (Polish and Baltic) stands where the unread ones stood.",
+    "The three strong alerts of the blind book are false: one-word river vessel names against a short alias of a listed party; they are the first thing a further round would read."
+  ],
+  "empreinte": "68157020f83b6741"
+}
