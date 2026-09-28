@@ -22,6 +22,8 @@ import { numeroDai } from "./kanji.ts";
 import { pliSlave, clesSlaves } from "./mots.ts";
 import { clesGrecques } from "./mots.ts";
 import { traductionNordique, estFinnois, GENITIFS_FINNOIS } from "./nordique.ts";
+import { estMarqueurGeorgien, TRADUCTIONS_GEORGIENNES, lireLatinGeorgien, estMarqueurArmenien, TRADUCTIONS_ARMENIENNES, plierPatronymeArmenien } from "./caucase.ts";
+import { estMarqueurHebreu, TRADUCTIONS_HEBRAIQUES } from "./hebreu.ts";
 import { GRAPHIES_INDIENNES } from "./indien.ts";
 import { TRADUCTIONS_SWAHILIES } from "./swahili.ts";
 import { estVietnamien, LOCUTIONS_VIETNAMIENNES } from "./vietnamien.ts";
@@ -79,6 +81,7 @@ export const FORMES = new Set([
   /* les zones franches de Dubaï et des Émirats, écrites comme une forme (« Orchid Ridge Commodities DMCC ») */
   "dmcc", "jafza", "dafza", "difc", "dso", "dwc", "rakez", "kizad",
   /* Azerbaïdjan, Liban */ "mmc", "sal",
+  /* Géorgie (შპს romanisé), Israël (בע"מ écrit « baam » dans un clavardage) : tour 17, jeu 21 */ "shps", "baam",
   /* Asie */ "sdn", "bhd", "berhad", "kk", "jusikhoesa", "chusikhoesa", "yuhanhoesa", "tbk",
   /* les sigles japonais de la Gōdō Kaisha (G.K.) et de la Yūgen Kaisha (Y.K.), comme K.K. (jeu 11) */ "gk", "yk",
 ]);
@@ -276,6 +279,25 @@ function traductionsArabesPliees(): ReadonlyMap<string, string> {
   if (!TRADUCTIONS_ARABES_PLIEES) TRADUCTIONS_ARABES_PLIEES = new Map([...TRADUCTIONS_ARABES].map(([k, v]) => [pliGenerique(k), v]));
   return TRADUCTIONS_ARABES_PLIEES;
 }
+/** Les marchandises et les qualificatifs persans que le nom anglais TRADUIT, sous la présomption persane ou arabe seulement (voir
+ *  `traduction`), parce que « Kashi » est aussi Kashgar et Bénarès : le safran (زعفران), la pistache (پسته), le carreau (کاشی), la
+ *  céramique (سرامیک), le doré (طلایی), les dattes (خرما), les fruits secs (خشکبار), le tissage (نساجی), le tapis (فرش), et le « va » (و,
+ *  et). Pas « dasht » (la plaine) : traduit, il sortait du composé « Mehrdasht » (« Sepidar Kavosh Mehrdasht Co. » perdu face à
+ *  « Sepidar Kawosh Mehr Dasht Company », mesuré le 28/09), et « Pesteh Dasht Kerman » face à « Kerman Plain Pistachio » reste au possible.
+ *  Sous les mêmes plis que les mots arabes (« Zaferan », « Zafaran » ; « Talayi », « Talaei »). Pas « Kavir », que l'anglais garde
+ *  (jeu 21, tour 17 : « Zaferan Talayi Kavir Co. » face à « Kavir Golden Saffron Co. » à 0,456, « Pesteh Dasht Kerman Co. » face à
+ *  « Kerman Plain Pistachio Co. » à 0,279). */
+const TRADUCTIONS_PERSANES: ReadonlyMap<string, string> = new Map(Object.entries({
+  zafaran: "saffron", zaferan: "saffron", zafran: "saffron", zaffaran: "saffron", zaferani: "saffron", talayi: "golden", talaei: "golden",
+  talaee: "golden", talai: "golden", pesteh: "pistachio", peste: "pistachio", pesta: "pistachio", kashi: "tile", seramik: "ceramic",
+  khorma: "dates", khurma: "dates", khoshkbar: "dried fruits", khushkbar: "dried fruits", farsh: "carpets", dastbaf: "handwoven", nassaji: "textiles", nasaji: "textiles",
+  giyahan: "herbs", darooi: "medicinal", darouyi: "medicinal", va: "",
+}));
+let TRADUCTIONS_PERSANES_PLIEES: ReadonlyMap<string, string> | undefined;
+function traductionsPersanesPliees(): ReadonlyMap<string, string> {
+  if (!TRADUCTIONS_PERSANES_PLIEES) TRADUCTIONS_PERSANES_PLIEES = new Map([...TRADUCTIONS_PERSANES].map(([k, v]) => [pliGenerique(k), v]));
+  return TRADUCTIONS_PERSANES_PLIEES;
+}
 /** Les mots de métier des raisons sociales japonaises, romanisés, et le lemme anglais que le nom traduit écrit : un
  *  seul par mot (jeu 11, 28/09). Leurs autres graphies ne se listent pas une à une : le pli des deux romanisations et
  *  des voyelles longues (`pliJaponais`) les ramène à la clé (« kougyou », « kogyou » : kogyo ; « syouzi » : shoji ;
@@ -312,9 +334,15 @@ function traductionsCoreennesPliees(): ReadonlyMap<string, string> {
 /** La traduction d'un mot du commerce ; `japonais` : le nom porte une forme ou un mot japonais, et ses mots de métier
  *  se cherchent aussi sous le pli des deux romanisations (« Oomura Kogyou K.K. » : kogyou restait un mot rare orphelin
  *  face à « industry », jeu 11, 28/09 : 0,361). Sans cette marque, « Teko » n'est pas « tekko » et reste un nom. */
-function traduction(j: string, japonais = false, slave = false, grec = false, coreen = false): string | undefined {
+function traduction(j: string, japonais = false, slave = false, grec = false, coreen = false, hebreu = false, georgien = false, armenien = false, persan = false): string | undefined {
   const t = TRADUCTIONS.get(j);
   if (t !== undefined) return t;
+  /* les mots du commerce hébreux, géorgiens, arméniens et persans, sous leur présomption (tour 17, jeu 21 : hebreu.ts, caucase.ts,
+     TRADUCTIONS_PERSANES) : « hovalot » n'est transport que dans un nom hébreu, « kat » lait que dans un nom arménien */
+  if (hebreu) { const h = TRADUCTIONS_HEBRAIQUES.get(j); if (h !== undefined) return h; }
+  if (georgien) { const g = TRADUCTIONS_GEORGIENNES.get(j); if (g !== undefined) return g; }
+  if (armenien) { const a = TRADUCTIONS_ARMENIENNES.get(j); if (a !== undefined) return a; }
+  if (persan) { const p = traductionsPersanesPliees().get(pliGenerique(j)); if (p !== undefined) return p; }
   /* un mot de métier coréen sous l'un ou l'autre système, quand le nom est coréen (voir TRADUCTIONS_COREENNES) */
   if (coreen) { const c = traductionsCoreennesPliees().get(pliCoreen(j)); if (c !== undefined) return c; }
   /* un générique finnois, suédois, danois ou norvégien, seul ou composé de deux (« satamapalvelu », « hamntjänst » : port
@@ -448,6 +476,9 @@ export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   tahil: "grain", zahire: "grain", hurda: "scrap", depolama: "storage", gemi: "ship", kiralama: "chartering", kurtarma: "salvage",
   liman: "port", deniz: "marine", demir: "iron", bakir: "copper", pamuk: "cotton", findik: "hazelnut", tutun: "tobacco",
   seker: "sugar", tuz: "salt", kagit: "paper", mobilya: "furniture", boya: "paint", plastik: "plastic", ambalaj: "packaging",
+  /* les mots anglais que le turc, le géorgien, l'arménien et le russe écrivent par le son (tour 17, jeu 21 : « grigolia kargo » face à
+     « Grigolia Cargo », « tevosyan agro treyd » face à « Tevosyan Agro Trade ») : une graphie qui n'est rien d'autre */
+  kargo: "cargo", treyd: "trade", ekspres: "express", ekspress: "express", seramik: "ceramic",
   /* scandinave */ rederi: "shipping", brodre: "brothers", broder: "brothers", handelsbolag: "trading",
   /* malais et indonésien (jeu 9 : « Kilang Beras » est « Rice Mill », « Syarikat Getah » est « Rubber Company ») */
   kilang: "mill", pabrik: "mill", beras: "rice", padi: "paddy", getah: "rubber", sawit: "palm", minyak: "oil",
@@ -1061,6 +1092,7 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["BR", "CO", "CL", "PT"], ["ltda", "limitada", "sociedade limitada"]);
   poser(["PT", "AO", "MZ", "CV"], ["lda"]);
   poser(["BR"], ["eireli", "empresa individual de responsabilidade limitada"]);
+  poser(["GE"], ["shps"]);
   poser(["RU", "BY", "KZ", "UZ", "UA", "KG", "TJ", "AM", "AZ", "GE"], ["oao", "zao", "pao", "ao", "jsc", "pjsc", "ojsc", "cjsc",
     "publichnoe aktsionernoe obshchestvo", "zakrytoe aktsionernoe obshchestvo", "otkrytoe aktsionernoe obshchestvo", "aktsionernoe obshchestvo"]);
   /* l'OOO n'existe pas au Kazakhstan, dont la société à responsabilité limitée est le TOO (товарищество, ЖШС), et le TOO n'existe
@@ -1133,6 +1165,8 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
 const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   const t = new Map<string, string[]>();
   const poser = (familles: string[], formes: string[]) => { for (const f of formes) t.set(f, [...(t.get(f) ?? []), ...familles]); };
+  /* la შპს géorgienne s'écrit LLC ou Ltd selon le traducteur, comme OOO ; la בע"מ est une Ltd */
+  poser(["ltd", "llc"], ["shps"]); poser(["ltd"], ["baam"]);
   poser(["ltd"], ["ltd", "limited", "ltee", "limitee", "pvt", "pte", "pty", "sdn", "sendirian", "sendirian berhad", "private limited",
     "proprietary limited", "private ltd", "pvt limited", "youxian gongsi", "youxian zeren gongsi", "siren youxian gongsi", "borisat chamkat", "borisat jamkat", "chamkat", "jamkat"]);
   poser(["ltd", "corp"], ["bhd", "berhad", "kk", "kabushiki kaisha", "kabushikigaisha", "kabushiki gaisha", "jusikhoesa", "chusikhoesa",
@@ -1333,7 +1367,12 @@ const MARQUEURS_PERSANS = new Set(["sanat", "sanaat", "sanati", "sanaye", "sanay
   "kashan", "kashani", "qom", "qomi", "yazd", "yazdi", "kerman", "kermani", "kermanshah", "ahvaz", "ahwaz", "rasht", "rashti",
   "zanjan", "hamedan", "hamadan", "hamedani", "ardabil", "qazvin", "qazvini", "semnan", "urmia", "bushehr", "chabahar", "anzali",
   "gilan", "gilani", "mazandaran", "khorasan", "khorasani", "khuzestan", "hormozgan", "tabrizi", "shirazi", "tehrani", "isfahani",
-  "esfahani", "mashhadi"]);
+  "esfahani", "mashhadi",
+  /* les marchandises que seul le persan nomme ainsi (voir TRADUCTIONS_PERSANES) et le désert de Kavir : la seule trace du persan dans
+     « Zaferan Talayi Kavir Co. » (jeu 21, tour 17). Ni « kashi » (Kashgar, Bénarès), ni « peste » (le fléau, en français et en italien),
+     ni le safran (زعفران est aussi l'arabe : « Bayt Al Zaafaran », une maison d'épices du Golfe, garde son nom) : ils ne se traduisent
+     que sous un autre marqueur */
+  "pesteh", "kavir", "dasht", "talayi", "talaei", "talaee", "khorma", "khurma", "khoshkbar"]);
 const MARQUEURS_COREENS = new Set(["tongsang", "sanop", "sanup", "muyeok", "muyok", "jeongmil", "jungmil", "jeonja", "junja", "hwahak",
   "junggongeop", "chunggongop", "chunggongeop",
   "mulryu", "haeun", "gaebal", "hanguk", "hankook", "hankuk", "korea", "korean", "daehan", "seoul", "busan", "pusan", "incheon", "inchon",
@@ -1692,6 +1731,17 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      `hebreuOuGrec` en vit (jeu 17, tour 13 : « Ntoumas Stevedoring I.K.E. » n'avait que sa forme pour dire le grec) */
   const grecPresume = /[\u0370-\u03ff]/.test(nom) || greeklish.lu
     || jetons(normaliser(plier(soude))).some((j) => FORMES_GRECQUES.has(j) || estMarqueurGrec(j));
+  /* le nom est hébreu par son écriture, un mot du commerce translittéré, un prénom ou le tz initial (hebreu.ts) ; géorgien par son
+     écriture, un toponyme, la forme ou un patronyme en -dze ou -shvili ; arménien par son écriture, un toponyme ou un patronyme en -yan
+     (caucase.ts) ; persan par l'écriture arabe, un marqueur, ou le -pour des patronymes iraniens (« Nikpour », « Sadeghpour ») : lus ici,
+     avant les tables, parce que leurs mots du commerce se traduisent sous ces présomptions (voir `traduction` ; tour 17, jeu 21) */
+  const motsPresumes = jetons(normaliser(plier(soude)));
+  const hebreuPresume = /[\u0590-\u05ff]/.test(nom) || motsPresumes.some(estMarqueurHebreu);
+  const georgienPresume = /[\u10a0-\u10ff\u1c90-\u1cbf]/u.test(nom) || motsPresumes.some((j) => estMarqueurGeorgien(j) && lemme(j) === undefined);
+  const armenienPresume = /[\u0530-\u058f]/u.test(nom) || motsPresumes.some((j) => estMarqueurArmenien(j) && lemme(j) === undefined && !PAYS_ADJECTIFS.has(j));
+  /* la présomption persane ne tient pas aux marqueurs arabes : « Bayt Al Zaafaran » garde son safran en nom, comme le Golfe l'écrit */
+  const persanPresume = /\p{Script=Arabic}/u.test(nom)
+    || motsPresumes.some((j) => MARQUEURS_PERSANS.has(j) || (j.length >= 6 && /(pour|poor)$/.test(j) && lemme(j) === undefined));
   /* LE TYPE DU NAVIRE ENTRE PARENTHÈSES en fin de nom (« PRIDONYE-41 (barge) », « (tug) », « (tanker) ») : ce que le
      préfixe dit devant (« barge PRIDONYE 41 »), et non une filiale (jeu 12, 28/09 : 0,667, la parenthèse sans répondant
      et « barge » mot rare orphelin) */
@@ -1722,15 +1772,19 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     .flatMap((m) => {
       let dedans = ` ${jetons(normaliser(plier(m[1]!))).join(" ")} `;
       for (const [de, vers] of LOCUTIONS) dedans = dedans.split(de).join(vers);
-      return dedans.trim().split(/ +/).flatMap((j) => (CIVILITES.has(j) ? "" : ABREVIATIONS.get(j) ?? traduction(j, japonaisPresume, slave, grecPresume, coreenPresume) ?? j).split(" "));
+      return dedans.trim().split(/ +/).flatMap((j) => (CIVILITES.has(j) ? "" : ABREVIATIONS.get(j) ?? traduction(j, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume) ?? j).split(" "));
     })
     .filter((j) => j !== "" && !FORMES.has(j)));
   /* Lettres et chiffres collés se séparent : « No18 » → « No 18 », « LANQIAOFENG16 » →
      « LANQIAOFENG 16 » ; le numéro d'un navire devient un jeton que la règle des numéros lit. */
   /* une forme ÉPELÉE avec des espaces (« S A S », « S de R L », « S A de C V », jeu 11) : les lettres seules qui se
      suivent se soudent, comme le font déjà les points (« S.A.S. ») ; « J P Morgan » devient « JP Morgan », rien de plus */
+  const latinEcrit = /\p{Script=Latin}/u.test(nom);
   const brut = jetons(jetons(normaliser(soude).replace(/\b\p{L}(?: \p{L})+\b/gu, (m) => m.replace(/ /g, ""))).map(ocr).join(" ")
-    .replace(/(\p{L})(\d)/gu, "$1 $2").replace(/(\d)(\p{L})/gu, "$1 $2")).map(digrammeOptique).map(lInitialLuPourI).map(motDuMetierPerdu)
+    .replace(/(\p{L})(\d)/gu, "$1 $2").replace(/(\d)(\p{L})/gu, "$1 $2")).map(digrammeOptique)
+    /* un nom sans aucune lettre latine n'a pas été lu par l'optique : le « lv » d'une lecture de l'hébreu (לויצקי, Levitski) reste un l
+       (tour 17, jeu 21 : « lvitski » devenait « ivitski ») */
+    .map((j) => (latinEcrit ? lInitialLuPourI(j) : j)).map(motDuMetierPerdu)
     .flatMap((j) => (japonaisPresume ? couperMetierJaponais(j) : couperMetierCoreen(j, coreenPresume)));
   const joints = brut;
   /* « No. », « Nr. », « Number » devant un numéro ne sont que le mot « numéro ». */
@@ -1811,7 +1865,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      « Ebrahim Alhosani Establishment », « Toufic Haddad Est. », sans article ni prénom marqueur). « Est » sans son point reste l'est */
   const etablissementDuGolfe = separes.some((j) => j === "establishment" || j === "establishments" || (j === "est" && abreges.has(j)));
   /* et un nom théophore, collé ou non (« Abdelkarim », « Abdurrahman » : voir `scinderAbd`), est arabe par lui-même */
-  const arabePresume = /\p{Script=Arabic}/u.test(nom) || etablissementDuGolfe
+  const arabePresume = /\p{Script=Arabic}/u.test(nom) || etablissementDuGolfe || persanPresume
     || separes.some((j) => MARQUEURS_ARABES.has(j) || MARQUEURS_PERSANS.has(j) || (scinderAbd(j) !== undefined && !connu(j)));
   /* la forme malaise (Sdn. Bhd.) : la filiation s'y abrège aussi (« B. », « Bt. ») */
   const malaisPresume = separes.some((j) => j === "sdn" || j === "bhd" || j === "berhad");
@@ -1841,7 +1895,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
        Quatre lettres au moins derrière l'article, et jamais un mot que le dictionnaire, les formes ou les tables connaissent
        (Alliance, Alpine, Alhandasiya) */
     if (arabePresume && j.length >= 6 && j.startsWith("al") && !connu(j) && !MARQUEURS_ARABES.has(j) && !MARQUEURS_PERSANS.has(j)) {
-      const reste = j.slice(2), t = traduction(reste, japonaisPresume, slave, grecPresume, coreenPresume);
+      const reste = j.slice(2), t = traduction(reste, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume);
       if (t === undefined) return ["al", reste];
       for (const m of t.split(" ")) if (m !== "") { traduits.add(m); if (!sources.has(m)) sources.set(m, reste); }
       return ["al", ...t.split(" ").filter((m) => m !== "")];
@@ -1863,20 +1917,28 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
       && separes[i - 1]!.length >= 3 && separes[i + 1]!.length >= 3 && !FORMES.has(separes[i - 1]!) && !FORMES.has(separes[i + 1]!)) {
       return [j === "b" ? "bin" : "bint"];
     }
+    /* LE PATRONYME ARMÉNIEN sous une seule graphie (« Hakobyan », « Akopyan » ; « Djanoyan », « Dzhanoyan » ; « Caturyan », « Tsaturyan » ;
+       « Khachatrian », « Khachatryan » ; « Hovhannisyan », « Oganesyan » : voir `plierPatronymeArmenien`), sous la présomption arménienne,
+       sur un mot en -yan ou -ian que le dictionnaire ignore (jeu 21, tour 17 : six paires entre 0,433 et 0,800) */
+    if (armenienPresume && j.length >= 6 && /(yan|ian)$/.test(j) && !connu(j)) return [plierPatronymeArmenien(j)];
+    /* LE LATIN ANCIEN DU GÉORGIEN (« Mcxeta » : Mtskheta : voir `lireLatinGeorgien`), sous la présomption géorgienne, sur un mot que le
+       dictionnaire ignore et qui porte le « cx » qu'aucune autre orthographe latine n'écrit : le x seul est aussi celui d'« Euxine »
+       (mesuré : « M/V EUXINE PORTER Batumi » lu « eukhine » sous le toponyme, 0,571 face à « EUXINE PORTER ») */
+    if (georgienPresume && !connu(j) && /cx/.test(j)) return [lireLatinGeorgien(j)];
     const a = ABREVIATIONS.get(j);
     /* une abréviation développée se traduit comme le mot entier : « Tic. » est ticaret, donc trading (jeu 13, 28/09 :
        « Tasimaciligi Tic. AS » à 0,704 face à « Ticaret A.Ş. », l'un traduit et l'autre non) */
     if (a !== undefined) return a.split(" ").flatMap((m) => {
-      const t = m === "" ? undefined : traduction(m, japonaisPresume, slave, grecPresume, coreenPresume);
+      const t = m === "" ? undefined : traduction(m, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume);
       if (t === undefined) return [m];
       for (const x of t.split(" ")) if (x !== "") { traduits.add(x); if (!sources.has(x)) sources.set(x, j); }
       return t.split(" ");
     });
     const p = PAYS_ADJECTIFS.get(j);
     if (p !== undefined) return [p];
-    let t = traduction(j, japonaisPresume, slave, grecPresume, coreenPresume);
+    let t = traduction(j, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume);
     /* « Comercioo de Graos » (jeu 16) : la lettre doublée d'un mot de métier que les tables connaissent sans elle */
-    if (t === undefined && /(\p{L})\1/u.test(j) && lemme(j) === undefined) { const d = j.replace(/(\p{L})\1/gu, "$1"); t = d === j ? undefined : traduction(d, japonaisPresume, slave, grecPresume, coreenPresume); }
+    if (t === undefined && /(\p{L})\1/u.test(j) && lemme(j) === undefined) { const d = j.replace(/(\p{L})\1/gu, "$1"); t = d === j ? undefined : traduction(d, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume); }
     if (t === undefined) return [j];
     for (const m of t.split(" ")) if (m !== "") { traduits.add(m); if (!sources.has(m)) sources.set(m, j); }
     return t.split(" ");
@@ -1933,6 +1995,10 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     if (priveDesMots && (j === "co" || j === "company")) designations.add("co");
     return false;
   });
+  /* la შპს géorgienne et la ՍՊԸ arménienne s'écrivent LLC ou Ltd selon qui traduit le registre (jeu 21, tour 17 : « Khachatryan and
+     Sons LLC » face à « Khachatrian and Sons Ltd », « Chanturia Trans LLC » face à « Tchanturia Trans Ltd », plafonnées par des
+     familles disjointes) : sous la présomption géorgienne ou arménienne, l'une porte les deux familles, comme « OOO » les porte */
+  if ((georgienPresume || armenienPresume) && (familles.has("llc") || familles.has("ltd"))) { familles.add("llc"); familles.add("ltd"); }
   /* un sigle en tête fait des initiales des mots qui suivent (« IMZ Industrias Metalicas
      Zacoalco ») : il ne dit rien de plus qu'eux, il s'ôte */
   if (t.length >= 3 && t[0]!.length >= 2 && t[0]!.length <= 6 && t[0] === t.slice(1, 1 + t[0]!.length).map((m) => m[0]).join("")) t = t.slice(1);
@@ -1989,7 +2055,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      avant le retrait des civilités (« Shree ») */
   const tousLesMots = [...articles, ...mots];
   /* et un mot lu en arabizi est la trace d'un nom arabe, marqueur ou pas (« mo7ammed trading ») */
-  const arabe = /[\u0600-\u06ff]/.test(nom) || etablissementDuGolfe || arabizi.lu || tousLesMots.some((j) => MARQUEURS_ARABES.has(j) || MARQUEURS_PERSANS.has(j));
+  const arabe = /[\u0600-\u06ff]/.test(nom) || etablissementDuGolfe || arabizi.lu || persanPresume || tousLesMots.some((j) => MARQUEURS_ARABES.has(j) || MARQUEURS_PERSANS.has(j));
   /* un nom écrit en kana ou avec une forme japonaise, en sinogrammes, en hangul, est de cette
      langue avant tout marqueur : ses jetons viennent de `romaniser` (ecritures.ts) */
   const japonais = estJaponais(nom) || tousLesMots.some(estMarqueurJaponais);
@@ -2014,7 +2080,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     const iHo = t.length - 1 - (/^\d+$/.test(t[t.length - 1]!) ? 1 : 0);
     if (iHo >= 1 && t[iHo] === "ho" && (t[iHo - 1]!.length >= 3) && lemme(t[iHo - 1]!) === undefined) navire = true;
   }
-  const hebreuOuGrec = /[\u0370-\u03ff\u0590-\u05ff]/.test(nom) || grecPresume
+  const hebreuOuGrec = /[\u0370-\u03ff\u0590-\u05ff]/.test(nom) || grecPresume || hebreuPresume
     || tousLesMots.some((j) => MARQUEURS_HEBREUX.has(j) || estMarqueurGrec(j));
   const prive = tousLesMots.some((j) => QUALIFICATIFS_PRIVES.has(j)) || privePhrase;
   /* un nom écrit en tamoul est indien : le crédit v, w, b vaut pour lui (வ s'écrit v ou w) */

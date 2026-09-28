@@ -41,7 +41,7 @@ import {
   pliSlave, CREDIT_CYRILLIQUE, clesGrecques, CREDIT_GREC, clePhonetique, homophoneCorrige, squeletteArabe, ARTICLES_ARABES, clesSlaves, pliThai, CREDIT_THAI,
   BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare, type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme, pliEnye,
 } from "./entites.ts";
-import { cleAbjad, cleAbjadSansTa, cleAbjadVLuF, type Abjad } from "./ecritures.ts";
+import { cleAbjad, cleAbjadSansTa, cleAbjadVLuF, cleAbjadVoyelles, type Abjad } from "./ecritures.ts";
 import { distanceOsa } from "./matchers/damerau.ts";
 
 /** Au plus autant de candidats montrés par nom ; le compte des autres est donné. */
@@ -355,6 +355,8 @@ export class Index {
             for (const mode of ["arabe", "hebreu", "thai"] as const) {
               const c = cleAbjad(mot, mode);
               if (c.length >= 3) ranger(this.parCleAbjad, `${mode[0]}|${c}`, m);
+              /* et la clé courte d'un mot de moins de trois consonnes, avec ses voyelles longues (voir cleAbjadVoyelles) */
+              else if (c.length >= 1) { const v = cleAbjadVoyelles(mot, mode); if (v.length >= 2) ranger(this.parCleAbjad, `${mode[0]}|${c}|${v}`, m); }
             }
             /* la ta marbuta : un mot en « -at » se range aussi sous sa clé sans ce t (voir cleAbjadSansTa) */
             const sansTa = cleAbjadSansTa(mot);
@@ -373,6 +375,7 @@ export class Index {
             m.abjadVu += mode[0];
             const c = cleAbjad(mot, mode);
             if (c.length >= 3) ranger(this.parCleAbjadNatif, `${mode[0]}|${c}`, m);
+            else if (c.length >= 1) { const v = cleAbjadVoyelles(mot, mode); if (v.length >= 2) ranger(this.parCleAbjadNatif, `${mode[0]}|${c}|${v}`, m); }
             const sansTa = mode === "arabe" ? cleAbjadSansTa(mot) : undefined;
             if (sansTa !== undefined && sansTa.length >= 3) ranger(this.parCleAbjadNatif, `a|${sansTa}`, m);
             const vLuF = mode === "arabe" ? cleAbjadVLuF(mot) : undefined;
@@ -477,6 +480,8 @@ export class Index {
         const table = abjad !== "" ? this.parCleAbjad : this.parCleAbjadNatif;
         const c = cleAbjad(mot, mode);
         if (c.length >= 3) for (const m of table.get(`${mode[0]}|${c}`) ?? []) retenus.add(m);
+        /* la clé courte, avec ses voyelles longues (voir cleAbjadVoyelles et la clé courte de scorePrepares) */
+        else if (c.length >= 1) { const v = cleAbjadVoyelles(mot, mode); if (v.length >= 2) for (const m of table.get(`${mode[0]}|${c}|${v}`) ?? []) retenus.add(m); }
         /* la ta marbuta, dans les deux sens : le mot demandé en « -at » cherche aussi sous sa clé sans
            ce t, et les mots listés en « -at » sont rangés sous la leur */
         const sansTa = mode === "arabe" ? cleAbjadSansTa(mot) : undefined;
