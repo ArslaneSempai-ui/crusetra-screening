@@ -1,0 +1,2407 @@
+{
+  "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+  "provenance": "blind test set #23, authored on 2026-09-28 by a separate agent (a Gdansk freight forwarder and Riga bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the 23 earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v24 (entites.ts 1e8cbea2…, cribler.ts ac3c1b11…, ecritures.ts 9496c409…): strong 0.81 found 102/200 [44-58 %] with 6/200 false alerts [1-6 %]; possible 0.80 found 149/200 [68-80 %] with 25/200 [9-18 %]. Studied afterwards and promoted to training set 23 on 2026-09-28, so it no longer measures anything held out.",
+  "avertissement": "judge once, aggregates only: reading the pairs before the verdict makes it a training set",
+  "paires": [
+    {
+      "a": "Spedycja Wisłoujście Sp. z o.o. Sp. k.",
+      "b": "Żegluga Wisłoujście Sp. z o.o. Sp. k.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Zakłady Mięsne Wiśniewski Sp. z o.o. S.K.A.",
+      "b": "Zaklady Miesne Wisniewski spolka z ograniczona odpowiedzialnoscia spolka komandytowo-akcyjna",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "Gdańska Stocznia Jachtowa Rybitwa S.A.",
+      "b": "GDANSKA STOCZNIA JACHTOWA RYBITWA SA REGON 221847305",
+      "verdict": "match",
+      "nature": "registry-number-residue"
+    },
+    {
+      "a": "Oliwskie Szkło Artystyczne Sp. z o.o. Oddział w Gdyni",
+      "b": "Oliwskie Szkło Artystyczne Sp. z o.o.",
+      "verdict": "match",
+      "nature": "branch-office"
+    },
+    {
+      "a": "Wiklinex Sp. z o.o.",
+      "b": "Wiklinex Sp. z o.o. Sp. k.",
+      "verdict": "different",
+      "nature": "partnership-vs-general-partner"
+    },
+    {
+      "a": "Nadwiślańskie Kruszywa Sp. z o.o.",
+      "b": "Nadwislanskie Kruszywa",
+      "verdict": "match",
+      "nature": "legal-form-dropped"
+    },
+    {
+      "a": "Nadwiślańskie Kruszywa Sp. z o.o.",
+      "b": "Nadodrzańskie Kruszywa Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "Chłodnia Rybna Szkuner Sp. z o.o.",
+      "b": "Chłodnia Rybna Szkwał Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "Piekarnia Rodzinna Kamińscy Sp. j.",
+      "b": "Cukiernia Rodzinna Kamińscy Sp. j.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Łączyńska Wytwórnia Łodzi Sp. j.",
+      "b": "LACZYNSKA WYTWORNIA LODZI SPOLKA JAWNA",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "Spedycja Wisłoujście Sp. z o.o. Sp. k.",
+      "b": "Spedycja Wisloujscie spolka z ograniczona odpowiedzialnoscia spolka komandytowa",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "Hurtownia Rybna Mewa Nowicki Sp. j.",
+      "b": "HURTOWNIA RYBNA MEWA NOWICKA SP.J.",
+      "verdict": "match",
+      "nature": "gendered-surname"
+    },
+    {
+      "a": "F.H.U. Morski Węzeł Anna Zielińska",
+      "b": "Morski Wezel Anna Zielinska",
+      "verdict": "match",
+      "nature": "trade-prefix-dropped"
+    },
+    {
+      "a": "Chmielewski Logistyka Sp. z o.o.",
+      "b": "Chmielawski Logistyka Sp. z o.o.",
+      "verdict": "match",
+      "nature": "one-letter-typo"
+    },
+    {
+      "a": "Bursztynowa Przystań Sp. z o.o.",
+      "b": "BURSZTYNOWA PRZYSTAN SPOLKA Z OGRANICZONA ODPOWIEDZIALNOSCIA",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "Wojciechowski Agro Sp. j.",
+      "b": "Wojciechowski Auto Sp. j.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Tczewskie Warsztaty Barkowe S.A.",
+      "b": "Tczew Barge Workshops Joint Stock Company",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "Łączyńska Wytwórnia Łodzi Sp. j.",
+      "b": "Łączyńska Wytwórnia Sieci Sp. j.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "PPHU Grabowiec Sp. z o.o.",
+      "b": "Grabowiec Sp. z o.o. Sp. k.",
+      "verdict": "different",
+      "nature": "partnership-vs-general-partner"
+    },
+    {
+      "a": "Gdańska Stocznia Jachtowa Rybitwa S.A.",
+      "b": "Gdyńska Stocznia Jachtowa Rybitwa S.A.",
+      "verdict": "different",
+      "nature": "different-place-one-letter"
+    },
+    {
+      "a": "Kormoran Serwis S.A.",
+      "b": "Kormoran Leasing S.A.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Wydmy Logistyka Sp. z o.o.",
+      "b": "Wydmy Energetyka Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Przeds. Handl. Lipowa Dolina Sp. z o.o.",
+      "b": "Przeds. Handl. Jodłowa Dolina Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "Kaszubskie Kruszywa Sp. z o.o.",
+      "b": "Kaszubskie Kruszywa Sp. z o.o. Sp. k.",
+      "verdict": "different",
+      "nature": "partnership-vs-general-partner"
+    },
+    {
+      "a": "Chłodnia Rybna Szkuner Sp. z o.o.",
+      "b": "Szkuner Fish Cold Store Sp. z o.o.",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "Lewandowski i Wspólnicy Sp. k.",
+      "b": "Lewandowski i Synowie Sp. k.",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "P.P.H.U. Dębowy Liść Tomasz Wróblewski",
+      "b": "Debowy Lisc Tomasz Wroblewski",
+      "verdict": "match",
+      "nature": "trade-prefix-dropped"
+    },
+    {
+      "a": "Tczewskie Warsztaty Barkowe S.A.",
+      "b": "Tczewskie Warsztaty Kolejowe S.A.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Grabowiec Sp. z o.o. Sp. k.",
+      "b": "Grabowiec spolka z ograniczona odpowiedzialnoscia sp.k.",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "Szkutnia Nowakowski i Córki Sp. j., KRS 0000604418",
+      "b": "Szkutnia Nowakowska i Corki sp. j.",
+      "verdict": "match",
+      "nature": "gendered-surname"
+    },
+    {
+      "a": "Elbląskie Formy Stalowe Sp. z o.o., ul. Warsztatowa 14, 82-300 Elbląg",
+      "b": "Elblaskie Formy Stalowe Sp z oo",
+      "verdict": "match",
+      "nature": "address-residue"
+    },
+    {
+      "a": "P.P.H.U. Dębowy Liść Tomasz Wróblewski",
+      "b": "P.P.H.U. Dębowy Liść Tomasz Wróbel",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Bracia Olszewscy Sp. j.",
+      "b": "Bracia Olszańscy Sp. j.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "F.H.U. Morski Węzeł Anna Zielińska",
+      "b": "F.H.U. Morski Węzeł Ewa Zielińska",
+      "verdict": "different",
+      "nature": "different-first-name"
+    },
+    {
+      "a": "Wydmy Logistyka Sp. z o.o. NIP PL 586-204-71-93",
+      "b": "Wydmy Logistyka",
+      "verdict": "match",
+      "nature": "registry-number-residue"
+    },
+    {
+      "a": "Elbląskie Formy Stalowe Sp. z o.o.",
+      "b": "Olsztyńskie Formy Stalowe Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "Wojciechowski Agro Sp. j.",
+      "b": "Wojciechowsky Agro Sp. j.",
+      "verdict": "match",
+      "nature": "one-letter-typo"
+    },
+    {
+      "a": "Kaszubska Wytwórnia Pierogów Bielawa Sp. z o.o.",
+      "b": "Kaszubska Wytwornia Pierogow Bielawa Limited Liability Company",
+      "verdict": "match",
+      "nature": "legal-form-translated"
+    },
+    {
+      "a": "Hurtownia Rybna Mewa Nowicki Sp. j.",
+      "b": "Hurtownia Owocowa Mewa Nowicki Sp. j.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Żuławskie Młyny Zbożowe S.A.",
+      "b": "Żuławskie Młyny Paszowe S.A.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Zdrojewski Metale Sp. z o.o.",
+      "b": "Zdrojowski Metale Sp. z o.o.",
+      "verdict": "match",
+      "nature": "one-letter-typo"
+    },
+    {
+      "a": "Usługi Transportowe Krzysztof Pawlak",
+      "b": "Usługi Transportowe Krzysztof Pawłowski",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "F.H.U. Leszczyna Marek Dąbrowski",
+      "b": "F.H.U. Leszczyna Marek Dobrowolski",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "P.U.P. Nabrzeże Sp. z o.o.",
+      "b": "P.U.P. Wybrzeże Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "Firma Handlowo-Usługowa Leszczyna Marek Dąbrowski",
+      "b": "F.H.U. Leszczyna Marek Dabrowski",
+      "verdict": "match",
+      "nature": "trade-prefix-abbreviated"
+    },
+    {
+      "a": "Tartak Kowalski Sp. j.",
+      "b": "Tartak Kowalczyk Sp. j.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Mazurek Transport Sp. z o.o. w likwidacji",
+      "b": "Mazurek Transport sp. z o.o.",
+      "verdict": "match",
+      "nature": "status-suffix"
+    },
+    {
+      "a": "Szkutnia Nowakowski i Córki Sp. j.",
+      "b": "Szkutnia Nowacki i Córki Sp. j.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Transport Drogowy Jan Kowalski",
+      "b": "Transport Drogowy Anna Kowalska",
+      "verdict": "different",
+      "nature": "different-first-name"
+    },
+    {
+      "a": "Lewandowski i Wspólnicy Sp. k.",
+      "b": "Lewandowska i Wspólnicy Sp. k.",
+      "verdict": "match",
+      "nature": "gendered-surname"
+    },
+    {
+      "a": "Mazurek Transport Sp. z o.o.",
+      "b": "Mazurek Transbud Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Chmielewski Logistyka Sp. z o.o.",
+      "b": "Chmielnicki Logistyka Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Kormoran Serwis S.A. w upadłości",
+      "b": "Kormoran Serwis S.A.",
+      "verdict": "match",
+      "nature": "status-suffix"
+    },
+    {
+      "a": "Kormoran Offshore Sp. z o.o.",
+      "b": "KORMORAN OFFSHORE SPÓŁKA Z O.O.",
+      "verdict": "match",
+      "nature": "legal-form-variant"
+    },
+    {
+      "a": "Kaszubskie Kruszywa Sp. z o.o.",
+      "b": "Kujawskie Kruszywa Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "Bursztynowa Przystań Sp. z o.o.",
+      "b": "Bursztynowa Zatoka Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "Przeds. Handl. Lipowa Dolina Sp. z o.o.",
+      "b": "Przedsiębiorstwo Handlowe Lipowa Dolina Sp. z o.o.",
+      "verdict": "match",
+      "nature": "abbreviation-expanded"
+    },
+    {
+      "a": "Szymanowski Budownictwo S.A.",
+      "b": "Szymański Budownictwo S.A.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Szymanowski Budownictwo S.A.",
+      "b": "Szymanowksi Budownictwo S.A.",
+      "verdict": "match",
+      "nature": "letter-transposition"
+    },
+    {
+      "a": "Kutermet Sp. z o.o. Oddział w Elblągu",
+      "b": "Kutermet Sp. z o.o.",
+      "verdict": "match",
+      "nature": "branch-office"
+    },
+    {
+      "a": "Kutermet Sp. z o.o.",
+      "b": "Kutermet Deutschland GmbH",
+      "verdict": "different",
+      "nature": "different-country-subsidiary"
+    },
+    {
+      "a": "Pomorskie Chłodnie Portowe Sp. z o.o. KRS 0000521907",
+      "b": "Pomorskie Chlodnie Portowe sp. z o.o.",
+      "verdict": "match",
+      "nature": "registry-number-residue"
+    },
+    {
+      "a": "Kaszubskie Kruszywa Sp. z o.o., NIP 584-271-90-36",
+      "b": "Kaszubskie Kruszywa Sp. z o.o.",
+      "verdict": "match",
+      "nature": "registry-number-residue"
+    },
+    {
+      "a": "P.P.H.U. Wiklinex Sp. z o.o.",
+      "b": "Wiklinex Sp. z o.o.",
+      "verdict": "match",
+      "nature": "trade-prefix-dropped"
+    },
+    {
+      "a": "Kaszubska Wytwórnia Pierogów Bielawa Sp. z o.o.",
+      "b": "Kaszubska Wytwórnia Pierogów Białogóra Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "Bracia Olszewscy Sp. j.",
+      "b": "Bracia Olszewscy Spółka Jawna",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "Żuławskie Młyny Zbożowe S.A.",
+      "b": "Zulawskie Mlyny Zbozowe Spolka Akcyjna",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "Kociewskie Zakłady Opakowań Sp. z o.o.",
+      "b": "Kociewskie Zakłady Obuwia Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Usługi Transportowe Krzysztof Pawlak",
+      "b": "Usługi Transportowe Pawlak Krzysztof",
+      "verdict": "match",
+      "nature": "word-order-person"
+    },
+    {
+      "a": "Piekarnia Rodzinna Kamińscy Sp. j.",
+      "b": "Piekarnia Rodzinna Kamiński Sp. j.",
+      "verdict": "match",
+      "nature": "family-plural-surname"
+    },
+    {
+      "a": "Kociewskie Zakłady Opakowań Sp. z o.o.",
+      "b": "Zakłady Opakowań Kociewskie Sp. z o.o.",
+      "verdict": "match",
+      "nature": "word-order"
+    },
+    {
+      "a": "Pomorskie Chłodnie Portowe Sp. z o.o.",
+      "b": "Pomorskie Chłodnie Przemysłowe Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Kormoran Offshore Sp. z o.o.",
+      "b": "Kormoran Onshore Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Oliwskie Szkło Artystyczne Sp. z o.o.",
+      "b": "Oliwskie Szkło Użytkowe Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Zakłady Mięsne Wiśniewski Sp. z o.o. S.K.A.",
+      "b": "Zakłady Mięsne Wiśniewski Sp. z o.o.",
+      "verdict": "different",
+      "nature": "partnership-vs-general-partner"
+    },
+    {
+      "a": "Źródlana Chata Sp. z o.o.",
+      "b": "Zrodlana Chata Spolka z o.o.",
+      "verdict": "match",
+      "nature": "legal-form-variant"
+    },
+    {
+      "a": "Zdrojewski Metale Sp. z o.o.",
+      "b": "Zdrojewski Meble Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Tartak Kowalski Sp. j.",
+      "b": "Tartak Kowalska sp.j.",
+      "verdict": "match",
+      "nature": "gendered-surname"
+    },
+    {
+      "a": "Przedsiębiorstwo Produkcyjno-Handlowo-Usługowe Grabowiec Sp. z o.o.",
+      "b": "PPHU Grabowiec Sp. z o.o.",
+      "verdict": "match",
+      "nature": "trade-prefix-abbreviated"
+    },
+    {
+      "a": "P.U.P. Nabrzeże Sp. z o.o.",
+      "b": "Przedsiębiorstwo Usług Portowych Nabrzeże Sp. z o.o.",
+      "verdict": "match",
+      "nature": "trade-prefix-abbreviated"
+    },
+    {
+      "a": "FIE Kalju Mägi",
+      "b": "Kalju Magi FIE",
+      "verdict": "match",
+      "nature": "legal-form-position"
+    },
+    {
+      "a": "UAB Gintaro Krantas",
+      "b": "Gintaro Krantas SIA",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "Lõuna Liivakivi OÜ",
+      "b": "LOUNA LIIVAKIVI OU REGISTRIKOOD 16230418",
+      "verdict": "match",
+      "nature": "registry-number-residue"
+    },
+    {
+      "a": "AS „Mangaļsalas Doki“",
+      "b": "Mangalsalas Doki JSC",
+      "verdict": "match",
+      "nature": "legal-form-translated"
+    },
+    {
+      "a": "AS „Ventas Ostas Tehnika“",
+      "b": "AS „Ventas Upes Tehnika“",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "UAB Baltoji Burė Eesti filiaal",
+      "b": "UAB „Baltoji Burė“",
+      "verdict": "match",
+      "nature": "branch-office"
+    },
+    {
+      "a": "Tõrva Puidutöö OÜ",
+      "b": "Tõrva Puidutöö Ltd",
+      "verdict": "match",
+      "nature": "legal-form-translated"
+    },
+    {
+      "a": "AB „Kuršių Marių Keltai“",
+      "b": "Curonian Lagoon Ferries AB",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "Hartmanis Loģistika SIA",
+      "b": "Hartmann Logistika SIA",
+      "verdict": "match",
+      "nature": "latvian-declension"
+    },
+    {
+      "a": "AS „Ventas Ostas Tehnika“",
+      "b": "Ventas Ostas Tehnika, akciju sabiedrība",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "UAB „Nemuno Baržos“",
+      "b": "UAB „Neries Baržos“",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "UAB „Baltoji Burė“",
+      "b": "Baltoji Burė OÜ",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "SIA „Zīlīte Loģistika“",
+      "b": "Zīlīte Loģistika UAB",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "IK Jans Kovaļskis",
+      "b": "IK Jan Kowalski",
+      "verdict": "match",
+      "nature": "latvian-declension"
+    },
+    {
+      "a": "Põhjatuule Logistika OÜ",
+      "b": "Põhjatuule Logistika SIA",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "SIA „Zīlīte Loģistika“",
+      "b": "Zilite Logistika, sabiedrība ar ierobežotu atbildību",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "IK Jans Kovaļskis",
+      "b": "IK Jans Kovaļenko",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Põhjatuule Logistika OÜ",
+      "b": "Lõunatuule Logistika OÜ",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "AB „Klaipėdos Kranų Servisas“",
+      "b": "AB „Klaipėdos Krovinių Servisas“",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "UAB „Šiaurės Vėjo Logistika“",
+      "b": "UAB „Šiaurės Vėjo Energija“",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "UAB „Novako Transportas“",
+      "b": "UAB Nowak Transportas",
+      "verdict": "match",
+      "nature": "lithuanian-name-ending"
+    },
+    {
+      "a": "SIA „Jensens Transports“",
+      "b": "SIA „Jansons Transports“",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "UAB „Baltoji Burė“",
+      "b": "UAB „Baltoji Banga“",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "Vaikse Sadama Ehitus OÜ",
+      "b": "Quiet Harbour Construction OÜ",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "UAB „Šiaurės Vėjo Logistika“",
+      "b": "UAB „Pietų Vėjo Logistika“",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "SIA „Rīgas Līcis Kravas“",
+      "b": "SIA „Rīgas Līcis Zveja“",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "UAB „Novako Transportas“",
+      "b": "UAB „Novickio Transportas“",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "IK „Kalniņa Darbnīca“",
+      "b": "IK „Kalnieša Darbnīca“",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "IK Agņeška Zieļinska",
+      "b": "IK Agnieszka Zielinska",
+      "verdict": "match",
+      "nature": "latvian-declension"
+    },
+    {
+      "a": "SIA „Višņevskis un Partneri“",
+      "b": "SIA „Višņevskis un Dēli“",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "AB „Klaipėdos Kranų Servisas“",
+      "b": "AB Klaipedos Kranu Servisas Vilniaus filialas",
+      "verdict": "match",
+      "nature": "branch-office"
+    },
+    {
+      "a": "IK Agņeška Zieļinska",
+      "b": "IK Malgožata Zieļinska",
+      "verdict": "different",
+      "nature": "different-first-name"
+    },
+    {
+      "a": "Vaikse Sadama Ehitus OÜ",
+      "b": "Vaikse Sadama Haldus OÜ",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "UAB „Šiaurės Vėjo Logistika“",
+      "b": "Siaures Vejo Logistika Ltd",
+      "verdict": "match",
+      "nature": "legal-form-translated"
+    },
+    {
+      "a": "Lõuna Liivakivi OÜ",
+      "b": "Lõuna Lubjakivi OÜ",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Kursiu Mariu Keltai AB",
+      "b": "Kuršių Nerijos Keltai AB",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "UAB „Kėdainių Medienos Centras“",
+      "b": "UAB „Kaišiadorių Medienos Centras“",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "UAB „Gintaro Krantas“",
+      "b": "UAB „Gintaro Uostas“",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "VšĮ „Smiltynės Jūrų Mokykla“",
+      "b": "VšĮ „Smiltynės Buriavimo Mokykla“",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "SIA Zīlīte Loģistika Lietuvos filialas",
+      "b": "SIA „Zīlīte Loģistika“",
+      "verdict": "match",
+      "nature": "branch-office"
+    },
+    {
+      "a": "SIA Mežrozīte Tirdzniecība",
+      "b": "SIA Mezrosite Tirdznieciba",
+      "verdict": "match",
+      "nature": "one-letter-typo"
+    },
+    {
+      "a": "SIA „Rīgas Līcis Kravas“",
+      "b": "Gulf of Riga Cargo SIA",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "Hartmanis Loģistika SIA",
+      "b": "Hartmanis Loģistika OÜ",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "AB „Kuršių Marių Keltai“",
+      "b": "Kursiu Mariu Keltai AB",
+      "verdict": "match",
+      "nature": "legal-form-position"
+    },
+    {
+      "a": "SIA Mežrozīte Tirdzniecība",
+      "b": "SIA Mežrozīte Ražošana",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "UAB „Baltoji Burė“",
+      "b": "White Sail UAB",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "SIA „Višņevskis un Partneri“",
+      "b": "SIA Wisniewski un Partneri",
+      "verdict": "match",
+      "nature": "latvian-declension"
+    },
+    {
+      "a": "Lõhe Kalatööstus AS",
+      "b": "Forelli Kalatööstus AS",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "Lõhe Kalatööstus AS",
+      "b": "Lohe Kalatoostus AS Pärnu filiaal",
+      "verdict": "match",
+      "nature": "branch-office"
+    },
+    {
+      "a": "UAB „Nemuno Baržos“",
+      "b": "Nemuno Barzos, UAB, Kaunas",
+      "verdict": "match",
+      "nature": "address-residue"
+    },
+    {
+      "a": "IK Tomass Novaks",
+      "b": "IK Tomass Novickis",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "UAB „Kėdainių Medienos Centras“",
+      "b": "UAB Kedaimiu Medienos Centras",
+      "verdict": "match",
+      "nature": "one-letter-typo"
+    },
+    {
+      "a": "AS „Mangaļsalas Doki“",
+      "b": "Mangalsalas Doki AS, Riga, Latvia",
+      "verdict": "match",
+      "nature": "address-residue"
+    },
+    {
+      "a": "MB „Ąžuolo Dirbtuvė“",
+      "b": "Azuolo Dirbtuve, mažoji bendrija",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "UAB „Žuvėdros Prekyba“",
+      "b": "UAB „Žuvėdros Statyba“",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "FIE Kalju Mägi",
+      "b": "FIE Kalev Mägi",
+      "verdict": "different",
+      "nature": "different-first-name"
+    },
+    {
+      "a": "Saarte Laevandus AS",
+      "b": "Saarte Kalandus AS",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "UAB „Gintaro Krantas“",
+      "b": "Uždaroji akcinė bendrovė Gintaro Krantas",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "MB „Ąžuolo Dirbtuvė“",
+      "b": "MB „Uosio Dirbtuvė“",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "IK Tomass Novaks",
+      "b": "IK Tomasz Nowak",
+      "verdict": "match",
+      "nature": "latvian-declension"
+    },
+    {
+      "a": "AS „Ventas Ostas Tehnika“",
+      "b": "AS „Rīgas Ostas Tehnika“",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "SIA „Baltais Kuģis“, reģ. Nr. 40103581247",
+      "b": "Baltais Kugis SIA",
+      "verdict": "match",
+      "nature": "registry-number-residue"
+    },
+    {
+      "a": "UAB Gintaro Krantas, įm. k. 305118742",
+      "b": "GINTARO KRANTAS UAB",
+      "verdict": "match",
+      "nature": "registry-number-residue"
+    },
+    {
+      "a": "SIA „Baltais Kuģis“",
+      "b": "SIA „Baltais Enkurs“",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "SIA „Liepājas Sālītava“",
+      "b": "SIA „Liepājas Kūpinātava“",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "UAB „Žuvėdros Prekyba“",
+      "b": "UAB Zuvedros Prekiba",
+      "verdict": "match",
+      "nature": "one-letter-typo"
+    },
+    {
+      "a": "VšĮ „Smiltynės Jūrų Mokykla“",
+      "b": "Viešoji įstaiga Smiltynės jūrų mokykla",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "AS „Mangaļsalas Doki“",
+      "b": "AS „Mangaļsalas Noliktavas“",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Vaikse Sadama Ehitus OÜ, registrikood 14622059",
+      "b": "Vaikse Sadama Ehitus osaühing",
+      "verdict": "match",
+      "nature": "registry-number-residue"
+    },
+    {
+      "a": "SIA „Zīlīte Loģistika“",
+      "b": "SIA „Zīlīte Būvniecība“",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "IK „Kalniņa Darbnīca“",
+      "b": "KALNINA DARBNICA IK",
+      "verdict": "match",
+      "nature": "legal-form-position"
+    },
+    {
+      "a": "Põhjatuule Logistika OÜ",
+      "b": "OU Pohjatuule Logistika",
+      "verdict": "match",
+      "nature": "legal-form-position"
+    },
+    {
+      "a": "Kuressaare Kiviveski OÜ",
+      "b": "Kuressaare Tuuleveski OÜ",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "AB „Kuršių Marių Keltai“",
+      "b": "AB „Kuršių Marių Laivai“",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Kuressaare Kiviveski OÜ",
+      "b": "Kuressaare Kivivesky OU",
+      "verdict": "match",
+      "nature": "one-letter-typo"
+    },
+    {
+      "a": "Tõrva Puidutöö OÜ",
+      "b": "Tartu Puidutöö OÜ",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "SIA „Jensens Transports“",
+      "b": "Jensen Transport SIA",
+      "verdict": "match",
+      "nature": "latvian-declension"
+    },
+    {
+      "a": "SIA „Liepājas Sālītava“",
+      "b": "SIA Liepajas Salitava filiāle Ventspilī",
+      "verdict": "match",
+      "nature": "branch-office"
+    },
+    {
+      "a": "Saarte Laevandus AS",
+      "b": "Aktsiaselts Saarte Laevandus",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "UAB „Šiaurės Vėjo Logistika“, company code 304771265",
+      "b": "Šiaurės Vėjo Logistika",
+      "verdict": "match",
+      "nature": "registry-number-residue"
+    },
+    {
+      "a": "TOV Soniashnykova Havan",
+      "b": "Soniashnykova Havan LLC, EDRPOU 41628397",
+      "verdict": "match",
+      "nature": "registry-number-residue"
+    },
+    {
+      "a": "PrAT Zhytomyrskyi Kakhelnyi Zavod",
+      "b": "ChAO Zhitomirskiy Kafelnyi Zavod",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "Товариство з обмеженою відповідальністю «Бриз Одеса»",
+      "b": "ТОВ «Бриз Одеса»",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "ТАА «Палескі Журавель»",
+      "b": "OOO Polesskiy Zhuravl",
+      "verdict": "match",
+      "nature": "belarusian-russian-form"
+    },
+    {
+      "a": "TOV Soniashnykova Havan",
+      "b": "TOV Soniashnykova Gavan",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "ПУП «Гродзенская Пякарня Каласок»",
+      "b": "ПУП «Гродзенская Пякарня Васілёк»",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "ТОВ «Хортицька Верф»",
+      "b": "ТОВ «Херсонська Верф»",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "IP Vladimir Zhovnerchik",
+      "b": "IP Vladimir Zhovnerovich",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "ТОВ «Бриз Одеса»",
+      "b": "ТОВ «Бриз Ізмаїл»",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "PP Dniprovskyi Burlak",
+      "b": "Private Enterprise Dniprovskyi Burlak, Dnipro",
+      "verdict": "match",
+      "nature": "legal-form-translated"
+    },
+    {
+      "a": "ТОВ «Ґердан Текстиль Львів»",
+      "b": "TOV Gerdan Tekstyl Lviv",
+      "verdict": "match",
+      "nature": "cyrillic-to-latin"
+    },
+    {
+      "a": "ФОП Гриценко Григорій Володимирович",
+      "b": "FOP Hrytsenko Hryhorii Volodymyrovych",
+      "verdict": "match",
+      "nature": "cyrillic-to-latin"
+    },
+    {
+      "a": "Briz Odessa LLC",
+      "b": "Bereg Odessa LLC",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "ПП «Вінницька Сироварня»",
+      "b": "PP Vinnytska Syrovarnia",
+      "verdict": "match",
+      "nature": "cyrillic-to-latin"
+    },
+    {
+      "a": "TAA Mahilioŭski Bortnik",
+      "b": "OOO Mogilevskiy Bortnik",
+      "verdict": "match",
+      "nature": "belarusian-russian-form"
+    },
+    {
+      "a": "ФОП Мороз Василь Іванович",
+      "b": "FOP Moroz Vasilii Ivanovich",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "ТОВ «Соняшникова Гавань»",
+      "b": "ТОВ «Соняшникова Долина»",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "ТОВ «Бриз Одеса»",
+      "b": "Briz Odessa LLC",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "IP Mikalai Rusetski",
+      "b": "IP Rusetski Mikalai",
+      "verdict": "match",
+      "nature": "word-order-person"
+    },
+    {
+      "a": "ІП Уладзімір Жаўнерчык",
+      "b": "IP Vladimir Zhovnerchik",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "FOP Hrytsenko Hryhorii Volodymyrovych",
+      "b": "FLP Gritsenko Grigoriy Vladimirovich",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "FOP Hrytsenko Hryhorii Volodymyrovych",
+      "b": "FOP Hrytsenko Hryhorii Vsevolodovych",
+      "verdict": "different",
+      "nature": "different-patronymic"
+    },
+    {
+      "a": "TOV Kharkivski Lyvarni Systemy",
+      "b": "TOV Khersonski Lyvarni Systemy",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "FOP Kovalenko Olena Petrivna",
+      "b": "FOP Kovalyshyn Olena Petrivna",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "OOO Polesskiy Zhuravl",
+      "b": "OOO Podolskiy Zhuravl",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "PrAT Zhytomyrskyi Kakhelnyi Zavod",
+      "b": "PrAT Zhmerynskyi Kakhelnyi Zavod",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "FOP Hrytsenko Hryhorii Volodymyrovych",
+      "b": "FOP Hrytsenko Hryhorii",
+      "verdict": "match",
+      "nature": "patronymic-dropped"
+    },
+    {
+      "a": "FLP Tkachuk Andrey Nikolaevich",
+      "b": "FLP Tkachenko Andrey Nikolaevich",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "ПрАТ «Житомирський Кахельний Завод»",
+      "b": "ПрАТ «Житомирський Цегельний Завод»",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "TOV Soniashnykova Havan",
+      "b": "Soniashnykova Havan Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-country-subsidiary"
+    },
+    {
+      "a": "ТОВ «Лелека Логістик Київ»",
+      "b": "TOV Sova Logistik Kyiv",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "PP Vinnytska Syrovarnia",
+      "b": "PP Vinnytska Pyvovarnia",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "ТОВ «Хортицька Верф»",
+      "b": "Khortytsia Shipyard LLC, Zaporizhzhia",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "ПП «Вінницька Сироварня»",
+      "b": "PP Vinnytska Maslobiinia",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "PP Chernihivskyi Khmil",
+      "b": "PP Chernivetskyi Khmil",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "ТАА «Брэсцкі Экспедытар»",
+      "b": "ТАА «Брэсцкі Перавозчык»",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "FOP Tkachuk Andrii Mykolaiovych",
+      "b": "FOP Tkachuk Andrii Mykhailovych",
+      "verdict": "different",
+      "nature": "different-patronymic"
+    },
+    {
+      "a": "PP Vinnytska Syrovarnia",
+      "b": "ChP Vinnitskaya Syrovarnya",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "FOP Tkachuk Andrii Mykolaiovych",
+      "b": "FLP Tkachuk Andrey Nikolaevich",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "IP Mikalai Rusetski",
+      "b": "IP Mikhail Rusetski",
+      "verdict": "different",
+      "nature": "different-given-name"
+    },
+    {
+      "a": "ІП Уладзімір Жаўнерчык",
+      "b": "IP Uladzimir Zhaunerchyk",
+      "verdict": "match",
+      "nature": "cyrillic-to-latin"
+    },
+    {
+      "a": "ФОП Мороз Василь Іванович",
+      "b": "ФОП Мороз Віталій Іванович",
+      "verdict": "different",
+      "nature": "different-given-name"
+    },
+    {
+      "a": "ТАА «Брэсцкі Экспедытар»",
+      "b": "OOO Brestskiy Ekspeditor, UNP 291847305",
+      "verdict": "match",
+      "nature": "belarusian-russian-form"
+    },
+    {
+      "a": "ChUP Grodnenskaya Pekarnya Kolosok",
+      "b": "ChUP Gomelskaya Pekarnya Kolosok",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "ТАА «Магілёўскі Бортнік»",
+      "b": "ТАА «Магілёўскі Млынар»",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "FOP Hrycenko Hryhorij Wołodymyrowycz",
+      "b": "ФОП Гриценко Григорій Володимирович",
+      "verdict": "match",
+      "nature": "polish-transliteration"
+    },
+    {
+      "a": "OOO Vitebskie Okna",
+      "b": "OOO Vileiskie Okna",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "ТОВ «Лелека Логістик Київ»",
+      "b": "TOV Leleka Logistik Kiev",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "PP Dniprovskyi Burlak",
+      "b": "PP Dniprovskyi Parom",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "ПП «Чернігівський Хміль»",
+      "b": "PP Chernihivskyi Khmil",
+      "verdict": "match",
+      "nature": "cyrillic-to-latin"
+    },
+    {
+      "a": "ПрАТ «Житомирський Кахельний Завод»",
+      "b": "PrAT Zhytomyrskyi Kakhelnyi Zavod",
+      "verdict": "match",
+      "nature": "cyrillic-to-latin"
+    },
+    {
+      "a": "PP Chernihivskyi Khmil",
+      "b": "ChP Chernigovskiy Khmel",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "FOP Moroz Vasyl Ivanovych",
+      "b": "FOP Morozenko Vasyl Ivanovych",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "ТАА «Магілёўскі Бортнік»",
+      "b": "ООО «Могилевский Бортник»",
+      "verdict": "match",
+      "nature": "belarusian-russian-form"
+    },
+    {
+      "a": "TOV Soniashnykova Havan",
+      "b": "PP Soniashnykova Havan",
+      "verdict": "different",
+      "nature": "different-legal-form"
+    },
+    {
+      "a": "ФОП Коваленко Олена Петрівна",
+      "b": "ФЛП Коваленко Елена Петровна",
+      "verdict": "match",
+      "nature": "ukrainian-russian-cyrillic"
+    },
+    {
+      "a": "ТОВ «Соняшникова Гавань»",
+      "b": "ООО «Подсолнечная Гавань»",
+      "verdict": "match",
+      "nature": "russian-translation"
+    },
+    {
+      "a": "OOO Mogilevskiy Bortnik",
+      "b": "OOO Molodechnenskiy Bortnik",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "ФОП Коваленко Олена Петрівна",
+      "b": "ФОП Коваленко Олена Павлівна",
+      "verdict": "different",
+      "nature": "different-patronymic"
+    },
+    {
+      "a": "ТОВ «Харківські Ливарні Системи»",
+      "b": "Kharkiv Foundry Systems LLC",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "TOV Khortytska Verf",
+      "b": "OOO Khortitskaya Verf, Zaporozhye",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "ТОВ «Харківські Ливарні Системи»",
+      "b": "ТОВ «Харківські Ліфтові Системи»",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "FOP Hrytsenko Hryhorii Volodymyrovych",
+      "b": "FOP Hrytsenko Heorhii Volodymyrovych",
+      "verdict": "different",
+      "nature": "different-given-name"
+    },
+    {
+      "a": "ФОП Ткачук Андрій Миколайович",
+      "b": "FOP Tkachuk Andriy Mykolayovych",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "ПП «Дніпровський Бурлак»",
+      "b": "PP Dneprovskiy Burlak",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "FLP Gritsenko Grigoriy Vladimirovich",
+      "b": "FLP Gritsenko Georgiy Vladimirovich",
+      "verdict": "different",
+      "nature": "different-given-name"
+    },
+    {
+      "a": "ТАА «Палескі Журавель»",
+      "b": "ТАА «Палескі Бусел»",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "ТОВ «Соняшникова Гавань»",
+      "b": "TOV Soniashnykova Havan",
+      "verdict": "match",
+      "nature": "cyrillic-to-latin"
+    },
+    {
+      "a": "ТАА «Віцебскія Вокны»",
+      "b": "Vitebsk Windows LLC",
+      "verdict": "match",
+      "nature": "translation"
+    },
+    {
+      "a": "TOV Leleka Logistik Kyiv",
+      "b": "TOV Leleka Logistik Kovel",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "TOV Gerdan Tekstyl Lviv",
+      "b": "TOV Gerdan Tekstyl Lutsk",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "ІП Мікалай Русецкі",
+      "b": "ІП Мікалай Руткоўскі",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "ПУП «Гродзенская Пякарня Каласок»",
+      "b": "ЧУП «Гродненская Пекарня Колосок»",
+      "verdict": "match",
+      "nature": "belarusian-russian-form"
+    },
+    {
+      "a": "TOV Kharkivski Lyvarni Systemy",
+      "b": "OOO Kharkovskie Liteinye Sistemy",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "IP Uladzimir Zhaunerchyk",
+      "b": "IP Uladzislau Zhaunerchyk",
+      "verdict": "different",
+      "nature": "different-given-name"
+    },
+    {
+      "a": "ТАА «Віцебскія Вокны»",
+      "b": "ТАА «Віцебскія Дзверы»",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "ПП «Дніпровський Бурлак»",
+      "b": "ПП «Дністровський Бурлак»",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "ФОП Коваленко Олена Петрівна",
+      "b": "Kovalenko Elena Petrovna, individual entrepreneur",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "TOV Gerdan Tekstyl Lviv",
+      "b": "OOO Gerdan Tekstil Lvov",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "PUP Hrodzienskaja Piakarnia Kalasok",
+      "b": "ChUP Grodnenskaya Pekarnya Kolosok",
+      "verdict": "match",
+      "nature": "belarusian-russian-form"
+    },
+    {
+      "a": "drobnicowiec ZEMGALE LAPWING",
+      "b": "Zemgale Lapwing",
+      "verdict": "match",
+      "nature": "vessel-type-descriptor"
+    },
+    {
+      "a": "PAKRI SEAL",
+      "b": "PALDISKI SEAL",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "BALTRIDGE CARRIER II (ex HAVGULL BIRK)",
+      "b": "HAVGULL BIRD",
+      "verdict": "different",
+      "nature": "ex-name-one-letter"
+    },
+    {
+      "a": "BALTRIDGE CARRIER II",
+      "b": "BALTRIDGE CARRIER III",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "WYDRZYK 3",
+      "b": "Holownik Wydrzyk 3 (Elbląg)",
+      "verdict": "match",
+      "nature": "vessel-type-descriptor"
+    },
+    {
+      "a": "CURONIAN TRAILBLAZER (ex SIGRUN HALVORS)",
+      "b": "SIGRUN HALVORS",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "CURONIAN TRAILBLAZER",
+      "b": "Ro-Ro Curonian Trailblazer, Klaipeda",
+      "verdict": "match",
+      "nature": "port-of-registry-suffix"
+    },
+    {
+      "a": "Barka motorowa BRDA 41",
+      "b": "Barka motorowa BRDA 14",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "BALTRIDGE CARRIER III",
+      "b": "Baltridge Carrier 3",
+      "verdict": "match",
+      "nature": "numeral-style"
+    },
+    {
+      "a": "CURONIAN TRAILBLAZER",
+      "b": "CURONIAN PATHFINDER",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "DAUGAVA KESTREL IMO 9384417",
+      "b": "Daugava Kestrel",
+      "verdict": "match",
+      "nature": "vessel-registry-residue"
+    },
+    {
+      "a": "Barka NOGAT 12 (ex WARTA 7)",
+      "b": "WARTA 1",
+      "verdict": "different",
+      "nature": "ex-name-numeral"
+    },
+    {
+      "a": "Pchacz SANDACZ 5",
+      "b": "Pchacz SANDACZ 6",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "JASTARNIA SPIRIT",
+      "b": "JURATA SPIRIT",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "WYDRZYK 3",
+      "b": "WYDRZYK 8",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "Kashubian Crane",
+      "b": "KASHUBIAN CRANE, GDYNIA",
+      "verdict": "match",
+      "nature": "port-of-registry-suffix"
+    },
+    {
+      "a": "PAKRI SEAL (ex LIIVI RUNNER)",
+      "b": "LIIVI RUNNER",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "VISTULA OTTER",
+      "b": "VISTULA OTTER 2",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "ZEMGALE LAPWING Riga",
+      "b": "mv Zemgale Lapwing",
+      "verdict": "match",
+      "nature": "port-of-registry-suffix"
+    },
+    {
+      "a": "Baltridge Carrier 2",
+      "b": "Baltridge Courier 2",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "KASHUBIAN HERON",
+      "b": "KASHUBIAN CRANE",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "KASHUBIAN HERON",
+      "b": "KASHUBIAN HERON II",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "SANDACZ 5 (ex LESZCZ 2)",
+      "b": "LESZCZ 3",
+      "verdict": "different",
+      "nature": "ex-name-numeral"
+    },
+    {
+      "a": "NERINGOS KOPA",
+      "b": "NERINGOS KOSA",
+      "verdict": "different",
+      "nature": "vessel-one-letter"
+    },
+    {
+      "a": "VISTULA OTTER",
+      "b": "VISTULA OTTERS",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "KASHUBIAN EGRET",
+      "b": "POMERANIAN EGRET",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "KLAIPEDOS VEJAS 2",
+      "b": "KLAIPEDOS VEJAS 3",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "LIELUPE MEADOW",
+      "b": "MV LIELUPE MEADOW RIGA",
+      "verdict": "match",
+      "nature": "port-of-registry-suffix"
+    },
+    {
+      "a": "Barka NOGAT 12",
+      "b": "NOGAT XII",
+      "verdict": "match",
+      "nature": "numeral-style"
+    },
+    {
+      "a": "KÄSMU PILOT",
+      "b": "KASMU PILOT (Tallinn)",
+      "verdict": "match",
+      "nature": "port-of-registry-suffix"
+    },
+    {
+      "a": "PIRITA SWIFT (ex CAPE OSMUSSAAR)",
+      "b": "CAPE OSMUSSAAR",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "BALTRIDGE CARRIER II",
+      "b": "Baltridge Carrier 2",
+      "verdict": "match",
+      "nature": "numeral-style"
+    },
+    {
+      "a": "MORSWIN 7",
+      "b": "MORSWIN VII",
+      "verdict": "match",
+      "nature": "numeral-style"
+    },
+    {
+      "a": "Barka motorowa BRDA 41",
+      "b": "BRDA 41 motor barge, Bydgoszcz",
+      "verdict": "match",
+      "nature": "vessel-type-translated"
+    },
+    {
+      "a": "ZEMGALE LAPWING",
+      "b": "LATGALE LAPWING",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "MORSWIN 7",
+      "b": "MORSWIN 17",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "Barka TCZEW-208",
+      "b": "TCZEW 208 barge, Gdansk",
+      "verdict": "match",
+      "nature": "vessel-type-descriptor"
+    },
+    {
+      "a": "Kashubian Heron (ex Amber Tern)",
+      "b": "AMBER TERN",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "KASMU PILOT",
+      "b": "KASMU PILOT 2",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "VISTULA OTTER",
+      "b": "m/s Vistula Otter (Gdansk)",
+      "verdict": "match",
+      "nature": "vessel-prefix-polish"
+    },
+    {
+      "a": "KASHUBIAN HERON (ex-AMBER TERN)",
+      "b": "M/V KASHUBIAN HERON",
+      "verdict": "match",
+      "nature": "ex-name-current"
+    },
+    {
+      "a": "LIELUPE MEADOW",
+      "b": "LIELUPE MEADOWS",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "Barka NOGAT 12 (ex WARTA 7)",
+      "b": "Warta 7",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Kashubian Heron",
+      "b": "Kashubian Herons",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "Pakri Seal (ex Liivi Runner)",
+      "b": "Liivi Rider",
+      "verdict": "different",
+      "nature": "ex-name-other-word"
+    },
+    {
+      "a": "PAKRI SEAL",
+      "b": "PAKRI TEAL",
+      "verdict": "different",
+      "nature": "vessel-one-letter"
+    },
+    {
+      "a": "JASTARNIA SPIRIT",
+      "b": "M/V JASTARNIA SPIRIT, GDANSK",
+      "verdict": "match",
+      "nature": "port-of-registry-suffix"
+    },
+    {
+      "a": "KASHUBIAN CRANE",
+      "b": "KASHUBIAN EGRET",
+      "verdict": "different",
+      "nature": "sister-ship"
+    },
+    {
+      "a": "Kashubian Heron (ex Amber Tern)",
+      "b": "Amber Fern",
+      "verdict": "different",
+      "nature": "ex-name-one-letter"
+    },
+    {
+      "a": "DAUGAVA KESTREL",
+      "b": "GAUJA KESTREL",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "PIRITA SWIFT",
+      "b": "Container feeder Pirita Swift, Tallinn",
+      "verdict": "match",
+      "nature": "vessel-type-descriptor"
+    },
+    {
+      "a": "SANDACZ 5 (ex LESZCZ 2)",
+      "b": "LESZCZ 2",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "KASHUBIAN HERON",
+      "b": "KASHUBIAN HERALD",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "KLAIPEDOS VEJAS 2 (Klaipeda)",
+      "b": "Klaipėdos Vėjas II",
+      "verdict": "match",
+      "nature": "numeral-style"
+    },
+    {
+      "a": "PIRITA SWIFT",
+      "b": "PIRITA SHIFT",
+      "verdict": "different",
+      "nature": "vessel-one-letter"
+    },
+    {
+      "a": "Barka TCZEW-208",
+      "b": "Barka TCZEW-209",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "MORSWIN 7",
+      "b": "MORS 7",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "BALTRIDGE CARRIER II (ex HAVGULL BIRK)",
+      "b": "Havgull Birk",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Pchacz SANDACZ 5",
+      "b": "pusher tug Sandacz 5",
+      "verdict": "match",
+      "nature": "vessel-type-translated"
+    },
+    {
+      "a": "SALACGRIVA DAWN, Riga",
+      "b": "mv Salacgrīva Dawn",
+      "verdict": "match",
+      "nature": "port-of-registry-suffix"
+    },
+    {
+      "a": "LIELUPE MEADOW (ex BIRGITTA SOL)",
+      "b": "Birgitta Sol",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "MORSWIN 7",
+      "b": "tug Morswin 7, Gdynia",
+      "verdict": "match",
+      "nature": "port-of-registry-suffix"
+    },
+    {
+      "a": "JASTARNIA SPIRIT (ex MARGIT BORG)",
+      "b": "Margit Borg",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "tug KLAIPEDOS VEJAS 2",
+      "b": "Vilkikas „Klaipėdos Vėjas 2“",
+      "verdict": "match",
+      "nature": "vessel-type-translated"
+    },
+    {
+      "a": "tug Klaipedos Vejas 2",
+      "b": "tug Klaipedos Banga 2",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "ZEMGALE LAPWING (ex IRMA KORSHOLM)",
+      "b": "Irma Korsholm",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "Barka NOGAT 12",
+      "b": "Barka NOTEC 12",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "VISTULA OTTER (ex BORNHOLM WREN)",
+      "b": "Bornholm Wren",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "CURONIAN TRAILBLAZER",
+      "b": "CURONIAN TRAILBLAZERS",
+      "verdict": "different",
+      "nature": "vessel-plural"
+    },
+    {
+      "a": "KASHUBIAN EGRET, IMO 9512233",
+      "b": "Kashubian Egret",
+      "verdict": "match",
+      "nature": "vessel-registry-residue"
+    },
+    {
+      "a": "RO-RO BALTRIDGE CARRIER II, Klaipeda",
+      "b": "Baltridge Carrier II",
+      "verdict": "match",
+      "nature": "vessel-type-descriptor"
+    },
+    {
+      "a": "KASHUBIAN HERON",
+      "b": "MV Kashubian Heron, Gdynia",
+      "verdict": "match",
+      "nature": "port-of-registry-suffix"
+    },
+    {
+      "a": "DAUGAVA KESTREL",
+      "b": "DAUGAVA KESTREL II",
+      "verdict": "different",
+      "nature": "vessel-numeral"
+    },
+    {
+      "a": "SALACGRIVA DAWN",
+      "b": "SALACGRIVA DUSK",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "NERINGOS KOPA",
+      "b": "m/v Neringos Kopa (Klaipeda)",
+      "verdict": "match",
+      "nature": "port-of-registry-suffix"
+    },
+    {
+      "a": "DAUGAVA KESTREL (ex ANNIKA VIK)",
+      "b": "Annika Vik",
+      "verdict": "match",
+      "nature": "ex-name-alias"
+    },
+    {
+      "a": "JASTARNIA SPIRIT",
+      "b": "JASTARNIA SPRINT",
+      "verdict": "different",
+      "nature": "vessel-other-word"
+    },
+    {
+      "a": "PAKRI SEAL, Tallinn",
+      "b": "RoRo Pakri Seal",
+      "verdict": "match",
+      "nature": "port-of-registry-suffix"
+    },
+    {
+      "a": "Zemgale Lapwing (ex Irma Korsholm)",
+      "b": "Irma Kortholm",
+      "verdict": "different",
+      "nature": "ex-name-one-letter"
+    },
+    {
+      "a": "LIELUPE MEADOW (ex BIRGITTA SOL)",
+      "b": "BIRGITTA SAL",
+      "verdict": "different",
+      "nature": "ex-name-one-letter"
+    },
+    {
+      "a": "Przedsiębiorstwo Transportowo-Spedycyjne Mielnik Sp. z o.o.",
+      "b": "PTS Mielnik sp zoo",
+      "verdict": "match",
+      "nature": "chat-abbreviations"
+    },
+    {
+      "a": "tov volynskij zernovoz lutsk",
+      "b": "TOV Volynskyi Zernovoz",
+      "verdict": "match",
+      "nature": "romanisation-variant"
+    },
+    {
+      "a": "zamowienie dla Hurtowni Kaszubskiej",
+      "b": "zamowienie dla Hurtowni Kujawskiej",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "ФОП Бондаренко Оксана Сергіївна",
+      "b": "FOP Bondarenko Oksana Sergeevna",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "SIA DAUGAVAS PILADZIS RIGA",
+      "b": "SIA DAUGAVAS BERZS RIGA",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "Przeds. Bud. Żuraw-Bud",
+      "b": "PrzedsBud ZurawBud spzoo",
+      "verdict": "match",
+      "nature": "chat-missing-spaces"
+    },
+    {
+      "a": "GARBARNIA RADUNIA SPOLKA AKCYJNA",
+      "b": "GARBARNIA WIERZYCA SPOLKA AKCYJNA",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "pieczec: CHLODNIE POMORSKIE L0DOWIEC S.A. GDYNIA",
+      "b": "Chłodnie Mazurskie Lodowiec S.A.",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "TOV Karpatska Smereka, Uzhhorod",
+      "b": "Karpatskaya Smereka LLC, Uzhgorod",
+      "verdict": "match",
+      "nature": "russian-based-spelling"
+    },
+    {
+      "a": "Hurtownia Kaszubska Sp. z o.o.",
+      "b": "Hurtownia Kociewska Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "GARBARNIA RADUNIA SPOLKA AKCYJNA",
+      "b": "Garbarnia Radunia S.A.",
+      "verdict": "match",
+      "nature": "legal-form-spelt-out"
+    },
+    {
+      "a": "ФОП Бондаренко Оксана Сергіївна",
+      "b": "ФОП Бондаренко Олена Сергіївна",
+      "verdict": "different",
+      "nature": "different-given-name"
+    },
+    {
+      "a": "Stocznia Remontowa Błotnik Sp. z o.o.",
+      "b": "STOCZNIA REMONTOWA BLOTNIK SP Z OO REF LC/GD/26/0417",
+      "verdict": "match",
+      "nature": "bank-reference-residue"
+    },
+    {
+      "a": "BENEFICIARY: SIA DAUGAVAS PILADZIS RIGA LV",
+      "b": "SIA „Daugavas Pīlādzis“",
+      "verdict": "match",
+      "nature": "swift-field-label"
+    },
+    {
+      "a": "Garbarnia Radunia S.A.",
+      "b": "Gabarnia Radunia S.A.",
+      "verdict": "match",
+      "nature": "chat-dropped-letter"
+    },
+    {
+      "a": "CHLODNIE POMORSKIE LODOWIEC SPOLKA\nAKCYJNA",
+      "b": "Chłodnie Pomorskie Lodowiec S.A.",
+      "verdict": "match",
+      "nature": "swift-line-cut"
+    },
+    {
+      "a": "tov karpatska smereka",
+      "b": "ТОВ «Карпатська Смерека»",
+      "verdict": "match",
+      "nature": "chat-transliterated-ukrainian"
+    },
+    {
+      "a": "UAB KURSIU RUONIS KLAIPEDA",
+      "b": "UAB KURSIU ZUVEDRA KLAIPEDA",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "PRZEDSIEBIORSTWO HANDLOWO-USLUGOWE\nPOLNOCNA ZAGRODA SP Z O O",
+      "b": "P.H.U. Północna Zagroda Sp. z o.o.",
+      "verdict": "match",
+      "nature": "swift-line-cut"
+    },
+    {
+      "a": "P.H.U. Północna Zagroda Sp. z o.o.",
+      "b": "P.H.U. Północna Zagroda Sp. z o.o. Sp. k.",
+      "verdict": "different",
+      "nature": "partnership-vs-general-partner"
+    },
+    {
+      "a": "Garbarnia Radunia S.A.",
+      "b": "Farbiarnia Radunia S.A.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "fop bondarenko oksana",
+      "b": "fop bondarchuk oksana",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Przeds. Prod. Oksywie",
+      "b": "Przeds. Prod. Obłuże",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "BOROWIACKIE KRUSZYWA I MATERIALY BU",
+      "b": "Borowiackie Kruszywa i Materiały Budowlane Sp. z o.o.",
+      "verdict": "match",
+      "nature": "swift-line-cut"
+    },
+    {
+      "a": "FOP Bondarenko Oksana Serhiivna",
+      "b": "FOP Bondarenko Oksana Stepanivna",
+      "verdict": "different",
+      "nature": "different-patronymic"
+    },
+    {
+      "a": "Usł. Dźwig. Leśniewski sp.j.",
+      "b": "Usł. Transp. Leśniewski sp.j.",
+      "verdict": "different",
+      "nature": "abbreviation-conflict"
+    },
+    {
+      "a": "Przeds. Bud. Żuraw-Bud",
+      "b": "Przeds. Handl. Żuraw-Bud",
+      "verdict": "different",
+      "nature": "abbreviation-conflict"
+    },
+    {
+      "a": "PRZEDS. BUD. ZURAW-BUD SP. Z O.O.",
+      "b": "Przedsiębiorstwo Budowlane Żuraw-Bud Sp. z o.o.",
+      "verdict": "match",
+      "nature": "abbreviation-expanded"
+    },
+    {
+      "a": "UAB „Kuršių Ruonis“",
+      "b": "Kuršių Ruonis SIA",
+      "verdict": "different",
+      "nature": "different-country-registration"
+    },
+    {
+      "a": "ТОВ «Карпатська Смерека»",
+      "b": "ТОВ «Подільська Смерека»",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "Wydmowski Transp. i Sped.",
+      "b": "Wydmowski Transport i Spedycja Sp. z o.o.",
+      "verdict": "match",
+      "nature": "chat-abbreviations"
+    },
+    {
+      "a": "WYDMOWSKI TRANSPORT I SPEDYCJA SP Z O O UL.PORTOWA 7 GDANSK",
+      "b": "Wydmowski Transport i Spedycja Sp. z o.o.",
+      "verdict": "match",
+      "nature": "swift-address-glued"
+    },
+    {
+      "a": "APPLICANT: OKSYWIE PRZEDSIEBIORSTWO PRODUKCYJNE SP ZOO",
+      "b": "Przedsiębiorstwo Produkcyjne Oksywie Sp. z o.o.",
+      "verdict": "match",
+      "nature": "word-order"
+    },
+    {
+      "a": "HURTOWNIA KASZUBSKA SP Z O O AL.ZWYCIESTWA 101 GDYNIA",
+      "b": "Hurtownia Kaszubska Sp. z o.o.",
+      "verdict": "match",
+      "nature": "swift-address-glued"
+    },
+    {
+      "a": "Wydmowski Transport i Spedycja Sp. z o.o.",
+      "b": "Wydmowski Transport i Spedycja Sp. z o.o. Sp. k.",
+      "verdict": "different",
+      "nature": "partnership-vs-general-partner"
+    },
+    {
+      "a": "Usługi Dźwigowe Leśniewski Sp. j.",
+      "b": "USLUGI DZWIGOWE LESNIEWSKA SP J",
+      "verdict": "match",
+      "nature": "gendered-surname"
+    },
+    {
+      "a": "Borowiackie Kruszywa i Materiały Budowlane Sp. z o.o.",
+      "b": "Borowiackie Kruszywa i Materiały Drogowe Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "HURTOWNIA KASZUBSKA SP Z O O AL.ZWYCIESTWA 101 GDYNIA",
+      "b": "HURTOWNIA KASZTELANSKA SP Z O O AL.ZWYCIESTWA 101 GDYNIA",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "Usługi Dźwigowy Leśniewski sp j",
+      "b": "Usługi Dźwigowe Leśniewski Sp. j.",
+      "verdict": "match",
+      "nature": "chat-autocorrect"
+    },
+    {
+      "a": "Stocznia Remontowa Błotnik Sp. z o.o.",
+      "b": "Stocznia Remontowa Bolszewo Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "PHU Polnocna Zagroda",
+      "b": "PHU Poludniowa Zagroda",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "TOW Karpacka Smereka Użhorod",
+      "b": "TOW Karpacka Jodła Użhorod",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "PHU Polnocna Zagroda",
+      "b": "Przedsiębiorstwo Handlowo-Usługowe Północna Zagroda Sp. z o.o.",
+      "verdict": "match",
+      "nature": "chat-abbreviations"
+    },
+    {
+      "a": "/PL00102018110000010200345678\nWYDMOWSKI TRANSPORT I SPEDYCJA\nSP Z O O",
+      "b": "Wydmowski Transport i Spedycja Sp. z o.o., Gdańsk",
+      "verdict": "match",
+      "nature": "swift-account-residue"
+    },
+    {
+      "a": "Usługi Dźwigowe Leśniewski Sp. j.",
+      "b": "Uslugi Dzwig0we Lesniewskl Sp. j.",
+      "verdict": "match",
+      "nature": "ocr-stamp"
+    },
+    {
+      "a": "TOW Karpacka Smereka Użhorod",
+      "b": "TOV Karpatska Smereka, Uzhhorod",
+      "verdict": "match",
+      "nature": "polish-transliteration"
+    },
+    {
+      "a": "vid TOV Volynskyi Zernovoz",
+      "b": "vid TOV Vinnytskyi Zernovoz",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "Sped-Trans Oliwa Sp. z o.o.",
+      "b": "SpedTransOliwa Sp.zo.o. (Gdańsk)",
+      "verdict": "match",
+      "nature": "chat-missing-spaces"
+    },
+    {
+      "a": "Usługi Dźwigowe Leśniewski Sp. j.",
+      "b": "Usł. Dźwig. Leśniewski sp.j.",
+      "verdict": "match",
+      "nature": "abbreviation-expanded"
+    },
+    {
+      "a": "50K: /UA00305299000002600101234567\nTOV KARPATSKA SMEREKA\nVUL.SHEVCHENKA 12 UZHHOROD",
+      "b": "ТОВ «Карпатська Смерека»",
+      "verdict": "match",
+      "nature": "swift-account-residue"
+    },
+    {
+      "a": "vid TOV Volynskyi Zernovoz",
+      "b": "ТОВ «Волинський Зерновоз»",
+      "verdict": "match",
+      "nature": "chat-transliterated-ukrainian"
+    },
+    {
+      "a": "Przeds. Transp.-Sped. Mielnik",
+      "b": "Przeds. Transp.-Sped. Mielec",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "PRZEDSIEBIORSTWO TRANSPORTOWO-SPEDY\nCYJNE MIELNIK SP Z O O",
+      "b": "Przeds. Transp.-Sped. Mielnik Sp. z o.o.",
+      "verdict": "match",
+      "nature": "swift-line-cut"
+    },
+    {
+      "a": "PTS Mielnik sp zoo",
+      "b": "PTS Mielnicki sp zoo",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "Chłodnie Pomorskie Lodowiec S.A.",
+      "b": "pieczec: CHLODNIE POMORSKIE L0DOWIEC S.A. GDYNIA",
+      "verdict": "match",
+      "nature": "ocr-stamp"
+    },
+    {
+      "a": "UAB KURSIU RUONIS KLAIPEDA LT",
+      "b": "UAB „Kuršių Ruonis“",
+      "verdict": "match",
+      "nature": "swift-uppercase-no-diacritics"
+    },
+    {
+      "a": "Wydmowski Transp. i Sped.",
+      "b": "Wydmowski Transp. i Bud.",
+      "verdict": "different",
+      "nature": "abbreviation-conflict"
+    },
+    {
+      "a": "HURTOWNIA KASZUBSKA Sp. z o.o. NIP 5861102447",
+      "b": "Hurtownia Kaszubska",
+      "verdict": "match",
+      "nature": "registry-number-residue"
+    },
+    {
+      "a": "Przedsiębiorstwo Produkcyjne Oksywie Sp. z o.o.",
+      "b": "Przeds. Prod. Oksywie Sp. z o.o.",
+      "verdict": "match",
+      "nature": "abbreviation-expanded"
+    },
+    {
+      "a": "PP Podilska Hvylia",
+      "b": "PP Podilska Zoria",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "pp podilska hvylia",
+      "b": "ПП «Подільська Хвиля»",
+      "verdict": "match",
+      "nature": "chat-transliterated-ukrainian"
+    },
+    {
+      "a": "Wydmowski Transport i Spedycja",
+      "b": "Wydmowskki Transsport i Spedycja",
+      "verdict": "match",
+      "nature": "chat-doubled-letter"
+    },
+    {
+      "a": "USLUGI DZWIGOWE LESNIEWSKI SP J",
+      "b": "USLUGI DZWIGOWE LEWANDOWSKI SP J",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "Usługi Dźwigowe Leśniewski Sp. j.",
+      "b": "Usługi Dźwigowe Leszczyński Sp. j.",
+      "verdict": "different",
+      "nature": "different-surname"
+    },
+    {
+      "a": "BENEFICIARY: SIA DAUGAVAS PILADZIS RIGA LV",
+      "b": "BENEFICIARY: SIA GAUJAS PILADZIS RIGA LV",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "Garbarnia Radunia S.A.",
+      "b": "Garbarnia Radunnia SA",
+      "verdict": "match",
+      "nature": "chat-doubled-letter"
+    },
+    {
+      "a": "TOV Volynskyi Zernovoz",
+      "b": "TOV Volynskyi Lisovoz",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "tov karpatska smereka",
+      "b": "tov karpatska yalynka",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "WYDMOWSKI TRANSPORT I SPEDYCJA SP Z O O",
+      "b": "WYDMOWSKI TRANSPORT I LOGISTYKA SP Z O O",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "tov volynskij zernovoz",
+      "b": "tov volynskij zernotorh",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "FOP Bondarenko Oksana Serhiivna",
+      "b": "fop bondarenko oksana",
+      "verdict": "match",
+      "nature": "patronymic-dropped"
+    },
+    {
+      "a": "STOCZNIA REMONTOWA BLOTNIK SP Z OO",
+      "b": "STOCZNIA JACHTOWA BLOTNIK SP Z OO",
+      "verdict": "different",
+      "nature": "different-trade-word"
+    },
+    {
+      "a": "Przeds. Transp.-Sped. Mielnik Sp. z o.o.",
+      "b": "Przeds. Transport Sped. Mielnik sp. z o.o.",
+      "verdict": "match",
+      "nature": "chat-autocorrect"
+    },
+    {
+      "a": "PRZEDS. BUD. ZURAW-BUD SP. Z O.O.",
+      "b": "PRZEDS. BUD. ZURAW-DREW SP. Z O.O.",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "CHLODNIE POMORSKIE LODOWIEC SA",
+      "b": "CHLODNIE POMORSKIE LODOLAMACZ SA",
+      "verdict": "different",
+      "nature": "different-name-word"
+    },
+    {
+      "a": "Sped-Trans Oliwa Sp. z o.o.",
+      "b": "Sped-Trans Orłowo Sp. z o.o.",
+      "verdict": "different",
+      "nature": "different-place"
+    },
+    {
+      "a": "zamowienie dla Hurtowni Kaszubskiej",
+      "b": "Hurtownia Kaszubska Sp. z o.o.",
+      "verdict": "match",
+      "nature": "chat-declension"
+    },
+    {
+      "a": "fv prosze na SpedTrans Oliwa",
+      "b": "Sped-Trans Oliwa Sp. z o.o.",
+      "verdict": "match",
+      "nature": "chat-framing"
+    },
+    {
+      "a": "BOROWIACKIE KRUSZYWA I MATERIALY BU",
+      "b": "Borowiackie Kruszywa i Materiały Opałowe Sp. z o.o.",
+      "verdict": "different",
+      "nature": "truncated-conflict"
+    },
+    {
+      "a": "Przeds. Prod. Oksywie Sp. z o.o.",
+      "b": "Przeds. Usł. Oksywie Sp. z o.o.",
+      "verdict": "different",
+      "nature": "abbreviation-conflict"
+    }
+  ]
+}
