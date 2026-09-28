@@ -85,3 +85,9 @@ Scores relevés le 28/09/2026 (`npm run paire`, poids des listes).
 | Greenbriar Poultry Farms Inc. | Greenbrier Poultry Farms Inc. | 20 | 0.594 | Briar et Brier sont deux mots du dictionnaire à une lettre près, deux mots par la règle ; même contradiction des jeux. |
 | Papadakis Import Export | Papadakis Import Export Canada Inc | 20 | 0.841 | Le pays ajouté devant la forme fait une filiale pour l'auteur ; pour la règle, un mot de lieu d'un seul côté ne change pas la personne, et les jeux le lisent des deux façons. |
 | ngoziadeyemi catering llc | Ngozi Adeyemi Catering LLC | 20 | 0.370 | Le prénom Ngozi est aussi le mot swahili du cuir, traduit avant la comparaison ; le nom soudé ne retrouve plus ses deux moitiés. |
+| ENGURI GLORY | ENGURI GLORIA | 21 | 0.848 | Glory et Gloria, une lettre dans un navire nu, sans signe de navire : dans une société, c'est le même nom. |
+| ANAKLIA DREAM | ANAKLIA DREAMER | 21 | 0.903 | Dream et Dreamer, deux mots du dictionnaire sur une même racine, sans signe de navire. |
+| LEAH MARIE | LEAH MARIA | 21 | 0.829 | Marie et Maria, une lettre dans un prénom, sans signe de navire. |
+| RIONI TRADER | RIONI TRADERS | 21 | 0.955 | Le pluriel d'un navire nu, sans préfixe ni type ; la convention de l'auteur (une autre coque) n'a aucun signe à lire. |
+| Pesteh Dasht-e Kerman | Pesteh Dasht-e Kermanshah | 21 | 0.936 | Kerman commence Kermanshah : le nom contenu dans le plus long est le plafond des lectures, pas un autre mot ; deux villes iraniennes que seule la géographie sépare. |
+| Elkayam Timber Ltd | Elkayan Timber Ltd | 21 | 0.800 | Un nom propre court à une lettre près reste au possible par construction (le plafond des mots courts) ; l'auteur le tient pour une faute de frappe. |
