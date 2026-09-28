@@ -89,6 +89,7 @@ export const CHEMINS_APPRENTISSAGE = [
   new URL("./paires-entites-20.json", import.meta.url),
   new URL("./paires-entites-21.json", import.meta.url),
   new URL("./paires-entites-22.json", import.meta.url),
+  new URL("./paires-entites-23.json", import.meta.url),
 ];
 /** Le jeu de VERDICT : écrit par une autre main qui n'a vu ni ce fichier ni les autres jeux,
  *  lu une seule fois la méthode figée, JAMAIS utilisé pour choisir un seuil. Ses taux sont
