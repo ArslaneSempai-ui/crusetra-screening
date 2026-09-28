@@ -35,7 +35,7 @@ measures which extraction tier suffices per field. Same method, same seal, same 
 
 ## Requirements
 
-Node 24 or newer, on **macOS or Linux**. Windows has not been tested and is not claimed.
+Node 24 or newer, on **macOS, Linux or Windows**: the whole test suite runs on all three at every push to main, on GitHub's runners (`.github/workflows/tests.yml`). Nobody has yet run the tool on a client's Windows machine, and this page does not claim it.
 
 ## What leaves your machine
 
