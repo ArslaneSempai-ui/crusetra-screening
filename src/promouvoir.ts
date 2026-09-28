@@ -79,20 +79,29 @@ const RECOUVREMENT_NUL: Recouvrement = { paires: 0, noms: 0 };
  *  parce qu'un lecteur du jeu promu doit savoir ce qu'il pesait déjà. */
 export const RECOUVREMENT_MAX = 2;
 
-export function phraseDuJuge(n: number, juge: Juge, date: string, recouvrement: Recouvrement = RECOUVREMENT_NUL): string {
+export function phraseDuJuge(n: number, juge: Juge, date: string, recouvrement: Recouvrement = RECOUVREMENT_NUL, cible: number = n + 1): string {
   const t = (x: Taux) => `${x.n}/${x.sur} [${x.bas}-${x.haut} %]`;
   const s = (k: number, mot: string) => `${k} ${mot}${k === 1 ? "" : "s"}`;
   return `Overlap with the ${nombreEnLettres(n)} earlier training sets: ${s(recouvrement.paires, "pair")}, ${s(recouvrement.noms, "name")}.`
     + ` Judged once by the judge session on method ${juge.version} (entites.ts ${juge.entites}…, cribler.ts ${juge.cribler}…, ecritures.ts ${juge.ecritures}…):`
     + ` strong ${juge.fort.seuil} found ${t(juge.fort.trouves)} with ${t(juge.fort.fausses).replace(" [", " false alerts [")};`
     + ` possible ${juge.possible.seuil} found ${t(juge.possible.trouves)} with ${t(juge.possible.fausses)}.`
-    + ` Studied afterwards and promoted to training set ${n + 1} on ${date}, so it no longer measures anything held out.`;
+    + ` Studied afterwards and promoted to training set ${cible} on ${date}, so it no longer measures anything held out.`;
 }
 
 /** La provenance promue : celle de l'auteur, fermée par un point si elle ne l'est pas, puis la phrase du juge. */
-export function provenancePromue(auteur: string, n: number, juge: Juge, date: string, recouvrement: Recouvrement = RECOUVREMENT_NUL): string {
+export function provenancePromue(auteur: string, n: number, juge: Juge, date: string, recouvrement: Recouvrement = RECOUVREMENT_NUL, cible: number = n + 1): string {
   const propre = auteur.trim();
-  return `${/[.!?]$/.test(propre) ? propre : propre + "."} ${phraseDuJuge(n, juge, date, recouvrement)}`;
+  return `${/[.!?]$/.test(propre) ? propre : propre + "."} ${phraseDuJuge(n, juge, date, recouvrement, cible)}`;
+}
+
+/** Le numéro du PROCHAIN jeu d'apprentissage : le dernier listé dans CHEMINS_APPRENTISSAGE plus un. Les numéros des jeux
+ *  aveugles et ceux des jeux d'apprentissage ont divergé au jeu réaliste 20, qui ne s'apprend jamais : le jeu aveugle 21
+ *  devient le jeu d'apprentissage 21, pas 22. */
+export function prochainNumero(source: string): number {
+  const listes = [...source.matchAll(/new URL\("\.\/paires-entites(?:-(\d+))?\.json", import\.meta\.url\)/g)].map((m) => (m[1] ? Number(m[1]) : 1));
+  if (listes.length === 0) throw new Error("src/entites.ts lists no training set in CHEMINS_APPRENTISSAGE");
+  return Math.max(...listes) + 1;
 }
 
 /** La ligne de CHEMINS_APPRENTISSAGE, insérée après celle du jeu N. Refuse si l'ancre manque ou
@@ -123,7 +132,9 @@ function principal(): void {
   const n = Number(process.argv[2]);
   if (!Number.isInteger(n) || n < 1) { console.error("usage: npm run promouvoir -- <N>   (N: the blind set's number)"); process.exit(2); }
   const cheminAveugle = join(DOSSIER_JEUX_AVEUGLES, `jeu${n}-aveugle.json`);
-  const cible = join(RACINE, "src", fichierDuJeu(n + 1));
+  const sourceEntites0 = readFileSync(CHEMIN_ENTITES, "utf8");
+  const numeroCible = prochainNumero(sourceEntites0);
+  const cible = join(RACINE, "src", fichierDuJeu(numeroCible));
   if (!existsSync(cheminAveugle)) refuser(`${cheminAveugle}: no such file`);
   if (existsSync(cible)) refuser(`${cible} exists already: set ${n} was promoted, or the number is wrong`);
 
@@ -141,10 +152,10 @@ function principal(): void {
   if (prefixe !== juge.sha) refuser(`the judge row is about set #${n} ${juge.sha}, this file is ${prefixe}: not the set that was judged`);
   const sourceEntites = readFileSync(CHEMIN_ENTITES, "utf8");
   let entitesPromu: string;
-  try { entitesPromu = insererChemin(sourceEntites, n); } catch (e) { refuser(e instanceof Error ? e.message : String(e)); }
+  try { entitesPromu = insererChemin(sourceEntites, numeroCible - 1); } catch (e) { refuser(e instanceof Error ? e.message : String(e)); }
 
   const date = aujourdhui();
-  const promu: JeuBrut = { quoi: jeu.quoi, provenance: provenancePromue(jeu.provenance, n, juge, date, recouvrement), avertissement: jeu.avertissement, paires: jeu.paires };
+  const promu: JeuBrut = { quoi: jeu.quoi, provenance: provenancePromue(jeu.provenance, n, juge, date, recouvrement, numeroCible), avertissement: jeu.avertissement, paires: jeu.paires };
   const texte = JSON.stringify(promu, null, 2) + "\n";
   if (texte.includes(CADRATIN)) refuser("the promoted file would carry an em dash");
   writeFileSync(cible, texte, { flag: "wx" });
@@ -152,7 +163,7 @@ function principal(): void {
 
   const figures = spawnSync("npm", ["run", "figures"], { cwd: RACINE, encoding: "utf8" });
   const etatFigures = figures.status === 0 ? "figures refreshed" : `npm run figures failed (${(figures.stderr || figures.stdout).trim().split("\n").pop()})`;
-  console.log(`promoted: blind set ${n} (${prefixe}, ${compte.paires} pairs, judged as ${juge.version}) -> src/${fichierDuJeu(n + 1)}; CHEMINS_APPRENTISSAGE now lists ${apprentissage.length + 1} sets; ${etatFigures}`);
+  console.log(`promoted: blind set ${n} (${prefixe}, ${compte.paires} pairs, judged as ${juge.version}) -> src/${fichierDuJeu(numeroCible)}; CHEMINS_APPRENTISSAGE now lists ${apprentissage.length + 1} sets; ${etatFigures}`);
   if (figures.status !== 0) process.exit(1);
 }
 

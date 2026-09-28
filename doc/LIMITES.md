@@ -25,7 +25,7 @@ Scores relevés le 28/09/2026 (`npm run paire`, poids des listes).
 | Theodosia K | Theodosia G | 17 | 0.957 | Une lettre seule en queue est un mot d'une lettre dont le squelette fond K et G ; sans signe de navire, rien ne dit que la lettre numérote une sœur plutôt qu'une initiale. |
 | MV Boa Esperança | MV Boa Esperancé | 16 | 0.900 | Le signe de navire est là, mais « esperance » est un mot anglais et la marque de clavardage crédite la correction du téléphone ; ce crédit porte de vrais navires des jeux et se garde. |
 | 59:/ACC 0042771 KIRMIZIGUL GIDA LTD STI | Kırmızıgöl Gıda Ltd. Şti. | 12 | 0.881 | Gül et göl sont deux mots turcs à une lettre près dans un mot de dix ; le dictionnaire ne connaît que l'anglais, et tenir une lettre pour un autre mot dans un mot rare casse les fautes de frappe. |
-| Talas Dan Azyk LLC | Taraz Dan Azyk LLC | 17 | 0.860 | Talas et Taraz sont deux villes à une lettre près ; il faudrait un répertoire des villes d'Asie centrale, et le dictionnaire ne connaît que l'anglais. |
+| Talas Dan Azyk LLC | Taraz Dan Azyk LLC | 17 | 0.842 | Talas et Taraz sont deux villes à une lettre près ; il faudrait un répertoire des villes d'Asie centrale, et le dictionnaire ne connaît que l'anglais. |
 | Hedland Trader Shipping K.K. | Hedland Traders Shipping K.K. | 13 | 0.964 | Trader/Traders est le pluriel d'un générique du commerce ; deux affréteurs qui ne diffèrent que par lui est une convention de l'auteur. |
 | Curtume Bianchi Ltda. | Curtume Bianchini Ltda. | 16 | 0.900 | Bianchi/Bianchini sont deux suffixes italiens sur un même radical, deux familles pour l'auteur, deux lettres dans un mot de neuf pour la méthode ; une table des suffixes italiens casserait les fautes de frappe des mêmes mots. |
 | Curtume Fontanelli | Curtume Fontanella | 16 | 0.900 | Fontanelli/Fontanella, même suffixe italien tenu à part par l'auteur ; une lettre dans un mot de dix reste une faute pour la méthode. |
@@ -74,3 +74,14 @@ Scores relevés le 28/09/2026 (`npm run paire`, poids des listes).
 | Aozora Venture | Aozora Ventures | 19 | 0.958 | Venture/Ventures, même pluriel d'un générique, sans signe de navire. |
 | SHIOMIDAI DENKI SEISAKUSHO KK | Shiomidai Electric Works Co., Ltd. | 19 | 0.657 | 製作所 (seisakusho) se traduit « Manufacturing » parce que le jeu 11 l'écrit ainsi (Kitazono Seisakusho, Kitazono Manufacturing) et le jeu 19 l'écrit « Works » : les jeux se contredisent, un seul lemme ne sert pas les deux. |
 | hanulbit | Haneulbit Mfg. Co., Ltd. | 19 | 0.616 | Le u d'un clavardage pour le eu de la romanisation révisée vaut le crédit de la voyelle coréenne (0,9), et le seul mot du nom court le porte face à un générique orphelin (Mfg.) ; le lire à 1 rapprocherait ㅜ et ㅡ, deux voyelles. |
+| Atchafalaya Ranger | Atchafalaya Rangers | 20 | 0.900 | Le pluriel d'un nom de navire nu, sans préfixe ni type, se lit comme dans une société ; la convention de l'auteur (une autre coque) n'a aucun signe à lire. |
+| Bayou Sprinter | Bayou Sprinters | 20 | 0.900 | Même cas : le pluriel d'un navire nu, sans signe de navire. |
+| Twin Ports Trader | Twin Ports Traders | 20 | 0.968 | Même cas : le pluriel d'un navire nu, sans signe de navire. |
+| Superior Harvester | Superior Harvest | 20 | 0.896 | Harvester et Harvest, deux mots du dictionnaire sur une même racine, sans signe de navire. |
+| St. Clair Voyager | St. Clair Voyageur | 20 | 0.910 | Voyager et Voyageur, le même mot en deux langues, sans signe de navire. |
+| Marie & Louis | Marie & Louise | 20 | 0.947 | Une lettre ajoutée à un prénom, sans signe de navire : dans une société, c'est le même nom mal écrit. |
+| Rosalind Marie | Rosalind Maria | 20 | 0.914 | Marie et Maria, une lettre dans un prénom, sans signe de navire. |
+| Marquette Steward | Marquette Stewart | 20 | 0.950 | Steward et Stewart, une lettre, sans signe de navire. |
+| Greenbriar Poultry Farms Inc. | Greenbrier Poultry Farms Inc. | 20 | 0.594 | Briar et Brier sont deux mots du dictionnaire à une lettre près, deux mots par la règle ; même contradiction des jeux. |
+| Papadakis Import Export | Papadakis Import Export Canada Inc | 20 | 0.841 | Le pays ajouté devant la forme fait une filiale pour l'auteur ; pour la règle, un mot de lieu d'un seul côté ne change pas la personne, et les jeux le lisent des deux façons. |
+| ngoziadeyemi catering llc | Ngozi Adeyemi Catering LLC | 20 | 0.370 | Le prénom Ngozi est aussi le mot swahili du cuir, traduit avant la comparaison ; le nom soudé ne retrouve plus ses deux moitiés. |

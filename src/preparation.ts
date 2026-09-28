@@ -43,7 +43,7 @@ import { SIGLES_PAYS } from "./variantes.ts";
  *  « Compagnie », « Cía », « Cie » et « Établissements » sont le mot « société » : retirés
  *  comme lui. */
 export const FORMES = new Set([
-  /* anglophones */ "llc", "pllc", "ltd", "limited", "ltee", "inc", "incorporated", "corp", "corporation",
+  /* anglophones */ "llc", "pllc", "ltd", "limited", "ltee", "limitee", "inc", "incorporated", "corp", "corporation",
   "co", "company", "plc", "llp", "lp", "pvt", "pte", "pty",
   /* « Corporación » et « Corporação » en tête d'un nom hispanophone ou lusophone sont le « Corp. » que le nom d'usage
      abrège (jeu 11, 27/09 : « Corporación Marítima del Pacífico Central » à 0,800 face à « Corp. Marítima … »,
@@ -56,7 +56,7 @@ export const FORMES = new Set([
   /* Europe ; « mbH » est le « GmbH » d'une « Gesellschaft mbH » ou « Handelsgesellschaft mbH » ; « KGaA », « GbR »,
      « SCE » sont des sociétés de personnes et de coopérateurs ; « Lda » la Limitada portugaise, angolaise, mozambicaine */
   "mbh", "kgaa", "gbr", "sce", "lda",
-  /* Europe */ "gmbh", "kg", "ohg", "ug", "ag", "se", "sa", "sas", "sasu", "sarl", "eurl", "snc",
+  /* Europe */ "gmbh", "kg", "ohg", "ug", "ag", "se", "sa", "sas", "sasu", "sarl", "eurl", "snc", "senc",
   "sprl", "bvba", "srl", "spa", "sl", "slu", "sau", "bv", "nv", "vof", "oy", "oyj", "ab", "as",
   "asa", "aps", "kft", "zrt", "nyrt", "sro", "doo", "ad", "eood", "ood",
   /* Amérique latine ; « Lda » au Portugal, en Angola, au Mozambique (jeu 10) */ "ltda", "lda", "eireli", "cv", "sapi", "sac", "saa",
@@ -136,6 +136,8 @@ const PHRASES = [
   /* et la forme allemande écrite avec son préfixe de commerce (« Handelsgesellschaft mbH » est une GmbH, voie registres) */
   " handelsgesellschaft mbh co kg ", " gesellschaft mbh co kg ",
   " societe anonyme ", " societe a responsabilite limitee ", " societe par actions simplifiee ",
+  /* le Québec et les États-Unis (jeu 20) : la société en nom collectif, le limited partnership écrit en toutes lettres */
+  " societe en nom collectif ", " limited partnership ", " ltd part ", " ltd partnership ",
   " sociedad anonima cerrada ", " sociedad anonima ", " soc anon ", " sociedad limitada ",
   " sociedad de responsabilidad limitada ",
   " sociedad anonima promotora de inversion de capital variable ", " sociedad anonima promotora de inversion ",
@@ -334,6 +336,13 @@ export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
      « Benabdallah Trading Co », d'« Ettayeb Négoce » et d'« El Tayeb Trading » deux alertes fortes, que l'auteur du jeu tient pour deux
      maisons (mesuré le 29/09 : deux fausses alertes fortes pour un vrai nom gagné) */
   logistique: "logistics",
+  /* le français du Canada (jeu 20, tour 16) : la raison sociale bilingue traduit ses mots de métier, l'ordre des mots changeant
+     de langue (« Portes et Fenêtres Bourassa » / « Bourassa Windows and Doors », « Produits forestiers Sabourin » / « Sabourin
+     Forest Products », « Coopérative laitière » / « Dairy Cooperative ») */
+  portes: "doors", porte: "door", fenetres: "windows", fenetre: "window", toitures: "roofing", toiture: "roofing",
+  meubles: "furniture", meuble: "furniture", manufacture: "manufacturing", produits: "products", produit: "product",
+  forestiers: "forest", forestier: "forest", alimentaire: "food", alimentaires: "food", laitiere: "dairy", laitier: "dairy",
+  aciers: "steel", metaux: "metals", recycles: "recycled", usinage: "machining",
   /* chinois (pinyin) */ maoyi: "trading", jinchukou: "import export", keji: "technology", dianzi: "electronics",
   gongye: "industry", shiye: "industrial", zhizao: "manufacturing", jituan: "group", guoji: "international",
   wuliu: "logistics", huoyun: "freight", hangyun: "shipping", chuanwu: "shipping", jixie: "machinery", luntai: "tire",
@@ -571,12 +580,12 @@ const VIDES_DE_MENTION: ReadonlySet<string> = new Set(["of", "the", "de", "di", 
  *  confondaient (jeu 10 : cinq paires à 1,000). Le numéro est donc une propriété de toutes les variantes du
  *  nom (`VarianteTypee.registre`) : deux numéros différents, deux dépôts, le possible au plus. */
 export const REGISTRES: readonly RegExp[] = [
-  /\(\s*(?:rc|bn|cac|cipc|hrb|hra|kvk|kbo|bce|ondernemingsnummer|ondernemingsnr|crn|cin|uen|acn|abn|brn|cnpj|cuit|ruc|nit|siren|siret|mb|pib|oib|jib|embs|edb|mati[cč]ni\s+broj|mati[cč]na\s+[sš]tevilka|eik|bulstat)\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*(?:[a-z]{1,2}\s?)?\d[\d/.\-]{2,}[^()]*\)/giu,
+  /\(\s*(?:rc|bn|ein|neq|on|cac|cipc|hrb|hra|kvk|kbo|bce|ondernemingsnummer|ondernemingsnr|crn|cin|uen|acn|abn|brn|cnpj|cuit|ruc|nit|siren|siret|mb|pib|oib|jib|embs|edb|mati[cč]ni\s+broj|mati[cč]na\s+[sš]tevilka|eik|bulstat)\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*(?:[a-z]{1,2}\s?)?\d[\d/.\-]{2,}[^()]*\)/giu,
   /\(\s*reg(?:istration|istered)?\.?\s*(?:no\.?|nr\.?|number|#)?\s*:?\s*[a-z]?\d[\d/.\-]{2,}[^()]*\)/giu,
   /* le RCCM de l'OHADA (« /RCCM ML BKO 2015 M 1234 », « (RCCM CI-ABJ-2015-B-1234) », jeu 16) : derrière une barre, une
      virgule ou une parenthèse, jusqu'à la fin */
   /\s*[\/(,;]\s*rccm\b\s*:?\s*[a-z0-9 .\-\/]{4,}\)?\s*$/giu,
-  /(?<=\b(?:ltd|limited|plc|inc|llc|gmbh|bhd|bv|nv|doo|d\.o\.o\.|dd|d\.d\.|ad|ood|eood|kft|srl|s\.r\.l\.|spa|kk|k\.k\.|corp|corporation)\.?)[\s,]+(?:rc|bn|hrb|hra|kvk|kbo|bce|mb|pib|oib|jib|embs|mati[cč]ni\s+broj|brn|reg(?:istration)?\.?\s*(?:no\.?|nr\.?|number)?)\s*[:.]?\s*[a-z]?\d[\d/.\-]{3,}\s*$/giu,
+  /(?<=\b(?:ltd|limited|plc|inc|llc|gmbh|bhd|bv|nv|doo|d\.o\.o\.|dd|d\.d\.|ad|ood|eood|kft|srl|s\.r\.l\.|spa|kk|k\.k\.|corp|corporation)\.?)[\s,]+(?:rc|bn|hrb|hra|kvk|kbo|bce|mb|pib|oib|jib|embs|mati[cč]ni\s+broj|brn|reg(?:istration)?\.?\s*(?:no\.?|nr\.?|number)?)\s*[:.]?\s*[a-z]?\d[\d/.\-]{3,}(?:[a-z]{2}\d{4})?\s*$/giu,
   /* le numéro de société japonais (法人番号, treize chiffres), entre parenthèses ou en tête, suivi d'un tiret ou d'un deux-points
      (« Corporate Number 8011001077453 », puis le nom, jeu 11 : un numéro d'un seul côté, 0,800) */
   /(?:\(\s*)?(?:法人番号|corporate\s+number|hojin\s+bango)\s*:?\s*\d{13}(?:\s*\)|\s*[-\u2013\u2014:])?/giu,
@@ -692,6 +701,8 @@ const ABREVIATIONS_NEERLANDAISES: ReadonlyMap<string, string> = new Map(Object.e
 }));
 const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   intl: "international", bros: "brothers", mfg: "manufacturing", mgmt: "management",
+  /* jeu 20 (Houston + Toronto) : l'entrepôt abrégé, et « INCOR » que la coupe à 35 caractères laisse de « Incorporated » */
+  whse: "warehouse", whs: "warehouse", incor: "incorporated", incorp: "incorporated",
   svcs: "services", assoc: "associates", st: "saint", capt: "captain", sta: "santa", sto: "santo",
   /* les abréviations d'un clavardage ou d'un connaissement, sans point ni majuscules (jeu 9, 27/09 :
      « najmat alsahel electronics trdg llc », « mulji devshi n sons gen trading ») */
@@ -964,7 +975,7 @@ function capitalesLuesOptiquement(nom: string): string {
 
 /** Préfixes et codes de type de navire, seulement EN TÊTE et seulement s'il reste un nom
  *  derrière : M/V, M/T, M/S, M/Y, S/Y, SS, FV, RV, LPG/C, LNG/C. */
-const PREFIXES_NAVIRE = new Set(["mv", "mt", "ms", "my", "sy", "ss", "mts", "fv", "rv", "tb", "lpgc", "lngc", "tug", "barge", "tugboat",
+const PREFIXES_NAVIRE = new Set(["mv", "mt", "ms", "my", "sy", "ss", "mts", "fv", "rv", "tb", "lpgc", "lngc", "tug", "barge", "tugboat", "atb",
   /* le Rhin et la Meuse (jeu 14) : TMS (Tankmotorschiff), GMS (Gütermotorschiff), MSV, la duwbak (barge poussée), le duwboot
      (pousseur) et le sleepboot (remorqueur), écrits devant le nom ou entre parenthèses derrière */
   "tms", "gms", "msv", "duwbak", "duwboot", "sleepboot", "nm",
@@ -1080,7 +1091,7 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   /* 私人有限公司 : la société privée de Singapour (Pte. Ltd.) et de Malaisie (Sdn. Bhd.), en chinois */
   poser(["SG", "MY"], ["siren youxian gongsi"]);
   poser(["US", "CA", "PH"], ["inc", "incorporated", "pllc"]);
-  poser(["CA"], ["ltee"]); poser(["SE"], ["aktiebolag"]); poser(["DK"], ["aktieselskab"]); poser(["NO"], ["aksjeselskap"]); poser(["FI"], ["osakeyhtio"]);
+  poser(["CA"], ["ltee", "limitee", "senc", "societe en nom collectif"]); poser(["SE"], ["aktiebolag"]); poser(["DK"], ["aktieselskab"]); poser(["NO"], ["aksjeselskap"]); poser(["FI"], ["osakeyhtio"]);
   poser(["EE"], ["ou", "osauhing", "aktsiaselts"]); poser(["DK"], ["anpartsselskab"]); poser(["LV"], ["sia", "sabiedriba ar ierobezotu atbildibu"]);
   poser(["LT"], ["uab", "uzdaroji akcine bendrove"]);
   poser(["UK", "IE", "NG", "LK", "ZA"], ["plc", "public limited company"]);
@@ -1116,7 +1127,7 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
 const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   const t = new Map<string, string[]>();
   const poser = (familles: string[], formes: string[]) => { for (const f of formes) t.set(f, [...(t.get(f) ?? []), ...familles]); };
-  poser(["ltd"], ["ltd", "limited", "ltee", "pvt", "pte", "pty", "sdn", "sendirian", "sendirian berhad", "private limited",
+  poser(["ltd"], ["ltd", "limited", "ltee", "limitee", "pvt", "pte", "pty", "sdn", "sendirian", "sendirian berhad", "private limited",
     "proprietary limited", "private ltd", "pvt limited", "youxian gongsi", "youxian zeren gongsi", "siren youxian gongsi", "borisat chamkat", "borisat jamkat", "chamkat", "jamkat"]);
   poser(["ltd", "corp"], ["bhd", "berhad", "kk", "kabushiki kaisha", "kabushikigaisha", "kabushiki gaisha", "jusikhoesa", "chusikhoesa",
     "chusik hoesa", "jusik hoesa", "gufen youxian gongsi", "oy", "ab", "aktiebolag", "aktieselskab", "aksjeselskap", "osakeyhtio"]);
@@ -1158,7 +1169,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
     "zakrytoe aktsionernoe obshchestvo", "otkrytoe aktsionernoe obshchestvo", "aktiengesellschaft", "societe anonyme",
     "societe par actions simplifiee", "sociedad anonima", "soc anon", "sociedad anonima cerrada", "sociedade anonima",
     "societa per azioni", "naamloze vennootschap", "anonim sirketi", "spolka akcyjna", "cong ty co phan", "sa de cv", "de cv"]);
-  poser(["part"], ["llp", "lp", "kg", "ohg", "snc", "vof", "limited liability partnership", "kommanditgesellschaft", "spolka jawna",
+  poser(["part"], ["llp", "lp", "limited partnership", "ltd part", "ltd partnership", "kg", "ohg", "snc", "senc", "societe en nom collectif", "vof", "limited liability partnership", "kommanditgesellschaft", "spolka jawna",
     /* les sociétés de personnes allemandes dont une société de capitaux est l'associée : une autre personne que celle-ci */
     "gmbh co kg", "gmbh und co kg", "gmbh and co kg", "mbh co kg", "mbh und co kg", "mbh and co kg", "ag co kg", "ag und co kg",
     "se co kg", "se und co kg", "gmbh co ohg", "mbh co ohg", "gmbh co kgaa", "gmbh co", "mbh co", "co kg", "co ohg", "und co kg",
