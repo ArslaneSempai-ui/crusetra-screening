@@ -37,3 +37,20 @@ test("tour 15 : le BRN coréen, l'adresse collée à la forme, l'usine et l'agen
   ] as const) assert.ok(score(a, b) >= FORT, `${a} / ${b} : ${score(a, b).toFixed(3)}`);
   assert.ok(score("0ZKAYA NAKL1YAT LTD. ST1.", "Özkaya Nakliyat Ltd. Şti.") >= FORT, "STL comme abréviation cassait la forme optique ST1 : retiré le 29/09");
 });
+
+test("tour 15 : l'abréviation sans point n'est crue que d'un mot courant, jamais d'un nom propre (livre de mille contreparties)", () => {
+  /* « LST » retrouvait ses trois lettres dans « Lieselotte » : 14 des 20 possibles du livre de mille étaient un navire
+     d'un seul mot face à un sigle de trois lettres. Un mot courant abrégé (Invst, Srvcs, Vsl Ops, Inds, Fwd) reste fort. */
+  for (const [a, b] of [
+    ["Lieselotte", "LST LTD"], ["Lahnstein", "LST LTD"], ["Lingestroom", "LST LTD"], ["Aarestern", "Aktsionernoe Obshchestvo AST"],
+    ["Andromachi", "ARCH COMPANY"], ["Roerstreek", "JOINT STOCK COMPANY RSK"], ["Samothraki", "AO SRK"], ["Veluwezoom", "AO VZM"],
+    ["Pelješac", "PSC"],
+  ] as const) assert.ok(score(a, b) < POSSIBLE, `${a} / ${b} : ${score(a, b).toFixed(3)}`);
+  for (const [a, b] of [
+    ["Kibet Invst Ltd", "Kibet Investments Ltd"], ["Shaheen Bahri Marine Srvcs", "Shaheen Bahri Marine Services"],
+    ["Cape Route Vsl Ops Ltd", "Cape Route Vessel Operators Limited"], ["Oduya Agro Allied Inds Ltd", "Oduya Agro-Allied Industries Limited"],
+    ["Bonny Freight Fwd Ltd", "Bonny Freight Forwarders Ltd"],
+  ] as const) assert.ok(score(a, b) >= FORT, `${a} / ${b} : ${score(a, b).toFixed(3)}`);
+  /* limite connue : un sigle qui COMMENCE le mot (« TRO » / Trondheimsleia, « SCH » / Schokland) reste un possible */
+  assert.equal(score("Trondheimsleia", "TRO"), POSSIBLE);
+});

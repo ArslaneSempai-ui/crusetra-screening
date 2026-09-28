@@ -35,7 +35,7 @@ import { pliEnye } from "./mots.ts";
 import { composesDistincts } from "./mots.ts";
 import { lemme } from "./mots.ts";
 import { tousDeuxAnglais } from "./mots.ts";
-import { initialesChinoisesCompatibles } from "./mots.ts";
+import { initialesChinoisesCompatibles, estMotCourant } from "./mots.ts";
 import { variationVocalique } from "./mots.ts";
 import { voyelleSautee } from "./mots.ts";
 import { voyelleEpenthetique } from "./mots.ts";
@@ -168,7 +168,10 @@ export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesL
     if (!pluriels) return 0.5;
   }
   if (gerondif(a, b) || gerondif(b, a)) return 0.95;
-  if (abrege(a, b) || abrege(b, a)) return 0.9;
+  /* l'abréviation SANS POINT n'est crue que d'un mot courant : on abrège engineering en engg et holdings en hldgs,
+     pas un nom propre. « LST » retrouvait ses trois lettres dans « Lieselotte », « Lahnstein » et « Lingestroom »
+     (livre de mille contreparties, 28/09 : 14 des 20 possibles étaient un navire d'un seul mot face à un sigle) */
+  if ((abrege(a, b) && estMotCourant(b)) || (abrege(b, a) && estMotCourant(a))) return 0.9;
   if (motsDistincts(a, b, voyellesLibres) || composesDistincts(a, b, voyellesLibres) || motsHispaniquesDistincts(a, b)) return 0.5;
   /* sauf quand les deux squelettes sont égaux : g et k en finale, une lettre doublée sont les classes d'une graphie, pas deux
      queues (« Kleinhekking », « Kleinhekkink », jeu 14 : 0,450, « king » et « kink » lus comme Timberline et Timberland dans un
