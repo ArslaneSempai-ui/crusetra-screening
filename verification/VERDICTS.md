@@ -41,6 +41,8 @@ a verdict set is ever listed by any tool before it becomes training.
 | | | | | possible 0.80 | 125/200 [56-69 %] | 45/200 [17-29 %] |
 | 2026-09-28 | v21 ffa68382 / 0f773c96 / ecritures 11eb0dba | set #19 49960aa0 (Houston and Toronto brief, North American English; overlap with the nineteen training sets: 0 pairs and 2 names by npm run verdict, 1 pair by valider-jeu; 0 pairs identical but for case), becomes paires-entites-20.json | 200 + 200 | strong 0.81 | 160/200 [74-85 %] | 10/200 [3-9 %] |
 | | | | | possible 0.80 | 186/200 [89-96 %] | 34/200 [12-23 %] |
+| 2026-09-28 | v21 ffa68382 / 0f773c96 / ecritures 11eb0dba | realistic set #20 2054c124 (a quarter of ordinary documents of an Antwerp freight forwarder, a realistic population and not a trap set; overlap with the nineteen training sets: 0 pairs, 0 names; 95 pairs identical but for case), never promoted to training, kept in place as verification/paires-entites-verdict.json for the client reports | 400 + 200 | strong 0.81 | 332/400 [79-86 %] | 0/200 [0-2 %] |
+| | | | | possible 0.80 | 355/400 [85-91 %] | 0/200 [0-2 %] |
 
 v6 on set #3 at other thresholds: 0.70 found 182 with 52 false; 0.75 found 181 with 37; 0.85 found 162
 with 19; 0.90 found 153 with 11.
