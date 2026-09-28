@@ -43,6 +43,8 @@ a verdict set is ever listed by any tool before it becomes training.
 | | | | | possible 0.80 | 186/200 [89-96 %] | 34/200 [12-23 %] |
 | 2026-09-28 | v21 ffa68382 / 0f773c96 / ecritures 11eb0dba | realistic set #20 2054c124 (a quarter of ordinary documents of an Antwerp freight forwarder, a realistic population and not a trap set; overlap with the nineteen training sets: 0 pairs, 0 names; 95 pairs identical but for case), never promoted to training, kept in place as verification/paires-entites-verdict.json for the client reports | 400 + 200 | strong 0.81 | 332/400 [79-86 %] | 0/200 [0-2 %] |
 | | | | | possible 0.80 | 355/400 [85-91 %] | 0/200 [0-2 %] |
+| 2026-09-28 | v22 201d5159 / 0f773c96 / ecritures 11eb0dba | set #21 a96afb13 (Haifa and Tbilisi brief: Hebrew, Georgian, Armenian, Persian and Arabic scripts and their romanisations; overlap with the twenty training sets: 0 pairs, 0 names; 0 pairs identical but for case), becomes paires-entites-21.json; the realistic set #20 is put back in place as the verdict file after the judgment | 200 + 200 | strong 0.81 | 94/200 [40-54 %] | 5/200 [1-6 %] |
+| | | | | possible 0.80 | 117/200 [52-65 %] | 26/200 [9-18 %] |
 
 v6 on set #3 at other thresholds: 0.70 found 182 with 52 false; 0.75 found 181 with 37; 0.85 found 162
 with 19; 0.90 found 153 with 11.
