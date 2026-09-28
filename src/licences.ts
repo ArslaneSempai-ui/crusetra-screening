@@ -135,8 +135,76 @@ function dossiers(racine: string): string[] {
   return out;
 }
 
-export function inventaire(racine = "node_modules"): Paquet[] {
+/** Le nom de famille d'un binaire propre à une machine : le nom coupé au premier jeton `-<os>` ou `-<cpu>`
+ *  qu'il porte parmi ceux que le paquet déclare LUI-MÊME (`@img/sharp-linuxmusl-x64` → `@img/sharp`,
+ *  `@img/sharp-wasm32` → `@img/sharp`). On coupe le nom, on ne retire pas les jetons un par un : retirer
+ *  « linux » de `@img/sharp-linuxmusl-x64` laisserait `@img/sharpmusl`. Un nom qui ne porte aucun de ses
+ *  jetons reste entier : `onnxruntime-node` déclare trois systèmes et s'appelle pareil partout. */
+export function nomDeFamille(complet: string, m: { os?: unknown; cpu?: unknown }): string {
+  const jetons = [...(Array.isArray(m.os) ? m.os : []), ...(Array.isArray(m.cpu) ? m.cpu : [])] as string[];
+  let coupe = complet.length;
+  for (const t of jetons) {
+    const i = complet.lastIndexOf(`-${t}`);
+    if (i > 0 && i < coupe) coupe = i;
+  }
+  return complet.slice(0, coupe);
+}
+
+export type Verrou = { packages?: Record<string, { version?: unknown; license?: unknown; os?: unknown; cpu?: unknown }> };
+
+export function lireVerrou(chemin: string): Verrou | null {
+  return existsSync(chemin) ? (JSON.parse(readFileSync(chemin, "utf8")) as Verrou) : null;
+}
+
+const RANG: Record<Classe, number> = { bloquante: 3, "à tenir": 2, "indéterminée": 1, permissive: 0 };
+/** La classe d'une famille est la plus stricte de celles de ses variantes. */
+export function laPlusStricte(classes: readonly Classe[]): Classe {
+  return classes.reduce((pire, c) => (RANG[c] > RANG[pire] ? c : pire), "permissive" as Classe);
+}
+/** Le fichier de licence d'une famille n'est pas lu : la variante installée ici n'est pas celle d'à côté. */
+export const FICHIER_NON_LU = "(not read: one file per variant, and this machine installs one variant)";
+
+/**
+ * LES FAMILLES DE BINAIRES SE LISENT DANS LE VERROU, PAS DANS L'ARBRE.
+ *
+ * L'arbre installé est celui d'UNE machine ; le verrou npm porte toutes les variantes, sur toutes les
+ * machines, et il est le même partout. Lire la famille dans l'arbre donnait la licence de la variante
+ * locale : sur ce Mac, `@img/sharp-darwin-arm64` déclare « Apache-2.0 » ; sur Windows (run 36400292432,
+ * 28/09/2026), `@img/sharp-win32-x64` déclare « Apache-2.0 AND LGPL-3.0-or-later » parce qu'il embarque
+ * libvips, et aucun paquet `@img/sharp-libvips-*` n'y est installé du tout. Le document écrit ici ne
+ * pouvait donc pas coïncider là-bas, quel que soit le nom sous lequel on l'inscrivait.
+ *
+ * Une famille par `nom@version` : sa licence déclarée est l'union, triée et sans doublon, de ce que ses
+ * variantes déclarent ; sa classe est la plus stricte des leurs. Ce qui est publié reste vrai, et plus
+ * complet : la famille sharp livre, sur l'un de ses systèmes, du code sous LGPL.
+ */
+export function famillesDuVerrou(verrou: Verrou): Paquet[] {
+  const familles = new Map<string, { nom: string; version: string; sigles: string[]; classes: Classe[] }>();
+  for (const [chemin, m] of Object.entries(verrou.packages ?? {})) {
+    const i = chemin.lastIndexOf("node_modules/");
+    if (i < 0) continue;                                   // l'entrée racine "" : le dépôt lui-même
+    const complet = chemin.slice(i + "node_modules/".length);
+    const nom = nomDeFamille(complet, m);
+    if (nom === complet) continue;                         // pas un binaire nommé d'après la machine
+    const version = typeof m.version === "string" ? m.version : "?";
+    const cle = `${nom}@${version}`;
+    const f = familles.get(cle) ?? { nom, version, sigles: [], classes: [] };
+    const declaree = typeof m.license === "string" && m.license.length > 0 ? m.license : null;
+    for (const sigle of (declaree ?? "").split(/\s+AND\s+/).filter(Boolean)) if (!f.sigles.includes(sigle)) f.sigles.push(sigle);
+    f.classes.push(classer(declaree, ""));
+    familles.set(cle, f);
+  }
+  return [...familles.values()].map((f) => ({
+    nom: f.nom, version: f.version,
+    declaree: f.sigles.length > 0 ? [...f.sigles].sort().join(" AND ") : null,
+    classe: laPlusStricte(f.classes), fichier: FICHIER_NON_LU, plateforme: "famille lue dans package-lock.json",
+  }));
+}
+
+export function inventaire(racine = "node_modules", verrou: Verrou | null = lireVerrou(join(racine, "..", "package-lock.json"))): Paquet[] {
   const vus = new Map<string, Paquet>();
+  const familles = verrou ? famillesDuVerrou(verrou) : [];
+  const parLeVerrou = new Set(familles.map((f) => `${f.nom}@${f.version}`));
   for (const dir of dossiers(racine)) {
     const m = JSON.parse(readFileSync(join(dir, "package.json"), "utf8"));
     let d: unknown = m.license ?? m.licenses;
@@ -148,40 +216,26 @@ export function inventaire(racine = "node_modules"): Paquet[] {
     /*
      * UN BINAIRE PROPRE À LA MACHINE NE PEUT PAS ÊTRE INSCRIT SOUS SON NOM COMPLET.
      *
-     * L'inventaire est pris sur `node_modules/`, donc sur la machine qui l'écrit. Sur macOS
-     * npm installe `@img/sharp-darwin-arm64` ; sur le Linux de l'intégration continue,
-     * `@img/sharp-linux-x64`. Les deux jeux ne peuvent JAMAIS coïncider, donc
-     * `licences.ts --check` échouait à chaque passe — et comme `npm test` est une chaîne de
-     * `&&`, `node --test` ne tournait pas du tout. Mesuré : 22 passes d'affilée en échec, la
-     * dernière réussite le 17 août 2026.
-     *
-     * Le nom de famille se DÉDUIT, il ne se devine pas : on retire du nom les jetons que le
-     * paquet déclare lui-même dans `os` et `cpu`. `@img/sharp-darwin-arm64` → `@img/sharp`,
-     * et `@img/sharp-linux-x64` → `@img/sharp`. Un paquet qui porte tous ses binaires dans
-     * un seul dossier — `onnxruntime-node` — garde son nom, puisqu'aucun jeton n'y figure.
-     *
-     * Ce qui est publié reste vrai : la licence est celle de la famille, et le document dit
-     * que la variante concrète dépend de la machine.
+     * Sur macOS npm installe `@img/sharp-darwin-arm64` ; sur le Linux de l'intégration continue,
+     * `@img/sharp-linux-x64`. Les deux jeux ne peuvent JAMAIS coïncider, donc `licences.ts --check`
+     * échouait à chaque passe, et comme `npm test` est une chaîne de `&&`, `node --test` ne tournait
+     * pas du tout. Mesuré : 22 passes d'affilée en échec, la dernière réussite le 17 août 2026. D'où
+     * le nom de famille (`nomDeFamille`). Et comme la LICENCE aussi dépend de la variante, la famille
+     * est inscrite par le verrou (`famillesDuVerrou`) ; l'arbre n'inscrit que ce que le verrou ignore.
      */
     const complet: string = m.name ?? dir;
-    /*
-     * On coupe le nom au DERNIER `-<os>` qu'il porte, pas les jetons un par un : retirer
-     * « linux » de `@img/sharp-linuxmusl-x64` laisserait `@img/sharpmusl`, et le document
-     * d'une machine Alpine différerait encore de celui d'une machine glibc. La coupe rend
-     * `@img/sharp` dans les deux cas, comme pour `-darwin-arm64` et `-freebsd-wasm32`.
-     */
-    let nom = complet;
-    for (const t of (Array.isArray(m.os) ? m.os : []) as string[]) {
-      const i = complet.lastIndexOf(`-${t}`);
-      if (i > 0 && i < nom.length) nom = complet.slice(0, i);
-    }
-    const p: Paquet = { nom, version: m.version ?? "?", declaree, classe: classer(declaree, texte), fichier,
+    const nom = nomDeFamille(complet, m);
+    const version: string = typeof m.version === "string" ? m.version : "?";
+    if (nom !== complet && parLeVerrou.has(`${nom}@${version}`)) continue;
+    const p: Paquet = { nom, version, declaree, classe: classer(declaree, texte), fichier,
       /* Marqué SEULEMENT si le nom portait la plateforme : `onnxruntime-node` déclare trois
-         systèmes et s'appelle pareil partout — il n'a rien de dépendant de la machine ici. */
+         systèmes et s'appelle pareil partout : il n'a rien de dépendant de la machine ici. */
       plateforme: nom !== complet ? "le nom portait la plateforme" : null };
     vus.set(`${p.nom}@${p.version}`, p);   // l'arbre répète les paquets hissés : une clé par version
   }
-  return [...vus.values()].sort((a, b) => a.nom.localeCompare(b.nom));
+  for (const f of familles) vus.set(`${f.nom}@${f.version}`, f);
+  /* Trié par nom PUIS version : l'ordre de lecture d'un dossier n'est pas le même sur tous les systèmes. */
+  return [...vus.values()].sort((a, b) => a.nom.localeCompare(b.nom) || a.version.localeCompare(b.version));
 }
 
 /** CycloneDX minimal — le format qu'un service achats sait ingérer. */
@@ -236,12 +290,14 @@ ${paquets.length} packages are installed under \`node_modules/\`, development de
 included. Each was classified on its \`license\` field **and** on the text of the licence
 file it ships; where the two disagree, the text decides.
 
-${paquets.filter((p) => p.plateforme).length} of them are binaries whose package name carries
-the platform (${paquets.filter((p) => p.plateforme).map((p) => `\`${p.nom}\``).join(", ") || "none"}).
-They are listed under their family name: which variant npm installs depends on the machine,
-while the licence and the version are the family's and do not change with it. Recorded under
-their full names, this inventory could never match on a second machine, and that is exactly
-what kept the public suite from running for nine days.
+${paquets.filter((p) => p.plateforme).length} of them are families of native binaries whose package name
+carries the platform (${paquets.filter((p) => p.plateforme).map((p) => `\`${p.nom}\``).join(", ") || "none"}).
+npm installs one variant per machine, so a family is read from \`package-lock.json\`, which is the same
+on every machine: its licence is the union of what its variants declare, and its class the strictest
+of them (the Windows build of sharp bundles libvips, under the LGPL, where the macOS build does not).
+Recorded under their full names, this inventory could never match on a second machine, and that is
+what kept the public suite from running for nine days; read from one machine's tree, it still failed
+on Windows, where sharp ships no separate libvips package at all.
 
 | Class | Packages | What it means |
 | --- | --- | --- |

@@ -69,7 +69,7 @@
       "licenses": [
         {
           "license": {
-            "id": "Apache-2.0"
+            "id": "Apache-2.0 AND LGPL-3.0-or-later AND MIT"
           }
         }
       ],
@@ -481,19 +481,6 @@
     {
       "type": "library",
       "name": "onnxruntime-common",
-      "version": "1.24.3",
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "purl": "pkg:npm/onnxruntime-common@1.24.3"
-    },
-    {
-      "type": "library",
-      "name": "onnxruntime-common",
       "version": "1.24.0-dev.20251116-b39e144322",
       "licenses": [
         {
@@ -503,6 +490,19 @@
         }
       ],
       "purl": "pkg:npm/onnxruntime-common@1.24.0-dev.20251116-b39e144322"
+    },
+    {
+      "type": "library",
+      "name": "onnxruntime-common",
+      "version": "1.24.3",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:npm/onnxruntime-common@1.24.3"
     },
     {
       "type": "library",
