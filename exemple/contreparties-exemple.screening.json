@@ -1,9 +1,9 @@
 {
   "version": 1,
   "genre": "cascade-screening/counterparty-screening",
-  "emisLe": "2026-09-28T02:25:39.218Z",
+  "emisLe": "2026-09-28T04:04:15.672Z",
   "client": "Example Forwarding Inc. (invented)",
-  "commit": "9660b25",
+  "commit": "11b4e74",
   "fichier": {
     "nom": "contreparties-exemple.csv",
     "sha256": "fab131564c82ea6c859845e4cf53207059d66e0acb75d1603c5d12974f6cbf89",
@@ -210,38 +210,45 @@
           "sha256": "995accda2472fbb5090bae4292e460f002cc9badc6bc9bb651266518366f2d5f",
           "match": 200,
           "different": 200
+        },
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "blind test set #22, authored on 2026-09-28 by a separate agent (a Bangkok freight forwarder and Yangon bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the 22 earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v23 (entites.ts 29f57a26…, cribler.ts 8a0d336c…, ecritures.ts 26b17532…): strong 0.81 found 87/200 [37-50 %] with 7/200 false alerts [2-7 %]; possible 0.80 found 109/200 [48-61 %] with 31/200 [11-21 %]. Studied afterwards and promoted to training set 22 on 2026-09-28, so it no longer measures anything held out.",
+          "sha256": "62305d7c944353a39cc5e4f8ca96879423378b4b6bfeb0c4a206cb8ff1dc4873",
+          "match": 200,
+          "different": 200
         }
       ],
       "fort": {
         "rappel": {
-          "succes": 3416,
-          "n": 3770,
-          "taux": 0.9061007957559681,
-          "bas": 0.8963717894317862,
-          "haut": 0.9150030176083397
+          "succes": 3606,
+          "n": 3970,
+          "taux": 0.9083123425692695,
+          "bas": 0.8989362256172446,
+          "haut": 0.9168990104928207
         },
         "fauxPositifs": {
-          "succes": 116,
-          "n": 3770,
-          "taux": 0.03076923076923077,
-          "bas": 0.025716416719308653,
-          "haut": 0.036777356204281984
+          "succes": 124,
+          "n": 3970,
+          "taux": 0.031234256926952142,
+          "bas": 0.026259984575726085,
+          "haut": 0.037114861568116185
         }
       },
       "possible": {
         "rappel": {
-          "succes": 3639,
-          "n": 3770,
-          "taux": 0.9652519893899204,
-          "bas": 0.9589160378393381,
-          "haut": 0.970640729991087
+          "succes": 3828,
+          "n": 3970,
+          "taux": 0.9642317380352645,
+          "bas": 0.9579913596066404,
+          "haut": 0.9695745504185606
         },
         "fauxPositifs": {
-          "succes": 828,
-          "n": 3770,
-          "taux": 0.21962864721485412,
-          "bas": 0.20670229036962706,
-          "haut": 0.23312581476334937
+          "succes": 859,
+          "n": 3970,
+          "taux": 0.2163727959697733,
+          "bas": 0.20384119246413077,
+          "haut": 0.2294527767771193
         }
       }
     },
@@ -800,5 +807,5 @@
     "At most 5 candidates are shown per name, highest score first; the count of the others is given.",
     "The rates quoted first come from 400 matching pairs and 200 hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties."
   ],
-  "empreinte": "1f6675c4e80a132c"
+  "empreinte": "197b697aa36b1797"
 }
