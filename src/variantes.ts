@@ -148,10 +148,13 @@ const ANNOTATIONS: readonly RegExp[] = [
      « Ulsan Branch » derrière une forme sans tiret ni virgule (le lieu puis le mot de l'établissement) */
   /(?<=\b(?:kk|k\.k\.|ltd|limited|inc|llc|gmbh|co\.?,?\s*ltd\.?)\.?)\s*\d+-\d+.*$/iu,
   /* jeu 21 : l'adresse du Caucase derrière la forme, numéro puis rue puis ville et code (« CJSC 14 NAIRI STR GAVAR AM ») */
-  /(?<=\b(?:kk|ltd|limited|inc|llc|gmbh|cjsc|ojsc|jsc|pjsc|ooo|too|uab|sia|co\.?,?\s*ltd\.?)\.?)\s+\d{1,4}\s+[\p{L}' .-]*?\b(?:str|street|st|ul|ulitsa|ave|avenue|road|rd|blvd|boul|prospekt|pr|kucha|poghots|qucha)\b.*$/iu,
+  /(?<=\b(?:kk|ltd|limited|inc|llc|gmbh|cjsc|ojsc|jsc|pjsc|ooo|too|uab|sia|co\.?,?\s*ltd\.?)\.?)\s+(?:no\.?\s*)?\d{1,4}(?:\/\d{1,4})?\s+[\p{L}\d' .-]*?\b(?:str|street|st|ul|ulitsa|ave|avenue|road|rd|blvd|boul|prospekt|pr|kucha|poghots|qucha|moo|soi|thanon)\b.*$/iu,
   /(?<=\b(?:co\.?,?\s*ltd\.?|ltd\.?|limited|inc\.?|corp\.?|k\.?k\.?|llc|gmbh|kabushiki\s+kaisha)\.?)\s+[\p{L}]{3,}\s+(?:branch|plant|factory|office|depot|warehouse)\s*$/iu,
   /* jeu 21 : le pays nu derrière la forme, résidu d'adresse (« AVETISYAN PHARM LLC ARMENIA ») */
   /(?<=\b(?:ltd|limited|llc|inc|cjsc|ojsc|jsc|pjsc|gmbh|sa|bv|nv|plc)\.?)\s+(?:armenia|georgia|israel|iran|turkey|azerbaijan|ukraine|romania|bulgaria|greece|cyprus|lebanon|egypt|jordan|moldova)\s*$/iu,
+  /* jeu 22 : la mention du siège en queue, entre parenthèses ou nue, en anglais ou en thaï (« (Head Office) », « (Yangon Head Office) »,
+     « สำนักงานใหญ่ ») : le siège est la société même */
+  /\s*\(?\s*(?:[\p{L}]{3,}\s+)?(?:head\s+office|main\s+office|h\.\s?o\.|สำนักงานใหญ่)\s*\)?\s*$/iu,
   /* et l'étiquette qu'une annotation antérieure laisse en queue (« DOC CREDIT », « REF LC ») */
   /\s+(?:doc(?:umentary)?\s+credit|(?:our\s+|your\s+)?ref(?:erence)?\.?(?:\s+(?:lc|dc|l\/c))?|lc|dc|l\/c)\s*$/iu,
   /* jeu 15 : le CNIC pakistanais, le PIN kényan, le TIN et le NTN entre parenthèses derrière le nom */
@@ -317,7 +320,10 @@ const PORTS_ET_QUARTIERS: ReadonlySet<string> = new Set(["bandar", "kota", "jebe
   "chicago", "boston", "miami", "tampa", "charleston", "norfolk", "st hyacinthe",
   /* la mer Noire, le Levant et le Caucase (jeu 21) */
   "batumi", "poti", "kulevi", "supsa", "anaklia", "ashdod", "haifa", "eilat", "novorossiysk", "constanta", "varna", "burgas",
-  "trabzon", "samsun", "mersin", "iskenderun", "limassol", "beirut", "tartus", "latakia", "bandar abbas", "bushehr", "gavar"]);
+  "trabzon", "samsun", "mersin", "iskenderun", "limassol", "beirut", "tartus", "latakia", "bandar abbas", "bushehr", "gavar",
+  /* le golfe de Thaïlande, la mer d'Andaman et le Mékong (jeu 22) */
+  "laem chabang", "bangkok", "songkhla", "map ta phut", "sattahip", "phuket", "yangon", "thilawa", "sihanoukville", "phnom penh",
+  "haiphong", "hai phong", "ho chi minh", "da nang", "vung tau", "cai mep", "chittagong", "penang", "port klang", "ygn", "bkk"]);
 /** Les codes pays à deux lettres qu'un export colle derrière la ville. */
 const CODES_PAYS: ReadonlySet<string> = new Set(["fi", "se", "no", "dk", "ee", "lv", "lt", "pl", "de", "nl", "be", "fr", "es", "it", "pt", "ro",
   "bg", "gr", "tr", "ua", "ru", "ge", "us", "uk", "gb", "ie", "ch", "at", "cz", "sk", "hu", "sg", "my", "id", "th", "vn", "cn", "hk", "jp", "kr",
@@ -400,7 +406,7 @@ const GENERIQUES: ReadonlySet<string> = new Set([...TRADUCTIONS.values()].flatMa
  *  contre & Co. KG, mesuré le 29/09). */
 const FORMES_A_CASSE: ReadonlySet<string> = new Set(["gmbh", "mbh", "kgaa", "gesmbh", "ggmbh", "ohg", "ekg", "sprl", "bvba", "cvba", "scrl", "sagl", "plc"]);
 /** Les mots de rue que l'adresse d'un export colle au nom, et les codes d'État ou de province qui suivent une ville. */
-const RUES = ["AVENIDA", "STRASSE", "STREET", "ROUTE", "CALLE", "ROAD", "RUA", "RUE", "ULITSA", "PROSPEKT", "KOCHASI", "UL", "BOULEVARD", "BOUL", "BLVD", "RANG", "CHEMIN", "HWY"];
+const RUES = ["AVENIDA", "STRASSE", "STREET", "ROUTE", "CALLE", "ROAD", "RUA", "RUE", "ULITSA", "PROSPEKT", "KOCHASI", "UL", "BOULEVARD", "BOUL", "BLVD", "RANG", "CHEMIN", "HWY", "MOO", "SOI", "THANON"];
 const CODES_ETATS: ReadonlySet<string> = new Set(["SP", "RJ", "PR", "SC", "RS", "MG", "BA", "PE", "CE", "ES", "GO", "PA", "AM", "MT", "MS",
   "WA", "NSW", "QLD", "VIC", "SA", "TAS", "NT", "ACT", "ON", "QC", "BC", "AB", "MB", "SK", "NS", "NB", "TX", "LA", "OH", "MI", "IL", "NY", "NJ", "GA", "FL", "WI", "MN"]);
 /** Un nom en capitales dont le dernier mot porte une ville, un port ou une rue collés : « FRERESABIDJAN » rend « FRERES », « SCHMIDTRUA15 »
@@ -457,6 +463,26 @@ function lieuDevantBranch(): RegExp {
 export function variantes(brut: string): string[] {
   return variantesTypees(brut).map((v) => v.texte);
 }
+/** Les mots d'un champ en capitales dont une coupe de ligne a séparé la fin : « FOO D » rend « FOOD », « LIMI TED » rend « LIMITED »,
+ *  « TRADI NG » rend « TRADING », « GEM S » rend « GEMS », seulement quand le mot recollé est une forme, un mot du commerce ou un mot
+ *  du dictionnaire (« CO LTD » et « M V » restent deux mots). Rend le texte recollé, ou undefined si rien ne se recolle. */
+export function recollerLaCoupe(brut: string): string | undefined {
+  const mots = brut.split(/\s+/);
+  const sortie: string[] = [];
+  let change = false;
+  for (let i = 0; i < mots.length; i++) {
+    const m = mots[i]!, suivant = mots[i + 1];
+    /* la lettre seule qui commence une forme épelée (« S A », « S R L ») n'est pas une coupe : « PANAMA S A » garde son S.A. */
+    const formeEpelee = suivant !== undefined && mots[i + 2] !== undefined && FORMES.has((suivant + mots[i + 2]!).toLowerCase());
+    if (suivant !== undefined && !formeEpelee && /^\p{L}{3,}$/u.test(m) && /^\p{L}{1,3}$/u.test(suivant) && !FORMES.has(suivant.toLowerCase())) {
+      const colle = (m + suivant).toLowerCase();
+      if (FORMES.has(colle) || TRADUCTIONS.has(colle) || lemme(colle)) { sortie.push(m + suivant); i++; change = true; continue; }
+    }
+    sortie.push(m);
+  }
+  return change ? sortie.join(" ") : undefined;
+}
+
 export function variantesTypees(brut: string): VarianteTypee[] {
   const vues = new Map<string, VarianteTypee>();
   /* les astérisques d'un message de banque (« *** COMPANIA … *** PANAMA », jeu 11) ne sont que du décor */
@@ -465,6 +491,18 @@ export function variantesTypees(brut: string): VarianteTypee[] {
      « J P Morgan » gardent leur soudure (préparation) */
   const tampon = /^(?:\p{L} )+\p{L}(?:\s{2,}(?:\p{L} )+\p{L})+\s*$/u.test(brut) ? brut.trim().split(/\s{2,}/).map((m) => m.replace(/ /g, "")).join(" ") : undefined;
   brut = brut.replace(/\*+/g, " ").replace(/\s{2,}/g, " ").trim();
+  /* jeu 22 : la société de personnes thaïe s'écrit « Ltd., Part. » ; la virgule entre les deux mots de la forme saute, sinon
+     « Part. » tombe en étiquette et la variante « Ltd. » fait d'une société de personnes une Ltd (« Chaiyapruek Agro Co., Ltd. »
+     face à « Chaiyapruek Agro Ltd., Part. » à 1,000) */
+  brut = brut.replace(/\b(ltd|limited)\.?,\s*(part(?:nership)?\.?)(?=\s|$)/giu, "$1 $2");
+  /* jeu 22 : la coupe de champ à 35 caractères tombée DANS un mot (« FROZEN FOO D », « LIMI TED », « TRADI NG », « GEM S ») : en
+     capitales, un fragment d'une à trois lettres recollé au mot qui le précède quand le mot recollé est une forme, un mot du
+     commerce ou un mot du dictionnaire ; la variante recollée s'ajoute, le brut reste */
+  const recolle = !/\p{Ll}/u.test(brut) && /\p{L}{3,} \p{L}{1,3}(?:\s|$)/u.test(brut) ? recollerLaCoupe(brut) : undefined;
+  /* le texte recollé prend la place du brut pour que les étiquettes, préfixes et adresses s'y lisent ensuite ; le brut
+     tel quel reste une variante, pour le cas où la lettre seule était un vrai mot */
+  const brutAvantRecollage = recolle !== undefined ? brut : undefined;
+  if (recolle !== undefined) brut = recolle;
   /* « (ex-Lindos Harrier until 2019) » (jeu 17) : la durée de l'ancien nom n'est pas le nom */
   brut = brut.replace(/\s+(?:until|till|up\s+to|bis|hasta|jusqu'(?:en|[aà]))\s+(?:\d{1,2}\/)?\d{4}(?=\s*[),]|$)/giu, "");
   /* une ligne de 35 caractères qui finit par une lettre seule après une conjonction (« SANAYI VE T », jeu 17) : la lettre est la
@@ -504,6 +542,7 @@ export function variantesTypees(brut: string): VarianteTypee[] {
      sans lui s'ajoute, le nom tel qu'écrit reste */
   if (!/\p{Ll}/u.test(seul) && /(?<!\p{L})D['’](?=\p{L})/u.test(seul)) poser(seul.replace(/(?<!\p{L})D['’](?=\p{L})/gu, ""), false, "");
   if (tampon !== undefined) poser(tampon, false, "");
+  if (brutAvantRecollage !== undefined) poser(brutAvantRecollage, false, "");
   /* le registre écrit la personne nom d'abord : « Okeke, Chidi Building Materials » (jeu 10) */
   const inverse = /^([\p{Lu}][\p{L}'-]+),\s+([\p{Lu}][\p{L}'-]+)\s+(\p{L}.*)$/u.exec(brut.trim());
   if (inverse) poser(`${inverse[2]} ${inverse[1]} ${inverse[3]}`, false, "");
