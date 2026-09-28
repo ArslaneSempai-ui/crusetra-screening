@@ -17,6 +17,8 @@ import { DEVANAGARI } from "./devanagari.ts";
 import { wadeGiles } from "./wadegiles.ts";
 /* une déclaration de fonction : elle traverse le cycle mots.ts → preparation.ts, et n'est appelée qu'à la première demande */
 import { pliJaponais } from "./mots.ts";
+import { pliCoreen } from "./mots.ts";
+import { numeroDai } from "./kanji.ts";
 import { pliSlave, clesSlaves } from "./mots.ts";
 import { clesGrecques } from "./mots.ts";
 import { traductionNordique, estFinnois, GENITIFS_FINNOIS } from "./nordique.ts";
@@ -151,7 +153,7 @@ const PHRASES = [
   " kabushiki kaisha ", " kabushikigaisha ", " godo kaisha ", " yugen kaisha ",
   /* le rendaku écrit : « Kabushiki Gaisha », « Gōdō Gaisha », « Yūgen Gaisha » (jeu 11 : « Kabushiki Gaisha Morioka Tekkō » à 0,800) */
   " kabushiki gaisha ", " godo gaisha ", " yugen gaisha ",
-  " chusik hoesa ", " jusik hoesa ", " gufen youxian gongsi ", " siren youxian gongsi ", " youxian gongsi ", " youxian zeren gongsi ",
+  " chusik hoesa ", " jusik hoesa ", " yuhan hoesa ", " gufen youxian gongsi ", " siren youxian gongsi ", " youxian gongsi ", " youxian zeren gongsi ",
   " cong ty tnhh ", " cong ty co phan ", " cong ty ",
   " spolka z ograniczona odpowiedzialnoscia ", " spolka akcyjna ", " spolka jawna ",
   " borisat chamkat ", " borisat jamkat ",
@@ -289,12 +291,28 @@ function traductionsJaponaisesPliees(): ReadonlyMap<string, string> {
   if (!TRADUCTIONS_JAPONAISES_PLIEES) TRADUCTIONS_JAPONAISES_PLIEES = new Map([...TRADUCTIONS_JAPONAISES].map(([k, v]) => [pliJaponais(k), v]));
   return TRADUCTIONS_JAPONAISES_PLIEES;
 }
+/** Les mots de métier coréens sous le pli des deux romanisations (`pliCoreen` : Chŏngmil et Jeongmil, Sanop et Saneop, Sikp'um et
+ *  Sikpum, Chosŏn et Joseon), sous un nom que son écriture, sa forme, un marqueur ou le brève du McCune-Reischauer dit coréen (voir
+ *  `traduction`) : « susan » (수산, la pêche) et « joseon » (조선, la construction navale) n'y sont que là, parce que Susan est un prénom
+ *  et Joseon un royaume (tour 15, jeu 19 : « P'ungam Chŏngmil » face à « Pungam Precision », 0,492). */
+const TRADUCTIONS_COREENNES: ReadonlyMap<string, string> = new Map(Object.entries({
+  sanop: "industry", saneop: "industry", muyeok: "trading", jeongmil: "precision", jeonja: "electronics", hwahak: "chemical", mullyu: "logistics",
+  haeun: "shipping", gaebal: "development", tongsang: "trading", junggongeop: "heavy industries", sangsa: "trading", sikpum: "food",
+  cheolgang: "steel", seomyu: "textile", jeyak: "pharmaceutical", gigye: "machinery", jeongi: "electric", susan: "fisheries", joseon: "shipbuilding",
+}));
+let TRADUCTIONS_COREENNES_PLIEES: ReadonlyMap<string, string> | undefined;
+function traductionsCoreennesPliees(): ReadonlyMap<string, string> {
+  if (!TRADUCTIONS_COREENNES_PLIEES) TRADUCTIONS_COREENNES_PLIEES = new Map([...TRADUCTIONS_COREENNES].map(([k, v]) => [pliCoreen(k), v]));
+  return TRADUCTIONS_COREENNES_PLIEES;
+}
 /** La traduction d'un mot du commerce ; `japonais` : le nom porte une forme ou un mot japonais, et ses mots de métier
  *  se cherchent aussi sous le pli des deux romanisations (« Oomura Kogyou K.K. » : kogyou restait un mot rare orphelin
  *  face à « industry », jeu 11, 28/09 : 0,361). Sans cette marque, « Teko » n'est pas « tekko » et reste un nom. */
-function traduction(j: string, japonais = false, slave = false, grec = false): string | undefined {
+function traduction(j: string, japonais = false, slave = false, grec = false, coreen = false): string | undefined {
   const t = TRADUCTIONS.get(j);
   if (t !== undefined) return t;
+  /* un mot de métier coréen sous l'un ou l'autre système, quand le nom est coréen (voir TRADUCTIONS_COREENNES) */
+  if (coreen) { const c = traductionsCoreennesPliees().get(pliCoreen(j)); if (c !== undefined) return c; }
   /* un générique finnois, suédois, danois ou norvégien, seul ou composé de deux (« satamapalvelu », « hamntjänst » : port
      services), les deux raisons sociales d'une société finlandaise (voir nordique.ts) */
   const n = traductionNordique(j);
@@ -330,6 +348,11 @@ export const TRADUCTIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   /* 중공업, l'industrie lourde, en romanisation révisée et en McCune-Reischauer (jeu 11 : « Pomyung Junggongeop »
      face à « Bomyeong Heavy Industries », 0,300) */
   junggongeop: "heavy industries", chunggongop: "heavy industries", chunggongeop: "heavy industries",
+  /* tour 15 (jeu 19) : les autres mots de métier coréens romanisés, en romanisation révisée (« Dongbaek Sangsa » face à
+     « 동백상사 » lu trading ; « Dodam Saneop » face à « Todam Sanop », 0,484, saneop sans répondant) ; leurs graphies
+     McCune-Reischauer se retrouvent sous le pli (TRADUCTIONS_COREENNES) */
+  sangsa: "trading", saneop: "industry", sikpum: "food", cheolgang: "steel", mullyu: "logistics", seomyu: "textile", jeyak: "pharmaceutical",
+  gigye: "machinery", jeongi: "electric", jungongeop: "heavy industries",
   /* persan et arabe : voir TRADUCTIONS_ARABES */ ...Object.fromEntries(TRADUCTIONS_ARABES),
   /* « fils » et « frères » dans les langues du commerce */
   sinovi: "sons", synowie: "sons", sohne: "sons", soehne: "sons", hijos: "sons", fils: "sons", figli: "sons",
@@ -562,6 +585,9 @@ export const REGISTRES: readonly RegExp[] = [
      Логистика» БИН 160240019875 » à 0,733, « ИНН 02511201910172 ОсОО «Талас Дан Азык» » à 0,800, le numéro d'un seul côté) */
   /[\s,;(]+(?:бин|иин|инн|огрн|кпп|окпо|стир|бсн|жсн|bin|iin|inn|ogrn|kpp|okpo|stir|bsn|zhsn)\s*(?:№|no\.?|:)?\s*\d{8,15}(?:\s*\/\s*\d{6,12})?\s*\)?\s*$/giu,
   /^\s*(?:бин|иин|инн|огрн|стир|бсн|жсн|bin|iin|inn|ogrn|stir|bsn|zhsn)\s*(?:№|no\.?|:)?\s*\d{8,15}\s+/giu,
+  /* le numéro d'enregistrement d'entreprise coréen (사업자등록번호, 000-00-00000), devant ou derrière le nom, entre parenthèses ou non
+     (tour 15, jeu 19 : deux paires à 0,800, le numéro d'un seul côté) */
+  /(?:\(\s*)?사업자\s*등록\s*번호\s*:?\s*\d{3}-\d{2}-\d{5}(?:\s*\))?/gu,
 ];
 /** Les numéros de registre d'un nom brut, chiffres seuls, triés ; « » sans numéro. */
 export function numeroDeRegistre(brut: string): string {
@@ -603,6 +629,9 @@ export function mentionDeSuccursale(brut: string): string {
   if (SIEGE.test(tete) && !/(?<![\p{L}])(?:hq|zentrale)(?![\p{L}])/iu.test(tete)) return "siege";
   const mots = jetons(normaliser(plier(tete)));
   const i = mots.findIndex((m) => SUCCURSALES.has(m));
+  /* la mention japonaise ou coréenne collée à son lieu (神戸支店, 부산지점) : le lieu est le mot devant, jamais en tête */
+  const iCollee = mots.findIndex((m, k) => k >= 1 && SUCCURSALES_COLLEES.has(m));
+  if (i < 0 && iCollee >= 1) return mots[iCollee - 1]!;
   if (i < 0) return "";
   /* sans virgule, le lieu suit la forme juridique : « Kano Merchant Bank Limited Sabon Gari Branch » */
   let j = -1;
@@ -1046,7 +1075,7 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["IN", "PK", "LK", "BD"], ["pvt"]);
   poser(["IN", "PK", "LK", "BD", "SG", "NG", "ZA", "AU", "NZ", "KE"], ["private limited", "private ltd", "pvt limited"]);
   poser(["JP"], ["kk", "gk", "yk", "kabushiki kaisha", "kabushikigaisha", "kabushiki gaisha", "godo kaisha", "godo gaisha", "yugen kaisha", "yugen gaisha"]);
-  poser(["KR"], ["chusik hoesa", "jusik hoesa", "jusikhoesa", "chusikhoesa", "yuhanhoesa"]);
+  poser(["KR"], ["chusik hoesa", "jusik hoesa", "jusikhoesa", "chusikhoesa", "yuhanhoesa", "yuhan hoesa"]);
   poser(["CN", "HK", "TW"], ["youxian gongsi", "gufen youxian gongsi", "youxian zeren gongsi"]);
   /* 私人有限公司 : la société privée de Singapour (Pte. Ltd.) et de Malaisie (Sdn. Bhd.), en chinois */
   poser(["SG", "MY"], ["siren youxian gongsi"]);
@@ -1094,7 +1123,7 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   /* et la Yūgen Kaisha (有限会社), que l'anglais rend « Co., Ltd. » ou « Y.K. » */
   poser(["ltd", "llc"], ["korlatolt felelossegu tarsasag", "ooo", "tov", "ltda", "lda", "limitada", "sociedade limitada", "eireli", "osauhing", "anpartsselskab",
     "sabiedriba ar ierobezotu atbildibu", "uzdaroji akcine bendrove", "ou", "sia", "uab", "aps", "tnhh", "cong ty tnhh", "sti", "limited sirketi",
-    "yuhanhoesa", "yugen kaisha", "yugen gaisha", "yk", "empresa individual de responsabilidade limitada",
+    "yuhanhoesa", "yuhan hoesa", "yugen kaisha", "yugen gaisha", "yk", "empresa individual de responsabilidade limitada",
     "tovarystvo z obmezhenoiu vidpovidalnistiu", "tovarystvo z obmezhenoyu vidpovidalnistyu"]);
   /* l'AT ukrainien (акціонерне товариство), PrAT et PAT : la société par actions, comme JSC et AO */
   poser(["corp"], ["pryvatne aktsionerne tovarystvo", "publichne aktsionerne tovarystvo", "aktsionerne tovarystvo"]);
@@ -1292,7 +1321,26 @@ const MARQUEURS_COREENS = new Set(["tongsang", "sanop", "sanup", "muyeok", "muyo
   "junggongeop", "chunggongop", "chunggongeop",
   "mulryu", "haeun", "gaebal", "hanguk", "hankook", "hankuk", "korea", "korean", "daehan", "seoul", "busan", "pusan", "incheon", "inchon",
   "daegu", "taegu", "ulsan", "gwangju", "kwangju", "daejeon", "taejon", "gyeonggi", "kyonggi", "kyunggi", "chungcheong", "jeolla",
-  "gyeongsang", "kyongsang", "kyung", "gyeong", "kyoung", "hwaseong", "hwasung", "cheonan", "chonan", "pyeongtaek", "pyongtaek"]);
+  "gyeongsang", "kyongsang", "kyung", "gyeong", "kyoung", "hwaseong", "hwasung", "cheonan", "chonan", "pyeongtaek", "pyongtaek",
+  /* tour 15 (jeu 19) : les autres mots de métier romanisés (voir TRADUCTIONS_COREENNES), la forme en toutes lettres et ses mots */
+  "sangsa", "saneop", "sikpum", "cheolgang", "mullyu", "seomyu", "jeyak", "gigye", "jeongi", "joseon", "chosun", "choson",
+  "jusikhoesa", "chusikhoesa", "yuhanhoesa", "hoesa", "jusik", "chusik", "yuhan"]);
+/** Les mêmes marqueurs sous `pliCoreen`, pour les lire sous l'un ou l'autre système (« Chŏngmil » marque comme « jeongmil », « Sanop »
+ *  comme « saneop ») ; les mots courts n'y sont pas, leur pli serait celui de trop de mots d'ailleurs. */
+const MARQUEURS_COREENS_PLIES: ReadonlySet<string> = new Set([...MARQUEURS_COREENS].filter((m) => m.length >= 5).map(pliCoreen));
+/** Le brève du McCune-Reischauer (ŏ, ŭ : Chŏngmil, Ŭnp'a, Hanŭl) : aucune autre romanisation d'un nom de société ne l'écrit. */
+const BREVE_COREEN = /[ŏŭŎŬ]/u;
+function estMarqueurCoreen(j: string): boolean {
+  return MARQUEURS_COREENS.has(j) || (j.length >= 5 && MARQUEURS_COREENS_PLIES.has(pliCoreen(j)));
+}
+/** Les civilités japonaises en queue d'un nom : le さん d'un clavardage, le 御中 (onchū) et le 様 d'un pli, sous la marque japonaise
+ *  (tour 15, jeu 19 : « 風早電機さん » et « 株式会社八雲堂 御中 » à 0,800 et 0,667, la civilité un mot rare sans répondant). */
+const HONORIFIQUES_JAPONAIS: ReadonlySet<string> = new Set(["san", "sama", "onchu", "dono"]);
+/** Les mentions d'établissement collées au lieu, en japonais et en coréen (神戸支店 Kobe shiten, 名古屋営業所 Nagoya eigyosho, 부산지점
+ *  Busan jijeom, 인천공장 Incheon gongjang) : le lieu est le mot qui les précède (voir `mentionDeSuccursale`), et la variante
+ *  sans elles est le siège (voir ANNOTATIONS, variantes.ts). Jamais en tête : « Kojo » est aussi un prénom. */
+export const SUCCURSALES_COLLEES: ReadonlySet<string> = new Set(["shiten", "eigyosho", "eigyobu", "kojo", "shisha", "shutchojo", "jigyosho",
+  "jijeom", "yeongeopso", "gongjang", "saeopso", "chuljangso"]);
 /** L'écriture thaïe, par sa propriété Unicode. */
 const THAI = /\p{Script=Thai}/u;
 /** Les mots qui marquent un nom thaï romanisé (voir `Marques.thai`) : le pays, ses provinces et ses ports (Bangkok, Samut Prakan,
@@ -1356,13 +1404,37 @@ const MARQUEURS_JAPONAIS = new Set(["kk", "gk", "yk", "kabushiki", "kaisha", "ga
   "suisan", "gyogyo", "bussan", "shokai", "shoten", "kensetsu", "kikai", "kinzoku", "seizo", "zosen", "senpaku", "sekiyu",
   "shokuhin", "seiyaku", "yakuhin", "tsushin", "tetsudo", "kumiai", "kyokai", "kogaku",
   /* les métiers traduits au tour 7 (jeu 11) : manutention portuaire, entrepôt, électronique, sidérurgie, bâtiment */
-  "koun", "soko", "denshi", "tekko", "tekkosho", "komuten"]);
-/** Les numéraux ordinaux japonais des navires, 第一 à 第十, sous leur clé `pliJaponais` (daiichi et daiiti, daishichi et
- *  daisiti, daikyu et daikyuu s'y rejoignent) : le chiffre que « No. N » écrit. */
-const NUMERAUX_DAI: ReadonlyMap<string, string> = new Map(Object.entries({
-  daiichi: "1", daini: "2", daisan: "3", daiyon: "4", daishi: "4", daigo: "5", dairoku: "6", dainana: "7", daishichi: "7",
-  daihachi: "8", daikyu: "9", daiju: "10",
-}).map(([k, v]) => [pliJaponais(k), v]));
+  "koun", "soko", "denshi", "tekko", "tekkosho", "komuten",
+  /* tour 15 (jeu 19) : les engins (重機), la chimie (化成), le textile (繊維), le papier (製紙), la brasserie (酒造) */
+  "juki", "kasei", "seni", "seishi", "shuzo"]);
+/** Les mêmes marqueurs sous `pliJaponais`, pour lire le Kunrei comme le Hepburn (« Seisakusyo » marque comme « seisakusho », « Syôzi »
+ *  comme « shoji » : jeu 19, tour 15, « Sumiyosibara Seisakusyo » à 0,450, son métier non traduit faute de marque) ; les mots courts
+ *  (kk, gk, yk) n'y sont pas, leur pli serait celui de trop de mots d'ailleurs. */
+const MARQUEURS_JAPONAIS_PLIES: ReadonlySet<string> = new Set([...MARQUEURS_JAPONAIS].filter((m) => m.length >= 5).map(pliJaponais));
+function estMarqueurJaponais(j: string): boolean {
+  return MARQUEURS_JAPONAIS.has(j) || (j.length >= 5 && MARQUEURS_JAPONAIS_PLIES.has(pliJaponais(j)));
+}
+/** Les métiers japonais sous leur pli, du plus long au plus court, pour couper un mot collé (voir `couperMetierJaponais`). */
+const METIERS_JAPONAIS_PLIES: readonly string[] = [...new Set([...MARQUEURS_JAPONAIS].filter((m) => m.length >= 4).map(pliJaponais))].sort((a, b) => b.length - a.length);
+/** UN MOT COLLÉ QUI FINIT PAR UN MÉTIER JAPONAIS se coupe devant lui (« kazehayadenki » : kazehaya denki ; « marushinjuki » : marushin
+ *  juki), sous la marque japonaise, quand le dictionnaire ignore le mot et qu'il reste trois lettres au moins devant (jeu 19, tour 15 :
+ *  « kazehayadenki kk » face à « Kazehaya Denki Kabushiki Kaisha », 0,155, le métier traduit d'un seul côté). */
+/** Le même mot collé en coréen romanisé (« daebitsangsa » : daebit sangsa), sous la présomption coréenne ou quand le métier collé fait
+ *  six lettres au moins, la trace suffisant alors (jeu 19, tour 15 : « daebitsangsa » face à « Daebit Sangsa Co., Ltd. », perdu quand
+ *  « sangsa » s'est traduit d'un seul côté). */
+const METIERS_COREENS: readonly string[] = [...new Set([...TRADUCTIONS_COREENNES.keys()].filter((m) => m.length >= 5))].sort((a, b) => b.length - a.length);
+function couperMetierCoreen(j: string, coreen: boolean): string[] {
+  if (j.length < 8 || /\d/.test(j) || lemme(j) !== undefined) return [j];
+  for (const m of METIERS_COREENS) if (j.endsWith(m) && j.length - m.length >= 3 && (coreen || m.length >= 6)) return [j.slice(0, j.length - m.length), m];
+  return [j];
+}
+function couperMetierJaponais(j: string): string[] {
+  if (j.length < 8 || /\d/.test(j) || lemme(j) !== undefined) return [j];
+  for (const m of METIERS_JAPONAIS_PLIES) {
+    for (let k = 3; k <= j.length - 3; k++) if (pliJaponais(j.slice(k)) === m) return [j.slice(0, k), j.slice(k)];
+  }
+  return [j];
+}
 /** Les mots translittérés du russe et de l'ukrainien qui marquent un nom slave (voir `Marques.slave`) : les mots du
  *  commerce (torgovyy, zavod, kompaniya, morskoy, rechnoy, flot, sklad, stroy), les mots des formes écrites en toutes
  *  lettres (obshchestvo, tovarystvo), les grades qu'un navire porte en tête (kapitan, shkiper, matros, botsman).
@@ -1466,6 +1538,11 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   sources: ReadonlyMap<string, string> } & Marques {
   /* la casse d'un document en capitales se lit avant tout : après, elle est perdue (voir `capitalesLuesOptiquement`) */
   nom = capitalesLuesOptiquement(nom);
+  /* LE BRÈVE DU McCUNE-REISCHAUER (ŏ, ŭ) écrit ce que la romanisation révisée écrit eo et eu, et rien d'autre : « Ŭnp'a » est « Eunpa »,
+     « Chŏngmil » est « Cheongmil », « Hanŭl » est « Haneul » (jeu 19, tour 15 : « Eunpa Ho » face à « Ŭnp'a Ho » à 0,800, un seul mot au
+     crédit de la voyelle). Récrit AVANT que la normalisation ne perde le signe ; la marque coréenne se lit sur le nom tel qu'écrit */
+  const breveCoreen = BREVE_COREEN.test(nom.normalize("NFC"));
+  if (breveCoreen) nom = nom.normalize("NFC").replace(/ŏ/g, "eo").replace(/ŭ/g, "eu").replace(/Ŏ/g, "Eo").replace(/Ŭ/g, "Eu");
   /* L'apostrophe DANS un mot le soude (« O'Brien », « Ch'iao ») : en faire une frontière
      de mot fabriquerait des jetons d'une ou deux lettres qui ne désignent rien. « F.lli »
      (fratelli) et « LPG/C » (LPG carrier) ont une ponctuation qui porte le sens : lus avant. */
@@ -1580,7 +1657,11 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const abreges = new Set([...soude.matchAll(/(\p{L}{2,})\./gu)].map((m) => normaliser(m[1]!)));
   /* le nom est japonais par ses kana, sa forme ou l'un de ses mots (la marque `japonais`, lue ici avant les tables :
      ses mots de métier se traduisent aussi sous le pli des deux romanisations, voir `traduction`) */
-  const japonaisPresume = estJaponais(nom) || jetons(normaliser(plier(soude))).some((j) => MARQUEURS_JAPONAIS.has(j));
+  const japonaisPresume = estJaponais(nom) || jetons(normaliser(plier(soude))).some(estMarqueurJaponais);
+  /* et coréen par son hangul, ses hanja (la lecture `hanja`), le brève du McCune-Reischauer ou l'un de ses mots sous l'un ou l'autre
+     système : ses mots de métier se traduisent sous le pli coréen (voir TRADUCTIONS_COREENNES) */
+  const coreenPresume = /[\uac00-\ud7a3]/u.test(nom) || lecture === "hanja" || breveCoreen
+    || jetons(normaliser(plier(soude))).some(estMarqueurCoreen);
   const neerlandais = jetons(normaliser(soude)).some((j) => MARQUEURS_NEERLANDAIS.has(j)) || ["hand", "scheepv", "exped", "handelsond"].some((j) => abreges.has(j));
   const pakistanais = jetons(normaliser(soude)).some((j) => MARQUEURS_PAKISTANAIS.has(j));
   /* le nom est slave par son écriture, sa forme, un mot du commerce translittéré, un grade, le teplokhod ou un suffixe
@@ -1624,7 +1705,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     .flatMap((m) => {
       let dedans = ` ${jetons(normaliser(plier(m[1]!))).join(" ")} `;
       for (const [de, vers] of LOCUTIONS) dedans = dedans.split(de).join(vers);
-      return dedans.trim().split(/ +/).flatMap((j) => (CIVILITES.has(j) ? "" : ABREVIATIONS.get(j) ?? traduction(j, japonaisPresume, slave, grecPresume) ?? j).split(" "));
+      return dedans.trim().split(/ +/).flatMap((j) => (CIVILITES.has(j) ? "" : ABREVIATIONS.get(j) ?? traduction(j, japonaisPresume, slave, grecPresume, coreenPresume) ?? j).split(" "));
     })
     .filter((j) => j !== "" && !FORMES.has(j)));
   /* Lettres et chiffres collés se séparent : « No18 » → « No 18 », « LANQIAOFENG16 » →
@@ -1632,7 +1713,8 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* une forme ÉPELÉE avec des espaces (« S A S », « S de R L », « S A de C V », jeu 11) : les lettres seules qui se
      suivent se soudent, comme le font déjà les points (« S.A.S. ») ; « J P Morgan » devient « JP Morgan », rien de plus */
   const brut = jetons(jetons(normaliser(soude).replace(/\b\p{L}(?: \p{L})+\b/gu, (m) => m.replace(/ /g, ""))).map(ocr).join(" ")
-    .replace(/(\p{L})(\d)/gu, "$1 $2").replace(/(\d)(\p{L})/gu, "$1 $2")).map(digrammeOptique).map(lInitialLuPourI).map(motDuMetierPerdu);
+    .replace(/(\p{L})(\d)/gu, "$1 $2").replace(/(\d)(\p{L})/gu, "$1 $2")).map(digrammeOptique).map(lInitialLuPourI).map(motDuMetierPerdu)
+    .flatMap((j) => (japonaisPresume ? couperMetierJaponais(j) : couperMetierCoreen(j, coreenPresume)));
   const joints = brut;
   /* « No. », « Nr. », « Number » devant un numéro ne sont que le mot « numéro ». */
   const sansNo = joints.filter((j, i) => !(/^(no|nr|num|number)$/.test(j) && /^\d+$/.test(joints[i + 1] ?? "")));
@@ -1742,7 +1824,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
        Quatre lettres au moins derrière l'article, et jamais un mot que le dictionnaire, les formes ou les tables connaissent
        (Alliance, Alpine, Alhandasiya) */
     if (arabePresume && j.length >= 6 && j.startsWith("al") && !connu(j) && !MARQUEURS_ARABES.has(j) && !MARQUEURS_PERSANS.has(j)) {
-      const reste = j.slice(2), t = traduction(reste, japonaisPresume, slave, grecPresume);
+      const reste = j.slice(2), t = traduction(reste, japonaisPresume, slave, grecPresume, coreenPresume);
       if (t === undefined) return ["al", reste];
       for (const m of t.split(" ")) if (m !== "") { traduits.add(m); if (!sources.has(m)) sources.set(m, reste); }
       return ["al", ...t.split(" ").filter((m) => m !== "")];
@@ -1768,16 +1850,16 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     /* une abréviation développée se traduit comme le mot entier : « Tic. » est ticaret, donc trading (jeu 13, 28/09 :
        « Tasimaciligi Tic. AS » à 0,704 face à « Ticaret A.Ş. », l'un traduit et l'autre non) */
     if (a !== undefined) return a.split(" ").flatMap((m) => {
-      const t = m === "" ? undefined : traduction(m, japonaisPresume, slave, grecPresume);
+      const t = m === "" ? undefined : traduction(m, japonaisPresume, slave, grecPresume, coreenPresume);
       if (t === undefined) return [m];
       for (const x of t.split(" ")) if (x !== "") { traduits.add(x); if (!sources.has(x)) sources.set(x, j); }
       return t.split(" ");
     });
     const p = PAYS_ADJECTIFS.get(j);
     if (p !== undefined) return [p];
-    let t = traduction(j, japonaisPresume, slave, grecPresume);
+    let t = traduction(j, japonaisPresume, slave, grecPresume, coreenPresume);
     /* « Comercioo de Graos » (jeu 16) : la lettre doublée d'un mot de métier que les tables connaissent sans elle */
-    if (t === undefined && /(\p{L})\1/u.test(j) && lemme(j) === undefined) { const d = j.replace(/(\p{L})\1/gu, "$1"); t = d === j ? undefined : traduction(d, japonaisPresume, slave, grecPresume); }
+    if (t === undefined && /(\p{L})\1/u.test(j) && lemme(j) === undefined) { const d = j.replace(/(\p{L})\1/gu, "$1"); t = d === j ? undefined : traduction(d, japonaisPresume, slave, grecPresume, coreenPresume); }
     if (t === undefined) return [j];
     for (const m of t.split(" ")) if (m !== "") { traduits.add(m); if (!sources.has(m)) sources.set(m, j); }
     return t.split(" ");
@@ -1851,10 +1933,16 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      l'armateur du même nom ne se confondent pas */
   const maru = japonaisPresume && t.length >= 2 && t.includes("maru");
   if (maru) {
+    /* le numéral en lettres, soudé (« Daihachi », 第八) ou détaché (« Dai-hachi », « Dai Hachi »), sous les deux romanisations et
+       jusqu'à 99 (第十一 : daijuichi), lu par `numeroDai` (kanji.ts ; tour 15, jeu 19) */
+    const detache = t[0] === "dai" && t.length >= 3 ? numeroDai("dai" + t[1]!) : undefined;
     if (t[0] === "dai" && /^\d+$/.test(t[1]!)) t = t.slice(1);
-    else { const n = NUMERAUX_DAI.get(pliJaponais(t[0]!)); if (n !== undefined) t = [n, ...t.slice(1)]; }
+    else if (detache !== undefined) t = [String(detache), ...t.slice(2)];
+    else { const n = numeroDai(t[0]!); if (n !== undefined) t = [String(n), ...t.slice(1)]; }
   }
   if (maru) navire = true;
+  /* la civilité japonaise en queue (さん, 御中, 様 : voir HONORIFIQUES_JAPONAIS), sous la marque et hors d'un navire */
+  if (japonaisPresume && !maru && t.length >= 2 && HONORIFIQUES_JAPONAIS.has(t[t.length - 1]!)) { civilites.add(t[t.length - 1]!); t = t.slice(0, -1); }
   /* « i » (« et », en serbe, croate, polonais) ne s'efface qu'ENTRE deux mots : en dernière
      position, formes juridiques ôtées, c'est le chiffre romain I (« Holdings I S.A. », mesuré
      le 27/09 : il disparaissait et « Holdings I » ne se distinguait plus de « Holdings III ») */
@@ -1887,16 +1975,28 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const arabe = /[\u0600-\u06ff]/.test(nom) || etablissementDuGolfe || arabizi.lu || tousLesMots.some((j) => MARQUEURS_ARABES.has(j) || MARQUEURS_PERSANS.has(j));
   /* un nom écrit en kana ou avec une forme japonaise, en sinogrammes, en hangul, est de cette
      langue avant tout marqueur : ses jetons viennent de `romaniser` (ecritures.ts) */
-  const japonais = estJaponais(nom) || tousLesMots.some((j) => MARQUEURS_JAPONAIS.has(j));
-  const chinois = pays.has("CN") || REGIONS.has(t[0] ?? "") || ecritEnSinogrammes || lecture !== "mandarin"
+  const japonais = estJaponais(nom) || tousLesMots.some(estMarqueurJaponais);
+  const chinois = pays.has("CN") || REGIONS.has(t[0] ?? "") || (ecritEnSinogrammes && lecture !== "hanja") || (lecture !== "mandarin" && lecture !== "hanja")
     || tousLesMots.some((j) => MARQUEURS_CHINOIS.has(j));
   /* et, sous une forme d'Asie de l'Est (« Co., Ltd. », pays KR possible) et hors d'un nom japonais, un mot que le
      dictionnaire ignore et qui écrit le digramme « eo » (ㅓ en romanisation révisée : Cheonghae, Seorim, Gyeongbo) :
      ni le japonais ni le pinyin ne l'écrivent, et c'est la seule trace du coréen dans « Cheonghae Marine Co., Ltd. »
      (jeu 11, 28/09 : 0,807 face à « Chunghae Marine », le pli coréen fermé faute de marque ; mesuré sur les onze
      jeux, les vingt et un noms que ce digramme marque sont tous coréens) */
-  const coreen = /[\uac00-\ud7a3]/u.test(nom) || tousLesMots.some((j) => MARQUEURS_COREENS.has(j))
-    || (pays.has("KR") && !japonais && t.some((j) => j.includes("eo") && lemme(j) === undefined));
+  /* et le digramme « eu » (ㅡ : Geumnae, Haneul, Heuksong) au même titre, hors d'un nom thaï (« Rungreung », jeu 7 : le seul autre
+     mot des dix-neuf jeux à le porter sous cette forme, mesuré le 28/09) */
+  const thaiPresume = THAI.test(nom) || tousLesMots.some((j) => MARQUEURS_THAIS.has(j));
+  const coreen = coreenPresume || tousLesMots.some(estMarqueurCoreen)
+    || (pays.has("KR") && !japonais && !thaiPresume && t.some((j) => (j.includes("eo") || j.includes("eu")) && lemme(j) === undefined));
+  /* LE 호 DES NAVIRES CORÉENS, romanisé « Ho » en queue (« Yongdu Ho No. 7 », « Eunpa Ho », « Ŭnp'a Ho ») : le suffixe qui dit le
+     navire, comme le Maru japonais (la marque `navire`, le mot gardé ; le nom sans lui est une variante de plus, voir
+     `variantesTypees`). Après un mot que le dictionnaire ignore (« Tally Ho » reste entier), hors d'une société et d'un nom
+     chinois (何, 河, 浩 : « Wing Ho » est un prénom), devant le numéro au plus (tour 15, jeu 19 : « naraenuri-ho » face à
+     « Naraenari Ho », 0,867, deux coques à une lettre près sans signe de navire) */
+  if (!societe && !chinois && !japonais && t.length >= 2) {
+    const iHo = t.length - 1 - (/^\d+$/.test(t[t.length - 1]!) ? 1 : 0);
+    if (iHo >= 1 && t[iHo] === "ho" && (t[iHo - 1]!.length >= 3) && lemme(t[iHo - 1]!) === undefined) navire = true;
+  }
   const hebreuOuGrec = /[\u0370-\u03ff\u0590-\u05ff]/.test(nom) || grecPresume
     || tousLesMots.some((j) => MARQUEURS_HEBREUX.has(j) || estMarqueurGrec(j));
   const prive = tousLesMots.some((j) => QUALIFICATIFS_PRIVES.has(j)) || privePhrase;
@@ -1921,7 +2021,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const chat = t.length >= 2 && !majuscules && (!/\p{Lu}/u.test(nom) || !/[.,()]/.test(nom));
   return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites, traduits, sources, sigles,
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
-    hebreuOuGrec, indien, hispanique, tamoul, thai, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture !== "mandarin", lecture, priveInconnu,
+    hebreuOuGrec, indien, hispanique, tamoul, thai, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture !== "mandarin" && lecture !== "hanja", lecture, priveInconnu,
     natifs: rom.natifs, filiation, filiationOrdre, succursale, typeNavire, slave };
 }
 
