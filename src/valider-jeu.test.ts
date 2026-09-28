@@ -10,7 +10,7 @@ import { existsSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
-  analyserJeu, cleDePaire, copier, nettoyerCadratins, normaliserNom, numeroDuJeu, refusDeStructure,
+  analyserJeu, cleDePaire, copier, lireAttendu, nettoyerCadratins, normaliserNom, numeroDuJeu, refusDeStructure,
   PHRASE_CADRATINS, type JeuBrut, type Nom, type PaireBrute,
 } from "./valider-jeu.ts";
 
@@ -107,6 +107,20 @@ test("valider-jeu : la structure refuse une clé de trop, une clé manquante, un
   const petit = analyserJeu(texte(jeu([{ a: "Un", b: "Deux", verdict: "match", nature: "x" }])), []);
   assert.deepEqual(petit.refus, ["1 pairs, 1 match, 0 different: expected 400/200/200"]);
   assert.match(analyserJeu("{ not json", []).refus[0]!, /not valid JSON/);
+});
+
+test("valider-jeu : --attendu accepte les comptes d'un jeu realiste, et rien d'autre ne les accepte", () => {
+  const paires: PaireBrute[] = [];
+  for (let i = 0; i < 4; i++) paires.push({ a: `Alpha ${i}`, b: `Alpha ${i} Ltd`, verdict: "match", nature: "x" });
+  for (let i = 0; i < 2; i++) paires.push({ a: `Beta ${i}`, b: `Gamma ${i}`, verdict: "different", nature: "x" });
+  const j = texte(jeu(paires, { provenance: "realistic set #20, authored blind" }));
+  assert.deepEqual(analyserJeu(j, [], { attendu: { paires: 6, match: 4, different: 2 } }).refus, []);
+  assert.deepEqual(analyserJeu(j, []).refus, ["6 pairs, 4 match, 2 different: expected 400/200/200"]);
+  assert.equal(numeroDuJeu("realistic set #20, authored blind"), 20);
+  assert.deepEqual(lireAttendu("--attendu=600/400/200"), { paires: 600, match: 400, different: 200 });
+  assert.equal(lireAttendu(undefined), undefined);
+  assert.throws(() => lireAttendu("--attendu=600/400/100"), /match \+ different/);
+  assert.throws(() => lireAttendu("--attendu=six"), /expected --attendu/);
 });
 
 test("valider-jeu : les cadratins des noms deviennent un tiret, et la provenance le dit une fois", () => {

@@ -10,8 +10,11 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const SCRIPT = fileURLToPath(new URL("../scripts/exemple.sh", import.meta.url));
+/* Le script d'exemple est un outil de développeur écrit en zsh : là où zsh manque (Windows), son test
+ * est sauté et le dit, au lieu d'échouer sur un shell que le client ne lance jamais. */
+const ZSH = spawnSync("zsh", ["--version"], { encoding: "utf8" }).status === 0;
 
-test("exemple.sh : la syntaxe passe, et sans ses arguments il refuse avant toute étape", () => {
+test("exemple.sh : la syntaxe passe, et sans ses arguments il refuse avant toute étape", { skip: ZSH ? false : "zsh is not installed on this machine" }, () => {
   const syntaxe = spawnSync("zsh", ["-n", SCRIPT], { encoding: "utf8" });
   assert.equal(syntaxe.status, 0, syntaxe.stderr);
   const sansRien = spawnSync("zsh", [SCRIPT], { encoding: "utf8" });

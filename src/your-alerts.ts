@@ -29,6 +29,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { basename } from "node:path";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { lireTable, apercu, MONTRES } from "./csv.ts";
 import { rate, type Rate } from "./interval.ts";
@@ -299,7 +300,7 @@ export function mesurer(
 export function commitCourant(): { commit: string } | null {
   try {
     const commit = execFileSync("git", ["rev-parse", "--short", "HEAD"],
-      { cwd: new URL(".", import.meta.url).pathname, encoding: "utf8" }).trim();
+      { cwd: fileURLToPath(new URL(".", import.meta.url)), encoding: "utf8" }).trim();
     return commit ? { commit } : null;
   } catch { return null; }
 }
