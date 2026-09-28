@@ -1,5 +1,11 @@
 node_modules
-data/
+# data/ holds the downloaded lists (never committed) and the frequency tables computed from them;
+# the table named by the current manifest fingerprint IS committed: it carries the weights every
+# frozen figure depends on, so the measure replays on a fresh clone without the lists
+data/*
+!data/frequences.*.json
 .DS_Store
+# the desktop app's worktrees for agent lanes
+.claude/worktrees
 cle-privee.pem
 *.key
