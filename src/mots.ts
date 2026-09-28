@@ -776,3 +776,9 @@ export function patronymeSlave(m: string): boolean {
 export function pliUmlaut(m: string): string {
   return m.replace(/ae/g, "a").replace(/oe/g, "o").replace(/ue/g, "u");
 }
+
+/** Un mot COURANT de l'anglais, sous une forme fléchie ou non : services, operators, industries, packaging.
+ *  C'est le mot qu'on abrège sans point (« srvcs », « ops », « inds », « pkg ») ; un nom propre, non. */
+export function estMotCourant(m: string): boolean {
+  return racines(m).some((r) => DICTIONNAIRE.has(r));
+}
