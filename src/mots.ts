@@ -753,10 +753,17 @@ export const CREDIT_CYRILLIQUE = 0.95;
  *  deux systèmes, comme les kana et le cyrillique (jeu 13, 28/09 : « Phrachan Ngoen » face à « Prajan Ngern » à 0,203 ; à 0,85,
  *  deux mots au crédit ne font pas un nom fort). */
 export function pliThai(m: string): string {
-  return m.replace(/ph/g, "p").replace(/th/g, "t").replace(/kh/g, "k").replace(/ch/g, "j").replace(/v/g, "w")
-    .replace(/oe/g, "e").replace(/er/g, "e").replace(/ue|eu/g, "u").replace(/ae/g, "a")
-    .replace(/r(?=[^aeiou]|$)/g, "").replace(/l$/, "n").replace(/ee/g, "i").replace(/oo/g, "u").replace(/aa/g, "a")
-    .replace(/(?<=[aeiou])w$/, "o").replace(/ay$/, "ai").replace(/(.)\1+/g, "$1");
+  /* tour 18 (jeu 22) : le จ final écrit j ou tch (« Rungroj », « Rungrot » ; « Petch », « Phet »), le อำ écrit um (« Numthip »,
+     « Namthip »), le ศักดิ์ écrit avec ou sans son ดิ muet (« Pongsakdi », « Phongsak »), le ศรี écrit sri ou si, เ-อ et อือ sous
+     une même classe (« Chaloen », « Chaleun », « Chalern »), le e muet d'une syllabe fermée (« Choke », « Chok »), le a final d'un
+     mot sanskrit en -n (« Suwanna », « Suwan »), le dh des vieilles graphies sanskrites (« Ayudhya », « Ayutthaya ») ; et le latin de Vientiane (« Xay » x pour s, « Boun » ou pour u, « -vanh » nh
+     pour n, « -my » y pour i), le lao partageant la marque */
+  return m.replace(/ph/g, "p").replace(/th|dh/g, "t").replace(/kh/g, "k").replace(/tch$/, "t").replace(/ch/g, "j").replace(/j$/, "t")
+    .replace(/x/g, "s").replace(/v/g, "w").replace(/sakdi/g, "sak").replace(/^sri/, "si")
+    .replace(/oe|er|ue|eu/g, "u").replace(/ae/g, "a").replace(/um/g, "am")
+    .replace(/r(?=[^aeiou]|$)/g, "").replace(/l$/, "n").replace(/nh$/, "n").replace(/ee/g, "i").replace(/oo|ou/g, "u").replace(/aa/g, "a")
+    .replace(/(?<=[aeiou])w$/, "o").replace(/ay$/, "ai").replace(/y$/, "i").replace(/(?<=[^aeiou])e$/, "").replace(/(?<=n)a$/, "")
+    .replace(/(.)\1+/g, "$1");
 }
 export const CREDIT_THAI = 0.95;
 /** LES QUEUES DES COMPOSÉS SLAVES : -stroy (строй, la construction), -prom (l'industrie), -snab (l'approvisionnement),

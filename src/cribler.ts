@@ -42,6 +42,8 @@ import {
   BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare, type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme, pliEnye,
 } from "./entites.ts";
 import { cleAbjad, cleAbjadSansTa, cleAbjadVLuF, cleAbjadVoyelles, type Abjad } from "./ecritures.ts";
+import { pliBirman, CREDIT_BIRMAN } from "./birman.ts";
+import { pliKhmer, CREDIT_KHMER } from "./khmer.ts";
 import { distanceOsa } from "./matchers/damerau.ts";
 
 /** Au plus autant de candidats montrés par nom ; le compte des autres est donné. */
@@ -182,7 +184,9 @@ type MotIndexe = { mot: string; sq: string; repli: string; abregeVu: boolean; no
    *  ne le tient plus pour un mot anglais (voir `anglais` dans scorePrepares et ARTICLES_ARABES) */
   apresArticleVu: boolean;
   /** une chaîne listée marquée thaïe porte ce mot (voir `pliThai`) */
-  thaiVu: boolean };
+  thaiVu: boolean;
+  /** une chaîne listée marquée birmane, khmère, porte ce mot (voir `pliBirman`, `pliKhmer` ; tour 18) */
+  birmanVu: boolean; khmerVu: boolean };
 
 /**
  * L'INDEX, ET POURQUOI IL NE PERD RIEN.
@@ -263,6 +267,11 @@ export class Index {
   /** le pli du thaï (`pliThai`, CREDIT_THAI), dans les deux sens de la marque comme le japonais */
   private readonly parPliThai = new Map<string, MotIndexe[]>();
   private readonly parPliThaiNatif = new Map<string, MotIndexe[]>();
+  /** le pli du birman (`pliBirman`, CREDIT_BIRMAN) et celui du khmer (`pliKhmer`, CREDIT_KHMER), dans les deux sens de la marque comme le thaï */
+  private readonly parPliBirman = new Map<string, MotIndexe[]>();
+  private readonly parPliBirmanNatif = new Map<string, MotIndexe[]>();
+  private readonly parPliKhmer = new Map<string, MotIndexe[]>();
+  private readonly parPliKhmerNatif = new Map<string, MotIndexe[]>();
   /** la clé phonétique anglaise des mots listés (`clePhonetique`) : c'est là que l'homophone d'un clavardage (0,9, « Steal » pour
    *  Steel) cherche le mot du commerce, et le mot du commerce son homophone (voir `homophoneCorrige`) */
   private readonly parClePhonetique = new Map<string, MotIndexe[]>();
@@ -322,7 +331,7 @@ export class Index {
           let m = this.vocabulaire.get(mot);
           if (!m) {
             m = { mot, sq: nom.squelettes[i]!, repli: nom.replis[i]!, abregeVu: nom.abreges[i]!, sigleVu: nom.sigles[i]!, noms: [k], abjadVu: "", cantonaisVu: false, grecVu: false,
-              japonaisVu: false, coreenVu: false, slaveVu: false, apresArticleVu: false, thaiVu: false };
+              japonaisVu: false, coreenVu: false, slaveVu: false, apresArticleVu: false, thaiVu: false, birmanVu: false, khmerVu: false };
             const ps = pliSlave(mot);
             ranger(this.parPliSlave, ps, m);
             for (const k of clesSlaves(mot)) if (k !== ps) ranger(this.parPliSlaveAllemand, k, m);
@@ -332,6 +341,8 @@ export class Index {
             ranger(this.parPliCoreen, pliCoreen(mot), m);
             for (const k of clesGrecques(mot)) ranger(this.parPliGrec, k, m);
             ranger(this.parPliThai, pliThai(mot), m);
+            ranger(this.parPliBirman, pliBirman(mot), m);
+            ranger(this.parPliKhmer, pliKhmer(mot), m);
             if (mot.length >= 4) ranger(this.parClePhonetique, clePhonetique(mot), m);
             this.vocabulaire.set(mot, m);
             ranger(this.parInitialeLongueur, mot[0]! + mot.length, m);
@@ -386,6 +397,8 @@ export class Index {
           if (nom.marques.coreen && !m.coreenVu) { m.coreenVu = true; ranger(this.parPliCoreenNatif, pliCoreen(mot), m); }
           if (nom.marques.hebreuOuGrec && !m.grecVu) { m.grecVu = true; for (const k of clesGrecques(mot)) ranger(this.parPliGrecNatif, k, m); }
           if (nom.marques.thai && !m.thaiVu) { m.thaiVu = true; ranger(this.parPliThaiNatif, pliThai(mot), m); }
+          if (nom.marques.birman && !m.birmanVu) { m.birmanVu = true; ranger(this.parPliBirmanNatif, pliBirman(mot), m); }
+          if (nom.marques.khmer && !m.khmerVu) { m.khmerVu = true; ranger(this.parPliKhmerNatif, pliKhmer(mot), m); }
           if (nom.marques.slave && !m.slaveVu) {
             m.slaveVu = true;
             const ps = pliSlave(mot);
@@ -434,8 +447,8 @@ export class Index {
 
   /** Les chaînes listées dont un mot est assez proche de `mot` (mêmes règles que le score). */
   private nomsParMot(mot: string, sq: string, repli: string, dernier: boolean, coupe: boolean, abreviation: boolean, abjad: Abjad, cantonais: boolean,
-    japonais: boolean, coreen: boolean, slave: boolean, grec: boolean, apresArticle: boolean, thai: boolean): number[] {
-    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}|${abjad}|${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${slave ? 1 : 0}${grec ? 1 : 0}${apresArticle ? 1 : 0}${thai ? 1 : 0}`;
+    japonais: boolean, coreen: boolean, slave: boolean, grec: boolean, apresArticle: boolean, thai: boolean, birman: boolean, khmer: boolean): number[] {
+    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}|${abjad}|${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${slave ? 1 : 0}${grec ? 1 : 0}${apresArticle ? 1 : 0}${thai ? 1 : 0}${birman ? 1 : 0}${khmer ? 1 : 0}`;
     /* deux mots du dictionnaire ne sont deux mots anglais que hors de l'article arabe, d'un côté comme de l'autre (voir ARTICLES_ARABES) */
     const anglais = (autre: MotIndexe) => tousDeuxAnglais(mot, autre.mot) && !apresArticle && !autre.apresArticleVu;
     const deja = this.cacheMots.get(cle);
@@ -496,6 +509,9 @@ export class Index {
     if (t <= CREDIT_KANA) for (const m of (japonais ? this.parPliJaponais : this.parPliJaponaisNatif).get(pliJaponais(mot)) ?? []) retenus.add(m);
     /* les mêmes lettres thaïes (CREDIT_THAI), dans les deux sens de la marque */
     if (t <= CREDIT_THAI) for (const m of (thai ? this.parPliThai : this.parPliThaiNatif).get(pliThai(mot)) ?? []) retenus.add(m);
+    /* la même syllabe birmane (CREDIT_BIRMAN) ou khmère (CREDIT_KHMER), dans les deux sens de la marque (tour 18) */
+    if (t <= CREDIT_BIRMAN) for (const m of (birman ? this.parPliBirman : this.parPliBirmanNatif).get(pliBirman(mot)) ?? []) retenus.add(m);
+    if (t <= CREDIT_KHMER) for (const m of (khmer ? this.parPliKhmer : this.parPliKhmerNatif).get(pliKhmer(mot)) ?? []) retenus.add(m);
     /* les mêmes lettres grecques (CREDIT_GREC), sous chaque clé du mot demandé, dans les deux sens de la marque grecque ou hébraïque */
     if (t <= CREDIT_GREC) for (const k of clesGrecques(mot)) for (const m of (grec ? this.parPliGrec : this.parPliGrecNatif).get(k) ?? []) retenus.add(m);
     /* la même suite cyrillique (CREDIT_CYRILLIQUE), dans les deux sens de la marque ; et, au crédit d'une romanisation, la
@@ -637,7 +653,7 @@ export class Index {
     const coupe = estCoupe(brut);
     q.mots.forEach((m, i) => {
       for (const k of this.nomsParMot(m, q.squelettes[i]!, q.replis[i]!, i === q.mots.length - 1, coupe, q.abreges[i]!, q.marques.abjad, q.marques.cantonais,
-        q.marques.japonais, q.marques.coreen, q.marques.slave, q.marques.hebreuOuGrec, i > 0 && ARTICLES_ARABES.has(q.mots[i - 1]!), q.marques.thai)) retenus.add(k);
+        q.marques.japonais, q.marques.coreen, q.marques.slave, q.marques.hebreuOuGrec, i > 0 && ARTICLES_ARABES.has(q.mots[i - 1]!), q.marques.thai, q.marques.birman, q.marques.khmer)) retenus.add(k);
       /* une civilité que la requête soude au mot suivant (« sripelangi »), ou qu'elle écrit à part
          quand une chaîne listée la soude : mêmes règles que le score, qui vérifie que l'autre côté
          l'a écrite ; ici on retient large */

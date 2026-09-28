@@ -719,7 +719,8 @@ test("tour 5 : le thaï se lit (RTGS), se compare sur ses consonnes, et ses mots
   /* la préparation : formes, préfixe de navire, parenthèse de pays, mots collés */
   assert.equal(preparerEntite("บริษัท โชคดี โฟรเซ่น ฟู้ด จำกัด"), "chokdi frozen food");
   assert.equal(preparerEntite("บริษัท น้ำตาลรุ่งโรจน์ จำกัด"), "sugar rungrot", "le mot du commerce collé au nom propre");
-  assert.equal(preparerEntite("เรือลำเลียง ทองเจริญ 9"), "thongcharoen 9");
+  /* tour 18 : le lecteur thaï coupe le nom soudé à ses mots (ทอง เจริญ), comme la graphie latine « Thong Charoen » */
+  assert.equal(preparerEntite("เรือลำเลียง ทองเจริญ 9"), "thong charoen 9");
   assert.ok(analyserEntite("เรือลำเลียง ทองเจริญ 9").navire);
   assert.deepEqual(analyserEntite("บริษัท เคนันกา แปซิฟิก (ประเทศไทย) จำกัด").pays, ["TH"]);
   assert.deepEqual([...analyserEntite("บริษัท เคนันกา แปซิฟิก (ประเทศไทย) จำกัด").parentheses], ["thailand"]);

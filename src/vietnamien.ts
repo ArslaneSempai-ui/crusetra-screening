@@ -12,7 +12,7 @@
  *  circonflexe (« Côte », « Hôtel ») et le seul aigu ne suffisent pas : c'est du français. */
 const ECRITURE_VIETNAMIENNE = /[đĐ]|[̛̣̉]|[̂̆][̣̀́̃̉]/u;
 /** Les formes et sigles vietnamiens, tels que la normalisation les laisse (avant que PHRASES ne les ôte). */
-const FORMES_VIETNAMIENNES = / (?:cong ty|tnhh|co phan|cty|cty cp|hochiminh|tp ho chi minh) /;
+const FORMES_VIETNAMIENNES = / (?:cong ty|tnhh|co phan|cty|cty cp|ctcp|dntn|private enterprise|hochiminh|tp ho chi minh) /;
 
 /** Le nom est vietnamien : par son écriture (les signes empilés du quốc ngữ), ou par sa forme (« Công Ty »,
  *  « TNHH », « Cổ Phần », « Cty ») dans le texte préparé. Sans l'un ni l'autre, « May Trading » reste anglais. */
@@ -26,4 +26,8 @@ export function estVietnamien(brut: string, texte: string): boolean {
  *  leurs deux mots ne se confondent avec rien. */
 export const LOCUTIONS_VIETNAMIENNES: readonly [string, string][] = [
   [" may ", " garment "], [" det ", " textile "], [" bao bi ", " packaging "],
+  /* les sigles d'un registre vietnamien : TM (thương mại), SX (sản xuất), DV (dịch vụ), XD (xây dựng), VT (vận tải) ; « tm » est aussi la
+     marque déposée, « dv » une initiale : sous la marque seulement (tour 18, jeu 22 : « Công ty TNHH TM Hoàng Phát Long » face à
+     « HOANG PHAT LONG TRADING COMPANY LIMITED » à 0,717) */
+  [" tmdv ", " trading services "], [" tm ", " trading "], [" sx ", " production "], [" dv ", " services "], [" xd ", " construction "], [" vt ", " transport "],
 ];
