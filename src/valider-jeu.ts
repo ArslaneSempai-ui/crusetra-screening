@@ -4,7 +4,7 @@
  * l'empreinte. Une seule ligne JSON, jamais une paire : le jeu reste aveugle. Le refus tient en
  * une ligne et dit quoi corriger, sans citer un nom.
  *
- *   npm run valider-jeu -- <chemin.json> [--copier]
+ *   npm run valider-jeu -- <chemin.json> [--copier] [--attendu=<paires>/<match>/<different>]
  *
  * `--copier` range le jeu accepté dans ~/Documents/jeux-aveugles/jeu<N>-aveugle.json (N lu dans
  * « blind test set #N » de la provenance ; un fichier présent n'est jamais écrasé), après avoir
@@ -84,7 +84,7 @@ export function lireApprentissage(chemins: readonly URL[] = CHEMINS_APPRENTISSAG
 
 /** Le numéro du jeu, lu dans sa provenance (« blind test set #15 »). */
 export function numeroDuJeu(provenance: string): number | null {
-  const m = /blind test set #(\d+)/.exec(provenance);
+  const m = /(?:blind test|realistic) set #(\d+)/.exec(provenance);
   return m ? Number(m[1]) : null;
 }
 
@@ -102,9 +102,14 @@ export function nettoyerCadratins(jeu: JeuBrut): { jeu: JeuBrut; remplaces: numb
 /**
  * Tout ce que la ligne JSON dit, et tout ce qui refuse. `copier` change une seule chose : un
  * cadratin DANS UN NOM n'est plus un refus, puisqu'il va être remplacé ; ailleurs (quoi,
- * provenance, avertissement, nature) il le reste, parce que rien ne le remplacera.
+ * provenance, avertissement, nature) il le reste, parce que rien ne le remplacera. `attendu` :
+ * les comptes d'un jeu d'une autre nature (le jeu realiste de 600 paires) ; par defaut ceux
+ * d'un jeu aveugle, 400/200/200, et promouvoir n'en connait pas d'autres : un jeu realiste se
+ * juge, il ne s'apprend pas.
  */
-export function analyserJeu(brut: string, apprentissage: readonly (readonly Nom[])[], options: { copier?: boolean } = {}): Analyse {
+export type Attendu = { paires: number; match: number; different: number };
+
+export function analyserJeu(brut: string, apprentissage: readonly (readonly Nom[])[], options: { copier?: boolean; attendu?: Attendu } = {}): Analyse {
   let lu: unknown;
   try { lu = JSON.parse(brut); } catch (e) { return { jeu: null, compte: null, refus: [`not valid JSON (${e instanceof Error ? e.message : String(e)})`] , attention: [] }; }
   const structure = refusDeStructure(lu);
@@ -137,8 +142,9 @@ export function analyserJeu(brut: string, apprentissage: readonly (readonly Nom[
   };
 
   const refus: string[] = [];
-  if (compte.paires !== ATTENDU.paires || match !== ATTENDU.match || different !== ATTENDU.different) {
-    refus.push(`${compte.paires} pairs, ${match} match, ${different} different: expected ${ATTENDU.paires}/${ATTENDU.match}/${ATTENDU.different}`);
+  const attendu: Attendu = options.attendu ?? ATTENDU;
+  if (compte.paires !== attendu.paires || match !== attendu.match || different !== attendu.different) {
+    refus.push(`${compte.paires} pairs, ${match} match, ${different} different: expected ${attendu.paires}/${attendu.match}/${attendu.different}`);
   }
   if (verdictsInconnus > 0) refus.push(`${verdictsInconnus} pair(s) carry a verdict outside match/different`);
   const doubles = [...exacts.values()].filter((n) => n > 1).length;
@@ -163,7 +169,7 @@ export function analyserJeu(brut: string, apprentissage: readonly (readonly Nom[
  *  les octets mêmes qui partent (l'empreinte reste celle du fichier reçu). */
 export function copier(brut: string, jeu: JeuBrut, dossier: string): { chemin: string; sha256: string; remplaces: number } {
   const n = numeroDuJeu(jeu.provenance);
-  if (n === null) throw new Error("the provenance does not say \"blind test set #N\": no number to file the copy under");
+  if (n === null) throw new Error("the provenance does not say \"blind test set #N\" nor \"realistic set #N\": no number to file the copy under");
   const chemin = join(dossier, `jeu${n}-aveugle.json`);
   if (existsSync(chemin)) throw new Error(`${chemin} exists already and is not overwritten`);
   const { jeu: propre, remplaces } = nettoyerCadratins(jeu);
@@ -173,14 +179,28 @@ export function copier(brut: string, jeu: JeuBrut, dossier: string): { chemin: s
   return { chemin, sha256: createHash("sha256").update(texte).digest("hex"), remplaces };
 }
 
+/** `--attendu=600/400/200` : les comptes d'un jeu d'une autre nature que le jeu aveugle. Mal
+ *  forme, il refuse : un compte devine validerait n'importe quoi. */
+export function lireAttendu(drapeau: string | undefined): Attendu | undefined {
+  if (drapeau === undefined) return undefined;
+  const m = /^--attendu=(\d+)\/(\d+)\/(\d+)$/.exec(drapeau);
+  if (!m) throw new Error(`${drapeau}: expected --attendu=<pairs>/<match>/<different>`);
+  const attendu = { paires: Number(m[1]), match: Number(m[2]), different: Number(m[3]) };
+  if (attendu.match + attendu.different !== attendu.paires) throw new Error(`${drapeau}: match + different must equal pairs`);
+  return attendu;
+}
+
 function principal(): void {
-  refuserDrapeauxInconnus(["--copier"]);
+  refuserDrapeauxInconnus(["--copier", "--attendu"]);
   const chemin = process.argv.slice(2).find((a) => !a.startsWith("--"));
-  if (!chemin) { console.error("usage: npm run valider-jeu -- <chemin.json> [--copier]"); process.exit(2); }
+  if (!chemin) { console.error("usage: npm run valider-jeu -- <chemin.json> [--copier] [--attendu=<pairs>/<match>/<different>]"); process.exit(2); }
   if (!existsSync(chemin)) { console.error(`${chemin}: no such file`); process.exit(2); }
   const veutCopier = process.argv.includes("--copier");
   const brut = readFileSync(chemin, "utf8");
-  const { jeu, compte, refus } = analyserJeu(brut, lireApprentissage(), { copier: veutCopier });
+  let attendu: Attendu | undefined;
+  try { attendu = lireAttendu(process.argv.find((a) => a.startsWith("--attendu"))); }
+  catch (e) { console.error(e instanceof Error ? e.message : String(e)); process.exit(2); }
+  const { jeu, compte, refus } = analyserJeu(brut, lireApprentissage(), { copier: veutCopier, attendu });
   if (compte) console.log(JSON.stringify(compte));
   if (refus.length > 0) { console.error(`refused: ${refus.join(" · ")}`); process.exit(1); }
   if (veutCopier && jeu) {
