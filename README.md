@@ -51,6 +51,10 @@ alert and analyst cost are **assumed** and declared. Perturbed variants of list 
 **synthetic**, measured apart, and never merged into a measured recall. Below five confirmed
 matches, no recall is quoted, and the report states why.
 
+## Trust package
+
+For a procurement or compliance review: [what the tool talks to, and when](doc/DATA-FLOW.md), [running on a machine without network](doc/OFFLINE.md), [a pre-filled vendor security questionnaire](doc/SECURITY-QUESTIONNAIRE.md), and [a pilot annex of outsourcing clauses](doc/PILOT-TERMS.md), a draft for counsel.
+
 ## Seals and signatures
 
 Records are sealed (`npm run sceller`) with the same content hash as cascade-routing, and
