@@ -18,6 +18,8 @@
 export const FORMES_KANJI: ReadonlyMap<string, string> = new Map(Object.entries({
   "株式会社": "kabushiki kaisha", "有限会社": "yugen kaisha", "合同会社": "godo kaisha", "合資会社": "goshi kaisha", "合名会社": "gomei kaisha",
   "株式會社": "kabushiki kaisha", "有限會社": "yugen kaisha",
+  /* les formes abrégées entre parenthèses, (株) (有) (同), et leurs formes encerclées ㈱ ㈲ que la compatibilité Unicode y ramène (tour 15) */
+  "(株)": "kabushiki kaisha", "(有)": "yugen kaisha", "(同)": "godo kaisha",
 }));
 
 /** Les mots faits : métiers (en lecture sino-japonaise, ceux de TRADUCTIONS_JAPONAISES et de MARQUEURS_JAPONAIS), lieux,
@@ -50,9 +52,23 @@ export const MOTS_KANJI: ReadonlyMap<string, string> = new Map(Object.entries({
   "鳥取": "tottori", "香川": "kagawa", "徳島": "tokushima", "秋田": "akita", "山形": "yamagata", "群馬": "gunma", "栃木": "tochigi", "埼玉": "saitama",
   "山梨": "yamanashi", "長野": "nagano", "岐阜": "gifu", "滋賀": "shiga", "奈良": "nara", "三菱": "mitsubishi", "三井": "mitsui", "住友": "sumitomo",
   "日立": "hitachi", "東芝": "toshiba", "川崎": "kawasaki", "日産": "nissan", "日野": "hino", "富士": "fuji", "旭": "asahi", "朝日": "asahi",
-  "第一": "daiichi", "第二": "daini", "第三": "daisan", "第五": "daigo", "第八": "daihachi", "第十": "daiju", "丸": "maru",
   "霜月": "shimotsuki", "睦月": "mutsuki", "如月": "kisaragi", "弥生": "yayoi", "卯月": "uzuki", "皐月": "satsuki", "水無月": "minazuki",
   "文月": "fumizuki", "葉月": "hazuki", "長月": "nagatsuki", "神無月": "kannazuki", "師走": "shiwasu",
+  /* tour 15 (jeu 19) : les métiers et les mots faits que les paires ont apportés (化成 kasei, 重機 juki), les mots composés dont
+     la lecture n'est pas la somme des kanji (霧雨 kirisame, 海幸 umisachi, 昭和 showa, 大丸 daimaru), les ères, les maisons de
+     commerce (丸紅, 日商), les mentions d'établissement (支店 shiten, 営業所 eigyosho, 工場 kojo : voir SUCCURSALES_COLLEES,
+     preparation.ts) et les civilités d'un pli (御中 onchu, 様 sama : voir HONORIFIQUES_JAPONAIS) */
+  "化成": "kasei", "重機": "juki", "霧雨": "kirisame", "海幸": "umisachi", "昭和": "showa", "平成": "heisei", "令和": "reiwa",
+  "大正": "taisho", "明治": "meiji", "大丸": "daimaru", "丸紅": "marubeni", "丸善": "maruzen", "日東": "nitto", "日商": "nissho",
+  "日通": "nittsu", "日鉄": "nittetsu", "三和": "sanwa", "三共": "sankyo", "三洋": "sanyo", "三陽": "sanyo", "三幸": "sanko",
+  "三光": "sanko", "協和": "kyowa", "共和": "kyowa", "大同": "daido", "大成": "taisei", "太陽": "taiyo", "太洋": "taiyo", "大洋": "taiyo",
+  "光洋": "koyo", "東亜": "toa", "東邦": "toho", "東和": "towa", "南海": "nankai", "北洋": "hokuyo", "共同": "kyodo", "国際": "kokusai",
+  "中央": "chuo", "山陽": "sanyo", "山陰": "sanin", "信越": "shinetsu", "信州": "shinshu", "紀州": "kishu", "本州": "honshu",
+  "阪急": "hankyu", "近鉄": "kintetsu", "海王": "kaio", "海洋": "kaiyo", "海神": "kaijin", "海龍": "kairyu", "海宝": "kaiho",
+  "旭日": "kyokujitsu", "日章": "nissho", "興亜": "koa", "宝来": "horai", "福寿": "fukuju", "永久": "eikyu", "栄光": "eiko",
+  "光栄": "koei", "瑞穂": "mizuho", "瑞鳳": "zuiho", "飛龍": "hiryu", "翔鶴": "shokaku", "海老": "ebi", "五十嵐": "igarashi",
+  "支店": "shiten", "営業所": "eigyosho", "営業部": "eigyobu", "工場": "kojo", "支社": "shisha", "出張所": "shutchojo", "事業所": "jigyosho",
+  "本社": "honsha", "本店": "honten", "御中": "onchu", "様": "sama", "殿": "dono",
 }));
 
 /** Les kanji un à un, sous la lecture qu'ils prennent dans un patronyme ou un nom de la nature (kun, sauf là où l'usage
@@ -65,12 +81,12 @@ export const KANJI: ReadonlyMap<string, string> = new Map(Object.entries({
   "浜": "hama", "濱": "hama", "港": "minato", "海": "umi", "光": "hikari", "日": "hi", "金": "kane", "富": "tomi", "三": "mi", "一": "ichi",
   "千": "chi", "星": "hoshi", "雪": "yuki", "花": "hana", "桜": "sakura", "鶴": "tsuru", "亀": "kame", "龍": "ryu", "竜": "ryu", "神": "kami",
   "戸": "to", "城": "shiro", "津": "tsu", "尾": "o", "平": "hira", "和": "wa", "栄": "sakae", "豊": "toyo", "吉": "yoshi", "福": "fuku",
-  "幸": "yuki", "清": "kiyo", "黒": "kuro", "白": "shiro", "赤": "aka", "青": "ao", "池": "ike", "泉": "izumi", "滝": "taki", "波": "nami",
+  "幸": "yuki", "清": "kiyo", "黒": "kuro", "白": "shira", "赤": "aka", "青": "ao", "池": "ike", "泉": "izumi", "滝": "taki", "波": "nami",
   "風": "kaze", "雲": "kumo", "春": "haru", "夏": "natsu", "秋": "aki", "冬": "fuyu", "朝": "asa", "空": "sora", "水": "mizu", "火": "hi",
   "土": "tsuchi", "米": "kome", "塩": "shio", "魚": "uo", "鳥": "tori", "馬": "uma", "牛": "ushi", "虎": "tora", "鷹": "taka", "熊": "kuma",
   "鹿": "shika", "岩": "iwa", "坂": "saka", "阪": "saka", "堀": "hori", "倉": "kura", "蔵": "kura", "庄": "sho", "郷": "go", "里": "sato",
   "町": "machi", "市": "ichi", "国": "kuni", "内": "uchi", "外": "soto", "前": "mae", "奥": "oku", "元": "moto", "末": "sue", "久": "hisa",
-  "永": "naga", "長": "naga", "広": "hiro", "太": "ta", "正": "masa", "真": "ma", "直": "nao", "義": "yoshi", "信": "nobu", "忠": "tada",
+  "永": "naga", "長": "naga", "広": "hiro", "太": "ta", "正": "masa", "真": "ma", "直": "nao", "義": "yoshi", "信": "shin", "忠": "tada",
   "孝": "taka", "徳": "toku", "英": "hide", "秀": "hide", "勝": "katsu", "武": "take", "文": "fumi", "宝": "takara", "玉": "tama", "根": "ne",
   "枝": "eda", "葉": "ha", "実": "mi", "菊": "kiku", "蘭": "ran", "柳": "yanagi", "杉": "sugi", "桐": "kiri", "楠": "kusu", "榊": "sakaki",
   "笹": "sasa", "萩": "hagi", "藪": "yabu", "畑": "hata", "畠": "hata", "岸": "kishi", "浦": "ura", "潟": "kata", "洲": "su", "瀬": "se",
@@ -83,4 +99,69 @@ export const KANJI: ReadonlyMap<string, string> = new Map(Object.entries({
   "銀": "gin", "銅": "do", "鉄": "tetsu", "鋼": "hagane", "錦": "nishiki", "絹": "kinu", "糸": "ito", "布": "nuno", "紙": "kami", "酒": "sake",
   "茶": "cha", "麦": "mugi", "豆": "mame", "栗": "kuri", "柿": "kaki", "梨": "nashi", "桃": "momo", "橘": "tachibana", "柚": "yuzu",
   "鮎": "ayu", "鯛": "tai", "鯨": "kujira", "鰹": "katsuo", "鮭": "sake", "鱒": "masu", "蟹": "kani", "貝": "kai", "珠": "tama", 
+  /* tour 15 (jeu 19) : les kanji des noms de navires et de sociétés que le jeu a apportés (駒 koma, 若 waka, 鷲 washi, 鳴 naru,
+     凪 nagi, 岬 misaki, 鳩 hato, 助 suke, 淀 yodo, 舟 fune, 早 haya), et les autres noms de la nature, des couleurs, des bêtes,
+     des lieux, des nombres et des vertus, chacun sous la lecture qu'il prend dans un nom. 丸 se lit ici (maru) dans un nom
+     de société (丸信 Marushin) et à part en queue d'un nom de navire (voir `japonais`, ecritures.ts) */
+  "丸": "maru", "駒": "koma", "若": "waka", "蒼": "so", "鷲": "washi", "鳴": "naru", "之": "no", "江": "e", "凪": "nagi", "岬": "misaki",
+  "鳩": "hato", "助": "suke", "霧": "kiri", "雨": "ame", "淀": "yodo", "舟": "fune", "早": "haya", "八": "ya", "二": "ni", "四": "yo",
+  "五": "go", "六": "roku", "七": "nana", "九": "ku", "十": "to", "百": "momo", "万": "man", "号": "go",
+  "峠": "toge", "磯": "iso", "灘": "nada", "沖": "oki", "洋": "yo", "湾": "wan", "渕": "fuchi", "洞": "hora", "穴": "ana", "嶽": "take",
+  "草": "kusa", "苔": "koke", "葦": "ashi", "椿": "tsubaki", "楓": "kaede", "檜": "hinoki", "桧": "hinoki", "樫": "kashi", "欅": "keyaki",
+  "樹": "ki", "桂": "katsura", "楢": "nara", "柏": "kashiwa", "榎": "enoki", "梶": "kaji", "椎": "shii", "櫻": "sakura", "蔦": "tsuta",
+  "葛": "kuzu", "芦": "ashi", "荻": "ogi", "稲": "ine", "稻": "ine", "穂": "ho", "粟": "awa", "芋": "imo", "瓜": "uri", "麻": "asa",
+  "綿": "wata", "桑": "kuwa", "苺": "ichigo", "蓮": "hasu",
+  "鷺": "sagi", "鴨": "kamo", "雁": "kari", "鶯": "uguisu", "燕": "tsubame", "雀": "suzume", "鳶": "tobi", "隼": "hayabusa", "鴻": "ko",
+  "鵜": "u", "鷗": "kamome", "鴎": "kamome", "兎": "usagi", "猿": "saru", "狐": "kitsune", "狸": "tanuki", "猫": "neko", "犬": "inu",
+  "羊": "hitsuji", "象": "zo", "獅": "shishi", "蝶": "cho", "蜂": "hachi", "鮪": "maguro", "鰤": "buri", "鯖": "saba", "鰯": "iwashi",
+  "鰻": "unagi", "鱈": "tara", "鮫": "same", "鯉": "koi", "鮒": "funa", "蛸": "tako", "烏": "karasu", "鵬": "ho", "鳳": "ho", "麒": "ki",
+  "麟": "rin", "汐": "shio", "渚": "nagisa", "濤": "nami", "舵": "kaji", "錨": "ikari", "碇": "ikari", "天": "ten", "虹": "niji",
+  "霞": "kasumi", "露": "tsuyu", "嵐": "arashi", "昴": "subaru", "輝": "teru", "翔": "sho",
+  "央": "o", "後": "go", "横": "yoko", "辺": "be", "邊": "be", "隅": "sumi", "端": "hata",
+  "男": "o", "女": "me", "子": "ko", "郎": "ro", "夫": "o", "雄": "o", "彦": "hiko", "介": "suke", "也": "ya", "哉": "ya", "造": "zo",
+  "治": "ji", "次": "ji", "智": "tomo", "恵": "e", "惠": "e", "愛": "ai", "夢": "yume", "希": "ki", "繁": "shige", "茂": "shige",
+  "盛": "mori", "昌": "masa", "晶": "aki", "彰": "aki", "亮": "ryo", "涼": "ryo", "良": "yoshi", "嘉": "yoshi", "芳": "yoshi",
+  "恒": "tsune", "常": "tsune", "典": "nori", "法": "nori", "則": "nori", "憲": "nori", "範": "nori", "寛": "hiro", "弘": "hiro",
+  "博": "hiro", "浩": "hiro", "宏": "hiro", "豪": "go", "猛": "take", "寿": "kotobuki", "禄": "roku", "祥": "sho", "瑞": "mizu",
+  "賀": "ga", "楽": "raku",
+  "錫": "suzu", "鈴": "suzu", "鐘": "kane", "剣": "tsurugi", "弓": "yumi", "矢": "ya", "盾": "tate", "旗": "hata", "鏡": "kagami",
+  "扇": "ogi", "笠": "kasa", "傘": "kasa", "帯": "obi", "綾": "aya", "紅": "beni", "紺": "kon", "藍": "ai", "緑": "midori", "翠": "midori",
+  "碧": "ao", "黄": "ki", "灰": "hai", "紫": "murasaki",
+  "館": "kan", "舎": "sha", "亭": "tei", "庵": "an", "苑": "en", "園": "en", "庭": "niwa", "窓": "mado", "塔": "to", "路": "ji",
+  "街": "machi", "都": "to", "府": "fu", "県": "ken", "州": "su", "京": "kyo", "社": "sha", "寺": "tera", "塚": "tsuka", "荘": "so",
+  "駅": "eki", "場": "ba", "所": "sho", "商": "sho", "産": "san", "業": "gyo", "会": "kai", "組": "kumi", "協": "kyo", "連": "ren",
+  "合": "go", "同": "do", "共": "kyo", "総": "so", "興": "ko", "成": "nari", "製": "sei",
+  "昼": "hiru", "古": "furu", "初": "hatsu", "年": "toshi", "歳": "toshi", "代": "shiro", "飛": "tobi",
 }));
+
+/* ─────────────────────────── les numéraux des navires (tour 15) ─────────────────────────── */
+
+/** Les chiffres en kanji d'un numéro de navire (第八 : 8 ; 第十一 : 11 ; 第二十八 : 28), ou undefined si la suite n'en est pas un. */
+export function numeralKanji(suite: string): number | undefined {
+  const UNITES: ReadonlyMap<string, number> = new Map([["一", 1], ["二", 2], ["三", 3], ["四", 4], ["五", 5], ["六", 6], ["七", 7], ["八", 8], ["九", 9]]);
+  const m = /^([一二三四五六七八九]?)(十?)([一二三四五六七八九]?)$/u.exec(suite);
+  if (!m || suite === "") return undefined;
+  const dizaine = m[2] === "十" ? (m[1] === "" ? 1 : UNITES.get(m[1]!)!) * 10 : m[1] === "" ? 0 : UNITES.get(m[1]!)!;
+  if (m[2] === "" && m[3] !== "") return undefined;
+  return dizaine + (m[3] === "" ? 0 : UNITES.get(m[3]!)!);
+}
+const ROMAJI_UNITES = ["", "ichi", "ni", "san", "yon", "go", "roku", "nana", "hachi", "kyu"];
+/** Un numéro en lecture japonaise, sans macron (8 : hachi ; 11 : juichi ; 28 : nijuhachi), celle que « Dai-hachi » écrit. */
+export function romajiNumeral(n: number): string {
+  if (n < 1 || n > 99) return String(n);
+  const d = Math.floor(n / 10), u = n % 10;
+  return (d === 0 ? "" : (d === 1 ? "" : ROMAJI_UNITES[d]) + "ju") + ROMAJI_UNITES[u];
+}
+/** Le numéro que dit un mot « dai… » (第 et son numéral : daihachi 8, daijuichi 11, dai-san 3), sous le Hepburn (hachi, shichi,
+ *  ju) ou le Kunrei (hati, siti, zyu, kyuu), ou undefined s'il n'en est pas un. */
+export function numeroDai(mot: string): number | undefined {
+  const m = /^dai-?(.+)$/.exec(mot.replace(/tsu/g, "tu").replace(/chi/g, "ti").replace(/shi/g, "si").replace(/zy/g, "j").replace(/uu/g, "u").replace(/ou/g, "o"));
+  if (!m) return undefined;
+  const UNITES: ReadonlyMap<string, number> = new Map([["iti", 1], ["ni", 2], ["san", 3], ["yon", 4], ["si", 4], ["go", 5], ["roku", 6], ["nana", 7], ["siti", 7],
+    ["hati", 8], ["kyu", 9], ["ku", 9]]);
+  const unite = [...UNITES.keys()].join("|");
+  const r = new RegExp(`^(?:(${unite})?(ju))?(${unite})?$`).exec(m[1]!);
+  if (!r || m[1] === "") return undefined;
+  const dizaine = r[2] ? (r[1] ? UNITES.get(r[1])! : 1) * 10 : 0;
+  return dizaine + (r[3] ? UNITES.get(r[3])! : 0);
+}

@@ -10,6 +10,7 @@ import { normaliser, jetons } from "./matchers/normaliser.ts";
 import { mesurerPaires, validerPaires, type JeuDePaires, type TableDUnPalier, type Cellule } from "./measure.ts";
 import type { Matcher, PalierId } from "./matcher.ts";
 import { distanceOsa } from "./matchers/damerau.ts";
+import { nasaliserCoreen } from "./hanja.ts";
 import { preparer } from "./matchers/preparer.ts";
 import { translitterer } from "./matchers/translitteration.ts";
 import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, type Lecture } from "./ecritures.ts";
@@ -102,6 +103,17 @@ function calculerRacines(m: string): string[] {
  *  Metals » restait à 0,833, une lettre de différence sur six, et le nom sous le niveau fort). Le seul
  *  pluriel, jamais -ing ni -er : « Trading » et « Traders » restent deux mots (voir `racines`) ; et seulement
  *  un mot du commerce (GENERIQUES_AU_PLURIEL) : le pluriel d'un mot distinctif est un autre nom. */
+/** L'ADJECTIF d'un mot du commerce est le même mot dans une raison sociale : « Industrial » et « Industry » (산업, 工業 : « Dodam
+ *  Industrial » face à « 도담산업 », jeu 19, tour 15, 0,597 quand la parenthèse ne plafonnait plus), « Electrical » et « Electric »,
+ *  « Commercial » et « Commerce », « Agricultural » et « Agriculture ». Une table du monde, courte : les génériques du commerce dont
+ *  l'anglais des registres écrit l'une ou l'autre forme. Au crédit du pluriel (0,95), pas à l'identité. */
+const ADJECTIFS_GENERIQUES: ReadonlyMap<string, string> = new Map(Object.entries({
+  industrial: "industry", electrical: "electric", commercial: "commerce", agricultural: "agriculture", technological: "technology",
+  mechanical: "mechanics", chemicals: "chemical", pharmaceuticals: "pharmaceutical", logistic: "logistics",
+}));
+export function deriveGenerique(a: string, b: string): boolean {
+  return ADJECTIFS_GENERIQUES.get(a) === b || ADJECTIFS_GENERIQUES.get(b) === a;
+}
 export function pluriel(long: string, court: string): boolean {
   return DICTIONNAIRE.has(court) && (GENERIQUES_AU_PLURIEL.has(court) || GENERIQUES_AU_PLURIEL.has(long)) && formePlurielle(long, court);
 }
@@ -494,7 +506,11 @@ export function pliJaponais(m: string): string {
   return m.replace(/tsu/g, "tu").replace(/chi/g, "ti").replace(/shi/g, "si").replace(/fu/g, "hu").replace(/ji/g, "zi").replace(/di/g, "zi").replace(/zu/g, "du")
     .replace(/sh(?=[aou])/g, "sy").replace(/ch(?=[aou])/g, "ty").replace(/j(?=[aou])/g, "zy").replace(/dy(?=[aou])/g, "zy")
     .replace(/m(?=[bmp])/g, "n")
-    .replace(/o(?:h(?![aeiou])|o|u)/g, "o").replace(/uu/g, "u").replace(/(.)\1+/g, "$1");
+    .replace(/o(?:h(?![aeiou])|o|u)/g, "o").replace(/uu/g, "u").replace(/(.)\1+/g, "$1")
+    /* tour 15 (jeu 19) : le rendaku que le squelette ne fond pas, h et b (鳩 hato, 小鳩 Kobato ; 橋 hashi, 日本橋 Nihombashi), et
+       l'EMPRUNT écrit en katakana face à son mot latin (ラピス rapisu, Lapis ; コバルト kobaruto, Cobalt) : le japonais n'a ni l ni
+       consonne finale, le kana écrit r et ajoute un u que le mot n'a pas */
+    .replace(/b/g, "h").replace(/r/g, "l").replace(/(?<=[^aeiou])u$/, "");
 }
 /** Le grec sous ses romanisations, ELOT 743 (celle de `grec`, preparation.ts), la graphie phonétique des armateurs et des
  *  registres chypriotes, la latine des noms classiques : χ écrit ch, kh ou h ; φ ph ou f ; θ th ; ρ rh ; κ c ou k ; ξ x ou ks ;
@@ -549,9 +565,12 @@ export function pliTamoul(m: string): string {
     .replace(/ee/g, "i").replace(/oo/g, "u").replace(/aa/g, "a").replace(/(.)\1+/g, "$1");
 }
 /** Le coréen en romanisation révisée et en McCune-Reischauer : eo, o, u (ㅓ, ㅗ, ㅜ) ; eu, u ; ae, e ;
- *  g, k ; d, t ; b, p ; j, ch ; r, l (ㄹ). */
+ *  g, k ; d, t ; b, p ; j, ch ; r, l (ㄹ). Le y reste : ㅕ et ㅜ sont deux voyelles (« P'yŏngam » et « P'ungam », 평암 et 풍암,
+ *  deux sociétés du jeu 19 que le y effacé rejoignait, mesuré le 28/09). */
 export function pliCoreen(m: string): string {
-  return m.replace(/eo/g, "o").replace(/eu/g, "u").replace(/ae/g, "e").replace(/oo|ou|u/g, "o").replace(/y(?=[aeiou])/g, "")
+  /* l'assimilation nasale de la romanisation révisée d'abord (« Baekrok » écrit lettre à lettre, « Baengnok » : voir hanja.ts), le
+     ㅅ devant i que le McCune-Reischauer écrit sh (Shinnae, Sinnae), le ㄴ devant ㅂ que l'usage écrit m (Umbong, Unbong) */
+  return nasaliserCoreen(m).replace(/sh/g, "s").replace(/m(?=[bp])/g, "n").replace(/eo/g, "o").replace(/eu/g, "u").replace(/ae/g, "e").replace(/oo|ou|u/g, "o")
     .replace(/g/g, "k").replace(/d/g, "t").replace(/b/g, "p").replace(/j/g, "ch").replace(/r/g, "l").replace(/(.)\1+/g, "$1");
 }
 

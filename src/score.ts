@@ -45,7 +45,7 @@ import { memeSuiteGrecque, CREDIT_GREC } from "./mots.ts";
 import { pliIndien } from "./mots.ts";
 import { pliTamoul } from "./mots.ts";
 import { CREDIT_ROMANISATION } from "./mots.ts";
-import { CREDIT_KANA } from "./mots.ts";
+import { CREDIT_KANA, deriveGenerique } from "./mots.ts";
 import { suffixeEtablissement } from "./mots.ts";
 import { pliSlave, memeSuiteCyrillique } from "./mots.ts";
 import { patronymeSlave } from "./mots.ts";
@@ -168,6 +168,8 @@ export function simMot(a: string, b: string, sqA: string, sqB: string, voyellesL
     if (!pluriels) return 0.5;
   }
   if (gerondif(a, b) || gerondif(b, a)) return 0.95;
+  /* l'adjectif d'un mot du commerce (« Industrial », « Industry » : voir `deriveGenerique`), au crédit du pluriel, hors d'un navire */
+  if (pluriels && deriveGenerique(a, b)) return 0.95;
   /* l'abréviation SANS POINT n'est crue que d'un mot courant : on abrège engineering en engg et holdings en hldgs,
      pas un nom propre. « LST » retrouvait ses trois lettres dans « Lieselotte », « Lahnstein » et « Lingestroom »
      (livre de mille contreparties, 28/09 : 14 des 20 possibles étaient un navire d'un seul mot face à un sigle) */

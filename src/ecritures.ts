@@ -40,7 +40,9 @@
 import { readFileSync } from "node:fs";
 import { DEVANAGARI, GENERIQUES_DEVANAGARI, devanagariEnLatin } from "./devanagari.ts";
 import { hokkienDe } from "./hokkien.ts";
-import { FORMES_KANJI, MOTS_KANJI, KANJI } from "./kanji.ts";
+import { FORMES_KANJI, MOTS_KANJI, KANJI, numeralKanji, romajiNumeral } from "./kanji.ts";
+import { kana } from "./kana.ts";
+import { hanjaDe, teteCoreenne, assimilerCoreen } from "./hanja.ts";
 
 /** L'écriture dont un mot se compare sur ses consonnes : les deux abjads, et le thaï (voir
  *  `cleAbjad`), dont la lecture écrit des voyelles que le côté latin n'écrit pas pareil. */
@@ -48,8 +50,9 @@ export type Abjad = "" | "arabe" | "hebreu" | "thai";
 export type Romanise = { texte: string; natifs: Map<string, string> };
 /** La lecture d'un nom en sinogrammes : le mandarin (pinyin, le nom propre soudé), le cantonais
  *  (jyutping en graphie de Hong Kong, syllabe par syllabe), ou le hokkien et le teochew de Singapour et de Malaisie
- *  (hokkien.ts, syllabe par syllabe aussi : « 金福隆 » Kim Hock Leong). Un nom latin se lit pareil sous les trois. */
-export type Lecture = "mandarin" | "cantonais" | "hokkien";
+ *  (hokkien.ts, syllabe par syllabe aussi : « 金福隆 » Kim Hock Leong), ou le sino-coréen des hanja (hanja.ts, le nom propre
+ *  soudé comme le mandarin : « 大輪 » Daeryun ; tour 15). Un nom latin se lit pareil sous les quatre. */
+export type Lecture = "mandarin" | "cantonais" | "hokkien" | "hanja";
 
 /* ─────────────────────────── les mots du commerce, par écriture ─────────────────────────── */
 
@@ -65,6 +68,15 @@ const GENERIQUES_HANGUL: ReadonlyMap<string, string> = new Map(Object.entries({
   "에너지": "energy", "그룹": "group", "국제": "international", "조선": "shipbuilding", "철강": "steel", "섬유": "textile",
   "자동차": "automotive", "엔지니어링": "engineering", "홀딩스": "holdings", "인터내셔널": "international", "마린": "marine",
   "서플라이": "supply", "시스템": "systems", "코리아": "korea", "자원": "resources",
+  /* tour 15 (jeu 19) : l'industrie lourde (중공업 : « 대륜중공업 » face à « Daeryun Heavy Industries », 0,129, le 중 restant
+     collé au nom), l'électricité, la pêche, le papier, les spiritueux, la distribution, le transport ; et la forme abrégée
+     entre parenthèses, « (주) » (㈜ s'y ramène par la compatibilité Unicode, voir `romaniser`) et « (유) » */
+  "중공업": "heavy industries", "전기": "electric", "수산": "fisheries", "제지": "paper", "주류": "liquor", "유통": "distribution",
+  "운수": "transport", "운송": "transport", "제철": "steel", "금속": "metal", "해양": "marine", "종합": "general",
+  "(주)": "jusikhoesa", "(유)": "yuhanhoesa",
+  /* les mentions d'établissement collées au lieu (부산지점 Busan jijeom, 인천공장 Incheon gongjang) : un mot à part, que
+     `mentionDeSuccursale` lit (SUCCURSALES_COLLEES, preparation.ts) */
+  "지점": "jijeom", "영업소": "yeongeopso", "공장": "gongjang", "사업소": "saeopso", "출장소": "chuljangso",
   /* les mots anglais écrits en hangul, tels que les navires et les sociétés coréennes les portent (jeu 13 : « 해솔 파이오니어호 »
      est « MT HAESOL PIONEER », 0,583 lu paionieo) : la transcription coréenne d'un mot anglais ne se replie sur aucune
      règle (파이오니어 : pa-i-o-ni-eo), il faut le mot. Deux syllabes au moins par clé, jamais une seule */
@@ -79,6 +91,9 @@ const GENERIQUES_HANGUL: ReadonlyMap<string, string> = new Map(Object.entries({
   "아일랜드": "island", "오리엔트": "orient", "이스턴": "eastern", "웨스턴": "western", "노던": "northern", "서던": "southern",
   "프라임": "prime", "로얄": "royal", "프린스": "prince", "스피릿": "spirit", "호프": "hope", "에이스": "ace", "제니스": "zenith",
   "갤럭시": "galaxy", "머스크": "maersk", "에버그린": "evergreen", "글로리": "glory", "포춘": "fortune", "럭키": "lucky", "타이어": "tire",
+  /* tour 15 (jeu 19 : « 하늘 오로라 » face à « Haneul Aurora », 0,466 lu orora) */
+  "오로라": "aurora", "호라이즌": "horizon", "크레스트": "crest", "벤처": "venture", "하이웨이": "highway", "벌커": "bulker", "페리": "ferry",
+  "코발트": "cobalt", "선라이즈": "sunrise", "아이리스": "iris", "빅토리아": "victoria", "리버티": "liberty", "프리덤": "freedom",
 }));
 
 /** Le persan écrit ک et ی là où l'arabe écrit ك et ي : une seule lettre pour les deux, dans
@@ -176,11 +191,12 @@ const GENERIQUES_HANZI: ReadonlyMap<string, string> = new Map(Object.entries({
 
 /** Les formes japonaises, et le mot « société » (会社) que le chinois n'emploie pas pour les
  *  siennes : un nom qui les porte est japonais (ou coréen écrit en caractères), pas chinois. */
-const FORMES_JAPONAISES = /株式会社|有限会社|合同会社|合資会社|合名会社|会社/u;
+const FORMES_JAPONAISES = /株式会社|有限会社|合同会社|合資会社|合名会社|会社|\(株\)|\(有\)|㈱|㈲/u;
 
-/** Un nom japonais : des kana, ou une forme japonaise. Ses kanji ne se lisent pas ici. */
+/** Un nom japonais : des kana, une forme japonaise, ou le 丸 en queue d'un nom de navire (« 霧雨丸 », « 第八星風丸 » : tour 15,
+ *  jeu 19, lus en mandarin à 0,000 face à « Kirisame Maru », « Hoshikaze Maru No. 8 »). Ses kanji se lisent dans kanji.ts. */
 export function estJaponais(nom: string): boolean {
-  return /[\u3040-\u30ff]/u.test(nom) || FORMES_JAPONAISES.test(nom);
+  return /[\u3040-\u30ff]/u.test(nom) || FORMES_JAPONAISES.test(nom) || /丸\s*$/u.test(nom.trim());
 }
 
 /** Les clés d'une table, de la plus longue à la plus courte, en une seule alternative. */
@@ -217,12 +233,15 @@ export function hangulEnLatin(syllabes: string): string {
     const finale = Lsuivant === INITIALE_MUETTE ? FINALES_LIEES[T]! : Lsuivant === INITIALE_R && T === FINALE_N ? "l" : FINALES[T]!;
     sortie += initiale + MEDIANES[V]! + finale;
   }
-  return sortie;
+  /* l'assimilation nasale de la romanisation révisée (백록 baengnok, 국민 gungmin : tour 15, jeu 19, « 백록화학 » lu baekrok face à
+     « Baengnok Chemical », 0,585) ; `pliCoreen` la rejoue sur le côté latin écrit lettre à lettre */
+  return assimilerCoreen(sortie);
 }
 
 const CLES_HANGUL = alternative(GENERIQUES_HANGUL);
 function hangul(nom: string): string {
-  return nom.replace(CLES_HANGUL, (m) => ` ${GENERIQUES_HANGUL.get(m) ?? m} `).replace(/[\uac00-\ud7a3]+/gu, hangulEnLatin);
+  /* « 제7 용두호 » : 제 devant un chiffre est le « No. » des navires coréens (tour 15, jeu 19 : « je » restait un mot rare) */
+  return nom.replace(/제\s*(?=\d)/gu, " no ").replace(CLES_HANGUL, (m) => ` ${GENERIQUES_HANGUL.get(m) ?? m} `).replace(/[\uac00-\ud7a3]+/gu, hangulEnLatin);
 }
 
 /* ─────────────────────────── les sinogrammes ─────────────────────────── */
@@ -313,15 +332,52 @@ function hanzi(nom: string, natifs: Map<string, string>, lecture: Lecture): stri
   return generiques.replace(/\([^()]*\)/gu, (p) => p.replace(SINOGRAMMES, mandarin)).replace(SINOGRAMMES, syllabique);
 }
 
+/* ─────────────────────────── les hanja ─────────────────────────── */
+
+/** Les formes et les mots du commerce d'un nom coréen écrit en hanja (« 大輪重工業株式會社 », « 瑞林海運 ») : la forme coréenne
+ *  (jusikhoesa, comme le hangul 주식회사) et les mêmes lemmes anglais que GENERIQUES_HANGUL. Traditionnels d'abord, et les
+ *  graphies japonaises qu'un document coréen emprunte (産, 学, 鉄). */
+const GENERIQUES_HANJA: ReadonlyMap<string, string> = new Map(Object.entries({
+  "株式會社": "jusikhoesa", "株式会社": "jusikhoesa", "有限會社": "yuhanhoesa", "有限会社": "yuhanhoesa",
+  "重工業": "heavy industries", "工業": "industrial", "商事": "trading", "海運": "shipping", "化學": "chemical", "化学": "chemical",
+  "機械": "machinery", "電機": "electric", "電氣": "electric", "電気": "electric", "電子": "electronics", "精密": "precision",
+  "産業": "industry", "產業": "industry", "水産": "fisheries", "水產": "fisheries", "食品": "food", "製藥": "pharmaceutical",
+  "製薬": "pharmaceutical", "製紙": "paper", "鐵鋼": "steel", "鉄鋼": "steel", "製鐵": "steel", "製鉄": "steel", "物流": "logistics",
+  "貿易": "trading", "通商": "trading", "建設": "construction", "造船": "shipbuilding", "纖維": "textile", "繊維": "textile",
+  "酒類": "liquor", "開發": "development", "開発": "development", "實業": "industrial", "実業": "industrial", "運輸": "transport",
+  "運送": "transport", "流通": "distribution", "金屬": "metal", "金属": "metal", "海洋": "marine", "國際": "international",
+  "国際": "international", "大韓": "daehan", "韓國": "hanguk", "韓国": "hanguk",
+}));
+const CLES_HANJA = alternative(GENERIQUES_HANJA);
+/** Un nom en sinogrammes lu en sino-coréen (hanja.ts) : la forme et les métiers traduits, puis chaque suite de caractères soudée
+ *  en un nom propre (« 大輪 » : daeryun, « 白鹿 » : baengnok), la règle du son initial sur son premier caractère et l'assimilation
+ *  nasale sur le mot, chaque jeton gardant ses caractères (`natifs`). Un caractère hors table garde sa lecture mandarine. */
+function hanja(nom: string, natifs: Map<string, string>): string {
+  return nom.replace(CLES_HANJA, (m) => ` ${GENERIQUES_HANJA.get(m) ?? m} `).replace(SINOGRAMMES, (suite) => {
+    const l = assimilerCoreen([...suite].map((c, i) => { const h = hanjaDe(c) || pinyinDe(c); return i === 0 ? teteCoreenne(h) : h; }).join(""));
+    if (/^[a-z]+$/.test(l)) natifs.set(l, suite);
+    return ` ${l} `;
+  });
+}
+
 /* ─────────────────────────── le japonais ─────────────────────────── */
 
 /** Un nom japonais en kanji (voir kanji.ts) : la forme, puis les mots faits (métiers en lecture sino-japonaise, lieux),
  *  puis chaque kanji sous sa lecture de nom propre, soudés par suite (« 株式会社霜月水産 » : kabushiki kaisha shimotsuki
  *  suisan, jeu 13). Un kanji hors table reste lui-même dans son mot. Les kana restent tels quels. */
 const CLES_FORMES_KANJI = alternative(FORMES_KANJI), CLES_MOTS_KANJI = alternative(MOTS_KANJI);
+/** Les kanji, et les petits ヶ et ヵ des noms de lieux (千鳥ヶ瀬 Chidorigase), qui se lisent dans leur mot. */
+const SINOGRAMMES_JAPONAIS = /[\u4e00-\u9fff\u30f5\u30f6]+/gu;
+const PETITS_KE: ReadonlyMap<string, string> = new Map([["ヶ", "ga"], ["ヵ", "ka"]]);
 function japonais(nom: string): string {
-  return nom.replace(CLES_FORMES_KANJI, (m) => ` ${FORMES_KANJI.get(m) ?? m} `).replace(CLES_MOTS_KANJI, (m) => ` ${MOTS_KANJI.get(m) ?? m} `)
-    .replace(SINOGRAMMES, (suite) => ` ${[...suite].map((c) => KANJI.get(c) ?? c).join("")} `);
+  return nom.replace(CLES_FORMES_KANJI, (m) => ` ${FORMES_KANJI.get(m) ?? m} `)
+    /* le numéro d'un navire, 第 et son numéral (第八星風丸 : daihachi hoshikaze maru, que la règle du maru lit « No. 8 » ; 第十一 :
+       daijuichi ; tour 15, jeu 19), lu en lettres pour que 第一 reste Daiichi dans une raison sociale */
+    .replace(/第([一二三四五六七八九十]+)/gu, (m, n: string) => { const v = numeralKanji(n); return v === undefined ? m : ` dai${romajiNumeral(v)} `; })
+    /* le 丸 en queue nomme le navire : un mot à part (« 霧雨丸 » : kirisame maru), quand 丸信 est Marushin dans son mot */
+    .replace(/丸\s*$/u, " maru ")
+    .replace(CLES_MOTS_KANJI, (m) => ` ${MOTS_KANJI.get(m) ?? m} `)
+    .replace(SINOGRAMMES_JAPONAIS, (suite) => ` ${[...suite].map((c) => KANJI.get(c) ?? PETITS_KE.get(c) ?? c).join("")} `);
 }
 
 /* ─────────────────────────── le thaï ─────────────────────────── */
@@ -798,9 +854,15 @@ export function abjadDe(nom: string): Abjad {
  */
 export function romaniser(nom: string, lecture: Lecture = "mandarin"): Romanise {
   const natifs = new Map<string, string>();
-  let t = nom;
+  /* les formes de compatibilité d'Asie de l'Est, ramenées à leurs lettres (tour 15, jeu 19) : le latin pleine chasse d'un document
+     japonais (ＫＡＺＡＭＡＴＳＵ : KAZAMATSU), l'espace idéographique, les formes encerclées ㈱ et ㈜ ((株), (주)), le katakana demi-chasse */
+  let t = nom.replace(/[\u3000\u3200-\u33ff\uff00-\uffef]/gu, (c) => c.normalize("NFKC"));
+  const japonaisEcrit = estJaponais(t);
   if (/[\uac00-\ud7a3]/u.test(t)) t = hangul(t);
-  if (/[\u4e00-\u9fff]/u.test(t) && !estJaponais(t)) t = hanzi(t, natifs, lecture);
+  /* les kana (kana.ts) : les kanji d'un nom japonais se lisent d'abord, parce que ヶ vit dans leur mot, puis chaque suite de kana ;
+     la marque japonaise se lit sur le nom tel qu'écrit, avant que ses kana ne deviennent des lettres */
+  if (/[\u3040-\u30ff]/u.test(t)) { if (japonaisEcrit && /[\u4e00-\u9fff]/u.test(t)) t = japonais(t); t = kana(t); }
+  if (/[\u4e00-\u9fff]/u.test(t) && !japonaisEcrit) t = lecture === "hanja" ? hanja(t, natifs) : hanzi(t, natifs, lecture);
   else if (/[\u4e00-\u9fff]/u.test(t)) t = japonais(t);
   if (/[\u0590-\u05ff]/u.test(t)) t = hebreu(t);
   if (/[\u0600-\u06ff]/u.test(t)) t = arabe(t);

@@ -14,6 +14,7 @@ import { preparer } from "./matchers/preparer.ts";
 import { translitterer } from "./matchers/translitteration.ts";
 import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, type Lecture } from "./ecritures.ts";
 import { SUCCURSALES, FORMES, TRADUCTIONS } from "./preparation.ts";
+import { SUCCURSALES_COLLEES } from "./preparation.ts";
 import { MOTS_DE_SIEGE } from "./preparation.ts";
 import { MOTS_DE_BUREAU } from "./preparation.ts";
 import { REGISTRES } from "./preparation.ts";
@@ -25,6 +26,7 @@ import { REGIONS } from "./preparation.ts";
 import { FACTEUR_CONTENANCE } from "./score.ts";
 import { succursalesCompatibles } from "./score.ts";
 import { pliCantonais } from "./mots.ts";
+import { lemme } from "./mots.ts";
 import { plier } from "./preparation.ts";
 
 const ANNONCES = /[\s,;]*(?:\b(?:a[./]?\s?k[./]?\s?a\.?|f[./]?\s?k[./]?\s?a\.?|formerly(?:\s+known\s+as|\s+called)?|gi[aà](?=\s)|trasformata\s+(?:da|in)|già\s+denominata|gia\s+denominata|also\s+known\s+as|previously\s+(?:known\s+as|called)|now\s+trading\s+as|d[./]?\s?b[./]?\s?a\.?|doing\s+business\s+as|t\/a|trading\s+as|now\s+known\s+as|n\.?k\.?a\.?|antes|anciennement|vormals|ehemals|voorheen|anteriormente|dawniej)(?=[\s:,])|(?<=\p{L}[\s,]*)\bex[-.\s]+(?=\p{L})|(?<![\p{L}])(?:δ\.?\s?τ\.?|διακριτικ[οό]ς\s+τ[ίι]τλος)(?=[\s:,«"]))\s*:?\s*/giu;
@@ -74,6 +76,8 @@ const PREFIXES: readonly RegExp[] = [
   /^\s*(?:α\.?\s?φ\.?\s?μ\.?|afm)\s*:?\s*(?:el\s?)?\d{9}\s+/iu,
   /* « CPTE NO 4455 ETS OUATTARA » (jeu 16) : le numéro de compte devant le nom, en français, espagnol, portugais, anglais */
   /^\s*(?:cpte|compte|cta|cuenta|conta|a\/c|acct|account)\.?\s*(?:no\.?|n[°º]|nr\.?|#)?\s*:?\s*[a-z0-9\-/]{3,}\s+/iu,
+  /* l'étiquette coréenne du titulaire d'un compte devant le nom (« 예금주 주식회사 풍암정밀 », tour 15, jeu 19 : 0,800) */
+  /^\s*예금주\s*:?\s*/u,
 ];
 const ANNOTATIONS: readonly RegExp[] = [
   /\([^()]*\b(?:flag|liquidation|liquidaci[oó]n|liquidazione|liquida[çc][aã]o|liquidatie|likvidation|konkurs|faillite|fallimento|insolven\w*|administration|receivership|receivers?|bankrupt\w*|dissolved|struck\s+off|under\s+arrest|arrested|detained|carrier|tanker|vessel|bulk|container|branch|office|built|blt|established|founded|est(?:d)?\.?\s*(?:in\s+)?\d{4}|since\s+\d{4}|(?:h\/n|hull\s*(?:no\.?)?)\s*[a-z]{0,3}-?\d+)\b[^()]*\)/giu,
@@ -152,6 +156,14 @@ const ANNOTATIONS: readonly RegExp[] = [
   new RegExp(`\\s*\\((?:${[...SUCCURSALES].join("|")}|${MOTS_DE_SIEGE}|${MOTS_DE_BUREAU})\\s+(?:de\\s+la|de|du|des|da|do|of|di|van|von|in|en|a|\\u00e0)\\s+[^()]{2,30}\\)\\s*$`, "iu"),
   new RegExp(`,\\s*[^,]*(?<![\\p{L}])(?:${[...SUCCURSALES].join("|")}|${MOTS_DE_SIEGE}|${MOTS_DE_BUREAU})(?![\\p{L}])(?!\\s*\\d).*$`, "iu"),
   /\s+branch$/iu,
+  /* la mention d'établissement japonaise ou coréenne collée à son lieu, derrière une espace ou la forme (« 株式会社北楠海運 神戸支店 »,
+     « 藤見化成株式会社 名古屋営業所 », « 주식회사 효림물류 부산지점 », tour 15, jeu 19 : trois paires entre 0,500 et 0,800) ; ce qu'elle
+     nommait, la variante le garde en mention (SUCCURSALES_COLLEES, `mentionDeSuccursale`) */
+  /(?:\s+|(?<=会社|會社))[\u4e00-\u9fff\u30a1-\u30fa]{1,6}(?:支店|営業所|営業部|工場|支社|出張所|事業所)\s*$/u,
+  /\s+[\uac00-\ud7a3]{1,6}(?:지점|영업소|공장|사업소|출장소)\s*$/u,
+  /* le texte d'un sceau derrière le nom : le 代表取締役之印 japonais (le sceau du président), le 대표이사 직인 coréen (tour 15) */
+  /\s*代表取締役(?:社長)?(?:之|の)?印\s*$/u,
+  /\s*대표이사\s*(?:직인|인)\s*$/u,
   /* le siège écrit sans virgule en fin de nom : « X Limited Head Office » */
   /\s+(?:head\s*office|headquarters?|hauptsitz|hoofdkantoor|hoofdzetel|si[e\u00e8]ge\s+social)$/iu,
   /* la cargaison derrière le nom d'un expéditeur ou d'un navire : « - CPO IN BULK », « - 500 MT RICE IN BAGS » */
@@ -626,6 +638,10 @@ export function variantesTypees(brut: string): VarianteTypee[] {
     /* le suffixe coréen des navires, 호 (« 세월호 », « 파이오니어호 ») : le nom sans lui est une lecture
        de plus, jamais la seule (« 금호 », Kumho, garde son 호, qui est son nom) */
     if (/[\uac00-\ud7a3]{2,}호$/u.test(p)) poser(p.replace(/호$/u, "").trim(), ancien, mentionDe(p));
+    /* et le même suffixe romanisé, « Ho » derrière un mot que le dictionnaire ignore, en queue ou devant le numéro (« Yongdu Ho No. 7 »
+       face à « Yongdu No. 7 », jeu 19, tour 15 : 0,748, « ho » sans répondant) : le nom sans lui, jamais le seul */
+    const hoLatin = /^(.*?(\p{L}{3,}))\s+ho(\s+no\.?\s*\d+)?\s*$/iu.exec(p);
+    if (hoLatin && !/[\u3040-\u9fff]/u.test(p) && lemme(hoLatin[2]!.toLowerCase()) === undefined) poser((hoLatin[1]! + (hoLatin[3] ?? "")).trim(), ancien, mentionDe(p));
     /* une adresse sans virgule derrière la forme juridique, dans un export : ce qui suit la
        dernière forme, quand ce sont des mots et non une autre forme, s'ôte */
     let dernier: RegExpExecArray | null = null;
@@ -667,6 +683,9 @@ export function lecturesDe(brut: string): LectureDe[] {
       /* et la troisième, en hokkien de Singapour et de Malaisie (« 金福隆33 » : Kim Hock Leong 33, jeu 13) */
       poser({ texte: v.texte, lecture: "hokkien", ancien, mention, registre, partie, paysRegistre, associe });
       for (const s of substitutions(v.texte)) poser({ ...s, ancien, mention, registre, partie, paysRegistre, associe });
+      /* et la quatrième, en sino-coréen (hanja.ts), quand le nom porte une forme coréenne (株式會社, 會社), un métier des raisons
+         sociales coréennes en hanja, ou du hangul (« 大輪重工業株式會社 » : Daeryun, jeu 19, tour 15) */
+      if (/株式會社|有限會社|會社|商事|工業|海運|化學|機械|重工業|[\uac00-\ud7a3]/u.test(v.texte)) poser({ texte: v.texte, lecture: "hanja", ancien, mention, registre, partie, paysRegistre, associe });
     }
   }
   return [...vues.values()];
