@@ -73,9 +73,16 @@ export function ligneDuJuge(texte: string, n: number): Juge | null {
 
 /** La phrase ajoutée à la provenance de l'auteur : le mot à mot de paires-entites-16.json, les
  *  points de suspension en un caractère (U+2026). */
-export function phraseDuJuge(n: number, juge: Juge, date: string): string {
+export type Recouvrement = { paires: number; noms: number };
+const RECOUVREMENT_NUL: Recouvrement = { paires: 0, noms: 0 };
+/** Le recouvrement toléré : celui de valider-jeu (au plus deux paires), écrit dans la provenance
+ *  parce qu'un lecteur du jeu promu doit savoir ce qu'il pesait déjà. */
+export const RECOUVREMENT_MAX = 2;
+
+export function phraseDuJuge(n: number, juge: Juge, date: string, recouvrement: Recouvrement = RECOUVREMENT_NUL): string {
   const t = (x: Taux) => `${x.n}/${x.sur} [${x.bas}-${x.haut} %]`;
-  return `Overlap with the ${nombreEnLettres(n)} earlier training sets: 0 pairs, 0 names.`
+  const s = (k: number, mot: string) => `${k} ${mot}${k === 1 ? "" : "s"}`;
+  return `Overlap with the ${nombreEnLettres(n)} earlier training sets: ${s(recouvrement.paires, "pair")}, ${s(recouvrement.noms, "name")}.`
     + ` Judged once by the judge session on method ${juge.version} (entites.ts ${juge.entites}…, cribler.ts ${juge.cribler}…, ecritures.ts ${juge.ecritures}…):`
     + ` strong ${juge.fort.seuil} found ${t(juge.fort.trouves)} with ${t(juge.fort.fausses).replace(" [", " false alerts [")};`
     + ` possible ${juge.possible.seuil} found ${t(juge.possible.trouves)} with ${t(juge.possible.fausses)}.`
@@ -83,9 +90,9 @@ export function phraseDuJuge(n: number, juge: Juge, date: string): string {
 }
 
 /** La provenance promue : celle de l'auteur, fermée par un point si elle ne l'est pas, puis la phrase du juge. */
-export function provenancePromue(auteur: string, n: number, juge: Juge, date: string): string {
+export function provenancePromue(auteur: string, n: number, juge: Juge, date: string, recouvrement: Recouvrement = RECOUVREMENT_NUL): string {
   const propre = auteur.trim();
-  return `${/[.!?]$/.test(propre) ? propre : propre + "."} ${phraseDuJuge(n, juge, date)}`;
+  return `${/[.!?]$/.test(propre) ? propre : propre + "."} ${phraseDuJuge(n, juge, date, recouvrement)}`;
 }
 
 /** La ligne de CHEMINS_APPRENTISSAGE, insérée après celle du jeu N. Refuse si l'ancre manque ou
@@ -125,7 +132,8 @@ function principal(): void {
   const apprentissage = lireApprentissage();
   const { jeu, compte, refus } = analyserJeu(brut, apprentissage, { copier: true });
   if (!jeu || !compte) refuser(refus.join(" · "));
-  if (compte.memePaire > 0 || compte.memeNom > 0) refuser(`overlap with the ${apprentissage.length} training sets: ${compte.memePaire} pair(s), ${compte.memeNom} name(s)`);
+  if (compte.memePaire > RECOUVREMENT_MAX) refuser(`overlap with the ${apprentissage.length} training sets: ${compte.memePaire} pair(s), ${compte.memeNom} name(s) (at most ${RECOUVREMENT_MAX} pairs, as valider-jeu tolerates)`);
+  const recouvrement: Recouvrement = { paires: compte.memePaire, noms: compte.memeNom };
   if (compte.cadratins > 0) refuser(`${compte.cadratins} em dash(es) in the blind file: a training set carries none (npm run valider-jeu -- --copier replaces those inside names)`);
   const juge = ligneDuJuge(readFileSync(CHEMIN_VERDICTS, "utf8"), n);
   if (!juge) refuser(`no judge row for set #${n} in verification/VERDICTS.md (a row starting with "| 2026-", carrying "set #${n} <sha>", followed by its "possible" row)`);
@@ -136,7 +144,7 @@ function principal(): void {
   try { entitesPromu = insererChemin(sourceEntites, n); } catch (e) { refuser(e instanceof Error ? e.message : String(e)); }
 
   const date = aujourdhui();
-  const promu: JeuBrut = { quoi: jeu.quoi, provenance: provenancePromue(jeu.provenance, n, juge, date), avertissement: jeu.avertissement, paires: jeu.paires };
+  const promu: JeuBrut = { quoi: jeu.quoi, provenance: provenancePromue(jeu.provenance, n, juge, date, recouvrement), avertissement: jeu.avertissement, paires: jeu.paires };
   const texte = JSON.stringify(promu, null, 2) + "\n";
   if (texte.includes(CADRATIN)) refuser("the promoted file would carry an em dash");
   writeFileSync(cible, texte, { flag: "wx" });
