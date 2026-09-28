@@ -44,6 +44,9 @@ import { FORMES_KANJI, MOTS_KANJI, KANJI, numeralKanji, romajiNumeral } from "./
 import { kana } from "./kana.ts";
 import { hanjaDe, teteCoreenne, assimilerCoreen } from "./hanja.ts";
 import { georgien, armenien } from "./caucase.ts";
+import { birman } from "./birman.ts";
+import { khmer } from "./khmer.ts";
+import { laoEnThai } from "./lao.ts";
 
 /** L'écriture dont un mot se compare sur ses consonnes : les deux abjads, et le thaï (voir
  *  `cleAbjad`), dont la lecture écrit des voyelles que le côté latin n'écrit pas pareil. */
@@ -643,6 +646,19 @@ const GENERIQUES_THAI: ReadonlyMap<string, string> = new Map(Object.entries({
   "พลาสติก": "plastic", "กระดาษ": "paper", "กลุ่ม": "group", "นานาชาติ": "international", "สากล": "international",
   "ระหว่างประเทศ": "international", "ธุรกิจ": "business", "ประเทศไทย": "thailand", "ไทยแลนด์": "thailand", "ไทย": "thai",
   "สยาม": "siam", "กรุงเทพมหานคร": "bangkok", "กรุงเทพฯ": "bangkok", "กรุงเทพ": "bangkok",
+  /* tour 18 (jeu 22) : les mots que le latin ÉCRIT À PART dans un nom que le thaï soude, et que le lecteur ne coupe pas (รัตนสมุทร :
+     Rattana Samut ; โรงสีข้าวสุวรรณมงคล : Rice Mill Suwan Mongkhon), les mots sanskrits dont la lecture syllabique se trompe (สุวรรณ,
+     มงคล, เกียรติ, สมบูรณ์, อุดม, วัฒนา, วิเศษ, โภคภัณฑ์), les provinces (สงขลา), la branche et le siège (สาขา, สำนักงานใหญ่), et
+     d'autres mots du commerce et mots anglais écrits en thaï */
+  "รัตน": "rattana", "สมุทร": "samut", "ศรี": "si", "ทอง": "thong", "ตะวัน": "tawan", "ใต้": "tai", "เพชร": "phet", "สุวรรณ": "suwan",
+  "มงคล": "mongkhon", "เกียรติ": "kiat", "สมบูรณ์": "sombun", "อุดม": "udom", "วัฒนา": "watthana", "วัฒน์": "wat", "วิเศษ": "wiset",
+  "โภคภัณฑ์": "phokhaphan", "สงขลา": "songkhla",
+  "ห้องเย็น": "cold storage", "เคมีภัณฑ์": "chemical", "ปาล์มออยล์": "palm oil", "ปาล์ม": "palm", "ออยล์": "oil", "ยางพารา": "rubber",
+  "โรงสีข้าว": "rice mill", "โรงสี": "rice mill", "ข้าว": "rice", "อัญมณี": "gems", "เครื่องดื่ม": "beverage", "การประมง": "fishery",
+  "สาขาที่": "branch", "สาขา": "branch", "สำนักงานใหญ่": "head office", "การเกษตร": "agriculture", "เกษตร": "agriculture", "ประกันภัย": "insurance",
+  "ธนาคาร": "bank", "โรงแรม": "hotel", "ท่องเที่ยว": "tourism", "เหมืองแร่": "mining", "อสังหาริมทรัพย์": "real estate", "ปูนซีเมนต์": "cement",
+  "ซีเมนต์": "cement", "แก๊ส": "gas", "ค้าปลีก": "retail", "ค้าส่ง": "wholesale", "ออร์คิด": "orchid", "ฟีดเดอร์": "feeder", "อินเตอร์เทรด": "intertrade",
+  "เทรด": "trade", "อะโกร": "agro", "ทัวร์": "tours",
   /* les mots anglais écrits en thaï */ "กรุ๊ป": "group", "อินเตอร์เนชั่นแนล": "international", "อินเตอร์": "inter",
   "เอ็นจิเนียริ่ง": "engineering", "เทรดดิ้ง": "trading", "โฮลดิ้งส์": "holdings", "โฮลดิ้ง": "holding", "มาร์เก็ตติ้ง": "marketing",
   "เซอร์วิสเซส": "services", "เซอร์วิส": "service", "ซัพพลาย": "supply", "ซีฟู้ด": "seafood", "ฟู้ดส์": "foods", "ฟู้ด": "food",
@@ -652,14 +668,22 @@ const GENERIQUES_THAI: ReadonlyMap<string, string> = new Map(Object.entries({
   "อินดัสเตรียล": "industrial", "โปรดักส์": "products", "แมชชีนเนอรี่": "machinery", "เท็กซ์ไทล์": "textile",
 }));
 
-const CLES_THAI = alternative(GENERIQUES_THAI);
+/** Les clés thaïes ne se lisent pas devant un signe de voyelle ou de ton : « ไทย » suivi d'un signe est une autre syllabe (tour 18). */
+const CLES_THAI = new RegExp(`(?:${alternative(GENERIQUES_THAI).source})(?![\\u0e30-\\u0e3a\\u0e47-\\u0e4e])`, "gu");
 function thai(nom: string): string {
   return nom.replace(/[๐-๙]/gu, (c) => String(c.codePointAt(0)! - 0x0e50))
     /* « เรือ » seul en tête, suivi d'une espace, est le préfixe de navire ; dans un mot c'est une
        syllabe (เรือน ruean), et il n'est pas dans la table */
     .replace(/^\s*เรือ(?=\s)/u, " mv ")
+    /* une consonne seule suivie d'un point est une initiale (« ส.เพชรสมุทร » : S. Phet Samut, tour 18, jeu 22) */
+    .replace(/(?<![฀-๿])([ก-ฮ])\./gu, (_m, c: string) => ` ${THAI_CONSONNES.get(c)![0]}. `)
     .replace(CLES_THAI, (m) => ` ${GENERIQUES_THAI.get(m) ?? m} `)
     .replace(/[฀-๿]+/gu, thaiEnLatin);
+}
+/** Le lao : chaque suite de lettres lao ramenée aux lettres thaïes (lao.ts, mots du commerce compris), lue par le lecteur thaï, puis
+ *  écrite comme Vientiane romanise (แ e, non ae : ຄຳແສງ Khamseng ; เ-ิ eu, non oe : ຈະເລີນ Chaleun). */
+function lao(nom: string): string {
+  return nom.replace(/[຀-໿]+/gu, (suite) => thai(laoEnThai(suite)).replace(/ae/g, "e").replace(/oe/g, "eu"));
 }
 
 /* ─────────────────────────── le tamoul ─────────────────────────── */
@@ -984,7 +1008,7 @@ export function cleAbjadVLuF(mot: string): string | undefined {
 
 /** L'abjad dans lequel un nom est écrit, s'il l'est ; le thaï compte ici (voir `cleAbjad`). */
 export function abjadDe(nom: string): Abjad {
-  return /[\u0600-\u06ff]/u.test(nom) ? "arabe" : /[\u0590-\u05ff]/u.test(nom) ? "hebreu" : /[\u0e00-\u0e7f]/u.test(nom) ? "thai" : "";
+  return /[\u0600-\u06ff]/u.test(nom) ? "arabe" : /[\u0590-\u05ff]/u.test(nom) ? "hebreu" : /[\u0e00-\u0eff]/u.test(nom) ? "thai" : "";
 }
 
 /* ─────────────────────────── l'entrée ─────────────────────────── */
@@ -1010,6 +1034,10 @@ export function romaniser(nom: string, lecture: Lecture = "mandarin"): Romanise 
   /* le géorgien (mkhedruli et mtavruli) et l'arménien, lus dans caucase.ts (tour 17, jeu 21) */
   if (/[\u10a0-\u10ff\u1c90-\u1cbf]/u.test(t)) t = georgien(t);
   if (/[\u0530-\u058f]/u.test(t)) t = armenien(t);
+  /* le birman, le khmer et le lao (tour 18, jeu 22 : birman.ts, khmer.ts, lao.ts ; le lao se lit par le lecteur thaï, lettre pour lettre) */
+  if (/[\u1000-\u109f\uaa60-\uaa7f]/u.test(t)) t = birman(t);
+  if (/[\u1780-\u17ff]/u.test(t)) t = khmer(t);
+  if (/[\u0e80-\u0eff]/u.test(t)) t = lao(t);
   if (/[\u0e00-\u0e7f]/u.test(t)) t = thai(t);
   if (/[\u0b80-\u0bff]/u.test(t)) t = tamoul(t);
   if (DEVANAGARI.test(t)) t = devanagari(t);

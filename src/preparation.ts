@@ -18,12 +18,16 @@ import { wadeGiles } from "./wadegiles.ts";
 /* une déclaration de fonction : elle traverse le cycle mots.ts → preparation.ts, et n'est appelée qu'à la première demande */
 import { pliJaponais } from "./mots.ts";
 import { pliCoreen } from "./mots.ts";
+import { pliThai } from "./mots.ts";
 import { numeroDai } from "./kanji.ts";
 import { pliSlave, clesSlaves } from "./mots.ts";
 import { clesGrecques } from "./mots.ts";
 import { traductionNordique, estFinnois, GENITIFS_FINNOIS } from "./nordique.ts";
 import { estMarqueurGeorgien, TRADUCTIONS_GEORGIENNES, lireLatinGeorgien, estMarqueurArmenien, TRADUCTIONS_ARMENIENNES, plierPatronymeArmenien } from "./caucase.ts";
 import { estMarqueurHebreu, TRADUCTIONS_HEBRAIQUES } from "./hebreu.ts";
+import { presomptionBirmane, couperSyllabesBirmanes, HONORIFIQUES_BIRMANS } from "./birman.ts";
+import { estMarqueurKhmer } from "./khmer.ts";
+import { estMarqueurLao } from "./lao.ts";
 import { GRAPHIES_INDIENNES } from "./indien.ts";
 import { TRADUCTIONS_SWAHILIES } from "./swahili.ts";
 import { estVietnamien, LOCUTIONS_VIETNAMIENNES } from "./vietnamien.ts";
@@ -207,6 +211,12 @@ const LOCUTIONS: readonly [string, string][] = [
   [" li tijarat ", " trading "], [" li tijarah ", " trading "], [" lil tijara ", " trading "], [" lil tijarah ", " trading "],
   /* vietnamien : thương mại (commerce), xuất nhập khẩu (import-export), sản xuất (production),
      dịch vụ (services), vận tải (transport), công nghiệp (industrie), kỹ thuật (technique) */
+  /* l'entreprise privée (doanh nghiệp tư nhân, DNTN), la société par actions abrégée (CTCP), le transport maritime (vận tải biển : shipping,
+     avant « vận tải » seul) ; tour 18, jeu 22 : « DNTN Kim Ngoc Ha » face à « Kim Ngọc Hà Private Enterprise » à 0,616 */
+  [" doanh nghiep tu nhan ", " private enterprise "], [" dntn ", " private enterprise "], [" van tai bien ", " shipping "], [" ctcp ", " cong ty co phan "],
+  /* le clavardage thaï : บจก. et หจก. tapés en lettres (« bjk », « hjk »), la particule de politesse en queue (ครับ : « krub », « krap ») ;
+     tour 18, jeu 22 : « chaiyapruek agro bjk » face à « CHAIYAPHRUEK AGRO CO LTD » à 0,756 */
+  [" bjk ", " borisat jamkat "], [" hjk ", " lp "], [" krub ", " "], [" krap ", " "], [" khrap ", " "], [" khrab ", " "],
   [" thuong mai ", " trading "], [" xuat nhap khau ", " import export "], [" san xuat ", " production "],
   [" dich vu ", " services "], [" van tai ", " transport "], [" cong nghiep ", " industry "], [" ky thuat ", " technology "],
   [" det may ", " textile garment "], [" giay da ", " leather shoes "], [" thep ", " steel "], [" xay dung ", " construction "],
@@ -331,10 +341,40 @@ function traductionsCoreennesPliees(): ReadonlyMap<string, string> {
   if (!TRADUCTIONS_COREENNES_PLIEES) TRADUCTIONS_COREENNES_PLIEES = new Map([...TRADUCTIONS_COREENNES].map(([k, v]) => [pliCoreen(k), v]));
   return TRADUCTIONS_COREENNES_PLIEES;
 }
+/** Les mots du commerce THAÏS ET LAO romanisés, sous le pli des graphies (`pliThai` : « Phatthana », « Pattana », « Patana » ; « Namtan »,
+ *  « Numtan » ; « Panich », « Phanit »), sous la présomption thaïe seulement (voir `traduction`) : « Pattana » est aussi un nom indien,
+ *  « Kaset » un lieu. Le lao partage la table (ພັດທະນາ phatthana, ການຄ້າ kankha, ຂົນສົ່ງ khonsong, ກະສິກຳ kasikam) et sa présomption.
+ *  Tour 18, jeu 22 : « Si Suk Phatthana Khonsong Co., Ltd. » face à « Srisuk Pattana Transport Company Limited » à 0,163, « Sang Aroon
+ *  Sugar » face à « Saeng Arun Namtan » à 0,529, « Chaleunxay Phatthana » face à « Chalernsai Development » à 0,206. */
+const TRADUCTIONS_THAIES: ReadonlyMap<string, string> = new Map(Object.entries({
+  phatthana: "development", pattana: "development", patana: "development", khonsong: "transport", kankha: "trading", karnkha: "trading", kanka: "trading",
+  namtan: "sugar", numtan: "sugar", ahan: "food", arharn: "food", aharn: "food", ahaan: "food", pramong: "fishery", kosang: "construction",
+  korsang: "construction", anyamani: "gems", khrueangduem: "beverage", kruangduem: "beverage", phanit: "commercial", panich: "commercial",
+  panit: "commercial", phanich: "commercial", utsahakam: "industry", utsahakum: "industry", borikan: "services", borikarn: "services",
+  kasikam: "agriculture", kasikan: "agriculture", rongsi: "rice mill", rongsikhao: "rice mill", hongyen: "cold storage", witsawakam: "engineering",
+  wisawakam: "engineering", khemiphan: "chemical", kemipan: "chemical", yangphara: "rubber", bohae: "mining", thanakhan: "bank",
+  prakanphai: "insurance", phalangngan: "energy", rongraem: "hotel", thongthiao: "tourism", thurakit: "business",
+  /* le Siam sous la RTGS (สยาม : « Sayam ») et dans l'usage (« Siam ») */ sayam: "siam",
+}));
+let TRADUCTIONS_THAIES_PLIEES: ReadonlyMap<string, string> | undefined;
+function traductionsThaiesPliees(): ReadonlyMap<string, string> {
+  if (!TRADUCTIONS_THAIES_PLIEES) TRADUCTIONS_THAIES_PLIEES = new Map([...TRADUCTIONS_THAIES].map(([k, v]) => [pliThai(k), v]));
+  return TRADUCTIONS_THAIES_PLIEES;
+}
+/** Les locutions thaïes de plusieurs mots, sous la présomption : la rizerie (โรงสีข้าว, « Rong Si Khao », « Rong Si »). */
+const LOCUTIONS_THAIES: readonly [string, string][] = [[" rong si khao ", " rice mill "], [" rong si ", " rice mill "]];
+/** Un mot du commerce thaï soudé au nom qui le suit (« Panichtong » : พาณิชย์ทอง, le commerce + Thong), sous la présomption thaïe :
+ *  le mot et le reste, trois lettres au moins (tour 18, jeu 22 : « Panichtong Songkla Ltd.,Part. » face à « Phanit Thong Songkhla
+ *  Limited Partnership » au possible). */
+const METIERS_THAIS_EN_TETE: readonly string[] = ["phanich", "phanit", "panich", "panit"];
+function couperMetierThai(j: string): string[] {
+  for (const m of METIERS_THAIS_EN_TETE) if (j.length >= m.length + 3 && j.startsWith(m)) return [m, j.slice(m.length)];
+  return [j];
+}
 /** La traduction d'un mot du commerce ; `japonais` : le nom porte une forme ou un mot japonais, et ses mots de métier
  *  se cherchent aussi sous le pli des deux romanisations (« Oomura Kogyou K.K. » : kogyou restait un mot rare orphelin
  *  face à « industry », jeu 11, 28/09 : 0,361). Sans cette marque, « Teko » n'est pas « tekko » et reste un nom. */
-function traduction(j: string, japonais = false, slave = false, grec = false, coreen = false, hebreu = false, georgien = false, armenien = false, persan = false): string | undefined {
+function traduction(j: string, japonais = false, slave = false, grec = false, coreen = false, hebreu = false, georgien = false, armenien = false, persan = false, thai = false): string | undefined {
   const t = TRADUCTIONS.get(j);
   if (t !== undefined) return t;
   /* les mots du commerce hébreux, géorgiens, arméniens et persans, sous leur présomption (tour 17, jeu 21 : hebreu.ts, caucase.ts,
@@ -343,6 +383,8 @@ function traduction(j: string, japonais = false, slave = false, grec = false, co
   if (georgien) { const g = TRADUCTIONS_GEORGIENNES.get(j); if (g !== undefined) return g; }
   if (armenien) { const a = TRADUCTIONS_ARMENIENNES.get(j); if (a !== undefined) return a; }
   if (persan) { const p = traductionsPersanesPliees().get(pliGenerique(j)); if (p !== undefined) return p; }
+  /* les mots du commerce thaïs et lao sous le pli de leurs graphies, sous la présomption thaïe (TRADUCTIONS_THAIES ; tour 18, jeu 22) */
+  if (thai) { const t = traductionsThaiesPliees().get(pliThai(j)); if (t !== undefined) return t; }
   /* un mot de métier coréen sous l'un ou l'autre système, quand le nom est coréen (voir TRADUCTIONS_COREENNES) */
   if (coreen) { const c = traductionsCoreennesPliees().get(pliCoreen(j)); if (c !== undefined) return c; }
   /* un générique finnois, suédois, danois ou norvégien, seul ou composé de deux (« satamapalvelu », « hamntjänst » : port
@@ -741,6 +783,9 @@ const ABREVIATIONS_NEERLANDAISES: ReadonlyMap<string, string> = new Map(Object.e
 }));
 const ABREVIATIONS: ReadonlyMap<string, string> = new Map(Object.entries({
   intl: "international", bros: "brothers", mfg: "manufacturing", mgmt: "management",
+  /* « Agri Products » est « Agricultural Products » (tour 18, jeu 22 : « Duc Thinh Phu Agri Products » face à « Đức Thịnh Phú Agricultural
+     Products » à 0,667, « agri » mot rare sans répondant) */
+  agri: "agricultural",
   /* jeu 20 (Houston + Toronto) : l'entrepôt abrégé, et « INCOR » que la coupe à 35 caractères laisse de « Incorporated » */
   whse: "warehouse", whs: "warehouse", incor: "incorporated", incorp: "incorporated",
   svcs: "services", assoc: "associates", st: "saint", capt: "captain", sta: "santa", sto: "santo",
@@ -1140,6 +1185,9 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["UK", "IE", "NG", "LK", "ZA"], ["plc", "public limited company"]);
   poser(["PL"], ["sp zoo", "sp z oo", "spolka z ograniczona odpowiedzialnoscia", "spolka akcyjna", "spolka jawna"]);
   poser(["VN"], ["tnhh", "cong ty tnhh", "cong ty co phan"]);
+  /* la Công ty Cổ phần est la « Joint Stock Company » des documents anglais du Vietnam (tour 18, jeu 22 : « Minh Khoi Shipping JSC » face à
+     « CTCP Van tai Bien Minh Khoi », le pays de JSC disjoint de celui de la forme) */
+  poser(["VN"], ["jsc"]);
   poser(["TH"], ["borisat chamkat", "borisat jamkat", "chamkat", "jamkat"]);
   poser(["IR"], ["sherkat", "sherkate"]);
   poser(["UA"], ["prat", "pat", "tov", "tovarystvo z obmezhenoiu vidpovidalnistiu", "tovarystvo z obmezhenoyu vidpovidalnistyu",
@@ -1297,6 +1345,12 @@ export type Marques = { pays: readonly string[]; familles: readonly string[]; na
    *  dictionnaire ignore et qui écrit ph devant r ou l (« Phrachan », « Chaiyaphruek » : la RTGS seule l'écrit). Sous cette marque,
    *  la RTGS et la graphie d'usage d'un même mot sont un mot (voir `pliThai`) */
   thai: boolean;
+  /** un nom birman : son écriture, ou ses syllabes (Kyaw, Aung, Htun : voir `presomptionBirmane`). Sous cette marque, la même
+   *  syllabe sous deux graphies est un mot (voir `pliBirman`), et la civilité en tête tombe (U, Daw) */
+  birman: boolean;
+  /** un nom khmer : son écriture, un toponyme, le chh initial ou le ea (voir `estMarqueurKhmer`) ; la même syllabe sous deux
+   *  graphies est un mot (voir `pliKhmer`) */
+  khmer: boolean;
   /** un nom russe, ukrainien ou d'un autre pays d'écriture cyrillique : le cyrillique lui-même, une forme de la CEI ou
    *  d'Ukraine (OOO, TOV, ZAO, PAO, AT…), un mot du commerce translittéré (zavod, torgovyy, morskoy, flot), un grade
    *  de navire (kapitan, matros), le T/H du teplokhod, ou un suffixe de nom propre (-ov, -skiy, -enko, -chuk). Sous
@@ -1403,7 +1457,10 @@ const HONORIFIQUES_JAPONAIS: ReadonlySet<string> = new Set(["san", "sama", "onch
 export const SUCCURSALES_COLLEES: ReadonlySet<string> = new Set(["shiten", "eigyosho", "eigyobu", "kojo", "shisha", "shutchojo", "jigyosho",
   "jijeom", "yeongeopso", "gongjang", "saeopso", "chuljangso"]);
 /** L'écriture thaïe, par sa propriété Unicode. */
-const THAI = /\p{Script=Thai}/u;
+const THAI = /\p{Script=Thai}|\p{Script=Lao}/u;
+/** Les écritures birmane et khmère (tour 18, jeu 22 : birman.ts, khmer.ts). */
+const MYANMAR = /\p{Script=Myanmar}/u;
+const KHMER = /\p{Script=Khmer}/u;
 /** Les mots qui marquent un nom thaï romanisé (voir `Marques.thai`) : le pays, ses provinces et ses ports (Bangkok, Samut Prakan,
  *  Laem Chabang, Rayong, Chonburi, Map Ta Phut), la forme (borisat, chamkat, mahachon : บริษัท จำกัด มหาชน), les mots du commerce
  *  (phanit, karnkha, utsahakam), les mots d'enseigne (Siam, Charoen, Ruam, Sahakit). Une table du monde, pas du jeu. */
@@ -1412,7 +1469,18 @@ const MARQUEURS_THAIS = new Set(["thai", "thailand", "siam", "siamese", "bangkok
   "songkhla", "hatyai", "phuket", "pattaya", "ayutthaya", "chiangmai", "chiangrai", "chiang", "lampang", "khon", "kaen", "udon", "ubon",
   "ratchathani", "saraburi", "lopburi", "kanchanaburi", "ratchaburi", "phetchaburi", "prachuap", "khiri", "chumphon", "ranong", "krabi",
   "satun", "phatthalung", "narathiwat", "yala", "pattani", "maptaphut", "sriracha", "siracha", "borisat", "chamkat", "jamkat", "mahachon",
-  "phanit", "panich", "panit", "karnkha", "kanka", "utsahakam", "utsahakit", "charoen", "jaroen", "ruam", "sahakit", "sahakij", "sahaphat"]);
+  "phanit", "panich", "panit", "karnkha", "kanka", "utsahakam", "utsahakit", "charoen", "jaroen", "ruam", "sahakit", "sahakij", "sahaphat",
+  /* tour 18 (jeu 22) : les autres mots du commerce romanisés, que la présomption traduit (voir TRADUCTIONS_THAIES) */
+  "kankha", "khonsong", "phatthana", "namtan", "numtan", "arharn", "aharn", "pramong", "borikan", "kasikam", "rongsi", "hongyen", "witsawakam",
+  "anyamani", "kosang", "korsang", "yangphara", "khemiphan", "thanakhan", "phanich", "songkla", "khrueangduem", "khao", "mongkhon", "mongkol",
+  "suwan", "suwanna", "suvarn", "pattana", "patana", "suphan", "suphanburi", "supanburi", "ahan", "ayudhya", "ayuthaya", "ayuthya", "dhonburi"]);
+/** Un mot latin qui dit le thaï : un marqueur, ou un mot du commerce thaï sous l'une de ses graphies (« Pattana », « Patthana » : voir
+ *  TRADUCTIONS_THAIES, sous `pliThai`), cinq lettres au moins et hors du dictionnaire (« Kafr » pliait comme « kafe » : « Mansour Olive Press
+ *  Kafr Kanna » perdu, mesuré le 28/09) ; ou le ศักดิ์ écrit avec son ดิ muet (« Sakdichai », « Pongsakdi ») et le -chai (ชัย) d'un mot de
+ *  six lettres que le dictionnaire ignore (« Somchai », « Sakchai »), que seul le thaï écrit ainsi. */
+function estMarqueurThai(j: string): boolean {
+  return MARQUEURS_THAIS.has(j) || (j.length >= 5 && lemme(j) === undefined && (traductionsThaiesPliees().has(pliThai(j)) || /sakdi/.test(j) || (j.length >= 6 && /chai$/.test(j))));
+}
 /** L'écriture tamoule (U+0B80 à U+0BFF). */
 const TAMOUL = /[\u0b80-\u0bff]/u;
 const MARQUEURS_INDIENS = new Set(["pvt", "india", "indian", "bharat", "bharati", "hindustan", "udyog", "vyapar", "mumbai", "bombay",
@@ -1747,6 +1815,13 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* la présomption persane ne tient pas aux marqueurs arabes : « Bayt Al Zaafaran » garde son safran en nom, comme le Golfe l'écrit */
   const persanPresume = /\p{Script=Arabic}/u.test(nom)
     || motsPresumes.some((j) => MARQUEURS_PERSANS.has(j) || (j.length >= 6 && /(pour|poor)$/.test(j) && lemme(j) === undefined));
+  /* le thaï et le lao (l'écriture, un marqueur, le ph devant r ou l : voir `Marques.thai`), le birman (l'écriture ou ses syllabes : voir
+     `presomptionBirmane`) et le khmer (l'écriture, un toponyme, le chh initial, le ea : voir `estMarqueurKhmer`) : lus ici, avant les tables,
+     parce que les mots du commerce thaïs et lao se traduisent sous la présomption (TRADUCTIONS_THAIES), et que les civilités birmanes et le
+     « sri » thaï en dépendent (tour 18, jeu 22) */
+  const thaiPresume = THAI.test(nom) || motsPresumes.some((j) => estMarqueurThai(j) || estMarqueurLao(j) || (j.length >= 5 && /ph[rl]/.test(j) && lemme(j) === undefined));
+  const birmanPresume = MYANMAR.test(nom) || presomptionBirmane(motsPresumes, (m) => lemme(m) !== undefined);
+  const khmerPresume = KHMER.test(nom) || motsPresumes.some((j) => estMarqueurKhmer(j) && lemme(j) === undefined);
   /* LE TYPE DU NAVIRE ENTRE PARENTHÈSES en fin de nom (« PRIDONYE-41 (barge) », « (tug) », « (tanker) ») : ce que le
      préfixe dit devant (« barge PRIDONYE 41 »), et non une filiale (jeu 12, 28/09 : 0,667, la parenthèse sans répondant
      et « barge » mot rare orphelin) */
@@ -1777,7 +1852,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     .flatMap((m) => {
       let dedans = ` ${jetons(normaliser(plier(m[1]!))).join(" ")} `;
       for (const [de, vers] of LOCUTIONS) dedans = dedans.split(de).join(vers);
-      return dedans.trim().split(/ +/).flatMap((j) => (CIVILITES.has(j) ? "" : ABREVIATIONS.get(j) ?? traduction(j, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume) ?? j).split(" "));
+      return dedans.trim().split(/ +/).flatMap((j) => (CIVILITES.has(j) ? "" : ABREVIATIONS.get(j) ?? traduction(j, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume, thaiPresume) ?? j).split(" "));
     })
     .filter((j) => j !== "" && !FORMES.has(j)));
   /* Lettres et chiffres collés se séparent : « No18 » → « No 18 », « LANQIAOFENG16 » →
@@ -1790,7 +1865,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     /* un nom sans aucune lettre latine n'a pas été lu par l'optique : le « lv » d'une lecture de l'hébreu (לויצקי, Levitski) reste un l
        (tour 17, jeu 21 : « lvitski » devenait « ivitski ») */
     .map((j) => (latinEcrit ? lInitialLuPourI(j) : j)).map(motDuMetierPerdu)
-    .flatMap((j) => (japonaisPresume ? couperMetierJaponais(j) : couperMetierCoreen(j, coreenPresume)));
+    .flatMap((j) => (japonaisPresume ? couperMetierJaponais(j) : thaiPresume ? couperMetierThai(j) : couperMetierCoreen(j, coreenPresume)))
+    /* le nom birman soudé d'un clavardage, coupé en ses syllabes quand elles le couvrent entier (voir `couperSyllabesBirmanes`) */
+    .flatMap((j) => (j.length >= 9 && lemme(j) === undefined ? couperSyllabesBirmanes(j, (m) => lemme(m) !== undefined) ?? [j] : [j]));
   const joints = brut;
   /* « No. », « Nr. », « Number » devant un numéro ne sont que le mot « numéro ». */
   const sansNo = joints.filter((j, i) => !(/^(no|nr|num|number)$/.test(j) && /^\d+$/.test(joints[i + 1] ?? "")));
@@ -1810,6 +1887,8 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   /* sous la marque vietnamienne (l'écriture ou la forme), les génériques qui sont aussi des mots d'ailleurs : « May » est
      la confection, « Dệt » le tissage (voir vietnamien.ts) */
   if (estVietnamien(nom, texte)) for (const [de, vers] of LOCUTIONS_VIETNAMIENNES) texte = texte.split(de).join(vers);
+  /* et sous la présomption thaïe, la rizerie en trois mots (voir LOCUTIONS_THAIES) */
+  if (thaiPresume) for (const [de, vers] of LOCUTIONS_THAIES) texte = texte.split(de).join(vers);
   let navire = false;
   for (const p of PHRASES_NAVIRE) {
     if (texte.startsWith(p) && texte.length > p.length) { navire = true; texte = " " + texte.slice(p.length); }
@@ -1876,7 +1955,12 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const malaisPresume = separes.some((j) => j === "sdn" || j === "bhd" || j === "berhad");
   const motsBruts = separes.flatMap((j, i) => {
     if (j === "i") return [j];
-    if (CIVILITES.has(j)) { civilites.add(j); return []; }
+    /* « Sri » est le mot thaï ศรี (Sri Rayong, Srisuk), pas la civilité indienne, sous la présomption thaïe (tour 18, jeu 22 : « ศรีระยอง 12 »
+       face à « SRI RAYONG 12 » à 0,500, le mot ôté d'un côté) */
+    if (CIVILITES.has(j) && !(thaiPresume && j === "sri")) { civilites.add(j); return []; }
+    /* LA CIVILITÉ BIRMANE en tête (U, Daw, Ko, Ma, Maung, Saya : voir HONORIFIQUES_BIRMANS), sous la présomption birmane, devant un nom d'au
+       moins deux mots (tour 18, jeu 22 : « U Kyaw Zaw Htun Trading » face à « Kyaw Zaw Tun Trading » à 0,576) */
+    if (i === 0 && birmanPresume && HONORIFIQUES_BIRMANS.has(j) && separes.length >= 3) { civilites.add(j); return []; }
     /* « li » (ل, « pour ») devant un mot du commerce arabe est la préposition, comme « lil » :
        « Li Tijarat Al Aruz » est « Rice Trading » (jeu 9) ; devant tout autre mot c'est un nom (« Li Ning ») */
     if (j === "li" && TRADUCTIONS_ARABES.has(separes[i + 1] ?? "")) return [];
@@ -1900,7 +1984,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
        Quatre lettres au moins derrière l'article, et jamais un mot que le dictionnaire, les formes ou les tables connaissent
        (Alliance, Alpine, Alhandasiya) */
     if (arabePresume && j.length >= 6 && j.startsWith("al") && !connu(j) && !MARQUEURS_ARABES.has(j) && !MARQUEURS_PERSANS.has(j)) {
-      const reste = j.slice(2), t = traduction(reste, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume);
+      const reste = j.slice(2), t = traduction(reste, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume, thaiPresume);
       if (t === undefined) return ["al", reste];
       for (const m of t.split(" ")) if (m !== "") { traduits.add(m); if (!sources.has(m)) sources.set(m, reste); }
       return ["al", ...t.split(" ").filter((m) => m !== "")];
@@ -1934,16 +2018,16 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
     /* une abréviation développée se traduit comme le mot entier : « Tic. » est ticaret, donc trading (jeu 13, 28/09 :
        « Tasimaciligi Tic. AS » à 0,704 face à « Ticaret A.Ş. », l'un traduit et l'autre non) */
     if (a !== undefined) return a.split(" ").flatMap((m) => {
-      const t = m === "" ? undefined : traduction(m, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume);
+      const t = m === "" ? undefined : traduction(m, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume, thaiPresume);
       if (t === undefined) return [m];
       for (const x of t.split(" ")) if (x !== "") { traduits.add(x); if (!sources.has(x)) sources.set(x, j); }
       return t.split(" ");
     });
     const p = PAYS_ADJECTIFS.get(j);
     if (p !== undefined) return [p];
-    let t = traduction(j, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume);
+    let t = traduction(j, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume, thaiPresume);
     /* « Comercioo de Graos » (jeu 16) : la lettre doublée d'un mot de métier que les tables connaissent sans elle */
-    if (t === undefined && /(\p{L})\1/u.test(j) && lemme(j) === undefined) { const d = j.replace(/(\p{L})\1/gu, "$1"); t = d === j ? undefined : traduction(d, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume); }
+    if (t === undefined && /(\p{L})\1/u.test(j) && lemme(j) === undefined) { const d = j.replace(/(\p{L})\1/gu, "$1"); t = d === j ? undefined : traduction(d, japonaisPresume, slave, grecPresume, coreenPresume, hebreuPresume, georgienPresume, armenienPresume, persanPresume, thaiPresume); }
     if (t === undefined) return [j];
     for (const m of t.split(" ")) if (m !== "") { traduits.add(m); if (!sources.has(m)) sources.set(m, j); }
     return t.split(" ");
@@ -2073,7 +2157,6 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
      jeux, les vingt et un noms que ce digramme marque sont tous coréens) */
   /* et le digramme « eu » (ㅡ : Geumnae, Haneul, Heuksong) au même titre, hors d'un nom thaï (« Rungreung », jeu 7 : le seul autre
      mot des dix-neuf jeux à le porter sous cette forme, mesuré le 28/09) */
-  const thaiPresume = THAI.test(nom) || tousLesMots.some((j) => MARQUEURS_THAIS.has(j));
   const coreen = coreenPresume || tousLesMots.some(estMarqueurCoreen)
     || (pays.has("KR") && !japonais && !thaiPresume && t.some((j) => (j.includes("eo") || j.includes("eu")) && lemme(j) === undefined));
   /* LE 호 DES NAVIRES CORÉENS, romanisé « Ho » en queue (« Yongdu Ho No. 7 », « Eunpa Ho », « Ŭnp'a Ho ») : le suffixe qui dit le
@@ -2097,7 +2180,9 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const indien = tamoul || DEVANAGARI.test(nom) || tousLesMots.some((j) => MARQUEURS_INDIENS.has(j))
     || t.some((j) => j.length >= 5 && j.endsWith("jee") && lemme(j) === undefined);
   /* un nom thaï : l'écriture, un marqueur, ou le ph devant r ou l d'un mot que le dictionnaire ignore (voir `Marques.thai`) */
-  const thai = THAI.test(nom) || tousLesMots.some((j) => MARQUEURS_THAIS.has(j)) || t.some((j) => j.length >= 5 && /ph[rl]/.test(j) && lemme(j) === undefined);
+  const thai = thaiPresume || tousLesMots.some((j) => estMarqueurThai(j) || estMarqueurLao(j));
+  /* un nom birman ou khmer : par son écriture ou ses mots, lus avant les tables (voir `Marques.birman`, `Marques.khmer`) */
+  const birman = birmanPresume || presomptionBirmane(t, (m) => lemme(m) !== undefined), khmer = khmerPresume;
   const hispanique = ["MX", "ES", "BR", "PE", "CO", "CL", "AR", "PT", "UY", "BO"].some((k) => pays.has(k)) || tousLesMots.some((j) => MARQUEURS_HISPANIQUES.has(j));
   const majuscules = !/\p{Ll}/u.test(nom) && /\p{Lu}/u.test(nom) && t.length >= 2;
   const filiation = tousLesMots.some((j) => FILIATION_M.has(j)) ? "m" : tousLesMots.some((j) => FILIATION_F.has(j)) ? "f" : "";
@@ -2109,7 +2194,7 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   const chat = t.length >= 2 && !majuscules && (!/\p{Lu}/u.test(nom) || !/[.,()]/.test(nom));
   return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites, traduits, sources, sigles,
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
-    hebreuOuGrec, indien, hispanique, tamoul, thai, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture !== "mandarin" && lecture !== "hanja", lecture, priveInconnu,
+    hebreuOuGrec, indien, hispanique, tamoul, thai, birman, khmer, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture !== "mandarin" && lecture !== "hanja", lecture, priveInconnu,
     natifs: rom.natifs, filiation, filiationOrdre, succursale, typeNavire, slave };
 }
 

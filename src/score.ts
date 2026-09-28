@@ -51,6 +51,8 @@ import { pliSlave, memeSuiteCyrillique } from "./mots.ts";
 import { patronymeSlave } from "./mots.ts";
 import { CREDIT_CYRILLIQUE } from "./mots.ts";
 import { pliThai, CREDIT_THAI } from "./mots.ts";
+import { pliBirman, CREDIT_BIRMAN } from "./birman.ts";
+import { pliKhmer, CREDIT_KHMER } from "./khmer.ts";
 import { queueDeComposeSlave } from "./mots.ts";
 import { QUEUES_SLAVES } from "./mots.ts";
 import { radicalSlave } from "./mots.ts";
@@ -99,7 +101,7 @@ export type NomPrepare = {
 };
 
 const SANS_MARQUES: Marques = { pays: [], familles: [], designations: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
-  coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, tamoul: false, thai: false, prive: false, majuscules: false, chat: false, abjad: "", cantonais: false,
+  coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, tamoul: false, thai: false, birman: false, khmer: false, prive: false, majuscules: false, chat: false, abjad: "", cantonais: false,
   lecture: "mandarin", priveInconnu: false, natifs: new Map(), filiation: "", filiationOrdre: "", succursale: "", typeNavire: "", slave: false };
 
 export function preparerNom(f: Frequences, nom: string, lecture: Lecture = "mandarin"): NomPrepare {
@@ -463,6 +465,8 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   const tamoul = A.marques.tamoul || B.marques.tamoul;
   /* un nom thaï d'un côté : la RTGS et la graphie d'usage d'un même mot sont un mot (`pliThai`, CREDIT_THAI) */
   const thai = A.marques.thai || B.marques.thai;
+  /* un nom birman ou khmer d'un côté : la même syllabe sous deux graphies est un mot (`pliBirman`, `pliKhmer` ; tour 18, jeu 22) */
+  const birman = A.marques.birman || B.marques.birman, khmer = A.marques.khmer || B.marques.khmer;
   /* en pinyin, l'initiale est un phonème : Jin n'est pas Yin, Chang n'est pas Shang ; seules les
      paires d'aspiration du Wade-Giles se confondent (k, g ; t, d ; p, b ; ts, z, c ; ch, zh, j, q ; hs, x) */
   const chinois = A.marques.chinois || B.marques.chinois;
@@ -529,7 +533,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
            restent deux mots (Green, Grin) */
         const arabeX = arabe && i > 0 && ARTICLES_ARABES.has(X.mots[i - 1]!), arabeY = arabe && j > 0 && ARTICLES_ARABES.has(Y.mots[j - 1]!);
         const anglais = tousDeuxAnglais(x, y) && !arabeX && !arabeY;
-        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${arabeX ? 1 : 0}${arabeY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${thai ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}${navire ? 1 : 0}${sansForme ? 1 : 0}${germanique ? 1 : 0}${slave ? 1 : 0}${abjad}${nx}${ny}${nordique ? 1 : 0}${styleX ? 1 : 0}${styleY ? 1 : 0}` : "";
+        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${arabeX ? 1 : 0}${arabeY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${thai ? 1 : 0}${birman ? 1 : 0}${khmer ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}${navire ? 1 : 0}${sansForme ? 1 : 0}${germanique ? 1 : 0}${slave ? 1 : 0}${abjad}${nx}${ny}${nordique ? 1 : 0}${styleX ? 1 : 0}${styleY ? 1 : 0}` : "";
         /* le cache code l'équivalence de romanisation en ajoutant 2 à la valeur (elle est dans [0, 1]) */
         const enCache = memo?.get(cle);
         let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
@@ -548,11 +552,18 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           const appuiSlave = slave && !pliS && x !== y && !anglais && voyelleEpenthetique(pliSlave(x), pliSlave(y));
           /* les mêmes lettres thaïes sous la RTGS et la graphie d'usage (`pliThai` : « Phrachan », « Prajan » ; « Ngoen », « Ngern ») ; lue
              avant la règle chinoise des initiales, parce que « Co., Ltd. » marque aussi le nom chinois */
-          const pliT = thai && x !== y && !anglais && pliThai(x) === pliThai(y);
+          /* et quand les DEUX noms sont thaïs, deux mots du dictionnaire anglais qui ne diffèrent que par ce pli sont la même syllabe thaïe
+             (« Thong », « Tong » : ทอง, l'or ; tour 18, jeu 22 : « Phanit Thong Songkhla » face à « Panichtong Songkla » à 0,549) ; et de même
+             quand un côté est écrit en thaï ou en lao, dont la lecture n'est pas un mot anglais (« ทองไพศาล » face à « Tong Paisal ») */
+          const pliT = thai && x !== y && (!anglais || abjad === "thai" || (A.marques.thai && B.marques.thai)) && pliThai(x) === pliThai(y);
+          /* la même syllabe birmane (« Htun », « Tun » ; « Myint », « Myin ») ou khmère (« Chhouk », « Chouk » ; « Pich », « Pech ») sous deux
+             graphies, lue avant la règle chinoise des initiales pour la même raison que le thaï (tour 18, jeu 22) */
+          const pliB = birman && x !== y && !anglais && pliBirman(x) === pliBirman(y);
+          const pliK = khmer && x !== y && !anglais && pliKhmer(x) === pliKhmer(y);
           /* la même suite de lettres grecques sous deux romanisations ou en greeklish (`memeSuiteGrecque` : « Hellas », « Ellas » ;
              « Chatzimichalis », « Hadjimichalis » ; « Xenofontos », « Ksenofontos », « 3enofontos »), sous la marque grecque ou hébraïque */
           const pliG = hebreuOuGrec && x !== y && !anglais && memeSuiteGrecque(x, y);
-          const autreSyllabe = chinois && x !== y && !pliC && !pliJ && !pliS && !pliT && !pliG && !initialesChinoisesCompatibles(x, y);
+          const autreSyllabe = chinois && x !== y && !pliC && !pliJ && !pliS && !pliT && !pliB && !pliK && !pliG && !initialesChinoisesCompatibles(x, y);
           if (autreSyllabe) v = Math.min(v, 0.5);
           /* une équivalence de romanisation, dans le contexte de la langue : elle vaut au moins
              CREDIT_ROMANISATION, et elle lève l'ambiguïté du mot court (voir plus bas) */
@@ -565,7 +576,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
             || (arabe && latin && voyelleSauteeArabe(squeletteArabe(x), squeletteArabe(y)))
             /* et « oe » y était « u » (« Soerya », « Surya ») : o et u ne font qu'une classe sous cette marque */
             || (indonesien && X.squelettes[i]!.replace(/o/g, "u") === Y.squelettes[j]!.replace(/o/g, "u"))
-            || pliJ || pliS || appuiSlave || pliT
+            || pliJ || pliS || appuiSlave || pliT || pliB || pliK
             || (coreen && pliCoreen(x) === pliCoreen(y))
             || pliG
             /* v, w, b : hindi, hébreu, espagnol, portugais ; sous leur contexte, au crédit et non au
@@ -585,6 +596,9 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           if (pliS) v = Math.max(v, CREDIT_CYRILLIQUE);
           /* et les mêmes lettres thaïes aussi (voir CREDIT_THAI) */
           if (pliT) v = Math.max(v, CREDIT_THAI);
+          /* et la même syllabe birmane ou khmère (voir CREDIT_BIRMAN, CREDIT_KHMER) */
+          if (pliB) v = Math.max(v, CREDIT_BIRMAN);
+          if (pliK) v = Math.max(v, CREDIT_KHMER);
           /* et les mêmes lettres grecques aussi (voir CREDIT_GREC) */
           if (pliG) v = Math.max(v, CREDIT_GREC);
           /* L'ADJECTIF SLAVE DE LIEU : « Kubanskaya » et « Kurganskaya » se ressemblent à 0,82 par leur suffixe commun ;
@@ -895,13 +909,16 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
      s'écrivent en syllabes), le bloc garde son droit : « Kuang Yu » est « Guangyu », « Soon Heng » est « Shun Hing »,
      « Tek Leong » est « Delong » (treize vrais noms perdus quand la règle valait partout, mesuré le 27/09 sur les jeux 3, 5,
      7 et 9). Ailleurs, les lettres sont des lettres */
-  const syllabes = voyellesLibres || cantonais || japonais || tamoul || thai || indonesien || A.marques.natifs.size > 0 || B.marques.natifs.size > 0
+  const syllabes = voyellesLibres || cantonais || japonais || tamoul || thai || birman || khmer || indonesien || A.marques.natifs.size > 0 || B.marques.natifs.size > 0
     || A.marques.pays.includes("SG") || B.marques.pays.includes("SG");
   const oA = orphelinsMots[0].join(""), oB = orphelinsMots[1].join("");
   const memesLettres = syllabes || oA === "" || oB === ""
     || similitude(oA, oB) >= BLOC_MIN || similitude(orphelinsMots[0].map(squelette).join(""), orphelinsMots[1].map(squelette).join("")) >= BLOC_MIN;
   if (A.mots.length !== B.mots.length && !motEnPlus && memesLettres) {
-    const meilleur = Math.max(similitude(A.bloc, B.bloc), Math.min(0.95, similitude(A.blocSq, B.blocSq)));
+    /* et sous la marque thaïe, les deux blocs sous le pli des graphies (« Charoen Sap Nawi » face à « Jaroensub Navee » : tour 18, jeu 22, 0,360,
+       cinq lettres sur quatorze quand le pli n'en laisse qu'une) */
+    const meilleur = Math.max(similitude(A.bloc, B.bloc), Math.min(0.95, similitude(A.blocSq, B.blocSq)),
+      thai ? Math.min(0.95, similitude(pliThai(A.bloc), pliThai(B.bloc))) : 0);
     if (meilleur >= BLOC_MIN) s = Math.max(s, meilleur);
   }
   /* LA CONTENANCE : un nom entier retrouvé DANS l'autre (« Quarrington Metals FZE » dans
