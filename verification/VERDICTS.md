@@ -99,3 +99,10 @@ the brief of the next blind author corrects it: one letter changed inside a comp
 misspelt (match), except in a vessel name; two real words (Coal / Coke, Cypress / Cyprus, Chiang Mai / Chiang Rai)
 are two names. The remaining eleven (plurals of trade words without a vessel prefix, Bros. / Bro., Supplies /
 Suppliers, Maghreb spellings held apart by convention) go to round nine's known list with the fifty-one misses.
+
+## Real company names
+
+Every set above was written by AI agents with invented names. The matcher was also measured once on
+real company names from the GLEIF register (CC0), on 30 September 2026: see `GLEIF.md` in this folder.
+On 448 real spelling variants it caught 143 at the strong level (32 %), and it raised 0 false alerts
+on 1,000 real different companies.
