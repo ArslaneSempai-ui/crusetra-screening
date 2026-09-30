@@ -3,6 +3,9 @@
 **Which name matcher suffices, at which threshold, measured on your own alert history.**
 Nothing of yours goes up: the lists come down, your alerts stay on your machine.
 
+It also screens a list of counterparties (companies, vessels, IMO numbers) against five public
+sanctions lists, on your machine: see `npm run cribler` below.
+
 Name screening (sanctions, PEP, internal lists) raises alerts; most of them are false, and
 nobody can say why the threshold sits at 85 rather than 90 except "that is the vendor's
 setting". This tool measures it: several matchers, from exact to phonetic to a local
@@ -39,8 +42,9 @@ Node 24 or newer, on **macOS, Linux or Windows**: the whole test suite runs on a
 
 ## What leaves your machine
 
-Nothing, except one explicit download: `npm run listes -- --fetch` pulls the public lists
-(OFAC SDN, EU consolidated, UN). Every other command runs with the network cut:
+Nothing, except two explicit downloads: `npm run listes -- --fetch` pulls the five public lists
+named above, and `npm run poids -- --fetch` pulls the embed tier's weights. Every other command
+runs with the network cut:
 `CASCADE_OFFLINE=1` is honoured by the one module allowed to touch it, and a test reads every
 source so that no second one appears (`src/frontiere.test.ts`).
 
