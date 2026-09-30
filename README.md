@@ -4,7 +4,8 @@
 Nothing of yours goes up: the lists come down, your alerts stay on your machine.
 
 It also screens a list of counterparties (companies, vessels, IMO numbers) against five public
-sanctions lists, on your machine: see `npm run cribler` below.
+sanctions lists, on your machine: see `npm run cribler` below. Its rates on real company names,
+measured on the GLEIF register, are in `verification/GLEIF.md`.
 
 Name screening (sanctions, PEP, internal lists) raises alerts; most of them are false, and
 nobody can say why the threshold sits at 85 rather than 90 except "that is the vendor's
