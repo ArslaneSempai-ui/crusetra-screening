@@ -107,6 +107,14 @@ export function rendreRapport(m: MesureAlertes): string {
     }
     l.push(``);
   }
+  const l2 = m.facultatifs?.["logic-v2"];
+  if (l2?.present) {
+    l.push(`logic-v2 is nomenklatura ${l2.nomenklatura} as installed on this machine, given the two names only (schema ${l2.schema}): it is logic-v2's name matching, not a screening with dates of birth, countries or identifiers. Its documented threshold is 0.70, and its scores are comparable only between records made with the same nomenklatura version.`);
+    l.push(``);
+  } else if (l2) {
+    l.push(`Optional matcher logic-v2 (nomenklatura) absent, said rather than guessed: ${l2.raison}.`);
+    l.push(``);
+  }
   if (m.absents.length) {
     l.push(`Contract matchers absent from tonight's registry, said rather than guessed: `
       + `${m.absents.map((a) => cellule(a)).join(", ")}. The frontier above covers what was measured.`);

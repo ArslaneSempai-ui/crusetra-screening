@@ -31,12 +31,21 @@ export interface Matcher {
    * couture, annoncé au chef dans ETAT et le message de livraison du lot E.
    */
   rechauffer?(noms: readonly string[]): Promise<void>;
+  /**
+   * FACULTATIF, et seul le palier facultatif `logic-v2` le porte : un matcher qui vit dans un autre processus reçoit TOUTES
+   * les paires d'un coup ici, de façon synchrone, et `score` sert ensuite depuis ce cache. Un consommateur appelle
+   * `m.preparerPaires?.(paires)` avant de noter ; les autres paliers n'ont pas ce membre. Ajout additif à la couture.
+   */
+  preparerPaires?(paires: readonly { a: string; b: string }[]): void;
 }
 
 /** Les paliers du contrat, dans l'ordre du coût. `human` n'est pas un matcher : c'est
  *  l'analyste, supposé puis mesurable avec measure:humans de cascade-routing. */
 export const PALIERS = ["exact", "tokens", "jaro-winkler", "damerau", "phonetic", "ngrams", "embed"] as const;
-export type PalierId = (typeof PALIERS)[number];
+/** Les paliers FACULTATIFS : hors du contrat, présents seulement quand le client a installé de quoi les faire tourner
+ *  (`logic-v2` : nomenklatura, voir src/matchers/logic-v2.ts). Absents, ils sont nommés avec leur raison, jamais devinés. */
+export const PALIERS_FACULTATIFS = ["logic-v2"] as const;
+export type PalierId = (typeof PALIERS)[number] | (typeof PALIERS_FACULTATIFS)[number];
 
 /** La grille de seuils balayée par la mesure : 0,50 → 1,00 par pas de 0,01, arrondie au
  *  centième pour que deux lots qui la recalculent obtiennent les MÊMES nombres. */
