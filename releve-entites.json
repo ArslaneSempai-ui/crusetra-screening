@@ -1,8 +1,8 @@
 {
   "version": 1,
   "quoi": "the company and vessel name matcher of cascade-screening: the training cells, the realistic verdict every client report cites, the blind verdicts of the rounds and the two thousand-name books, frozen with their date and commit; sealed afterwards with npm run sceller",
-  "date": "2026-09-28",
-  "commit": "d0332ab",
+  "date": "2026-10-04",
+  "commit": "413ddb7",
   "apprentissage": {
     "jeux": 23,
     "paires": 4170,
@@ -10,11 +10,11 @@
     "fort": {
       "seuil": 0.81,
       "trouves": {
-        "succes": 3812,
+        "succes": 3817,
         "n": 4170,
-        "taux": 0.9141486810551559,
-        "bas": 0.9052599129084157,
-        "haut": 0.922275085065633
+        "taux": 0.915347721822542,
+        "bas": 0.9065117721888781,
+        "haut": 0.9234191001278865
       },
       "fausses": {
         "succes": 127,
@@ -22,6 +22,13 @@
         "taux": 0.030455635491606715,
         "bas": 0.02565670474608747,
         "haut": 0.036118902646392406
+      },
+      "faussesReelles": {
+        "succes": 0,
+        "n": 1000,
+        "taux": 0,
+        "bas": 0,
+        "haut": 0.003826898586390522
       }
     },
     "possible": {
@@ -34,11 +41,18 @@
         "haut": 0.9782847853507782
       },
       "fausses": {
-        "succes": 883,
+        "succes": 884,
         "n": 4170,
-        "taux": 0.2117505995203837,
-        "bas": 0.19961847283823225,
-        "haut": 0.2244133351728816
+        "taux": 0.2119904076738609,
+        "bas": 0.19985293630353454,
+        "haut": 0.22465804657612246
+      },
+      "faussesReelles": {
+        "succes": 0,
+        "n": 1000,
+        "taux": 0,
+        "bas": 0,
+        "haut": 0.003826898586390522
       }
     }
   },
@@ -517,36 +531,36 @@
       "fichier": "exemple/contreparties-mille.csv",
       "sha256": "6bc5d6b290ed041ffa17423d45f3e0ee0163826d38c8c1bcc56a121180eb7963",
       "releve": "exemple/contreparties-mille.screening.json",
-      "sceau": "ec006d36990b8840",
-      "commit": "5dc1c23",
-      "emisLe": "2026-09-28T01:46:19.802Z",
+      "sceau": "6489a0b81ad5ff3b",
+      "commit": "413ddb7",
+      "emisLe": "2026-10-04T12:46:49.989Z",
       "lignes": 1000,
-      "forts": 2,
-      "possibles": 13,
-      "sansCorrespondance": 985,
+      "forts": 4,
+      "possibles": 14,
+      "sansCorrespondance": 982,
       "aveugle": false,
-      "note": "a Rotterdam forwarder's book; the abbreviation rule of 3eec970 was tightened from its first record, so its figure is not blind"
+      "note": "a Rotterdam forwarder's book; the abbreviation rule of 3eec970 was tightened from its first record, and its alert volume was read on 30 September 2026 to choose the possible threshold (the review budget of choisirSeuils), so its figure is not blind"
     },
     {
       "fichier": "exemple/contreparties-mille-2.csv",
       "sha256": "523054e1772d8016a7dc4ff0d17d0b4376ed363c20b5948da4fdd4032ce5bb75",
       "releve": "exemple/contreparties-mille-2.screening.json",
-      "sceau": "08589317bf1d213a",
-      "commit": "9e18a1c",
-      "emisLe": "2026-09-28T05:57:51.930Z",
+      "sceau": "66ff8ff39c3b039f",
+      "commit": "413ddb7",
+      "emisLe": "2026-10-04T12:49:39.208Z",
       "lignes": 1000,
-      "forts": 3,
+      "forts": 4,
       "possibles": 13,
-      "sansCorrespondance": 984,
-      "aveugle": true,
-      "note": "a Hamburg forwarder's book, written after that rule and never read before its single screening on the final matcher"
+      "sansCorrespondance": 983,
+      "aveugle": false,
+      "note": "a Hamburg forwarder's book, written after that rule and screened blind once on commit 9e18a1c; its alert volume was then read on 30 September 2026 to choose the possible threshold (the review budget of choisirSeuils), so its figure is no longer blind"
     }
   ],
   "reserves": [
     "A candidate is a name to be read by the client's compliance officer, never a match established: every figure here counts candidates, not findings.",
     "The realistic set is a quarter of ordinary documents of one forwarder, written blind; it is the held-out set every client report cites first, and it was never used to choose a threshold.",
     "The blind sets are trap populations, one per round; a population whose script the matcher had never read scores 40 to 55 % at the strong level on its round and gains about forty points the round after, so the last set (Polish and Baltic) stands where the unread ones stood.",
-    "The three strong alerts of the blind book are false: one-word river vessel names against a short alias of a listed party; they are the first thing a further round would read."
+    "Neither thousand-name book is blind any more: both were read to choose the possible threshold. Of their eight strong alerts, seven are false on reading: a vessel name against a short or unrelated alias of a listed party, three of them new with the recalibration on real names (a Latin vessel name against a Cyrillic alias); the eighth is one letter away from a listed vessel's name. They are the first thing a further round would read."
   ],
-  "empreinte": "68157020f83b6741"
+  "empreinte": "ea82a3c597135dcf"
 }
