@@ -32,7 +32,7 @@ M-0030,Conservas Mariñeira Ribeiro S.L.,,no-match,,,,,,,,,
 M-0031,Ceramiche Valdarno Superiore S.p.A.,,no-match,,,,,,,,,
 M-0032,Tessitura Bellagamba S.r.l.,,no-match,,,,,,,,,
 M-0033,Corticas do Alentejo Pereira & Filhos Lda,,no-match,,,,,,,,,
-M-0034,Kyra Evdokia,,no-match,,,,,,,,,
+M-0034,Kyra Evdokia,,strong,Societatea cu  răspundere limitată «Krafttek»,EU,UKR,177347,Общество с ограниченной ответственностью “Крафттек”,,,0.950,name
 M-0035,Frida Kvalvik,,no-match,,,,,,,,,
 M-0036,PRZEDSIEBIORSTWO HANDLOWE LIPOWIEC SP Z O O,,no-match,,,,,,,,,
 M-0037,Meble Zagajnik Sp. z o.o.,,no-match,,,,,,,,,
@@ -683,7 +683,7 @@ M-0679,Olives de Table du Saïss SARL,,no-match,,,,,,,,,
 M-0680,Sidama Highland Coffee Exporters PLC,,no-match,,,,,,,,,
 M-0681,Takoradi Timber Mouldings Ltd,,no-match,,,,,,,,,
 M-0682,Nacala Cashew Processors Lda,,no-match,,,,,,,,,
-M-0683,Wanjiru Muthoni,,no-match,,,,,,,,,
+M-0683,Wanjiru Muthoni,,possible,W & M Limited Partnership,CSL,Nonproliferation Sanctions (ISN): Chemical and Biological Weapons Act,6b1afd880f0aa5d6de2b8ca262fb4ab3b424bb830751bfe128cb0e03,,,,0.800,name
 M-0684,Ithaki Dawn,,no-match,,,,,,,,,
 M-0685,Samothraki,,possible,CHLOE,OFAC,SDGT,51850,SAM 121,,9173745,0.800,name
 M-0685,Samothraki,,possible,SARAYA AL-MUKHTAR,OFAC,SDGT,30650,SAM,yes,,0.800,name
@@ -811,7 +811,7 @@ M-0805,Stolwijk Zuivelcooperatie U.A.,,no-match,,,,,,,,,
 M-0806,Beneluxhaven Containerdepot B.V. Moezelweg 150,,no-match,,,,,,,,,
 M-0807,Diervoeders De Peel B.V.,,no-match,,,,,,,,,
 M-0808,Expeditiekantoor Kempenaar B.V.,,no-match,,,,,,,,,
-M-0809,Veluwezoom,,no-match,,,,,,,,,
+M-0809,Veluwezoom,,strong,AKTCIONERNOE OBSHESTVO “NAUCHNO-ISSLEDOVATELSKIJ INSTITUT GAZORAZRYADNIH PRIBOROV ‘PLAZMA’”,EU,UKR,150842,АО “Плазма”,,,0.900,name
 M-0810,Bram Doornbos,,no-match,,,,,,,,,
 M-0811,Leiesteden Vlasspinnerij NV,,no-match,,,,,,,,,
 M-0812,Mouterij Haspengouw NV,,no-match,,,,,,,,,

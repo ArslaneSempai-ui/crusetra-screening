@@ -102,7 +102,19 @@ Suppliers, Maghreb spellings held apart by convention) go to round nine's known 
 
 ## Real company names
 
-Every set above was written by AI agents with invented names. The matcher was also measured once on
-real company names from the GLEIF register (CC0), on 30 September 2026: see `GLEIF.md` in this folder.
-On 448 real spelling variants it caught 143 at the strong level (32 %), and it raised 0 false alerts
-on 1,000 real different companies.
+Every set above was written by AI agents with invented names. The matcher was also measured on real
+company names from the GLEIF register (CC0), twice, each time once: see `GLEIF.md` in this folder.
+
+- First verdict, 30 September 2026, thresholds chosen on the written sets alone: on 448 real
+  spelling variants it caught 143 at the strong level (32 %), and it raised 0 false alerts on 1,000
+  real different companies.
+- Second verdict, 1 October 2026, after a recalibration on a separate GLEIF training sample, with
+  the method frozen beforehand and a fresh sample: on 488 real spelling variants it caught 239 at
+  the strong level (49 %) and 334 at the possible level (68 %), and it raised 1 false alert at the
+  strong level and 7 at the possible level on 1,000 real different companies.
+
+The thresholds are still strong 0.81 and possible 0.80, now by a written rule (`choisirSeuils`,
+`src/entites.ts`): strong holds two false-alert ceilings on the upper bound of the Wilson interval,
+5 % on the written traps and 1 % on real different companies; possible stays at 0.80 for a review
+budget of one name per fifty counterparties. The two thousand-name books of `exemple/` were read to
+set that budget, so neither is a blind figure any more.

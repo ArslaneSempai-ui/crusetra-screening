@@ -1,9 +1,9 @@
 {
   "version": 1,
   "genre": "cascade-screening/counterparty-screening",
-  "emisLe": "2026-09-28T01:46:19.802Z",
+  "emisLe": "2026-10-04T12:46:49.989Z",
   "client": "Example forwarder, Antwerp",
-  "commit": "5dc1c23",
+  "commit": "413ddb7",
   "fichier": {
     "nom": "contreparties-mille.csv",
     "sha256": "6bc5d6b290ed041ffa17423d45f3e0ee0163826d38c8c1bcc56a121180eb7963",
@@ -203,38 +203,100 @@
           "sha256": "8e0e8515e9722e388304a068284bb3e745166618aa3dc9ec1aa0b8127db6fdaa",
           "match": 200,
           "different": 200
+        },
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "blind test set #21, authored on 2026-09-28 by a separate agent (a Haifa freight forwarder and Tbilisi bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the 21 earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v22 (entites.ts 201d5159…, cribler.ts 0f773c96…, ecritures.ts 11eb0dba…): strong 0.81 found 94/200 [40-54 %] with 5/200 false alerts [1-6 %]; possible 0.80 found 117/200 [52-65 %] with 26/200 [9-18 %]. Studied afterwards and promoted to training set 21 on 2026-09-28, so it no longer measures anything held out.",
+          "sha256": "995accda2472fbb5090bae4292e460f002cc9badc6bc9bb651266518366f2d5f",
+          "match": 200,
+          "different": 200
+        },
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "blind test set #22, authored on 2026-09-28 by a separate agent (a Bangkok freight forwarder and Yangon bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the 22 earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v23 (entites.ts 29f57a26…, cribler.ts 8a0d336c…, ecritures.ts 26b17532…): strong 0.81 found 87/200 [37-50 %] with 7/200 false alerts [2-7 %]; possible 0.80 found 109/200 [48-61 %] with 31/200 [11-21 %]. Studied afterwards and promoted to training set 22 on 2026-09-28, so it no longer measures anything held out.",
+          "sha256": "62305d7c944353a39cc5e4f8ca96879423378b4b6bfeb0c4a206cb8ff1dc4873",
+          "match": 200,
+          "different": 200
+        },
+        {
+          "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+          "provenance": "blind test set #23, authored on 2026-09-28 by a separate agent (a Gdansk freight forwarder and Riga bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the 23 earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v24 (entites.ts 1e8cbea2…, cribler.ts ac3c1b11…, ecritures.ts 9496c409…): strong 0.81 found 102/200 [44-58 %] with 6/200 false alerts [1-6 %]; possible 0.80 found 149/200 [68-80 %] with 25/200 [9-18 %]. Studied afterwards and promoted to training set 23 on 2026-09-28, so it no longer measures anything held out.",
+          "sha256": "41bf7d64dc0a31c3ae5c743abdb99dbe166e7294e361afafc63c7dd5122fad7c",
+          "match": 200,
+          "different": 200
         }
       ],
       "fort": {
         "rappel": {
-          "succes": 3297,
-          "n": 3570,
-          "taux": 0.9235294117647059,
-          "bas": 0.9143493995009366,
-          "haut": 0.9317989020913893
+          "succes": 3817,
+          "n": 4170,
+          "taux": 0.915347721822542,
+          "bas": 0.9065117721888781,
+          "haut": 0.9234191001278865
         },
         "fauxPositifs": {
-          "succes": 112,
-          "n": 3570,
-          "taux": 0.03137254901960784,
-          "bas": 0.026138795329870977,
-          "haut": 0.037613778371213026
+          "succes": 127,
+          "n": 4170,
+          "taux": 0.030455635491606715,
+          "bas": 0.02565670474608747,
+          "haut": 0.036118902646392406
         }
       },
       "possible": {
         "rappel": {
-          "succes": 3511,
-          "n": 3570,
-          "taux": 0.9834733893557422,
-          "bas": 0.9787416504771809,
-          "haut": 0.9871657361288735
+          "succes": 4061,
+          "n": 4170,
+          "taux": 0.9738609112709832,
+          "bas": 0.9685647548905189,
+          "haut": 0.9782847853507782
         },
         "fauxPositifs": {
-          "succes": 802,
-          "n": 3570,
-          "taux": 0.2246498599439776,
-          "bas": 0.21125935215232472,
-          "haut": 0.23863232743414603
+          "succes": 884,
+          "n": 4170,
+          "taux": 0.2119904076738609,
+          "bas": 0.19985293630353454,
+          "haut": 0.22465804657612246
+        }
+      }
+    },
+    "apprentissageReel": {
+      "jeu": {
+        "quoi": "TRAINING sample (seed 20261001), drawn to calibrate the method and free to study: company name pairs from the GLEIF register: two names recorded for the same LEI (match), or the legal names of two distinct LEIs sharing a distinctive word (different)",
+        "provenance": "GLEIF golden copy published 2026-09-30 08:00:00 UTC, listed by https://goldencopy.gleif.org/api/v2/golden-copies/publishes/latest. Level 1 (LEI-CDF 3.1, full file, CSV): https://goldencopy.gleif.org/storage/golden-copy-files/2026/09/30/1282700/20260930-0800-gleif-goldencopy-lei2-golden-copy.csv.zip, 506285686 bytes, sha256 62b7307663b412cd8d4b7226e4c6ccccb7b22066efea98a500ad2b205db2ce99. Level 2 relationships (RR 2.1, full file, CSV): https://goldencopy.gleif.org/storage/golden-copy-files/2026/09/30/1282745/20260930-0800-gleif-goldencopy-rr-golden-copy.csv.zip, 24413344 bytes, sha256 b348cdef56834609bbf98b1e37545ab90b2be55d8cc5b436dca7980846157110. GLEIF data is released under CC0 1.0 (no rights reserved, commercial use allowed). Built by node src/gleif-paires.ts --graine 20261001 --sortie src/paires-gleif-apprentissage.json --exclure verification/paires-gleif.json, which checks both hashes and rewrites this file byte for byte; seed 20261001 (every draw is a cyrb53 hash of the seed, the stratum and the LEI). The labels come from the registry records, not from anyone judging whether two names match: a match pair is the legal name of one LEI record and another name recorded on that same record; a different pair is the legal names of two distinct LEIs. MATCH (1000): records with registration status ISSUED or LAPSED only (never DUPLICATE, ANNULLED, RETIRED, MERGED, TRANSFERRED, PENDING_*); one pair per LEI per stratum; at most 250 per stratum; no country (legal jurisdiction, else legal address) above 15 % of a stratum. Strata: previous-legal-name (OtherEntityName PREVIOUS_LEGAL_NAME), trading-name (TRADING_OR_OPERATING_NAME), alternative-language-name (ALTERNATIVE_LANGUAGE_LEGAL_NAME), transliteration (TransliteratedOtherEntityName PREFERRED_ or AUTO_ASCII_TRANSLITERATED_LEGAL_NAME, kept only where most letters of the legal name are outside the Latin script). Dropped before the draw: other names that are empty, a placeholder, carry no letter or repeat the LEI; pairs identical after NFKC, case, whitespace and punctuation folding; pairs with a name that, folded the same way, is in a training set (src/paires-entites*.json) or in verification/paires-entites-verdict.json. Excluded, in the match and the different pairs alike: pairs with a name that, folded the same way, is a name of verification/paires-gleif.json (4494 distinct folded names), so that no name of that set reappears here. Counts: previous-legal-name 250 (from 202989 eligible LEIs; of 248946 name slots, dropped 5931 identical, 19 not a name, 0 overlapping, 640 excluded); trading-name 250 (from 140823 eligible LEIs; of 151688 name slots, dropped 2724 identical, 237 not a name, 6 overlapping, 612 excluded); alternative-language-name 250 (from 43863 eligible LEIs; of 47938 name slots, dropped 16 identical, 4 not a name, 1 overlapping, 366 excluded); transliteration 250 (from 19752 eligible LEIs; of 20227 name slots, dropped 0 identical, 0 not a name, 0 overlapping, 287 excluded). DIFFERENT (1000, plus the contained stratum): two distinct ISSUED, non-branch LEIs from a seeded 25 % sample of the 1979107 ISSUED records, whose legal names share a distinctive word: at least 3 characters, a letter, not a stopword, not a legal-form word (in at least 25 % of the sampled names of one ISO 20275 ELF code with at least 10 of them: 586 words, mostly legal forms and their fragments, plus generic entity words such as bank, fund, trust or holding and a few place names; the rebuild writes them to data/gleif/legal-form-words-20261001.tsv), in at most 0.5 % of the ISSUED legal names. Each drawn LEI appears once per stratum, and no country above 15 % of a stratum. Strata: same shared word and same country; same shared word, different country; same legal-address city, same country and same ELF legal form code (not 8888 or 9999), with a shared word. Set aside: pairs linked in the Level 2 file (any relationship, or a common direct or ultimate parent, head office or umbrella fund) or through the Level 1 associated or successor entity; pairs identical after folding (3 of 1162 drawn: different entities with the same name cannot be separated by a name matcher); pairs where every word of one name, legal-form words and stopwords set aside, is in the other (152 of 1162 drawn); pairs with an excluded name (7 of 1162 drawn). Counts: different-same-word-same-country 334 (of 380 drawn: 2 identical after folding, 43 contained, 0 overlapping, 1 excluded, 0 duplicates); different-same-word-other-country 333 (of 415 drawn: 0 identical after folding, 78 contained, 0 overlapping, 4 excluded, 0 duplicates); different-same-city-same-form 333 (of 367 drawn: 1 identical after folding, 31 contained, 0 overlapping, 2 excluded, 0 duplicates). CONTAINED (250, nature different-contained): the contained pairs, drawn on their own from the same sample: two distinct ISSUED LEIs, any country, sharing a distinctive word, not identical after folding, not related, and every word of one name (legal-form words and stopwords set aside) in the other. Screening practice may want them to alert: they are reported as their own stratum and never counted in the false-alert rate of the other negatives. Of 252 contained pairs drawn, 2 had an excluded name. TRAINING: drawn to calibrate the method. Its pairs and the matcher's scores on them may be studied freely; a figure measured on it is a training figure, never a verdict.",
+        "sha256": "356fca407dd75273a2198f545722b0afc28a8427677b8297547555437f988b9b",
+        "match": 1000,
+        "different": 1000
+      },
+      "fort": {
+        "rappel": {
+          "succes": 276,
+          "n": 1000,
+          "taux": 0.276,
+          "bas": 0.2491906205347866,
+          "haut": 0.3045238300319165
+        },
+        "fauxPositifs": {
+          "succes": 0,
+          "n": 1000,
+          "taux": 0,
+          "bas": 0,
+          "haut": 0.003826898586390522
+        }
+      },
+      "possible": {
+        "rappel": {
+          "succes": 413,
+          "n": 1000,
+          "taux": 0.413,
+          "bas": 0.3828719864762746,
+          "haut": 0.4437938938777574
+        },
+        "fauxPositifs": {
+          "succes": 0,
+          "n": 1000,
+          "taux": 0,
+          "bas": 0,
+          "haut": 0.003826898586390522
         }
       }
     },
@@ -248,11 +310,11 @@
       },
       "fort": {
         "rappel": {
-          "succes": 332,
+          "succes": 334,
           "n": 400,
-          "taux": 0.83,
-          "bas": 0.7900900795523471,
-          "haut": 0.8636315776518637
+          "taux": 0.835,
+          "bas": 0.7954710126340742,
+          "haut": 0.8681555181641397
         },
         "fauxPositifs": {
           "succes": 0,
@@ -282,9 +344,9 @@
   },
   "totaux": {
     "lignes": 1000,
-    "forts": 2,
-    "possibles": 13,
-    "sansCorrespondance": 985
+    "forts": 4,
+    "possibles": 14,
+    "sansCorrespondance": 982
   },
   "resultats": [
     {
@@ -656,8 +718,21 @@
       "ref": "M-0034",
       "type": "vessel",
       "pays": "MT",
-      "statut": "no-match",
-      "candidats": [],
+      "statut": "strong",
+      "candidats": [
+        {
+          "source": "EU",
+          "liste": "UKR",
+          "ids": [
+            "177347"
+          ],
+          "nomListe": "Societatea cu  răspundere limitată «Krafttek»",
+          "alias": "Общество с ограниченной ответственностью “Крафттек”",
+          "type": "entity",
+          "score": 0.95,
+          "par": "name"
+        }
+      ],
       "autres": 0,
       "ecartesParImo": []
     },
@@ -7924,8 +7999,20 @@
       "ref": "M-0683",
       "type": "person",
       "pays": "KE",
-      "statut": "no-match",
-      "candidats": [],
+      "statut": "possible",
+      "candidats": [
+        {
+          "source": "CSL",
+          "liste": "Nonproliferation Sanctions (ISN): Chemical and Biological Weapons Act",
+          "ids": [
+            "6b1afd880f0aa5d6de2b8ca262fb4ab3b424bb830751bfe128cb0e03"
+          ],
+          "nomListe": "W & M Limited Partnership",
+          "type": "other",
+          "score": 0.8,
+          "par": "name"
+        }
+      ],
       "autres": 0,
       "ecartesParImo": []
     },
@@ -9377,8 +9464,21 @@
       "ref": "M-0809",
       "type": "vessel",
       "pays": "NL",
-      "statut": "no-match",
-      "candidats": [],
+      "statut": "strong",
+      "candidats": [
+        {
+          "source": "EU",
+          "liste": "UKR",
+          "ids": [
+            "150842"
+          ],
+          "nomListe": "AKTCIONERNOE OBSHESTVO “NAUCHNO-ISSLEDOVATELSKIJ INSTITUT GAZORAZRYADNIH PRIBOROV ‘PLAZMA’”",
+          "alias": "АО “Плазма”",
+          "type": "entity",
+          "score": 0.9,
+          "par": "name"
+        }
+      ],
       "autres": 0,
       "ecartesParImo": []
     },
@@ -11545,5 +11645,5 @@
     "At most 5 candidates are shown per name, highest score first; the count of the others is given.",
     "The rates quoted first come from 400 matching pairs and 200 hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties."
   ],
-  "empreinte": "ec006d36990b8840"
+  "empreinte": "6489a0b81ad5ff3b"
 }

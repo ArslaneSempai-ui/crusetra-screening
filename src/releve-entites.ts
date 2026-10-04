@@ -30,9 +30,9 @@ export const JEUX_AVEUGLES: readonly number[] = [12, 13, 14, 15, 16, 17, 18, 19,
 export const JEU_REALISTE = 20;
 export const LIVRES = [
   { fichier: "exemple/contreparties-mille.csv", releve: "exemple/contreparties-mille.screening.json", aveugle: false,
-    note: "a Rotterdam forwarder's book; the abbreviation rule of 3eec970 was tightened from its first record, so its figure is not blind" },
-  { fichier: "exemple/contreparties-mille-2.csv", releve: "exemple/contreparties-mille-2.screening.json", aveugle: true,
-    note: "a Hamburg forwarder's book, written after that rule and never read before its single screening on the final matcher" },
+    note: "a Rotterdam forwarder's book; the abbreviation rule of 3eec970 was tightened from its first record, and its alert volume was read on 30 September 2026 to choose the possible threshold (the review budget of choisirSeuils), so its figure is not blind" },
+  { fichier: "exemple/contreparties-mille-2.csv", releve: "exemple/contreparties-mille-2.screening.json", aveugle: false,
+    note: "a Hamburg forwarder's book, written after that rule and screened blind once on commit 9e18a1c; its alert volume was then read on 30 September 2026 to choose the possible threshold (the review budget of choisirSeuils), so its figure is no longer blind" },
 ] as const;
 
 export type Niveau = { seuil: number; trouves: Cellule; fausses: Cellule;
@@ -52,7 +52,7 @@ export const RESERVES: readonly string[] = [
   "A candidate is a name to be read by the client's compliance officer, never a match established: every figure here counts candidates, not findings.",
   "The realistic set is a quarter of ordinary documents of one forwarder, written blind; it is the held-out set every client report cites first, and it was never used to choose a threshold.",
   "The blind sets are trap populations, one per round; a population whose script the matcher had never read scores 40 to 55 % at the strong level on its round and gains about forty points the round after, so the last set (Polish and Baltic) stands where the unread ones stood.",
-  "The three strong alerts of the blind book are false: one-word river vessel names against a short alias of a listed party; they are the first thing a further round would read.",
+  "Neither thousand-name book is blind any more: both were read to choose the possible threshold. Of their eight strong alerts, seven are false on reading: a vessel name against a short or unrelated alias of a listed party, three of them new with the recalibration on real names (a Latin vessel name against a Cyrillic alias); the eighth is one letter away from a listed vessel's name. They are the first thing a further round would read.",
 ];
 
 export function batirReleve(entree: { date: string; commit: string; apprentissage: Apprentissage; verdictRealiste: Verdict; verdictsAveugles: Verdict[]; livres: Livre[] }): ReleveEntites {
