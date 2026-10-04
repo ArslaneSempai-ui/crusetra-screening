@@ -16,9 +16,9 @@ import { readFileSync } from "node:fs";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { frequencesDesListes } from "./frequences.ts";
 import { validerPaires, type PaireEtiquetee, type TableDUnPalier } from "./measure.ts";
-import { mesurerJeuxParallele, sequentielDemande } from "./mesure-parallele.ts";
+import { mesurerJeuxParallele, mesurerReelParallele, sequentielDemande } from "./mesure-parallele.ts";
 import {
-  frequencesDe, palierEntite, mesurerJeux, choisirSeuils, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, type Frequences,
+  frequencesDe, palierEntite, mesurerJeux, choisirSeuils, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, CHEMIN_APPRENTISSAGE_REEL, mesurerReel, type Frequences,
 } from "./entites.ts";
 
 
@@ -42,7 +42,10 @@ async function principal(): Promise<void> {
     table = m.table; scores = m.scores;
     fils = ` · ${m.fils} fils prêts en ${m.demarrage} ms`;
   }
-  const r = choisirSeuils(table);
+  /* l'échantillon réel, que la règle des seuils lit à côté des jeux écrits (voir `choisirSeuils`) */
+  const brutReel = readFileSync(CHEMIN_APPRENTISSAGE_REEL, "utf8");
+  const reel = sequentielDemande() ? mesurerReel(f, brutReel) : await mesurerReelParallele(f, brutReel, { cache: !sansListes });
+  const r = choisirSeuils(table, reel.table);
   const M = toutes.filter((x) => x.verdict === "match").length, D = toutes.length - M;
   const cell = (seuil: number) => table[seuil.toFixed(2)]!;
   const ligne = (nom: string, seuil: number) => {
