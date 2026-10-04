@@ -32,7 +32,7 @@ M-0030,Conservas Mariñeira Ribeiro S.L.,,no-match,,,,,,,,,
 M-0031,Ceramiche Valdarno Superiore S.p.A.,,no-match,,,,,,,,,
 M-0032,Tessitura Bellagamba S.r.l.,,no-match,,,,,,,,,
 M-0033,Corticas do Alentejo Pereira & Filhos Lda,,no-match,,,,,,,,,
-M-0034,Kyra Evdokia,,strong,Societatea cu  răspundere limitată «Krafttek»,EU,UKR,177347,Общество с ограниченной ответственностью “Крафттек”,,,0.950,name
+M-0034,Kyra Evdokia,,no-match,,,,,,,,,
 M-0035,Frida Kvalvik,,no-match,,,,,,,,,
 M-0036,PRZEDSIEBIORSTWO HANDLOWE LIPOWIEC SP Z O O,,no-match,,,,,,,,,
 M-0037,Meble Zagajnik Sp. z o.o.,,no-match,,,,,,,,,
@@ -44,7 +44,7 @@ M-0042,Tatranská Drevovýroba s.r.o.,,no-match,,,,,,,,,
 M-0043,Alföldi Konzervgyár Kft.,,no-match,,,,,,,,,
 M-0044,Agroserv Banat SRL,,no-match,,,,,,,,,
 M-0045,Savska Logistika d.o.o.,,no-match,,,,,,,,,
-M-0046,"Ningbo Hengyue Machinery Co., Ltd.",,no-match,,,,,,,,,
+M-0046,"Ningbo Hengyue Machinery Co., Ltd.",,possible,"NINGBO OTURN MACHINERY CO., LTD",UK,The Russia (Sanctions) (EU Exit) Regulations 2019,RUS2393,宁波欧腾机械有限公司,,,0.800,name
 M-0047,嘉兴云帆纺织有限公司,,no-match,,,,,,,,,
 M-0048,"Foshan Nanhai Mingcui Ceramics Co., Ltd.",,no-match,,,,,,,,,
 M-0049,"Qingdao Haibin Food Machinery Co., Ltd.",,no-match,,,,,,,,,
@@ -74,7 +74,7 @@ M-0071,Buldan Dokuma Tekstil San. ve Tic. A.Ş.,,no-match,,,,,,,,,
 M-0072,Konya Tarım Makinaları San. Tic. Ltd. Şti.,,no-match,,,,,,,,,
 M-0073,Nilüfer Oto Yan Sanayi A.S.,,no-match,,,,,,,,,
 M-0074,Gebze Kimya Boya San. A.Ş.,,possible,Baotou Guanghua Chemical Industrial Corporation (Parent Organization: China National Nuclear Group Corporation (CNNC)),CSL,Entity List (EL),a052cd878cfc19b35d7a427a1ee017c501e4f4d9855594a6e3a0474f,Chemical Industry Company,,,0.800,name
-M-0075,Elif Karaosmanoğlu,,no-match,,,,,,,,,
+M-0075,Elif Karaosmanoğlu,,possible,EKC.AG,UK,The Russia (Sanctions) (EU Exit) Regulations 2019,RUS2441,e. K.-Company GmbH & Co. KG,,,0.800,name
 M-0076,PALM CREST FOOD DISTRIBUTION LLC,,no-match,,,,,,,,,
 M-0077,Tabuk Fresh Produce Co.,,no-match,,,,,,,,,
 M-0078,Sohar Harbour Stevedoring LLC,,no-match,,,,,,,,,
@@ -83,8 +83,8 @@ M-0080,Huilerie Ben Ammar et Fils,,no-match,,,,,,,,,
 M-0081,Tema Harbour Cocoa Warehousing Ltd,,no-match,,,,,,,,,
 M-0082,Kofi Asamoah Boateng,,no-match,,,,,,,,,
 M-0083,Mombasa Road Tea Packers Limited,,no-match,,,,,,,,,
-M-0084,Eleni Karvouni,,no-match,,,,,,,,,
-M-0085,Bonita Harvest,,no-match,,,,,,,,,
+M-0084,Eleni Karvouni,,possible,EKC.AG,UK,The Russia (Sanctions) (EU Exit) Regulations 2019,RUS2441,e. K.-Company GmbH & Co. KG,,,0.800,name
+M-0085,Bonita Harvest,,possible,Blood and Honour,UK,The Counter-Terrorism (Sanctions) (EU Exit) Regulations 2019,CTD0006,B&H,,,0.800,name
 M-0086,Saginaw Valley Castings Inc.,,no-match,,,,,,,,,
 M-0087,Prairie Hollow Feed & Grain LLC,,no-match,,,,,,,,,
 M-0088,Brandywine Specialty Resins Inc.,,no-match,,,,,,,,,
@@ -399,6 +399,7 @@ M-0396,Tejidos Andinos de Cotopaxi S.A.,,no-match,,,,,,,,,
 M-0397,Empacadora de Banano Pasaje S.A.,,no-match,,,,,,,,,
 M-0398,Aguacates Uruapan Selectos SPR de RL,,no-match,,,,,,,,,
 M-0399,Boquete Mist,,no-match,,,,,,,,,
+M-0400,Eleuthera Swift,,possible,ELECTRO SANAM COMPANY,UK,The Iran (Sanctions) (Nuclear) (EU Exit) Regulations 2019,INU0225,E. S. Co.,,,0.800,name
 M-0400,Eleuthera Swift,,possible,ELECTRO SANAM COMPANY,UN,Iran,110390,E. S. Co.,,,0.800,name
 M-0400,Eleuthera Swift,,possible,Electro Sanam Vállalat,EU,IRN,4282,E.S. Co.,,,0.800,name
 M-0401,Kloosterman Bouwstaal B.V.,,no-match,,,,,,,,,
@@ -470,7 +471,7 @@ M-0466,TANGAIL JUTE TWINE LTD,,no-match,,,,,,,,,
 M-0467,Quang Nam Granite JSC,,no-match,,,,,,,,,
 M-0468,"Samut Sakhon Tuna Canning Co., Ltd.",,no-match,,,,,,,,,
 M-0469,PT Karet Palembang Jaya,,no-match,,,,,,,,,
-M-0470,Clementi Pride,,no-match,,,,,,,,,
+M-0470,Clementi Pride,,possible,Shang Yuan Bao,UK,The Democratic People's Republic of Korea (Sanctions) (EU Exit) Regulations 2019,DPR0121,C.P. 33,,8126070,0.800,name
 M-0471,مصنع زهرة الصحراء للتغليف,,no-match,,,,,,,,,
 M-0472,Bilecik Seramik Sağlık Gereçleri A.Ş.,,no-match,,,,,,,,,
 M-0473,Rize Çay Paketleme Ltd. Şti.,,no-match,,,,,,,,,
@@ -518,7 +519,7 @@ M-0514,Möbelwerkstätten Ostwestfalen Tenge GmbH,,no-match,,,,,,,,,
 M-0515,Kunststofftechnik Allgäu Bernried GmbH,,no-match,,,,,,,,,
 M-0516,ROSTOCKER GETREIDELAGER GMBH,,no-match,,,,,,,,,
 M-0517,Speditionskontor Altenwerder GmbH,,no-match,,,,,,,,,
-M-0518,Beschlage Hohenlohe GmbH & Co KG,,no-match,,,,,,,,,
+M-0518,Beschlage Hohenlohe GmbH & Co KG,,possible,Blood and Honour,UK,The Counter-Terrorism (Sanctions) (EU Exit) Regulations 2019,CTD0006,B&H,,,0.800,name
 M-0519,Kaub,,no-match,,,,,,,,,
 M-0520,Frauke Heidbrink,,no-match,,,,,,,,,
 M-0521,Faiencerie du Bas-Berry,,no-match,,,,,,,,,
@@ -670,6 +671,7 @@ M-0666,"Ayutthaya Canned Fruit Co., Ltd.",,no-match,,,,,,,,,
 M-0667,Muar Furniture Components Sdn. Bhd.,,no-match,,,,,,,,,
 M-0668,Kavitha Subramaniam,,no-match,,,,,,,,,
 M-0669,PT Tekstil Bandung Raya Sentosa,,no-match,,,,,,,,,
+M-0670,Toa Payoh Voyager,,possible,TOA PAYOH,EU-VESSELS,833/2014 Annex XLII,IMO9298492,,,9298492,0.800,name
 M-0670,Toa Payoh Voyager,,possible,TOA PAYOH,OFAC,IRAN-EO13902,54809,,,9298492,0.800,name
 M-0671,Ordu Findik Ihracat AS,,no-match,,,,,,,,,
 M-0672,Bartın Orman Ürünleri Ltd. Şti.,,no-match,,,,,,,,,
@@ -686,6 +688,7 @@ M-0682,Nacala Cashew Processors Lda,,no-match,,,,,,,,,
 M-0683,Wanjiru Muthoni,,possible,W & M Limited Partnership,CSL,Nonproliferation Sanctions (ISN): Chemical and Biological Weapons Act,6b1afd880f0aa5d6de2b8ca262fb4ab3b424bb830751bfe128cb0e03,,,,0.800,name
 M-0684,Ithaki Dawn,,no-match,,,,,,,,,
 M-0685,Samothraki,,possible,CHLOE,OFAC,SDGT,51850,SAM 121,,9173745,0.800,name
+M-0685,Samothraki,,possible,LLC SCIENTIFIC AND PRODUCTION ENTERPRISE SPETSENERGOMEKHANIKA,UK,The Russia (Sanctions) (EU Exit) Regulations 2019,RUS3624,LLC NPP SAM,,,0.800,name
 M-0685,Samothraki,,possible,SARAYA AL-MUKHTAR,OFAC,SDGT,30650,SAM,yes,,0.800,name
 M-0685,Samothraki,,possible,STAR 18,OFAC,DPRK4,28716,SAM 5,yes,9020015,0.800,name
 M-0686,Susquehanna Millwork Supply Inc.,,no-match,,,,,,,,,
@@ -793,7 +796,7 @@ M-0787,Monterey Bay Produce Exporters LLC,,no-match,,,,,,,,,
 M-0788,Great Smoky Hardwood Kilns Inc.,,no-match,,,,,,,,,
 M-0789,Merrimack Specialty Fibers Inc.,,no-match,,,,,,,,,
 M-0790,Travis Hollingsworth,,no-match,,,,,,,,,
-M-0791,Chesapeake Pathfinder,,no-match,,,,,,,,,
+M-0791,Chesapeake Pathfinder,,possible,Shang Yuan Bao,UK,The Democratic People's Republic of Korea (Sanctions) (EU Exit) Regulations 2019,DPR0121,C.P. 33,,8126070,0.800,name
 M-0792,Saint-Hyacinthe Pork Processors Inc.,,no-match,,,,,,,,,
 M-0793,Chilliwack Blueberry Growers Ltd.,,no-match,,,,,,,,,
 M-0794,Frigorifico Serrano Paysandu SA,,no-match,,,,,,,,,
@@ -810,14 +813,14 @@ M-0804,Draaierij en Frezerij Hengelo B.V.,,no-match,,,,,,,,,
 M-0805,Stolwijk Zuivelcooperatie U.A.,,no-match,,,,,,,,,
 M-0806,Beneluxhaven Containerdepot B.V. Moezelweg 150,,no-match,,,,,,,,,
 M-0807,Diervoeders De Peel B.V.,,no-match,,,,,,,,,
-M-0808,Expeditiekantoor Kempenaar B.V.,,no-match,,,,,,,,,
-M-0809,Veluwezoom,,strong,AKTCIONERNOE OBSHESTVO “NAUCHNO-ISSLEDOVATELSKIJ INSTITUT GAZORAZRYADNIH PRIBOROV ‘PLAZMA’”,EU,UKR,150842,АО “Плазма”,,,0.900,name
+M-0808,Expeditiekantoor Kempenaar B.V.,,possible,EKC.AG,UK,The Russia (Sanctions) (EU Exit) Regulations 2019,RUS2441,e. K.-Company GmbH & Co. KG,,,0.800,name
+M-0809,Veluwezoom,,no-match,,,,,,,,,
 M-0810,Bram Doornbos,,no-match,,,,,,,,,
 M-0811,Leiesteden Vlasspinnerij NV,,no-match,,,,,,,,,
 M-0812,Mouterij Haspengouw NV,,no-match,,,,,,,,,
 M-0813,Hainaut Charpentes Metalliques SA,,no-match,,,,,,,,,
 M-0814,Rupelmonde,,no-match,,,,,,,,,
-M-0815,Nathalie Vanhecke,,no-match,,,,,,,,,
+M-0815,Nathalie Vanhecke,,possible,Naserin Vahid,UK,The Iran (Sanctions) (Nuclear) (EU Exit) Regulations 2019,INU0097,N.V. Co,,,0.800,name
 M-0816,Kaltetechnik Vorpommern GmbH,,no-match,,,,,,,,,
 M-0817,Spielwaren Neufang GmbH,,no-match,,,,,,,,,
 M-0818,Stahlhandel Ruhrort GmbH,,no-match,,,,,,,,,
@@ -862,7 +865,8 @@ M-0856,"Tajimi Tile Works Co., Ltd.",,no-match,,,,,,,,,
 M-0857,Hiroko Nishimaki,,no-match,,,,,,,,,
 M-0858,"Jinju Bidan Silk Co., Ltd.",,no-match,,,,,,,,,
 M-0859,Chai Wan Cargo Handling Limited ref CW-2024-5519,,no-match,,,,,,,,,
-M-0860,Chang Yuan Bao,,strong,SHANG YUAN BAO,OFAC,DPRK4,26933,,,8126070,0.964,name
+M-0860,Chang Yuan Bao,,strong,Shang Yuan Bao,UK,The Democratic People's Republic of Korea (Sanctions) (EU Exit) Regulations 2019,DPR0121,,,8126070,0.965,name
+M-0860,Chang Yuan Bao,,strong,SHANG YUAN BAO,OFAC,DPRK4,26933,,,8126070,0.965,name
 M-0861,Bhadohi Carpet Weavers Pvt. Ltd.,,no-match,,,,,,,,,
 M-0862,Ludhiana Woollen Knitwear Pvt Ltd,,no-match,,,,,,,,,
 M-0863,Guntur Red Chilli Traders Pvt. Ltd.,,no-match,,,,,,,,,
@@ -910,7 +914,7 @@ M-0904,Eemshaven Biomassa Overslag B.V.,,no-match,,,,,,,,,
 M-0905,Delfzijl Zoutopslag B.V. Oosterhorn 12,,no-match,,,,,,,,,
 M-0906,Sassenheim Bloembollen Handelmaatschappij B.V.,,no-match,,,,,,,,,
 M-0907,Stichtse Verzekeringsmaatschappij N.V.,,no-match,,,,,,,,,
-M-0908,Lingestroom,,possible,LIN 9,OFAC,IRAN-EO13902,57132,,,9240158,0.800,name
+M-0908,Lingestroom,,no-match,,,,,,,,,
 M-0909,Merel Kooijmans,,no-match,,,,,,,,,
 M-0910,Brugse Chocolade Ateliers Vermeersch BV,,no-match,,,,,,,,,
 M-0911,Fonderie Mosane Dethier SA,,no-match,,,,,,,,,

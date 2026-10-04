@@ -2,7 +2,7 @@
   "version": 1,
   "quoi": "the company and vessel name matcher of cascade-screening: the training cells, the realistic verdict every client report cites, the blind verdicts of the rounds and the two thousand-name books, frozen with their date and commit; sealed afterwards with npm run sceller",
   "date": "2026-10-04",
-  "commit": "413ddb7",
+  "commit": "617e771",
   "apprentissage": {
     "jeux": 23,
     "paires": 4170,
@@ -10,18 +10,18 @@
     "fort": {
       "seuil": 0.81,
       "trouves": {
-        "succes": 3817,
+        "succes": 3816,
         "n": 4170,
-        "taux": 0.915347721822542,
-        "bas": 0.9065117721888781,
-        "haut": 0.9234191001278865
+        "taux": 0.9151079136690647,
+        "bas": 0.9062613603573744,
+        "haut": 0.923190337090847
       },
       "fausses": {
-        "succes": 127,
+        "succes": 126,
         "n": 4170,
-        "taux": 0.030455635491606715,
-        "bas": 0.02565670474608747,
-        "haut": 0.036118902646392406
+        "taux": 0.030215827338129497,
+        "bas": 0.02543695353570954,
+        "haut": 0.03585947898822717
       },
       "faussesReelles": {
         "succes": 0,
@@ -41,11 +41,11 @@
         "haut": 0.9782847853507782
       },
       "fausses": {
-        "succes": 884,
+        "succes": 885,
         "n": 4170,
-        "taux": 0.2119904076738609,
-        "bas": 0.19985293630353454,
-        "haut": 0.22465804657612246
+        "taux": 0.21223021582733814,
+        "bas": 0.20008740614687306,
+        "haut": 0.22490275160132714
       },
       "faussesReelles": {
         "succes": 0,
@@ -531,13 +531,13 @@
       "fichier": "exemple/contreparties-mille.csv",
       "sha256": "6bc5d6b290ed041ffa17423d45f3e0ee0163826d38c8c1bcc56a121180eb7963",
       "releve": "exemple/contreparties-mille.screening.json",
-      "sceau": "6489a0b81ad5ff3b",
-      "commit": "413ddb7",
-      "emisLe": "2026-10-04T12:46:49.989Z",
+      "sceau": "51ec7615903c384c",
+      "commit": "617e771",
+      "emisLe": "2026-10-04T15:34:52.476Z",
       "lignes": 1000,
-      "forts": 4,
-      "possibles": 14,
-      "sansCorrespondance": 982,
+      "forts": 2,
+      "possibles": 22,
+      "sansCorrespondance": 976,
       "aveugle": false,
       "note": "a Rotterdam forwarder's book; the abbreviation rule of 3eec970 was tightened from its first record, and its alert volume was read on 30 September 2026 to choose the possible threshold (the review budget of choisirSeuils), so its figure is not blind"
     },
@@ -545,13 +545,13 @@
       "fichier": "exemple/contreparties-mille-2.csv",
       "sha256": "523054e1772d8016a7dc4ff0d17d0b4376ed363c20b5948da4fdd4032ce5bb75",
       "releve": "exemple/contreparties-mille-2.screening.json",
-      "sceau": "66ff8ff39c3b039f",
-      "commit": "413ddb7",
-      "emisLe": "2026-10-04T12:49:39.208Z",
+      "sceau": "ef9730f5159180b6",
+      "commit": "617e771",
+      "emisLe": "2026-10-04T15:37:56.552Z",
       "lignes": 1000,
-      "forts": 4,
-      "possibles": 13,
-      "sansCorrespondance": 983,
+      "forts": 3,
+      "possibles": 22,
+      "sansCorrespondance": 975,
       "aveugle": false,
       "note": "a Hamburg forwarder's book, written after that rule and screened blind once on commit 9e18a1c; its alert volume was then read on 30 September 2026 to choose the possible threshold (the review budget of choisirSeuils), so its figure is no longer blind"
     }
@@ -560,7 +560,7 @@
     "A candidate is a name to be read by the client's compliance officer, never a match established: every figure here counts candidates, not findings.",
     "The realistic set is a quarter of ordinary documents of one forwarder, written blind; it is the held-out set every client report cites first, and it was never used to choose a threshold.",
     "The blind sets are trap populations, one per round; a population whose script the matcher had never read scores 40 to 55 % at the strong level on its round and gains about forty points the round after, so the last set (Polish and Baltic) stands where the unread ones stood.",
-    "Neither thousand-name book is blind any more: both were read to choose the possible threshold. Of their eight strong alerts, seven are false on reading: a vessel name against a short or unrelated alias of a listed party, three of them new with the recalibration on real names (a Latin vessel name against a Cyrillic alias); the eighth is one letter away from a listed vessel's name. They are the first thing a further round would read."
+    "Neither thousand-name book is blind any more: both were read to choose the possible threshold. Screened against the seven sources, they give 24 and 25 names to review in a thousand, above the budget of one in fifty that threshold was chosen for on five lists (18 and 17). Of their five strong alerts, four are false on reading: a vessel name against a short or unrelated alias of a listed party; the fifth is one letter away from a listed vessel's name. They are the first thing a further round would read."
   ],
-  "empreinte": "ea82a3c597135dcf"
+  "empreinte": "69a728f400de4ebf"
 }
