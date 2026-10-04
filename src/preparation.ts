@@ -13,6 +13,7 @@ import { distanceOsa } from "./matchers/damerau.ts";
 import { preparer } from "./matchers/preparer.ts";
 import { translitterer } from "./matchers/translitteration.ts";
 import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, type Lecture } from "./ecritures.ts";
+import { siglesEpeles, lettresCollees, LETTRES_EPELEES_CYRILLIQUES } from "./ecritures.ts";
 import { DEVANAGARI } from "./devanagari.ts";
 import { wadeGiles } from "./wadegiles.ts";
 /* une déclaration de fonction : elle traverse le cycle mots.ts → preparation.ts, et n'est appelée qu'à la première demande */
@@ -88,6 +89,16 @@ export const FORMES = new Set([
   /* Géorgie (შპს romanisé), Israël (בע"מ écrit « baam » dans un clavardage) : tour 17, jeu 21 */ "shps", "baam",
   /* Asie */ "sdn", "bhd", "berhad", "kk", "jusikhoesa", "chusikhoesa", "yuhanhoesa", "tbk",
   /* les sigles japonais de la Gōdō Kaisha (G.K.) et de la Yūgen Kaisha (Y.K.), comme K.K. (jeu 11) */ "gk", "yk",
+  /* LES FORMES QUE LE REGISTRE GLEIF A MONTRÉES ABSENTES (30/09/2026, échantillon d'apprentissage) : des formes de la liste des
+     formes juridiques par juridiction (ISO 20275), lues comme les autres, jamais des mots des noms. L'IVS danoise
+     (iværksætterselskab), la Sagl tessinoise (società a garanzia limitata), la SRLS italienne, les coopératives belges (CVBA,
+     SCRL), l'eGbR allemande et l'e.K. (eingetragener Kaufmann), la « (haftungsbeschränkt) » de l'UG, l'EAD bulgare, le DOOEL
+     macédonien, le d.d. et le j.d.o.o. croates, le Kkt hongrois, la SCA et la SCS du Luxembourg, la P.S.C. du Golfe, l'Aktiebolaget
+     suédois (la forme au défini), l'ΑΒΕΕ et l'ΑΕΒΕ grecques (Ανώνυμη Βιομηχανική Εμπορική Εταιρεία, lues avee, aeve), la P.C. qui
+     traduit l'Ι.Κ.Ε., la S.A.B. mexicaine, et la (Persero) indonésienne. Pas la « GP » anglaise : « X GP LLC » est l'associé
+     commandité de « X LP », une autre personne (jeu 23, mesuré le 30/09 quand elle était lue comme une forme) */
+  "ivs", "sagl", "srls", "cvba", "scrl", "egbr", "ek", "haftungsbeschrankt", "ead", "dooel", "dd", "jdoo", "kkt", "sca", "scs", "psc",
+  "aktiebolaget", "avee", "aeve", "abee", "aebe", "pc", "sab", "persero",
 ]);
 /** Formes qui ne se placent QU'À LA FIN d'un nom : en tête, le même jeton est autre chose
  *  (« Ag. Prokopis » est « Agios », « As-Salam » un article arabe). Les formes russes, elles,
@@ -95,7 +106,9 @@ export const FORMES = new Set([
 const FORMES_FINALES = new Set(["ag", "se", "sa", "as", "ad", "ab", "sl", "kg", "nv", "bv", "oy",
   "spa", "srl", "sas", "snc", "sac", "sti", "est", "kk", "gk", "yk", "cv", "ae", "epe", "ike", "ene", "mepe",
   /* « Teo. » (Teoranta) ferme un nom irlandais ; en tête, « Teo » est une syllabe teochew (« Teo Heng », jeu 9) */
-  "teo"]);
+  "teo",
+  /* et les sigles courts ajoutés le 30/09 (voir FORMES) : en tête ce sont des initiales (« EK Holding », « PC World », « DD Trading ») */
+  "ek", "dd", "pc", "sca", "scs", "sab"]);
 /** Les formes écrites en plusieurs mots, retirées AVANT les mots isolés (sinon « liability »
  *  resterait seul au milieu du nom). Les translittérations russes sont parmi les mots les
  *  plus fréquents des listes : « obshchestvo » figure dans 1 361 entrées sur 33 393
@@ -184,6 +197,26 @@ const PHRASES = [
      devant le nom (jeu 12, 28/09 : face à « TOV Prychornomorskyi Terminal », 0,800, quatre mots rares sans répondant) */
   " tovarystvo z obmezhenoiu vidpovidalnistiu ", " tovarystvo z obmezhenoyu vidpovidalnistyu ",
   " pryvatne aktsionerne tovarystvo ", " publichne aktsionerne tovarystvo ", " aktsionerne tovarystvo ",
+  /* LES FORMES EN TOUTES LETTRES que le registre GLEIF a montrées absentes (30/09/2026), prises aux listes de formes par
+     juridiction (ISO 20275) : l'ukrainien lu par la table russe (и : i, « tovaristvo »), le bulgare (ЕООД, ООД, АД, ЕАД), le
+     croate, le serbe, le bosnien, le slovène et le macédonien (d.o.o., d.d., j.d.o.o., a.d., DOOEL), le tchèque et le slovaque
+     (s.r.o., a.s.), le roumain, l'italien coopératif, le grec (Ι.Κ.Ε., Ε.Π.Ε., Ο.Ε., Ε.Ε., et l'Α.Ε. sous ses graphies en η lu e),
+     le hongrois (Kkt), le danois (IVS), le luxembourgeois (SCA, SCS), le mexicain (S.A.B. de C.V.), l'indonésien (Persero), et la
+     LLC abrégée à l'américaine */
+  " tovaristvo z obmezhenoyu vidpovidalnistyu ", " tovaristvo z obmezhenoiu vidpovidalnistiu ",
+  " privatne aktsionerne tovaristvo ", " publichne aktsionerne tovaristvo ", " aktsionerne tovaristvo ",
+  " ednolichno druzhestvo s ogranichena otgovornost ", " druzhestvo s ogranichena otgovornost ",
+  " ednolichno aktsionerno druzhestvo ", " aktsionerno druzhestvo ",
+  " jednostavno drustvo s ogranicenom odgovornoscu ", " drustvo s ogranicenom odgovornoscu ", " drustvo sa ogranicenom odgovornoscu ",
+  " dionicko drustvo ", " akcionarsko drustvo ", " druzba z omejeno odgovornostjo ", " drustvo so ograniceno odgovornost ",
+  " spolecnost s rucenim omezenym ", " spolocnost s rucenim obmedzenym ", " akciova spolecnost ", " akciova spolocnost ",
+  " societate cu raspundere limitata ", " societate pe actiuni ",
+  " societa cooperativa a responsabilita limitata ", " soc coop a responsabilita limitata ", " societa cooperativa ", " soc coop ", " coop soc ",
+  " societa a responsabilita limitata semplificata ", " societa a garanzia limitata ",
+  " idiotiki kefalaiouchiki etaireia ", " etaireia periorismenis efthynis ", " omorrythmi etaireia ", " eterorrythmi etaireia ",
+  " anonymos etairia ", " anonymi etairia ", " anonyme etaireia ", " anonymos etaireia ",
+  " kozkereseti tarsasag ", " ivaerksaetterselskab ", " societe en commandite par actions ", " societe en commandite simple ",
+  " sab de cv ", " perusahaan perseroan ", " ltd liab co ", " limited liability co ",
 ].sort((a, b) => b.length - a.length);   /* les plus longues d'abord : « sociedad anonima » ne doit pas manger « sociedad anonima unipersonal » */
 /** Les locutions d'usage abrégées en bloc : leur sens tient à leurs voisins (« San » seul
  *  est aussi « saint » en espagnol ; « San. ve Tic. » est toujours « Sanayi ve Ticaret »). */
@@ -222,6 +255,10 @@ const LOCUTIONS: readonly [string, string][] = [
   [" det may ", " textile garment "], [" giay da ", " leather shoes "], [" thep ", " steel "], [" xay dung ", " construction "],
   [" co khi ", " mechanical "], [" dien tu ", " electronics "], [" thuy san ", " seafood "], [" nong san ", " agricultural products "],
   [" mot thanh vien ", " "], [" mtv ", " "], [" one member ", " "],
+  /* LE QUALIFICATIF D'ASSOCIÉ UNIQUE de la forme, que l'autre écriture du nom omet (registre GLEIF, 30/09/2026) : la μονοπρόσωπη
+     grecque (« Μονοπρόσωπη Ανώνυμη Εταιρεία », lue monoprosopi, ou monoprosope quand η se lit e), la « Single Member » qui la
+     traduit, l'« unipessoal » portugaise. Comme « một thành viên » : il dit la forme, pas le nom */
+  [" monoprosopi ", " "], [" monoprosopos ", " "], [" monoprosopo ", " "], [" monoprosope ", " "], [" single member ", " "], [" unipessoal ", " "],
   /* les sigles d'un clavardage vietnamien : « cty cp » est « công ty cổ phần », la société par actions,
      que la phrase retire ensuite (jeu 9, 27/09 : « cty cp phan phoi minh khang » plafonné à 0,800, « cp »
      mot rare orphelin) ; « phân phối » (distribution) est un mot du commerce, traduit comme les autres */
@@ -949,12 +986,18 @@ export function plier(nom: string): string {
  *  et « ООО Северный Транзит » plafonnait au possible face à « OOO Severny Tranzit »). Les
  *  autres écritures (hangul, arabe et persan, hébreu, sinogrammes) ont déjà été lues par
  *  `romaniser` (ecritures.ts), qui rend des jetons latins et traduit leurs mots du commerce. */
+const LETTRES_SUD_SLAVES: Readonly<Record<string, string>> = { "ј": "j", "љ": "lj", "њ": "nj", "џ": "dzh", "ђ": "dj", "ћ": "c", "ѓ": "gj", "ќ": "kj", "ѕ": "dz" };
 function plierLatin(nom: string): string {
   /* l'Asie centrale d'abord (tour 13, voir asie-centrale.ts) : les lettres latines qu'une lecture optique glisse dans un mot cyrillique
      (« ATБACAP »), les lettres kazakhes, ouzbèkes et kirghizes ramenées au clavier russe (Ақжайық, Акжайык), et les alphabets latins
      kazakhs de 2017, 2018 et 2021 lus dans le latin ancien des documents (Ko'ks'etau, Şyğys : Kokshetau, Shygys) */
   nom = lireLatinKazakh(plierCyrilliqueTurcique(lireMelangeCyrillique(nom)));
-  const latin = /[\u0400-\u04ff]/.test(nom) ? translitterer(nom.toLowerCase()) : nom;
+  /* un sigle latin épelé en cyrillique (« ТИ ДИ КЪМПАНИ » : TD Company ; « ЭсЭфАй » : SFI), lu comme le sigle (voir `siglesEpeles`) */
+  if (/[\u0400-\u04ff]/.test(nom)) nom = siglesEpeles(nom.replace(/[\u0400-\u04ff]+/g, lettresCollees), LETTRES_EPELEES_CYRILLIQUES, /^[\u0400-\u04ff]+$/u, (m) => m.toLowerCase());
+  /* les lettres serbes et macédoniennes (ј, љ, њ, џ, ђ, ћ, ѓ, ќ, ѕ) que la table russe ne connaît pas, lues ici comme leurs registres
+     les romanisent (« ДООЕЛ », « ЕНЕРЏИ » : registre GLEIF, 30/09/2026, la lettre traversait en cyrillique et coupait le mot) ; la
+     table commune (matchers/translitteration.ts) reste celle des personnes, dont le relevé public est scellé */
+  const latin = /[\u0400-\u04ff]/.test(nom) ? translitterer(nom.toLowerCase().replace(/[јљњџђћѓќѕ]/g, (c) => LETTRES_SUD_SLAVES[c] ?? c)) : nom;
   return grec(latin.replace(/[ıİłŁøØđĐħĦßæÆœŒþÞðÐəƏ]/g, (c) => LETTRES_SANS_BASE[c] ?? c));
 }
 
@@ -1126,7 +1169,8 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["ID"], ["pt", "perseroan terbatas", "tbk", "ud", "usaha dagang", "perseroan komanditer"]);
   poser(["IR"], ["sherkat sahami khas", "sherkate sahami khas", "sahami khas", "sahami khass", "sahami amm"]);
   poser(["AZ"], ["mmc"]); poser(["LB"], ["sal"]);
-  poser(["FR", "LU", "MA", "TN", "LB"], ["sarl", "societe a responsabilite limitee"]);
+  /* et la Suisse romande, dont la Sàrl est la GmbH des cantons alémaniques (registre GLEIF, 30/09/2026) */
+  poser(["FR", "LU", "MA", "TN", "LB", "CH"], ["sarl", "societe a responsabilite limitee"]);
   poser(["FR", "CO"], ["sas"]);
   poser(["FR", "IT"], ["snc"]);
   poser(["BE"], ["sprl", "bvba"]);
@@ -1202,6 +1246,22 @@ const PAYS_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["FI"], ["oy", "oyj"]); poser(["SE"], ["ab"]); poser(["HU"], ["kft", "zrt", "nyrt", "korlatolt felelossegu tarsasag", "zartkoruen mukodo reszvenytarsasag", "nyilvanosan mukodo reszvenytarsasag", "beteti tarsasag", "bt"]);
   poser(["CZ", "SK"], ["sro"]); poser(["RS", "HR", "BA", "SI", "ME", "MK"], ["doo"]);
   poser(["BG", "RS", "MK"], ["ad"]); poser(["BG"], ["eood", "ood"]);
+  /* les formes ajoutées le 30/09 (voir FORMES, PHRASES) */
+  poser(["DK"], ["ivs", "ivaerksaetterselskab"]); poser(["CH"], ["sagl", "societa a garanzia limitata"]); poser(["IT"], ["srls", "societa a responsabilita limitata semplificata"]);
+  poser(["BE"], ["cvba", "scrl"]); poser(["DE"], ["egbr", "ek", "haftungsbeschrankt"]);
+  poser(["BG"], ["ead", "ednolichno druzhestvo s ogranichena otgovornost", "druzhestvo s ogranichena otgovornost", "ednolichno aktsionerno druzhestvo", "aktsionerno druzhestvo"]);
+  poser(["MK"], ["dooel", "drustvo so ograniceno odgovornost"]);
+  poser(["HR", "BA", "SI", "RS", "ME"], ["dd", "jdoo", "jednostavno drustvo s ogranicenom odgovornoscu", "drustvo s ogranicenom odgovornoscu",
+    "drustvo sa ogranicenom odgovornoscu", "dionicko drustvo", "akcionarsko drustvo", "druzba z omejeno odgovornostjo"]);
+  poser(["CZ", "SK"], ["spolecnost s rucenim omezenym", "spolocnost s rucenim obmedzenym", "akciova spolecnost", "akciova spolocnost"]);
+  poser(["RO", "MD"], ["societate cu raspundere limitata", "societate pe actiuni"]);
+  poser(["IT"], ["societa cooperativa a responsabilita limitata", "soc coop a responsabilita limitata", "societa cooperativa", "soc coop", "coop soc"]);
+  poser(["GR", "CY"], ["avee", "aeve", "abee", "aebe", "idiotiki kefalaiouchiki etaireia", "etaireia periorismenis efthynis", "omorrythmi etaireia",
+    "eterorrythmi etaireia", "anonymos etairia", "anonymi etairia", "anonyme etaireia"]);
+  poser(["HU"], ["kkt", "kozkereseti tarsasag"]); poser(["LU", "FR", "BE"], ["sca", "scs", "societe en commandite par actions", "societe en commandite simple"]);
+  poser(["AE", "JO", "PS"], ["psc"]); poser(["SE"], ["aktiebolaget"]); poser(["MX"], ["sab", "sab de cv"]); poser(["ID"], ["persero", "perusahaan perseroan"]);
+  poser(["UA"], ["tovaristvo z obmezhenoyu vidpovidalnistyu", "tovaristvo z obmezhenoiu vidpovidalnistiu", "privatne aktsionerne tovaristvo",
+    "publichne aktsionerne tovaristvo", "aktsionerne tovaristvo"]);
   return t;
 })();
 
@@ -1276,6 +1336,23 @@ const FAMILLES_DES_FORMES: ReadonlyMap<string, readonly string[]> = (() => {
   poser(["corp"], ["ene", "special maritime enterprise", "anonymi", "anonimi", "anonymos", "anonimos", "anonymi etaireia", "anonimi etairia",
     "anonymos etaireia", "anonimos etairia"]);
   poser(["est"], ["est", "establishment", "establishments", "sole proprietorship"]);
+  /* les formes ajoutées le 30/09 (voir FORMES, PHRASES) ; la (Persero) et la (haftungsbeschränkt) ne disent pas de famille à elles
+     seules */
+  poser(["ltd", "llc"], ["ivs", "ivaerksaetterselskab", "srls", "societa a responsabilita limitata semplificata", "dooel", "jdoo", "pc",
+    "ednolichno druzhestvo s ogranichena otgovornost", "druzhestvo s ogranichena otgovornost", "drustvo so ograniceno odgovornost",
+    "jednostavno drustvo s ogranicenom odgovornoscu", "drustvo s ogranicenom odgovornoscu", "drustvo sa ogranicenom odgovornoscu",
+    "druzba z omejeno odgovornostjo", "spolecnost s rucenim omezenym", "spolocnost s rucenim obmedzenym", "societate cu raspundere limitata",
+    "idiotiki kefalaiouchiki etaireia", "etaireia periorismenis efthynis", "tovaristvo z obmezhenoyu vidpovidalnistyu", "tovaristvo z obmezhenoiu vidpovidalnistiu",
+    "ltd liab co", "limited liability co"]);
+  poser(["llc"], ["sagl", "societa a garanzia limitata"]);
+  poser(["corp"], ["ead", "ednolichno aktsionerno druzhestvo", "aktsionerno druzhestvo", "dd", "dionicko drustvo", "akcionarsko drustvo", "akciova spolecnost",
+    "akciova spolocnost", "societate pe actiuni", "avee", "aeve", "abee", "aebe", "anonymos etairia", "anonymi etairia", "anonyme etaireia", "aktiebolaget",
+    "sab", "sab de cv", "psc", "privatne aktsionerne tovaristvo", "publichne aktsionerne tovaristvo", "aktsionerne tovaristvo"]);
+  poser(["ltd", "corp"], ["aktiebolaget"]);
+  poser(["part"], ["egbr", "kkt", "kozkereseti tarsasag", "omorrythmi etaireia", "eterorrythmi etaireia", "sca", "scs",
+    "societe en commandite par actions", "societe en commandite simple"]);
+  /* la coopérative est une famille à elle : « Comelli Soc. Coop. » n'est pas « Comelli Srl » (jeu 23 : deux immatriculations) */
+  poser(["coop"], ["cvba", "scrl", "societa cooperativa a responsabilita limitata", "soc coop a responsabilita limitata", "societa cooperativa", "soc coop", "coop soc"]);
   return t;
 })();
 
@@ -1324,6 +1401,8 @@ const DESIGNATIONS: ReadonlyMap<string, string> = new Map([
   ["fze", "fze"], ["free zone establishment", "fze"], ["fzco", "fzco"], ["fzc", "fzco"], ["free zone company", "fzco"],
   /* la Bulgarie (jeu 18) : l'OOD à plusieurs associés et l'EOOD à un seul, l'AD et l'EAD ; la Croatie : le d.o.o. et le j.d.o.o. */
   ["ood", "ood"], ["eood", "eood"], ["ead", "ead"], ["jdoo", "jdoo"],
+  ["ednolichno druzhestvo s ogranichena otgovornost", "eood"], ["druzhestvo s ogranichena otgovornost", "ood"], ["ednolichno aktsionerno druzhestvo", "ead"],
+  ["jednostavno drustvo s ogranicenom odgovornoscu", "jdoo"],
   ["fzllc", "fzllc"], ["fz llc", "fzllc"], ["free zone limited liability company", "fzllc"],
   ["dmcc", "dmcc"], ["jafza", "jafza"], ["dafza", "dafza"], ["difc", "difc"], ["dso", "dso"], ["dwc", "dwc"], ["rakez", "rakez"], ["kizad", "kizad"],
   /* Bahreïn : la S.P.C. (un seul associé) et la W.L.L. (plusieurs) sont deux immatriculations d'une même famille
@@ -1358,6 +1437,9 @@ export type Marques = { pays: readonly string[]; familles: readonly string[]; na
   slave: boolean;
   /** un qualificatif de société privée (Pty, Pte, Pvt, Sdn, (P)) : « X Pty Ltd » n'est pas « X Ltd » */
   prive: boolean;
+  /** le nom est ÉCRIT dans une écriture qui prononce les mots anglais qu'elle emprunte (voir `clesEmprunt`, mots.ts) : « r » pour le
+   *  cyrillique et le grec, « n » pour les kana, le hangul, le thaï et le lao ; « » pour un nom latin, arabe, hébreu ou en sinogrammes */
+  emprunt: "" | "r" | "n";
   /** les désignations écrites qu'un même registre garde distinctes dans une même famille
    *  (« Inc. » et « Corp. », voir DESIGNATIONS) */
   designations: readonly string[];
@@ -1510,7 +1592,7 @@ const MARQUEURS_GRECS = new Set(["kai", "sia", "naftiliaki", "naftiki", "emporik
  *  et « emporiki ». Les mots courts (kai, sia) n'y sont pas : leur clé serait celle de trop de mots d'ailleurs. */
 const MARQUEURS_GRECS_PLIES: ReadonlySet<string> = new Set([...MARQUEURS_GRECS].filter((m) => m.length >= 5).flatMap((m) => [...clesGrecques(m)]));
 /** Les formes grecques en lettres latines, que la présomption grecque lit avant les tables (voir `analyserEntite`). */
-const FORMES_GRECQUES = new Set(["ae", "epe", "ike", "oe", "ee", "ene", "mepe", "anonymi", "anonimi", "anonymos", "anonimos"]);
+const FORMES_GRECQUES = new Set(["ae", "epe", "ike", "oe", "ee", "ene", "mepe", "anonymi", "anonimi", "anonymos", "anonimos", "avee", "aeve", "abee", "aebe"]);
 const SUFFIXES_GRECS = /(akis|opoulos|poulos|ides|idis|iadis|iotis|iki|ikos|ellis)$/;
 /** Un mot latin qui dit le grec : un marqueur, sous sa graphie ou sous l'une de ses clés grecques (« nautiki », « emporikh »), un
  *  suffixe de patronyme dans un mot de six lettres au moins, ou le σχ du greeklish (« isxyros », « sxolh »), qu'aucune autre
@@ -2195,7 +2277,8 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   return { texte: t.length > 0 ? t.join(" ") : normaliser(soude), abreges, parentheses, civilites, traduits, sources, sigles,
     pays: [...pays].sort(), familles: [...familles].sort(), designations: [...designations].sort(), navire, societe, arabe, japonais, chinois, coreen,
     hebreuOuGrec, indien, hispanique, tamoul, thai, birman, khmer, prive, majuscules, chat, abjad: abjadDe(nom), cantonais: lecture !== "mandarin" && lecture !== "hanja", lecture, priveInconnu,
-    natifs: rom.natifs, filiation, filiationOrdre, succursale, typeNavire, slave };
+    natifs: rom.natifs, filiation, filiationOrdre, succursale, typeNavire, slave,
+    emprunt: /[\u3040-\u30ff\uac00-\ud7a3\u0e00-\u0eff]/u.test(nom) ? "n" : /[\u0400-\u04ff\u0370-\u03ff]/u.test(nom) ? "r" : "" };
 }
 
 /** Le texte d'une parenthèse NOMME-T-IL UNE SOCIÉTÉ : une forme juridique, et devant elle un nom qui n'est pas

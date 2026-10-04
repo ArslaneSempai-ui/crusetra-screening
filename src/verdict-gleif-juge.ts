@@ -14,11 +14,11 @@
  */
 import { readFileSync } from "node:fs";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
-import { CHEMINS_APPRENTISSAGE, choisirSeuils } from "./entites.ts";
+import { CHEMINS_APPRENTISSAGE, CHEMIN_APPRENTISSAGE_REEL, choisirSeuils } from "./entites.ts";
 import { frequencesDesListes } from "./frequences.ts";
 import { rate } from "./interval.ts";
 import { validerPaires, type JeuDePaires } from "./measure.ts";
-import { mesurerJeuxParallele } from "./mesure-parallele.ts";
+import { mesurerJeuxParallele, mesurerReelParallele } from "./mesure-parallele.ts";
 
 const SET = new URL("../verification/paires-gleif.json", import.meta.url);
 const LABELS = new URL("../verification/paires-gleif-juges.json", import.meta.url);
@@ -43,9 +43,10 @@ async function main(): Promise<void> {
 
   const f = frequencesDesListes();
   const training = await mesurerJeuxParallele(f, CHEMINS_APPRENTISSAGE.map((u) => readFileSync(u, "utf8")), { cache: true, fils: THREADS });
-  const r = choisirSeuils(training.table);
+  const real = await mesurerReelParallele(f, readFileSync(CHEMIN_APPRENTISSAGE_REEL, "utf8"), { cache: true, fils: THREADS });
+  const r = choisirSeuils(training.table, real.table);
   const strong = r.fort.seuil, possible = r.possible.seuil;
-  console.log(`thresholds chosen on ${training.jeux.length} training sets: strong ${strong.toFixed(2)}, possible ${possible.toFixed(2)}`);
+  console.log(`thresholds chosen on ${training.jeux.length} written training sets and the real training sample: strong ${strong.toFixed(2)}, possible ${possible.toFixed(2)}`);
 
   const g = await mesurerJeuxParallele(f, [brut], { cache: true, fils: THREADS });
   if (g.paires.length !== set.paires.length || g.paires.some((p, k) => p.a !== set.paires[k]!.a || p.b !== set.paires[k]!.b)) {

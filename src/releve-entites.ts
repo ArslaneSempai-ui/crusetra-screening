@@ -18,10 +18,10 @@ import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
-import { CHEMINS_APPRENTISSAGE, choisirSeuils } from "./entites.ts";
+import { CHEMINS_APPRENTISSAGE, CHEMIN_APPRENTISSAGE_REEL, choisirSeuils } from "./entites.ts";
 import type { Cellule } from "./measure.ts";
 import { frequencesDesListes } from "./frequences.ts";
-import { mesurerJeuxParallele } from "./mesure-parallele.ts";
+import { mesurerJeuxParallele, mesurerReelParallele } from "./mesure-parallele.ts";
 import { ligneDuJuge, aujourdhui, CHEMIN_VERDICTS, type Juge } from "./promouvoir.ts";
 
 export const CHEMIN_RELEVE = new URL("../releve-entites.json", import.meta.url);
@@ -35,7 +35,9 @@ export const LIVRES = [
     note: "a Hamburg forwarder's book, written after that rule and never read before its single screening on the final matcher" },
 ] as const;
 
-export type Niveau = { seuil: number; trouves: Cellule; fausses: Cellule };
+export type Niveau = { seuil: number; trouves: Cellule; fausses: Cellule;
+  /** les fausses alertes sur les vraies sociétés distinctes de l'échantillon réel (voir `choisirSeuils`), au même seuil */
+  faussesReelles?: Cellule };
 export type Apprentissage = { jeux: number; paires: number; pieges: number; fort: Niveau; possible: Niveau };
 export type Verdict = { jeu: number; realiste: boolean } & Juge;
 export type Livre = { fichier: string; sha256: string; releve: string; sceau: string; commit: string; emisLe: string;
@@ -92,9 +94,10 @@ export async function mesurerApprentissage(): Promise<Apprentissage> {
   const f = frequencesDesListes();
   const bruts = CHEMINS_APPRENTISSAGE.map((u) => readFileSync(u, "utf8"));
   const m = await mesurerJeuxParallele(f, bruts, { cache: true });
-  const r = choisirSeuils(m.table);
+  const reel = await mesurerReelParallele(f, readFileSync(CHEMIN_APPRENTISSAGE_REEL, "utf8"), { cache: true });
+  const r = choisirSeuils(m.table, reel.table);
   const paires = m.paires.filter((x) => x.verdict === "match").length;
-  const niveau = (n: { seuil: number; rappel: Cellule; fauxPositifs: Cellule }): Niveau => ({ seuil: n.seuil, trouves: n.rappel, fausses: n.fauxPositifs });
+  const niveau = (n: { seuil: number; rappel: Cellule; fauxPositifs: Cellule; fauxPositifsReels: Cellule }): Niveau => ({ seuil: n.seuil, trouves: n.rappel, fausses: n.fauxPositifs, faussesReelles: n.fauxPositifsReels });
   return { jeux: CHEMINS_APPRENTISSAGE.length, paires, pieges: m.paires.length - paires, fort: niveau(r.fort), possible: niveau(r.possible) };
 }
 

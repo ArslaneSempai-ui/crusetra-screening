@@ -7,11 +7,13 @@ import {
   variationVocalique, voyelleEpenthetique, squeletteLongue, lettrePerdue, PERDU, fauteDeFrappe, composesDistincts, simMot, pluriel, LU_UN,
   estSyllabeIsolee, compose, gerondif, regionDeRegistre, descripteur,
   tronque, estCoupe, apport, simMinimale, choisirSeuils, marquesEnConflit, frequencesDe, mesurerJeux, qualificatifSoude,
-  poidsDuMot, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, FAUSSES_ALERTES_MAX_FORT, SEUIL_POSSIBLE, lecturesDe, pliCantonais, pliTamoul,
+  poidsDuMot, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, FAUSSES_ALERTES_MAX_FORT, SEUIL_POSSIBLE,
+  FAUSSES_ALERTES_REELLES_MAX_FORT, lecturesDe, pliCantonais, pliTamoul,
   variantesTypees, plafondDesLectures, mentionDeSuccursale, succursalesCompatibles, numeroDeRegistre, formePlurielle, sembleCoupe,
   pliJaponais, suffixeEtablissement, pliVoyellesCoreennes,
 } from "./entites.ts";
 import { validerPaires, type TableDUnPalier } from "./measure.ts";
+import { rate } from "./interval.ts";
 import { hangulEnLatin, pinyinDe, cleAbjad, cleAbjadSansTa, romaniser, CHEMIN_PINYIN, CHEMIN_JYUTPING, jyutpingDe, hongkong, thaiEnLatin, tamoulEnLatin } from "./ecritures.ts";
 
 const f = FREQUENCES_UNIFORMES;
@@ -114,17 +116,32 @@ test("les poids : un mot que les listes portent souvent pèse moins qu'un mot qu
   assert.ok(poidsDuMot(fr, "inconnu") > poidsDuMot(fr, "kestrel"));
 });
 
-test("les seuils : possible = le niveau des plafonds ; fort = au-dessus, le plus bas sous 5 % de fausses alertes", () => {
-  const cellule = (succes: number, n: number) => ({ succes, n, taux: succes / n, bas: 0, haut: 1 });
-  const t: TableDUnPalier = {};
+test("les seuils : la règle écrite lit les pièges écrits ET les vraies sociétés distinctes, sur la borne haute de Wilson", () => {
+  const cellule = (succes: number, n: number) => { const r = rate(succes, n); return { succes, n, taux: r.rate, bas: r.low, haut: r.high }; };
+  /* les pièges écrits : 1 000 paires, les fausses alertes tombent de 600 à 0 le long de la grille, et font un saut au niveau des plafonds */
+  const ecrits: TableDUnPalier = {}, reels: TableDUnPalier = {};
   for (let i = 0; i <= 50; i++) {
     const s = (50 + i) / 100;
-    t[s.toFixed(2)] = { rappel: cellule(Math.max(0, 100 - Math.max(0, i - 20) * 3), 100), fauxPositifs: cellule(Math.max(0, 40 - i), 100) };
+    const fpEcrits = s <= 0.80 + 1e-9 ? Math.max(210, 700 - i * 16) : Math.max(0, 40 - i);
+    const fpReels = Math.max(0, 80 - i * 4);
+    ecrits[s.toFixed(2)] = { rappel: cellule(1000 - i * 5, 1000), fauxPositifs: cellule(fpEcrits, 1000) };
+    reels[s.toFixed(2)] = { rappel: cellule(800 - i * 8, 1000), fauxPositifs: cellule(fpReels, 1000) };
   }
-  const r = choisirSeuils(t);
-  assert.equal(r.fort.seuil, 0.85, "le premier seuil où les fausses alertes tombent à 5 %");
-  assert.ok(r.fort.fauxPositifs.taux <= FAUSSES_ALERTES_MAX_FORT);
-  assert.ok(Math.abs(r.possible.seuil - SEUIL_POSSIBLE) < 1e-9 && r.possible.seuil < r.fort.seuil, "le possible est le niveau des plafonds");
+  const r = choisirSeuils(ecrits, reels);
+  /* possible : le niveau des plafonds, quel que soit le reste de la grille (le budget des relectures, voir la règle) */
+  assert.equal(r.possible.seuil.toFixed(2), SEUIL_POSSIBLE.toFixed(2));
+  /* fort : au-dessus du possible, le plus bas seuil où les pièges tiennent sous 5 % et les vraies voisines sous 1 % */
+  assert.ok(r.fort.seuil > r.possible.seuil);
+  assert.ok(r.fort.fauxPositifs.haut <= FAUSSES_ALERTES_MAX_FORT && r.fort.fauxPositifsReels.haut <= FAUSSES_ALERTES_REELLES_MAX_FORT);
+  const avantFort = ecrits[(r.fort.seuil - 0.01).toFixed(2)]!, avantFortReel = reels[(r.fort.seuil - 0.01).toFixed(2)]!;
+  assert.ok(r.fort.seuil - 0.01 <= r.possible.seuil + 1e-9 || avantFort.fauxPositifs.haut > FAUSSES_ALERTES_MAX_FORT
+    || avantFortReel.fauxPositifs.haut > FAUSSES_ALERTES_REELLES_MAX_FORT);
+  /* et la règle refuse deux tables qui ne portent pas la même grille */
+  const { ["0.70"]: _, ...troue } = reels;
+  assert.throws(() => choisirSeuils(ecrits, troue), /threshold grid/);
+  /* si même le niveau des plafonds casse un plafond du possible, le possible reste au niveau des plafonds */
+  const saturees: TableDUnPalier = Object.fromEntries(Object.entries(reels).map(([k, c]) => [k, { ...c, fauxPositifs: cellule(500, 1000) }]));
+  assert.ok(Math.abs(choisirSeuils(ecrits, saturees).possible.seuil - SEUIL_POSSIBLE) < 1e-9);
 });
 
 test("les jeux d'apprentissage : valides, et leur provenance dit leur rôle", () => {

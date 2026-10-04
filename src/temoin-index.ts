@@ -16,10 +16,10 @@
 import { readFileSync } from "node:fs";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { lireManifeste, lireListe, SOURCES, type EntreeListe } from "./listes.ts";
-import { frequencesDe, mesurerJeux, choisirSeuils, CHEMINS_APPRENTISSAGE } from "./entites.ts";
+import { frequencesDe, mesurerJeux, choisirSeuils, CHEMINS_APPRENTISSAGE, CHEMIN_APPRENTISSAGE_REEL, mesurerReel } from "./entites.ts";
 import { Index, cribler, lireContreparties, type Contrepartie } from "./cribler.ts";
 import { frequencesDesListes } from "./frequences.ts";
-import { criblerExhaustif, mesurerJeuxParallele, sequentielDemande } from "./mesure-parallele.ts";
+import { criblerExhaustif, mesurerJeuxParallele, mesurerReelParallele, sequentielDemande } from "./mesure-parallele.ts";
 
 async function principal(): Promise<void> {
   refuserDrapeauxInconnus(["--exhaustif", "--noms"]);
@@ -31,7 +31,9 @@ async function principal(): Promise<void> {
   const f = frequencesDesListes();   /* le cache des fréquences (src/frequences.ts) : les mêmes poids, sans relire les listes ; construit ici s'il manque, avant tout fil */
   const bruts = CHEMINS_APPRENTISSAGE.map((u) => readFileSync(u, "utf8"));
   const sequentiel = sequentielDemande();
-  const r = choisirSeuils(sequentiel ? mesurerJeux(f, bruts).table : (await mesurerJeuxParallele(f, bruts, { cache: true })).table);
+  const brutReel = readFileSync(CHEMIN_APPRENTISSAGE_REEL, "utf8");
+  const r = choisirSeuils(sequentiel ? mesurerJeux(f, bruts).table : (await mesurerJeuxParallele(f, bruts, { cache: true })).table,
+    sequentiel ? mesurerReel(f, brutReel).table : (await mesurerReelParallele(f, brutReel, { cache: true })).table);
   const seuils = { fort: r.fort.seuil, possible: r.possible.seuil };
   let t = Date.now();
   const index = new Index(f, entrees, seuils.possible);

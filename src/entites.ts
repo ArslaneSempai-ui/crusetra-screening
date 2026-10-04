@@ -123,15 +123,63 @@ export function lireJeu(chemin: URL): string | null {
  *  voyelles longues (ō : o, oo, ou, oh ; ū : u, uu). */
 
 export const RAPPEL_MIN = 0.90;
-/** Le niveau FORT : au plus une fausse alerte sur vingt sur les pièges d'apprentissage. */
+
+/* ─────────────────────────── le choix des deux seuils ─────────────────────────── */
+
+/**
+ * L'ÉCHANTILLON D'APPRENTISSAGE RÉEL : des noms de sociétés du registre GLEIF (CC0), tirés par src/gleif-paires.ts avec la graine
+ * 20261001, sans aucun nom commun avec le verdict dépensé (verification/paires-gleif.json) ni avec le verdict frais
+ * (verification/paires-gleif-2.json). Ses 1 000 paires « different » sont de VRAIES sociétés distinctes qui partagent un mot
+ * distinctif : la population qu'une équipe de criblage rencontre chaque jour, et que les jeux écrits par des agents ne montrent
+ * pas (verification/GLEIF.md : 0 fausse alerte sur 1 000 au niveau fort, quand les pièges écrits en faisaient 3 %). Il entre
+ * dans le choix des seuils à côté des 23 jeux d'apprentissage écrits ; sa strate CONTENUE (un nom retrouvé dans l'autre) est à
+ * part : une équipe peut vouloir qu'elle alerte, elle ne compte jamais comme fausse alerte.
+ */
+export const CHEMIN_APPRENTISSAGE_REEL = new URL("./paires-gleif-apprentissage.json", import.meta.url);
+export const STRATE_CONTENUE = "different-contained";
+
+/** L'échantillon réel mesuré : ses paires « match » et ses vraies paires « different », la strate contenue retirée ; le jeu
+ *  cité porte l'empreinte du fichier tel qu'il est sur disque. */
+export function mesurerReel(f: Frequences, brut: string): MesureEntites {
+  const jeu = JSON.parse(brut) as JeuDePaires;
+  const paires = validerPaires(jeu).filter((x) => x.nature !== STRATE_CONTENUE);
+  const match = paires.filter((x) => x.verdict === "match").length;
+  const p = palierEntite(f);
+  return { jeux: [{ quoi: jeu.quoi, provenance: jeu.provenance, sha256: createHash("sha256").update(brut).digest("hex"), match, different: paires.length - match }],
+    table: mesurerPaires(new Map([[p.id, p]]), paires)[p.id]! };
+}
+
+/**
+ * LA RÈGLE DES DEUX SEUILS, ÉCRITE AVANT D'ÊTRE APPLIQUÉE (30/09/2026). Chaque plafond porte sur la borne HAUTE de l'intervalle de
+ * Wilson à 95 % (src/interval.ts) : un taux se tient sous son plafond avec cette confiance, pas seulement en moyenne.
+ *
+ * FORT : le plus bas seuil au-dessus du possible dont
+ *  - les fausses alertes sur les PIÈGES ÉCRITS (les 23 jeux d'apprentissage, groupés) restent sous FAUSSES_ALERTES_MAX_FORT (5 %) :
+ *    ces pièges sont écrits pour ressembler à un vrai nom (filiale, homonyme, coque numérotée), et une alerte forte en déclenche au
+ *    plus une sur vingt, comme avant ;
+ *  - ET les fausses alertes sur les VRAIES SOCIÉTÉS DISTINCTES (l'échantillon réel, strate contenue à part) restent sous
+ *    FAUSSES_ALERTES_REELLES_MAX_FORT (1 %) : une alerte forte part en instruction ; sur des sociétés qui ne font que partager un
+ *    mot, une sur cent au plus.
+ * POSSIBLE : le niveau des plafonds, SEUIL_POSSIBLE (0,80), où les plafonds (un nom retrouvé dans un plus long, une forme d'un
+ *  autre pays, un mot distinctif d'un seul côté) rangent leurs candidats. Plus bas, la file des relectures déborde le budget d'une
+ *  relecture pour cinquante contreparties (2 %). Mesuré le 30/09/2026 sur les deux livres de mille contreparties (écrits, criblés
+ *  contre les vraies listes) : 18 et 17 noms à relire à 0,80, 22 et 21 à 0,75, 45 et 43 à 0,70, 215 et 219 à 0,61. Sur les vraies
+ *  variantes de l'échantillon d'apprentissage, 0,80 en retient 69 % et 0,61 en retiendrait 79 % : dix points pour douze fois plus
+ *  de relectures (choix d'Arslane, 30/09/2026 ; une première version descendait à 0,61 sous un plafond de 50 % sur les pièges).
+ * Les deux jeux se lisent ensemble parce que chacun manque ce que l'autre voit : les pièges écrits sont plus durs que les vraies
+ * voisines, les vraies voisines sont ce que le criblage rencontre ; le fort doit tenir les deux. Mesuré sur l'apprentissage seul ;
+ * le verdict frais (verification/paires-gleif-2.json) ne sert jamais à choisir.
+ */
 export const FAUSSES_ALERTES_MAX_FORT = 0.05;
-/** Le niveau POSSIBLE est celui des PLAFONDS : un nom retrouvé dans un plus long, une forme
- *  juridique d'un autre pays, un mot distinctif d'un seul côté, un mot court à une lettre
- *  près, un numéro d'un seul côté : la méthode y voit une raison précise de douter, et
- *  range ces candidats à FACTEUR_CONTENANCE (0,80) ou juste au-dessous. */
+export const FAUSSES_ALERTES_REELLES_MAX_FORT = 0.01;
+/** Le niveau des PLAFONDS : un nom retrouvé dans un plus long, une forme juridique d'un autre pays, un mot distinctif d'un seul
+ *  côté, un mot court à une lettre près, un numéro d'un seul côté : la méthode y voit une raison précise de douter, et range ces
+ *  candidats à FACTEUR_CONTENANCE (0,80) ou juste au-dessous. Le possible n'est jamais au-dessus. */
 export const SEUIL_POSSIBLE = FACTEUR_CONTENANCE;
 
-export type Niveau = { seuil: number; rappel: Cellule; fauxPositifs: Cellule };
+export type Niveau = { seuil: number; rappel: Cellule; fauxPositifs: Cellule;
+  /** les fausses alertes sur les vraies sociétés distinctes de l'échantillon réel, au même seuil */
+  fauxPositifsReels: Cellule };
 export type Reglage = {
   fort: Niveau; possible: Niveau;
   /** false : même le niveau possible ne tient pas RAPPEL_MIN à la borne basse ; le rapport
@@ -139,20 +187,19 @@ export type Reglage = {
   tientLePlancher: boolean;
 };
 
-/**
- * Les deux seuils.
- *  - POSSIBLE : SEUIL_POSSIBLE, le niveau des plafonds ; structurel, pas mesuré.
- *  - FORT : au-dessus du possible, le plus bas seuil dont les fausses alertes restent sous
- *    FAUSSES_ALERTES_MAX_FORT sur l'apprentissage (le plus de vrais noms possible à ce niveau
- *    de confiance). Les taux des deux niveaux sont mesurés, et cités.
- */
-export function choisirSeuils(t: TableDUnPalier): Reglage {
-  const cellules = Object.entries(t).map(([seuil, c]) => ({ seuil: Number(seuil), ...c }))
-    .sort((a, b) => a.seuil - b.seuil);
+/** Les deux seuils, par la règle écrite ci-dessus. `ecrits` : la table des 23 jeux d'apprentissage écrits ; `reels` : celle de
+ *  l'échantillon réel, strate contenue retirée (`mesurerReel`). Les deux tables portent la même grille de seuils. */
+export function choisirSeuils(ecrits: TableDUnPalier, reels: TableDUnPalier): Reglage {
+  const cellules = Object.entries(ecrits).map(([seuil, c]) => {
+    const r = reels[seuil];
+    if (!r) throw new Error(`the real training table has no cell at ${seuil}: the two tables do not share the threshold grid.`);
+    return { seuil: Number(seuil), ...c, fauxPositifsReels: r.fauxPositifs };
+  }).sort((a, b) => a.seuil - b.seuil);
   if (cellules.length === 0) throw new Error("the threshold grid is empty: nothing was measured.");
-  const niveau = (c: (typeof cellules)[number]): Niveau => ({ seuil: c.seuil, rappel: c.rappel, fauxPositifs: c.fauxPositifs });
-  const possible = cellules.find((c) => c.seuil >= SEUIL_POSSIBLE - 1e-9) ?? cellules[0]!;
-  const fort = cellules.find((c) => c.seuil > possible.seuil && c.fauxPositifs.taux <= FAUSSES_ALERTES_MAX_FORT)
+  const niveau = (c: (typeof cellules)[number]): Niveau => ({ seuil: c.seuil, rappel: c.rappel, fauxPositifs: c.fauxPositifs, fauxPositifsReels: c.fauxPositifsReels });
+  const possible = cellules.find((c) => c.seuil >= SEUIL_POSSIBLE - 1e-9) ?? cellules[cellules.length - 1]!;
+  const fort = cellules.find((c) => c.seuil > possible.seuil
+    && c.fauxPositifs.haut <= FAUSSES_ALERTES_MAX_FORT && c.fauxPositifsReels.haut <= FAUSSES_ALERTES_REELLES_MAX_FORT)
     ?? cellules[cellules.length - 1]!;
   return { fort: niveau(fort), possible: niveau(possible), tientLePlancher: possible.rappel.bas >= RAPPEL_MIN };
 }

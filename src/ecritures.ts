@@ -149,6 +149,10 @@ const GENERIQUES_ARABES: ReadonlyMap<string, string> = new Map(Object.entries({
   "الأدوات الصحية": "sanitary ware", "للأدوات الصحية": "sanitary ware", "أدوات صحية": "sanitary ware", "الصحية": "sanitary", "صحية": "sanitary",
   "الأدوات": "tools", "أدوات": "tools", "لقطع الغيار": "spare parts", "الأقمشة": "textiles", "أقمشة": "textiles", "للأقمشة": "textiles",
   "التمور": "dates", "تمور": "dates", "للتمور": "dates", "شمم": "llc", "المواد الغذائية": "foodstuff", "للمواد الغذائية": "foodstuff",
+  /* les autres sigles des registres du Golfe, tels que leurs noms arabes les écrivent (registre GLEIF, 30/09/2026) : la DMCC
+     (م.د.م.س, مركز دبي للسلع المتعددة), la société par actions privée (ش.م.خ, P.S.C.), la « zone franche » (منطقة حرة) qui fait
+     d'une ذ.م.م une FZ-LLC, et la « Limited » anglaise écrite en lettres arabes (ليمتد) */
+  "مدمس": "dmcc", "شمخ": "psc", "منطقة حرة": "fz", "المنطقة الحرة": "fz", "ليمتد": "limited", "ليميتد": "limited",
   "مواد غذائية": "foodstuff", "الحلويات": "sweets", "حلويات": "sweets", "المجوهرات": "jewellery", "مجوهرات": "jewellery", "الذهب والمجوهرات": "gold and jewellery",
 }).map(([k, v]) => [unifierLettres(k), v] as const));
 
@@ -395,6 +399,51 @@ function hanzi(nom: string, natifs: Map<string, string>, lecture: Lecture): stri
     return ` ${l} `;
   }).join("");
   return generiques.replace(/\([^()]*\)/gu, (p) => p.replace(SINOGRAMMES, mandarin)).replace(SINOGRAMMES, syllabique);
+}
+
+/**
+ * LE PINYIN ÉCRIT SYLLABE PAR SYLLABE (« hang zhou lin jiang tou zi fa zhan you xian gong si ») : la translittération
+ * automatique d'un registre, un jeton par caractère, là où la lecture mandarine des caractères SOUDE le nom propre et
+ * TRADUIT les mots du commerce (« 杭州临江投资发展有限公司 » : hangzhoulinjiang investment development youxian gongsi).
+ * Les deux écritures d'un même nom ne se rencontraient pas (registre GLEIF, 30/09/2026 : 43 des 49 noms chinois jugés
+ * « même nom » face à leur pinyin restaient sous le possible). Ce pinyin se lit donc comme les caractères : les suites
+ * de syllabes qui sont celles d'un mot de GENERIQUES_HANZI (sa lecture, caractère par caractère) deviennent ce mot, et
+ * chaque suite restante, parenthèse par parenthèse, devient UN jeton. Rien n'est deviné : la règle ne vaut que pour un
+ * nom dont TOUS les jetons (quatre au moins) sont des syllabes de la table du pinyin, et la lecture s'ajoute aux autres
+ * (`lecturesDe`, variantes.ts), elle n'en retire aucune.
+ */
+const SYLLABES_PINYIN: ReadonlySet<string> = new Set(PINYIN.filter((l) => /^[a-z]+$/.test(l)));
+let GENERIQUES_EN_PINYIN: readonly (readonly [readonly string[], string])[] | undefined;
+function generiquesEnPinyin(): readonly (readonly [readonly string[], string])[] {
+  GENERIQUES_EN_PINYIN ??= [...GENERIQUES_HANZI].filter(([k]) => /^[一-鿿]{2,}$/u.test(k))
+    .map(([k, v]) => [[...k].map(pinyinDe), v] as const).sort((a, b) => b[0].length - a[0].length);
+  return GENERIQUES_EN_PINYIN;
+}
+export function pinyinSyllabique(nom: string): string | undefined {
+  const plie = nom.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
+  if (/[^a-z\s().,'-]/.test(plie)) return undefined;
+  const groupes = plie.split(/([()])/).reduce<{ dedans: boolean; syllabes: string[] }[]>((acc, morceau) => {
+    if (morceau === "(") acc.push({ dedans: true, syllabes: [] });
+    else if (morceau === ")") acc.push({ dedans: false, syllabes: [] });
+    else acc[acc.length - 1]!.syllabes.push(...morceau.split(/[\s.,'-]+/).filter(Boolean));
+    return acc;
+  }, [{ dedans: false, syllabes: [] }]).filter((g) => g.syllabes.length > 0);
+  const toutes = groupes.flatMap((g) => g.syllabes);
+  if (toutes.length < 4 || !toutes.every((s) => SYLLABES_PINYIN.has(s))) return undefined;
+  const lire = (syllabes: readonly string[]): string => {
+    const sortie: string[] = [];
+    let suite = "";
+    for (let i = 0; i < syllabes.length;) {
+      const g = generiquesEnPinyin().find(([cle]) => cle.every((s, k) => syllabes[i + k] === s));
+      if (g === undefined) { suite += syllabes[i]; i++; continue; }
+      if (suite !== "") { sortie.push(suite); suite = ""; }
+      sortie.push(g[1]);
+      i += g[0].length;
+    }
+    if (suite !== "") sortie.push(suite);
+    return sortie.join(" ");
+  };
+  return groupes.map((g) => (g.dedans ? `(${lire(g.syllabes)})` : lire(g.syllabes))).join(" ");
 }
 
 /* ─────────────────────────── les hanja ─────────────────────────── */
@@ -873,8 +922,119 @@ function generiqueArabe(mot: string): string | undefined {
 }
 
 const CLES_PERSANES = alternative(GENERIQUES_PERSANS);
+/**
+ * LES LETTRES LATINES ÉPELÉES DANS UNE AUTRE ÉCRITURE : un sigle latin (« MEA », « DWC », « LTD », « SFI », « NBB ») que le nom
+ * natif écrit par le NOM de chaque lettre, tel qu'il se prononce en anglais (« ام اي ايه », « دي دبليو سي », « إل تي دي » ;
+ * « ЭсЭфАй » ; « エヌビービー » ; « 티엔케이 »). Le côté latin écrit le sigle. Une suite de DEUX noms de lettres au moins se lit
+ * comme le sigle ; un nom de lettre seul reste un mot (« في » est aussi « dans », « ام » la mère d'Umm Al Quwain). Les tables
+ * sont les noms des lettres de l'alphabet latin dans chaque écriture, rien d'autre. Registre GLEIF, 30/09/2026 : une vingtaine
+ * de noms jugés « même nom » portaient un sigle ainsi épelé.
+ */
+/* lue AVANT `unifier`, qui confond les alifs : « إي » (E) et « آي » (I) ne se distinguent que par leur hamza et leur madda ;
+   le yā' final s'écrit ي, ى ou ی selon la frappe, une seule clé (`cleEpelee`) */
+const cleEpelee = (m: string) => m.replace(/[ىی]/g, "ي").replace(/ک/g, "ك");
+const LETTRES_EPELEES_ARABES: ReadonlyMap<string, string> = new Map(Object.entries({
+  "ايه": "a", "أيه": "a", "إيه": "a", "بي": "b", "پي": "p", "سي": "c", "دي": "d",
+  "اي": "e", "إي": "e", "إف": "f", "اف": "f", "جي": "g", "إتش": "h", "اتش": "h", "ايتش": "h", "إيتش": "h",
+  "آي": "i", "أي": "i", "جيه": "j", "جاي": "j", "كيه": "k", "كاي": "k", "إل": "l", "ال": "l", "ايل": "l", "إم": "m", "ام": "m",
+  "إن": "n", "ان": "n", "أو": "o", "او": "o", "كيو": "q", "آر": "r", "ار": "r", "إس": "s", "اس": "s", "تي": "t",
+  "يو": "u", "في": "v", "ڤي": "v", "دبليو": "w", "دبليوو": "w", "إكس": "x", "اكس": "x", "واي": "y", "زد": "z", "زي": "z",
+}).map(([k, v]) => [cleEpelee(k), v] as const));
+/** Les formes juridiques qu'un nom natif épelle derrière son sigle, sans rien qui les sépare (« دي بي ال تي دي » : DB LTD) : la
+ *  forme se détache du sigle, pour être lue comme une forme. L'arabe n'a pas de p : son بي est B ou P (`bLuP`). */
+const FORMES_EPELEES: readonly string[] = ["fzco", "pjsc", "ltd", "llc", "llp", "plc", "inc", "fze", "fzc", "dwc", "jsc", "lp"];
+function detacherLaForme(sigle: string, bLuP: boolean): string {
+  for (const f of FORMES_EPELEES) {
+    const queue = sigle.slice(-f.length);
+    if (queue === f || (bLuP && queue.replace(/b/g, "p") === f)) return sigle.length === f.length ? f : `${sigle.slice(0, -f.length)} ${f}`;
+  }
+  return sigle;
+}
+/** Les mots d'une écriture à espaces (l'arabe, le cyrillique) : chaque suite d'au moins deux mots qui sont tous des noms de
+ *  lettres latines devient le sigle ; `cle` ramène le mot à la forme des clés de la table. */
+export function siglesEpeles(nom: string, table: ReadonlyMap<string, string>, lettres: RegExp, cle: (mot: string) => string = (m) => m, bLuP = false): string {
+  /* les mots et ce qui les sépare ; une espace, un tiret ou un point séparent deux lettres d'un même sigle, un guillemet ou une
+     parenthèse le ferment */
+  const mots = nom.split(/([^\p{L}\p{N}]+)/u);
+  const lien = (x: string) => /^[\s.\-\u2013]+$/u.test(x);
+  const sortie: string[] = [];
+  for (let i = 0; i < mots.length;) {
+    const suite: string[] = [];
+    let k = i;
+    while (k < mots.length && (k % 2 === 1 ? suite.length > 0 && lien(mots[k]!) && k + 1 < mots.length && lettres.test(mots[k + 1]!) && table.has(cle(mots[k + 1]!))
+      : lettres.test(mots[k]!) && table.has(cle(mots[k]!)))) {
+      if (k % 2 === 0) suite.push(table.get(cle(mots[k]!))!);
+      k++;
+    }
+    if (suite.length >= 2) { sortie.push(` ${detacherLaForme(suite.join(""), bLuP)} `); i = k; }
+    else { sortie.push(mots[i]!); i++; }
+  }
+  return sortie.join("");
+}
+/** Les noms des lettres latines en cyrillique, tels que le russe, le bulgare et l'ukrainien les disent (« ЭсЭфАй » : SFI ; « АЙ ДЖИ » :
+ *  IG), et les noms allemands que les registres de l'Est emploient aussi (« ЕрФауЦе » : RVC). Pas « и » (E), qui est « et ». */
+export const LETTRES_EPELEES_CYRILLIQUES: ReadonlyMap<string, string> = new Map(Object.entries({
+  "эй": "a", "ей": "a", "би": "b", "бе": "b", "си": "c", "це": "c", "ди": "d", "эф": "f", "еф": "f", "джи": "g", "ге": "g", "эйч": "h",
+  "ейч": "h", "ха": "h", "ай": "i", "джей": "j", "йот": "j", "кей": "k", "кэй": "k", "ка": "k", "эл": "l", "ел": "l", "эль": "l", "ель": "l",
+  "эм": "m", "ем": "m", "эн": "n", "ен": "n", "оу": "o", "пи": "p", "пе": "p", "кью": "q", "кю": "q", "ар": "r", "эр": "r", "ер": "r",
+  "эс": "s", "ес": "s", "ти": "t", "те": "t", "ю": "u", "ви": "v", "фау": "v", "дабълю": "w", "даблю": "w", "экс": "x", "екс": "x",
+  "икс": "x", "уай": "y", "вай": "y", "зет": "z", "зед": "z", "зи": "z", "цет": "z",
+}));
+/** Un mot cyrillique fait de noms de lettres collés, chacun sa capitale (« ЭсЭфАй », « ДиПи ») : le sigle, lu d'un coup. */
+export function lettresCollees(mot: string): string {
+  const parts = mot.split(/(?<=\p{Ll})(?=\p{Lu})/u);
+  return parts.length >= 2 && parts.every((x) => LETTRES_EPELEES_CYRILLIQUES.has(x.toLowerCase()))
+    ? detacherLaForme(parts.map((x) => LETTRES_EPELEES_CYRILLIQUES.get(x.toLowerCase())!).join(""), false) : mot;
+}
+/** Les noms des lettres latines en katakana (エー, ビー, シー, ディー…), en hangul (에이, 비, 씨, 디… ; pas 이, 지, 오, 유, syllabes
+ *  trop courantes des mots coréens) et en thaï (เอ, บี, ซี, ดี…). Ces écritures COLLENT le sigle au mot qui suit (« エヌビービー
+ *  ポルトリース », « 에스엔글로벌 ») : le sigle se lit en TÊTE d'une suite, deux lettres au moins, le reste de la suite restant un mot. */
+const LETTRES_EPELEES_KANA: ReadonlyMap<string, string> = new Map(Object.entries({
+  "エー": "a", "エイ": "a", "ビー": "b", "シー": "c", "ディー": "d", "デー": "d", "イー": "e", "エフ": "f", "ジー": "g", "エイチ": "h", "エッチ": "h",
+  "アイ": "i", "ジェー": "j", "ジェイ": "j", "ケー": "k", "ケイ": "k", "エル": "l", "エム": "m", "エヌ": "n", "オー": "o", "ピー": "p",
+  "キュー": "q", "アール": "r", "エス": "s", "ティー": "t", "テー": "t", "ユー": "u", "ブイ": "v", "ヴィ": "v", "ヴイ": "v",
+  "ダブリュー": "w", "エックス": "x", "ワイ": "y", "ゼット": "z", "ズィー": "z", "ゼッド": "z",
+}));
+const LETTRES_EPELEES_HANGUL: ReadonlyMap<string, string> = new Map(Object.entries({
+  "에이": "a", "비": "b", "씨": "c", "디": "d", "에프": "f", "에이치": "h", "아이": "i", "제이": "j", "케이": "k", "엘": "l", "엠": "m",
+  "엔": "n", "피": "p", "큐": "q", "알": "r", "에스": "s", "티": "t", "브이": "v", "더블유": "w", "엑스": "x", "와이": "y", "제트": "z",
+}));
+const LETTRES_EPELEES_THAIES: ReadonlyMap<string, string> = new Map(Object.entries({
+  "เอ": "a", "บี": "b", "ซี": "c", "ดี": "d", "อี": "e", "เอฟ": "f", "จี": "g", "เอช": "h", "ไอ": "i", "เจ": "j", "เค": "k", "แอล": "l",
+  "เอ็ม": "m", "เอ็น": "n", "โอ": "o", "พี": "p", "คิว": "q", "อาร์": "r", "เอส": "s", "ที": "t", "ยู": "u", "วี": "v", "ดับเบิลยู": "w",
+  "เอ็กซ์": "x", "วาย": "y", "แซด": "z",
+}));
+/** Le sigle en tête d'une suite collée : les noms de lettres les plus longs d'abord (エイチ avant エイ), un séparateur (・) permis entre
+ *  deux ; deux lettres au moins, sinon la suite reste telle quelle. `entier` : la suite entière doit être le sigle (le thaï, dont les
+ *  mots commencent trop souvent par ces syllabes : ดี « bon », ที « à »). */
+function siglePrefixe(suite: string, table: ReadonlyMap<string, string>, entier = false): string {
+  const noms = [...table.keys()].sort((a, b) => b.length - a.length);
+  let reste = suite, sigle = "";
+  for (;;) {
+    const r = reste.replace(/^[・･\s]+/u, "");
+    const n = noms.find((x) => r.startsWith(x));
+    if (n === undefined) break;
+    sigle += table.get(n)!;
+    reste = r.slice(n.length);
+  }
+  if (sigle.length < 2 || (entier && reste.trim() !== "")) return suite;
+  return ` ${detacherLaForme(sigle, false)} ${reste}`;
+}
+export function siglesEnTete(nom: string, ecriture: "kana" | "hangul" | "thai"): string {
+  if (ecriture === "kana") return nom.replace(/[\u30a0-\u30ff・･]+/gu, (m) => siglePrefixe(m, LETTRES_EPELEES_KANA));
+  if (ecriture === "hangul") return nom.replace(/[\uac00-\ud7a3]+/gu, (m) => siglePrefixe(m, LETTRES_EPELEES_HANGUL));
+  return nom.replace(/[\u0e00-\u0e7f]+/gu, (m) => siglePrefixe(m, LETTRES_EPELEES_THAIES, true));
+}
+/** Les sigles du Golfe écrits lettre par lettre SANS point (« ش م ح », « ذ م م ») : les lettres isolées qui se suivent se soudent
+ *  quand leur soudure est une forme de la table, comme `unifier` soude la forme pointée (« ش.م.ح ») */
+function siglesArabesEspaces(nom: string): string {
+  return nom.replace(/(?<![\p{L}])[\u0600-\u06ff](?![\p{L}])(?:\s+[\u0600-\u06ff](?![\p{L}]))+/gu, (m) => {
+    const soude = m.replace(/\s+/g, "");
+    return GENERIQUES_ARABES.has(soude) ? soude : m;
+  });
+}
 function arabe(nom: string): string {
-  return unifier(nom)
+  return siglesArabesEspaces(unifier(siglesEpeles(nom, LETTRES_EPELEES_ARABES, /^[\u0600-\u06ff]+$/u, cleEpelee, true)))
     /* les mots persans d'abord, entiers (voir GENERIQUES_PERSANS), puis les clés arabes de plusieurs mots (« حمل و نقل », « قطع الغيار ») :
        un mot seul les couperait */
     .replace(new RegExp(`(?<![\\p{L}])(?:${CLES_PERSANES.source})(?![\\p{L}])`, "gu"), (m) => ` ${GENERIQUES_PERSANS.get(m) ?? m} `)
@@ -958,6 +1118,11 @@ export function cleAbjadVoyelles(mot: string, abjad: Abjad): string {
 }
 /** Les consonnes d'un mot ramenées à leurs classes, voyelles encore en place : ce que les deux clés partagent. */
 function clePleine(mot: string, abjad: Abjad): string {
+  /* l'orthographe ANGLAISE d'un mot que l'abjad écrit comme il se prononce (« سولوشنز » solutions, « נאנומושן » Nanomotion) : -tion
+     et -sion se disent shn, qu'aucune lecture d'un abjad n'écrit ; et, en arabe seulement, le g doux devant e, i, y se dit j
+     (« داميج » damage), quand l'hébreu garde le g dur de ses noms (« Negev », « Segev » : ג) (registre GLEIF, 30/09/2026) */
+  if (abjad !== "thai") mot = mot.replace(/[ts]ion/g, "shn");
+  if (abjad === "arabe") mot = mot.replace(/g(?=[eiy])/g, "j");
   if (abjad === "hebreu") return cleHebraique(mot);
   /* arabe et persan : v est و, dj est ج (voie arabe), x est ks (إكسبرس : Express) ; thaï : le côté latin
      écrit les aspirées avec ou sans h (Kenanga, Khenangka ; Pattaya, Phatthaya), จ s'écrit ch ou j et se lit t
@@ -1023,10 +1188,10 @@ export function romaniser(nom: string, lecture: Lecture = "mandarin"): Romanise 
      japonais (ＫＡＺＡＭＡＴＳＵ : KAZAMATSU), l'espace idéographique, les formes encerclées ㈱ et ㈜ ((株), (주)), le katakana demi-chasse */
   let t = nom.replace(/[\u3000\u3200-\u33ff\uff00-\uffef]/gu, (c) => c.normalize("NFKC"));
   const japonaisEcrit = estJaponais(t);
-  if (/[\uac00-\ud7a3]/u.test(t)) t = hangul(t);
+  if (/[\uac00-\ud7a3]/u.test(t)) t = hangul(siglesEnTete(t, "hangul"));
   /* les kana (kana.ts) : les kanji d'un nom japonais se lisent d'abord, parce que ヶ vit dans leur mot, puis chaque suite de kana ;
      la marque japonaise se lit sur le nom tel qu'écrit, avant que ses kana ne deviennent des lettres */
-  if (/[\u3040-\u30ff]/u.test(t)) { if (japonaisEcrit && /[\u4e00-\u9fff]/u.test(t)) t = japonais(t); t = kana(t); }
+  if (/[\u3040-\u30ff]/u.test(t)) { t = siglesEnTete(t, "kana"); if (japonaisEcrit && /[\u4e00-\u9fff]/u.test(t)) t = japonais(t); t = kana(t); }
   if (/[\u4e00-\u9fff]/u.test(t) && !japonaisEcrit) t = lecture === "hanja" ? hanja(t, natifs) : hanzi(t, natifs, lecture);
   else if (/[\u4e00-\u9fff]/u.test(t)) t = japonais(t);
   if (/[\u0590-\u05ff]/u.test(t)) t = hebreu(t);
@@ -1038,7 +1203,7 @@ export function romaniser(nom: string, lecture: Lecture = "mandarin"): Romanise 
   if (/[\u1000-\u109f\uaa60-\uaa7f]/u.test(t)) t = birman(t);
   if (/[\u1780-\u17ff]/u.test(t)) t = khmer(t);
   if (/[\u0e80-\u0eff]/u.test(t)) t = lao(t);
-  if (/[\u0e00-\u0e7f]/u.test(t)) t = thai(t);
+  if (/[\u0e00-\u0e7f]/u.test(t)) t = thai(siglesEnTete(t, "thai"));
   if (/[\u0b80-\u0bff]/u.test(t)) t = tamoul(t);
   if (DEVANAGARI.test(t)) t = devanagari(t);
   return { texte: t, natifs };

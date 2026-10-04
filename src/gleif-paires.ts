@@ -20,9 +20,25 @@
  * stay in memory.
  *
  * It prints counts only. It never scores a pair: the single measurement is src/verdict-gleif.ts.
+ *
+ * Another draw, with the same strata, sizes and rules:
+ *
+ *   node src/gleif-paires.ts --graine <n> --sortie <path> --exclure <path>[,<path>...]
+ *
+ *   --graine   the seed (default 20260930): the 25 % sample, the legal-form words drawn from it,
+ *              and every draw change with it;
+ *   --sortie   the output file (default verification/paires-gleif.json). Under verification/ it is
+ *              a held-out verdict sample; under src/ a training sample. Nowhere else;
+ *   --exclure  pair files whose names must not reappear: a candidate pair is dropped when either
+ *              name, folded as below, is a name of any of them.
+ * Without options it rebuilds verification/paires-gleif.json byte for byte, as before. With a
+ * non-default seed the legal-form words go to data/gleif/legal-form-words-<seed>.tsv, so the
+ * audit trail of the default draw is never overwritten.
  */
 import { createHash } from "node:crypto";
 import { closeSync, createReadStream, existsSync, fstatSync, openSync, readdirSync, readFileSync, readSync, statSync, writeFileSync } from "node:fs";
+import { isAbsolute, relative, resolve, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 import { createInflateRaw } from "node:zlib";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 
@@ -44,7 +60,8 @@ export const RR: Pinned = {
   sha256: "b348cdef56834609bbf98b1e37545ab90b2be55d8cc5b436dca7980846157110",
 };
 const DATA = new URL("../data/gleif/", import.meta.url);
-const OUT = new URL("../verification/paires-gleif.json", import.meta.url);
+const ROOT = fileURLToPath(new URL("../", import.meta.url));
+const DEFAULT_OUT = "verification/paires-gleif.json";
 
 /* ─────────────────────────── the selection rules ─────────────────────────── */
 
@@ -300,6 +317,91 @@ function namesAlreadySeen(): Set<string> {
   return seen;
 }
 
+/* ─────────────────────────── the options ─────────────────────────── */
+
+export type Options = {
+  seed: number;
+  /** repository-relative, "/" separated: what the file and the provenance name */
+  out: string;
+  exclude: string[];
+  role: "verdict" | "training";
+};
+
+/** A path given on the command line (relative to the current directory), as a repository-relative
+ *  path. Outside the repository is refused: the provenance names files a fresh clone can find. */
+function inRepo(given: string, what: string): string {
+  const rel = relative(ROOT, resolve(given));
+  if (rel === "" || rel.startsWith("..") || isAbsolute(rel) || resolve(ROOT, rel) !== resolve(given)) throw new Error(`${what} ${given} is outside the repository ${ROOT}.`);
+  return rel.split(sep).join("/");
+}
+
+export function parseOptions(argv: readonly string[]): Options {
+  const consumed = new Set<number>();
+  const value = (flag: string): string | undefined => {
+    let found: string | undefined;
+    for (let i = 0; i < argv.length; i++) {
+      const a = argv[i]!;
+      let v: string | undefined;
+      if (a === flag) {
+        v = argv[i + 1];
+        if (v === undefined || v.startsWith("--")) throw new Error(`${flag} needs a value.`);
+        consumed.add(i).add(i + 1);
+        i++;
+      } else if (a.startsWith(`${flag}=`)) { v = a.slice(flag.length + 1); consumed.add(i); }
+      else continue;
+      if (found !== undefined) throw new Error(`${flag} is given twice.`);
+      found = v;
+    }
+    return found;
+  };
+  const g = value("--graine");
+  if (g !== undefined && !/^[1-9]\d{0,8}$/.test(g)) throw new Error(`--graine ${g}: a positive integer below 10^9 is expected.`);
+  const seed = g === undefined ? SEED : Number(g);
+  const s = value("--sortie");
+  const out = s === undefined ? DEFAULT_OUT : inRepo(s, "--sortie");
+  const e = value("--exclure");
+  const stray = argv.filter((a, i) => !consumed.has(i) && a !== "--");
+  if (stray.length > 0) throw new Error(`unexpected argument${stray.length > 1 ? "s" : ""}: ${stray.join(" ")}. This command accepts --graine <n>, --sortie <path>, --exclure <path>[,<path>...].`);
+  const exclude = e === undefined ? [] : e.split(",").map((p) => {
+    if (p.trim() === "") throw new Error(`--exclure ${e}: an empty path.`);
+    const rel = inRepo(p.trim(), "--exclure");
+    if (!existsSync(resolve(ROOT, rel))) throw new Error(`--exclure: ${rel} does not exist.`);
+    return rel;
+  });
+  if (new Set(exclude).size !== exclude.length) throw new Error(`--exclure names the same file twice.`);
+  if (exclude.includes(out)) throw new Error(`--sortie ${out} is also excluded: a draw cannot exclude the file it writes.`);
+  if (!/\.json$/.test(out)) throw new Error(`--sortie ${out}: a .json file is expected.`);
+  const role = out.startsWith("verification/") ? "verdict" : out.startsWith("src/") ? "training" : null;
+  if (role === null) throw new Error(`--sortie ${out}: under verification/ (a held-out verdict sample) or under src/ (a training sample), nowhere else.`);
+  if (out === DEFAULT_OUT && (seed !== SEED || exclude.length > 0)) {
+    throw new Error(`--sortie ${DEFAULT_OUT} is the default draw (seed ${SEED}, nothing excluded): another draw goes to another file.`);
+  }
+  return { seed, out, exclude, role };
+}
+
+/** The command that rebuilds a draw, in one canonical form: the provenance quotes it. */
+export function commandOf(o: Options): string {
+  const parts = ["node src/gleif-paires.ts"];
+  if (o.seed !== SEED) parts.push(`--graine ${o.seed}`);
+  if (o.out !== DEFAULT_OUT) parts.push(`--sortie ${o.out}`);
+  if (o.exclude.length > 0) parts.push(`--exclure ${o.exclude.join(",")}`);
+  return parts.join(" ");
+}
+
+/** The folded names of the excluded pair files. */
+function namesExcluded(files: readonly string[]): Set<string> {
+  const names = new Set<string>();
+  for (const f of files) {
+    const set = JSON.parse(readFileSync(resolve(ROOT, f), "utf8")) as { paires?: { a: string; b: string }[] };
+    if (!Array.isArray(set.paires) || set.paires.length === 0) throw new Error(`--exclure: ${f} carries no "paires" array.`);
+    for (const p of set.paires) {
+      if (typeof p.a !== "string" || typeof p.b !== "string") throw new Error(`--exclure: ${f} has a pair without two string names.`);
+      names.add(fold(p.a)); names.add(fold(p.b));
+    }
+  }
+  return names;
+}
+
 /** The largest target T (at most `want`) that the per-country availability can fill under the cap. */
 function feasibleTarget(available: Map<string, number>, want: number): number {
   for (let t = want; t > 0; t--) {
@@ -311,13 +413,18 @@ function feasibleTarget(available: Map<string, number>, want: number): number {
   return 0;
 }
 
-type PoolCounts = { slots: number; notAName: number; identical: number; overlap: number; valid: number; records: number };
+type PoolCounts = { slots: number; notAName: number; identical: number; overlap: number; excluded: number; valid: number; records: number };
 
-async function build(): Promise<{ json: string; report: string[] }> {
+async function build(o: Options): Promise<{ json: string; report: string[] }> {
   const report: string[] = [];
   const lei2Path = await checkPinned(LEI2);
   const rrPath = await checkPinned(RR);
   const seen = namesAlreadySeen();
+  const excluded = namesExcluded(o.exclude);
+  const excluding = o.exclude.length > 0;
+  if (excluding) report.push(`excluded: ${excluded.size} distinct folded names from ${o.exclude.join(", ")}`);
+  const h53 = (s: string) => hash53(s, o.seed);
+  const legalFormFile = o.seed === SEED ? "legal-form-words.tsv" : `legal-form-words-${o.seed}.tsv`;
 
   /* Level 2: direct links (any relationship) and group keys (parent, head office, umbrella). */
   const links = new Set<string>();
@@ -340,7 +447,7 @@ async function build(): Promise<{ json: string; report: string[] }> {
     "Entity.EntityCategory", "Entity.LegalForm.EntityLegalFormCode", "Entity.AssociatedEntity.AssociatedLEI", "Registration.RegistrationStatus",
     ...OTHER, ...OTHER.map((c) => `${c}.type`), ...TRANS, ...TRANS.map((c) => `${c}.type`), ...SUCC];
 
-  const pool = Object.fromEntries(POS_STRATA.map((s) => [s, { slots: 0, notAName: 0, identical: 0, overlap: 0, valid: 0, records: 0 }])) as Record<PosStratum, PoolCounts>;
+  const pool = Object.fromEntries(POS_STRATA.map((s) => [s, { slots: 0, notAName: 0, identical: 0, overlap: 0, excluded: 0, valid: 0, records: 0 }])) as Record<PosStratum, PoolCounts>;
   const kept = Object.fromEntries(POS_STRATA.map((s) => [s, new Map<string, Candidate[]>()])) as Record<PosStratum, Map<string, Candidate[]>>;
   const byCountry = Object.fromEntries(POS_STRATA.map((s) => [s, new Map<string, number>()])) as Record<PosStratum, Map<string, number>>;
   const keepBottom = (s: PosStratum, c: Candidate) => {
@@ -376,8 +483,9 @@ async function build(): Promise<{ json: string; report: string[] }> {
       const bf = fold(b);
       if (bf === legalFolded) { p.identical++; return; }
       if (seen.has(bf) || seen.has(legalFolded)) { p.overlap++; return; }
+      if (excluded.has(bf) || excluded.has(legalFolded)) { p.excluded++; return; }
       p.valid++;
-      const h = hash53(`${s}|${lei}|${b}`);
+      const h = h53(`${s}|${lei}|${b}`);
       const cur = best.get(s);
       if (!cur || h < cur.h) best.set(s, { h, b });
     };
@@ -390,7 +498,7 @@ async function build(): Promise<{ json: string; report: string[] }> {
     for (const [s, { b }] of best) {
       pool[s].records++;
       byCountry[s].set(country, (byCountry[s].get(country) ?? 0) + 1);
-      keepBottom(s, { h: hash53(`${s}|${lei}`), lei, a: legal, b, country });
+      keepBottom(s, { h: h53(`${s}|${lei}`), lei, a: legal, b, country });
     }
 
     /* negatives: document frequency over every ISSUED legal name, and the seeded sample */
@@ -398,7 +506,7 @@ async function build(): Promise<{ json: string; report: string[] }> {
     issued++;
     for (const w of new Set(words(legalFolded))) if (w.length >= 3 && !STOPWORDS.has(w) && /\p{L}/u.test(w)) df.set(w, (df.get(w) ?? 0) + 1);
     if (r["Entity.EntityCategory"] === "BRANCH") return;
-    if (hash53(`sample|${lei}`) / 2 ** 53 >= SAMPLE_SHARE) return;
+    if (h53(`sample|${lei}`) / 2 ** 53 >= SAMPLE_SHARE) return;
     S.lei.push(lei); S.name.push(legal); S.country.push(country);
     S.city.push(fold(r["Entity.LegalAddress.City"]!)); S.elf.push(r["Entity.LegalForm.EntityLegalFormCode"]!);
   });
@@ -428,9 +536,9 @@ async function build(): Promise<{ json: string; report: string[] }> {
     }
     const p = pool[s];
     const line = `${s}: ${taken} pairs (target ${POSITIVE_TARGET}${target < POSITIVE_TARGET ? `, the 15 % country cap allows ${target}` : ""}), ${per.size} countries, largest ${Math.max(...per.values())}; `
-      + `pool ${p.slots} name slots on ISSUED or LAPSED records: ${p.notAName} not a name, ${p.identical} identical after folding, ${p.overlap} overlapping a training or verdict name, ${p.valid} valid on ${p.records} LEIs in ${byCountry[s].size} countries; ${duplicates} duplicate pairs skipped`;
+      + `pool ${p.slots} name slots on ISSUED or LAPSED records: ${p.notAName} not a name, ${p.identical} identical after folding, ${p.overlap} overlapping a training or verdict name, ${excluding ? `${p.excluded} excluded, ` : ""}${p.valid} valid on ${p.records} LEIs in ${byCountry[s].size} countries; ${duplicates} duplicate pairs skipped`;
     report.push(line);
-    positiveCounts.push(`${s} ${taken} (from ${p.records} eligible LEIs; of ${p.slots} name slots, dropped ${p.identical} identical, ${p.notAName} not a name, ${p.overlap} overlapping)`);
+    positiveCounts.push(`${s} ${taken} (from ${p.records} eligible LEIs; of ${p.slots} name slots, dropped ${p.identical} identical, ${p.notAName} not a name, ${p.overlap} overlapping${excluding ? `, ${p.excluded} excluded` : ""})`);
   }
 
   /* ── negatives: legal-form words, distinctive words, the index ── */
@@ -460,7 +568,7 @@ async function build(): Promise<{ json: string; report: string[] }> {
   }
   wordsPerForm.clear();
   /* the audit trail of the rule, written next to the golden copy in data/gleif/ and rebuilt with it */
-  writeFileSync(new URL("legal-form-words.tsv", DATA), [...why.entries()].sort((x, y) => (x[0] < y[0] ? -1 : 1))
+  writeFileSync(new URL(legalFormFile, DATA), [...why.entries()].sort((x, y) => (x[0] < y[0] ? -1 : 1))
     .map(([w, x]) => `${w}\t${x.elf}\t${x.share.toFixed(3)}\t${x.names}`).join("\n") + "\n");
   const dfMax = DF_MAX * issued;
   let frequent = 0;
@@ -492,25 +600,25 @@ async function build(): Promise<{ json: string; report: string[] }> {
     return true;
   };
 
-  type Draw = { taken: number; drawn: number; identical: number; contained: number; overlap: number; duplicates: number; related: number; countries: number; largest: number };
+  type Draw = { taken: number; drawn: number; identical: number; contained: number; overlap: number; excluded: number; duplicates: number; related: number; countries: number; largest: number };
   const draw = (nature: string, target: number, eligible: (i: number, j: number) => boolean, containedStratum: boolean): Draw => {
     const order = Array.from({ length: N }, (_, i) => i)
-      .map((i) => ({ i, h: hash53(`${nature}|${S.lei[i]}`) }))
+      .map((i) => ({ i, h: h53(`${nature}|${S.lei[i]}`) }))
       .sort((x, y) => x.h - y.h || (S.lei[x.i]! < S.lei[y.i]! ? -1 : 1));
     const cap = Math.floor(COUNTRY_CAP * target);
     const per = new Map<string, number>();
     const usedHere = new Set<number>();
-    const d: Draw = { taken: 0, drawn: 0, identical: 0, contained: 0, overlap: 0, duplicates: 0, related: 0, countries: 0, largest: 0 };
+    const d: Draw = { taken: 0, drawn: 0, identical: 0, contained: 0, overlap: 0, excluded: 0, duplicates: 0, related: 0, countries: 0, largest: 0 };
     for (const { i } of order) {
       if (d.taken === target) break;
       if (usedHere.has(i) || (per.get(S.country[i]!) ?? 0) >= cap || tokens[i]!.length === 0) continue;
-      const ws = [...tokens[i]!].sort((x, y) => hash53(`${nature}|${S.lei[i]}|${x}`) - hash53(`${nature}|${S.lei[i]}|${y}`) || (x < y ? -1 : 1));
+      const ws = [...tokens[i]!].sort((x, y) => h53(`${nature}|${S.lei[i]}|${x}`) - h53(`${nature}|${S.lei[i]}|${y}`) || (x < y ? -1 : 1));
       for (const w of ws) {
         let best = -1, bestH = Infinity;
         for (const j of index.get(w)!) {
           if (j === i || usedHere.has(j) || !eligible(i, j)) continue;
           if (related(i, j)) { d.related++; continue; }
-          const h = hash53(`${nature}|${S.lei[i]}|${S.lei[j]}`);
+          const h = h53(`${nature}|${S.lei[i]}|${S.lei[j]}`);
           if (h < bestH || (h === bestH && S.lei[j]! < S.lei[best]!)) { best = j; bestH = h; }
         }
         if (best < 0) continue;
@@ -519,6 +627,7 @@ async function build(): Promise<{ json: string; report: string[] }> {
         if (foldedS[i] === foldedS[best]) { d.identical++; break; }
         if (!containedStratum && contained(i, best)) { d.contained++; break; }
         if (seen.has(foldedS[i]!) || seen.has(foldedS[best]!)) { d.overlap++; break; }
+        if (excluded.has(foldedS[i]!) || excluded.has(foldedS[best]!)) { d.excluded++; break; }
         const k = pairKey(a, b);
         if (used.has(k)) { d.duplicates++; break; }
         used.add(k); usedHere.add(i); usedHere.add(best);
@@ -533,10 +642,10 @@ async function build(): Promise<{ json: string; report: string[] }> {
     return d;
   };
   const describe = (nature: string, target: number, d: Draw) =>
-    `${nature}: ${d.taken} pairs (target ${target}), ${d.countries} countries, largest ${d.largest}; ${d.drawn} pairs drawn: ${d.identical} identical after folding, ${d.contained} contained, ${d.overlap} overlapping a training or verdict name, ${d.duplicates} duplicates; ${d.related} candidate partners set aside as related (Level 1 or 2)`;
+    `${nature}: ${d.taken} pairs (target ${target}), ${d.countries} countries, largest ${d.largest}; ${d.drawn} pairs drawn: ${d.identical} identical after folding, ${d.contained} contained, ${d.overlap} overlapping a training or verdict name, ${excluding ? `${d.excluded} excluded, ` : ""}${d.duplicates} duplicates; ${d.related} candidate partners set aside as related (Level 1 or 2)`;
 
   const negativeCounts: string[] = [];
-  let identicalTotal = 0, containedSeen = 0, drawnTotal = 0;
+  let identicalTotal = 0, containedSeen = 0, drawnTotal = 0, excludedTotal = 0;
   const sameCity = (i: number, j: number) => S.country[i] === S.country[j] && S.city[i] !== "" && S.city[i] === S.city[j]
     && S.elf[i] !== "" && S.elf[i] !== "8888" && S.elf[i] !== "9999" && S.elf[i] === S.elf[j];
   const rules: Record<NegStratum, (i: number, j: number) => boolean> = {
@@ -547,8 +656,8 @@ async function build(): Promise<{ json: string; report: string[] }> {
   for (const s of NEG_STRATA) {
     const d = draw(s, NEGATIVE_TARGETS[s], rules[s], false);
     report.push(describe(s, NEGATIVE_TARGETS[s], d));
-    negativeCounts.push(`${s} ${d.taken} (of ${d.drawn} drawn: ${d.identical} identical after folding, ${d.contained} contained, ${d.overlap} overlapping, ${d.duplicates} duplicates)`);
-    identicalTotal += d.identical; containedSeen += d.contained; drawnTotal += d.drawn;
+    negativeCounts.push(`${s} ${d.taken} (of ${d.drawn} drawn: ${d.identical} identical after folding, ${d.contained} contained, ${d.overlap} overlapping, ${excluding ? `${d.excluded} excluded, ` : ""}${d.duplicates} duplicates)`);
+    identicalTotal += d.identical; containedSeen += d.contained; drawnTotal += d.drawn; excludedTotal += d.excluded;
   }
   const dc = draw(CONTAINED, CONTAINED_TARGET, (i, j) => foldedS[i] !== foldedS[j] && contained(i, j), true);
   report.push(describe(CONTAINED, CONTAINED_TARGET, dc));
@@ -560,19 +669,29 @@ async function build(): Promise<{ json: string; report: string[] }> {
     `Level 1 (LEI-CDF 3.1, full file, CSV): ${LEI2.url}, ${LEI2.bytes} bytes, sha256 ${LEI2.sha256}.`,
     `Level 2 relationships (RR 2.1, full file, CSV): ${RR.url}, ${RR.bytes} bytes, sha256 ${RR.sha256}.`,
     "GLEIF data is released under CC0 1.0 (no rights reserved, commercial use allowed).",
-    `Built by node src/gleif-paires.ts, which checks both hashes and rewrites this file byte for byte; seed ${SEED} (every draw is a cyrb53 hash of the seed, the stratum and the LEI).`,
+    `Built by ${commandOf(o)}, which checks both hashes and rewrites this file byte for byte; seed ${o.seed} (every draw is a cyrb53 hash of the seed, the stratum and the LEI).`,
     "The labels come from the registry records, not from anyone judging whether two names match: a match pair is the legal name of one LEI record and another name recorded on that same record; a different pair is the legal names of two distinct LEIs.",
-    `MATCH (${nMatch}): records with registration status ISSUED or LAPSED only (never DUPLICATE, ANNULLED, RETIRED, MERGED, TRANSFERRED, PENDING_*); one pair per LEI per stratum; at most ${POSITIVE_TARGET} per stratum; no country (legal jurisdiction, else legal address) above ${COUNTRY_CAP * 100} % of a stratum. Strata: previous-legal-name (OtherEntityName PREVIOUS_LEGAL_NAME), trading-name (TRADING_OR_OPERATING_NAME), alternative-language-name (ALTERNATIVE_LANGUAGE_LEGAL_NAME), transliteration (TransliteratedOtherEntityName PREFERRED_ or AUTO_ASCII_TRANSLITERATED_LEGAL_NAME, kept only where most letters of the legal name are outside the Latin script). Dropped before the draw: other names that are empty, a placeholder, carry no letter or repeat the LEI; pairs identical after NFKC, case, whitespace and punctuation folding; pairs with a name that, folded the same way, is in a training set (src/paires-entites*.json) or in verification/paires-entites-verdict.json.`,
+    `MATCH (${nMatch}): records with registration status ISSUED or LAPSED only (never DUPLICATE, ANNULLED, RETIRED, MERGED, TRANSFERRED, PENDING_*); one pair per LEI per stratum; at most ${POSITIVE_TARGET} per stratum; no country (legal jurisdiction, else legal address) above ${COUNTRY_CAP * 100} % of a stratum. Strata: previous-legal-name (OtherEntityName PREVIOUS_LEGAL_NAME), trading-name (TRADING_OR_OPERATING_NAME), alternative-language-name (ALTERNATIVE_LANGUAGE_LEGAL_NAME), transliteration (TransliteratedOtherEntityName PREFERRED_ or AUTO_ASCII_TRANSLITERATED_LEGAL_NAME, kept only where most letters of the legal name are outside the Latin script). Dropped before the draw: other names that are empty, a placeholder, carry no letter or repeat the LEI; pairs identical after NFKC, case, whitespace and punctuation folding; pairs with a name that, folded the same way, is in a training set (src/paires-entites*.json) or in verification/paires-entites-verdict.json.${excluding ? ` Excluded, in the match and the different pairs alike: pairs with a name that, folded the same way, is a name of ${o.exclude.join(" or ")} (${excluded.size} distinct folded names), so that no name of ${o.exclude.length > 1 ? "those sets" : "that set"} reappears here.` : ""}`,
     `Counts: ${positiveCounts.join("; ")}.`,
-    `DIFFERENT (${nMain}, plus the contained stratum): two distinct ISSUED, non-branch LEIs from a seeded ${SAMPLE_SHARE * 100} % sample of the ${issued} ISSUED records, whose legal names share a distinctive word: at least 3 characters, a letter, not a stopword, not a legal-form word (in at least ${LEGAL_FORM_SHARE * 100} % of the sampled names of one ISO 20275 ELF code with at least ${LEGAL_FORM_MIN_NAMES} of them: ${legalForm.size} words, mostly legal forms and their fragments, plus generic entity words such as bank, fund, trust or holding and a few place names; the rebuild writes them to data/gleif/legal-form-words.tsv), in at most ${DF_MAX * 100} % of the ISSUED legal names. Each drawn LEI appears once per stratum, and no country above ${COUNTRY_CAP * 100} % of a stratum. Strata: same shared word and same country; same shared word, different country; same legal-address city, same country and same ELF legal form code (not 8888 or 9999), with a shared word. Set aside: pairs linked in the Level 2 file (any relationship, or a common direct or ultimate parent, head office or umbrella fund) or through the Level 1 associated or successor entity; pairs identical after folding (${identicalTotal} of ${drawnTotal} drawn: different entities with the same name cannot be separated by a name matcher); pairs where every word of one name, legal-form words and stopwords set aside, is in the other (${containedSeen} of ${drawnTotal} drawn).`,
+    `DIFFERENT (${nMain}, plus the contained stratum): two distinct ISSUED, non-branch LEIs from a seeded ${SAMPLE_SHARE * 100} % sample of the ${issued} ISSUED records, whose legal names share a distinctive word: at least 3 characters, a letter, not a stopword, not a legal-form word (in at least ${LEGAL_FORM_SHARE * 100} % of the sampled names of one ISO 20275 ELF code with at least ${LEGAL_FORM_MIN_NAMES} of them: ${legalForm.size} words, mostly legal forms and their fragments, plus generic entity words such as bank, fund, trust or holding and a few place names; the rebuild writes them to data/gleif/${legalFormFile}), in at most ${DF_MAX * 100} % of the ISSUED legal names. Each drawn LEI appears once per stratum, and no country above ${COUNTRY_CAP * 100} % of a stratum. Strata: same shared word and same country; same shared word, different country; same legal-address city, same country and same ELF legal form code (not 8888 or 9999), with a shared word. Set aside: pairs linked in the Level 2 file (any relationship, or a common direct or ultimate parent, head office or umbrella fund) or through the Level 1 associated or successor entity; pairs identical after folding (${identicalTotal} of ${drawnTotal} drawn: different entities with the same name cannot be separated by a name matcher); pairs where every word of one name, legal-form words and stopwords set aside, is in the other (${containedSeen} of ${drawnTotal} drawn)${excluding ? `; pairs with an excluded name (${excludedTotal} of ${drawnTotal} drawn)` : ""}.`,
     `Counts: ${negativeCounts.join("; ")}.`,
-    `CONTAINED (${dc.taken}, nature ${CONTAINED}): the contained pairs, drawn on their own from the same sample: two distinct ISSUED LEIs, any country, sharing a distinctive word, not identical after folding, not related, and every word of one name (legal-form words and stopwords set aside) in the other. Screening practice may want them to alert: they are reported as their own stratum and never counted in the false-alert rate of the other negatives.`,
-    "No one looked at the matcher's result on any pair before the single measurement (node src/verdict-gleif.ts).",
+    `CONTAINED (${dc.taken}, nature ${CONTAINED}): the contained pairs, drawn on their own from the same sample: two distinct ISSUED LEIs, any country, sharing a distinctive word, not identical after folding, not related, and every word of one name (legal-form words and stopwords set aside) in the other. Screening practice may want them to alert: they are reported as their own stratum and never counted in the false-alert rate of the other negatives.${excluding ? ` Of ${dc.drawn} contained pairs drawn, ${dc.excluded} had an excluded name.` : ""}`,
+    o.out === DEFAULT_OUT
+      ? "No one looked at the matcher's result on any pair before the single measurement (node src/verdict-gleif.ts)."
+      : o.role === "verdict"
+        ? "HELD OUT: a fresh verdict sample, to be judged once, aggregates only. No one looked at its pairs or at the matcher's result on any of them before that single measurement."
+        : "TRAINING: drawn to calibrate the method. Its pairs and the matcher's scores on them may be studied freely; a figure measured on it is a training figure, never a verdict.",
   ].join(" ");
+  const what = "company name pairs from the GLEIF register: two names recorded for the same LEI (match), or the legal names of two distinct LEIs sharing a distinctive word (different)";
+  const warning = "the different-contained stratum is reported on its own, never inside the negatives' false-alert rate";
   const head = {
-    quoi: "company name pairs from the GLEIF register: two names recorded for the same LEI (match), or the legal names of two distinct LEIs sharing a distinctive word (different)",
+    quoi: o.out === DEFAULT_OUT ? what
+      : o.role === "verdict" ? `HELD-OUT VERDICT sample (seed ${o.seed}), ${what}`
+        : `TRAINING sample (seed ${o.seed}), drawn to calibrate the method and free to study: ${what}`,
     provenance,
-    avertissement: "judge once, aggregates only: reading the pairs or their scores makes it a training set; the different-contained stratum is reported on its own, never inside the negatives' false-alert rate",
+    avertissement: o.role === "verdict"
+      ? `judge once, aggregates only: reading the pairs or their scores makes it a training set; ${warning}`
+      : `a training sample: study its pairs and scores freely, but never report a figure measured on it as a verdict; ${warning}`,
   };
   const J = JSON.stringify;
   const json = `{"quoi": ${J(head.quoi)}, "provenance": ${J(head.provenance)}, "avertissement": ${J(head.avertissement)}, "paires": [\n`
@@ -582,12 +701,13 @@ async function build(): Promise<{ json: string; report: string[] }> {
 }
 
 async function main(): Promise<void> {
-  refuserDrapeauxInconnus([]);
+  refuserDrapeauxInconnus(["--graine", "--sortie", "--exclure"]);
+  const o = parseOptions(process.argv.slice(2));
   const t0 = Date.now();
-  const { json, report } = await build();
-  writeFileSync(OUT, json);
+  const { json, report } = await build(o);
+  writeFileSync(resolve(ROOT, o.out), json);
   for (const l of report) console.log(l);
-  console.log(`wrote verification/paires-gleif.json, sha256 ${createHash("sha256").update(json).digest("hex")}, in ${Math.round((Date.now() - t0) / 1000)} s`);
+  console.log(`wrote ${o.out} (${o.role === "verdict" ? "held-out verdict sample" : "training sample"}; ${commandOf(o)}), sha256 ${createHash("sha256").update(json).digest("hex")}, in ${Math.round((Date.now() - t0) / 1000)} s`);
 }
 
 if (isMain(import.meta)) await main();

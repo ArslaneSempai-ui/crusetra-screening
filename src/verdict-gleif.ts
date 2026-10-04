@@ -6,7 +6,8 @@
  *
  * The same code path as `npm run verdict`: the entity score of src/entites.ts, the word weights
  * of the lists (src/frequences.ts), the pairs scored on threads (src/mesure-parallele.ts). The
- * two thresholds are NOT written here: they are chosen by `choisirSeuils` on the training sets,
+ * two thresholds are NOT written here: they are chosen by `choisirSeuils` on the training sets (the 23 written sets and the
+ * real training sample),
  * measured first in this same run, exactly as the screener chooses them.
  *
  * It prints counts per stratum and in total, each with its 95 % Wilson interval (src/interval.ts).
@@ -16,11 +17,11 @@
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
-import { CHEMINS_APPRENTISSAGE, CHEMIN_VERDICT, choisirSeuils } from "./entites.ts";
+import { CHEMINS_APPRENTISSAGE, CHEMIN_APPRENTISSAGE_REEL, CHEMIN_VERDICT, choisirSeuils } from "./entites.ts";
 import { frequencesDesListes } from "./frequences.ts";
 import { rate } from "./interval.ts";
 import { validerPaires, type JeuDePaires } from "./measure.ts";
-import { mesurerJeuxParallele } from "./mesure-parallele.ts";
+import { mesurerJeuxParallele, mesurerReelParallele } from "./mesure-parallele.ts";
 
 const SET = new URL("../verification/paires-gleif.json", import.meta.url);
 /** At most four scoring threads: the machine is shared. */
@@ -56,10 +57,11 @@ async function main(): Promise<void> {
   /* the thresholds, chosen on the training sets by the repository's own rule */
   const f = frequencesDesListes();
   const training = await mesurerJeuxParallele(f, CHEMINS_APPRENTISSAGE.map((u) => readFileSync(u, "utf8")), { cache: true, fils: THREADS });
-  const r = choisirSeuils(training.table);
+  const real = await mesurerReelParallele(f, readFileSync(CHEMIN_APPRENTISSAGE_REEL, "utf8"), { cache: true, fils: THREADS });
+  const r = choisirSeuils(training.table, real.table);
   const strong = r.fort.seuil, possible = r.possible.seuil;
   const M = training.jeux.reduce((s, j) => s + j.match, 0), D = training.jeux.reduce((s, j) => s + j.different, 0);
-  console.log(`weights: ${f.entrees ? `${f.entrees} listed entries` : "uniform (no lists on disk)"} · thresholds chosen on ${training.jeux.length} training sets (${M} match, ${D} different): strong ${strong.toFixed(2)}, possible ${possible.toFixed(2)}`);
+  console.log(`weights: ${f.entrees ? `${f.entrees} listed entries` : "uniform (no lists on disk)"} · thresholds chosen on ${training.jeux.length} written training sets (${M} match, ${D} different) and the real training sample: strong ${strong.toFixed(2)}, possible ${possible.toFixed(2)}`);
 
   /* the single measurement */
   const g = await mesurerJeuxParallele(f, [brut], { cache: true, fils: THREADS });

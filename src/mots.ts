@@ -526,7 +526,8 @@ export function pliGrec(m: string): string {
     .replace(/c/g, "k").replace(/x/g, "ks").replace(/dj|j/g, "tz")
     .replace(/^nt/, "d").replace(/^mp/, "b").replace(/^gk/, "g").replace(/nd/g, "nt").replace(/mb/g, "mp")
     .replace(/ge|ye/g, "e").replace(/gi(?=[aeou])/g, "i").replace(/y(?=[aeou])/g, "i")
-    .replace(/([ae])u(?=[tkpsfh])/g, "$1f").replace(/([ae])u(?=[a-z])/g, "$1v").replace(/ou/g, "u")
+    /* et αυ, ευ écrits lettre pour lettre, υ lu y (« EYRYNOMI » pour Ευρυνόμη : registre GLEIF, 30/09/2026), comme au, eu */
+    .replace(/([ae])[uy](?=[tkpsfh])/g, "$1f").replace(/([ae])[uy](?=[a-z])/g, "$1v").replace(/ou/g, "u")
     .replace(/oe/g, "i").replace(/ae/g, "e").replace(/ei|oi|y/g, "i").replace(/ai/g, "e").replace(/[vw]/g, "b").replace(/(.)\1+/g, "$1");
 }
 /** LE GREEKLISH des clavardages, la troisième convention : h est η (« emporikh », « naulomesitikh », « kymo8oh »), w est ω,
@@ -615,6 +616,33 @@ export const CREDIT_ROMANISATION = 0.85;
  *  Au crédit de 0,85, un nom d'un seul mot propre et d'un mot de métier restait à 0,798 (jeu 11, 28/09 : « Sinwa
  *  Kōgyō K.K. » face à « Shinwa Kogyo Co., Ltd. », « Zyōnan Kōgyō » face à « Jonan Kogyo »). */
 export const CREDIT_KANA = 0.95;
+/**
+ * LA CLÉ D'EMPRUNT : un mot anglais écrit PAR SON SON dans une autre écriture (« Синерджи Кепитъл » : Synergy Capital ;
+ * « スワローテイル » : Swallowtail ; « 디스플레이 » : Display ; « มาร์เก็ต » : Market ; « ΤΑΡΓΚΕΤ ΦΑΡΜΑ » : Target Pharma). Le nom
+ * natif ne translittère pas l'orthographe anglaise, il la prononce, et sa lecture (sinerdzhi, suwarooteiru, diseupeullei) ne
+ * rencontre le mot anglais ni à l'écrit ni au squelette (registre GLEIF, 30/09/2026 : 199 des 263 noms jugés « même nom » perdus
+ * au possible avaient un côté dans une autre écriture). La clé ramène les deux côtés à leurs consonnes, par classes de son :
+ *  - l'orthographe anglaise lue : -tion et -sion se disent shn, -ture chr, gh muet devant une consonne, ph f, x ks, qu k, ck k,
+ *    c et g doux devant e, i, y (s, j), ch deux fois (j de « church », k de « chemical » : deux clés) ;
+ *  - les lectures des écritures : dzh, dj, tch, zh sont j ; kh est k ; th est t ; sh, ts, tz, z sont s ;
+ *  - les classes : b, p, f, v une labiale ; t et d, k et g (le coréen les écrit d'une même lettre, le thaï n'a pas de g) ;
+ *  - les voyelles, y, w et h tombent, et les consonnes doublées se simplifient.
+ * Deux MODES, selon l'écriture native de la paire : « r » (cyrillique, grec), qui écrivent le r anglais et distinguent l et r ;
+ * « n » (kana, hangul, thaï), qui ne l'écrivent pas après une voyelle (マーケット maaketto, 마켓 maket) et confondent l et r.
+ * L'arabe et l'hébreu ont déjà leur clé de consonnes (`cleAbjad`). Une clé de trois consonnes au moins, et le score ne la lit
+ * qu'entre un mot d'un nom écrit dans l'une de ces écritures et un mot d'un nom écrit en latin (voir `Marques.emprunt`).
+ */
+export function clesEmprunt(m: string, mode: "r" | "n"): readonly string[] {
+  let base = m.replace(/tion|sion/g, "shn").replace(/ture/g, "chr").replace(/gh(?![aeiouy])/g, "").replace(/ph/g, "f")
+    .replace(/x/g, "ks").replace(/qu/g, "k").replace(/ck/g, "k").replace(/c(?=[eiy])/g, "s").replace(/g(?=[eiy])/g, "j")
+    .replace(/dzh|dj|tch|zh/g, "j").replace(/kh/g, "k").replace(/th/g, "t").replace(/sh|ts|tz|z/g, "s");
+  if (mode === "n") base = base.replace(/(?<=[aeiouy])r(?![aeiouy])/g, "").replace(/l/g, "r");
+  const variantes = base.includes("ch") ? [base.replace(/ch/g, "j"), base.replace(/ch/g, "k")] : [base];
+  return [...new Set(variantes.map((v) => v.replace(/[cqg]/g, "k").replace(/[bpfv]/g, "p").replace(/d/g, "t")
+    .replace(/[aeiouywh]/g, "").replace(/(.)\1+/g, "$1")))];
+}
+/** Ce que vaut la même clé d'emprunt : autant qu'une romanisation d'une écriture (CREDIT_CYRILLIQUE, CREDIT_KANA : 0,95). */
+export const CREDIT_EMPRUNT = 0.95;
 /** Les suffixes d'établissement du japonais : -sho (所, 場 : l'atelier, l'usine), -jo (場), -sha (社), -kan (館), -do (堂).
  *  Sous la marque japonaise, un mot qui n'est l'autre qu'augmenté de l'un d'eux est une AUTRE raison sociale (« Tekkō »,
  *  « Tekkōsho » ; « Kōki », « Kōkisho »), pas le mot coupé par un champ ni son abréviation (jeu 11, 28/09 : « Nambu Tekko »

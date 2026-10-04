@@ -12,7 +12,7 @@ import type { Matcher, PalierId } from "./matcher.ts";
 import { distanceOsa } from "./matchers/damerau.ts";
 import { preparer } from "./matchers/preparer.ts";
 import { translitterer } from "./matchers/translitteration.ts";
-import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, type Abjad, type Lecture } from "./ecritures.ts";
+import { romaniser, cleAbjad, cleAbjadSansTa, abjadDe, estJaponais, pinyinSyllabique, type Abjad, type Lecture } from "./ecritures.ts";
 import { SUCCURSALES, FORMES, TRADUCTIONS } from "./preparation.ts";
 import { SUCCURSALES_COLLEES } from "./preparation.ts";
 import { MOTS_DE_SIEGE } from "./preparation.ts";
@@ -192,6 +192,12 @@ const ANNOTATIONS: readonly RegExp[] = [
   /\s*\(\s*[\p{L} .'-]{2,30},\s*[A-Z]{2}\s*\)\s*$/u,
   /\s+voy\.?\s*\d{2,5}[a-z]?\s*$/iu,
   /\s+(?:in|en|em)\s+(?:liquidazione|liquidation|liquidación|liquidacion|liquidação|liquidacao|liquidatie|likvidation)\s*$/iu,
+  /* L'ÉTAT DE LA SOCIÉTÉ dans les autres langues des registres (registre GLEIF, 30/09/2026 : « EICHEN SPOL, s.r.o. "v likvidaci" »,
+     « ASSENSGADE 34 ApS UNDER STIFTELSE », « FUNDACJA RODZINNA MIECHOWSKICH W ORGANIZACJI », « MARTIN HIDALGO SL (EN CONSTITUCION) »,
+     « (ΥΠΟ ΕΚΚΑΘΑΡΙΣΗ) 7 STAR ENERGY RATING Ι.Κ.Ε. ») : en liquidation, en faillite, en formation ; le nom sans l'état est une variante,
+     comme « (in liquidation) » */
+  /[\s,]*["“”„«»(]?\s*(?:v\s+likvidaci|v\s+likvid[aá]cii|u\s+likvidaciji|u\s+ste[čc]aju|w\s+likwidacji|w\s+upad[łl]o[śs]ci|w\s+organizacji|under\s+(?:stiftelse|afvikling|avvikling|konkurs|likvidation)|i\s+(?:likvidation|konkurs)|en\s+(?:constituci[oó]n|formaci[oó]n)|in\s+(?:liquidation|gr[üu]ndung)|[îi]n\s+(?:lichidare|insolven[țt][ăa])|felsz[áa]mol[áa]s\s+alatt|v[ée]gelsz[áa]mol[áa]s\s+alatt|υπ[οό]\s+εκκαθ[αά]ριση)\s*["“”„«»)]?\s*$/iu,
+  /^\s*\(\s*(?:υπ[οό]\s+εκκαθ[αά]ριση|in\s+liquidation|en\s+liquidation|in\s+liquidazione|v\s+likvidaci|w\s+likwidacji|u\s+likvidaciji)\s*\)\s*/iu,
   /,\s*flag\s*:?\s*[\p{L} ]{2,30}\s*$/iu,
   /* jeu 12 : « , port Rostov-on-Don », « - OWNERS ACCOUNT », « (THE SELLER) », « (publ) », les lignes 2/ et 3/ du champ 50F,
      la politesse d'un message (« asap », « thx ») */
@@ -732,7 +738,9 @@ export function variantesTypees(brut: string): VarianteTypee[] {
  *  cantonais (voir ecritures.ts) ; un nom latin n'a qu'une lecture, sauf celles que lui donnent
  *  les sinogrammes qu'il porte (`substitutions`). C'est ici que l'index et le score prennent
  *  leurs lectures : tout ce qui s'ajoute ici est vu des deux. */
-export type LectureDe = { texte: string; lecture: Lecture; ancien: boolean; mention: string; registre: string; partie: string; paysRegistre: string; associe: string };
+export type LectureDe = { texte: string; lecture: Lecture; ancien: boolean; mention: string; registre: string; partie: string; paysRegistre: string; associe: string;
+  /** la lecture d'un pinyin écrit syllabe par syllabe (voir `pinyinSyllabique`) : elle ne se compare qu'à un nom écrit en caractères */
+  syllabique?: boolean };
 export function lecturesDe(brut: string): LectureDe[] {
   const vues = new Map<string, LectureDe>();
   const poser = (l: LectureDe) => { const k = `${l.lecture}|${l.texte}`; if (!vues.has(k)) vues.set(k, l); };
@@ -748,6 +756,10 @@ export function lecturesDe(brut: string): LectureDe[] {
          sociales coréennes en hanja, ou du hangul (« 大輪重工業株式會社 » : Daeryun, jeu 19, tour 15) */
       if (/株式會社|有限會社|會社|商事|工業|海運|化學|機械|重工業|[\uac00-\ud7a3]/u.test(v.texte)) poser({ texte: v.texte, lecture: "hanja", ancien, mention, registre, partie, paysRegistre, associe });
     }
+    /* le pinyin écrit syllabe par syllabe, lu comme la lecture mandarine des caractères le lit : le nom propre soudé, les mots
+       du commerce traduits (voir `pinyinSyllabique`, ecritures.ts) ; une lecture de plus, le nom tel qu'écrit reste */
+    const syllabique = pinyinSyllabique(v.texte);
+    if (syllabique !== undefined) poser({ texte: syllabique, lecture: "mandarin", ancien, mention, registre, partie, paysRegistre, associe, syllabique: true });
   }
   return [...vues.values()];
 }
@@ -757,6 +769,10 @@ export function lecturesDe(brut: string): LectureDe[] {
  *  Le score d'entité et le criblage (cribler.ts) l'appliquent tous deux, pour que l'index et le témoin
  *  exhaustif voient la même chose. */
 export function plafondDesLectures(a: LectureDe, b: LectureDe): number {
+  /* le pinyin soudé n'est la lecture que des caractères qu'il transcrit : face à un autre nom latin, deux coques ou deux sociétés
+     écrites syllabe par syllabe (« Chun Feng Er Hao », « Chun Feng Hao ») se compareraient soudées, à la distance d'un long mot
+     (jeu 23, mesuré le 30/09 : 0,846) ; elles se comparent syllabe par syllabe, comme avant */
+  if ((a.syllabique && !/[\u4e00-\u9fff]/u.test(b.texte)) || (b.syllabique && !/[\u4e00-\u9fff]/u.test(a.texte))) return 0;
   if (a.ancien && b.ancien) return FACTEUR_CONTENANCE;
   if (a.mention !== "" && b.mention !== "" && !succursalesCompatibles(a.mention, b.mention)) return FACTEUR_CONTENANCE;
   /* deux numéros de registre différents : deux dépôts du même nom (« (RC 884213) », « (RC 918532) »), ou la
