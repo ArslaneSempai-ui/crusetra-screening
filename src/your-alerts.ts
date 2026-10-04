@@ -33,7 +33,7 @@ import { fileURLToPath } from "node:url";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { lireTable, apercu, MONTRES } from "./csv.ts";
 import { rate, type Rate } from "./interval.ts";
-import { SEUILS, PALIERS, type PalierId, type Registre, type Matcher } from "./matcher.ts";
+import { SEUILS, PALIERS, PALIERS_FACULTATIFS, type PalierId, type Registre, type Matcher } from "./matcher.ts";
 import { empreinteDuReleve } from "./empreinte.ts";
 import { lignesEvaluation } from "./evaluation.ts";
 import { rendreRapport } from "./rapport.ts";
@@ -199,6 +199,8 @@ export type MesurePalier = {
   cellules: Cellule[];
 };
 
+export type Facultatif = { present: true; nomenklatura: string; schema: string } | { present: false; raison: string };
+
 export type MesureAlertes = {
   kind: "screening-client-record";
   version: 1;
@@ -214,6 +216,12 @@ export type MesureAlertes = {
   paliers: Partial<Record<PalierId, MesurePalier>>;
   /** Les paliers du contrat absents du registre ce soir — la table le dit, elle ne plante pas. */
   absents: PalierId[];
+  /**
+   * Les paliers FACULTATIFS (hors contrat, voir PALIERS_FACULTATIFS) : présent avec ce qui le date (la version de
+   * nomenklatura, le schéma donné aux deux noms), ou absent avec sa raison. Le champ n'existe que quand la commande a
+   * regardé : un relevé d'avant ce palier ne le porte pas.
+   */
+  facultatifs?: Partial<Record<PalierId, Facultatif>>;
   /**
    * Un verdict par alerte : la disposition de l'analyste et le score de chaque palier.
    * Des identifiants et des nombres — JAMAIS un nom. Le score permet de rejouer n'importe
@@ -245,6 +253,7 @@ export function mesurer(
   sha256: string,
   volume: MesureAlertes["volume"],
   measuredAt = new Date().toISOString(),
+  facultatifs?: MesureAlertes["facultatifs"],
 ): MesureAlertes {
   const matches = alertes.filter((a) => a.disposition === "match");
   const fps = alertes.filter((a) => a.disposition === "false_positive");
@@ -261,6 +270,8 @@ export function mesurer(
        garantit le déterminisme, donc le flottant exact est déjà stable d'une machine à
        l'autre. Les noms partent bruts aussi : chaque matcher normalise lui-même, et une
        double normalisation fausserait `exact` sans un mot (couture R1, 5/09 au soir). */
+    /* un palier qui vit dans un autre processus (logic-v2) reçoit toutes les paires d'un coup, avant de noter */
+    m.preparerPaires?.(alertes.map((a) => ({ a: a.nomFiltre, b: a.entreeListe })));
     const scores = new Map<string, number>(
       alertes.map((a) => [a.id, m.score(a.nomFiltre, a.entreeListe)]));
     for (const a of alertes) verdicts[a.id]!.scores[m.id] = scores.get(a.id)!;
@@ -291,6 +302,7 @@ export function mesurer(
     volume,
     paliers,
     absents: PALIERS.filter((p) => !registre.has(p)),
+    ...(facultatifs ? { facultatifs } : {}),
     verdicts,
     code: commitCourant(),
   };
@@ -338,6 +350,7 @@ export function executer(
   fichier: string,
   registre: Registre,
   volume: MesureAlertes["volume"],
+  facultatifs?: () => MesureAlertes["facultatifs"],
 ): { mesure: MesureAlertes; cheminMd: string; cheminJson: string; avertissements: string[] } {
   const texte = readFileSync(fichier, "utf8");
   const sha = createHash("sha256").update(texte).digest("hex");
@@ -350,6 +363,9 @@ export function executer(
   }
 
   const m = mesurer(alertes, registre, fichier, sha, volume);
+  /* lu APRÈS la mesure : la version de nomenklatura est celle du processus qui a noté */
+  const f = facultatifs?.();
+  if (f) m.facultatifs = f;
   m.empreinte = empreinteDuReleve(m);
 
   const base = fichier.replace(/\.csv$/i, "");
@@ -367,7 +383,7 @@ export function executer(
    signalé au chef le 5/09 au soir. */
 async function principal(): Promise<void> {
   for (const l of lignesEvaluation()) console.log(l);
-  refuserDrapeauxInconnus(["--alerts", "--screened", "--volume"]);
+  refuserDrapeauxInconnus(["--alerts", "--screened", "--volume", "--logic-v2-schema"]);
   const arg = (nom: string) => process.argv.find((a) => a.startsWith(`--${nom}=`))?.split("=").slice(1).join("=");
   const fichier = arg("alerts");
   if (!fichier) {
@@ -432,12 +448,30 @@ Nothing about your file leaves this machine.
     process.exit(2);
   }
 
-  const { mesure, cheminMd, cheminJson, avertissements } = executer(fichier, registre, volume);
+  /* LE PALIER FACULTATIF logic-v2 (nomenklatura, installé par le client) : présent quand CASCADE_LOGIC_V2_PYTHON nomme un
+     Python où il s'importe ; absent sinon, et dit avec sa raison. Le schéma FollowTheMoney donné aux deux noms se choisit
+     par --logic-v2-schema (LegalEntity par défaut ; Person pour un historique de personnes). */
+  const { logicV2, SCHEMAS } = await import("./matchers/logic-v2.ts");
+  const schema = arg("logic-v2-schema") ?? "LegalEntity";
+  if (!(SCHEMAS as readonly string[]).includes(schema)) {
+    console.error(`\n--logic-v2-schema=${schema} is not a schema this tool passes to logic-v2. One of: ${SCHEMAS.join(", ")}.\n`);
+    process.exit(2);
+  }
+  const lv2 = logicV2(process.env.CASCADE_LOGIC_V2_PYTHON, schema as (typeof SCHEMAS)[number]);
+  if (lv2.present) registre = new Map([...registre, [lv2.matcher.id, lv2.matcher]]);
+  const facultatifs = (): MesureAlertes["facultatifs"] => ({ "logic-v2": lv2.present
+    ? { present: true, nomenklatura: lv2.version() ?? "unknown", schema: lv2.schema } : { present: false, raison: lv2.raison } });
+
+  const { mesure, cheminMd, cheminJson, avertissements } = executer(fichier, registre, volume, facultatifs);
   for (const a of avertissements) console.warn(`⚠ ${a}`);
 
   console.log(`\n${mesure.source.alerts} alert(s): ${mesure.source.matches} confirmed match(es), `
     + `${mesure.source.falsePositives} false positive(s); ${Object.keys(mesure.paliers).length} matcher(s), `
     + `${SEUILS.length} thresholds each.`);
+  const l2 = mesure.facultatifs?.["logic-v2"];
+  if (l2) console.log(l2.present
+    ? `  optional matcher logic-v2: measured with nomenklatura ${l2.nomenklatura} (schema ${l2.schema}), the two names only.`
+    : `  optional matcher logic-v2: absent (${l2.raison}).`);
   if (mesure.absents.length) {
     console.log(`  ${mesure.absents.length} contract matcher(s) not in tonight's registry: `
       + `${mesure.absents.join(", ")}; said in the report, not guessed.`);
