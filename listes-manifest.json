@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "genereLe": "2026-09-26T22:24:34.451Z",
+  "genereLe": "2026-10-04T14:44:20.923Z",
   "listes": [
     {
       "source": "OFAC",
@@ -56,6 +56,28 @@
       "sha256": "cd59eccb0278d33181c1d87814236109287c9ea5925502f00acfd2e0fd7fe440",
       "octets": 25791425,
       "entrees": 6241
+    },
+    {
+      "source": "UK",
+      "titre": "UK Sanctions List (FCDO): individuals, entities and ships",
+      "url": "https://sanctionslist.fcdo.gov.uk/docs/UK-Sanctions-List.xml",
+      "format": "uk-sanctions-xml",
+      "disponible": true,
+      "telechargeLe": "2026-10-04T14:43:51.092Z",
+      "sha256": "8e23b2d050ea2cc07319a19a7e71060f71ab560c979646c43f6efcec9e03250b",
+      "octets": 21899314,
+      "entrees": 6370
+    },
+    {
+      "source": "EU-VESSELS",
+      "titre": "EU designated vessels: Annex XLII of Regulation (EU) No 833/2014, consolidated text 2026-07-24",
+      "url": "https://publications.europa.eu/resource/celex/02014R0833-20260724",
+      "format": "eu-833-annex-xlii-xhtml",
+      "disponible": true,
+      "telechargeLe": "2026-10-04T14:44:09.186Z",
+      "sha256": "2682ecf3442d2f16a3b36ef4d9bbb6fde43fd4d6743bcd991bd4a8e14857770b",
+      "octets": 10349814,
+      "entrees": 672
     }
   ]
 }

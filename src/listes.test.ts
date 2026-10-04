@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import {
   blocs, champ, decoderEntites, analyserOfac, analyserOnu, analyserUe, analyser,
-  recouperOfac, lireManifeste, lireListe, SOURCES, type Manifeste, analyserCsl, fichierDe,
+  recouperOfac, lireManifeste, lireListe, SOURCES, type Manifeste, analyserCsl, fichierDe, analyserRoyaumeUni, analyserNaviresUe,
 } from "./listes.ts";
 
 const fixture = (n: string) => readFileSync(fileURLToPath(new URL(`./fixtures/${n}`, import.meta.url)), "utf8");
@@ -56,6 +56,29 @@ test("UE (v1.1, attributs) : premier wholeName = nom, les suivants = alias, prog
     alias: ["Mohammed Hosny Mubarak"], type: "person", programme: "EGY" });
   assert.equal(societe!.type, "entity");
   assert.equal(societe!.nom, "JSC Concern & Partners", "l'entité &amp; en attribut se décode aussi");
+});
+
+test("Royaume-Uni : le nom principal, ses variations et alias, l'alias de basse qualité marqué faible, le premier numéro OMI", () => {
+  const e = analyserRoyaumeUni(fixture("royaume-uni.xml"));
+  assert.equal(e.length, 3);
+  const [societe, personne, navire] = e;
+  assert.deepEqual(societe, { source: "UK", id: "XYZ0001", nom: "EXAMPLE MONEY EXCHANGE & SONS",
+    alias: ["Example Hawala", "EMX", "مثال صرافی"], type: "entity", programme: "The Example (Sanctions) Regulations 2020", aliasFaibles: ["EMX"] });
+  assert.equal(personne!.nom, "Ivan EXAMPLOV", "le « Primary name » fait le nom, quelle que soit sa casse et sa place");
+  assert.deepEqual(personne!.alias, ["Ivan Ivanovich EXAMPLOV"], "Name1 à Name6 joints dans l'ordre");
+  assert.equal(personne!.type, "person");
+  assert.equal(navire!.type, "vessel");
+  assert.equal(navire!.imo, "9074729", "« IMO9074729 » : sept chiffres, le premier des deux numéros");
+});
+
+test("UE, navires : l'annexe XLII seule, ses lignes de navire seules, un numéro OMI une seule fois", () => {
+  const e = analyserNaviresUe(fixture("navires-ue.xhtml"));
+  assert.deepEqual(e, [
+    { source: "EU-VESSELS", id: "IMO9074729", nom: "Example Star", alias: ["EXAMPLE STAR I"], type: "vessel", programme: "833/2014 Annex XLII", imo: "9074729" },
+    { source: "EU-VESSELS", id: "IMO9187629", nom: "SAMPLE & SONS II", alias: [], type: "vessel", programme: "833/2014 Annex XLII", imo: "9187629" },
+  ], "l'en-tête, la marque de modification et les annexes voisines ne sont pas des navires ; un rang sans point en est un");
+  assert.throws(() => analyser("eu-833-annex-xlii-xhtml", "<html>no annex here</html>"), /does not look like eu-833-annex-xlii-xhtml/);
+  assert.equal(fichierDe({ source: "EU-VESSELS", format: "eu-833-annex-xlii-xhtml" }), "eu-vessels.xhtml");
 });
 
 test("un format inattendu se refuse — zéro entrée d'une liste de sanctions n'est pas une petite liste", () => {
@@ -113,8 +136,8 @@ test("CASCADE_OFFLINE=1 avec --fetch : refus code 2 qui nomme le drapeau ET l'is
   assert.match(r.stderr, /unset CASCADE_OFFLINE/, "un refus sans issue se fait commenter");
 });
 
-test("les cinq sources déclarées sont celles du contrat, chacune en https", () => {
-  assert.deepEqual(SOURCES.map((s) => s.source).sort(), ["CSL", "EU", "OFAC", "OFAC-CONS", "UN"]);
+test("les sept sources déclarées sont celles du contrat, chacune en https", () => {
+  assert.deepEqual(SOURCES.map((s) => s.source).sort(), ["CSL", "EU", "EU-VESSELS", "OFAC", "OFAC-CONS", "UK", "UN"]);
   for (const s of SOURCES) assert.match(s.url, /^https:\/\//);
 });
 
