@@ -685,9 +685,12 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           const autreNom = etablissement || turc;
           /* dans un export tout en majuscules, un mot court qu'aucun dictionnaire ne connaît et
              qui commence un mot long de l'autre nom est une abréviation sans point (« HVY IND ») */
+          /* trois lettres au moins : deux lettres en commencent trop (« FU » n'abrège pas « FUNDACIONISSARA », 0,800 face à l'alias
+             « 224 FU JSC » le 04/10/2026, et l'index, qui ne cherche pas les préfixes de deux lettres, ne le voyait pas : le témoin
+             exhaustif le montrait). Mesuré sur l'apprentissage : deux vrais noms de moins au fort sur 548 (GLEIF), un sur 4 170 */
           /* jamais sous la marque navire : une syllabe qui en commence une autre y est un autre navire (« KARA MARTI », « KARA MARTILAR », jeu 12) */
-          if (v < 0.9 && !autreNom && !navire && ((X.marques.majuscules && x.length >= 2 && x.length <= 9 && y.length >= x.length + 3 && y.length >= 6 && y.startsWith(x) && !lemme(x))
-            || (Y.marques.majuscules && y.length >= 2 && y.length <= 9 && x.length >= y.length + 3 && x.length >= 6 && x.startsWith(y) && !lemme(y)))) v = 0.9;
+          if (v < 0.9 && !autreNom && !navire && ((X.marques.majuscules && x.length >= 3 && x.length <= 9 && y.length >= x.length + 3 && y.length >= 6 && y.startsWith(x) && !lemme(x))
+            || (Y.marques.majuscules && y.length >= 3 && y.length <= 9 && x.length >= y.length + 3 && x.length >= 6 && x.startsWith(y) && !lemme(y)))) v = 0.9;
           /* un mot abrégé d'un point correspond au mot entier qu'il commence, ou dont il garde
              les lettres dans l'ordre depuis l'initiale (« Petrochem. », « Dist. », « Capt. ») ;
              dans les DEUX sens, sinon le côté entier ne rendait qu'un demi-crédit */
@@ -965,9 +968,24 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
      (familles, désignations, succursales) gardent leur mot */
   const conflit = raisonsBilingues(A.sources, B.sources)
     ? marquesEnConflit({ ...A.marques, pays: [] }, { ...B.marques, pays: [] }) : marquesEnConflit(A.marques, B.marques);
-  return A.numeros === B.numeros && !conflit && !filiale && !qualificatifSoudeVu
+  /* UNE CLÉ DE SON SUR UN NOM TRÈS COURT NE DÉSIGNE PAS SEULE : deux noms d'un seul mot, que ni leurs lettres ni leurs squelettes ne
+     rapprochent (sous BLOC_MIN ; « Sony » et « ソニー », soni, restent un même mot) et dont l'un n'a que trois consonnes ou moins, ne se rencontrent que par une clé (les consonnes d'un abjad,
+     la clé d'emprunt, la phonétique, les lettres d'un sigle) : trois consonnes se retrouvent par hasard. Le candidat reste à
+     relire, au niveau des plafonds (04/10/2026, livres de mille : « Stör » face à un alias arabe de trois consonnes, « Seeve »
+     face au sigle « CEV », « Nogat » face à un sigle cyrillique, trois noms de bateaux fluviaux au fort à 0,900) */
+  const cleCourte = A.mots.length === 1 && B.mots.length === 1 && A.mots[0] !== B.mots[0]
+    && Math.min(consonnes(A.mots[0]!), consonnes(B.mots[0]!)) <= CLE_COURTE
+    /* un mot de trois lettres au plus est un sigle : il ne vaut un mot plus long par aucune clé, squelette compris */
+    && (Math.min(A.mots[0]!.length, B.mots[0]!.length) <= 3 || [[A.mots[0]!, B.mots[0]!], [A.squelettes[0]!, B.squelettes[0]!]].every(([x, y]) => 1 - (distanceOsa(x!, y!) + (x![0] === y![0] ? 0 : 1)) / Math.max(x!.length, y!.length, 1) < BLOC_MIN));
+  return A.numeros === B.numeros && !conflit && !filiale && !qualificatifSoudeVu && !cleCourte
     ? s : Math.min(s, FACTEUR_CONTENANCE);
 }
+/** Les consonnes d'un mot préparé, les doubles comptées une fois. */
+function consonnes(m: string): number {
+  return m.replace(/[aeiouyhw]/g, "").replace(/(.)\1+/g, "$1").length;
+}
+/** Une clé de son COURTE : à ce nombre de consonnes ou moins, deux mots d'ailleurs différents se rencontrent par hasard. */
+export const CLE_COURTE = 3;
 
 export const FACTEUR_CONTENANCE = 0.8;
 /** L'article et la filiation arabes : le mot qui les suit est un mot arabe, quoi qu'en dise le dictionnaire anglais, qui connaît
