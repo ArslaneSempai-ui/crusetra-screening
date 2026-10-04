@@ -489,6 +489,9 @@ export function recollerLaCoupe(brut: string): string | undefined {
   return change ? sortie.join(" ") : undefined;
 }
 
+/** Le mot qui annonce le nom d'un navire derrière celui de son armateur : « - Navire Kang Gye », « (vessel: …) », « buque … ». */
+const MOT_DE_NAVIRE = /(?<![\p{L}])(?:navire|vessel|ship|buque|navio|nave|schiff|судно)(?![\p{L}])\s*:?\s*\p{L}/iu;
+
 export function variantesTypees(brut: string): VarianteTypee[] {
   const vues = new Map<string, VarianteTypee>();
   /* les astérisques d'un message de banque (« *** COMPANIA … *** PANAMA », jeu 11) ne sont que du décor */
@@ -526,6 +529,11 @@ export function variantesTypees(brut: string): VarianteTypee[] {
   const associe = associeDeLaSociete(brut);
   const poser = (texte: string, ancien: boolean, mention: string) => { if (!vues.has(texte)) vues.set(texte, { texte, ancien, mention, registre, partie, paysRegistre, associe }); };
   poser(brut.trim(), false, "");
+  /* LE NAVIRE D'UN ARMATEUR DÉSIGNÉ, écrit derrière lui (« Ocean … Company, Limited - Navire Kang Gye », « … Ltd (vessel: X) ») :
+     le nom du navire seul est une lecture de plus, pour que le navire criblé sous son nom rencontre l'entrée ; la tête doit
+     porter une forme juridique, sinon « Vessel » est un mot du nom (« Blue Vessel Trading ») */
+  const navireNomme = /^(.*\p{L}.*?)\s*[-\u2013,(]\s*(?:navire|vessel|ship|buque|navio|nave|schiff|судно)\s*:?\s+(\p{L}[^()]*?)\s*\)?\s*$/iu.exec(brut.trim());
+  if (navireNomme && new RegExp(FORME_EN_LIGNE.source, "iu").test(navireNomme[1]!)) poser(navireNomme[2]!.trim(), false, "");
   /* UN NOM SANS ESPACES (jeu 13, 28/09 : « CarmichaelExportsPtyLtd » à 0,482, « GUANGZHOUFENGYUANIMPEXP » et
      « WEIFANGHENGTAIFOODSCOLTD » à 0,000 face à leurs noms écrits) : les majuscules intérieures coupent les mots ; en
      capitales, les formes et génériques collés en queue se détachent un à un (COLTD, PTYLTD, IMPEXP), et le reste demeure
@@ -680,10 +688,15 @@ export function variantesTypees(brut: string): VarianteTypee[] {
          que le score doit voir (jeu 10 : la succursale et son siège, jugés différents, mesurés à 1,000 le 27/09
          quand « mbH » devenu une forme faisait ôter la queue) */
       const queueSuccursale = motsQueue.some((m) => SUCCURSALES.has(m));
+      /* et « …Company, Limited - Navire Kang Gye » : la queue NOMME UN NAVIRE de la société (les listes écrivent ainsi les
+         navires d'un armateur désigné) ; l'ôter ferait de tous ses navires le même nom, celui de l'armateur (mesuré le
+         04/10/2026 sur les paires de navires d'OpenSanctions, matériel d'apprentissage : 232 des 410 fausses alertes au fort
+         étaient deux navires d'un même armateur écrits ainsi, à 1,000) */
+      const queueNavire = MOT_DE_NAVIRE.test(queue);
       /* derrière une forme : l'adresse s'ôte ; sans forme devant, un ou deux mots sans forme
          derrière la virgule sont un port ou une ville (« SIROCCO MARINER, MONROVIA »), mais
          « Marks, Spencer Ltd » garde Spencer : la forme est dans la queue */
-      if (queue.length > 0 && !queueEstForme && !queueSuccursale && (FORMES.has(dernier)
+      if (queue.length > 0 && !queueEstForme && !queueSuccursale && !queueNavire && (FORMES.has(dernier)
         || (!queuePorteUneForme && /^[\p{L} .'-]{2,30}$/u.test(queue) && motsQueue.length <= 2 && !p.includes("&")
           && tete.trim().split(/\s+/).length >= 2))) p = tete.trim();
     }
@@ -721,7 +734,7 @@ export function variantesTypees(brut: string): VarianteTypee[] {
          et aucune forme : « de C.V. » n'est pas une adresse, « of Canada Ltd. » non plus */
       const adresse = motsQueue.some((m) => PAYS_MOTS.has(m) || PAVILLONS.has(m) || REGIONS.has(m) || PORTS_ET_QUARTIERS.has(m) || /^\d+[a-z]?$/.test(m)
         || /^(?:room|rm|unit|bldg|building|floor|fl|suite|ste|street|st|road|rd|avenue|ave|zone|area|district|city|port|tower|plaza|plot|block)$/.test(m));
-      if (queue.length > 0 && adresse && /^[\p{L}\d .,'-]{2,60}$/u.test(queue) && !new RegExp(FORME_EN_LIGNE.source, "iu").test(queue)
+      if (queue.length > 0 && adresse && !MOT_DE_NAVIRE.test(queue) && /^[\p{L}\d .,'-]{2,60}$/u.test(queue) && !new RegExp(FORME_EN_LIGNE.source, "iu").test(queue)
         && p.slice(0, dernier.index).trim().split(/\s+/).length >= 1) {
         poser(p.slice(0, fin).trim(), ancien, mentionDe(p.slice(0, fin)));
       }

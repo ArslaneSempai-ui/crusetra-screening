@@ -40,7 +40,7 @@ import {
   CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pliJaponais, pliCoreen, CREDIT_KANA, pluriel, CHEMIN_VERDICT, RAPPEL_MIN,
   pliSlave, CREDIT_CYRILLIQUE, clesGrecques, CREDIT_GREC, clePhonetique, homophoneCorrige, squeletteArabe, ARTICLES_ARABES, clesSlaves, pliThai, CREDIT_THAI,
   BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare, type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme, pliEnye,
-  clesEmprunt, CREDIT_EMPRUNT, CHEMIN_APPRENTISSAGE_REEL, mesurerReel,
+  clesEmprunt, CREDIT_EMPRUNT, CHEMIN_APPRENTISSAGE_REEL, mesurerReel, SEUIL_POSSIBLE,
 } from "./entites.ts";
 import { cleAbjad, cleAbjadSansTa, cleAbjadVLuF, cleAbjadVoyelles, type Abjad } from "./ecritures.ts";
 import { pliBirman, CREDIT_BIRMAN } from "./birman.ts";
@@ -862,7 +862,11 @@ function prefere(a: Candidat, b: Candidat): boolean {
   return (a.alias ?? "") < (b.alias ?? "");
 }
 
+/** UN ALIAS FAIBLE NE DÉSIGNE PAS SEUL : l'OFAC le dit de ses alias « weak », le Royaume-Uni de ses « Low quality a.k.a ».
+ *  Un candidat trouvé par un tel alias ne dépasse pas le niveau des plafonds : il reste à relire, marqué, jamais au fort
+ *  (04/10/2026 : un pétrolier, « ASTRAL », au fort à 0,833 par l'alias faible « AO AZ URAL » d'une usine d'automobiles). */
 function candidat(n: NomIndexe, score: number, par: Candidat["par"]): Candidat {
+  if (n.faible && par === "name") score = Math.min(score, SEUIL_POSSIBLE);
   return {
     source: n.entree.source, ...(n.entree.programme ? { liste: n.entree.programme } : {}),
     ids: [n.entree.id], nomListe: n.entree.nom,

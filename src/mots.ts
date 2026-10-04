@@ -632,14 +632,50 @@ export const CREDIT_KANA = 0.95;
  * L'arabe et l'hébreu ont déjà leur clé de consonnes (`cleAbjad`). Une clé de trois consonnes au moins, et le score ne la lit
  * qu'entre un mot d'un nom écrit dans l'une de ces écritures et un mot d'un nom écrit en latin (voir `Marques.emprunt`).
  */
-export function clesEmprunt(m: string, mode: "r" | "n"): readonly string[] {
+/** Le mot ramené aux classes de son de ses consonnes, ses voyelles encore en place (une ou deux variantes, selon le ch). */
+function classesEmprunt(m: string, mode: "r" | "n"): string[] {
   let base = m.replace(/tion|sion/g, "shn").replace(/ture/g, "chr").replace(/gh(?![aeiouy])/g, "").replace(/ph/g, "f")
     .replace(/x/g, "ks").replace(/qu/g, "k").replace(/ck/g, "k").replace(/c(?=[eiy])/g, "s").replace(/g(?=[eiy])/g, "j")
     .replace(/dzh|dj|tch|zh/g, "j").replace(/kh/g, "k").replace(/th/g, "t").replace(/sh|ts|tz|z/g, "s");
   if (mode === "n") base = base.replace(/(?<=[aeiouy])r(?![aeiouy])/g, "").replace(/l/g, "r");
   const variantes = base.includes("ch") ? [base.replace(/ch/g, "j"), base.replace(/ch/g, "k")] : [base];
-  return [...new Set(variantes.map((v) => v.replace(/[cqg]/g, "k").replace(/[bpfv]/g, "p").replace(/d/g, "t")
-    .replace(/[aeiouywh]/g, "").replace(/(.)\1+/g, "$1")))];
+  return variantes.map((v) => v.replace(/[cqg]/g, "k").replace(/[bpfv]/g, "p").replace(/d/g, "t"));
+}
+export function clesEmprunt(m: string, mode: "r" | "n"): readonly string[] {
+  return [...new Set(classesEmprunt(m, mode).map((v) => v.replace(/[aeiouywh]/g, "").replace(/(.)\1+/g, "$1")))];
+}
+/**
+ * LA CLÉ D'EMPRUNT AVEC SES SYLLABES : les mêmes classes de consonnes, et entre elles la PLACE des voyelles (un point par
+ * suite de voyelles, la voyelle finale à part : le e muet de « Trade », « Finance »). Le cyrillique et le grec écrivent les
+ * voyelles du mot anglais qu'ils prononcent (« Кепитъл » : k.p.t.l, Capital ; « Синерджи » : s.n.rj, Synergy), et deux mots
+ * qui n'ont que leurs consonnes en commun ne sont pas le même mot prononcé : « Astral » (.str.l) n'est pas « Стрела »
+ * (str.l), ni « Yangtze » (.nks) « Эникс » (.n.ks), ni « Pilica » (p.l.k) « Павлик » (p.lk), trois alertes fortes levées sur
+ * un vrai pétrolier et sur les livres de mille le 04/10/2026. Le kana, le hangul et le thaï intercalent des voyelles
+ * que l'anglais n'a pas (« 디스플레이 » : diseupeullei) : la place des voyelles ne s'y lit pas, le mode « n » garde la clé nue.
+ */
+export function clesEmpruntSyllabes(m: string): readonly string[] {
+  return [...new Set(classesEmprunt(m, "r").map((v) => v.replace(/h/g, "").replace(/[aeiouyw]+/g, ".").replace(/([^.])\1+/g, "$1").replace(/\.$/, "")))];
+}
+/** Deux clés à syllabes qui ne diffèrent que par UNE place de voyelle, ailleurs qu'en tête : la voyelle réduite que l'anglais
+ *  écrit et ne dit pas, ou dit et n'écrit pas (« Management » m.n.j.m.nt, « Мениджмънт » m.n.jm.nt ; « International »,
+ *  « Интернешънъл » ; « Ventures », « Венчърс »). */
+function uneVoyelleReduite(a: string, b: string): boolean {
+  if (Math.abs(a.length - b.length) !== 1) return false;
+  const [long, court] = a.length > b.length ? [a, b] : [b, a];
+  for (let i = 1; i < long.length; i++) if (long[i] === "." && long.slice(0, i) + long.slice(i + 1) === court) return true;
+  return false;
+}
+/** Deux mots sous la même clé d'emprunt d'au moins `min` consonnes ; en mode « r », sous la même clé à syllabes aussi, à une
+ *  voyelle réduite près quand la clé porte au moins quatre consonnes et que `souple` le permet (les mots un à un ; jamais les
+ *  blocs, où deux noms entiers se rencontrent par leurs seules consonnes : « Kyra Evdokia », « Крафттек »). */
+export function memeEmprunt(x: string, y: string, mode: "r" | "n", min: number, souple = false): boolean {
+  const ky = clesEmprunt(y, mode);
+  const communes = clesEmprunt(x, mode).filter((k) => k.length >= min && ky.includes(k));
+  if (communes.length === 0) return false;
+  if (mode === "n") return true;
+  const sx = clesEmpruntSyllabes(x), sy = clesEmpruntSyllabes(y);
+  if (sx.some((k) => sy.includes(k))) return true;
+  return souple && communes.some((k) => k.length >= 4) && sx.some((u) => sy.some((v) => uneVoyelleReduite(u, v)));
 }
 /** Ce que vaut la même clé d'emprunt : autant qu'une romanisation d'une écriture (CREDIT_CYRILLIQUE, CREDIT_KANA : 0,95). */
 export const CREDIT_EMPRUNT = 0.95;
