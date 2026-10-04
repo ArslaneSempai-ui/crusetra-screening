@@ -68,7 +68,7 @@ import { REGIONS } from "./preparation.ts";
 import { plier } from "./preparation.ts";
 import { pliCantonais } from "./mots.ts";
 import { FORMES } from "./preparation.ts";
-import { clesEmprunt, CREDIT_EMPRUNT } from "./mots.ts";
+import { memeEmprunt, CREDIT_EMPRUNT } from "./mots.ts";
 
 export type NomPrepare = {
   mots: readonly string[]; poids: readonly number[]; total: number;
@@ -607,8 +607,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           if (pliG) v = Math.max(v, CREDIT_GREC);
           /* et la même clé d'emprunt, d'une écriture qui prononce au latin (voir CREDIT_EMPRUNT) */
           if (emprunt !== "" && v < CREDIT_EMPRUNT && x !== y && !anglais && x.length >= 3 && y.length >= 3) {
-            const ky = clesEmprunt(y, emprunt);
-            if (clesEmprunt(x, emprunt).some((k) => k.length >= 3 && ky.includes(k))) { equivalent = true; v = CREDIT_EMPRUNT; }
+            if (memeEmprunt(x, y, emprunt, 3, true)) { equivalent = true; v = CREDIT_EMPRUNT; }
           }
           /* L'ADJECTIF SLAVE DE LIEU : « Kubanskaya » et « Kurganskaya » se ressemblent à 0,82 par leur suffixe commun ;
              ce sont leurs radicaux qui nomment, Kuban et Kurgan, deux lieux à deux lettres près (voir `radicalSlave`).
@@ -928,15 +927,21 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
        cinq lettres sur quatorze quand le pli n'en laisse qu'une) */
     const meilleur = Math.max(similitude(A.bloc, B.bloc), Math.min(0.95, similitude(A.blocSq, B.blocSq)),
       thai ? Math.min(0.95, similitude(pliThai(A.bloc), pliThai(B.bloc))) : 0);
-    if (meilleur >= BLOC_MIN) s = Math.max(s, meilleur);
+    /* UNE SOUDURE ET UNE LETTRE CHANGÉE SONT DEUX GESTES : sur un bloc de BLOC_COURT lettres au plus, un bloc qui n'est pas exact
+       ne dépasse pas le niveau des plafonds. « Petrolink » reste « Petro Link » (1,000) ; « Astral » n'est plus « AZ Ural » ni
+       « Yangtze » « Yang Su » au niveau fort (0,833 tous deux le 04/10/2026, sur un vrai pétrolier criblé contre un alias faible
+       de l'OFAC et un nom de la liste ITAR) : ils restent à relire. Les marques qui regroupent des syllabes gardent leur droit,
+       comme plus haut. Mesuré sur l'apprentissage : un vrai nom de moins au fort sur 4 170 (3 816), aucun sur l'échantillon
+       GLEIF ; sans borne de longueur, seize de moins pour une fausse alerte de moins. */
+    const borne = meilleur < 1 && !syllabes && Math.max(A.bloc.length, B.bloc.length) <= BLOC_COURT ? Math.min(meilleur, FACTEUR_CONTENANCE) : meilleur;
+    if (meilleur >= BLOC_MIN) s = Math.max(s, borne);
   }
   /* ET LE BLOC SOUS LA CLÉ D'EMPRUNT : une écriture qui prononce soude souvent le nom en un mot (« 삼성디스플레이 » : samseongdiseupeullei,
      « มาร์เก็ตเอนี่แวร์ » : maketeniwae) que le nom latin écrit en deux (« Samsung Display », « Market Anyware ») ; les deux blocs sous la
      même clé, de cinq consonnes au moins, valent la clé d'un mot (voir `clesEmprunt` ; registre GLEIF, 30/09/2026). Comme le bloc, seulement
      quand le nombre de mots diffère : à nombre égal, les mots se comparent un à un */
   if (emprunt !== "" && A.mots.length !== B.mots.length) {
-    const kB = clesEmprunt(B.bloc, emprunt);
-    if (clesEmprunt(A.bloc, emprunt).some((k) => k.length >= 5 && kB.includes(k))) s = Math.max(s, CREDIT_EMPRUNT);
+    if (memeEmprunt(A.bloc, B.bloc, emprunt, 5)) s = Math.max(s, CREDIT_EMPRUNT);
   }
   /* LA CONTENANCE : un nom entier retrouvé DANS l'autre (« Quarrington Metals FZE » dans
      « Quarrington Metals FZE, Jebel Ali Free Zone, Dubai »). La question du criblage n'est pas
@@ -974,6 +979,8 @@ export const ARTICLES_ARABES: ReadonlySet<string> = new Set(["al", "el", "ul", "
 export const SEUIL_RARE = 0.45;
 /** Le bloc (mots collés ou coupés) ne compte qu'à partir de cette similarité. */
 export const BLOC_MIN = 0.8;
+/** Un bloc COURT : à cette longueur ou moins, une lettre changée dans un nom soudé pèse un sixième du nom au moins. */
+export const BLOC_COURT = 8;
 
 /** Les qualificatifs de groupe qu'un nom SOUDE à son radical : « Agroholding », « Agroinvest »,
  *  « Uraltrade ». Écrit en un mot à part (« Dorreval Chemicals Holdings »), le qualificatif est

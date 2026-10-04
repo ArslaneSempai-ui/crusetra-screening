@@ -1765,6 +1765,11 @@ export function analyserEntite(nom: string, lecture: Lecture = "mandarin"): { te
   if (/[Đđ]/.test(nom) && /[ćčšžĆČŠŽ]|\bd\.?o\.?o\.?(?![\p{L}])|\bd\.?d\.?(?![\p{L}])|\ba\.?d\.?(?![\p{L}])/iu.test(nom) && !/[ơưăạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹƠƯĂẠ]/.test(nom)) nom = nom.replace(/Đ/g, "Dj").replace(/đ/g, "dj");
   /* le 호 coréen (« Yongdu Ho No. 7 », jeu 19) : le suffixe de navire devant le numéro n'est pas un mot du nom */
   nom = nom.replace(/\s+[Hh]o\s+(?=[Nn]o\.?\s*\d)/u, " ");
+  /* LE Ъ BULGARE DEVANT UNE CONSONNE est une voyelle, lue а : le signe dur russe ne s'écrit que devant е, ё, ю, я (« объект »),
+     jamais devant une consonne (registre GLEIF, 04/10/2026 : « Кепитъл », « Мениджмънт », « Интернешънъл », dont la lecture sans
+     voyelle, kepitl, menidzhmnt, n'avait plus les syllabes de Capital, Management ; voir `clesEmpruntSyllabes`). Lu AVANT la
+     romanisation, qui laisse tomber le signe */
+  nom = nom.replace(/[ъЪ](?=[бвгджзйклмнпрстфхцчшщ])/giu, (m) => (m === "ъ" ? "а" : "А"));
   const rom = romaniser(wadeGiles(nom), lecture);
   /* le T/H ou T/KH du teplokhod devant un navire russe (voir TEPLOKHOD) : le M/V des documents russes, rendu tel quel
      avant la soudure des sigles (« T/H » y deviendrait « th », un mot ; « T/KH » deux mots), et une marque slave */

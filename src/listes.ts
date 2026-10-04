@@ -60,14 +60,15 @@ import { lireTable } from "./csv.ts";
 /** LA forme commune : les noms restent TELS QUE LA LISTE LES ÉCRIT — la normalisation est
  *  le travail des matchers, pas du téléchargeur. */
 export type EntreeListe = {
-  source: "OFAC" | "OFAC-CONS" | "CSL" | "EU" | "UN";
+  source: "OFAC" | "OFAC-CONS" | "CSL" | "EU" | "UN" | "UK" | "EU-VESSELS";
   id: string;
   nom: string;
   alias: string[];
   type: "person" | "entity" | "vessel" | "other";
   programme?: string;
-  /** Les alias que l'OFAC classe « weak » (catégorie de son fichier) : trop génériques pour
-   *  désigner seuls ; un candidat trouvé par eux le dit au relecteur. Sous-ensemble d'`alias`. */
+  /** Les alias que l'OFAC classe « weak » (catégorie de son fichier), et ceux que la liste du Royaume-Uni dit
+   *  « Low quality a.k.a » : trop génériques pour désigner seuls ; un candidat trouvé par eux le dit au
+   *  relecteur. Sous-ensemble d'`alias`. */
   aliasFaibles?: string[];
   /** Le numéro OMI d'un navire, sept chiffres, tel que la liste l'écrit (« IMO 9187629 »). */
   imo?: string;
@@ -77,12 +78,14 @@ export type SourceListe = {
   source: EntreeListe["source"];
   titre: string;
   url: string;
-  format: "ofac-sdn-xml" | "un-consolidated-xml" | "eu-fsf-xml-1.1" | "trade-csl-csv";
+  format: "ofac-sdn-xml" | "un-consolidated-xml" | "eu-fsf-xml-1.1" | "trade-csl-csv" | "uk-sanctions-xml" | "eu-833-annex-xlii-xhtml";
+  /** les en-têtes que la source exige en plus (la négociation de contenu de l'Office des publications) */
+  entetes?: Record<string, string>;
 };
 
 /** Le fichier d'une source dans data/listes/ : son extension suit son format. */
 export function fichierDe(s: Pick<SourceListe, "source" | "format">): string {
-  return `${s.source.toLowerCase()}.${s.format === "trade-csl-csv" ? "csv" : "xml"}`;
+  return `${s.source.toLowerCase()}.${s.format === "trade-csl-csv" ? "csv" : s.format === "eu-833-annex-xlii-xhtml" ? "xhtml" : "xml"}`;
 }
 
 const DOSSIER = fileURLToPath(new URL("..", import.meta.url));
@@ -99,6 +102,9 @@ export const MANIFESTE = join(DOSSIER, "listes-manifest.json");
  */
 const JETON_UE_GENERIQUE_PUBLIC = "dG9rZW4tMjAxNw";
 const JETON_UE = process.env.CASCADE_EU_TOKEN ?? JETON_UE_GENERIQUE_PUBLIC;
+
+/** La version consolidée du règlement (UE) 833/2014 dont l'annexe XLII est lue : son numéro CELEX, daté. */
+export const CELEX_833 = "02014R0833-20260724";
 
 export const SOURCES: SourceListe[] = [
   {
@@ -125,6 +131,31 @@ export const SOURCES: SourceListe[] = [
     source: "EU", titre: "EU consolidated financial sanctions list (FSF, XML v1.1)",
     url: `https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content?token=${JETON_UE}`,
     format: "eu-fsf-xml-1.1",
+  },
+  /*
+   * LES NAVIRES DÉSIGNÉS, mesuré le 04/10/2026 sur un vrai pétrolier (OMI 9274800, ASTRAL pour l'UE, YANGTZE pour
+   * le Royaume-Uni) : aucune des cinq listes ci-dessus ne le portait. Le fichier FSF de l'UE ne porte que le gel des
+   * avoirs ; les navires interdits de port et de services sont à l'annexe XLII du règlement (UE) 833/2014, qui
+   * n'existe dans aucun fichier lisible par machine : la source est le TEXTE CONSOLIDÉ du règlement, servi par
+   * l'Office des publications (réutilisation permise avec mention de la source, décision 2011/833/UE). L'adresse
+   * NOMME UNE VERSION CONSOLIDÉE (CELEX_833) : un paquet de sanctions plus récent n'y est pas tant que la constante
+   * n'a pas été avancée, et le manifeste porte la date de la version lue. La page d'EUR-Lex elle-même répond par un
+   * défi anti-robot ; le service de l'Office est l'accès prévu pour une machine.
+   * Mesuré le 04/10/2026 : l'Office répond en https par une redirection (303) vers une adresse http de son
+   * entrepôt ; le contenu arrive donc en clair, et c'est l'empreinte du manifeste qui dit quel fichier a été lu.
+   * La liste du Royaume-Uni (FCDO, Open Government Licence v3.0) porte personnes, entités et navires, les navires
+   * avec leur numéro OMI.
+   */
+  {
+    source: "UK", titre: "UK Sanctions List (FCDO): individuals, entities and ships",
+    url: "https://sanctionslist.fcdo.gov.uk/docs/UK-Sanctions-List.xml",
+    format: "uk-sanctions-xml",
+  },
+  {
+    source: "EU-VESSELS", titre: `EU designated vessels: Annex XLII of Regulation (EU) No 833/2014, consolidated text ${CELEX_833.slice(-8, -4)}-${CELEX_833.slice(-4, -2)}-${CELEX_833.slice(-2)}`,
+    url: `https://publications.europa.eu/resource/celex/${CELEX_833}`,
+    format: "eu-833-annex-xlii-xhtml",
+    entetes: { accept: "application/xhtml+xml, text/html", "accept-language": "eng" },
   },
 ];
 
@@ -246,6 +277,60 @@ export function analyserUe(xml: string): EntreeListe[] {
 }
 
 /**
+ * ROYAUME-UNI (UK Sanctions List, XML) : `<Designation>` avec `<UniqueID>`, `<Names>` (chaque `<Name>` porte
+ * `<Name1>`…`<Name6>`, Name6 étant le nom de famille ou le nom entier, et un `<NameType>` : « Primary Name », sa
+ * variation, ou « Alias » avec un `<AliasStrength>`), `<NonLatinNames>`, `<IndividualEntityShip>` et, pour un navire,
+ * `<IMONumber>` (« IMO9274800 » ou sept chiffres). Mesuré le 04/10/2026 sur le fichier du 02/10 : 6 370 désignations
+ * (4 054 personnes, 1 645 entités, 671 navires dont 670 avec un numéro OMI ; six en portent plusieurs, le premier
+ * est gardé), 613 alias « Low quality a.k.a », gardés et marqués faibles comme les « weak » de l'OFAC.
+ */
+export function analyserRoyaumeUni(xml: string): EntreeListe[] {
+  const TYPES: Record<string, EntreeListe["type"]> = { "Individual": "person", "Entity": "entity", "Ship": "vessel" };
+  return blocs(xml, "Designation").map((b) => {
+    const noms = blocs(b, "Name").map((n) => ({
+      nom: ["Name1", "Name2", "Name3", "Name4", "Name5", "Name6"].map((t) => champ(n, t)?.trim()).filter(Boolean).join(" "),
+      principal: /^primary name$/i.test((champ(n, "NameType") ?? "").trim()),
+      faible: /^low quality/i.test((champ(n, "AliasStrength") ?? "").trim()),
+    })).filter((n) => n.nom.length > 0);
+    const natifs = blocs(b, "NonLatinName").map((n) => (champ(n, "NameNonLatinScript") ?? "").trim()).filter((n) => n.length > 0);
+    const principal = noms.find((n) => n.principal) ?? noms[0];
+    const alias = [...new Set([...noms.filter((n) => n !== principal).map((n) => n.nom), ...natifs])].filter((a) => a !== principal?.nom);
+    const aliasFaibles = [...new Set(noms.filter((n) => n !== principal && n.faible).map((n) => n.nom))];
+    const imo = blocs(b, "IMONumber").map((i) => /^(?:IMO\s*)?(\d{7})$/i.exec(decoderEntites(i).trim())?.[1]).find(Boolean);
+    const programme = champ(b, "RegimeName")?.trim();
+    return { source: "UK" as const, id: champ(b, "UniqueID") ?? "", nom: principal?.nom ?? "", alias,
+      type: TYPES[(champ(b, "IndividualEntityShip") ?? "").trim()] ?? "other",
+      ...(programme ? { programme } : {}), ...(aliasFaibles.length ? { aliasFaibles } : {}), ...(imo ? { imo } : {}) };
+  }).filter((e) => e.nom.length > 0 && e.id.length > 0);
+}
+
+/**
+ * UE, LES NAVIRES (annexe XLII du règlement 833/2014, texte consolidé en XHTML) : entre le titre « ANNEX XLII » et
+ * celui de l'annexe suivante, un tableau dont chaque ligne porte un rang (« 462. », une fois sans son point), le nom du navire, son numéro
+ * OMI de sept chiffres, le motif et la date d'application. Une ligne qui n'a pas cette forme (l'en-tête, les marques
+ * de modification « ▼M38 ») n'est pas un navire. L'identifiant est le numéro OMI, ce que l'annexe désigne ; un
+ * numéro qui revient sous un second nom garde sa première ligne et prend l'autre nom pour alias. Mesuré le
+ * 04/10/2026 sur la version du 24/07/2026 : 674 lignes, 672 numéros (deux reviennent deux fois sous le même nom).
+ */
+export function analyserNaviresUe(xhtml: string): EntreeListe[] {
+  const debut = xhtml.search(/ANNEX\s+XLII\b/);
+  if (debut === -1) return [];
+  const suite = xhtml.slice(debut + 10).search(/ANNEX\s+XLIII\b/);
+  const annexe = suite === -1 ? xhtml.slice(debut) : xhtml.slice(debut, debut + 10 + suite);
+  const texte = (c: string) => decoderEntites(c.replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim();
+  const parImo = new Map<string, EntreeListe>();
+  for (const ligne of annexe.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/g)) {
+    const cellules = [...ligne[1]!.matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/g)].map((c) => texte(c[1]!));
+    if (cellules.length < 3 || !/^\d+\.?$/.test(cellules[0]!) || !/^\d{7}$/.test(cellules[2]!) || cellules[1]!.length === 0) continue;
+    const [, nom, imo] = cellules as [string, string, string];
+    const deja = parImo.get(imo);
+    if (deja) { if (deja.nom !== nom && !deja.alias.includes(nom)) deja.alias.push(nom); continue; }
+    parImo.set(imo, { source: "EU-VESSELS", id: `IMO${imo}`, nom, alias: [], type: "vessel", programme: "833/2014 Annex XLII", imo });
+  }
+  return [...parImo.values()];
+}
+
+/**
  * CSL (trade.gov, CSV) : une ligne par entrée, `alt_names` séparés par « ; », la liste
  * d'origine dans `source` (« Entity List (EL) - Bureau of Industry and Security »). Les
  * lignes du Trésor sont ÉCARTÉES ici, pas plus loin : ses deux fichiers primaires les
@@ -278,7 +363,9 @@ export function analyserCsl(texte: string): EntreeListe[] {
 export function analyser(format: SourceListe["format"], texte: string, source?: EntreeListe["source"]): EntreeListe[] {
   const entrees = format === "ofac-sdn-xml" ? analyserOfac(texte, source === "OFAC-CONS" ? "OFAC-CONS" : "OFAC")
     : format === "un-consolidated-xml" ? analyserOnu(texte)
-    : format === "trade-csl-csv" ? analyserCsl(texte) : analyserUe(texte);
+    : format === "trade-csl-csv" ? analyserCsl(texte)
+    : format === "uk-sanctions-xml" ? analyserRoyaumeUni(texte)
+    : format === "eu-833-annex-xlii-xhtml" ? analyserNaviresUe(texte) : analyserUe(texte);
   if (entrees.length === 0) {
     throw new Error(
       `the file does not look like ${format}: not one entry could be read from it.\n`
@@ -363,7 +450,7 @@ async function telecharger(s: SourceListe): Promise<LigneManifeste> {
   const maintenant = new Date().toISOString();
   let brut: Buffer;
   try {
-    const r = await fetch(s.url, { headers: ENTETES, redirect: "follow" });
+    const r = await fetch(s.url, { headers: { ...ENTETES, ...s.entetes }, redirect: "follow" });
     if (!r.ok) {
       /* L'UE avec le jeton générique rend 500 : le manifeste porte le fait ET l'issue. */
       const issue = s.source === "EU"
@@ -397,8 +484,19 @@ async function telecharger(s: SourceListe): Promise<LigneManifeste> {
 /* ─────────────────────────────────── la commande ─────────────────────────────────── */
 
 async function principal(): Promise<void> {
-  refuserDrapeauxInconnus(["--fetch"]);
+  refuserDrapeauxInconnus(["--fetch", "--only"]);
   const veutFetch = process.argv.includes("--fetch");
+  /* `--only=UK,EU-VESSELS` : ne retélécharger que ces sources ; les autres gardent leur ligne du manifeste et leur
+     fichier, donc leur date. Sans cela, ajouter une liste rajeunirait toutes les autres et déplacerait d'un coup
+     chaque chiffre mesuré sur elles. */
+  const seules = process.argv.find((a) => a.startsWith("--only="))?.slice("--only=".length).split(",").map((x) => x.trim()).filter(Boolean);
+  if (seules) {
+    const inconnues = seules.filter((x) => !SOURCES.some((s) => s.source === x));
+    if (!veutFetch || inconnues.length > 0) {
+      console.error(!veutFetch ? "--only goes with --fetch: it names the sources to download." : `--only names unknown source(s): ${inconnues.join(", ")}. Known: ${SOURCES.map((s) => s.source).join(", ")}.`);
+      process.exit(2);
+    }
+  }
 
   if (veutFetch && process.env.CASCADE_OFFLINE === "1") {
     /* Le refus nomme le drapeau ET l'issue : un refus sans issue se fait commenter. */
@@ -410,9 +508,15 @@ async function principal(): Promise<void> {
   }
 
   if (veutFetch) {
-    console.log(`\nFetching the ${SOURCES.length} public lists: they download to your machine, and nothing of yours is sent.\n`);
+    console.log(`\nFetching ${seules ? `${seules.length} of the ${SOURCES.length}` : `the ${SOURCES.length}`} public lists: they download to your machine, and nothing of yours is sent.\n`);
     const lignes: LigneManifeste[] = [];
+    const avant = seules ? lireManifeste() : null;
     for (const s of SOURCES) {
+      if (seules && !seules.includes(s.source)) {
+        const gardee = avant?.listes.find((x) => x.source === s.source);
+        if (gardee) { lignes.push(gardee); console.log(`  ${s.source.padEnd(10)} kept as recorded`); }
+        continue;
+      }
       const l = await telecharger(s);
       lignes.push(l);
       if (l.disponible) {

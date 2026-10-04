@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Designations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DateGenerated>02/10/2026</DateGenerated>
+  <Designation>
+    <LastUpdated>04/08/2026</LastUpdated>
+    <DateDesignated>29/06/2012</DateDesignated>
+    <UniqueID>XYZ0001</UniqueID>
+    <Names>
+      <Name>
+        <Name6>EXAMPLE MONEY EXCHANGE &amp; SONS</Name6>
+        <NameType>Primary Name</NameType>
+      </Name>
+      <Name>
+        <Name6>Example Hawala</Name6>
+        <NameType>Alias</NameType>
+        <AliasStrength>Good quality a.k.a</AliasStrength>
+      </Name>
+      <Name>
+        <Name6>EMX</Name6>
+        <NameType>Alias</NameType>
+        <AliasStrength>Low quality a.k.a</AliasStrength>
+      </Name>
+    </Names>
+    <NonLatinNames>
+      <NonLatinName>
+        <NameNonLatinScript>مثال صرافی</NameNonLatinScript>
+      </NonLatinName>
+    </NonLatinNames>
+    <RegimeName>The Example (Sanctions) Regulations 2020</RegimeName>
+    <IndividualEntityShip>Entity</IndividualEntityShip>
+  </Designation>
+  <Designation>
+    <UniqueID>XYZ0002</UniqueID>
+    <Names>
+      <Name>
+        <Name1>Ivan</Name1>
+        <Name2>Ivanovich</Name2>
+        <Name6>EXAMPLOV</Name6>
+        <NameType>Primary name variation</NameType>
+      </Name>
+      <Name>
+        <Name1>Ivan</Name1>
+        <Name6>EXAMPLOV</Name6>
+        <NameType>Primary name</NameType>
+      </Name>
+    </Names>
+    <RegimeName>The Example (Sanctions) Regulations 2020</RegimeName>
+    <IndividualEntityShip>Individual</IndividualEntityShip>
+  </Designation>
+  <Designation>
+    <UniqueID>XYZ0003</UniqueID>
+    <Names>
+      <Name>
+        <Name6>EXAMPLE STAR</Name6>
+        <NameType>Primary Name</NameType>
+      </Name>
+    </Names>
+    <RegimeName>The Example (Sanctions) Regulations 2020</RegimeName>
+    <IndividualEntityShip>Ship</IndividualEntityShip>
+    <ShipDetails>
+      <Ship>
+        <IMONumbers>
+          <IMONumber>IMO9074729</IMONumber>
+          <IMONumber>9187629</IMONumber>
+        </IMONumbers>
+      </Ship>
+    </ShipDetails>
+  </Designation>
+</Designations>
