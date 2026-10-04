@@ -31,7 +31,7 @@ que deux voies ne se rencontrent pas dans le même fichier à la fusion.
   les vraies sociétés distinctes de l'échantillon réel (`src/paires-gleif-apprentissage.json`, strate contenue à
   part) ; POSSIBLE est le niveau des plafonds, 0,80 (là où les plafonds rangent une paire douteuse) : plus bas, les
   relectures dépassent le budget, une contrepartie sur quarante depuis le 04/10/2026 (24 et 24 noms pour mille sur
-  les sept sources ; une sur cinquante le 30/09, sur cinq listes : 18 et 17). Seuils : 0,81 et 0,80.
+  les sept sources ; une sur cinquante le 30/09, sur cinq listes : 18 et 17). Seuils : 0,81 et 0,80.
   Une vraie paire à 0,800 est plafonnée : trouver LE plafond avant d'écrire une règle. `node src/etude-gleif.ts`
   donne la table sur l'échantillon réel ; `--paires` ses paires sous le fort.
 - La barre : après une règle, les fausses alertes au fort ne montent pas et les vrais noms ne descendent pas,

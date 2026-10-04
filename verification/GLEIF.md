@@ -3,11 +3,11 @@
 Every other test set in this repository was written by AI agents, with invented names. The sets here
 are built from real names: the legal entity names in GLEIF's LEI register, released under CC0 1.0.
 
-There are three verdicts, each measured once on its own sample. The third, of 4 October 2026, is the
-current one and is [at the end](#the-third-verdict-after-the-vessel-round): 241 of 452 real spelling
-variants at the strong level (53 %), 322 at the possible level (71 %), and on 1,000 real different
-companies no false alert at the strong level and 3 at the possible level. The first two are kept below
-as they were written.
+There are four verdicts, each measured once on its own sample. The fourth, of 4 October 2026, is the
+current one and is [at the end](#the-fourth-verdict-after-the-leftovers): of 1,000 same-entity pairs,
+236 found at the strong level and 379 at the possible level; 222 of 469 real spelling variants at
+strong (47 %) and 318 at possible (68 %); on 1,000 real different companies no false alert at the
+strong level and 2 at the possible level. The earlier three are kept below as they were written.
 
 The first, on 30 September 2026, took the method as
 published then (entites 1dd3c893, cribler ac3c1b11), with thresholds chosen on the 23 written
@@ -356,7 +356,113 @@ read. The threshold was not moved; that choice is open again.
 
 This sample has now been judged, so it can no longer serve as a verdict.
 
-# Limits of the three verdicts
+# The fourth verdict, after the leftovers
+
+## What changed since the third
+
+- **A short sound key stays at the possible level**: two one-word names that neither letters nor
+  skeletons bring together, one of them with three consonants or fewer, or a word of three letters
+  or fewer.
+- **A capital-letters abbreviation needs three letters**, not two. At two the exhaustive comparison
+  scored a pair the index never retrieved; a test now compares the two and goes red without the
+  rule, and the full witness (`npm run temoin-index -- --exhaustif`) reports no gap.
+- **Every IMO number of a UK ship is kept.** In the screener, not in the pair score.
+- **The review budget is one name in forty**, set on 4 October 2026; the possible threshold stays
+  at 0.80. On seven sources the two books give 24 and 24 names to review in a thousand; on five
+  lists the budget was one in fifty and they gave 18 and 17. The extra names come from the two
+  added sources.
+- **The word weights were stale, and are not any more.** The committed table of word frequencies
+  had been counted before the Bulgarian hard-sign rule of the vessel round: 122 of 58,593 words
+  differed from a fresh count, and the third verdict was measured on that table while the screener
+  counted afresh. The table is recounted, and a test now refuses a table that differs from a fresh
+  count. On the training material the recount moved no figure.
+
+Cost of the first two rules on training material only: GLEIF training sample, same-name 252/548 at
+strong and 374/548 at possible (257 and 377 before); the 23 written sets 3,815/4,170 found at
+strong and 4,060/4,170 at possible (3,816 and 4,061), false alerts unchanged (126 and 885).
+
+## The fresh sample
+
+`verification/paires-gleif-4.json` (sha256 a767e77b…, seed 20261005), drawn from the same golden
+copy by the same rules, leaving out every name of the three earlier verdict sets and of the
+training sample. Two blind AI judges per batch agreed on 965 of 1,000; a blind arbiter settled the
+35 others by the written rule as written, with no added clarification: 469 same-name, 297 partial,
+234 other-name (`verification/paires-gleif-4-juges.json`, which keeps both judges' labels). The
+method was frozen in `verification/methode-gelee-gleif-4.json` (85 files) and
+`src/verdict-gleif-4.ts` ran once, on 4 October 2026.
+
+## Results, beside the third
+
+`node src/verdict-gleif-4.ts`, the output as written (the third verdict's is above, under its own
+heading):
+
+```
+set a767e77b · 2250 pairs · overlap with the training sets and the other verdict sets: 0 pairs, 0 pairs with a name already seen
+method frozen in verification/methode-gelee-gleif-4.json (85 files, all unchanged)
+weights: 40435 listed entries · thresholds chosen on 23 written training sets and the real training sample: strong 0.81, possible 0.80
+SAME ENTITY, found (score >= threshold), by kind of second name:
+  same-name                                    strong  222/469   47.3 % [42.9-51.9 %]   possible  318/469   67.8 % [63.4-71.9 %]
+  partial                                      strong   13/297    4.4 % [2.6-7.3 %]   possible   60/297   20.2 % [16.0-25.1 %]
+  other-name                                   strong    1/234    0.4 % [0.1-2.4 %]   possible    1/234    0.4 % [0.1-2.4 %]
+  all                                          strong  236/1000  23.6 % [21.1-26.3 %]   possible  379/1000  37.9 % [34.9-40.9 %]
+by kind and register stratum:
+  other-name · alternative-language-name       strong    1/34     2.9 % [0.5-14.9 %]   possible    1/34     2.9 % [0.5-14.9 %]
+  other-name · previous-legal-name             strong    0/104    0.0 % [0.0-3.6 %]   possible    0/104    0.0 % [0.0-3.6 %]
+  other-name · trading-name                    strong    0/74     0.0 % [0.0-4.9 %]   possible    0/74     0.0 % [0.0-4.9 %]
+  other-name · transliteration                 strong    0/22     0.0 % [0.0-14.9 %]   possible    0/22     0.0 % [0.0-14.9 %]
+  partial · alternative-language-name          strong    9/99     9.1 % [4.9-16.4 %]   possible   10/99    10.1 % [5.6-17.6 %]
+  partial · previous-legal-name                strong    1/82     1.2 % [0.2-6.6 %]   possible   22/82    26.8 % [18.4-37.3 %]
+  partial · trading-name                       strong    0/45     0.0 % [0.0-7.9 %]   possible   24/45    53.3 % [39.1-67.1 %]
+  partial · transliteration                    strong    3/71     4.2 % [1.4-11.7 %]   possible    4/71     5.6 % [2.2-13.6 %]
+  same-name · alternative-language-name        strong   56/117   47.9 % [39.0-56.8 %]   possible   73/117   62.4 % [53.4-70.6 %]
+  same-name · previous-legal-name              strong   21/64    32.8 % [22.6-45.0 %]   possible   45/64    70.3 % [58.2-80.1 %]
+  same-name · trading-name                     strong   55/131   42.0 % [33.9-50.5 %]   possible   93/131   71.0 % [62.7-78.1 %]
+  same-name · transliteration                  strong   90/157   57.3 % [49.5-64.8 %]   possible  107/157   68.2 % [60.5-74.9 %]
+DIFFERENT: false alerts (score >= threshold) on real different companies, contained stratum apart:
+  different-same-word-same-country             strong    0/334    0.0 % [0.0-1.1 %]   possible    0/334    0.0 % [0.0-1.1 %]
+  different-same-word-other-country            strong    0/333    0.0 % [0.0-1.1 %]   possible    0/333    0.0 % [0.0-1.1 %]
+  different-same-city-same-form                strong    0/333    0.0 % [0.0-1.1 %]   possible    2/333    0.6 % [0.2-2.2 %]
+  TOTAL different                              strong    0/1000   0.0 % [0.0-0.4 %]   possible    2/1000   0.2 % [0.1-0.7 %]
+CONTAINED (different entities, one name's words inside the other's): alerts, reported on their own
+  different-contained                          strong    1/250    0.4 % [0.1-2.2 %]   possible   12/250    4.8 % [2.8-8.2 %]
+```
+
+| | Third verdict | Fourth verdict |
+|---|---|---|
+| All same-entity pairs, strong | 267/1000, 26.7 % [24.1-29.5 %] | 236/1000, 23.6 % [21.1-26.3 %] |
+| All same-entity pairs, possible | 394/1000, 39.4 % [36.4-42.5 %] | 379/1000, 37.9 % [34.9-40.9 %] |
+| Same-name by the judges, strong | 241/452, 53.3 % | 222/469, 47.3 % [42.9-51.9 %] |
+| Same-name by the judges, possible | 322/452, 71.2 % | 318/469, 67.8 % [63.4-71.9 %] |
+| Real different companies, strong | 0/1000 | 0/1000 [0.0-0.4 %] |
+| Real different companies, possible | 3/1000 | 2/1000 [0.1-0.7 %] |
+| Contained, strong and possible | 1/250, 7/250 | 1/250, 12/250 |
+
+## What it means
+
+Fewer pairs are found at the strong level than at the third verdict: 236 of 1,000 against 267. The
+two intervals overlap ([21.1-26.3 %] and [24.1-29.5 %]), so two draws of the same register could
+differ by that much; but the direction is the one the two new rules predict, and the drop is
+larger than the 5 pairs in 548 they cost on the training sample. It cannot be said from these two
+numbers how much is the rules and how much is the draw. At the possible level the two verdicts are
+close (379 and 394).
+
+The same-name rows are not comparable between the third and the fourth verdict: the third's
+arbiter was given a clarification that moved pairs from same-name to partial. The fourth's labels
+follow the rule as written, like the first two verdicts': against the second (239/488 at strong,
+49.0 %; 334/488 at possible, 68.4 %) it reads 47.3 % and 67.8 %, inside the intervals.
+
+No false alert at the strong level on 1,000 real different companies, and 2 at the possible level.
+
+As before, this sample holds no vessel and no sanctions alias: the vessel rules, the weak alias and
+the IMO numbers have no held-out test. The books, screened on the same commit against the seven
+sources: 2 strong and 22 possible on the first, 0 strong and 24 possible on the second. The three
+one-word vessel names that were strong on the second book are at the possible level. The two
+strong alerts left on the first are a vessel name against an alias of a listed company (0.833,
+false on reading) and a name one letter away from a listed vessel's.
+
+This sample has now been judged, so it can no longer serve as a verdict.
+
+# Limits of the four verdicts
 
 - A same-entity label means the same LEI, and the kind of name comes from AI judges, not from
   compliance analysts.
@@ -365,8 +471,9 @@ This sample has now been judged, so it can no longer serve as a verdict.
 - Chinese and Japanese legal names have no spaces, so they rarely share a distinctive word: the
   different-entity pairs are mostly in Latin script.
 - Company names only. No person and no vessel is in these sets.
-- Each verdict is one draw of 2,250 pairs from one day's golden copy. The four samples
-  (three verdicts and the training sample) come from the same register by the same rules, so it
+- Each verdict is one draw of 2,250 pairs from one day's golden copy. The five samples
+  (four verdicts and the training sample) come from the same register by the same rules, so it
   says nothing about names built another way, such as sanctions list aliases.
-- The possible threshold was kept at 0.80 for a review budget measured on two invented books; a
+- The possible threshold was kept at 0.80 for a review budget (one name in fifty on five lists, one
+  in forty on seven sources since 4 October 2026) measured on two invented books; a
   team with another budget would choose another level, and the rule in `src/entites.ts` says how.

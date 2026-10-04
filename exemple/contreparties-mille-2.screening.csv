@@ -21,7 +21,7 @@ N-0019,Mobilificio Ghedini Arredi Srl,,no-match,,,,,,,,,
 N-0020,"Cantine Rocca Solana S.r.l., Via Provinciale 22, Canelli",,no-match,,,,,,,,,
 N-0021,Giulia Scarabelli,,no-match,,,,,,,,,
 N-0022,Conservas Puerto Arnela S.L.,,no-match,,,,,,,,,
-N-0023,AZULEJOS TERRASOLA SA,,possible,TERRA-AZ LIMITED,OFAC,RUSSIA-EO14024,40493,,,,0.800,name
+N-0023,AZULEJOS TERRASOLA SA,,no-match,,,,,,,,,
 N-0024,"Quinta do Seixo Alto, Vinhos Lda",,no-match,,,,,,,,,
 N-0025,Ponta do Pargo,,no-match,,,,,,,,,
 N-0026,Northmoor Pharma Distribution Ltd,,no-match,,,,,,,,,
@@ -208,9 +208,9 @@ N-0206,Arzneimittelvertrieb Kellinghusen GmbH,,no-match,,,,,,,,,
 N-0207,Zollagentur Waltershof GmbH Am Ballinkai 2,,no-match,,,,,,,,,
 N-0208,Bankhaus Frerichs & Ohlsen KG,,no-match,,,,,,,,,
 N-0209,Friederike Ahlgrimm,,no-match,,,,,,,,,
-N-0210,Stör,,strong,SATRA,EU,IRN,180587,ساترا,,,0.900,name
-N-0210,Stör,,strong,"STORELAB, S.A. DE C.V.",OFAC,ILLICIT-DRUGS-EO14059+SDGT,54604,,,,0.800,name
-N-0210,Stör,,strong,STORMBRINGER (ex KRITI VIGOR),EU-VESSELS,833/2014 Annex XLII,IMO9290397,STORMBRINGER,,9290397,0.800,name
+N-0210,Stör,,possible,SATRA,EU,IRN,180587,ساترا,,,0.800,name
+N-0210,Stör,,possible,"STORELAB, S.A. DE C.V.",OFAC,ILLICIT-DRUGS-EO14059+SDGT,54604,,,,0.800,name
+N-0210,Stör,,possible,STORMBRINGER (ex KRITI VIGOR),EU-VESSELS,833/2014 Annex XLII,IMO9290397,STORMBRINGER,,9290397,0.800,name
 N-0211,Maasland Beglazing NV,,no-match,,,,,,,,,
 N-0212,Ardeense Houtindustrie BVBA,,no-match,,,,,,,,,
 N-0213,Pieter-Jan Verstraete,,no-match,,,,,,,,,
@@ -440,7 +440,7 @@ N-0434,Paphos Gull,,no-match,,,,,,,,,
 N-0435,Hustadvika,,no-match,,,,,,,,,
 N-0436,Tektura Falista Oława Sp. z o.o.,,no-match,,,,,,,,,
 N-0437,Przetworstwo Rybne Wladyslawowo Sp. z o.o.,,no-match,,,,,,,,,
-N-0438,Nogat,,strong,N.A. Dollezhal Order of Lenin Research and Design Institute of Power Engineering JSC,UK,The Russia (Sanctions) (EU Exit) Regulations 2019,RUS1442,AO НИКИЭТ,,,0.900,name
+N-0438,Nogat,,possible,N.A. Dollezhal Order of Lenin Research and Design Institute of Power Engineering JSC,UK,The Russia (Sanctions) (EU Exit) Regulations 2019,RUS1442,AO НИКИЭТ,,,0.800,name
 N-0439,Beton Hranice a.s.,,possible,Blood and Honour,UK,The Counter-Terrorism (Sanctions) (EU Exit) Regulations 2019,CTD0006,B&H,,,0.800,name
 N-0440,Lekarenska Distribuce Olomouc a.s.,,no-match,,,,,,,,,
 N-0441,Veronika Havlíčková,,no-match,,,,,,,,,
@@ -717,7 +717,7 @@ N-0706,Pharmaversand Pinneberg GmbH,,no-match,,,,,,,,,
 N-0707,Hafenagentur Köhlbrand GmbH Ellerholzdamm 12,,no-match,,,,,,,,,
 N-0708,Handelsbank Wesselburen AG,,no-match,,,,,,,,,
 N-0709,Annika Brodersen,,no-match,,,,,,,,,
-N-0710,Seeve,,strong,"System Equipment Co., Ltd. of the 28th Research Institute (Liyang)",CSL,Entity List (EL),5c73a9f276c77db67f2f344f8df0f928fac78fb26f2c2e3d5f368045,CEV,,,0.900,name
+N-0710,Seeve,,possible,"System Equipment Co., Ltd. of the 28th Research Institute (Liyang)",CSL,Entity List (EL),5c73a9f276c77db67f2f344f8df0f928fac78fb26f2c2e3d5f368045,CEV,,,0.800,name
 N-0711,Mechelse Meubelmakerij NV,,no-match,,,,,,,,,
 N-0712,Waaslandse Koelopslag NV,,no-match,,,,,,,,,
 N-0713,Friese Golfkarton B.V.,,no-match,,,,,,,,,
