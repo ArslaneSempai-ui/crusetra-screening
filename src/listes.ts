@@ -72,6 +72,9 @@ export type EntreeListe = {
   aliasFaibles?: string[];
   /** Le numéro OMI d'un navire, sept chiffres, tel que la liste l'écrit (« IMO 9187629 »). */
   imo?: string;
+  /** Les AUTRES numéros OMI que la liste donne au même navire (le Royaume-Uni en écrit deux ou trois pour quelques
+   *  coques renumérotées) : chacun désigne le navire autant que le premier. */
+  autresImo?: string[];
 };
 
 export type SourceListe = {
@@ -143,6 +146,9 @@ export const SOURCES: SourceListe[] = [
    * défi anti-robot ; le service de l'Office est l'accès prévu pour une machine.
    * Mesuré le 04/10/2026 : l'Office répond en https par une redirection (303) vers une adresse http de son
    * entrepôt ; le contenu arrive donc en clair, et c'est l'empreinte du manifeste qui dit quel fichier a été lu.
+   * Vérifié le 04/10/2026 au catalogue de l'Office (SPARQL, les actes qui « amend » 32014R0833) : le dernier acte modificatif
+   * est le règlement (UE) 2026/1848 du 23/07/2026, que cette version consolidée porte ; aucun acte postérieur n'y figure, le
+   * catalogue allant jusqu'au 01/10/2026. L'annexe lue est donc l'annexe en vigueur ce jour-là.
    * La liste du Royaume-Uni (FCDO, Open Government Licence v3.0) porte personnes, entités et navires, les navires
    * avec leur numéro OMI.
    */
@@ -281,8 +287,8 @@ export function analyserUe(xml: string): EntreeListe[] {
  * `<Name1>`…`<Name6>`, Name6 étant le nom de famille ou le nom entier, et un `<NameType>` : « Primary Name », sa
  * variation, ou « Alias » avec un `<AliasStrength>`), `<NonLatinNames>`, `<IndividualEntityShip>` et, pour un navire,
  * `<IMONumber>` (« IMO9274800 » ou sept chiffres). Mesuré le 04/10/2026 sur le fichier du 02/10 : 6 370 désignations
- * (4 054 personnes, 1 645 entités, 671 navires dont 670 avec un numéro OMI ; six en portent plusieurs, le premier
- * est gardé), 613 alias « Low quality a.k.a », gardés et marqués faibles comme les « weak » de l'OFAC.
+ * (4 054 personnes, 1 645 entités, 671 navires dont 670 avec un numéro OMI ; six en portent plusieurs, tous
+ * gardés : `imo` et `autresImo`), 613 alias « Low quality a.k.a », gardés et marqués faibles comme les « weak » de l'OFAC.
  */
 export function analyserRoyaumeUni(xml: string): EntreeListe[] {
   const TYPES: Record<string, EntreeListe["type"]> = { "Individual": "person", "Entity": "entity", "Ship": "vessel" };
@@ -296,11 +302,12 @@ export function analyserRoyaumeUni(xml: string): EntreeListe[] {
     const principal = noms.find((n) => n.principal) ?? noms[0];
     const alias = [...new Set([...noms.filter((n) => n !== principal).map((n) => n.nom), ...natifs])].filter((a) => a !== principal?.nom);
     const aliasFaibles = [...new Set(noms.filter((n) => n !== principal && n.faible).map((n) => n.nom))];
-    const imo = blocs(b, "IMONumber").map((i) => /^(?:IMO\s*)?(\d{7})$/i.exec(decoderEntites(i).trim())?.[1]).find(Boolean);
+    const imos = [...new Set(blocs(b, "IMONumber").map((i) => /^(?:IMO\s*)?(\d{7})$/i.exec(decoderEntites(i).trim())?.[1]).filter((x): x is string => Boolean(x)))];
+    const imo = imos[0];
     const programme = champ(b, "RegimeName")?.trim();
     return { source: "UK" as const, id: champ(b, "UniqueID") ?? "", nom: principal?.nom ?? "", alias,
       type: TYPES[(champ(b, "IndividualEntityShip") ?? "").trim()] ?? "other",
-      ...(programme ? { programme } : {}), ...(aliasFaibles.length ? { aliasFaibles } : {}), ...(imo ? { imo } : {}) };
+      ...(programme ? { programme } : {}), ...(aliasFaibles.length ? { aliasFaibles } : {}), ...(imo ? { imo } : {}), ...(imos.length > 1 ? { autresImo: imos.slice(1) } : {}) };
   }).filter((e) => e.nom.length > 0 && e.id.length > 0);
 }
 

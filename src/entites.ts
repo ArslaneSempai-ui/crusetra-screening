@@ -161,11 +161,15 @@ export function mesurerReel(f: Frequences, brut: string): MesureEntites {
  *    FAUSSES_ALERTES_REELLES_MAX_FORT (1 %) : une alerte forte part en instruction ; sur des sociétés qui ne font que partager un
  *    mot, une sur cent au plus.
  * POSSIBLE : le niveau des plafonds, SEUIL_POSSIBLE (0,80), où les plafonds (un nom retrouvé dans un plus long, une forme d'un
- *  autre pays, un mot distinctif d'un seul côté) rangent leurs candidats. Plus bas, la file des relectures déborde le budget d'une
- *  relecture pour cinquante contreparties (2 %). Mesuré le 30/09/2026 sur les deux livres de mille contreparties (écrits, criblés
- *  contre les vraies listes) : 18 et 17 noms à relire à 0,80, 22 et 21 à 0,75, 45 et 43 à 0,70, 215 et 219 à 0,61. Sur les vraies
- *  variantes de l'échantillon d'apprentissage, 0,80 en retient 69 % et 0,61 en retiendrait 79 % : dix points pour douze fois plus
- *  de relectures (choix d'Arslane, 30/09/2026 ; une première version descendait à 0,61 sous un plafond de 50 % sur les pièges).
+ *  autre pays, un mot distinctif d'un seul côté) rangent leurs candidats. Plus bas, la file des relectures déborde le budget :
+ *  UNE RELECTURE POUR QUARANTE CONTREPARTIES (2,5 %), choix d'Arslane du 04/10/2026. Mesuré ce jour-là sur les deux livres de
+ *  mille contreparties (écrits, criblés contre les SEPT sources) : 24 et 24 noms à relire à 0,80. Le budget était d'une
+ *  relecture pour cinquante (2 %) le 30/09/2026, sur cinq listes : 18 et 17 noms à 0,80, 22 et 21 à 0,75, 45 et 43 à 0,70,
+ *  215 et 219 à 0,61. Les noms en plus viennent des deux sources ajoutées (la liste du Royaume-Uni, les navires de l'annexe
+ *  XLII de l'UE), donc d'une meilleure couverture, pas d'un seuil plus lâche : le seuil reste à 0,80 et c'est le budget qui
+ *  suit les listes. Sur les vraies variantes de l'échantillon d'apprentissage, 0,80 en retenait 69 % et 0,61 en aurait retenu
+ *  79 % le 30/09 : dix points pour douze fois plus de relectures (une première version descendait à 0,61 sous un plafond de
+ *  50 % sur les pièges).
  * Les deux jeux se lisent ensemble parce que chacun manque ce que l'autre voit : les pièges écrits sont plus durs que les vraies
  * voisines, les vraies voisines sont ce que le criblage rencontre ; le fort doit tenir les deux. Mesuré sur l'apprentissage seul ;
  * le verdict frais (verification/paires-gleif-2.json) ne sert jamais à choisir.
