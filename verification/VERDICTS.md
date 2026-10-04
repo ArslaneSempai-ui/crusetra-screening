@@ -103,7 +103,7 @@ Suppliers, Maghreb spellings held apart by convention) go to round nine's known 
 ## Real company names
 
 Every set above was written by AI agents with invented names. The matcher was also measured on real
-company names from the GLEIF register (CC0), twice, each time once: see `GLEIF.md` in this folder.
+company names from the GLEIF register (CC0), three times, each time once: see `GLEIF.md` in this folder.
 
 - First verdict, 30 September 2026, thresholds chosen on the written sets alone: on 448 real
   spelling variants it caught 143 at the strong level (32 %), and it raised 0 false alerts on 1,000
@@ -112,6 +112,13 @@ company names from the GLEIF register (CC0), twice, each time once: see `GLEIF.m
   the method frozen beforehand and a fresh sample: on 488 real spelling variants it caught 239 at
   the strong level (49 %) and 334 at the possible level (68 %), and it raised 1 false alert at the
   strong level and 7 at the possible level on 1,000 real different companies.
+
+- Third verdict, 4 October 2026, after a round on vessels and sanctions aliases (seven sources, a
+  stricter sound key, the vessel named behind its owner), method frozen, fresh sample: 267 of 1,000
+  same-entity pairs found at the strong level and 394 at the possible level (259 and 399 at the
+  second verdict), 241 of 452 real spelling variants at strong (53 %) and 322 at possible (71 %), no
+  false alert at the strong level and 3 at the possible level on 1,000 real different companies.
+  It holds no vessel: the vessel rules have no held-out test yet.
 
 The thresholds are still strong 0.81 and possible 0.80, now by a written rule (`choisirSeuils`,
 `src/entites.ts`): strong holds two false-alert ceilings on the upper bound of the Wilson interval,

@@ -3,8 +3,8 @@
 **Which name matcher suffices, at which threshold, measured on your own alert history.**
 Nothing of yours goes up: the lists come down, your alerts stay on your machine.
 
-It also screens a list of counterparties (companies, vessels, IMO numbers) against five public
-sanctions lists, on your machine: see `npm run cribler` below. Its rates on real company names,
+It also screens a list of counterparties (companies, vessels, IMO numbers) against seven public
+sanctions sources, on your machine: see `npm run cribler` below. Its rates on real company names,
 measured on the GLEIF register, are in `verification/GLEIF.md`.
 
 Name screening (sanctions, PEP, internal lists) raises alerts; most of them are false, and
@@ -21,7 +21,7 @@ measures which extraction tier suffices per field. Same method, same seal, same 
 | Command | What it does, in the order that makes sense |
 |---|---|
 | `npm ci --ignore-scripts` | install exactly the versions the lockfile pins, and run no install script from any dependency; the only command besides `listes -- --fetch` that needs the network |
-| `npm run listes [-- --fetch]` | the five public sanctions lists: OFAC SDN and OFAC consolidated (non-SDN), the US Consolidated Screening List (its Commerce and State lists; its Treasury rows come from the two OFAC files), UN consolidated, EU consolidated (FSF), downloaded into data/ with a committed manifest (source, date, sha256, entry count); without the flag it reports what is on disk and touches nothing. The lists download to your machine, and nothing of yours is sent |
+| `npm run listes [-- --fetch [--only=<sources>]]` | the seven public sanctions sources: OFAC SDN and OFAC consolidated (non-SDN), the US Consolidated Screening List (its Commerce and State lists; its Treasury rows come from the two OFAC files), UN consolidated, EU consolidated (FSF), the UK Sanctions List (individuals, entities and ships), and the vessels the EU designates in Annex XLII of Regulation 833/2014 (read from the consolidated text of a dated version; a later sanctions package is not in it until that date is moved forward), downloaded into data/ with a committed manifest (source, date, sha256, entry count); without the flag it reports what is on disk and touches nothing. The lists download to your machine, and nothing of yours is sent |
 | `npm run poids [-- --fetch]` | the embed tier's weights: four files pinned by bytes and sha256, fetched only by this command (never during install or tests, refused offline) into data/models/: absent weights make an absent tier, named, not a surprise download |
 | `npm run test` | types, the README blocks, the licence inventory, and the suite. Start here; it runs with the network cut |
 | `npm run measure [-- --yes-overwrite]` | the public measure: every tier at every threshold on pairs we authored (hard negatives included) plus declared synthetic variants, sealed into `releve-public.json` and readable in `RELEVE-PUBLIC.md`: the record the catalogue requires, and it refuses to overwrite a sealed one without the flag |
@@ -43,7 +43,7 @@ Node 24 or newer, on **macOS, Linux or Windows**: the whole test suite runs on a
 
 ## What leaves your machine
 
-Nothing, except two explicit downloads: `npm run listes -- --fetch` pulls the five public lists
+Nothing, except two explicit downloads: `npm run listes -- --fetch` pulls the seven public sources
 named above, and `npm run poids -- --fetch` pulls the embed tier's weights. Every other command
 runs with the network cut:
 `CASCADE_OFFLINE=1` is honoured by the one module allowed to touch it, and a test reads every
@@ -67,7 +67,7 @@ reports are verified against the same public key, [`cle-publique.pem`](cle-publi
 with `npm run verify`.
 
 <!-- figures:tests -->
-**432 tests** across 55 files, counted from the sources rather than typed here.
+**439 tests** across 56 files, counted from the sources rather than typed here.
 <!-- /figures:tests -->
 
 ## Licence
