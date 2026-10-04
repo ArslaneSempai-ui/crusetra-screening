@@ -103,7 +103,7 @@ Suppliers, Maghreb spellings held apart by convention) go to round nine's known 
 ## Real company names
 
 Every set above was written by AI agents with invented names. The matcher was also measured on real
-company names from the GLEIF register (CC0), three times, each time once: see `GLEIF.md` in this folder.
+company names from the GLEIF register (CC0), four times, each time once: see `GLEIF.md` in this folder.
 
 - First verdict, 30 September 2026, thresholds chosen on the written sets alone: on 448 real
   spelling variants it caught 143 at the strong level (32 %), and it raised 0 false alerts on 1,000
@@ -120,8 +120,16 @@ company names from the GLEIF register (CC0), three times, each time once: see `G
   false alert at the strong level and 3 at the possible level on 1,000 real different companies.
   It holds no vessel: the vessel rules have no held-out test yet.
 
-The thresholds are still strong 0.81 and possible 0.80, now by a written rule (`choisirSeuils`,
+- Fourth verdict, 4 October 2026, after the leftovers of that round (a short sound key kept at the
+  possible level, a three-letter minimum for a capital-letters abbreviation, the word weights
+  recounted), method frozen, fresh sample: 236 of 1,000 same-entity pairs found at the strong level
+  and 379 at the possible level, 222 of 469 real spelling variants at strong (47 %) and 318 at
+  possible (68 %), no false alert at the strong level and 2 at the possible level on 1,000 real
+  different companies. Fewer pairs at strong than the third verdict, with overlapping intervals.
+
+The thresholds are still strong 0.81 and possible 0.80, by a written rule (`choisirSeuils`,
 `src/entites.ts`): strong holds two false-alert ceilings on the upper bound of the Wilson interval,
 5 % on the written traps and 1 % on real different companies; possible stays at 0.80 for a review
-budget of one name per fifty counterparties. The two thousand-name books of `exemple/` were read to
-set that budget, so neither is a blind figure any more.
+budget of one name per forty counterparties on the seven sources (it was one per fifty on five
+lists until 4 October 2026). The two thousand-name books of `exemple/` were read to set that
+budget, so neither is a blind figure any more.

@@ -1,9 +1,9 @@
 {
   "version": 1,
   "genre": "cascade-screening/counterparty-screening",
-  "emisLe": "2026-10-04T15:34:52.476Z",
+  "emisLe": "2026-10-04T17:51:01.191Z",
   "client": "Example forwarder, Antwerp",
-  "commit": "617e771",
+  "commit": "3b611c5",
   "fichier": {
     "nom": "contreparties-mille.csv",
     "sha256": "6bc5d6b290ed041ffa17423d45f3e0ee0163826d38c8c1bcc56a121180eb7963",
@@ -244,11 +244,11 @@
       ],
       "fort": {
         "rappel": {
-          "succes": 3816,
+          "succes": 3815,
           "n": 4170,
-          "taux": 0.9151079136690647,
-          "bas": 0.9062613603573744,
-          "haut": 0.923190337090847
+          "taux": 0.9148681055155875,
+          "bas": 0.9060109685899473,
+          "haut": 0.9229615539897309
         },
         "fauxPositifs": {
           "succes": 126,
@@ -260,11 +260,11 @@
       },
       "possible": {
         "rappel": {
-          "succes": 4061,
+          "succes": 4060,
           "n": 4170,
-          "taux": 0.9738609112709832,
-          "bas": 0.9685647548905189,
-          "haut": 0.9782847853507782
+          "taux": 0.973621103117506,
+          "bas": 0.9683037194801323,
+          "haut": 0.9780666458926219
         },
         "fauxPositifs": {
           "succes": 885,
@@ -285,11 +285,11 @@
       },
       "fort": {
         "rappel": {
-          "succes": 276,
+          "succes": 271,
           "n": 1000,
-          "taux": 0.276,
-          "bas": 0.2491906205347866,
-          "haut": 0.3045238300319165
+          "taux": 0.271,
+          "bas": 0.24436624773932128,
+          "haut": 0.2993864718132457
         },
         "fauxPositifs": {
           "succes": 0,
@@ -301,11 +301,11 @@
       },
       "possible": {
         "rappel": {
-          "succes": 413,
+          "succes": 410,
           "n": 1000,
-          "taux": 0.413,
-          "bas": 0.3828719864762746,
-          "haut": 0.4437938938777574
+          "taux": 0.41,
+          "bas": 0.37991671320713805,
+          "haut": 0.4407721285384123
         },
         "fauxPositifs": {
           "succes": 0,
@@ -11789,5 +11789,5 @@
     "At most 5 candidates are shown per name, highest score first; the count of the others is given.",
     "The rates quoted first come from 400 matching pairs and 200 hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties."
   ],
-  "empreinte": "51ec7615903c384c"
+  "empreinte": "055215e7a7c7e73f"
 }

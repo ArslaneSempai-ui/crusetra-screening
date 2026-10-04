@@ -2,7 +2,7 @@
   "version": 1,
   "quoi": "the company and vessel name matcher of cascade-screening: the training cells, the realistic verdict every client report cites, the blind verdicts of the rounds and the two thousand-name books, frozen with their date and commit; sealed afterwards with npm run sceller",
   "date": "2026-10-04",
-  "commit": "617e771",
+  "commit": "3b611c5",
   "apprentissage": {
     "jeux": 23,
     "paires": 4170,
@@ -10,11 +10,11 @@
     "fort": {
       "seuil": 0.81,
       "trouves": {
-        "succes": 3816,
+        "succes": 3815,
         "n": 4170,
-        "taux": 0.9151079136690647,
-        "bas": 0.9062613603573744,
-        "haut": 0.923190337090847
+        "taux": 0.9148681055155875,
+        "bas": 0.9060109685899473,
+        "haut": 0.9229615539897309
       },
       "fausses": {
         "succes": 126,
@@ -34,11 +34,11 @@
     "possible": {
       "seuil": 0.8,
       "trouves": {
-        "succes": 4061,
+        "succes": 4060,
         "n": 4170,
-        "taux": 0.9738609112709832,
-        "bas": 0.9685647548905189,
-        "haut": 0.9782847853507782
+        "taux": 0.973621103117506,
+        "bas": 0.9683037194801323,
+        "haut": 0.9780666458926219
       },
       "fausses": {
         "succes": 885,
@@ -531,9 +531,9 @@
       "fichier": "exemple/contreparties-mille.csv",
       "sha256": "6bc5d6b290ed041ffa17423d45f3e0ee0163826d38c8c1bcc56a121180eb7963",
       "releve": "exemple/contreparties-mille.screening.json",
-      "sceau": "51ec7615903c384c",
-      "commit": "617e771",
-      "emisLe": "2026-10-04T15:34:52.476Z",
+      "sceau": "055215e7a7c7e73f",
+      "commit": "3b611c5",
+      "emisLe": "2026-10-04T17:51:01.191Z",
       "lignes": 1000,
       "forts": 2,
       "possibles": 22,
@@ -545,13 +545,13 @@
       "fichier": "exemple/contreparties-mille-2.csv",
       "sha256": "523054e1772d8016a7dc4ff0d17d0b4376ed363c20b5948da4fdd4032ce5bb75",
       "releve": "exemple/contreparties-mille-2.screening.json",
-      "sceau": "ef9730f5159180b6",
-      "commit": "617e771",
-      "emisLe": "2026-10-04T15:37:56.552Z",
+      "sceau": "83b78d5b131ea06b",
+      "commit": "3b611c5",
+      "emisLe": "2026-10-04T17:53:26.234Z",
       "lignes": 1000,
-      "forts": 3,
-      "possibles": 22,
-      "sansCorrespondance": 975,
+      "forts": 0,
+      "possibles": 24,
+      "sansCorrespondance": 976,
       "aveugle": false,
       "note": "a Hamburg forwarder's book, written after that rule and screened blind once on commit 9e18a1c; its alert volume was then read on 30 September 2026 to choose the possible threshold (the review budget of choisirSeuils), so its figure is no longer blind"
     }
@@ -560,7 +560,7 @@
     "A candidate is a name to be read by the client's compliance officer, never a match established: every figure here counts candidates, not findings.",
     "The realistic set is a quarter of ordinary documents of one forwarder, written blind; it is the held-out set every client report cites first, and it was never used to choose a threshold.",
     "The blind sets are trap populations, one per round; a population whose script the matcher had never read scores 40 to 55 % at the strong level on its round and gains about forty points the round after, so the last set (Polish and Baltic) stands where the unread ones stood.",
-    "Neither thousand-name book is blind any more: both were read to choose the possible threshold. Screened against the seven sources, they give 24 and 25 names to review in a thousand, above the budget of one in fifty that threshold was chosen for on five lists (18 and 17). Of their five strong alerts, four are false on reading: a vessel name against a short or unrelated alias of a listed party; the fifth is one letter away from a listed vessel's name. They are the first thing a further round would read."
+    "Neither thousand-name book is blind any more: both were read to choose the possible threshold and its review budget. Screened against the seven sources, each gives 24 names to review in a thousand, inside the budget of one in forty set on 4 October 2026 (it was one in fifty on five lists, with 18 and 17 names). Of their two strong alerts, one is false on reading (a vessel name against an alias of a listed company) and the other is one letter away from a listed vessel's name."
   ],
-  "empreinte": "69a728f400de4ebf"
+  "empreinte": "ea01de439f1f2478"
 }

@@ -1,9 +1,9 @@
 {
   "version": 1,
   "genre": "cascade-screening/counterparty-screening",
-  "emisLe": "2026-10-04T15:37:56.552Z",
+  "emisLe": "2026-10-04T17:53:26.234Z",
   "client": "Example forwarder, Hamburg",
-  "commit": "617e771",
+  "commit": "3b611c5",
   "fichier": {
     "nom": "contreparties-mille-2.csv",
     "sha256": "523054e1772d8016a7dc4ff0d17d0b4376ed363c20b5948da4fdd4032ce5bb75",
@@ -244,11 +244,11 @@
       ],
       "fort": {
         "rappel": {
-          "succes": 3816,
+          "succes": 3815,
           "n": 4170,
-          "taux": 0.9151079136690647,
-          "bas": 0.9062613603573744,
-          "haut": 0.923190337090847
+          "taux": 0.9148681055155875,
+          "bas": 0.9060109685899473,
+          "haut": 0.9229615539897309
         },
         "fauxPositifs": {
           "succes": 126,
@@ -260,11 +260,11 @@
       },
       "possible": {
         "rappel": {
-          "succes": 4061,
+          "succes": 4060,
           "n": 4170,
-          "taux": 0.9738609112709832,
-          "bas": 0.9685647548905189,
-          "haut": 0.9782847853507782
+          "taux": 0.973621103117506,
+          "bas": 0.9683037194801323,
+          "haut": 0.9780666458926219
         },
         "fauxPositifs": {
           "succes": 885,
@@ -285,11 +285,11 @@
       },
       "fort": {
         "rappel": {
-          "succes": 276,
+          "succes": 271,
           "n": 1000,
-          "taux": 0.276,
-          "bas": 0.2491906205347866,
-          "haut": 0.3045238300319165
+          "taux": 0.271,
+          "bas": 0.24436624773932128,
+          "haut": 0.2993864718132457
         },
         "fauxPositifs": {
           "succes": 0,
@@ -301,11 +301,11 @@
       },
       "possible": {
         "rappel": {
-          "succes": 413,
+          "succes": 410,
           "n": 1000,
-          "taux": 0.413,
-          "bas": 0.3828719864762746,
-          "haut": 0.4437938938777574
+          "taux": 0.41,
+          "bas": 0.37991671320713805,
+          "haut": 0.4407721285384123
         },
         "fauxPositifs": {
           "succes": 0,
@@ -360,9 +360,9 @@
   },
   "totaux": {
     "lignes": 1000,
-    "forts": 3,
-    "possibles": 22,
-    "sansCorrespondance": 975
+    "forts": 0,
+    "possibles": 24,
+    "sansCorrespondance": 976
   },
   "resultats": [
     {
@@ -639,20 +639,8 @@
       "ref": "N-0023",
       "type": "entity",
       "pays": "ES",
-      "statut": "possible",
-      "candidats": [
-        {
-          "source": "OFAC",
-          "liste": "RUSSIA-EO14024",
-          "ids": [
-            "40493"
-          ],
-          "nomListe": "TERRA-AZ LIMITED",
-          "type": "entity",
-          "score": 0.8,
-          "par": "name"
-        }
-      ],
+      "statut": "no-match",
+      "candidats": [],
       "autres": 0,
       "ecartesParImo": []
     },
@@ -2732,7 +2720,7 @@
       "ref": "N-0210",
       "type": "vessel",
       "pays": "DE",
-      "statut": "strong",
+      "statut": "possible",
       "candidats": [
         {
           "source": "EU",
@@ -2743,7 +2731,7 @@
           "nomListe": "SATRA",
           "alias": "ساترا",
           "type": "entity",
-          "score": 0.9,
+          "score": 0.8,
           "par": "name"
         },
         {
@@ -5366,7 +5354,7 @@
       "ref": "N-0438",
       "type": "vessel",
       "pays": "PL",
-      "statut": "strong",
+      "statut": "possible",
       "candidats": [
         {
           "source": "UK",
@@ -5377,7 +5365,7 @@
           "nomListe": "N.A. Dollezhal Order of Lenin Research and Design Institute of Power Engineering JSC",
           "alias": "AO НИКИЭТ",
           "type": "entity",
-          "score": 0.9,
+          "score": 0.8,
           "par": "name"
         }
       ],
@@ -8516,7 +8504,7 @@
       "ref": "N-0710",
       "type": "vessel",
       "pays": "DE",
-      "statut": "strong",
+      "statut": "possible",
       "candidats": [
         {
           "source": "CSL",
@@ -8527,7 +8515,7 @@
           "nomListe": "System Equipment Co., Ltd. of the 28th Research Institute (Liyang)",
           "alias": "CEV",
           "type": "other",
-          "score": 0.9,
+          "score": 0.8,
           "par": "name"
         }
       ],
@@ -11860,5 +11848,5 @@
     "At most 5 candidates are shown per name, highest score first; the count of the others is given.",
     "The rates quoted first come from 400 matching pairs and 200 hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties."
   ],
-  "empreinte": "ef9730f5159180b6"
+  "empreinte": "83b78d5b131ea06b"
 }
