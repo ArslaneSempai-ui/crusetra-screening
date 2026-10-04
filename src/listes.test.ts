@@ -68,7 +68,8 @@ test("Royaume-Uni : le nom principal, ses variations et alias, l'alias de basse 
   assert.deepEqual(personne!.alias, ["Ivan Ivanovich EXAMPLOV"], "Name1 à Name6 joints dans l'ordre");
   assert.equal(personne!.type, "person");
   assert.equal(navire!.type, "vessel");
-  assert.equal(navire!.imo, "9074729", "« IMO9074729 » : sept chiffres, le premier des deux numéros");
+  assert.equal(navire!.imo, "9074729", "« IMO9074729 » : sept chiffres");
+  assert.deepEqual(navire!.autresImo, ["9187629"], "le second numéro du même navire est gardé");
 });
 
 test("UE, navires : l'annexe XLII seule, ses lignes de navire seules, un numéro OMI une seule fois", () => {

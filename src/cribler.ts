@@ -64,6 +64,8 @@ export type Candidat = {
   aliasFaible?: boolean;
   type: EntreeListe["type"];
   imo?: string;
+  /** les autres numéros OMI que la liste donne au même navire */
+  autresImo?: string[];
   score: number;
   /** « imo » : trouvé par le numéro OMI, pas par le nom */
   par: "name" | "imo";
@@ -455,9 +457,9 @@ export class Index {
         }
       }
       /* le numéro OMI désigne l'ENTRÉE : on l'accroche à sa première chaîne indexée */
-      if (e.imo && premier !== -1) {
-        const l = this.parImo.get(e.imo);
-        if (l) l.push(premier); else this.parImo.set(e.imo, [premier]);
+      for (const imo of e.imo && premier !== -1 ? [e.imo, ...(e.autresImo ?? [])] : []) {
+        const l = this.parImo.get(imo);
+        if (l) l.push(premier); else this.parImo.set(imo, [premier]);
       }
     }
   }
@@ -823,7 +825,7 @@ export function cribler(c: Contrepartie, index: Index, seuils: { fort: number; p
   const ecartesParImo: Resultat["ecartesParImo"] = [];
   if (c.imo) {
     for (const [cle, cand] of meilleurs) {
-      if (cand.par === "name" && cand.imo && cand.imo !== c.imo) {
+      if (cand.par === "name" && cand.imo && cand.imo !== c.imo && !cand.autresImo?.includes(c.imo)) {
         ecartesParImo.push({ nomListe: cand.nomListe, imo: cand.imo });
         meilleurs.delete(cle);
       }
@@ -872,7 +874,7 @@ function candidat(n: NomIndexe, score: number, par: Candidat["par"]): Candidat {
     ids: [n.entree.id], nomListe: n.entree.nom,
     ...(n.alias && par === "name" ? { alias: n.alias } : {}),
     ...(n.faible && par === "name" ? { aliasFaible: true } : {}),
-    type: n.entree.type, ...(n.entree.imo ? { imo: n.entree.imo } : {}), score, par,
+    type: n.entree.type, ...(n.entree.imo ? { imo: n.entree.imo } : {}), ...(n.entree.autresImo?.length ? { autresImo: n.entree.autresImo } : {}), score, par,
   };
 }
 
