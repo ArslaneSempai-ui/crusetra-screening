@@ -40,6 +40,7 @@ import {
   CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pliJaponais, pliCoreen, CREDIT_KANA, pluriel, CHEMIN_VERDICT, RAPPEL_MIN,
   pliSlave, CREDIT_CYRILLIQUE, clesGrecques, CREDIT_GREC, clePhonetique, homophoneCorrige, squeletteArabe, ARTICLES_ARABES, clesSlaves, pliThai, CREDIT_THAI,
   BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare, type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme, pliEnye,
+  clesEmprunt, CREDIT_EMPRUNT, CHEMIN_APPRENTISSAGE_REEL, mesurerReel,
 } from "./entites.ts";
 import { cleAbjad, cleAbjadSansTa, cleAbjadVLuF, cleAbjadVoyelles, type Abjad } from "./ecritures.ts";
 import { pliBirman, CREDIT_BIRMAN } from "./birman.ts";
@@ -98,6 +99,9 @@ export type Criblage = {
     seuils: { fort: number; possible: number };
     rappelMin: number; tientLePlancher: boolean;
     apprentissage: { jeux: JeuMesure[]; fort: MesureCitee; possible: MesureCitee };
+    /** l'échantillon réel (noms du registre GLEIF) que la règle des seuils lit à côté des jeux écrits : ses taux aux deux seuils,
+     *  les fausses alertes comptées sur ses vraies sociétés distinctes, strate contenue à part (voir `choisirSeuils`) */
+    apprentissageReel: { jeu: JeuMesure; fort: MesureCitee; possible: MesureCitee };
     verdict: { jeu: JeuMesure; fort: MesureCitee; possible: MesureCitee } | null;
   };
   totaux: { lignes: number; forts: number; possibles: number; sansCorrespondance: number };
@@ -162,6 +166,8 @@ type NomIndexe = { brut: string; nom: NomPrepare; entree: EntreeListe; alias?: s
   /** la chaîne est un ANCIEN nom annoncé, ou a perdu une mention de succursale qui nommait `mention` : voir
    *  `plafondDesLectures`, que le criblage applique comme le score d'entité */
   ancien: boolean; mention: string; registre: string; partie: string; paysRegistre: string; associe: string;
+  /** la chaîne est la lecture soudée d'un pinyin écrit syllabe par syllabe (voir `plafondDesLectures`) */
+  syllabique: boolean;
   /** les bigrammes des deux blocs, codés et triés : le compte des bigrammes partagés se fait
    *  par fusion de deux tableaux triés, sans recalcul (mesuré : 35 % du temps avant) */
   bg: Uint32Array; bgSq: Uint32Array };
@@ -186,7 +192,9 @@ type MotIndexe = { mot: string; sq: string; repli: string; abregeVu: boolean; no
   /** une chaîne listée marquée thaïe porte ce mot (voir `pliThai`) */
   thaiVu: boolean;
   /** une chaîne listée marquée birmane, khmère, porte ce mot (voir `pliBirman`, `pliKhmer` ; tour 18) */
-  birmanVu: boolean; khmerVu: boolean };
+  birmanVu: boolean; khmerVu: boolean;
+  /** les modes d'emprunt (r, n) des écritures dans lesquelles une chaîne listée porte ce mot (voir `clesEmprunt`) */
+  empruntVu: string };
 
 /**
  * L'INDEX, ET POURQUOI IL NE PERD RIEN.
@@ -278,6 +286,14 @@ export class Index {
   private readonly parPliSlaveAllemand = new Map<string, MotIndexe[]>();
   private readonly parPliSlaveAllemandNatif = new Map<string, MotIndexe[]>();
   private readonly parPliSlaveInitialeLongueur = new Map<string, MotIndexe[]>();
+  /** les clés d'emprunt (`clesEmprunt`, CREDIT_EMPRUNT) de chaque mot sous les deux modes (« r|… », « n|… ») : c'est là qu'un nom écrit
+   *  dans une écriture qui prononce cherche ses mots ; et les mêmes clés pour les seuls mots que des chaînes écrites dans une telle
+   *  écriture portent, sous leur mode : c'est là qu'un nom latin cherche les leurs, comme pour les abjads */
+  private readonly parCleEmprunt = new Map<string, MotIndexe[]>();
+  private readonly parCleEmpruntNatif = new Map<string, MotIndexe[]>();
+  /** les chaînes par la clé d'emprunt de leur bloc (voir le bloc sous la clé d'emprunt, scorePrepares) : une chaîne latine sous les deux
+   *  modes, une chaîne écrite dans une écriture qui prononce sous le sien */
+  private readonly parCleEmpruntBloc = new Map<string, number[]>();
   /** les chaînes qui portent un bigramme, par bigramme ET longueur de bloc (« an20 ») : la
    *  borne de longueur du bloc se lit dans la clé, sans parcourir les autres longueurs */
   private readonly bigrammes = new Map<string, number[]>();
@@ -324,14 +340,14 @@ export class Index {
         const k = this.noms.length;
         if (premier === -1) premier = k;
         this.noms.push({ brut: texte, nom, entree: e, ...(alias ? { alias } : {}), faible: origine ? faibles.has(origine) : false,
-          ancien: l.ancien, mention: l.mention, registre: l.registre, partie: l.partie, paysRegistre: l.paysRegistre, associe: l.associe, bg: this.coder(nom.bloc), bgSq: this.coder(nom.blocSq) });
+          ancien: l.ancien, mention: l.mention, registre: l.registre, partie: l.partie, paysRegistre: l.paysRegistre, associe: l.associe, syllabique: l.syllabique ?? false, bg: this.coder(nom.bloc), bgSq: this.coder(nom.blocSq) });
         if (estCoupe(texte)) this.coupes.push(k);
         if (nom.mots.length === 0) { this.sansMots.push(k); continue; }
         nom.mots.forEach((mot, i) => {
           let m = this.vocabulaire.get(mot);
           if (!m) {
             m = { mot, sq: nom.squelettes[i]!, repli: nom.replis[i]!, abregeVu: nom.abreges[i]!, sigleVu: nom.sigles[i]!, noms: [k], abjadVu: "", cantonaisVu: false, grecVu: false,
-              japonaisVu: false, coreenVu: false, slaveVu: false, apresArticleVu: false, thaiVu: false, birmanVu: false, khmerVu: false };
+              japonaisVu: false, coreenVu: false, slaveVu: false, apresArticleVu: false, thaiVu: false, birmanVu: false, khmerVu: false, empruntVu: "" };
             const ps = pliSlave(mot);
             ranger(this.parPliSlave, ps, m);
             for (const k of clesSlaves(mot)) if (k !== ps) ranger(this.parPliSlaveAllemand, k, m);
@@ -344,6 +360,7 @@ export class Index {
             ranger(this.parPliBirman, pliBirman(mot), m);
             ranger(this.parPliKhmer, pliKhmer(mot), m);
             if (mot.length >= 4) ranger(this.parClePhonetique, clePhonetique(mot), m);
+            if (mot.length >= 3) for (const mode of ["r", "n"] as const) for (const c of clesEmprunt(mot, mode)) if (c.length >= 3) ranger(this.parCleEmprunt, `${mode}|${c}`, m);
             this.vocabulaire.set(mot, m);
             ranger(this.parInitialeLongueur, mot[0]! + mot.length, m);
             ranger(this.parSqInitialeLongueur, (m.sq[0] ?? "") + m.sq.length, m);
@@ -392,6 +409,11 @@ export class Index {
             const vLuF = mode === "arabe" ? cleAbjadVLuF(mot) : undefined;
             if (vLuF !== undefined && vLuF.length >= 3) ranger(this.parCleAbjadNatif, `a|${vLuF}`, m);
           }
+          const emprunt = nom.marques.emprunt;
+          if (emprunt !== "" && !m.empruntVu.includes(emprunt)) {
+            m.empruntVu += emprunt;
+            if (mot.length >= 3) for (const c of clesEmprunt(mot, emprunt)) if (c.length >= 3) ranger(this.parCleEmpruntNatif, `${emprunt}|${c}`, m);
+          }
           if (nom.marques.cantonais && !m.cantonaisVu) { m.cantonaisVu = true; ranger(this.parPliCantonaisNatif, pliCantonais(mot), m); }
           if (nom.marques.japonais && !m.japonaisVu) { m.japonaisVu = true; ranger(this.parPliJaponaisNatif, pliJaponais(mot), m); }
           if (nom.marques.coreen && !m.coreenVu) { m.coreenVu = true; ranger(this.parPliCoreenNatif, pliCoreen(mot), m); }
@@ -406,6 +428,13 @@ export class Index {
             for (const k of clesSlaves(mot)) if (k !== ps) ranger(this.parPliSlaveAllemandNatif, k, m);
           }
         });
+        /* le bloc sous la clé d'emprunt : une chaîne latine sous les deux modes, une chaîne écrite dans une écriture qui prononce sous le sien */
+        for (const mode of nom.marques.emprunt !== "" ? [nom.marques.emprunt] : ["r", "n"] as const) {
+          for (const c of clesEmprunt(nom.bloc, mode)) if (c.length >= 5) {
+            const l = this.parCleEmpruntBloc.get(`${mode}|${c}`);
+            if (l) { if (l[l.length - 1] !== k) l.push(k); } else this.parCleEmpruntBloc.set(`${mode}|${c}`, [k]);
+          }
+        }
         /* les initiales de deux à quatre mots consécutifs, pour le sigle écrit d'une requête (mêmes conditions que `sigleDe`) */
         for (let L = 2; L <= 4; L++) for (let i = 0; i + L <= nom.mots.length; i++) {
           const suite = nom.mots.slice(i, i + L);
@@ -447,8 +476,8 @@ export class Index {
 
   /** Les chaînes listées dont un mot est assez proche de `mot` (mêmes règles que le score). */
   private nomsParMot(mot: string, sq: string, repli: string, dernier: boolean, coupe: boolean, abreviation: boolean, abjad: Abjad, cantonais: boolean,
-    japonais: boolean, coreen: boolean, slave: boolean, grec: boolean, apresArticle: boolean, thai: boolean, birman: boolean, khmer: boolean): number[] {
-    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}|${abjad}|${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${slave ? 1 : 0}${grec ? 1 : 0}${apresArticle ? 1 : 0}${thai ? 1 : 0}${birman ? 1 : 0}${khmer ? 1 : 0}`;
+    japonais: boolean, coreen: boolean, slave: boolean, grec: boolean, apresArticle: boolean, thai: boolean, birman: boolean, khmer: boolean, emprunt: "" | "r" | "n"): number[] {
+    const cle = `${mot}|${dernier ? 1 : 0}|${coupe ? 1 : 0}|${abreviation ? 1 : 0}|${abjad}|${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${slave ? 1 : 0}${grec ? 1 : 0}${apresArticle ? 1 : 0}${thai ? 1 : 0}${birman ? 1 : 0}${khmer ? 1 : 0}${emprunt}`;
     /* deux mots du dictionnaire ne sont deux mots anglais que hors de l'article arabe, d'un côté comme de l'autre (voir ARTICLES_ARABES) */
     const anglais = (autre: MotIndexe) => tousDeuxAnglais(mot, autre.mot) && !apresArticle && !autre.apresArticleVu;
     const deja = this.cacheMots.get(cle);
@@ -502,6 +531,14 @@ export class Index {
         /* le v lu ف, dans les deux sens aussi */
         const vLuF = mode === "arabe" ? cleAbjadVLuF(mot) : undefined;
         if (vLuF !== undefined && vLuF.length >= 3) for (const m of table.get(`a|${vLuF}`) ?? []) retenus.add(m);
+      }
+    }
+    /* la même clé d'emprunt (CREDIT_EMPRUNT) : un nom écrit dans une écriture qui prononce face à tous les mots, sous son mode ; un nom
+       latin face aux mots que des chaînes écrites dans une telle écriture portent, sous les deux modes */
+    if (t <= CREDIT_EMPRUNT && mot.length >= 3) {
+      for (const mode of emprunt !== "" ? [emprunt] : ["r", "n"] as const) {
+        const table = emprunt !== "" ? this.parCleEmprunt : this.parCleEmpruntNatif;
+        for (const c of clesEmprunt(mot, mode)) if (c.length >= 3) for (const m of table.get(`${mode}|${c}`) ?? []) retenus.add(m);
       }
     }
     /* les mêmes kana (CREDIT_KANA) : un nom marqué japonais face à tous les mots, un nom sans marque face aux mots
@@ -653,13 +690,20 @@ export class Index {
     const coupe = estCoupe(brut);
     q.mots.forEach((m, i) => {
       for (const k of this.nomsParMot(m, q.squelettes[i]!, q.replis[i]!, i === q.mots.length - 1, coupe, q.abreges[i]!, q.marques.abjad, q.marques.cantonais,
-        q.marques.japonais, q.marques.coreen, q.marques.slave, q.marques.hebreuOuGrec, i > 0 && ARTICLES_ARABES.has(q.mots[i - 1]!), q.marques.thai, q.marques.birman, q.marques.khmer)) retenus.add(k);
+        q.marques.japonais, q.marques.coreen, q.marques.slave, q.marques.hebreuOuGrec, i > 0 && ARTICLES_ARABES.has(q.mots[i - 1]!), q.marques.thai, q.marques.birman, q.marques.khmer,
+        q.marques.emprunt)) retenus.add(k);
       /* une civilité que la requête soude au mot suivant (« sripelangi »), ou qu'elle écrit à part
          quand une chaîne listée la soude : mêmes règles que le score, qui vérifie que l'autre côté
          l'a écrite ; ici on retient large */
       for (const c of CIVILITES) if (m.startsWith(c) && m.length >= c.length + 4) for (const k of this.vocabulaire.get(m.slice(c.length))?.noms ?? []) retenus.add(k);
       for (const c of q.civilites) for (const k of this.vocabulaire.get(c + m)?.noms ?? []) retenus.add(k);
     });
+    /* le bloc sous la clé d'emprunt (voir scorePrepares) : sous le mode de la requête écrite dans une écriture qui prononce, sous les
+       deux pour une requête latine ; la condition (une écriture d'un côté, le latin de l'autre, des nombres de mots différents) se vérifie
+       au score */
+    for (const mode of q.marques.emprunt !== "" ? [q.marques.emprunt] : ["r", "n"] as const) {
+      for (const c of clesEmprunt(q.bloc, mode)) if (c.length >= 5) for (const k of this.parCleEmpruntBloc.get(`${mode}|${c}`) ?? []) retenus.add(k);
+    }
     /* le sigle d'une locution (voir `sigleDe`) : un sigle écrit de la requête cherche les chaînes dont des mots consécutifs
        portent ses initiales ; les initiales de mots consécutifs de la requête cherchent les sigles écrits des listes. La
        condition d'absence de l'autre côté se vérifie au score ; ici on retient large */
@@ -762,7 +806,7 @@ export function cribler(c: Contrepartie, index: Index, seuils: { fort: number; p
     let s = 0;
     /* un ancien nom des deux côtés, deux succursales : le possible au plus (voir `plafondDesLectures`) */
     for (const l of lectures) {
-      const plafond = plafondDesLectures(l.lecture, { texte: n.brut, lecture: n.nom.marques.lecture, ancien: n.ancien, mention: n.mention, registre: n.registre, partie: n.partie, paysRegistre: n.paysRegistre, associe: n.associe });
+      const plafond = plafondDesLectures(l.lecture, { texte: n.brut, lecture: n.nom.marques.lecture, ancien: n.ancien, mention: n.mention, registre: n.registre, partie: n.partie, paysRegistre: n.paysRegistre, associe: n.associe, syllabique: n.syllabique });
       s = Math.max(s, Math.min(plafond, scoreBrut(index.f, l.brut, l.nom, n.brut, n.nom, options)));
     }
     if (s < seuils.possible) continue;
@@ -958,7 +1002,10 @@ export function executer(
     return b;
   });
   const apprentissage = mesurerJeux(f, bruts);
-  const reglage: Reglage = choisirSeuils(apprentissage.table);
+  const brutReel = lireJeu(CHEMIN_APPRENTISSAGE_REEL);
+  if (brutReel === null) throw new Error(`the real training sample ${CHEMIN_APPRENTISSAGE_REEL.pathname} is missing: the thresholds cannot be measured. Nothing was screened.`);
+  const reel = mesurerReel(f, brutReel);
+  const reglage: Reglage = choisirSeuils(apprentissage.table, reel.table);
   const seuils = { fort: reglage.fort.seuil, possible: reglage.possible.seuil };
   const brutVerdict = lireJeu(CHEMIN_VERDICT);
   const verdict = brutVerdict === null ? null : mesurerJeux(f, [brutVerdict]);
@@ -980,6 +1027,7 @@ export function executer(
       poids: `word weights are the smoothed inverse document frequency over the ${f.entrees.toLocaleString("en-GB")} entries of the screened lists`,
       seuils, rappelMin: RAPPEL_MIN, tientLePlancher: reglage.tientLePlancher,
       apprentissage: { jeux: apprentissage.jeux, fort: citer(apprentissage.table, seuils.fort), possible: citer(apprentissage.table, seuils.possible) },
+      apprentissageReel: { jeu: reel.jeux[0]!, fort: citer(reel.table, seuils.fort), possible: citer(reel.table, seuils.possible) },
       verdict: verdict ? { jeu: verdict.jeux[0]!, fort: citer(verdict.table, seuils.fort), possible: citer(verdict.table, seuils.possible) } : null,
     },
     totaux: { lignes: lignes.length, forts, possibles, sansCorrespondance: lignes.length - forts - possibles },

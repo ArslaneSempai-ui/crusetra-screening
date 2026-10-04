@@ -68,6 +68,7 @@ import { REGIONS } from "./preparation.ts";
 import { plier } from "./preparation.ts";
 import { pliCantonais } from "./mots.ts";
 import { FORMES } from "./preparation.ts";
+import { clesEmprunt, CREDIT_EMPRUNT } from "./mots.ts";
 
 export type NomPrepare = {
   mots: readonly string[]; poids: readonly number[]; total: number;
@@ -102,7 +103,7 @@ export type NomPrepare = {
 
 const SANS_MARQUES: Marques = { pays: [], familles: [], designations: [], navire: false, societe: false, arabe: false, japonais: false, chinois: false,
   coreen: false, hebreuOuGrec: false, indien: false, hispanique: false, tamoul: false, thai: false, birman: false, khmer: false, prive: false, majuscules: false, chat: false, abjad: "", cantonais: false,
-  lecture: "mandarin", priveInconnu: false, natifs: new Map(), filiation: "", filiationOrdre: "", succursale: "", typeNavire: "", slave: false };
+  lecture: "mandarin", priveInconnu: false, natifs: new Map(), filiation: "", filiationOrdre: "", succursale: "", typeNavire: "", slave: false, emprunt: "" };
 
 export function preparerNom(f: Frequences, nom: string, lecture: Lecture = "mandarin"): NomPrepare {
   const a = analyserEntite(nom, lecture);
@@ -512,6 +513,9 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
   const tronqueur: readonly [boolean, boolean] = [styleTronque(A, B), styleTronque(B, A)];
   /* le mot qu'un téléphone a corrigé (voir `motAutocorrige`) : sous la marque chat, hors des noms chinois, coréens et japonais */
   const autocorrige = chat && !chinois && !coreen && !japonais ? motAutocorrige(A, B) : undefined;
+  /* UN NOM ÉCRIT DANS UNE ÉCRITURE QUI PRONONCE, face à un nom latin : ses mots anglais se comparent sur leur clé d'emprunt (voir
+     `clesEmprunt`), dans le mode de l'écriture native ; deux noms de la même écriture, ou deux noms latins, jamais */
+  const emprunt = A.marques.emprunt !== "" && B.marques.emprunt === "" ? A.marques.emprunt : B.marques.emprunt !== "" && A.marques.emprunt === "" ? B.marques.emprunt : "";
   const memo = options.memo;
   const cote = (X: NomPrepare, Y: NomPrepare, cote: 0 | 1) => {
     const styleX = tronqueur[cote], styleY = tronqueur[1 - cote]!;
@@ -533,7 +537,7 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
            restent deux mots (Green, Grin) */
         const arabeX = arabe && i > 0 && ARTICLES_ARABES.has(X.mots[i - 1]!), arabeY = arabe && j > 0 && ARTICLES_ARABES.has(Y.mots[j - 1]!);
         const anglais = tousDeuxAnglais(x, y) && !arabeX && !arabeY;
-        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${arabeX ? 1 : 0}${arabeY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${thai ? 1 : 0}${birman ? 1 : 0}${khmer ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}${navire ? 1 : 0}${sansForme ? 1 : 0}${germanique ? 1 : 0}${slave ? 1 : 0}${abjad}${nx}${ny}${nordique ? 1 : 0}${styleX ? 1 : 0}${styleY ? 1 : 0}` : "";
+        const cle = memo ? `${x}|${y}|${X.abreges[i] ? 1 : 0}${Y.abreges[j] ? 1 : 0}${dernierX ? 1 : 0}${dernierY ? 1 : 0}${arabeX ? 1 : 0}${arabeY ? 1 : 0}${romanisation ? 1 : 0}${arabe ? 1 : 0}${chinois ? 1 : 0}${cantonais ? 1 : 0}${japonais ? 1 : 0}${coreen ? 1 : 0}${hebreuOuGrec ? 1 : 0}${indien ? 1 : 0}${tamoul ? 1 : 0}${thai ? 1 : 0}${birman ? 1 : 0}${khmer ? 1 : 0}${hispanique ? 1 : 0}${X.marques.majuscules ? 1 : 0}${Y.marques.majuscules ? 1 : 0}${chat ? 1 : 0}${navire ? 1 : 0}${sansForme ? 1 : 0}${germanique ? 1 : 0}${slave ? 1 : 0}${abjad}${nx}${ny}${nordique ? 1 : 0}${styleX ? 1 : 0}${styleY ? 1 : 0}${emprunt}` : "";
         /* le cache code l'équivalence de romanisation en ajoutant 2 à la valeur (elle est dans [0, 1]) */
         const enCache = memo?.get(cle);
         let v = enCache === undefined ? undefined : enCache >= 2 ? enCache - 2 : enCache;
@@ -601,6 +605,11 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
           if (pliK) v = Math.max(v, CREDIT_KHMER);
           /* et les mêmes lettres grecques aussi (voir CREDIT_GREC) */
           if (pliG) v = Math.max(v, CREDIT_GREC);
+          /* et la même clé d'emprunt, d'une écriture qui prononce au latin (voir CREDIT_EMPRUNT) */
+          if (emprunt !== "" && v < CREDIT_EMPRUNT && x !== y && !anglais && x.length >= 3 && y.length >= 3) {
+            const ky = clesEmprunt(y, emprunt);
+            if (clesEmprunt(x, emprunt).some((k) => k.length >= 3 && ky.includes(k))) { equivalent = true; v = CREDIT_EMPRUNT; }
+          }
           /* L'ADJECTIF SLAVE DE LIEU : « Kubanskaya » et « Kurganskaya » se ressemblent à 0,82 par leur suffixe commun ;
              ce sont leurs radicaux qui nomment, Kuban et Kurgan, deux lieux à deux lettres près (voir `radicalSlave`).
              Sous la marque, deux mots au même suffixe et de radicaux différents valent leurs radicaux seuls ; sauf quand
@@ -920,6 +929,14 @@ export function scorePrepares(A: NomPrepare, B: NomPrepare, options: OptionsScor
     const meilleur = Math.max(similitude(A.bloc, B.bloc), Math.min(0.95, similitude(A.blocSq, B.blocSq)),
       thai ? Math.min(0.95, similitude(pliThai(A.bloc), pliThai(B.bloc))) : 0);
     if (meilleur >= BLOC_MIN) s = Math.max(s, meilleur);
+  }
+  /* ET LE BLOC SOUS LA CLÉ D'EMPRUNT : une écriture qui prononce soude souvent le nom en un mot (« 삼성디스플레이 » : samseongdiseupeullei,
+     « มาร์เก็ตเอนี่แวร์ » : maketeniwae) que le nom latin écrit en deux (« Samsung Display », « Market Anyware ») ; les deux blocs sous la
+     même clé, de cinq consonnes au moins, valent la clé d'un mot (voir `clesEmprunt` ; registre GLEIF, 30/09/2026). Comme le bloc, seulement
+     quand le nombre de mots diffère : à nombre égal, les mots se comparent un à un */
+  if (emprunt !== "" && A.mots.length !== B.mots.length) {
+    const kB = clesEmprunt(B.bloc, emprunt);
+    if (clesEmprunt(A.bloc, emprunt).some((k) => k.length >= 5 && kB.includes(k))) s = Math.max(s, CREDIT_EMPRUNT);
   }
   /* LA CONTENANCE : un nom entier retrouvé DANS l'autre (« Quarrington Metals FZE » dans
      « Quarrington Metals FZE, Jebel Ali Free Zone, Dubai »). La question du criblage n'est pas

@@ -24,7 +24,7 @@ import { Worker, isMainThread, parentPort, workerData } from "node:worker_thread
 import { availableParallelism, totalmem } from "node:os";
 import { createHash } from "node:crypto";
 import type { Frequences } from "./mots.ts";
-import { scoreNoms, type JeuMesure, type MesureEntites } from "./entites.ts";
+import { scoreNoms, STRATE_CONTENUE, type JeuMesure, type MesureEntites } from "./entites.ts";
 import { frequencesDesListes } from "./frequences.ts";
 import { mesurerPaires, validerPaires, type JeuDePaires, type PaireEtiquetee, type TableDUnPalier } from "./measure.ts";
 import type { Matcher, PalierId } from "./matcher.ts";
@@ -142,6 +142,17 @@ export async function mesurerJeuxParallele(f: Frequences, bruts: readonly string
   });
   const { scores, ...repartition } = await scorerPaires(f, paires, options);
   return { jeux, table: tableDepuisScores(paires, scores), paires, scores, ...repartition };
+}
+
+/** `mesurerReel` (src/entites.ts) sur des fils : l'échantillon réel, strate contenue retirée, sa table et ses paires notées. */
+export async function mesurerReelParallele(f: Frequences, brut: string, options: Options = {}):
+  Promise<MesureEntites & Repartition & { paires: PaireEtiquetee[]; scores: number[] }> {
+  const jeu = JSON.parse(brut) as JeuDePaires;
+  const paires = validerPaires(jeu).filter((x) => x.nature !== STRATE_CONTENUE);
+  const match = paires.filter((x) => x.verdict === "match").length;
+  const { scores, ...repartition } = await scorerPaires(f, paires, options);
+  return { jeux: [{ quoi: jeu.quoi, provenance: jeu.provenance, sha256: createHash("sha256").update(brut).digest("hex"), match, different: paires.length - match }],
+    table: tableDepuisScores(paires, scores), paires, scores, ...repartition };
 }
 
 /** Le témoin exhaustif sur des fils : chaque fil construit son index des mêmes entrées et crible sa
