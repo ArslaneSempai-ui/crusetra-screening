@@ -1,5 +1,5 @@
 /**
- * LES FRÉQUENCES DES MOTS DES LISTES, EN CACHE. Les poids des mots (IDF) viennent des cinq listes publiques :
+ * LES FRÉQUENCES DES MOTS DES LISTES, EN CACHE. Les poids des mots (IDF) viennent des listes publiques du manifeste :
  * les relire et les analyser à chaque mesure coûtait une minute (mesuré le 28/09/2026 : douze mesures par voie,
  * quatre voies par tour). Le cache est un fichier de data/ (jamais commis) nommé par l'empreinte du manifeste :
  * une liste rafraîchie change le manifeste, donc le nom, donc le cache se recalcule. Rien n'entre ici qui ne

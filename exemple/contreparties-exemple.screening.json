@@ -1,9 +1,9 @@
 {
   "version": 1,
   "genre": "cascade-screening/counterparty-screening",
-  "emisLe": "2026-10-04T12:46:02.305Z",
+  "emisLe": "2026-10-04T15:34:01.642Z",
   "client": "Example Forwarding Inc. (invented)",
-  "commit": "413ddb7",
+  "commit": "617e771",
   "fichier": {
     "nom": "contreparties-exemple.csv",
     "sha256": "fab131564c82ea6c859845e4cf53207059d66e0acb75d1603c5d12974f6cbf89",
@@ -49,13 +49,29 @@
       "telechargeLe": "2026-09-26T22:24:31.044Z",
       "sha256": "cd59eccb0278d33181c1d87814236109287c9ea5925502f00acfd2e0fd7fe440",
       "entrees": 6241
+    },
+    {
+      "source": "UK",
+      "titre": "UK Sanctions List (FCDO): individuals, entities and ships",
+      "url": "https://sanctionslist.fcdo.gov.uk/docs/UK-Sanctions-List.xml",
+      "telechargeLe": "2026-10-04T14:43:51.092Z",
+      "sha256": "8e23b2d050ea2cc07319a19a7e71060f71ab560c979646c43f6efcec9e03250b",
+      "entrees": 6370
+    },
+    {
+      "source": "EU-VESSELS",
+      "titre": "EU designated vessels: Annex XLII of Regulation (EU) No 833/2014, consolidated text 2026-07-24",
+      "url": "https://publications.europa.eu/resource/celex/02014R0833-20260724",
+      "telechargeLe": "2026-10-04T14:44:09.186Z",
+      "sha256": "2682ecf3442d2f16a3b36ef4d9bbb6fde43fd4d6743bcd991bd4a8e14857770b",
+      "entrees": 672
     }
   ],
   "nonCriblees": [],
   "methode": {
     "palier": "entite",
     "description": "company and vessel names: words aligned in any order and weighted by their rarity on the lists, typos, OCR slips and romanisation variants tolerated, vessel numbers must agree, a listed name found inside a longer one is a possible match, and former names, trading names and document annotations are read as such",
-    "poids": "word weights are the smoothed inverse document frequency over the 33,393 entries of the screened lists",
+    "poids": "word weights are the smoothed inverse document frequency over the 40,435 entries of the screened lists",
     "seuils": {
       "fort": 0.81,
       "possible": 0.8
@@ -228,18 +244,18 @@
       ],
       "fort": {
         "rappel": {
-          "succes": 3817,
+          "succes": 3816,
           "n": 4170,
-          "taux": 0.915347721822542,
-          "bas": 0.9065117721888781,
-          "haut": 0.9234191001278865
+          "taux": 0.9151079136690647,
+          "bas": 0.9062613603573744,
+          "haut": 0.923190337090847
         },
         "fauxPositifs": {
-          "succes": 127,
+          "succes": 126,
           "n": 4170,
-          "taux": 0.030455635491606715,
-          "bas": 0.02565670474608747,
-          "haut": 0.036118902646392406
+          "taux": 0.030215827338129497,
+          "bas": 0.02543695353570954,
+          "haut": 0.03585947898822717
         }
       },
       "possible": {
@@ -251,11 +267,11 @@
           "haut": 0.9782847853507782
         },
         "fauxPositifs": {
-          "succes": 884,
+          "succes": 885,
           "n": 4170,
-          "taux": 0.2119904076738609,
-          "bas": 0.19985293630353454,
-          "haut": 0.22465804657612246
+          "taux": 0.21223021582733814,
+          "bas": 0.20008740614687306,
+          "haut": 0.22490275160132714
         }
       }
     },
@@ -626,6 +642,17 @@
           "par": "name"
         },
         {
+          "source": "UK",
+          "liste": "The Iran (Sanctions) (Nuclear) (EU Exit) Regulations 2019",
+          "ids": [
+            "INU0221"
+          ],
+          "nomListe": "BEHINEH TRADING CO.",
+          "type": "entity",
+          "score": 1,
+          "par": "name"
+        },
+        {
           "source": "UN",
           "liste": "Iran",
           "ids": [
@@ -848,12 +875,12 @@
   ],
   "reserves": [
     "A candidate is not a finding. Each one is for your compliance officer to confirm or clear; this report does not decide, and it is not legal advice.",
-    "The lists are those downloaded on 2026-09-26. A name added to a list after that date is not in this report.",
+    "The lists are those downloaded on 2026-09-26, 2026-10-04. A name added to a list after that date is not in this report.",
     "Names and IMO numbers only are compared. Dates of birth, addresses and other identifiers on the lists are not.",
     "Ownership is not screened. Under OFAC's 50 Percent Rule, an entity owned 50 % or more, directly or indirectly, by one or more blocked persons is itself blocked even when it appears on no list; no name screening can see that.",
     "The type and country columns are carried into the report, not used to filter: a counterparty listed under another type or country is still shown.",
     "At most 5 candidates are shown per name, highest score first; the count of the others is given.",
     "The rates quoted first come from 400 matching pairs and 200 hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties."
   ],
-  "empreinte": "154e44c33616200b"
+  "empreinte": "f8bbab2917bee08e"
 }

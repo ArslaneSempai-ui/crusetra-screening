@@ -1,0 +1,28 @@
+set 5531e9a6 · 2250 pairs · overlap with the training sets and the other verdict sets: 0 pairs, 0 pairs with a name already seen
+method frozen in verification/methode-gelee-gleif-3.json (83 files, all unchanged)
+weights: 40435 listed entries · thresholds chosen on 23 written training sets and the real training sample: strong 0.81, possible 0.80
+SAME ENTITY, found (score >= threshold), by kind of second name:
+  same-name                                    strong  241/452   53.3 % [48.7-57.9 %]   possible  322/452   71.2 % [66.9-75.2 %]
+  partial                                      strong   26/331    7.9 % [5.4-11.3 %]   possible   72/331   21.8 % [17.6-26.5 %]
+  other-name                                   strong    0/217    0.0 % [0.0-1.7 %]   possible    0/217    0.0 % [0.0-1.7 %]
+  all                                          strong  267/1000  26.7 % [24.1-29.5 %]   possible  394/1000  39.4 % [36.4-42.5 %]
+by kind and register stratum:
+  other-name · alternative-language-name       strong    0/24     0.0 % [0.0-13.8 %]   possible    0/24     0.0 % [0.0-13.8 %]
+  other-name · previous-legal-name             strong    0/104    0.0 % [0.0-3.6 %]   possible    0/104    0.0 % [0.0-3.6 %]
+  other-name · trading-name                    strong    0/66     0.0 % [0.0-5.5 %]   possible    0/66     0.0 % [0.0-5.5 %]
+  other-name · transliteration                 strong    0/23     0.0 % [0.0-14.3 %]   possible    0/23     0.0 % [0.0-14.3 %]
+  partial · alternative-language-name          strong   20/114   17.5 % [11.7-25.6 %]   possible   20/114   17.5 % [11.7-25.6 %]
+  partial · previous-legal-name                strong    0/101    0.0 % [0.0-3.7 %]   possible   22/101   21.8 % [14.8-30.8 %]
+  partial · trading-name                       strong    2/48     4.2 % [1.2-14.0 %]   possible   23/48    47.9 % [34.5-61.7 %]
+  partial · transliteration                    strong    4/68     5.9 % [2.3-14.2 %]   possible    7/68    10.3 % [5.1-19.8 %]
+  same-name · alternative-language-name        strong   57/112   50.9 % [41.8-60.0 %]   possible   71/112   63.4 % [54.2-71.7 %]
+  same-name · previous-legal-name              strong   19/45    42.2 % [29.0-56.7 %]   possible   40/45    88.9 % [76.5-95.2 %]
+  same-name · trading-name                     strong   55/136   40.4 % [32.6-48.8 %]   possible   93/136   68.4 % [60.2-75.6 %]
+  same-name · transliteration                  strong  110/159   69.2 % [61.6-75.8 %]   possible  118/159   74.2 % [66.9-80.4 %]
+DIFFERENT: false alerts (score >= threshold) on real different companies, contained stratum apart:
+  different-same-word-same-country             strong    0/334    0.0 % [0.0-1.1 %]   possible    1/334    0.3 % [0.1-1.7 %]
+  different-same-word-other-country            strong    0/333    0.0 % [0.0-1.1 %]   possible    1/333    0.3 % [0.1-1.7 %]
+  different-same-city-same-form                strong    0/333    0.0 % [0.0-1.1 %]   possible    1/333    0.3 % [0.1-1.7 %]
+  TOTAL different                              strong    0/1000   0.0 % [0.0-0.4 %]   possible    3/1000   0.3 % [0.1-0.9 %]
+CONTAINED (different entities, one name's words inside the other's): alerts, reported on their own
+  different-contained                          strong    1/250    0.4 % [0.1-2.2 %]   possible    7/250    2.8 % [1.4-5.7 %]
