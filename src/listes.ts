@@ -5,7 +5,7 @@
  *   npm run listes -- --fetch   download the public lists into data/listes/
  *
  * `frontiere.test.ts` nomme ce fichier comme l'unique autorisé à toucher le réseau, et
- * exige qu'il lise CASCADE_OFFLINE. La liste descend, rien ne monte : aucune donnée du
+ * exige qu'il lise CRUSETRA_OFFLINE et CASCADE_OFFLINE, son ancien nom. La liste descend, rien ne monte : aucune donnée du
  * client n'existe encore à ce stade — on télécharge des documents publics, c'est tout.
  *
  * ─── LES URL SONT TROUVÉES ET VÉRIFIÉES, PAS RECOPIÉES ───
@@ -27,12 +27,12 @@
  *   générique historique. Mesuré le 5 septembre 2026 : TOUS les points de fichier rendent
  *   HTTP 500 avec ce jeton — XML v1.0, v1.1 et CSV — pendant que le RSS, lui, répond.
  *   Le téléchargement programmatique demande un jeton personnel EU Login
- *   (token=[username]). Le manifeste le dit, et l'issue existe : CASCADE_EU_TOKEN.
+ *   (token=[username]). Le manifeste le dit, et l'issue existe : CRUSETRA_EU_TOKEN.
  *   L'analyseur v1.1 est écrit contre le schéma PUBLIÉ, pas contre un fichier reçu —
  *   c'est dit ici plutôt que découvert le jour où le jeton marche.
  *   Mesuré le 27 septembre 2026 : le jeton générique répond de nouveau (XML v1.1, 24,6 Mio),
  *   et l'analyseur écrit contre le schéma lit 6 241 entrées pour 6 241 balises
- *   `<sanctionEntity` dans le fichier. L'issue CASCADE_EU_TOKEN reste pour le jour où il
+ *   `<sanctionEntity` dans le fichier. L'issue CRUSETRA_EU_TOKEN reste pour le jour où il
  *   retombe.
  *
  * Ajoutées le 27 septembre 2026, pour le criblage de contreparties (cribler.ts) : un
@@ -101,11 +101,11 @@ export const MANIFESTE = join(DOSSIER, "listes-manifest.json");
  * (https://webgate.ec.europa.eu/fsd/fsf/public/rss) l'écrit dans chaque lien de fichier.
  * Un scanner de secrets — ou un acheteur qui lit — verra une chaîne en dur ; cette ligne
  * existe pour qu'il lise aussi d'où elle vient. Un jeton personnel EU Login la remplace
- * par CASCADE_EU_TOKEN.
+ * par CRUSETRA_EU_TOKEN, ou par CASCADE_EU_TOKEN, son ancien nom, lu en alias déprécié.
  */
 const JETON_UE_GENERIQUE_PUBLIC = "dG9rZW4tMjAxNw";
-const JETON_UE = process.env.CASCADE_EU_TOKEN ?? JETON_UE_GENERIQUE_PUBLIC;
-
+export const jetonUe = (env: NodeJS.ProcessEnv = process.env): string => env.CRUSETRA_EU_TOKEN ?? env.CASCADE_EU_TOKEN ?? JETON_UE_GENERIQUE_PUBLIC;
+const JETON_UE = jetonUe();
 /** La version consolidée du règlement (UE) 833/2014 dont l'annexe XLII est lue : son numéro CELEX, daté. */
 export const CELEX_833 = "02014R0833-20260724";
 
@@ -462,7 +462,7 @@ async function telecharger(s: SourceListe): Promise<LigneManifeste> {
       /* L'UE avec le jeton générique rend 500 : le manifeste porte le fait ET l'issue. */
       const issue = s.source === "EU"
         ? "the programmatic download needs a personal EU Login token (token=[username]); "
-          + "set CASCADE_EU_TOKEN and run --fetch again. The generic public token returned "
+          + "set CRUSETRA_EU_TOKEN and run --fetch again. The generic public token returned "
           + "this error on every file endpoint while the RSS still answered."
         : "check the URL against the official page, then run --fetch again.";
       return { source: s.source, titre: s.titre, url: s.url, format: s.format,
@@ -505,12 +505,17 @@ async function principal(): Promise<void> {
     }
   }
 
-  if (veutFetch && process.env.CASCADE_OFFLINE === "1") {
-    /* Le refus nomme le drapeau ET l'issue : un refus sans issue se fait commenter. */
-    console.error(`\nCASCADE_OFFLINE=1 forbids the network, and --fetch exists to use it.`);
+  if (veutFetch && (process.env.CRUSETRA_OFFLINE === "1" || process.env.CASCADE_OFFLINE === "1")) {
+    /* Le refus nomme le drapeau ET l'issue : un refus sans issue se fait commenter. Il nomme celui que le poste a posé.
+       L'ancien nom refuse exactement comme avant, même quand CRUSETRA_OFFLINE vaut autre chose que 1 : un poste isolé
+       configuré avant le changement de nom ne perd jamais son refus. */
+    const poses = ["CRUSETRA_OFFLINE", "CASCADE_OFFLINE"].filter((n) => process.env[n] === "1");
+    const ancien = poses.includes("CASCADE_OFFLINE") ? " (CASCADE_OFFLINE is the deprecated name of CRUSETRA_OFFLINE)" : "";
+    console.error(`\n${poses.map((n) => `${n}=1`).join(" and ")} ${poses.length > 1 ? "forbid" : "forbids"} the network, `
+      + `and --fetch exists to use it${ancien}.`);
     console.error(`Nothing was downloaded and nothing was written.`);
     console.error(`  → run \`npm run listes\` (no flag) to see what is already on disk, or`);
-    console.error(`  → unset CASCADE_OFFLINE to fetch the public lists.\n`);
+    console.error(`  → unset ${poses.join(" and ")} to fetch the public lists.\n`);
     process.exit(2);
   }
 

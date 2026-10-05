@@ -4,8 +4,9 @@
  * paliers de cet outil.
  *
  * Il n'est jamais installé, téléchargé ni cherché par cet outil : le client nomme son interpréteur Python par
- * CASCADE_LOGIC_V2_PYTHON (celui d'un environnement où `pip install nomenklatura` a été fait). Sans cette variable, ou si
- * nomenklatura ne s'importe pas, le palier est ABSENT et nommé comme tel avec sa raison, comme `embed` sans ses poids.
+ * CRUSETRA_LOGIC_V2_PYTHON (celui d'un environnement où `pip install nomenklatura` a été fait) ; CASCADE_LOGIC_V2_PYTHON,
+ * l'ancien nom, reste lu en alias déprécié quand le nouveau manque. Sans l'une ni l'autre, ou si nomenklatura ne s'importe
+ * pas, le palier est ABSENT et nommé comme tel avec sa raison, comme `embed` sans ses poids.
  *
  * Le pont (scripts/logic_v2.py) reçoit les paires sur son entrée standard et rend un score par paire : un seul processus pour
  * tout le fichier, lancé de façon synchrone AVANT la mesure (`preparerPaires`), parce qu'un matcher note de façon synchrone
@@ -31,11 +32,26 @@ export type LogicV2 =
 
 const cle = (a: string, b: string) => `${a}\u0000${b}`;
 
+/** Le nom de la variable qui désigne l'interpréteur, et son ancien nom, lu à défaut (alias déprécié). */
+export const VARIABLE = "CRUSETRA_LOGIC_V2_PYTHON";
+export const VARIABLE_ANCIENNE = "CASCADE_LOGIC_V2_PYTHON";
+
+/** L'interpréteur nommé par le client, et la variable qui l'a nommé : un message d'échec désigne ce que le client a
+ *  écrit, et dit le nouveau nom quand c'est l'ancien. */
+export function interpreteNomme(env: NodeJS.ProcessEnv = process.env): { python: string | undefined; variable: string } {
+  if (env[VARIABLE] !== undefined) return { python: env[VARIABLE], variable: VARIABLE };
+  if (env[VARIABLE_ANCIENNE] !== undefined) return { python: env[VARIABLE_ANCIENNE], variable: VARIABLE_ANCIENNE };
+  return { python: undefined, variable: VARIABLE };
+}
+
+/** La variable telle qu'un message la nomme : l'ancien nom porte le nouveau à côté de lui. */
+const nommer = (variable: string) => variable === VARIABLE_ANCIENNE ? `${variable} (the deprecated name of ${VARIABLE})` : variable;
+
 /** Lancer le pont sur des paires : la version annoncée et un score par paire, ou la raison de l'échec. */
-export function lancerLePont(python: string, schema: Schema, paires: readonly { a: string; b: string }[], pont: string = PONT):
-  { version: string; scores: number[] } | { raison: string } {
+export function lancerLePont(python: string, schema: Schema, paires: readonly { a: string; b: string }[], pont: string = PONT,
+  variable: string = VARIABLE): { version: string; scores: number[] } | { raison: string } {
   const r = spawnSync(python, [pont, schema], { input: paires.map((p) => JSON.stringify(p)).join("\n") + "\n", encoding: "utf8", maxBuffer: 1 << 30 });
-  if (r.error) return { raison: `the Python named by CASCADE_LOGIC_V2_PYTHON could not be started (${(r.error as NodeJS.ErrnoException).code ?? r.error.message})` };
+  if (r.error) return { raison: `the Python named by ${nommer(variable)} could not be started (${(r.error as NodeJS.ErrnoException).code ?? r.error.message})` };
   if (r.status !== 0) return { raison: (r.stderr.trim().split("\n").at(-1) ?? "").slice(0, 300) || `the bridge exited with code ${r.status}` };
   const lignes = r.stdout.split("\n").filter((l) => l.length > 0);
   let version: string;
@@ -48,12 +64,13 @@ export function lancerLePont(python: string, schema: Schema, paires: readonly { 
 }
 
 /**
- * Le palier, s'il est là. `python` : l'interpréteur nommé par le client (undefined : absent, dit). Une paire vide suffit à
- * savoir si nomenklatura s'importe ; la version lue alors est celle du relevé.
+ * Le palier, s'il est là. `python` : l'interpréteur nommé par le client (undefined : absent, dit), `variable` : le nom sous
+ * lequel il l'a nommé (interpreteNomme). Une paire vide suffit à savoir si nomenklatura s'importe ; la version lue alors est
+ * celle du relevé.
  */
-export function logicV2(python: string | undefined, schema: Schema = "LegalEntity", pont: string = PONT): LogicV2 {
-  if (!python) return { present: false, raison: "CASCADE_LOGIC_V2_PYTHON is not set: name the Python of an environment where nomenklatura is installed" };
-  const essai = lancerLePont(python, schema, [], pont);
+export function logicV2(python: string | undefined, schema: Schema = "LegalEntity", pont: string = PONT, variable: string = VARIABLE): LogicV2 {
+  if (!python) return { present: false, raison: `${nommer(variable)} is not set: name the Python of an environment where nomenklatura is installed` };
+  const essai = lancerLePont(python, schema, [], pont, variable);
   if ("raison" in essai) return { present: false, raison: essai.raison };
   let version: string | null = essai.version;
   const cache = new Map<string, number>();
@@ -64,7 +81,7 @@ export function logicV2(python: string | undefined, schema: Schema = "LegalEntit
     preparerPaires(paires) {
       const neuves = paires.filter((p) => !cache.has(cle(p.a, p.b)));
       if (neuves.length === 0) return;
-      const r = lancerLePont(python, schema, neuves, pont);
+      const r = lancerLePont(python, schema, neuves, pont, variable);
       if ("raison" in r) throw new Error(`logic-v2: ${r.raison}`);
       version = r.version;
       neuves.forEach((p, i) => cache.set(cle(p.a, p.b), r.scores[i]!));

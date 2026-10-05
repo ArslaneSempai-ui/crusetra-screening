@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { logicV2, lancerLePont, PONT, SEUIL_DOCUMENTE } from "./matchers/logic-v2.ts";
+import { logicV2, lancerLePont, interpreteNomme, PONT, SEUIL_DOCUMENTE } from "./matchers/logic-v2.ts";
 import { PALIERS, PALIERS_FACULTATIFS, type Matcher, type PalierId } from "./matcher.ts";
 import { mesurer, type Alerte } from "./your-alerts.ts";
 import { rendreRapport } from "./rapport.ts";
@@ -36,13 +36,30 @@ test("logic-v2 : hors contrat, facultatif, et le contrat des sept paliers ne bou
 test("logic-v2 : sans interpréteur nommé, ou sans nomenklatura, le palier est absent et dit pourquoi", () => {
   const sans = logicV2(undefined);
   assert.equal(sans.present, false);
-  assert.match((sans as { raison: string }).raison, /CASCADE_LOGIC_V2_PYTHON is not set/);
+  assert.match((sans as { raison: string }).raison, /^CRUSETRA_LOGIC_V2_PYTHON is not set/);
   const pasInstalle = logicV2(node, "LegalEntity", ABSENT);
   assert.equal(pasInstalle.present, false);
   assert.match((pasInstalle as { raison: string }).raison, /nomenklatura is not importable/);
   const introuvable = logicV2(join(dossier, "no-such-python"), "LegalEntity", BON);
   assert.equal(introuvable.present, false);
   assert.match((introuvable as { raison: string }).raison, /could not be started/);
+});
+
+test("logic-v2 : CRUSETRA_LOGIC_V2_PYTHON d'abord, CASCADE_LOGIC_V2_PYTHON (l'ancien nom) à défaut, et le message dit le nouveau", () => {
+  assert.deepEqual(interpreteNomme({}), { python: undefined, variable: "CRUSETRA_LOGIC_V2_PYTHON" });
+  assert.deepEqual(interpreteNomme({ CASCADE_LOGIC_V2_PYTHON: node }), { python: node, variable: "CASCADE_LOGIC_V2_PYTHON" });
+  assert.deepEqual(interpreteNomme({ CRUSETRA_LOGIC_V2_PYTHON: node }), { python: node, variable: "CRUSETRA_LOGIC_V2_PYTHON" });
+  assert.deepEqual(interpreteNomme({ CRUSETRA_LOGIC_V2_PYTHON: node, CASCADE_LOGIC_V2_PYTHON: "/ailleurs" }),
+    { python: node, variable: "CRUSETRA_LOGIC_V2_PYTHON" }, "le nouveau nom passe devant");
+  /* nommé par l'ancien nom, le palier est présent : l'alias marche de bout en bout */
+  const ancien = interpreteNomme({ CASCADE_LOGIC_V2_PYTHON: node });
+  assert.equal(logicV2(ancien.python, "LegalEntity", BON, ancien.variable).present, true);
+  /* et un échec sous l'ancien nom le dit, avec le nouveau à côté */
+  const casse = interpreteNomme({ CASCADE_LOGIC_V2_PYTHON: join(dossier, "no-such-python") });
+  const r = logicV2(casse.python, "LegalEntity", BON, casse.variable);
+  assert.equal(r.present, false);
+  assert.match((r as { raison: string }).raison,
+    /the Python named by CASCADE_LOGIC_V2_PYTHON \(the deprecated name of CRUSETRA_LOGIC_V2_PYTHON\) could not be started/);
 });
 
 test("logic-v2 : présent, il note les paires d'un coup, refuse une paire non préparée, et un compte faux", () => {
@@ -82,9 +99,9 @@ test("logic-v2 : dans la mesure d'un historique, un palier de plus, sa version a
   assert.ok(!rapport.includes("Zeltrix"), "aucun nom dans le rapport");
   /* absent : dit avec sa raison, et la mesure tient sans lui */
   const sans = mesurer(alertes, new Map<PalierId, Matcher>([["exact", exact]]), "alertes.csv", "0".repeat(64), null, "2026-10-04T00:00:00.000Z",
-    { "logic-v2": { present: false, raison: "CASCADE_LOGIC_V2_PYTHON is not set" } });
+    { "logic-v2": { present: false, raison: "CRUSETRA_LOGIC_V2_PYTHON is not set" } });
   assert.equal(sans.paliers["logic-v2"], undefined);
-  assert.match(rendreRapport(sans), /Optional matcher logic-v2 \(nomenklatura\) absent, said rather than guessed: CASCADE_LOGIC_V2_PYTHON is not set/);
+  assert.match(rendreRapport(sans), /Optional matcher logic-v2 \(nomenklatura\) absent, said rather than guessed: CRUSETRA_LOGIC_V2_PYTHON is not set/);
   /* et un relevé d'avant ce palier, sans le champ, se rend comme avant */
   assert.ok(!rendreRapport(mesurer(alertes, new Map<PalierId, Matcher>([["exact", exact]]), "alertes.csv", "0".repeat(64), null)).includes("logic-v2"));
 });
