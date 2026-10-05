@@ -56,11 +56,12 @@ import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { lireTable } from "./csv.ts";
+import { lireClasseur, tableParEntete } from "./xlsx.ts";
 
 /** LA forme commune : les noms restent TELS QUE LA LISTE LES ÉCRIT — la normalisation est
  *  le travail des matchers, pas du téléchargeur. */
 export type EntreeListe = {
-  source: "OFAC" | "OFAC-CONS" | "CSL" | "EU" | "UN" | "UK" | "EU-VESSELS";
+  source: "OFAC" | "OFAC-CONS" | "CSL" | "EU" | "UN" | "UK" | "EU-VESSELS" | "AU" | "CA" | "NZ";
   id: string;
   nom: string;
   alias: string[];
@@ -75,20 +76,78 @@ export type EntreeListe = {
   /** Les AUTRES numéros OMI que la liste donne au même navire (le Royaume-Uni en écrit deux ou trois pour quelques
    *  coques renumérotées) : chacun désigne le navire autant que le premier. */
   autresImo?: string[];
+  /** LA DATE DE DÉSIGNATION TELLE QUE LA LISTE L'ÉCRIT, et le champ de la liste qui la porte (« LISTED_ON »,
+   *  « DateDesignated », « Date of application »). Jamais déduite : absente quand la liste n'en publie pas (l'OFAC)
+   *  ou n'en écrit pas pour cette entrée ; le criblage le dit alors en toutes lettres. */
+  designation?: { date: string; champ: string };
+  /** LES PARTIES QUE LA LISTE ELLE-MÊME NOMME POUR CETTE ENTRÉE (le propriétaire d'un navire, son exploitant, un
+   *  « Linked To: »), mot pour mot, avec le rôle que la liste leur donne. Jamais déduites, jamais prises à une autre
+   *  entrée : seuls les champs structurés des listes entrent ici, pas leur texte libre. */
+  parties?: { role: string; nom: string }[];
+};
+
+/**
+ * LA LICENCE D'UNE SOURCE, LUE SUR LA PAGE DE L'ÉDITEUR. Le Royaume-Uni publie sa liste sous l'Open Government
+ * Licence v3.0, qui exige une mention écrite, et elle n'était imprimée nulle part jusqu'au 5 octobre 2026. Chaque
+ * source porte donc le nom de sa licence, la page de l'éditeur qui la dit (jamais celle d'un tiers), la mention
+ * exigée mot pour mot ou null quand aucune ne l'est (la page le dit, la note le répète), et le jour où la page a
+ * été lue. Le criblage recopie ces champs dans son relevé et son tableur ; `src/licences.ts --check` refuse une
+ * source à qui il en manque un.
+ */
+export type Licence = {
+  /** la licence, nommée comme l'éditeur la nomme */
+  nom: string;
+  /** la page de l'éditeur qui l'énonce */
+  url: string;
+  /** la mention que la licence exige, mot pour mot ; null quand l'éditeur n'en exige aucune */
+  mention: string | null;
+  /** ce que la page de l'éditeur dit, en une ligne : pourquoi aucune mention n'est exigée, ou la limite lue */
+  note: string;
+  /** le jour où la page a été lue (AAAA-MM-JJ) */
+  lue: string;
 };
 
 export type SourceListe = {
   source: EntreeListe["source"];
   titre: string;
   url: string;
-  format: "ofac-sdn-xml" | "un-consolidated-xml" | "eu-fsf-xml-1.1" | "trade-csl-csv" | "uk-sanctions-xml" | "eu-833-annex-xlii-xhtml";
+  format: "ofac-sdn-xml" | "un-consolidated-xml" | "eu-fsf-xml-1.1" | "trade-csl-csv" | "uk-sanctions-xml" | "eu-833-annex-xlii-xhtml"
+    | "dfat-consolidated-xlsx" | "gac-sema-xml" | "mfat-russia-register-xlsx";
   /** les en-têtes que la source exige en plus (la négociation de contenu de l'Office des publications) */
   entetes?: Record<string, string>;
+  licence: Licence;
 };
 
 /** Le fichier d'une source dans data/listes/ : son extension suit son format. */
 export function fichierDe(s: Pick<SourceListe, "source" | "format">): string {
-  return `${s.source.toLowerCase()}.${s.format === "trade-csl-csv" ? "csv" : s.format === "eu-833-annex-xlii-xhtml" ? "xhtml" : "xml"}`;
+  const ext = s.format === "trade-csl-csv" ? "csv" : s.format === "eu-833-annex-xlii-xhtml" ? "xhtml"
+    : s.format === "dfat-consolidated-xlsx" || s.format === "mfat-russia-register-xlsx" ? "xlsx" : "xml";
+  return `${s.source.toLowerCase()}.${ext}`;
+}
+
+/** Les formats qui sont un classeur, lus en octets ; les autres sont du texte. */
+export function estClasseur(format: SourceListe["format"]): boolean {
+  return format === "dfat-consolidated-xlsx" || format === "mfat-russia-register-xlsx";
+}
+
+/**
+ * Ce qui manque à une source pour que sa licence soit dite : le contrôle que `src/licences.ts --check` lance, et
+ * dont `listes.test.ts` prouve qu'il rougit quand un champ est retiré. Rendu comme liste de manques nommés, jamais
+ * comme un booléen : une garde qui ne dit pas ce qui manque fait perdre le temps qu'elle prétend faire gagner.
+ */
+export function manquesDeLicence(sources: readonly Partial<SourceListe>[]): string[] {
+  const manques: string[] = [];
+  for (const s of sources) {
+    const qui = s.source ?? "(unnamed source)";
+    const l = s.licence;
+    if (!l) { manques.push(`${qui}: no licence recorded`); continue; }
+    if (!l.nom?.trim()) manques.push(`${qui}: the licence has no name`);
+    if (!/^https:\/\/\S+$/.test(l.url ?? "")) manques.push(`${qui}: the licence has no https publisher page`);
+    if (l.mention !== null && !(typeof l.mention === "string" && l.mention.trim().length > 0)) manques.push(`${qui}: the attribution is neither a text nor null`);
+    if (l.mention === null && !l.note?.trim()) manques.push(`${qui}: no attribution is required, and the note does not say where the publisher says so`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(l.lue ?? "")) manques.push(`${qui}: the day the publisher's page was read is missing`);
+  }
+  return manques;
 }
 
 const DOSSIER = fileURLToPath(new URL("..", import.meta.url));
@@ -109,31 +168,84 @@ const JETON_UE = process.env.CASCADE_EU_TOKEN ?? JETON_UE_GENERIQUE_PUBLIC;
 /** La version consolidée du règlement (UE) 833/2014 dont l'annexe XLII est lue : son numéro CELEX, daté. */
 export const CELEX_833 = "02014R0833-20260724";
 
+/*
+ * LES LICENCES, LUES LE 5 OCTOBRE 2026 SUR LA PAGE DE CHAQUE ÉDITEUR (jamais sur celle d'un tiers) :
+ *
+ *   États-Unis (OFAC, trade.gov) : une œuvre du gouvernement fédéral n'est pas protégée par le droit d'auteur
+ *   (17 U.S.C. § 105, « Copyright protection under this title is not available for any work of the United States
+ *   Government ») ; USA.gov demande seulement que l'usage ne laisse pas entendre une approbation de l'agence. La page
+ *   de la Consolidated Screening List n'énonce aucune condition.
+ *   ONU : les conditions d'utilisation du site (un.org/en/about-us/terms-of-use) accordent « permission to Users to
+ *   visit the Site and to download and copy the information, documents and materials [...] for the User's personal,
+ *   non-commercial use, without any right to resell or redistribute them » ; la page de la liste consolidée dit que la
+ *   liste existe « to facilitate the implementation of the measures ». Aucune mention n'est prescrite ; l'usage
+ *   commercial n'est pas réglé par la page de l'éditeur, et c'est écrit dans la note.
+ *   UE (FSF) : l'avis juridique de la Commission (commission.europa.eu/legal-notice_en) : « content owned by the EU on
+ *   this website is licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) licence. This means
+ *   that reuse is allowed, provided appropriate credit is given and changes are indicated », en application de la
+ *   décision 2011/833/UE ; data.europa.eu range le jeu FSF sous cette décision (« European Commission reuse notice »).
+ *   UE (Office des publications, EUR-Lex) : réutilisation autorisée à des fins commerciales ou non, la source
+ *   reconnue (décision 2011/833/UE).
+ *   Royaume-Uni : Open Government Licence v3.0 ; la page de la liste dit « All content is available under the Open
+ *   Government Licence v3.0, except where otherwise stated », et la licence impose la mention recopiée ci-dessous.
+ *   Australie : « all material presented on this website is provided under a Creative Commons Attribution 4.0
+ *   International licence [...] Content from this website should be attributed as Department of Foreign Affairs and
+ *   Trade website – www.dfat.gov.au ».
+ *   Canada : la liste est le jeu ab076f2e-94b1-4039-bb3d-58002deb826d d'open.canada.ca, publié par Affaires mondiales
+ *   Canada sous l'Open Government Licence - Canada, dont la mention par défaut est recopiée ci-dessous ; sans ce jeu,
+ *   les conditions générales de canada.ca exigeraient une permission écrite pour toute redistribution commerciale.
+ *   Nouvelle-Zélande : « Crown copyright ©. [...] licensed under the Creative Commons Attribution 4.0 International
+ *   licence [...] as long as you attribute the work to the Crown » ; aucune formule imposée.
+ */
+const LUE = "2026-10-05";
+const LICENCE_ETATS_UNIS: Licence = {
+  nom: "United States Government work: not subject to copyright (17 U.S.C. § 105)",
+  url: "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title17-section105&num=0&edition=prelim",
+  mention: null,
+  note: "a work of the United States Government is not protected by copyright; no attribution is required. USA.gov (usa.gov/government-copyright) asks that reuse not imply endorsement by the agency.",
+  lue: LUE,
+};
+const LICENCE_COMMISSION: Licence = {
+  nom: "Commission Decision 2011/833/EU on the reuse of Commission documents; Creative Commons Attribution 4.0 International (CC BY 4.0)",
+  url: "https://commission.europa.eu/legal-notice_en",
+  mention: "Source: European Commission, Financial Sanctions Files (FSF), © European Union, reused under Commission Decision 2011/833/EU (CC BY 4.0)",
+  note: "the legal notice requires appropriate credit and that changes be indicated, and prescribes no wording; this is the wording used. data.europa.eu lists the dataset under the European Commission reuse notice (Decision 2011/833/EU).",
+  lue: LUE,
+};
+
 export const SOURCES: SourceListe[] = [
   {
     source: "OFAC", titre: "OFAC Specially Designated Nationals (SDN) list",
     url: "https://sanctionslistservice.ofac.treas.gov/api/publicationpreview/exports/sdn.xml",
-    format: "ofac-sdn-xml",
+    format: "ofac-sdn-xml", licence: LICENCE_ETATS_UNIS,
   },
   {
     source: "OFAC-CONS", titre: "OFAC Consolidated Sanctions List (the non-SDN lists)",
     url: "https://sanctionslistservice.ofac.treas.gov/api/publicationpreview/exports/consolidated.xml",
-    format: "ofac-sdn-xml",
+    format: "ofac-sdn-xml", licence: LICENCE_ETATS_UNIS,
   },
   {
     source: "CSL", titre: "US Consolidated Screening List: its Commerce and State lists (trade.gov)",
     url: "https://data.trade.gov/downloadable_consolidated_screening_list/v1/consolidated.csv",
     format: "trade-csl-csv",
+    licence: { ...LICENCE_ETATS_UNIS, note: `${LICENCE_ETATS_UNIS.note} The Consolidated Screening List page (trade.gov/consolidated-screening-list) states no condition of use.` },
   },
   {
     source: "UN", titre: "UN Security Council Consolidated List",
     url: "https://scsanctions.un.org/resources/xml/en/consolidated.xml",
     format: "un-consolidated-xml",
+    licence: {
+      nom: "United Nations website Terms of Use (no open licence)",
+      url: "https://www.un.org/en/about-us/terms-of-use",
+      mention: null,
+      note: "the Terms grant Users permission to download and copy the Materials for the User's personal, non-commercial use, without any right to resell or redistribute them; the Consolidated List page says the list exists to facilitate the implementation of the measures. No attribution wording is prescribed. Commercial reuse is not settled by the publisher's page: to be confirmed with the United Nations before a sale.",
+      lue: LUE,
+    },
   },
   {
     source: "EU", titre: "EU consolidated financial sanctions list (FSF, XML v1.1)",
     url: `https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content?token=${JETON_UE}`,
-    format: "eu-fsf-xml-1.1",
+    format: "eu-fsf-xml-1.1", licence: LICENCE_COMMISSION,
   },
   /*
    * LES NAVIRES DÉSIGNÉS, mesuré le 04/10/2026 sur un vrai pétrolier (OMI 9274800, ASTRAL pour l'UE, YANGTZE pour
@@ -156,12 +268,83 @@ export const SOURCES: SourceListe[] = [
     source: "UK", titre: "UK Sanctions List (FCDO): individuals, entities and ships",
     url: "https://sanctionslist.fcdo.gov.uk/docs/UK-Sanctions-List.xml",
     format: "uk-sanctions-xml",
+    licence: {
+      nom: "Open Government Licence v3.0",
+      url: "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+      mention: "Contains public sector information licensed under the Open Government Licence v3.0.",
+      note: "the UK Sanctions List page (gov.uk/government/publications/the-uk-sanctions-list) says: All content is available under the Open Government Licence v3.0, except where otherwise stated; the licence requires the attribution statement above when the provider gives none of its own.",
+      lue: LUE,
+    },
   },
   {
     source: "EU-VESSELS", titre: `EU designated vessels: Annex XLII of Regulation (EU) No 833/2014, consolidated text ${CELEX_833.slice(-8, -4)}-${CELEX_833.slice(-4, -2)}-${CELEX_833.slice(-2)}`,
     url: `https://publications.europa.eu/resource/celex/${CELEX_833}`,
     format: "eu-833-annex-xlii-xhtml",
     entetes: { accept: "application/xhtml+xml, text/html", "accept-language": "eng" },
+    licence: {
+      nom: "Commission Decision 2011/833/EU on the reuse of Commission documents; consolidated texts under Creative Commons Attribution 4.0 International (CC BY 4.0), Publications Office (EUR-Lex)",
+      url: "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+      mention: "© European Union, 1998-2026. Source: EUR-Lex, consolidated text of Regulation (EU) No 833/2014 (Annex XLII), reused under Commission Decision 2011/833/EU (CC BY 4.0)",
+      note: "the EUR-Lex legal notice: you can re-use the legal documents published in EUR-Lex for commercial or non-commercial purposes; the consolidated texts, owned by the EU, are licensed under CC BY 4.0 provided you acknowledge the source and indicate any changes. No wording is prescribed beyond the copyright line; this is the wording used.",
+      lue: LUE,
+    },
+  },
+  /*
+   * AJOUTÉES LE 5 OCTOBRE 2026 : trois listes officielles de plus, chacune lue dans le format que l'éditeur publie.
+   *
+   *   AU : la Consolidated List du DFAT (Australian Sanctions Office), un classeur Excel d'une feuille dont le nom
+   *   porte la date (« Consolidated List - 2_10_2026 ») : lue par position, pas par nom. Une ligne par NOM : la
+   *   référence « 8227 » est le nom principal, « 8227a », « 8227b » ses alias (Name Type « Alias », force « strong »
+   *   ou « weak ») et ses écritures d'origine (« Original Script »). « Control Date » est la dernière mise à jour de
+   *   l'entrée, pas sa désignation (le guide de la liste le dit) : la date de désignation est celle que « Listing
+   *   Information » écrit (« Listed on 25 January 2001 ») quand elle l'écrit. Mesuré le 05/10/2026 sur le fichier du
+   *   02/10 : 11 416 lignes de noms.
+   *   CA : la Consolidated Canadian Autonomous Sanctions List d'Affaires mondiales Canada, un XML d'enregistrements
+   *   bilingues (« Country-Pays », « DateOfListing-DateDinscription »), une personne par LastName/GivenName (certaines
+   *   n'ont qu'un GivenName), une entité ou un navire par EntityOrShip, le navire reconnu à son numéro OMI lisible.
+   *   Mesuré le 05/10/2026 : 4 659 enregistrements, 732 avec un champ OMI dont 727 lisibles ; les cinq autres
+   *   portent un nom en écriture arabe dans le champ OMI (une colonne décalée chez l'éditeur) et restent des
+   *   personnes sans numéro. Les alias sont un texte libre coupé aux points-virgules et aux virgules.
+   *   NZ : le Russia Sanctions Register du MFAT, un classeur de cinq feuilles dont deux sont criblées : « Russia
+   *   Sanctions Register » (personnes, entités, banques, actifs ; l'en-tête est à la onzième ligne, sous une légende)
+   *   et « Ships » (navires avec leur numéro OMI). Les dates sont des numéros de série Excel, rendus AAAA-MM-JJ.
+   *   Mesuré le 05/10/2026 sur le fichier du 09/09 : 1 925 lignes sanctionnées et 210 navires.
+   */
+  {
+    source: "AU", titre: "Australia: DFAT Consolidated List (Australian Sanctions Office)",
+    url: "https://www.dfat.gov.au/sites/default/files/Australian_Sanctions_Consolidated_List.xlsx",
+    format: "dfat-consolidated-xlsx",
+    licence: {
+      nom: "Creative Commons Attribution 4.0 International (CC BY 4.0), Commonwealth of Australia (DFAT)",
+      url: "https://www.dfat.gov.au/about-us/about-this-website/copyright",
+      mention: "Department of Foreign Affairs and Trade website – www.dfat.gov.au",
+      note: "the copyright page: all material presented on this website is provided under a Creative Commons Attribution 4.0 International licence, and content should be attributed with the statement above.",
+      lue: LUE,
+    },
+  },
+  {
+    source: "CA", titre: "Canada: Consolidated Canadian Autonomous Sanctions List (Global Affairs Canada)",
+    url: "https://www.international.gc.ca/world-monde/assets/office_docs/international_relations-relations_internationales/sanctions/sema-lmes.xml",
+    format: "gac-sema-xml",
+    licence: {
+      nom: "Open Government Licence - Canada",
+      url: "https://open.canada.ca/en/open-government-licence-canada",
+      mention: "Contains information licensed under the Open Government Licence – Canada.",
+      note: "the list is dataset ab076f2e-94b1-4039-bb3d-58002deb826d on open.canada.ca, published by Global Affairs Canada under this licence, whose default attribution statement is the one above; the general terms of canada.ca would otherwise require written permission for commercial redistribution.",
+      lue: LUE,
+    },
+  },
+  {
+    source: "NZ", titre: "New Zealand: Russia Sanctions Register (MFAT): individuals, entities and ships",
+    url: "https://www.mfat.govt.nz/assets/Countries-and-Regions/Europe/Ukraine/Russia-Sanctions-Register.xlsx",
+    format: "mfat-russia-register-xlsx",
+    licence: {
+      nom: "Creative Commons Attribution 4.0 International (CC BY 4.0), Crown copyright (Ministry of Foreign Affairs and Trade)",
+      url: "https://www.mfat.govt.nz/en/copyright",
+      mention: "Source: New Zealand Ministry of Foreign Affairs and Trade, Russia Sanctions Register, Crown copyright, licensed under CC BY 4.0",
+      note: "the copyright page asks that the work be attributed to the Crown under CC BY 4.0 and prescribes no wording; this is the wording used.",
+      lue: LUE,
+    },
   },
 ];
 
@@ -204,7 +387,22 @@ export function decoderEntites(t: string): string {
     .replace(/&apos;/g, "'").replace(/&amp;/g, "&");
 }
 
-/** OFAC : `<sdnEntry>` — uid, firstName?/lastName, sdnType, programList, akaList. */
+/** « IMO 9187629 », « imo9187629 », « 9187629 » → « 9187629 » ; autre chose → undefined. La lecture du criblage,
+ *  la même pour le fichier du client (cribler.ts) et pour les listes qui écrivent un numéro OMI. */
+export function lireImo(brut: string | undefined): string | undefined {
+  if (brut === undefined) return undefined;
+  const m = /^(?:imo\s*)?(\d{7})$/i.exec(brut.trim());
+  return m?.[1];
+}
+
+/** Les parties d'une entrée, à partir d'un champ et d'un rôle, les vides écartées. */
+function parties(role: string, noms: readonly (string | undefined)[]): { role: string; nom: string }[] {
+  return noms.map((n) => (n ?? "").replace(/\s+/g, " ").trim()).filter((n) => n.length > 0).map((nom) => ({ role, nom }));
+}
+
+/** OFAC : `<sdnEntry>`, avec uid, firstName?/lastName, sdnType, programList, akaList ; pas de date de désignation dans
+ *  ce fichier (l'OFAC n'en publie pas là) ; le propriétaire d'un navire dans `<vesselInfo><vesselOwner>`, et les
+ *  « Linked To: » des `<remarks>`, sont les parties que la liste nomme. */
 export function analyserOfac(xml: string, source: "OFAC" | "OFAC-CONS" = "OFAC"): EntreeListe[] {
   return blocs(xml, "sdnEntry").map((b) => {
     const nom = [champ(b, "firstName"), champ(b, "lastName")].filter(Boolean).join(" ").trim();
@@ -225,13 +423,21 @@ export function analyserOfac(xml: string, source: "OFAC" | "OFAC-CONS" = "OFAC")
       .filter((i) => champ(i, "idType") === "Vessel Registration Identification")
       .map((i) => /^IMO\s*(\d{7})$/.exec((champ(i, "idNumber") ?? "").trim())?.[1])
       .find(Boolean);
+    /* les remarques : « (Linked To: X; Linked To: Y) », et un nom peut porter ses propres parenthèses (« (IRGC)-QODS FORCE ») :
+       la parenthèse qui enferme toute la remarque est ôtée d'abord, puis chaque segment « Linked To: » est pris jusqu'au
+       point-virgule suivant */
+    const remarques = (champ(b, "remarks") ?? "").trim().replace(/^\(([\s\S]*)\)$/, "$1");
+    const nommees = [
+      ...parties("vesselOwner", blocs(b, "vesselInfo").map((v) => champ(v, "vesselOwner"))),
+      ...parties("Linked To", remarques.split(";").map((s) => s.trim()).filter((s) => /^Linked To:/i.test(s)).map((s) => s.replace(/^Linked To:\s*/i, ""))),
+    ];
     return { source, id: champ(b, "uid") ?? "", nom, alias, type,
       ...(programmes.length ? { programme: programmes.join("+") } : {}),
-      ...(aliasFaibles.length ? { aliasFaibles } : {}), ...(imo ? { imo } : {}) };
+      ...(aliasFaibles.length ? { aliasFaibles } : {}), ...(imo ? { imo } : {}), ...(nommees.length ? { parties: nommees } : {}) };
   }).filter((e) => e.nom.length > 0 && e.id.length > 0);
 }
 
-/** ONU : `<INDIVIDUAL>` et `<ENTITY>` — DATAID, FIRST_NAME…FOURTH_NAME, *_ALIAS. Un
+/** ONU : `<INDIVIDUAL>` et `<ENTITY>`, avec DATAID, FIRST_NAME…FOURTH_NAME, *_ALIAS, LISTED_ON. Un
  *  `<ALIAS_NAME/>` VIDE existe dans le vrai fichier : il s'écarte, il ne devient pas "". */
 export function analyserOnu(xml: string): EntreeListe[] {
   const lire = (b: string, type: "person" | "entity", baliseAlias: string): EntreeListe => {
@@ -241,8 +447,9 @@ export function analyserOnu(xml: string): EntreeListe[] {
       .map((a) => (champ(a, "ALIAS_NAME") ?? "").trim())
       .filter((a) => a.length > 0);
     const programme = champ(b, "UN_LIST_TYPE")?.trim();
+    const liste = champ(b, "LISTED_ON")?.trim();
     return { source: "UN", id: champ(b, "DATAID") ?? "", nom, alias, type,
-      ...(programme ? { programme } : {}) };
+      ...(programme ? { programme } : {}), ...(liste ? { designation: { date: liste, champ: "LISTED_ON" } } : {}) };
   };
   return [
     ...blocs(xml, "INDIVIDUAL").map((b) => lire(b, "person", "INDIVIDUAL_ALIAS")),
@@ -275,9 +482,14 @@ export function analyserUe(xml: string): EntreeListe[] {
     const code = (/<subjectType\b[^>]*>/.exec(corps!) ?? [""])[0];
     const type = /code="person"/.test(code) ? "person" as const
       : /code="enterprise"/.test(code) ? "entity" as const : "other" as const;
-    const programme = attribut((/<regulation\b[^>]*>/.exec(corps!) ?? [""])[0]!, "programme");
+    const reglement = (/<regulation\b[^>]*>/.exec(corps!) ?? [""])[0]!;
+    const programme = attribut(reglement, "programme");
+    /* la date : celle d'entrée en vigueur du règlement que l'entrée porte, avec le numéro du règlement dans le nom du champ */
+    const vigueur = attribut(reglement, "entryIntoForceDate");
+    const numero = attribut(reglement, "numberTitle");
     entites.push({ source: "EU", id: attribut(entete!, "logicalId") ?? "", nom: noms[0]!,
-      alias: noms.slice(1), type, ...(programme ? { programme } : {}) });
+      alias: noms.slice(1), type, ...(programme ? { programme } : {}),
+      ...(vigueur ? { designation: { date: vigueur, champ: `regulation entryIntoForceDate${numero ? ` (${numero})` : ""}` } } : {}) });
   }
   return entites.filter((e) => e.id.length > 0);
 }
@@ -305,9 +517,16 @@ export function analyserRoyaumeUni(xml: string): EntreeListe[] {
     const imos = [...new Set(blocs(b, "IMONumber").map((i) => /^(?:IMO\s*)?(\d{7})$/i.exec(decoderEntites(i).trim())?.[1]).filter((x): x is string => Boolean(x)))];
     const imo = imos[0];
     const programme = champ(b, "RegimeName")?.trim();
+    const designee = champ(b, "DateDesignated")?.trim();
+    /* les parties qu'un navire porte : son propriétaire ou exploitant actuel, les précédents (ShipDetails) */
+    const nommees = [
+      ...parties("CurrentOwnerOperator", blocs(b, "CurrentOwnerOperator").map(decoderEntites)),
+      ...parties("PreviousOwnerOperator", blocs(b, "PreviousOwnerOperator").map(decoderEntites)),
+    ];
     return { source: "UK" as const, id: champ(b, "UniqueID") ?? "", nom: principal?.nom ?? "", alias,
       type: TYPES[(champ(b, "IndividualEntityShip") ?? "").trim()] ?? "other",
-      ...(programme ? { programme } : {}), ...(aliasFaibles.length ? { aliasFaibles } : {}), ...(imo ? { imo } : {}), ...(imos.length > 1 ? { autresImo: imos.slice(1) } : {}) };
+      ...(programme ? { programme } : {}), ...(aliasFaibles.length ? { aliasFaibles } : {}), ...(imo ? { imo } : {}), ...(imos.length > 1 ? { autresImo: imos.slice(1) } : {}),
+      ...(designee ? { designation: { date: designee, champ: "DateDesignated" } } : {}), ...(nommees.length ? { parties: nommees } : {}) };
   }).filter((e) => e.nom.length > 0 && e.id.length > 0);
 }
 
@@ -332,9 +551,113 @@ export function analyserNaviresUe(xhtml: string): EntreeListe[] {
     const [, nom, imo] = cellules as [string, string, string];
     const deja = parImo.get(imo);
     if (deja) { if (deja.nom !== nom && !deja.alias.includes(nom)) deja.alias.push(nom); continue; }
-    parImo.set(imo, { source: "EU-VESSELS", id: `IMO${imo}`, nom, alias: [], type: "vessel", programme: "833/2014 Annex XLII", imo });
+    const application = (cellules[4] ?? "").trim();
+    parImo.set(imo, { source: "EU-VESSELS", id: `IMO${imo}`, nom, alias: [], type: "vessel", programme: "833/2014 Annex XLII", imo,
+      ...(application ? { designation: { date: application, champ: "Date of application" } } : {}) });
   }
   return [...parImo.values()];
+}
+
+/**
+ * AUSTRALIE (DFAT Consolidated List, classeur d'une feuille dont le nom porte la date : lue par position). Une ligne
+ * par nom : « 8227 » est le nom principal, « 8227a » et les suivants ses alias (Name Type « Alias », Alias Strength
+ * « Strong » ou « Weak ») et ses écritures d'origine (« Original Script »). Les alias faibles sont marqués comme les
+ * « weak » de l'OFAC. « Control Date » est la dernière mise à jour de l'entrée, pas sa désignation (le guide de la
+ * liste le dit) : la date de désignation est celle que « Listing Information » écrit en toutes lettres (« Listed on
+ * 25 January 2001 », « Listed by UN 1267 Committee on 6 Oct. 2001 ») quand elle l'écrit ; sinon l'entrée n'en a pas.
+ */
+export function analyserDfat(classeur: Buffer): EntreeListe[] {
+  const [feuille] = lireClasseur(classeur, [0]);
+  const lignes = tableParEntete(feuille!, ["Reference", "Name of Individual or Entity", "Type", "Name Type", "Alias Strength", "Listing Information", "IMO Number", "Committees"]);
+  const TYPES: Record<string, EntreeListe["type"]> = { "Individual": "person", "Entity": "entity", "Vessel": "vessel" };
+  const groupes = new Map<string, typeof lignes>();
+  for (const l of lignes) {
+    const ref = /^(\d+)/.exec(l.par("Reference"))?.[1];
+    if (!ref || !l.par("Name of Individual or Entity")) continue;
+    const g = groupes.get(ref);
+    if (g) g.push(l); else groupes.set(ref, [l]);
+  }
+  const entrees: EntreeListe[] = [];
+  for (const [id, g] of groupes) {
+    const principal = g.find((l) => /^primary name$/i.test(l.par("Name Type"))) ?? g[0]!;
+    const nom = principal.par("Name of Individual or Entity");
+    const autres = g.filter((l) => l !== principal);
+    const alias = [...new Set(autres.map((l) => l.par("Name of Individual or Entity")).filter((a) => a && a !== nom))];
+    const aliasFaibles = [...new Set(autres.filter((l) => /^weak$/i.test(l.par("Alias Strength"))).map((l) => l.par("Name of Individual or Entity")))].filter((a) => alias.includes(a));
+    const imo = g.map((l) => lireImo(l.par("IMO Number"))).find(Boolean);
+    const programme = principal.par("Committees");
+    const date = /\bListed\b.{0,80}?\bon (\d{1,2} [A-Za-z]{3,9}\.? \d{4})/.exec(principal.par("Listing Information"))?.[1];
+    entrees.push({ source: "AU", id, nom, alias, type: TYPES[principal.par("Type")] ?? "other",
+      ...(programme ? { programme } : {}), ...(aliasFaibles.length ? { aliasFaibles } : {}), ...(imo ? { imo } : {}),
+      ...(date ? { designation: { date, champ: "Listing Information" } } : {}) });
+  }
+  return entrees;
+}
+
+/**
+ * CANADA (Consolidated Canadian Autonomous Sanctions List, XML bilingue d'Affaires mondiales Canada) : un `<record>`
+ * par entrée, une personne par LastName/GivenName (certaines n'ont qu'un GivenName : « Than Shwe »), une entité ou
+ * un navire par EntityOrShip, le navire reconnu à un numéro OMI LISIBLE (`lireImo`) : mesuré le 05/10/2026, cinq
+ * enregistrements de personnes portent un nom en écriture arabe dans le champ OMI, une colonne décalée chez
+ * l'éditeur ; ils restent des personnes sans numéro. L'identifiant est règlement + annexe + numéro d'article (le
+ * fichier n'en donne pas d'autre) ; les alias sont un texte libre coupé aux points-virgules et aux virgules, les
+ * étiquettes de langue (« Belarusian: ») retirées.
+ */
+export function analyserCanada(xml: string): EntreeListe[] {
+  const vus = new Map<string, number>();
+  const entrees: EntreeListe[] = [];
+  for (const b of blocs(xml, "record")) {
+    const c = (t: string) => { const v = champ(b, t)?.replace(/\s+/g, " ").trim(); return v ? v : undefined; };
+    const nomFamille = c("LastName-NomDeFamille"), prenom = c("GivenName-Prenom"), entiteOuNavire = c("EntityOrShip-EntiteOuNavire");
+    const personne = Boolean(nomFamille || prenom);
+    const nom = personne ? [prenom, nomFamille].filter(Boolean).join(" ") : entiteOuNavire ?? "";
+    if (!nom) continue;
+    const imo = personne ? undefined : lireImo(c("ShipIMONumber-NumeroOMIDuNavire"));
+    const programme = (c("Country-Pays") ?? "").split(" / ")[0]!.trim();
+    const alias = [...new Set((c("Aliases-Alias") ?? "").split(/[;,]/).map((a) => a.replace(/^\s*[A-Z][A-Za-z]+:\s*/, "").trim()).filter((a) => a.length > 1 && a !== nom))];
+    const cle = `${programme}|${c("Schedule-Annexe") ?? ""}|${c("Item-NumeroDarticle") ?? ""}`;
+    const n = (vus.get(cle) ?? 0) + 1;
+    vus.set(cle, n);
+    const date = c("DateOfListing-DateDinscription");
+    entrees.push({ source: "CA", id: n === 1 ? cle : `${cle}#${n}`, nom, alias, type: personne ? "person" : imo ? "vessel" : "entity",
+      ...(programme ? { programme } : {}), ...(imo ? { imo } : {}), ...(date ? { designation: { date, champ: "DateOfListing" } } : {}) });
+  }
+  return entrees;
+}
+
+/**
+ * NOUVELLE-ZÉLANDE (Russia Sanctions Register du MFAT, classeur) : deux feuilles criblées. « Russia Sanctions
+ * Register » : l'en-tête est sous une légende (onzième ligne), une ligne par personne (First, Middle, Last name),
+ * entité ou banque (le nom dans la colonne « First name »), actif (« Name of Asset » : des classes de navires, pas
+ * des coques) ; seules les lignes « Sanctioned » avec un identifiant entrent, la ligne « Total » non. « Ships » : un
+ * navire par ligne avec son numéro OMI, sauf celles marquées supprimées. Les dates sont des numéros de série Excel,
+ * rendus AAAA-MM-JJ par le lecteur ; « Associates/Relatives » est la partie que la liste nomme.
+ */
+export function analyserMfat(classeur: Buffer): EntreeListe[] {
+  const [registre, navires] = lireClasseur(classeur, ["Russia Sanctions Register", "Ships"]);
+  const TYPES: Record<string, EntreeListe["type"]> = { "Individual": "person", "Entity": "entity", "Bank": "entity", "Asset": "other" };
+  const entrees: EntreeListe[] = [];
+  const couper = (t: string) => [...new Set(t.split(/;/).map((a) => a.trim()).filter((a) => a.length > 0))];
+  for (const l of tableParEntete(registre!, ["Type", "Unique Identifier", "First name", "Last name", "Sanction Status", "Date of Sanction"])) {
+    const type = TYPES[l.par("Type")], id = l.par("Unique Identifier");
+    if (!type || !id || !/^sanctioned$/i.test(l.par("Sanction Status"))) continue;
+    const nom = type === "other" ? (l.par("Name of Asset") || l.par("First name"))
+      : [l.par("First name"), l.par("Middle name(s)"), l.par("Last name")].filter(Boolean).join(" ");
+    if (!nom) continue;
+    const date = l.par("Date of Sanction");
+    const nommees = parties("Associates/Relatives", [l.par("Associates/Relatives")]);
+    entrees.push({ source: "NZ", id, nom, alias: couper(l.par("Alias/Alternate Spellings")).filter((a) => a !== nom), type, programme: "Russia Sanctions Regulations 2022",
+      ...(date ? { designation: { date, champ: "Date of Sanction" } } : {}), ...(nommees.length ? { parties: nommees } : {}) });
+  }
+  for (const l of tableParEntete(navires!, ["Type", "Unique Identifier", "IMO Number", "Name of Ship as of Date of Sanction", "Date of Sanction"])) {
+    const id = l.par("Unique Identifier"), nom = l.par("Name of Ship as of Date of Sanction");
+    if (!id || !nom || /^yes$/i.test(l.par("Record Deleted Flag")) || (l.par("Sanction Status") && !/^sanctioned$/i.test(l.par("Sanction Status")))) continue;
+    const imo = lireImo(l.par("IMO Number"));
+    const date = l.par("Date of Sanction");
+    entrees.push({ source: "NZ", id, nom, alias: [...new Set(l.par("Alias/Alternate Names").split(/[;,]/).map((a) => a.trim()).filter((a) => a.length > 0 && a !== nom))], type: "vessel",
+      programme: "Russia Sanctions Regulations 2022", ...(imo ? { imo } : {}), ...(date ? { designation: { date, champ: "Date of Sanction" } } : {}) });
+  }
+  return entrees;
 }
 
 /**
@@ -353,26 +676,38 @@ export function analyserCsl(texte: string): EntreeListe[] {
   };
   const [iId, iSource, iType, iProg, iNom, iAlias] =
     ["_id", "source", "type", "programs", "name", "alt_names"].map(col) as [number, number, number, number, number, number];
+  /* la date de début (« start_date ») et le propriétaire d'un navire (« vessel_owner ») : colonnes du fichier, vides pour
+     la plupart des lignes du Commerce ; absentes du fichier, elles ne refusent rien, elles restent vides */
+  const iDebut = t.noms.indexOf("start_date"), iProprietaire = t.noms.indexOf("vessel_owner");
   const TYPES: Record<string, EntreeListe["type"]> = { "Individual": "person", "Entity": "entity", "Vessel": "vessel" };
   return t.lignes
     .filter((l) => !(l[iSource] ?? "").includes("Treasury Department"))
     .map((l) => {
       const liste = (l[iSource] ?? "").split(" - ")[0]!.trim();
       const programmes = (l[iProg] ?? "").trim();
+      const debut = iDebut === -1 ? "" : (l[iDebut] ?? "").trim();
+      const nommees = iProprietaire === -1 ? [] : parties("vessel_owner", [l[iProprietaire]]);
       return { source: "CSL" as const, id: (l[iId] ?? "").trim(), nom: (l[iNom] ?? "").trim(),
         alias: (l[iAlias] ?? "").split(";").map((a) => a.trim()).filter((a) => a.length > 0),
         type: TYPES[(l[iType] ?? "").trim()] ?? "other",
-        ...(liste ? { programme: programmes ? `${liste}: ${programmes}` : liste } : {}) };
+        ...(liste ? { programme: programmes ? `${liste}: ${programmes}` : liste } : {}),
+        ...(debut ? { designation: { date: debut, champ: "start_date" } } : {}), ...(nommees.length ? { parties: nommees } : {}) };
     })
     .filter((e) => e.nom.length > 0 && e.id.length > 0);
 }
 
-export function analyser(format: SourceListe["format"], texte: string, source?: EntreeListe["source"]): EntreeListe[] {
+/** Un fichier de liste, texte ou octets : un classeur se lit en octets, les autres formats en texte UTF-8. */
+export function analyser(format: SourceListe["format"], brut: string | Buffer, source?: EntreeListe["source"]): EntreeListe[] {
+  const texte = typeof brut === "string" ? brut : brut.toString("utf8");
+  const octets = typeof brut === "string" ? Buffer.from(brut, "utf8") : brut;
   const entrees = format === "ofac-sdn-xml" ? analyserOfac(texte, source === "OFAC-CONS" ? "OFAC-CONS" : "OFAC")
     : format === "un-consolidated-xml" ? analyserOnu(texte)
     : format === "trade-csl-csv" ? analyserCsl(texte)
     : format === "uk-sanctions-xml" ? analyserRoyaumeUni(texte)
-    : format === "eu-833-annex-xlii-xhtml" ? analyserNaviresUe(texte) : analyserUe(texte);
+    : format === "eu-833-annex-xlii-xhtml" ? analyserNaviresUe(texte)
+    : format === "dfat-consolidated-xlsx" ? analyserDfat(octets)
+    : format === "gac-sema-xml" ? analyserCanada(texte)
+    : format === "mfat-russia-register-xlsx" ? analyserMfat(octets) : analyserUe(texte);
   if (entrees.length === 0) {
     throw new Error(
       `the file does not look like ${format}: not one entry could be read from it.\n`
@@ -442,7 +777,7 @@ export function lireListe(source: EntreeListe["source"], racine: string = DOSSIE
       + `  Screening against a list that is not the one recorded certifies nothing.\n`
       + `  → npm run listes -- --fetch   (downloads again and reseals the manifest)`);
   }
-  return analyser(def.format, brut.toString("utf8"), source);
+  return analyser(def.format, brut, source);
 }
 
 /* ─────────────────────────────── le téléchargement ─────────────────────────────── */
@@ -475,7 +810,7 @@ async function telecharger(s: SourceListe): Promise<LigneManifeste> {
       erreur: `network: ${(e as Error).message}`,
       issue: "no bytes were written; check the connection and run --fetch again." };
   }
-  const entrees = analyser(s.format, brut.toString("utf8"), s.source);
+  const entrees = analyser(s.format, brut, s.source);
   mkdirSync(DONNEES, { recursive: true });
   const chemin = join(DONNEES, fichierDe(s));
   const provisoire = `${chemin}.tmp`;

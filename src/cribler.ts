@@ -29,12 +29,13 @@ import { createHash } from "node:crypto";
 import { basename } from "node:path";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { lireTable } from "./csv.ts";
-import { lireManifeste, lireListe, SOURCES, type EntreeListe } from "./listes.ts";
+import { lireManifeste, lireListe, SOURCES, lireImo, type EntreeListe, type Licence } from "./listes.ts";
+import { frequencesDesListes, TABLE_GELEE } from "./frequences.ts";
 import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
 import { commitCourant } from "./your-alerts.ts";
 import type { Cellule } from "./measure.ts";
 import {
-  frequencesDe, preparerNom, scoreBrut, variantes, simMot, abrege, abregeAllemand, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD, sembleCoupe,
+  preparerNom, scoreBrut, variantes, simMot, abrege, abregeAllemand, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD, sembleCoupe,
   compose, membres, gerondif, PARTICULES,
   variationVocalique, voyelleEpenthetique, squeletteLongue, pliAi, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
   CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pliJaponais, pliCoreen, CREDIT_KANA, pluriel, CHEMIN_VERDICT, RAPPEL_MIN,
@@ -69,6 +70,16 @@ export type Candidat = {
   score: number;
   /** « imo » : trouvé par le numéro OMI, pas par le nom */
   par: "name" | "imo";
+  /** LA DATE DE DÉSIGNATION TELLE QUE LA LISTE L'ÉCRIT, le champ de la liste qui la porte, et la source. Jamais déduite :
+   *  « not published by OFAC » pour les deux fichiers de l'OFAC, qui n'en publient pas ; « not stated by <source> for
+   *  this entry » quand la liste a le champ et l'a laissé vide. */
+  designation?: { date: string; champ?: string; source: EntreeListe["source"] };
+  /** LES PARTIES QUE LA LISTE ELLE-MÊME NOMME pour cette entrée (propriétaire ou exploitant d'un navire, « Linked To »),
+   *  mot pour mot, avec le rôle que la liste écrit et la source ; jamais prises à une autre entrée */
+  parties?: { role: string; nom: string; source: EntreeListe["source"] }[];
+  /** UN NAVIRE RENOMMÉ : trouvé par le numéro OMI, et le nom envoyé reste sous le seuil possible face à chacun des noms
+   *  que la liste donne à cette coque ; les voici */
+  renomme?: { nomsListes: string[] };
 };
 
 export type Statut = "strong" | "possible" | "no-match";
@@ -82,6 +93,10 @@ export type Resultat = Contrepartie & {
   ecartesParImo: { nomListe: string; imo: string }[];
   /** l'IMO fourni ne passe pas son chiffre de contrôle : utilisé tel quel, et signalé */
   imoInvalide?: boolean;
+  /** UN NAVIRE CRIBLÉ SANS NUMÉRO OMI : la ligne est un navire par la colonne `type` du client ou par un marqueur
+   *  explicite dans le nom (`navireDeclare`), et aucun numéro OMI lisible n'a été fourni : la règle de l'OMI, qui
+   *  tranche, n'a pas pu jouer */
+  navireSansImo?: true;
 };
 
 type MesureCitee = { rappel: Cellule; fauxPositifs: Cellule };
@@ -93,11 +108,16 @@ export type Criblage = {
   client?: string;
   commit?: string;
   fichier: { nom: string; sha256: string; lignes: number };
-  listes: { source: string; titre: string; url: string; telechargeLe: string; sha256: string; entrees: number }[];
+  /** chaque liste criblée, avec sa licence et la mention qu'elle exige (null quand aucune ne l'est) */
+  listes: { source: string; titre: string; url: string; telechargeLe: string; sha256: string; entrees: number; licence: Licence }[];
+  /** les mentions d'attribution exigées par les licences des listes criblées, chacune une fois : à imprimer avec tout extrait de ce relevé */
+  attributions: string[];
   nonCriblees: { source: string; titre: string; raison: string }[];
   methode: {
     palier: string; description: string;
     poids: string;
+    /** la table de poids ÉPINGLÉE (src/frequences.ts, TABLE_GELEE) : celle sur laquelle chaque chiffre publié a été mesuré */
+    tablePoids: { fichier: string; sha256: string; entrees: number; compteeLe: string; sources: string[] };
     seuils: { fort: number; possible: number };
     rappelMin: number; tientLePlancher: boolean;
     apprentissage: { jeux: JeuMesure[]; fort: MesureCitee; possible: MesureCitee };
@@ -124,10 +144,27 @@ export function imoValide(imo: string): boolean {
   return s % 10 === Number(imo[6]);
 }
 
-/** « IMO 9187629 », « imo9187629 », « 9187629 » → « 9187629 » ; autre chose → undefined. */
-export function lireImo(brut: string): string | undefined {
-  const m = /^(?:imo\s*)?(\d{7})$/i.exec(brut.trim());
-  return m?.[1];
+/** « IMO 9187629 », « imo9187629 », « 9187629 » → « 9187629 » ; autre chose → undefined. La lecture vit dans
+ *  listes.ts depuis le 05/10/2026, parce que les listes qui écrivent un numéro OMI (Canada, Nouvelle-Zélande,
+ *  Australie) le lisent avec la même règle que le fichier du client ; ré-exportée ici pour ses appelants. */
+export { lireImo };
+
+/**
+ * UN NAVIRE QUE LE CLIENT DÉCLARE SANS DONNER SON NUMÉRO OMI. La ligne est un navire quand la colonne `type` du
+ * client le dit (la cellule entière, en minuscules, parmi TYPES_NAVIRE_CLIENT), ou quand le nom porte un marqueur
+ * EXPLICITE : un préfixe écrit avec sa barre (M/V, M/T, M/S, M/Y, S/Y, F/V, R/V, T/B, LPG/C, LNG/C, B/M, N/M, R/M, le
+ * T/H et T/KH du teplokhod), « motor vessel », « motor tanker », « motor ship », « motor yacht » en tête, ou le type
+ * entre parenthèses en fin de nom (« (vessel) », « (tanker) », « (barge) », « (tug) », « (ship) »). La liste est
+ * volontairement ÉTROITE : « MV Agusta », « MT Bank », « Mt. Everest Trading », « FV Holdings », « Barge Transport
+ * Services » ne sont pas des navires, et un faux drapeau sur une société coûterait la confiance dans le vrai. Le
+ * criblage, lui, lit les préfixes sans barre (src/preparation.ts) pour comparer les noms : deux règles, deux usages.
+ */
+const TYPES_NAVIRE_CLIENT = new Set(["vessel", "ship", "navire", "bateau", "boat", "tanker", "barge", "tug", "tugboat", "yacht",
+  "schiff", "buque", "navio", "nave", "schip", "vaartuig"]);
+const MARQUEURS_NAVIRE = /^(?:m\/v|m\/t|m\/s|m\/y|s\/y|f\/v|r\/v|t\/b|lpg\/c|lng\/c|b\/m|n\/m|r\/m|t\/h|t\/kh)\b\.?\s*\S|^motor\s+(?:vessel|tanker|ship|yacht)\s+\S|\((?:vessel|tanker|barge|tug|ship)\)\s*$/i;
+export function navireDeclare(c: Pick<Contrepartie, "nom" | "type">): boolean {
+  if (c.type !== undefined && TYPES_NAVIRE_CLIENT.has(c.type.trim().toLowerCase())) return true;
+  return MARQUEURS_NAVIRE.test(c.nom.trim());
 }
 
 /* ─────────────────────────── le fichier du client ─────────────────────────── */
@@ -803,6 +840,9 @@ export function cribler(c: Contrepartie, index: Index, seuils: { fort: number; p
   };
   const ks = exhaustif ? index.noms.map((_, k) => k)
     : [...new Set(lectures.flatMap((l) => index.candidats(l.nom, l.brut)))];
+  /* les entrées qu'un NOM a atteintes au seuil possible : l'index ne perd aucune chaîne qui peut l'atteindre (voir
+     `Index`), donc une entrée absente d'ici a tous ses noms sous le seuil face au nom envoyé */
+  const parNom = new Set<string>();
   for (const k of ks) {
     const n = index.noms[k]!;
     let s = 0;
@@ -812,12 +852,19 @@ export function cribler(c: Contrepartie, index: Index, seuils: { fort: number; p
       s = Math.max(s, Math.min(plafond, scoreBrut(index.f, l.brut, l.nom, n.brut, n.nom, options)));
     }
     if (s < seuils.possible) continue;
-    garder(`${n.entree.source}:${n.entree.id}`, candidat(n, Math.round(s * 1000) / 1000, "name"));
+    const cle = `${n.entree.source}:${n.entree.id}`;
+    parNom.add(cle);
+    garder(cle, candidat(n, Math.round(s * 1000) / 1000, "name"));
   }
   if (c.imo) {
     for (const k of index.parNumeroImo(c.imo)) {
       const n = index.noms[k]!;
-      garder(`${n.entree.source}:${n.entree.id}`, { ...candidat(n, 1, "imo"), nomListe: n.entree.nom });
+      const cle = `${n.entree.source}:${n.entree.id}`;
+      /* LE NAVIRE RENOMMÉ : la coque est celle de la liste (même numéro OMI) et aucun des noms que la liste lui connaît
+         n'atteint le seuil possible face au nom envoyé ; le relecteur voit ces noms au lieu de chercher pourquoi un
+         nom sans rapport est au niveau fort */
+      const renomme = parNom.has(cle) ? {} : { renomme: { nomsListes: [n.entree.nom, ...n.entree.alias] } };
+      garder(cle, { ...candidat(n, 1, "imo"), nomListe: n.entree.nom, ...renomme });
     }
   }
   /* L'IMO fourni tranche : un navire listé au nom voisin mais au numéro différent n'est pas
@@ -839,14 +886,16 @@ export function cribler(c: Contrepartie, index: Index, seuils: { fort: number; p
     d.ids.push(...cand.ids);
     if (prefere(cand, d)) { d.score = cand.score; d.par = cand.par;
       if (cand.alias) d.alias = cand.alias; else delete d.alias;
-      if (cand.aliasFaible) d.aliasFaible = true; else delete d.aliasFaible; }
+      if (cand.aliasFaible) d.aliasFaible = true; else delete d.aliasFaible;
+      if (cand.renomme) d.renomme = cand.renomme; else delete d.renomme; }
   }
   const tous = [...regroupes.values()].map((x) => ({ ...x, ids: [...new Set(x.ids)].sort() }))
     .sort((a, b) => b.score - a.score || a.nomListe.localeCompare(b.nomListe)
       || a.source.localeCompare(b.source) || a.ids[0]!.localeCompare(b.ids[0]!));
   const statut: Statut = tous.length === 0 ? "no-match" : tous[0]!.score >= seuils.fort ? "strong" : "possible";
   return { ...c, statut, candidats: tous.slice(0, CANDIDATS_MONTRES), autres: Math.max(0, tous.length - CANDIDATS_MONTRES),
-    ecartesParImo, ...(c.imo && !imoValide(c.imo) ? { imoInvalide: true } : {}) };
+    ecartesParImo, ...(c.imo && !imoValide(c.imo) ? { imoInvalide: true } : {}),
+    ...(!c.imo && navireDeclare(c) ? { navireSansImo: true as const } : {}) };
 }
 
 /**
@@ -869,12 +918,17 @@ function prefere(a: Candidat, b: Candidat): boolean {
  *  (04/10/2026 : un pétrolier, « ASTRAL », au fort à 0,833 par l'alias faible « AO AZ URAL » d'une usine d'automobiles). */
 function candidat(n: NomIndexe, score: number, par: Candidat["par"]): Candidat {
   if (n.faible && par === "name") score = Math.min(score, SEUIL_POSSIBLE);
+  const e = n.entree;
+  /* la date : celle que la liste écrit, ou la raison de son absence, jamais une date déduite */
+  const designation = e.designation ? { ...e.designation, source: e.source }
+    : { date: e.source === "OFAC" || e.source === "OFAC-CONS" ? "not published by OFAC" : `not stated by ${e.source} for this entry`, source: e.source };
   return {
-    source: n.entree.source, ...(n.entree.programme ? { liste: n.entree.programme } : {}),
-    ids: [n.entree.id], nomListe: n.entree.nom,
+    source: e.source, ...(e.programme ? { liste: e.programme } : {}),
+    ids: [e.id], nomListe: e.nom,
     ...(n.alias && par === "name" ? { alias: n.alias } : {}),
     ...(n.faible && par === "name" ? { aliasFaible: true } : {}),
-    type: n.entree.type, ...(n.entree.imo ? { imo: n.entree.imo } : {}), ...(n.entree.autresImo?.length ? { autresImo: n.entree.autresImo } : {}), score, par,
+    type: e.type, ...(e.imo ? { imo: e.imo } : {}), ...(e.autresImo?.length ? { autresImo: e.autresImo } : {}), score, par,
+    designation, ...(e.parties?.length ? { parties: e.parties.map((p) => ({ ...p, source: e.source })) } : {}),
   };
 }
 
@@ -928,22 +982,36 @@ export function comparer(avant: Criblage, apres: Omit<Criblage, "reserves" | "em
 
 /* ─────────────────────────── l'export tableur ─────────────────────────── */
 
+/** La mention d'attribution d'une liste, pour une cellule : la mention exigée mot pour mot, ou le nom de la licence
+ *  avec « no attribution required ». */
+export function mentionDe(l: { licence?: Licence } | undefined): string {
+  if (!l?.licence) return "";
+  return l.licence.mention ?? `${l.licence.nom} (no attribution required)`;
+}
+
 /** Une ligne par candidat (une seule pour un nom sans candidat), pour le système du client.
  *  Les cellules qui commencent par = + - @ sont préfixées d'une apostrophe : un tableur les
- *  exécuterait comme des formules (l'injection de formule dans un export CSV). */
+ *  exécuterait comme des formules (l'injection de formule dans un export CSV).
+ *  PAS DE NOTE D'ATTRIBUTION EN PIED DE FICHIER : le CSV (RFC 4180) n'a ni commentaire ni pied de page, et une ligne
+ *  de texte après les données serait lue comme une contrepartie de plus par le système du client, qui est le lecteur
+ *  de ce fichier. La mention voyage donc dans une colonne, sur chaque ligne de candidat (`list_licence`), et dans le
+ *  relevé JSON, liste par liste. */
 export function versCsv(c: Criblage): string {
   const cell = (v: string | number | undefined) => {
     let t = v === undefined ? "" : String(v);
     if (/^[=+\-@\t\r]/.test(t)) t = `'${t}`;
     return /[",\n\r]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
   };
-  const lignes = [["ref", "name", "imo", "level", "listed_name", "list_source", "list", "list_ids", "via_alias", "weak_alias", "listed_imo", "score", "matched_on"].join(",")];
+  const parSource = new Map(c.listes.map((l) => [l.source, l] as const));
+  const lignes = [["ref", "name", "imo", "level", "vessel_without_imo", "listed_name", "list_source", "list", "list_ids", "via_alias", "weak_alias", "listed_imo", "score", "matched_on",
+    "designated_on", "designation_field", "named_parties", "renamed_ship_listed_names", "list_licence"].join(",")];
   for (const r of c.resultats) {
-    const base = [r.ref, r.nom, r.imo, r.statut];
-    if (r.candidats.length === 0) { lignes.push([...base, "", "", "", "", "", "", "", "", ""].map(cell).join(",")); continue; }
+    const base = [r.ref, r.nom, r.imo, r.statut, r.navireSansImo ? "yes" : ""];
+    if (r.candidats.length === 0) { lignes.push([...base, ...Array<string>(14).fill("")].map(cell).join(",")); continue; }
     for (const k of r.candidats) {
       lignes.push([...base, k.nomListe, k.source, k.liste, k.ids.join(" "), k.alias, k.aliasFaible ? "yes" : "", k.imo,
-        k.score.toFixed(3), k.par].map(cell).join(","));
+        k.score.toFixed(3), k.par, k.designation?.date, k.designation?.champ, (k.parties ?? []).map((p) => `${p.role}: ${p.nom}`).join("; "),
+        k.renomme?.nomsListes.join(" | "), mentionDe(parSource.get(k.source))].map(cell).join(","));
     }
   }
   return lignes.join("\n") + "\n";
@@ -971,6 +1039,10 @@ export function reserves(c: Omit<Criblage, "reserves" | "empreinte">): string[] 
   if (!m.tientLePlancher) r.push(`Even the possible level does not hold a recall lower bound of ${pct(m.rappelMin)} on the training sets.`);
   if (m.seuils.fort === m.seuils.possible) r.push(`On the training sets the two levels meet at ${m.seuils.fort.toFixed(2)}: every candidate is a strong one.`);
   if (c.resultats.some((x) => x.imoInvalide)) r.push("Some IMO numbers you supplied fail their check digit; they were used as given, and are marked.");
+  const sansImo = c.resultats.filter((x) => x.navireSansImo).length;
+  if (sansImo > 0) r.push(`${sansImo} counterpart${sansImo > 1 ? "ies are" : "y is"} a vessel by your type column or by an explicit marker in the name, with no readable IMO number: the IMO rule, which decides, could not apply; ${sansImo > 1 ? "they are" : "it is"} marked.`);
+  const horsTable = c.listes.filter((l) => !m.tablePoids.sources.includes(l.source)).map((l) => l.source);
+  if (horsTable.length > 0) r.push(`Word weights are those of the pinned table counted on ${m.tablePoids.compteeLe} over ${m.tablePoids.sources.join(", ")}, the table every published rate was measured on; ${horsTable.join(", ")} ${horsTable.length > 1 ? "were" : "was"} screened with the same weights, a word absent from the table weighing as a word seen in no listed entry.`);
   return r;
 }
 
@@ -997,11 +1069,16 @@ export function executer(
     /* lireListe refuse un fichier qui ne correspond plus à son empreinte : on ne crible
        pas contre une liste qui n'est pas celle que le relevé va nommer. */
     entrees.push(...lireListe(s.source));
-    listes.push({ source: s.source, titre: s.titre, url: s.url, telechargeLe: l.telechargeLe, sha256: l.sha256, entrees: l.entrees });
+    listes.push({ source: s.source, titre: s.titre, url: s.url, telechargeLe: l.telechargeLe, sha256: l.sha256, entrees: l.entrees, licence: s.licence });
   }
   if (listes.length === 0) throw new Error(`no list is available on this machine. Nothing was screened.\n  → npm run listes -- --fetch`);
 
-  const f = frequencesDe(entrees.map((e) => [e.nom, ...e.alias]));
+  /* LES POIDS SONT CEUX DE LA TABLE ÉPINGLÉE (src/frequences.ts), pas un compte des listes criblées : les listes
+     ajoutées après le gel, ou rafraîchies, sont pesées avec les poids sur lesquels chaque chiffre publié a été mesuré,
+     et un mot que la table ne porte pas pèse comme un mot vu dans aucune entrée (src/mots.ts, poidsDuMot). Avant le
+     05/10/2026 le criblage comptait les poids sur les listes qu'il criblait : ajouter une liste déplaçait tous les
+     scores, et les verdicts publiés ne décrivaient plus le matcher livré. */
+  const f = frequencesDesListes();
   const bruts = CHEMINS_APPRENTISSAGE.map((u) => {
     const b = lireJeu(u);
     if (b === null) throw new Error(`the training set ${u.pathname} is missing: the thresholds cannot be measured. Nothing was screened.`);
@@ -1027,10 +1104,11 @@ export function executer(
     version: 1, genre: "cascade-screening/counterparty-screening",
     emisLe: maintenant.toISOString(), ...(client ? { client } : {}), ...(commit ? commit : {}),
     fichier: { nom: basename(fichier), sha256: createHash("sha256").update(texte).digest("hex"), lignes: lignes.length },
-    listes, nonCriblees,
+    listes, attributions: [...new Set(listes.map((l) => l.licence.mention).filter((x): x is string => x !== null))], nonCriblees,
     methode: {
       palier: p.id, description: p.description,
-      poids: `word weights are the smoothed inverse document frequency over the ${f.entrees.toLocaleString("en-GB")} entries of the screened lists`,
+      poids: `word weights are the smoothed inverse document frequency of the pinned table data/${TABLE_GELEE.fichier}: the ${f.entrees.toLocaleString("en-GB")} entries of ${TABLE_GELEE.listes.length} sources as recorded on ${TABLE_GELEE.compteeLe}, the table every published rate was measured on; a list screened here that was not counted in it is weighed with the same weights, a word absent from the table weighing as a word seen in no entry`,
+      tablePoids: { fichier: TABLE_GELEE.fichier, sha256: TABLE_GELEE.sha256, entrees: TABLE_GELEE.entrees, compteeLe: TABLE_GELEE.compteeLe, sources: TABLE_GELEE.listes.map((l) => l.source) },
       seuils, rappelMin: RAPPEL_MIN, tientLePlancher: reglage.tientLePlancher,
       apprentissage: { jeux: apprentissage.jeux, fort: citer(apprentissage.table, seuils.fort), possible: citer(apprentissage.table, seuils.possible) },
       apprentissageReel: { jeu: reel.jeux[0]!, fort: citer(reel.table, seuils.fort), possible: citer(reel.table, seuils.possible) },

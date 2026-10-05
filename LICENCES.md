@@ -75,3 +75,34 @@ impede spontaneous adoption, which is not what this repository is for.
 ## Bill of materials
 
 `sbom.json` accompanies this document, in CycloneDX 1.5 format.
+
+## Public lists screened against
+
+10 public sanctions sources are downloaded by `npm run listes -- --fetch` and screened against by `npm run cribler`.
+Each licence below was read on the publisher's own page on the date given, never on a third party's; the attribution
+statement is the one the licence requires, word for word, and the screener's record (`.screening.json`, field
+`licence` of each list, and `attributions`) and spreadsheet (column `list_licence`) carry it with every candidate.
+
+| Source | Licence | Attribution required | Publisher's page | Read on |
+| --- | --- | --- | --- | --- |
+| OFAC | United States Government work: not subject to copyright (17 U.S.C. § 105) | none required | https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title17-section105&num=0&edition=prelim | 2026-10-05 |
+| OFAC-CONS | United States Government work: not subject to copyright (17 U.S.C. § 105) | none required | https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title17-section105&num=0&edition=prelim | 2026-10-05 |
+| CSL | United States Government work: not subject to copyright (17 U.S.C. § 105) | none required | https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title17-section105&num=0&edition=prelim | 2026-10-05 |
+| UN | United Nations website Terms of Use (no open licence) | none required | https://www.un.org/en/about-us/terms-of-use | 2026-10-05 |
+| EU | Commission Decision 2011/833/EU on the reuse of Commission documents; Creative Commons Attribution 4.0 International (CC BY 4.0) | Source: European Commission, Financial Sanctions Files (FSF), © European Union, reused under Commission Decision 2011/833/EU (CC BY 4.0) | https://commission.europa.eu/legal-notice_en | 2026-10-05 |
+| UK | Open Government Licence v3.0 | Contains public sector information licensed under the Open Government Licence v3.0. | https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/ | 2026-10-05 |
+| EU-VESSELS | Commission Decision 2011/833/EU on the reuse of Commission documents; consolidated texts under Creative Commons Attribution 4.0 International (CC BY 4.0), Publications Office (EUR-Lex) | © European Union, 1998-2026. Source: EUR-Lex, consolidated text of Regulation (EU) No 833/2014 (Annex XLII), reused under Commission Decision 2011/833/EU (CC BY 4.0) | https://eur-lex.europa.eu/content/legal-notice/legal-notice.html | 2026-10-05 |
+| AU | Creative Commons Attribution 4.0 International (CC BY 4.0), Commonwealth of Australia (DFAT) | Department of Foreign Affairs and Trade website – www.dfat.gov.au | https://www.dfat.gov.au/about-us/about-this-website/copyright | 2026-10-05 |
+| CA | Open Government Licence - Canada | Contains information licensed under the Open Government Licence – Canada. | https://open.canada.ca/en/open-government-licence-canada | 2026-10-05 |
+| NZ | Creative Commons Attribution 4.0 International (CC BY 4.0), Crown copyright (Ministry of Foreign Affairs and Trade) | Source: New Zealand Ministry of Foreign Affairs and Trade, Russia Sanctions Register, Crown copyright, licensed under CC BY 4.0 | https://www.mfat.govt.nz/en/copyright | 2026-10-05 |
+
+- **OFAC**: a work of the United States Government is not protected by copyright; no attribution is required. USA.gov (usa.gov/government-copyright) asks that reuse not imply endorsement by the agency.
+- **OFAC-CONS**: a work of the United States Government is not protected by copyright; no attribution is required. USA.gov (usa.gov/government-copyright) asks that reuse not imply endorsement by the agency.
+- **CSL**: a work of the United States Government is not protected by copyright; no attribution is required. USA.gov (usa.gov/government-copyright) asks that reuse not imply endorsement by the agency. The Consolidated Screening List page (trade.gov/consolidated-screening-list) states no condition of use.
+- **UN**: the Terms grant Users permission to download and copy the Materials for the User's personal, non-commercial use, without any right to resell or redistribute them; the Consolidated List page says the list exists to facilitate the implementation of the measures. No attribution wording is prescribed. Commercial reuse is not settled by the publisher's page: to be confirmed with the United Nations before a sale.
+- **EU**: the legal notice requires appropriate credit and that changes be indicated, and prescribes no wording; this is the wording used. data.europa.eu lists the dataset under the European Commission reuse notice (Decision 2011/833/EU).
+- **UK**: the UK Sanctions List page (gov.uk/government/publications/the-uk-sanctions-list) says: All content is available under the Open Government Licence v3.0, except where otherwise stated; the licence requires the attribution statement above when the provider gives none of its own.
+- **EU-VESSELS**: the EUR-Lex legal notice: you can re-use the legal documents published in EUR-Lex for commercial or non-commercial purposes; the consolidated texts, owned by the EU, are licensed under CC BY 4.0 provided you acknowledge the source and indicate any changes. No wording is prescribed beyond the copyright line; this is the wording used.
+- **AU**: the copyright page: all material presented on this website is provided under a Creative Commons Attribution 4.0 International licence, and content should be attributed with the statement above.
+- **CA**: the list is dataset ab076f2e-94b1-4039-bb3d-58002deb826d on open.canada.ca, published by Global Affairs Canada under this licence, whose default attribution statement is the one above; the general terms of canada.ca would otherwise require written permission for commercial redistribution.
+- **NZ**: the copyright page asks that the work be attributed to the Crown under CC BY 4.0 and prescribes no wording; this is the wording used.
