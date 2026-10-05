@@ -1,10 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { Index, cribler, lireContreparties, imoValide, lireImo, comparer, versCsv, type Contrepartie, type Criblage } from "./cribler.ts";
+import { Index, cribler, lireContreparties, imoValide, lireImo, comparer, versCsv, navireDeclare, mentionDe, type Contrepartie, type Criblage, type Candidat } from "./cribler.ts";
 import { empreinteDuReleve } from "./empreinte.ts";
 import { frequencesDe, preparerNom, CHEMINS_APPRENTISSAGE } from "./entites.ts";
-import type { EntreeListe } from "./listes.ts";
+import { SOURCES, type EntreeListe, type Licence } from "./listes.ts";
+
+const LICENCE_ESSAI: Licence = { nom: "Essai", url: "https://example.org/licence", mention: null, note: "none required: a test", lue: "2026-10-05" };
 
 /* Une « liste » fabriquée avec les noms des jeux d'apprentissage : le témoin tourne sur
    toute machine, sans data/ (les vraies listes ne sont pas committées). */
@@ -66,6 +68,62 @@ test("le numéro OMI : chiffre de contrôle, lecture tolérante, et il tranche",
   assert.deepEqual(ecarte.ecartesParImo, [{ nomListe: "OCEAN PEARL", imo: "9187629" }], "écarté, mais nommé : écarté n'est pas caché");
 });
 
+test("le navire renommé : trouvé par le numéro OMI quand aucun nom de la coque n'atteint le possible, le relevé donne les noms listés ; retrouvé par son nom aussi, il ne le dit pas", () => {
+  const e: EntreeListe[] = [
+    { source: "UK", id: "v1", nom: "OCEAN PEARL", alias: ["PEARL OF THE OCEAN"], type: "vessel", imo: "9187629" },
+    { source: "OFAC", id: "v2", nom: "SEA FALCON", alias: [], type: "vessel", imo: "9187631" },
+  ];
+  const ix = new Index(frequencesDe(e.map((x) => [x.nom, ...x.alias])), e, 0.74);
+  const renomme = cribler({ ligne: 2, nom: "Blue Star", imo: "9187629" }, ix, seuils);
+  assert.equal(renomme.candidats.length, 1);
+  assert.equal(renomme.candidats[0]!.par, "imo");
+  assert.deepEqual(renomme.candidats[0]!.renomme, { nomsListes: ["OCEAN PEARL", "PEARL OF THE OCEAN"] }, "le nom envoyé est sous le seuil face aux deux noms : la coque a changé de nom, et le relecteur voit lesquels");
+  const memeNom = cribler({ ligne: 3, nom: "MV Ocean Pearl", imo: "9187629" }, ix, seuils);
+  assert.equal(memeNom.candidats[0]!.par, "imo", "le numéro OMI porte le score (1), le nom l'avait déjà atteint");
+  assert.equal(memeNom.candidats[0]!.renomme, undefined, "le nom envoyé retrouve la coque : rien à dire");
+  const exhaustif = cribler({ ligne: 2, nom: "Blue Star", imo: "9187629" }, ix, seuils, true);
+  assert.deepEqual(exhaustif, renomme, "l'index et la comparaison exhaustive disent la même chose du renommage");
+});
+
+test("le navire criblé sans numéro OMI : par la colonne type du client ou par un marqueur explicite du nom ; les sosies ne lèvent pas le drapeau", () => {
+  for (const nom of ["M/V Ocean Pearl", "m/t Baltic Sun", "LNG/C Arctic Aurora", "T/H NIZHNEDONSK-1408", "Motor Vessel Ocean Pearl", "B/M Río Chagres", "PRIDONYE-41 (barge)", "Pacific Trader (tanker)"]) {
+    assert.equal(navireDeclare({ nom }), true, nom);
+  }
+  for (const nom of ["MV Agusta Motor S.p.A.", "MT Bank Corporation", "Mt. Everest Trading", "FV Holdings Ltd", "Barge Transport Services Ltd", "Tug of War Ltd", "Microsoft Dynamics", "SS Lazio", "Ocean Pearl", "M/VOCEAN", "Tanker Street Bakery", "Vessel Health Clinic", "Davar Shipping Co. Limited"]) {
+    assert.equal(navireDeclare({ nom }), false, nom);
+  }
+  assert.equal(navireDeclare({ nom: "Ocean Pearl", type: "Vessel" }), true, "la colonne type du client dit navire");
+  assert.equal(navireDeclare({ nom: "Ocean Pearl", type: " ship " }), true);
+  assert.equal(navireDeclare({ nom: "Ocean Pearl", type: "shipping company" }), false, "une cellule qui n'est pas le mot entier ne dit pas navire");
+  assert.equal(navireDeclare({ nom: "Ocean Pearl", type: "entity" }), false);
+  const e: EntreeListe[] = [{ source: "OFAC", id: "v1", nom: "OCEAN PEARL", alias: [], type: "vessel", imo: "9187629" }];
+  const ix = new Index(frequencesDe(e.map((x) => [x.nom])), e, 0.74);
+  assert.equal(cribler({ ligne: 2, nom: "M/V Ocean Pearl" }, ix, seuils).navireSansImo, true, "un navire déclaré, pas de numéro : le drapeau");
+  assert.equal(cribler({ ligne: 3, nom: "M/V Ocean Pearl", imo: "9187629" }, ix, seuils).navireSansImo, undefined, "avec son numéro : pas de drapeau");
+  assert.equal(cribler({ ligne: 4, nom: "Ocean Pearl", type: "vessel" }, ix, seuils).navireSansImo, true);
+  assert.equal(cribler({ ligne: 5, nom: "Ocean Pearl Trading GmbH" }, ix, seuils).navireSansImo, undefined, "une société : rien");
+  const { lignes } = lireContreparties("name,type,imo\nOcean Pearl,vessel,12\n");
+  assert.equal(cribler(lignes[0]!, ix, seuils).navireSansImo, true, "un numéro illisible (« 12 ») est un numéro absent : le drapeau");
+});
+
+test("la date de désignation et les parties nommées voyagent avec le candidat ; l'OFAC dit qu'il n'en publie pas, une liste au champ vide le dit aussi", () => {
+  const e: EntreeListe[] = [
+    { source: "UK", id: "u1", nom: "EXAMPLE STAR", alias: [], type: "vessel", imo: "9074729", designation: { date: "29/06/2012", champ: "DateDesignated" }, parties: [{ role: "CurrentOwnerOperator", nom: "Global United Shipping India" }] },
+    { source: "OFAC", id: "o1", nom: "SEA FALCON", alias: [], type: "vessel", imo: "9187631", parties: [{ role: "vesselOwner", nom: "Samir de Navegacion S.A." }] },
+    { source: "CSL", id: "c1", nom: "HARBOR POINT LOGISTICS", alias: [], type: "other" },
+  ];
+  const ix = new Index(frequencesDe(e.map((x) => [x.nom, ...x.alias])), e, 0.74);
+  const uk = cribler({ ligne: 2, nom: "Example Star" }, ix, seuils).candidats[0]!;
+  assert.deepEqual(uk.designation, { date: "29/06/2012", champ: "DateDesignated", source: "UK" });
+  assert.deepEqual(uk.parties, [{ role: "CurrentOwnerOperator", nom: "Global United Shipping India", source: "UK" }]);
+  const ofac = cribler({ ligne: 3, nom: "Sea Falcon" }, ix, seuils).candidats[0]!;
+  assert.deepEqual(ofac.designation, { date: "not published by OFAC", source: "OFAC" }, "jamais déduite : l'OFAC n'en publie pas");
+  assert.deepEqual(ofac.parties, [{ role: "vesselOwner", nom: "Samir de Navegacion S.A.", source: "OFAC" }]);
+  const csl = cribler({ ligne: 4, nom: "Harbor Point Logistics" }, ix, seuils).candidats[0]!;
+  assert.deepEqual(csl.designation, { date: "not stated by CSL for this entry", source: "CSL" });
+  assert.equal(csl.parties, undefined);
+});
+
 test("l'index retrouve à lui seul le pluriel anglais et la lecture cantonaise d'un nom en sinogrammes", () => {
   const e: EntreeListe[] = [
     { source: "OFAC", id: "1", nom: "Luen Shing Recycling Metals Limited", alias: [], type: "entity" },
@@ -120,7 +178,8 @@ function releveMinimal(resultats: Criblage["resultats"], sha = "aaa"): Criblage 
   const c = {
     version: 1, genre: "cascade-screening/counterparty-screening", emisLe: "2026-09-20T00:00:00.000Z",
     fichier: { nom: "c.csv", sha256: "x", lignes: resultats.length },
-    listes: [{ source: "OFAC", titre: "OFAC", url: "u", telechargeLe: "2026-09-20T00:00:00Z", sha256: sha, entrees: 1 }],
+    listes: [{ source: "OFAC", titre: "OFAC", url: "u", telechargeLe: "2026-09-20T00:00:00Z", sha256: sha, entrees: 1, licence: LICENCE_ESSAI }],
+    attributions: [],
     nonCriblees: [], methode: {} as Criblage["methode"],
     totaux: { lignes: resultats.length, forts: 0, possibles: 0, sansCorrespondance: 0 }, resultats, reserves: [],
   } as Criblage;
@@ -156,6 +215,35 @@ test("l'export tableur : une ligne par candidat, et aucune formule exécutable",
   assert.ok(lignes[1]!.startsWith("'=1+2,"), "une cellule qui commence par = est neutralisée");
   assert.ok(lignes[1]!.includes('"Acme, Inc"'), "une virgule se cite");
   assert.ok(lignes[2]!.includes("'@SUM(A1)"));
+  const colonnes = lignes[0]!.split(",").length;
+  assert.equal(lignes[2]!.split(",").length, colonnes, "une ligne sans candidat a autant de cellules que l'en-tête");
+});
+
+test("l'export tableur porte les quatre champs et la mention de licence de chaque liste, par colonne et jamais en pied de fichier", () => {
+  const uk: Criblage["listes"][number] = { source: "UK", titre: "UK", url: "u", telechargeLe: "2026-10-04T00:00:00Z", sha256: "s", entrees: 1,
+    licence: SOURCES.find((s) => s.source === "UK")!.licence };
+  const trouve: Candidat = { source: "UK", ids: ["v1"], nomListe: "OCEAN PEARL", type: "vessel", imo: "9187629", score: 1, par: "imo",
+    designation: { date: "29/06/2012", champ: "DateDesignated", source: "UK" },
+    parties: [{ role: "CurrentOwnerOperator", nom: "Global United Shipping India", source: "UK" }], renomme: { nomsListes: ["OCEAN PEARL", "PEARL OF THE OCEAN"] } };
+  const c = releveMinimal([
+    { ligne: 2, ref: "C1", nom: "M/V Blue Star", imo: "9187629", statut: "strong", candidats: [trouve], autres: 0, ecartesParImo: [] },
+    { ...res("C2", "M/T Baltic Sun", []), navireSansImo: true as const },
+  ]);
+  c.listes.push(uk);
+  const lignes = versCsv(c).trim().split("\n");
+  const entete = lignes[0]!.split(",");
+  for (const col of ["vessel_without_imo", "designated_on", "designation_field", "named_parties", "renamed_ship_listed_names", "list_licence"]) assert.ok(entete.includes(col), col);
+  const cellule = (l: string, col: string) => l.split(",")[entete.indexOf(col)];
+  assert.equal(cellule(lignes[1]!, "designated_on"), "29/06/2012");
+  assert.equal(cellule(lignes[1]!, "designation_field"), "DateDesignated");
+  assert.equal(cellule(lignes[1]!, "named_parties"), "CurrentOwnerOperator: Global United Shipping India");
+  assert.equal(cellule(lignes[1]!, "renamed_ship_listed_names"), "OCEAN PEARL | PEARL OF THE OCEAN");
+  assert.equal(cellule(lignes[1]!, "list_licence"), "Contains public sector information licensed under the Open Government Licence v3.0.", "la mention de l'OGL, sur la ligne du candidat");
+  assert.equal(cellule(lignes[1]!, "vessel_without_imo"), "");
+  assert.equal(cellule(lignes[2]!, "vessel_without_imo"), "yes", "le drapeau est sur la ligne de la contrepartie, candidat ou pas");
+  assert.equal(lignes.length, 3, "aucune ligne de pied : le système du client la lirait comme une contrepartie");
+  assert.equal(mentionDe(c.listes[0]), "Essai (no attribution required)");
+  assert.equal(mentionDe(undefined), "");
 });
 
 test("tour 5 : l'index retrouve à lui seul le 1 lu optiquement, la civilité soudée dans les deux sens, et la faute d'un clavardage", () => {

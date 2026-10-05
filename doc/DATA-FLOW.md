@@ -13,6 +13,11 @@ appear unnoticed (`src/frontiere.test.ts`).
 | `npm run listes -- --fetch` | data.trade.gov | download | the US Consolidated Screening List (Commerce and State lists) |
 | `npm run listes -- --fetch` | scsanctions.un.org | download | the UN consolidated list |
 | `npm run listes -- --fetch` | webgate.ec.europa.eu | download | the EU consolidated financial sanctions list (public token, or your own in `CASCADE_EU_TOKEN`) |
+| `npm run listes -- --fetch` | sanctionslist.fcdo.gov.uk | download | the UK Sanctions List |
+| `npm run listes -- --fetch` | publications.europa.eu | download | the consolidated text of Regulation (EU) No 833/2014, for the vessels of its Annex XLII (the Office answers with a redirection to an http address of its store) |
+| `npm run listes -- --fetch` | www.dfat.gov.au | download | Australia's DFAT Consolidated List |
+| `npm run listes -- --fetch` | www.international.gc.ca | download | the Consolidated Canadian Autonomous Sanctions List |
+| `npm run listes -- --fetch` | www.mfat.govt.nz | download | New Zealand's Russia Sanctions Register |
 | `npm run poids -- --fetch` | huggingface.co | download | the optional embedding tier: four files of `Xenova/multilingual-e5-small` at a pinned revision, checked by size and sha256 |
 
 Each download is recorded in `listes-manifest.json` with its source, date, sha256 and entry

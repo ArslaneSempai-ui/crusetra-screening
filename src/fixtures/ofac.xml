@@ -49,8 +49,16 @@
     <uid>306</uid>
     <lastName>MV HORIZON</lastName>
     <sdnType>Vessel</sdnType>
+    <remarks>(Linked To: ISLAMIC REVOLUTIONARY GUARD CORPS (IRGC)-QODS FORCE; Linked To: HIZBALLAH)</remarks>
     <programList>
       <program>SDGT</program>
     </programList>
+    <vesselInfo>
+      <callSign>CL2192</callSign>
+      <vesselType>Tug</vesselType>
+      <vesselFlag>Cuba</vesselFlag>
+      <vesselOwner>Samir de Navegacion S.A.</vesselOwner>
+      <grossRegisteredTonnage>212</grossRegisteredTonnage>
+    </vesselInfo>
   </sdnEntry>
 </sdnList>
