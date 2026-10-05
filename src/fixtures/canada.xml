@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<data-set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<record>
+		<Country-Pays>Belarus / Bélarus</Country-Pays>
+		<LastName-NomDeFamille>FIXTURENINE</LastName-NomDeFamille>
+		<GivenName-Prenom>Mike Testovich </GivenName-Prenom>
+		<Aliases-Alias>[name removed], [name removed],  Mike FIXTURENINE Testovich, [name removed],  Belarusian: Майк Тэставiч ФIКСТУР, Russian: [name removed]</Aliases-Alias>
+		<Schedule-Annexe>1, Part 1</Schedule-Annexe>
+		<Item-NumeroDarticle>99</Item-NumeroDarticle>
+		<DateOfListing-DateDinscription>2024-04-12</DateOfListing-DateDinscription>
+	</record>
+<record>
+		<Country-Pays>Belarus / Bélarus</Country-Pays>
+		<EntityOrShip-EntiteOuNavire>ALEVKURP OJSC</EntityOrShip-EntiteOuNavire>
+		<Aliases-Alias>Открытое акционерное общество "АЛЕВКУРП"/ ОАО "АЛЕВКУРП</Aliases-Alias>
+		<Schedule-Annexe>1, Part 2</Schedule-Annexe>
+		<Item-NumeroDarticle>40</Item-NumeroDarticle>
+		<DateOfListing-DateDinscription>2022-11-17</DateOfListing-DateDinscription>
+	</record>
+<record>
+		<Country-Pays>Russia / Russie</Country-Pays>
+		<EntityOrShip-EntiteOuNavire>Balitiyskiy III</EntityOrShip-EntiteOuNavire>
+		<TitleOrShipType-TitreOuTypeDeNavire>General Cargo/Multi Purpose | Cargo classique/navire polyvalent</TitleOrShipType-TitreOuTypeDeNavire>
+		<ShipIMONumber-NumeroOMIDuNavire>7612448</ShipIMONumber-NumeroOMIDuNavire>
+		<DateOfBirthOrShipBuildDate-DateDeNaissanceOuDateDeConstructionDuNavire>1980</DateOfBirthOrShipBuildDate-DateDeNaissanceOuDateDeConstructionDuNavire>
+		<Schedule-Annexe>1.1</Schedule-Annexe>
+		<Item-NumeroDarticle>1</Item-NumeroDarticle>
+		<DateOfListing-DateDinscription>2025-02-21</DateOfListing-DateDinscription>
+	</record>
+<record>
+		<Country-Pays>Iran</Country-Pays>
+		<LastName-NomDeFamille>FIXTUREELEVEN</LastName-NomDeFamille>
+		<GivenName-Prenom>Kamran Testi</GivenName-Prenom>
+		<ShipIMONumber-NumeroOMIDuNavire>نام ساختگی</ShipIMONumber-NumeroOMIDuNavire>
+		<Schedule-Annexe>1, Part 2</Schedule-Annexe>
+		<Item-NumeroDarticle>116</Item-NumeroDarticle>
+		<DateOfListing-DateDinscription>2026-09-22</DateOfListing-DateDinscription>
+	</record>
+<record>
+		<Country-Pays>Myanmar (Burma) / Myanmar (Birmanie)</Country-Pays>
+		<GivenName-Prenom>Kyaw Fixtureten</GivenName-Prenom>
+		<DateOfBirthOrShipBuildDate-DateDeNaissanceOuDateDeConstructionDuNavire>1930-01-01</DateOfBirthOrShipBuildDate-DateDeNaissanceOuDateDeConstructionDuNavire>
+		<Schedule-Annexe>Part 2</Schedule-Annexe>
+		<Item-NumeroDarticle>1</Item-NumeroDarticle>
+		<DateOfListing-DateDinscription>2012-04-24</DateOfListing-DateDinscription>
+	</record>
+</data-set>
