@@ -12,13 +12,14 @@ appear unnoticed (`src/frontiere.test.ts`).
 | `npm run listes -- --fetch` | sanctionslistservice.ofac.treas.gov | download | OFAC SDN and OFAC consolidated (non-SDN) lists |
 | `npm run listes -- --fetch` | data.trade.gov | download | the US Consolidated Screening List (Commerce and State lists) |
 | `npm run listes -- --fetch` | scsanctions.un.org | download | the UN consolidated list |
-| `npm run listes -- --fetch` | webgate.ec.europa.eu | download | the EU consolidated financial sanctions list (public token, or your own in `CASCADE_EU_TOKEN`) |
+| `npm run listes -- --fetch` | webgate.ec.europa.eu | download | the EU consolidated financial sanctions list (public token, or your own in `CRUSETRA_EU_TOKEN`; `CASCADE_EU_TOKEN`, its deprecated name, is still read) |
 | `npm run poids -- --fetch` | huggingface.co | download | the optional embedding tier: four files of `Xenova/multilingual-e5-small` at a pinned revision, checked by size and sha256 |
 
 Each download is recorded in `listes-manifest.json` with its source, date, sha256 and entry
 count, so a report can say which version of each list it was screened against.
 
-`CASCADE_OFFLINE=1` makes even the downloader refuse, with a message that names the flag.
+`CRUSETRA_OFFLINE=1` makes even the downloader refuse, with a message that names the flag.
+`CASCADE_OFFLINE=1`, its deprecated name, still refuses exactly as before.
 `npm run test` runs with the network cut.
 
 ## What the tool writes

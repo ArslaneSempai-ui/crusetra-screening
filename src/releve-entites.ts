@@ -58,7 +58,7 @@ export const RESERVES: readonly string[] = [
 export function batirReleve(entree: { date: string; commit: string; apprentissage: Apprentissage; verdictRealiste: Verdict; verdictsAveugles: Verdict[]; livres: Livre[] }): ReleveEntites {
   return {
     version: 1,
-    quoi: "the company and vessel name matcher of cascade-screening: the training cells, the realistic verdict every client report cites, the blind verdicts of the rounds and the two thousand-name books, frozen with their date and commit; sealed afterwards with npm run sceller",
+    quoi: "the company and vessel name matcher of Crusetra Screening: the training cells, the realistic verdict every client report cites, the blind verdicts of the rounds and the two thousand-name books, frozen with their date and commit; sealed afterwards with npm run sceller",
     date: entree.date, commit: entree.commit,
     apprentissage: entree.apprentissage, verdictRealiste: entree.verdictRealiste, verdictsAveugles: entree.verdictsAveugles,
     livres: entree.livres, reserves: [...RESERVES],

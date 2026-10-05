@@ -64,10 +64,28 @@ test("aucun module ne touche le réseau, hors le téléchargeur de listes", () =
     + "    d'envoi s'ajoute à AUTORISES avec sa raison, ou ne s'ajoute pas.");
 });
 
-test("le téléchargeur, quand il existe, obéit à CASCADE_OFFLINE", () => {
-  const chemin = join(dossier, "listes.ts");
-  if (!existsSync(chemin)) return;   /* pas encore écrit : rien à exiger, rien à feindre */
-  const src = readFileSync(chemin, "utf8");
-  assert.match(src, /CASCADE_OFFLINE/,
-    "listes.ts touche le réseau sans lire CASCADE_OFFLINE : la mesure hors ligne ne peut pas le retenir.");
+/* Le drapeau hors-ligne sous ses DEUX noms : CRUSETRA_OFFLINE, et CASCADE_OFFLINE, l'ancien, qu'un poste isolé configuré
+   avant le changement de nom porte encore et qui doit refuser exactement comme avant. Chaque téléchargeur autorisé lit les
+   deux ; celui des poids est joué ici pour de vrai, celui des listes l'est dans listes.test.ts. */
+test("chaque téléchargeur autorisé obéit à CRUSETRA_OFFLINE et à l'ancien CASCADE_OFFLINE", async () => {
+  for (const n of Object.keys(AUTORISES)) {
+    const chemin = join(dossier, n);
+    if (!existsSync(chemin)) continue;   /* pas encore écrit : rien à exiger, rien à feindre */
+    const src = readFileSync(chemin, "utf8");
+    for (const drapeau of ["CRUSETRA_OFFLINE", "CASCADE_OFFLINE"]) {
+      assert.match(src, new RegExp(`process\\.env\\.${drapeau} === "1"`),
+        `${n} touche le réseau sans lire ${drapeau} : la mesure hors ligne ne peut pas le retenir.`);
+    }
+  }
+  const { spawnSync } = await import("node:child_process");
+  const sansDrapeau = { ...process.env };
+  for (const n of ["CRUSETRA_OFFLINE", "CASCADE_OFFLINE", "ROUGE_OFFLINE"]) delete sansDrapeau[n];
+  for (const env of [{ CRUSETRA_OFFLINE: "1" }, { CASCADE_OFFLINE: "1" }, { CRUSETRA_OFFLINE: "0", CASCADE_OFFLINE: "1" }]) {
+    const r = spawnSync(process.execPath, [join(dossier, "poids.ts"), "--fetch"],
+      { encoding: "utf8", env: { ...sansDrapeau, ...env }, timeout: 30_000 });
+    const quoi = JSON.stringify(env);
+    assert.equal(r.status, 1, `${quoi} : code ${r.status}, sortie :\n${r.stdout}\n${r.stderr}`);
+    assert.match(r.stderr, /the offline flag is set \(CRUSETRA_OFFLINE, or CASCADE_OFFLINE, its deprecated name\)/, quoi);
+    assert.doesNotMatch(r.stdout, /<-|already here/, `${quoi} : aucun fichier ne doit être tiré, ni même regardé`);
+  }
 });
