@@ -30,7 +30,7 @@ export const COMMANDES: [string, string][] = [
   ["npm run verdict [-- --version=vN]", "the single verdict on the held-out pair set: overlap with the training sets counted first, code hashes frozen, both levels with their intervals; no pair is read (see verification/JUGE.md)"],
   ["npm run temoin-index [-- --exhaustif]", "the screening index against the exhaustive comparison on the real lists (needs data/): same candidates, same scores, and the time per name"],
   ["npm run optimise -- --from=<record> --recall=<min>", "the best trade-off: fewest alerts with the recall lower bound held, or `--alert-budget=<N>` for the highest bounded recall under a monthly alert budget"],
-  ["npm run sceller -- <record.json>", "seal a record: the content hash that makes a silently edited measurement fail loudly; the same content hash as cascade-routing"],
+  ["npm run sceller -- <record.json> [--check]", "seal a record: the content hash that makes a silently edited measurement fail loudly; the same content hash as cascade-routing. --check verifies and writes nothing: exit 0 when the seal holds, 1 when it is missing or no longer matches; without it, the command re-declares the seal on an edited file"],
   ["npm run verify -- <report>", "check that a report was issued by the holder of the suite's public key, `cle-publique.pem`, without asking us"],
   ["npm run licences", "regenerate `LICENCES.md`, the licence of every shipped package; `--check` fails the suite when the table drifts"],
 ];
