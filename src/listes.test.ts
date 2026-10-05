@@ -9,6 +9,7 @@ import { createHash } from "node:crypto";
 import {
   blocs, champ, decoderEntites, analyserOfac, analyserOnu, analyserUe, analyser,
   recouperOfac, lireManifeste, lireListe, SOURCES, type Manifeste, analyserCsl, fichierDe, analyserRoyaumeUni, analyserNaviresUe,
+  jetonUe,
 } from "./listes.ts";
 
 const fixture = (n: string) => readFileSync(fileURLToPath(new URL(`./fixtures/${n}`, import.meta.url)), "utf8");
@@ -109,7 +110,7 @@ test("lireListe : manifeste absent, source indisponible, fichier changé — tro
         telechargeLe: new Date().toISOString(),
         sha256: createHash("sha256").update(octets).digest("hex"), octets: octets.length, entrees: 3 },
       { source: "EU", titre: "t", url: "u", format: "eu-fsf-xml-1.1", disponible: false,
-        verifieLe: new Date().toISOString(), erreur: "HTTP 500", issue: "set CASCADE_EU_TOKEN" },
+        verifieLe: new Date().toISOString(), erreur: "HTTP 500", issue: "set CRUSETRA_EU_TOKEN" },
     ],
   };
   writeFileSync(join(racine, "listes-manifest.json"), JSON.stringify(manifeste));
@@ -119,7 +120,7 @@ test("lireListe : manifeste absent, source indisponible, fichier changé — tro
   assert.equal(lireListe("OFAC", racine).length, 3, "le chemin sain doit lire — sinon les refus ci-dessous ne prouvent rien");
   assert.throws(() => lireListe("EU", racine), (e: Error) => {
     assert.match(e.message, /unavailable: HTTP 500/);
-    assert.match(e.message, /CASCADE_EU_TOKEN/, "le refus doit porter l'issue enregistrée");
+    assert.match(e.message, /CRUSETRA_EU_TOKEN/, "le refus doit porter l'issue enregistrée");
     return true;
   });
   /* Le fichier changé après le manifeste : filtrer contre lui certifierait n'importe quoi. */
@@ -127,14 +128,38 @@ test("lireListe : manifeste absent, source indisponible, fichier changé — tro
   assert.throws(() => lireListe("OFAC", racine), /does not match the manifest content hash/);
 });
 
-test("CASCADE_OFFLINE=1 avec --fetch : refus code 2 qui nomme le drapeau ET l'issue, rien d'écrit", () => {
-  const r = spawnSync(process.execPath, [fileURLToPath(new URL("./listes.ts", import.meta.url)), "--fetch"],
-    { encoding: "utf8", env: { ...process.env, CASCADE_OFFLINE: "1" }, timeout: 30_000 });
-  assert.equal(r.status, 2, `code ${r.status} — sortie :\n${r.stdout}\n${r.stderr}`);
-  assert.match(r.stderr, /CASCADE_OFFLINE=1/);
-  assert.match(r.stderr, /--fetch/);
-  assert.match(r.stderr, /Nothing was downloaded and nothing was written/);
-  assert.match(r.stderr, /unset CASCADE_OFFLINE/, "un refus sans issue se fait commenter");
+/* Le drapeau sous ses deux noms : CRUSETRA_OFFLINE, et CASCADE_OFFLINE, l'ancien, qu'un poste isolé configuré avant le
+   changement de nom porte encore. L'ancien refuse EXACTEMENT comme avant, même quand le nouveau vaut 0 : un drapeau de
+   sûreté se lit en fermant, jamais en ouvrant. */
+test("CRUSETRA_OFFLINE=1, ou l'ancien CASCADE_OFFLINE=1, avec --fetch : refus code 2 qui nomme le drapeau ET l'issue, rien d'écrit", () => {
+  const sansDrapeau = { ...process.env };
+  for (const n of ["CRUSETRA_OFFLINE", "CASCADE_OFFLINE", "ROUGE_OFFLINE"]) delete sansDrapeau[n];
+  const cas: { env: Record<string, string>; nomme: RegExp[]; leve: RegExp }[] = [
+    { env: { CRUSETRA_OFFLINE: "1" }, nomme: [/CRUSETRA_OFFLINE=1 forbids/], leve: /unset CRUSETRA_OFFLINE to fetch/ },
+    { env: { CASCADE_OFFLINE: "1" }, nomme: [/CASCADE_OFFLINE=1 forbids/, /deprecated name of CRUSETRA_OFFLINE/], leve: /unset CASCADE_OFFLINE to fetch/ },
+    { env: { CRUSETRA_OFFLINE: "0", CASCADE_OFFLINE: "1" }, nomme: [/CASCADE_OFFLINE=1 forbids/], leve: /unset CASCADE_OFFLINE to fetch/ },
+    { env: { CRUSETRA_OFFLINE: "1", CASCADE_OFFLINE: "1" }, nomme: [/CRUSETRA_OFFLINE=1 and CASCADE_OFFLINE=1 forbid /], leve: /unset CRUSETRA_OFFLINE and CASCADE_OFFLINE/ },
+  ];
+  for (const c of cas) {
+    const r = spawnSync(process.execPath, [fileURLToPath(new URL("./listes.ts", import.meta.url)), "--fetch"],
+      { encoding: "utf8", env: { ...sansDrapeau, ...c.env }, timeout: 30_000 });
+    const quoi = JSON.stringify(c.env);
+    assert.equal(r.status, 2, `${quoi} : code ${r.status}, sortie :\n${r.stdout}\n${r.stderr}`);
+    for (const m of c.nomme) assert.match(r.stderr, m, quoi);
+    assert.match(r.stderr, /--fetch/);
+    assert.match(r.stderr, /Nothing was downloaded and nothing was written/);
+    assert.match(r.stderr, c.leve, `${quoi} : un refus sans issue se fait commenter`);
+    assert.doesNotMatch(r.stdout, /Fetching/, `${quoi} : rien ne doit partir`);
+  }
+});
+
+test("le jeton UE : CRUSETRA_EU_TOKEN d'abord, CASCADE_EU_TOKEN (l'ancien nom) à défaut, le jeton public sinon", () => {
+  const generique = jetonUe({});
+  assert.ok(generique.length > 0, "sans variable, le jeton générique public");
+  assert.equal(jetonUe({ CASCADE_EU_TOKEN: "ancien" }), "ancien", "l'ancien nom reste lu");
+  assert.equal(jetonUe({ CRUSETRA_EU_TOKEN: "neuf" }), "neuf");
+  assert.equal(jetonUe({ CRUSETRA_EU_TOKEN: "neuf", CASCADE_EU_TOKEN: "ancien" }), "neuf", "le nouveau nom passe devant");
+  assert.notEqual(generique, "ancien");
 });
 
 test("les sept sources déclarées sont celles du contrat, chacune en https", () => {

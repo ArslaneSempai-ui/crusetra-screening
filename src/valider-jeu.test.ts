@@ -10,7 +10,7 @@ import { existsSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
-  analyserJeu, cleDePaire, copier, lireAttendu, nettoyerCadratins, normaliserNom, numeroDuJeu, refusDeStructure,
+  analyserJeu, cleDePaire, copier, dossierJeuxAveugles, lireAttendu, nettoyerCadratins, normaliserNom, numeroDuJeu, refusDeStructure,
   PHRASE_CADRATINS, type JeuBrut, type Nom, type PaireBrute,
 } from "./valider-jeu.ts";
 
@@ -133,6 +133,15 @@ test("valider-jeu : les cadratins des noms deviennent un tiret, et la provenance
   const intact = nettoyerCadratins(jeu([{ a: "Sans", b: "Rien", verdict: "match", nature: "x" }]));
   assert.equal(intact.remplaces, 0);
   assert.ok(!intact.jeu.provenance.includes(PHRASE_CADRATINS));
+});
+
+test("valider-jeu : CRUSETRA_JEUX_AVEUGLES déplace les jeux, CASCADE_JEUX_AVEUGLES (l'ancien nom) à défaut", () => {
+  const defaut = dossierJeuxAveugles({});
+  assert.match(defaut, /jeux-aveugles$/, "sans variable, le dossier voisin du dépôt");
+  assert.equal(dossierJeuxAveugles({ CASCADE_JEUX_AVEUGLES: "/ancien" }), "/ancien", "l'ancien nom reste lu");
+  assert.equal(dossierJeuxAveugles({ CRUSETRA_JEUX_AVEUGLES: "/neuf" }), "/neuf");
+  assert.equal(dossierJeuxAveugles({ CRUSETRA_JEUX_AVEUGLES: "/neuf", CASCADE_JEUX_AVEUGLES: "/ancien" }), "/neuf",
+    "le nouveau nom passe devant");
 });
 
 test("valider-jeu : le numéro du jeu vient de sa provenance", () => {

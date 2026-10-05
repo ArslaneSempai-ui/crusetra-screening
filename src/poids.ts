@@ -136,8 +136,8 @@ if (isMain(import.meta)) {
   try {
     refuserDrapeauxInconnus(["--fetch", "--sha"]);
     if (process.argv.includes("--fetch")) {
-      if (process.env.ROUGE_OFFLINE === "1" || process.env.CASCADE_OFFLINE === "1") {
-        throw new Error("the offline flag is set, and fetching weights is a download.\n"
+      if (process.env.ROUGE_OFFLINE === "1" || process.env.CRUSETRA_OFFLINE === "1" || process.env.CASCADE_OFFLINE === "1") {
+        throw new Error("the offline flag is set (CRUSETRA_OFFLINE, or CASCADE_OFFLINE, its deprecated name), and fetching weights is a download.\n"
           + "  Carry the four pinned files into data/models by hand, then run: npm run poids");
       }
       await tirerLesPoids();

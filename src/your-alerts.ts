@@ -448,16 +448,17 @@ Nothing about your file leaves this machine.
     process.exit(2);
   }
 
-  /* LE PALIER FACULTATIF logic-v2 (nomenklatura, installé par le client) : présent quand CASCADE_LOGIC_V2_PYTHON nomme un
+  /* LE PALIER FACULTATIF logic-v2 (nomenklatura, installé par le client) : présent quand CRUSETRA_LOGIC_V2_PYTHON (ou CASCADE_LOGIC_V2_PYTHON, son ancien nom) nomme un
      Python où il s'importe ; absent sinon, et dit avec sa raison. Le schéma FollowTheMoney donné aux deux noms se choisit
      par --logic-v2-schema (LegalEntity par défaut ; Person pour un historique de personnes). */
-  const { logicV2, SCHEMAS } = await import("./matchers/logic-v2.ts");
+  const { logicV2, interpreteNomme, SCHEMAS } = await import("./matchers/logic-v2.ts");
   const schema = arg("logic-v2-schema") ?? "LegalEntity";
   if (!(SCHEMAS as readonly string[]).includes(schema)) {
     console.error(`\n--logic-v2-schema=${schema} is not a schema this tool passes to logic-v2. One of: ${SCHEMAS.join(", ")}.\n`);
     process.exit(2);
   }
-  const lv2 = logicV2(process.env.CASCADE_LOGIC_V2_PYTHON, schema as (typeof SCHEMAS)[number]);
+  const { python, variable } = interpreteNomme();
+  const lv2 = logicV2(python, schema as (typeof SCHEMAS)[number], undefined, variable);
   if (lv2.present) registre = new Map([...registre, [lv2.matcher.id, lv2.matcher]]);
   const facultatifs = (): MesureAlertes["facultatifs"] => ({ "logic-v2": lv2.present
     ? { present: true, nomenklatura: lv2.version() ?? "unknown", schema: lv2.schema } : { present: false, raison: lv2.raison } });

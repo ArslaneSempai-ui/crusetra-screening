@@ -232,7 +232,7 @@ function tableMd(tables: Record<string, TableDUnPalier>, quoi: "rappel" | "fauxP
 
 export function rapportMd(m: MesurePublique): string {
   const l: string[] = [
-    `# Cascade Screening: the public measure`,
+    `# Crusetra Screening: the public measure`,
     ``,
     `**Provenance**: pairs authored by this repository (no client data, no list data) plus`,
     `synthetic variants, measured APART and never merged. Commit \`${m.commit}\`, ${m.date}.`,
