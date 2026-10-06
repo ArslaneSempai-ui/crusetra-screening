@@ -35,7 +35,7 @@ import { lireTable, apercu, MONTRES } from "./csv.ts";
 import { rate, type Rate } from "./interval.ts";
 import { SEUILS, PALIERS, PALIERS_FACULTATIFS, type PalierId, type Registre, type Matcher } from "./matcher.ts";
 import { empreinteDuReleve } from "./empreinte.ts";
-import { lignesEvaluation } from "./evaluation.ts";
+import { lignesEvaluationDe } from "./evaluation.ts";
 import { rendreRapport } from "./rapport.ts";
 
 export const COLONNES_REQUISES = ["alert_id", "screened_name", "list_name", "list_source", "disposition"] as const;
@@ -382,7 +382,7 @@ export function executer(
    côté règle (l'article français ne s'écrit jamais en capitales au milieu d'une phrase),
    signalé au chef le 5/09 au soir. */
 async function principal(): Promise<void> {
-  for (const l of lignesEvaluation()) console.log(l);
+  for (const l of lignesEvaluationDe("screening")) console.log(l);
   refuserDrapeauxInconnus(["--alerts", "--screened", "--volume", "--logic-v2-schema"]);
   const arg = (nom: string) => process.argv.find((a) => a.startsWith(`--${nom}=`))?.split("=").slice(1).join("=");
   const fichier = arg("alerts");
