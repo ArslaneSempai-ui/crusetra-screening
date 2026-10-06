@@ -15,11 +15,12 @@ import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { run, table } from "./figures.ts";
+import { SOURCES } from "./listes.ts";
 
 /* ─── les commandes, dans l'ordre où elles ont un sens ─── */
 export const COMMANDES: [string, string][] = [
   ["npm ci --ignore-scripts", "install exactly the versions the lockfile pins, and run no install script from any dependency; the only command besides `listes -- --fetch` that needs the network"],
-  ["npm run listes [-- --fetch [--only=<sources>]]", "the seven public sanctions sources: OFAC SDN and OFAC consolidated (non-SDN), the US Consolidated Screening List (its Commerce and State lists; its Treasury rows come from the two OFAC files), UN consolidated, EU consolidated (FSF), the UK Sanctions List (individuals, entities and ships), and the vessels the EU designates in Annex XLII of Regulation 833/2014 (read from the consolidated text of a dated version; a later sanctions package is not in it until that date is moved forward), downloaded into data/ with a committed manifest (source, date, sha256, entry count); without the flag it reports what is on disk and touches nothing. The lists download to your machine, and nothing of yours is sent"],
+  ["npm run listes [-- --fetch [--only=<sources>]]", `the ${SOURCES.length} public sanctions sources: OFAC SDN and OFAC consolidated (non-SDN), the US Consolidated Screening List (its Commerce and State lists; its Treasury rows come from the two OFAC files), UN consolidated, EU consolidated (FSF), the UK Sanctions List (individuals, entities and ships), the vessels the EU designates in Annex XLII of Regulation 833/2014 (read from the consolidated text of a dated version; a later sanctions package is not in it until that date is moved forward), Australia's DFAT Consolidated List, the Consolidated Canadian Autonomous Sanctions List and New Zealand's Russia Sanctions Register, downloaded into data/ with a committed manifest (source, date, sha256, entry count); without the flag it reports what is on disk and touches nothing. The lists download to your machine, and nothing of yours is sent`],
   ["npm run poids [-- --fetch]", "the embed tier's weights: four files pinned by bytes and sha256, fetched only by this command (never during install or tests, refused offline) into data/models/: absent weights make an absent tier, named, not a surprise download"],
   ["npm run test", "types, the README blocks, the licence inventory, and the suite. Start here; it runs with the network cut"],
   ["npm run measure [-- --yes-overwrite]", "the public measure: every tier at every threshold on pairs we authored (hard negatives included) plus declared synthetic variants, sealed into `releve-public.json` and readable in `RELEVE-PUBLIC.md`: the record the catalogue requires, and it refuses to overwrite a sealed one without the flag"],
@@ -68,9 +69,14 @@ if (extensionsLancees(scriptTest).length < 2) {
 const { n, fichiers } = compterLesCas(dossier, scriptTest);
 if (n < 5) throw new Error(`${n} tests counted across ${fichiers.length} file(s): the reading failed.`);
 
+/* ─── les sources et leurs licences, lues dans SOURCES : la mention exigée s'imprime ici, pas de mémoire ─── */
+const cellule = (t: string) => t.replace(/\|/g, "\\|").replace(/\n/g, " ");
+
 const blocs = {
   commandes: table(["Command", "What it does, in the order that makes sense"],
     COMMANDES.map(([c, quoi]) => [`\`${c}\``, quoi])),
+  sources: table(["Source", "What it is", "Licence", "Attribution required", "Publisher's page, read on"],
+    SOURCES.map((s) => [s.source, cellule(s.titre), cellule(s.licence.nom), s.licence.mention === null ? "none required" : cellule(s.licence.mention), `${s.licence.url} (${s.licence.lue})`])),
   tests: `**${n} tests** across ${fichiers.length} files, counted from the sources rather than typed here.`,
 };
 

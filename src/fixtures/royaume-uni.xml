@@ -63,6 +63,12 @@
           <IMONumber>IMO9074729</IMONumber>
           <IMONumber>9187629</IMONumber>
         </IMONumbers>
+        <CurrentOwnerOperators>
+          <CurrentOwnerOperator>Global United Shipping India </CurrentOwnerOperator>
+        </CurrentOwnerOperators>
+        <CurrentBelievedFlagOfShips>
+          <CurrentBelievedFlagOfShip>Comoros</CurrentBelievedFlagOfShip>
+        </CurrentBelievedFlagOfShips>
       </Ship>
     </ShipDetails>
   </Designation>

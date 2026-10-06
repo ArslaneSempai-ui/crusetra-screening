@@ -35,6 +35,7 @@ import { readdirSync, readFileSync, writeFileSync, statSync, existsSync } from "
 
 import { isMain } from "./cli.ts";
 import { join } from "node:path";
+import { SOURCES, manquesDeLicence, type SourceListe } from "./listes.ts";
 
 /** Copyleft fort : contamine l'œuvre qui l'incorpore. Bloque une livraison propriétaire. */
 const BLOQUANTES = /\b(GPL-2|GPL-3|GPLv2|GPLv3|AGPL|SSPL|CC-BY-NC|BUSL|Business Source|Commons Clause|OSL-3|PolyForm|Noncommercial|Non-Commercial|Elastic-2|Elastic License)\b/i;
@@ -272,7 +273,31 @@ export function sbom(paquets: Paquet[], nom: string, version: string) {
   };
 }
 
-export function document(paquets: Paquet[], licenceDuDepot: string | null): string {
+/**
+ * LES LISTES PUBLIQUES, DANS LE MÊME DOCUMENT QUE LES PAQUETS. Un service achats demande aussi sous quelle licence les
+ * données criblées sont réutilisées, et quelle mention l'outil doit imprimer : la liste du Royaume-Uni (Open Government
+ * Licence v3.0) en exige une, et elle n'était écrite nulle part avant le 5 octobre 2026. Chaque source porte ici sa
+ * licence, la page de l'éditeur, la mention exigée mot pour mot (ou qu'aucune ne l'est, et pourquoi) et le jour où la
+ * page a été lue ; `--check` refuse une source à qui il manque un de ces champs (`manquesDeLicence`).
+ */
+export function sectionDesListes(sources: readonly SourceListe[]): string {
+  const cellule = (t: string) => t.replace(/\|/g, "\\|").replace(/\n/g, " ");
+  return `## Public lists screened against
+
+${sources.length} public sanctions sources are downloaded by \`npm run listes -- --fetch\` and screened against by \`npm run cribler\`.
+Each licence below was read on the publisher's own page on the date given, never on a third party's; the attribution
+statement is the one the licence requires, word for word, and the screener's record (\`.screening.json\`, field
+\`licence\` of each list, and \`attributions\`) and spreadsheet (column \`list_licence\`) carry it with every candidate.
+
+| Source | Licence | Attribution required | Publisher's page | Read on |
+| --- | --- | --- | --- | --- |
+${sources.map((s) => `| ${s.source} | ${cellule(s.licence.nom)} | ${s.licence.mention === null ? "none required" : cellule(s.licence.mention)} | ${s.licence.url} | ${s.licence.lue} |`).join("\n")}
+
+${sources.map((s) => `- **${s.source}**: ${cellule(s.licence.note)}`).join("\n")}
+`;
+}
+
+export function document(paquets: Paquet[], licenceDuDepot: string | null, sources: readonly SourceListe[] = SOURCES): string {
   const par = (c: Classe) => paquets.filter((p) => p.classe === c);
   const bloquantes = par("bloquante");
   const aTenir = par("à tenir");
@@ -359,7 +384,8 @@ impede spontaneous adoption, which is not what this repository is for.`
 ## Bill of materials
 
 \`sbom.json\` accompanies this document, in CycloneDX 1.5 format.
-`;
+
+${sectionDesListes(sources)}`;
 }
 
 function principal() {
@@ -369,6 +395,13 @@ function principal() {
     console.error("The licence classifier no longer recognises what it claims to recognise:");
     for (const r of ratés) console.error(`  - ${r}`);
     console.error("\nIts verdict is worthless until those witnesses pass again. Nothing was written.");
+    process.exit(1);
+  }
+  const manques = manquesDeLicence(SOURCES);
+  if (manques.length > 0) {
+    console.error("A public list is screened against without its licence being recorded (src/listes.ts, SOURCES):");
+    for (const m of manques) console.error(`  - ${m}`);
+    console.error("\nThe attribution the list's licence requires could not be printed. Nothing was written.");
     process.exit(1);
   }
   if (!existsSync("node_modules")) {
@@ -420,7 +453,7 @@ function principal() {
       console.error("\nRun: npm run licences");
       process.exit(1);
     }
-    console.log(`LICENCES.md and sbom.json are up to date (${paquets.length} packages, ${temoins().length === 0 ? "witnesses green" : "WITNESSES BROKEN"}).`);
+    console.log(`LICENCES.md and sbom.json are up to date (${paquets.length} packages, ${SOURCES.length} public lists with their licence, ${temoins().length === 0 ? "witnesses green" : "WITNESSES BROKEN"}).`);
     return;
   }
   writeFileSync("LICENCES.md", md);
