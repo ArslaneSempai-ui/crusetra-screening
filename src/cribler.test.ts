@@ -1,8 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { Index, cribler, lireContreparties, imoValide, lireImo, comparer, versCsv, type Contrepartie, type Criblage } from "./cribler.ts";
-import { empreinteDuReleve } from "./empreinte.ts";
+import {
+  Index, cribler, lireContreparties, imoValide, lireImo, comparer, versCsv, GENRE_CRIBLAGE, GENRE_CRIBLAGE_ANCIEN, GENRES_CRIBLAGE_LUS,
+  type Contrepartie, type Criblage,
+} from "./cribler.ts";
+import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
 import { frequencesDe, preparerNom, CHEMINS_APPRENTISSAGE } from "./entites.ts";
 import type { EntreeListe } from "./listes.ts";
 
@@ -118,7 +121,7 @@ test("un navire que la liste dit navire entre en conflit avec une forme de soci�
 
 function releveMinimal(resultats: Criblage["resultats"], sha = "aaa"): Criblage {
   const c = {
-    version: 1, genre: "cascade-screening/counterparty-screening", emisLe: "2026-09-20T00:00:00.000Z",
+    version: 1, genre: GENRE_CRIBLAGE, emisLe: "2026-09-20T00:00:00.000Z",
     fichier: { nom: "c.csv", sha256: "x", lignes: resultats.length },
     listes: [{ source: "OFAC", titre: "OFAC", url: "u", telechargeLe: "2026-09-20T00:00:00Z", sha256: sha, entrees: 1 }],
     nonCriblees: [], methode: {} as Criblage["methode"],
@@ -146,6 +149,32 @@ test("le re-criblage refuse un relevé précédent retouché", () => {
   const avant = releveMinimal([res("C1", "Alpha", [])]);
   const retouche = { ...avant, totaux: { ...avant.totaux, lignes: 9 } };
   assert.throws(() => comparer(retouche, avant), /edited after screening[\s\S]*Nothing was screened/);
+});
+
+test("le genre : l'écrivain émet le nom Crusetra, le lecteur accepte les deux noms et rien d'autre", () => {
+  assert.equal(GENRE_CRIBLAGE, "crusetra-screening/counterparty-screening");
+  assert.deepEqual([...GENRES_CRIBLAGE_LUS].sort(), [GENRE_CRIBLAGE_ANCIEN, GENRE_CRIBLAGE].sort());
+  const ancien = releveMinimal([res("C1", "Alpha", [])]);
+  ancien.genre = GENRE_CRIBLAGE_ANCIEN;
+  ancien.empreinte = empreinteDuReleve(ancien);
+  assert.doesNotThrow(() => comparer(ancien, releveMinimal([res("C1", "Alpha", [])])),
+    "un client qui repasse son relevé d'avant le renommage en --previous ne doit pas être refusé");
+  const autre = { ...releveMinimal([]), genre: "crusetra-routing-report" } as unknown as Criblage;
+  autre.empreinte = empreinteDuReleve(autre);
+  assert.throws(() => comparer(autre, releveMinimal([])), /not a screening record \(genre: crusetra-routing-report\)[\s\S]*Nothing was screened/);
+});
+
+test("les relevés scellés d'avant le renommage, tels que commis : ancien genre, scellé intact, relus par le re-criblage", () => {
+  for (const nom of ["contreparties-exemple", "contreparties-mille", "contreparties-mille-2"]) {
+    const c = JSON.parse(readFileSync(new URL(`../exemple/${nom}.screening.json`, import.meta.url), "utf8")) as Criblage;
+    assert.equal(c.genre, GENRE_CRIBLAGE_ANCIEN, `${nom} est HISTOIRE : il garde le genre sous lequel il a été scellé`);
+    assert.ok(scelleIntact(c as unknown as Record<string, unknown>), `${nom} : le scellé tient toujours`);
+    const { reserves: _r, empreinte: _e, ...corps } = c;
+    const ch = comparer(c, { ...corps, genre: GENRE_CRIBLAGE });
+    assert.equal(ch.precedent.empreinte, c.empreinte);
+    assert.equal(ch.nouveauxCandidats.length + ch.candidatsDisparus.length + ch.contrepartiesAjoutees.length + ch.contrepartiesRetirees.length, 0,
+      `${nom} relu contre lui-même sous le nouveau genre : aucun changement`);
+  }
 });
 
 test("l'export tableur : une ligne par candidat, et aucune formule exécutable", () => {
