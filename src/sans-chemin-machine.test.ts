@@ -27,7 +27,7 @@ export function chemins(racine: string, suivis: readonly string[]): string[] {
 test("le détecteur voit un chemin de poste sous les trois systèmes, et laisse passer un chemin relatif : témoin", () => {
   /* Les témoins sont assemblés par morceaux : écrits en clair, ce fichier se refuserait lui-même. */
   for (const l of ["/Users" + "/qui/Documents/x", "C:" + "\\Users\\qui\\x", "/home" + "/qui/x"]) assert.match(l, CHEMIN_DE_POSTE, l);
-  for (const l of ["../jeux-aveugles", "${depot:h}/cascade-licencie", "/usr/bin/env", "data/listes/ofac.xml", "~/.cascade/x"]) {
+  for (const l of ["../jeux-aveugles", "${depot:h}/cascade-licencie", "/usr/bin/env", "data/listes/ofac.xml", "~/.crusetra/x"]) {
     assert.doesNotMatch(l, CHEMIN_DE_POSTE, l);
   }
   const d = mkdtempSync(join(tmpdir(), "chemins-"));

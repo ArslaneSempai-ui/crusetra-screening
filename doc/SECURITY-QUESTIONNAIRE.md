@@ -23,7 +23,7 @@ Where we hold no certification, we say so.
 | Deletion? | Delete the folder. |
 | Code integrity? | Lockfile with pinned versions, `npm ci --ignore-scripts`, a software bill of materials (`sbom.json`), a licence inventory (`LICENCES.md`), and the whole test suite run on macOS, Linux and Windows at every push. |
 | Report integrity? | Every report is sealed with a content hash and signed; anyone verifies it with `npm run verify` against the public key `cle-publique.pem`, without asking us. |
-| Vulnerability management? | Dependencies pinned and inventoried; no dependency install script runs; the network boundary is a test. Report an issue to contact@cascade-routing.com. |
+| Vulnerability management? | Dependencies pinned and inventoried; no dependency install script runs; the network boundary is a test. Report an issue to contact@crusetra.com. |
 | Business continuity? | The source is readable and the tool runs offline; nothing depends on our being reachable. |
 | Certifications (SOC 2, ISO 27001)? | None. The controls above are inspectable instead. |
 | Windows? | The suite runs on Windows at every push. No client has yet run the tool on a Windows workstation, and we do not claim it. |

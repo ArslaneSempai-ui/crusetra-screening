@@ -1,5 +1,5 @@
 {
-  "name": "cascade-screening",
+  "name": "crusetra-screening",
   "version": "0.1.0",
   "description": "Which name matcher suffices, at which threshold, measured on your own alert history. Nothing of yours goes up.",
   "type": "module",
