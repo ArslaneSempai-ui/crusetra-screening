@@ -48,7 +48,7 @@ etape "cascade-licencie: node --test src/rapport-criblage.test.ts" '^# (pass|fai
 {
   print -r -- "Example screening fixture refreshed on the round-$round matcher"
   print -r -- ""
-  print -r -- "Copied from cascade-screening exemple/contreparties-exemple.screening.json,"
+  print -r -- "Copied from crusetra-screening exemple/contreparties-exemple.screening.json,"
   print -r -- "the example screening rerun by npm run cribler on commit $commit (round"
   print -r -- "$round): $totaux. node --test"
   print -r -- "src/rapport-criblage.test.ts is green on this fixture."

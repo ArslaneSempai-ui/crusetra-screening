@@ -1,4 +1,4 @@
-"""The bridge between cascade-screening's audit and nomenklatura's logic-v2 matcher.
+"""The bridge between crusetra-screening's audit and nomenklatura's logic-v2 matcher.
 
   python scripts/logic_v2.py <schema>     pairs on stdin, scores on stdout
 
