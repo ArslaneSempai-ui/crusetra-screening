@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "genereLe": "2026-10-04T14:44:20.923Z",
+  "genereLe": "2026-10-05T07:57:12.395Z",
   "listes": [
     {
       "source": "OFAC",
@@ -78,6 +78,39 @@
       "sha256": "2682ecf3442d2f16a3b36ef4d9bbb6fde43fd4d6743bcd991bd4a8e14857770b",
       "octets": 10349814,
       "entrees": 672
+    },
+    {
+      "source": "AU",
+      "titre": "Australia: DFAT Consolidated List (Australian Sanctions Office)",
+      "url": "https://www.dfat.gov.au/sites/default/files/Australian_Sanctions_Consolidated_List.xlsx",
+      "format": "dfat-consolidated-xlsx",
+      "disponible": true,
+      "telechargeLe": "2026-10-05T07:53:13.573Z",
+      "sha256": "0936243df3269ba127709353bc0f26128f7268cbee4133e64cbbb81311def679",
+      "octets": 1342232,
+      "entrees": 4010
+    },
+    {
+      "source": "CA",
+      "titre": "Canada: Consolidated Canadian Autonomous Sanctions List (Global Affairs Canada)",
+      "url": "https://www.international.gc.ca/world-monde/assets/office_docs/international_relations-relations_internationales/sanctions/sema-lmes.xml",
+      "format": "gac-sema-xml",
+      "disponible": true,
+      "telechargeLe": "2026-10-05T07:53:48.698Z",
+      "sha256": "cf413b2dee406c209a010d53faeeb9c0ae6c046670f628132c02d16718bf085b",
+      "octets": 2890679,
+      "entrees": 5707
+    },
+    {
+      "source": "NZ",
+      "titre": "New Zealand: Russia Sanctions Register (MFAT): individuals, entities and ships",
+      "url": "https://www.mfat.govt.nz/assets/Countries-and-Regions/Europe/Ukraine/Russia-Sanctions-Register.xlsx",
+      "format": "mfat-russia-register-xlsx",
+      "disponible": true,
+      "telechargeLe": "2026-10-05T07:56:18.395Z",
+      "sha256": "d5ae6f2c18163c8045689338fb961977c61e12a64dd97f60ae9c31d6b89057f0",
+      "octets": 21646206,
+      "entrees": 2135
     }
   ]
 }
