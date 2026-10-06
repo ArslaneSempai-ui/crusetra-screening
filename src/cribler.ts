@@ -86,9 +86,17 @@ export type Resultat = Contrepartie & {
 
 type MesureCitee = { rappel: Cellule; fauxPositifs: Cellule };
 
+/* LE GENRE DU RELEVÉ, sous deux noms (Crusetra, 5 octobre 2026). L'écrivain émet le nouveau ;
+   tout lecteur accepte les deux, parce que les relevés émis avant portent l'ancien DANS leur
+   scellé : le renommer, ce serait les resceller, et un relevé rescellé n'est plus celui que le
+   client a reçu. */
+export const GENRE_CRIBLAGE = "crusetra-screening/counterparty-screening";
+export const GENRE_CRIBLAGE_ANCIEN = "cascade-screening/counterparty-screening";
+export const GENRES_CRIBLAGE_LUS: readonly string[] = [GENRE_CRIBLAGE, GENRE_CRIBLAGE_ANCIEN];
+
 export type Criblage = {
   version: 1;
-  genre: "cascade-screening/counterparty-screening";
+  genre: typeof GENRE_CRIBLAGE | typeof GENRE_CRIBLAGE_ANCIEN;
   emisLe: string;
   client?: string;
   commit?: string;
@@ -899,6 +907,10 @@ const cleContrepartie = (r: { ref?: string; nom: string }) => (r.ref ? `ref:${r.
 const cleCandidat = (c: Candidat) => `${c.source}|${[...c.ids].sort().join(",")}`;
 
 export function comparer(avant: Criblage, apres: Omit<Criblage, "reserves" | "empreinte">): Changements {
+  if (!GENRES_CRIBLAGE_LUS.includes(String((avant as { genre?: unknown }).genre))) {
+    throw new Error(`the previous record is not a screening record (genre: ${String((avant as { genre?: unknown }).genre)}).\n`
+      + `  Pass the .screening.json this command wrote last time. Nothing was screened.`);
+  }
   if (!scelleIntact(avant as unknown as Record<string, unknown>)) {
     throw new Error(`the previous record's seal does not match its content: it was edited after screening.
 `
@@ -1024,7 +1036,7 @@ export function executer(
   const p = palierEntite(f);
 
   const base: Omit<Criblage, "reserves" | "empreinte"> = {
-    version: 1, genre: "cascade-screening/counterparty-screening",
+    version: 1, genre: GENRE_CRIBLAGE,
     emisLe: maintenant.toISOString(), ...(client ? { client } : {}), ...(commit ? commit : {}),
     fichier: { nom: basename(fichier), sha256: createHash("sha256").update(texte).digest("hex"), lignes: lignes.length },
     listes, nonCriblees,

@@ -14,7 +14,7 @@ embedding model, are run over the alerts your analysts already dispositioned, an
 matcher × threshold cell is read for recall on confirmed matches, false-alert rate and
 alerts per thousand screenings, with its count and its interval, or not at all.
 
-It is the second tool of the Crusetra suite. The first, [Crusetra Routing](https://github.com/ArslaneSempai-ui/cascade-routing),
+It is the second tool of the Crusetra suite. The first, [Crusetra Routing](https://github.com/ArslaneSempai-ui/crusetra-routing),
 measures which extraction tier suffices per field. Same method, same seal, same key.
 
 <!-- figures:commandes -->
@@ -68,7 +68,7 @@ reports are verified against the same public key, [`cle-publique.pem`](cle-publi
 with `npm run verify`.
 
 <!-- figures:tests -->
-**453 tests** across 60 files, counted from the sources rather than typed here.
+**461 tests** across 61 files, counted from the sources rather than typed here.
 <!-- /figures:tests -->
 
 ## Licence
