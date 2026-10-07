@@ -235,7 +235,7 @@ export const SOURCES: SourceListe[] = [
     url: "https://scsanctions.un.org/resources/xml/en/consolidated.xml",
     format: "un-consolidated-xml",
     licence: {
-      nom: "United Nations website Terms of Use (no open licence)",
+      nom: "United Nations website Terms of Use (no open license)",
       url: "https://www.un.org/en/about-us/terms-of-use",
       mention: null,
       note: "the Terms grant Users permission to download and copy the Materials for the User's personal, non-commercial use, without any right to resell or redistribute them; the Consolidated List page says the list exists to facilitate the implementation of the measures. No attribution wording is prescribed. Commercial reuse is not settled by the publisher's page: to be confirmed with the United Nations before a sale.",
