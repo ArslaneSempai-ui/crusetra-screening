@@ -19,7 +19,7 @@ import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { fraicheurUE, SEUIL_RETARD_UE_JOURS } from "./fraicheur-ue.ts";
+import { fraicheurUE, SEUIL_RETARD_UE_JOURS, TOLERANCE_APRES_GENERATION_UE_JOURS } from "./fraicheur-ue.ts";
 
 const FAUX_JETON = "FAKE-TOKEN-0000";
 const ICI = fileURLToPath(new URL(".", import.meta.url));
@@ -44,6 +44,10 @@ const xmlUe = (generation: string | null, publication: string | null): string =>
   ``,
 ].join("\n");
 
+/** The same file with more regulations in it, each carrying one publicationDate value exactly as given. */
+const avecPublications = (xml: string, ...valeurs: string[]): string =>
+  xml.replace("</export>", valeurs.map((v) => `<regulation publicationDate="${v}"/>\n`).join("") + "</export>");
+
 /* ───────────────────────────── the rule, on its own ───────────────────────────── */
 
 test("the rule: lagging by less than the limit and by exactly the limit is fresh, one day more is stale", () => {
@@ -63,6 +67,61 @@ test("the rule takes the NEWEST publicationDate of the file, not the first", () 
   const r = fraicheurUE(xml);
   assert.equal(r.max, avant(1));
   assert.equal(r.perime, false);
+});
+
+test("a publication date later than the generation date by more than the tolerance is stale with the dates named, not a negative lag that hides a frozen feed", () => {
+  /* the probe of the review: a frozen feed (newest real publication 23 July) and one stray year */
+  for (const stray of ["2062-07-23", "2099-01-01", "9999-12-31"]) {
+    const r = fraicheurUE(avecPublications(xmlUe("2026-10-12", "2026-07-23"), stray));
+    assert.equal(r.perime, true, stray);
+    assert.equal(r.retard, null, `${stray}: no lag is claimed`);
+    assert.equal(r.max, stray);
+    assert.match(r.raison ?? "", /publication date later than generation date/, stray);
+    assert.ok(r.raison!.includes(stray) && r.raison!.includes("2026-10-12"), `${stray}: the reason names both dates: ${r.raison}`);
+  }
+});
+
+test("a publication exactly the tolerance after the generation date stays fresh, one day more is stale", () => {
+  const dedans = fraicheurUE(xmlUe(GENERATION, avant(-TOLERANCE_APRES_GENERATION_UE_JOURS)));
+  assert.equal(dedans.perime, false);
+  assert.equal(dedans.retard, -TOLERANCE_APRES_GENERATION_UE_JOURS);
+  const dehors = fraicheurUE(xmlUe(GENERATION, avant(-TOLERANCE_APRES_GENERATION_UE_JOURS - 1)));
+  assert.equal(dehors.perime, true);
+  assert.match(dehors.raison ?? "", /publication date later than generation date/);
+});
+
+test("one impossible publicationDate that sorts highest neither hides a fresh one nor turns the verdict into 'unreadable': it is reported", () => {
+  const r = fraicheurUE(avecPublications(xmlUe(GENERATION, avant(SEUIL_RETARD_UE_JOURS + 30)), avant(1), "2026-13-45"));
+  assert.equal(r.max, avant(1), "the newest VALID date is taken");
+  assert.equal(r.perime, false);
+  assert.equal(r.retard, 1);
+  assert.ok((r.raison ?? "").includes("2026-13-45"), `the invalid value is named: ${r.raison}`);
+  assert.ok(!/unreadable|missing/.test(r.raison ?? ""), `the reason does not say the dates are unreadable or missing: ${r.raison}`);
+});
+
+test("invalid publicationDates are named next to a stale verdict, and a file with no valid one is stale", () => {
+  const vieux = fraicheurUE(avecPublications(xmlUe(GENERATION, avant(SEUIL_RETARD_UE_JOURS + 30)), "2026-13-45", "2026-02-30"));
+  assert.equal(vieux.perime, true);
+  assert.equal(vieux.max, avant(SEUIL_RETARD_UE_JOURS + 30), "the newest valid date, not the highest string");
+  assert.equal(vieux.retard, SEUIL_RETARD_UE_JOURS + 30);
+  assert.ok(vieux.raison!.includes("2026-13-45"), `the invalid value is named: ${vieux.raison}`);
+  const aucune = fraicheurUE(xmlUe(GENERATION, "2026-13-45"));
+  assert.equal(aucune.perime, true);
+  assert.equal(aucune.max, null);
+  assert.equal(aucune.retard, null);
+  assert.ok(aucune.raison!.includes("2026-13-45"), `the invalid value is named: ${aucune.raison}`);
+});
+
+test("a publicationDate in datetime form is read by its date part, as the generationDate is; a malformed one is invalid, not missing", () => {
+  for (const forme of ["2026-10-10T08:15:00", "2026-10-10T08:15:00.000+02:00", "2026-10-10T06:15:00Z"]) {
+    const r = fraicheurUE(xmlUe(GENERATION, forme));
+    assert.equal(r.max, "2026-10-10", forme);
+    assert.equal(r.perime, false, forme);
+    assert.equal(r.retard, 2, forme);
+  }
+  const r = fraicheurUE(xmlUe(GENERATION, "2026-10-10Tnoon"));
+  assert.equal(r.perime, true);
+  assert.ok(r.raison!.includes("2026-10-10Tnoon"), `the malformed value is named: ${r.raison}`);
 });
 
 test("the rule fails closed: a missing date, an impossible day and an out-of-range month are stale with a reason, never fresh", () => {
@@ -227,6 +286,29 @@ test("EU fetch, a file with no dates: stale with the reason (fail closed), never
     const ue = verifierLeTrajet(r);
     assert.match(ue.avertissement ?? "", /^stale: .*missing/, "the row is stale and says what is missing");
     assert.ok(r.sortie.includes(`⚠ ${ue.avertissement}`), `the fetch prints the line:\n${r.sortie}`);
+  } finally {
+    rmSync(r.racine, { recursive: true, force: true });
+  }
+});
+
+test("EU fetch, a frozen feed with one stray publicationDate in the year 2062: marked stale, the dates named, not masked by a negative lag", () => {
+  const r = lancer({ corps: avecPublications(xmlUe(GENERATION, "2026-07-23"), "2062-07-23") });
+  try {
+    const ue = verifierLeTrajet(r);
+    assert.match(ue.avertissement ?? "", /^stale: .*publication date later than generation date/, "the row is stale");
+    assert.ok(ue.avertissement!.includes("2062-07-23") && ue.avertissement!.includes(GENERATION), `the warning names the two dates: ${ue.avertissement}`);
+    assert.ok(r.sortie.includes(`⚠ ${ue.avertissement}`), `the fetch prints the line:\n${r.sortie}`);
+  } finally {
+    rmSync(r.racine, { recursive: true, force: true });
+  }
+});
+
+test("EU fetch, one impossible publicationDate next to a fresh one: the row stays fresh", () => {
+  const r = lancer({ corps: avecPublications(xmlUe(GENERATION, avant(SEUIL_RETARD_UE_JOURS + 30)), avant(1), "2026-13-45") });
+  try {
+    const ue = verifierLeTrajet(r);
+    assert.equal(ue.avertissement, undefined, "a valid publication inside the limit proves the feed is live: no warning");
+    assert.ok(!/stale/i.test(r.sortie), `nothing is said about staleness:\n${r.sortie}`);
   } finally {
     rmSync(r.racine, { recursive: true, force: true });
   }
