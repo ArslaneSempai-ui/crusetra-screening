@@ -766,8 +766,8 @@ export function recouperOfac(xml: string, lues: number): string | undefined {
 
 /**
  * The EU file is judged by its own dates when it arrives (the rule is `fraicheurUE`, shared with
- * `scripts/fraicheur-ue.mjs`): a feed that lags by more than SEUIL_RETARD_UE_JOURS days, or whose dates cannot be read,
- * gets a warning in its manifest row. The row stays available (the file is written and its hash recorded), exactly
+ * `scripts/fraicheur-ue.mjs`): a feed that lags by more than SEUIL_RETARD_UE_JOURS days, or whose dates cannot be read
+ * or are out of order, gets a warning in its manifest row. The row stays available (the file is written and its hash recorded), exactly
  * like the OFAC count mismatch above: said in the manifest, never in silence. Undefined when the file is within the
  * limit, so a fresh file leaves the row as it was. The text names both dates and goes through `urlSansJeton` like every
  * other string this module writes.
@@ -775,11 +775,11 @@ export function recouperOfac(xml: string, lues: number): string | undefined {
 export function avertissementFraicheurUe(xml: string, env: NodeJS.ProcessEnv = process.env): string | undefined {
   const r = fraicheurUE(xml);
   if (!r.perime) return undefined;
-  const dates = `newest publicationDate ${r.max ?? "missing"}, generationDate ${r.gen ?? "missing"}`;
-  const detail = r.retard === null
-    ? `${r.raison}, so its freshness cannot be shown`
-    : `${r.retard} days apart, the limit is ${SEUIL_RETARD_UE_JOURS} days; recent listings may be missing`;
-  return urlSansJeton(`stale: ${dates} (${detail})`, env);
+  /* No lag can be claimed when a date is missing, invalid or out of order: the reason then names what it found, dates
+     included. Otherwise the two dates and the lag, with any publicationDate value that was not read as a day. */
+  if (r.retard === null) return urlSansJeton(`stale: ${r.raison ?? "the dates cannot be read"}; its freshness cannot be shown`, env);
+  const detail = `${r.retard} days apart, the limit is ${SEUIL_RETARD_UE_JOURS} days; recent listings may be missing${r.raison ? `; ${r.raison}` : ""}`;
+  return urlSansJeton(`stale: newest publicationDate ${r.max}, generationDate ${r.gen} (${detail})`, env);
 }
 
 /* ───────────────────────────── le manifeste, committé ───────────────────────────── */
