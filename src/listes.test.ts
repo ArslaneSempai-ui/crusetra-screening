@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, writeFileSync, mkdtempSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdtempSync, mkdirSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -10,6 +10,7 @@ import {
   blocs, champ, decoderEntites, analyserOfac, analyserOnu, analyserUe, analyser,
   recouperOfac, lireManifeste, lireListe, SOURCES, type Manifeste, analyserCsl, fichierDe, analyserRoyaumeUni, analyserNaviresUe,
   jetonUe, analyserDfat, analyserCanada, analyserMfat, lireImo, manquesDeLicence, estClasseur,
+  urlSansJeton, urlDeTelechargement, texteDuManifeste, JETON_MASQUE,
 } from "./listes.ts";
 
 const fixture = (n: string) => readFileSync(fileURLToPath(new URL(`./fixtures/${n}`, import.meta.url)), "utf8");
@@ -172,6 +173,110 @@ test("le jeton UE : CRUSETRA_EU_TOKEN d'abord, CASCADE_EU_TOKEN (l'ancien nom) �
   assert.equal(jetonUe({ CRUSETRA_EU_TOKEN: "neuf" }), "neuf");
   assert.equal(jetonUe({ CRUSETRA_EU_TOKEN: "neuf", CASCADE_EU_TOKEN: "ancien" }), "neuf", "le nouveau nom passe devant");
   assert.notEqual(generique, "ancien");
+});
+
+/* The token never rides in a source's address: the address SOURCES keeps holds the placeholder, the request alone gets
+   the token, and one function (urlSansJeton) redacts every text that may hold one. The run-level witness is
+   listes-jeton.test.ts; these cases pin the pieces. */
+test("the EU address keeps the placeholder; the request address carries the token, and only it", () => {
+  const ue = SOURCES.find((s) => s.source === "EU")!;
+  assert.ok(ue.url.endsWith(`?token=${JETON_MASQUE}`), "SOURCES holds the placeholder, never a token");
+  assert.equal(JETON_MASQUE, "[username]", "the word the documentation and the manifest already use");
+  assert.ok(urlDeTelechargement(ue.url, { CRUSETRA_EU_TOKEN: "FAKE-TOKEN-0000" }).endsWith("?token=FAKE-TOKEN-0000"));
+  assert.ok(urlDeTelechargement(ue.url, {}).endsWith(`?token=${jetonUe({})}`), "without a variable: the public generic token");
+  const onu = SOURCES.find((s) => s.source === "UN")!;
+  assert.equal(urlDeTelechargement(onu.url, { CRUSETRA_EU_TOKEN: "FAKE-TOKEN-0000" }), onu.url, "a source with no placeholder is requested as declared");
+  assert.equal(urlDeTelechargement("https://h/x?token=[username]&a=1", { CRUSETRA_EU_TOKEN: "a$&b" }), "https://h/x?token=a$&b&a=1",
+    "the token is put in as it is, with no replacement pattern read in it");
+});
+
+test("urlSansJeton: any token= value becomes the placeholder, in an address or in an error text, and a second pass changes nothing", () => {
+  const env = { CRUSETRA_EU_TOKEN: "FAKE-TOKEN-0000" };
+  const cas: [string, string][] = [
+    ["https://h/f?token=FAKE-TOKEN-0000", "https://h/f?token=[username]"],
+    ["https://h/f?a=1&token=FAKE-TOKEN-0000&b=2", "https://h/f?a=1&token=[username]&b=2"],
+    ["https://h/f?TOKEN=whatever", "https://h/f?TOKEN=[username]"],
+    ["https://h/f?access_token=abc", "https://h/f?access_token=[username]"],
+    ["connect ECONNRESET while fetching https://h/f?token=FAKE-TOKEN-0000 (retry)", "connect ECONNRESET while fetching https://h/f?token=[username] (retry)"],
+    ["the proxy refused the key FAKE-TOKEN-0000 for h", "the proxy refused the key [username] for h"],
+    ["https://h/f?token=[username]", "https://h/f?token=[username]"],
+    ["failed at https://h/f?token=abc.", "failed at https://h/f?token=[username]."],
+    ["failed at https://h/f?token=abc, then", "failed at https://h/f?token=[username], then"],
+    ["failed at https://h/f?token=FAKE-TOKEN-0000. Next.", "failed at https://h/f?token=[username]. Next."],
+    ["failed at https://h/f?token=a.b-c", "failed at https://h/f?token=[username]"],
+    ["https://h/f?a=1", "https://h/f?a=1"],
+    ["", ""],
+  ];
+  for (const [entree, attendu] of cas) {
+    assert.equal(urlSansJeton(entree, env), attendu, entree);
+    assert.equal(urlSansJeton(attendu, env), attendu, `idempotent: ${attendu}`);
+  }
+  assert.equal(urlSansJeton("key a%2Bb here", { CRUSETRA_EU_TOKEN: "a+b+c-12" }), "key a%2Bb here", "a different value is left alone");
+  assert.equal(urlSansJeton("key a%2Bb%2Bc-12 here", { CRUSETRA_EU_TOKEN: "a+b+c-12" }), "key [username] here", "the percent-encoded form of the token goes too");
+  assert.equal(urlSansJeton("a short value abc stays", { CRUSETRA_EU_TOKEN: "abc" }), "a short value abc stays",
+    "a value under six characters is not searched for as a bare string (it would eat ordinary words)");
+});
+
+test("texteDuManifeste: a token in any string of the manifest, whatever the field, is gone from the committed text; the JSON stays valid", () => {
+  const env = { CRUSETRA_EU_TOKEN: "FAKE-TOKEN-0000" };
+  const m = {
+    version: 1 as const, genereLe: "2026-10-13T00:00:00.000Z",
+    listes: [{
+      source: "EU", titre: "EU", format: "eu-fsf-xml-1.1",
+      url: "https://h/f?token=FAKE-TOKEN-0000",
+      disponible: false as const, verifieLe: "2026-10-13T00:00:00.000Z",
+      erreur: 'network: reset while fetching https://h/f?token=FAKE-TOKEN-0000 "quoted"\nsecond line',
+      issue: "key FAKE-TOKEN-0000 refused",
+    }],
+  };
+  const texte = texteDuManifeste(m, env);
+  assert.ok(!texte.includes("FAKE-TOKEN-0000"));
+  assert.ok(texte.endsWith("\n"));
+  const relu = JSON.parse(texte) as typeof m;
+  assert.equal(relu.listes[0]!.url, "https://h/f?token=[username]");
+  assert.equal(relu.listes[0]!.erreur, 'network: reset while fetching https://h/f?token=[username] "quoted"\nsecond line',
+    "the diagnosis around the address survives, quotes and line breaks included");
+  assert.equal(relu.listes[0]!.issue, "key [username] refused");
+});
+
+test("urlSansJeton: a held token that itself holds ), &, a quote or a space is replaced whole, not cut at its first delimiter", () => {
+  /* The held token is replaced BEFORE the token= rule runs: the rule stops at the first delimiter, which would leave the tail. */
+  for (const jeton of ["FAKE)tail-0000", "FAKE&tail-0000", 'FAKE"tail-0000', "FAKE tail-0000", "FAKE'tail-0000", "FAKE<tail>-0000"]) {
+    const env = { CRUSETRA_EU_TOKEN: jeton };
+    assert.equal(urlSansJeton(`fetching https://h/f?token=${jeton} now`, env), "fetching https://h/f?token=[username] now", `raw: ${jeton}`);
+    assert.equal(urlSansJeton(`fetching https://h/f?token=${encodeURIComponent(jeton)} now`, env), "fetching https://h/f?token=[username] now", `encoded: ${jeton}`);
+    assert.equal(urlSansJeton(`the proxy refused ${jeton} for h`, env), "the proxy refused [username] for h", `bare: ${jeton}`);
+    assert.ok(!urlSansJeton(`a ${jeton} b`, env).includes("tail"), `no tail of ${jeton} is left`);
+  }
+});
+
+test("lireManifeste redacts what it reads: an old-style manifest with a token in url, erreur or issue gives none of it back, and neither does lireListe", () => {
+  const racine = mkdtempSync(join(tmpdir(), "manifeste-ancien-"));
+  const jeton = "FAKE)tail-0000";
+  const env = { CRUSETRA_EU_TOKEN: jeton };
+  writeFileSync(join(racine, "listes-manifest.json"), JSON.stringify({
+    version: 1, genereLe: "2026-10-13T17:00:00.000Z",
+    listes: [{
+      source: "EU", titre: "EU", format: "eu-fsf-xml-1.1", url: `https://h/f?token=${jeton}`,
+      disponible: false, verifieLe: "2026-10-13T17:00:00.000Z",
+      erreur: `network: reset while fetching https://h/f?token=${jeton}`, issue: `key ${jeton} was refused; run --fetch again.`,
+    }],
+  }, null, 2));
+  const avant = process.env.CRUSETRA_EU_TOKEN;
+  process.env.CRUSETRA_EU_TOKEN = jeton;
+  try {
+    const m = lireManifeste(racine, env)!;
+    const ligne = m.listes[0]!;
+    assert.ok(!JSON.stringify(m).includes("tail"), "no part of the token comes back");
+    assert.ok(!ligne.disponible);
+    assert.equal(ligne.url, "https://h/f?token=[username]");
+    assert.equal(!ligne.disponible && ligne.erreur, "network: reset while fetching https://h/f?token=[username]");
+    assert.equal(!ligne.disponible && ligne.issue, "key [username] was refused; run --fetch again.");
+    assert.throws(() => lireListe("EU", racine), (e: Error) => /recorded as unavailable/.test(e.message) && !e.message.includes("tail") && e.message.includes("was refused; run --fetch again"));
+  } finally {
+    if (avant === undefined) delete process.env.CRUSETRA_EU_TOKEN; else process.env.CRUSETRA_EU_TOKEN = avant;
+    rmSync(racine, { recursive: true, force: true });
+  }
 });
 
 test("les dix sources déclarées sont celles du contrat, chacune en https, chacune avec sa licence lue chez l'éditeur", () => {
