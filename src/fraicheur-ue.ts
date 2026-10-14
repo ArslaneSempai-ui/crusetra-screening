@@ -36,6 +36,13 @@
  * downloads, so the downloads are what (b) measures. A row written before the confirmation was recorded has none, and its
  * file is then judged by its generationDate alone, as before.
  *
+ * WHAT THIS CAN AND CANNOT SEE. A client screening does not trust the recorded file dates: it reads the generationDate again
+ * from the file on disk (hash-checked against the manifest) and refuses when it differs from the recorded one or the file
+ * cannot be read, so a hand-edited `fichierGenereLe` buys nothing. It CANNOT see a forged `confirmeLe`, or a forged feed day:
+ * they are a statement by the machine that made the manifest, the manifest is a local, unsigned file, and anyone who can edit
+ * it can say that a download confirmed the file today. The rule keeps an honest manifest honest; it is not a defense
+ * against its owner.
+ *
  * Three callers share this one rule: `scripts/fraicheur-ue.mjs` (the command line, exit 1 when stale), `src/listes.ts`
  * (`--fetch` records the inputs and a warning, a client screening refuses) and the tests. The limit and the tolerance are
  * typed once, here, and no text and no test retypes them.
@@ -143,11 +150,28 @@ export function lireDatesUe(xml: string, tolerance: number = TOLERANCE_APRES_GEN
 }
 
 /**
+ * Whether the confirming day of the row before may be carried onto a download that could not confirm. It may when the file
+ * is the same one (same content hash), or when its generation day is not older than the one recorded before: a confirmation
+ * says "that file was the latest on that day", and it says nothing about an OLDER file the server may hand out later. A
+ * previous generation day that was never recorded, or a new one that cannot be read, carries nothing.
+ */
+export function confirmationReportable(
+  avant: { confirmeLe: string | null; fichierGenereLe: string | null; sha256: string } | null,
+  genereLe: string | null, sha256: string,
+): string | null {
+  if (avant === null || avant.confirmeLe === null) return null;
+  if (avant.sha256 === sha256) return avant.confirmeLe;
+  if (genereLe === null || avant.fichierGenereLe === null) return null;
+  const ecart = joursEntre(avant.fichierGenereLe, genereLe);
+  return !Number.isNaN(ecart) && ecart >= 0 ? avant.confirmeLe : null;
+}
+
+/**
  * The record of a download: the file's two dates, what the feed said (read before the file, so that a file published in
  * between is not mistaken for a newer one), and the day of the last download that confirmed the file against the feed.
  * `jourDuTelechargement` is the day of THIS download (its clock, a parameter); `confirmeAvant` is the confirming day the
  * row before carried, if any. This download confirms when the feed was read, the file's dates can be trusted, and the feed
- * does not announce a file published more than the tolerance after the generation: then the confirming day is today.
+ * announces a file dated within the tolerance of the generation, on either side: then the confirming day is today.
  * Otherwise it does NOT refresh that day, and the row keeps the one it had.
  */
 export function enregistrerFraicheurUe(
@@ -158,7 +182,9 @@ export function enregistrerFraicheurUe(
   let confirmeLe = confirmeAvant;
   if ("jour" in rss && d.defaut === undefined && d.gen !== null) {
     const ecart = joursEntre(d.gen, rss.jour);
-    if (!Number.isNaN(ecart) && ecart <= tolerance) confirmeLe = jourDuTelechargement;
+    /* BOTH sides: a feed item dated long BEFORE the file (2020, 1970) is not agreement, it is a feed that says nothing about
+       this file, and counting it would let a file of any age read as confirmed today. */
+    if (!Number.isNaN(ecart) && Math.abs(ecart) <= tolerance) confirmeLe = jourDuTelechargement;
   }
   return {
     fichierGenereLe: d.gen, fichierPublieLe: d.max, ...(d.defaut !== undefined ? { fichierDefaut: d.defaut } : {}),

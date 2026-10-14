@@ -16,10 +16,10 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, constants as fsConstants, cpSync, existsSync, fstatSync, closeSync, mkdirSync, mkdtempSync, openSync, readdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
-import { spawnSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import * as listes from "./listes.ts";
 
@@ -37,7 +37,7 @@ const SAUT_WIN = PEUT_CHMOD ? false : "file modes mean nothing on win32: the fil
 /* ───────────────────────────── the rules, on the reader alone ───────────────────────────── */
 
 /** A throwaway home with `.cascade/eu-token` laid out as asked; its parent folder is returned too, for removal. */
-type Pose = { contenu: string; mode?: number } | { lienVers: string } | { dossier: true } | null;
+type Pose = { contenu: string; mode?: number } | { lienVers: string } | { dossier: true } | { fifo: true } | null;
 function maisonAvec(pose: Pose): { base: string; maison: string; chemin: string } {
   const base = realpathSync(mkdtempSync(join(tmpdir(), "jeton-lecteur-")));
   const maison = join(base, "home");
@@ -45,6 +45,7 @@ function maisonAvec(pose: Pose): { base: string; maison: string; chemin: string 
   const chemin = join(maison, ".cascade", "eu-token");
   if (pose === null) return { base, maison, chemin };
   if ("dossier" in pose) mkdirSync(chemin);
+  else if ("fifo" in pose) execFileSync("mkfifo", [chemin]);
   else if ("lienVers" in pose) symlinkSync(pose.lienVers, chemin);
   else { writeFileSync(chemin, pose.contenu); if (PEUT_CHMOD) chmodSync(chemin, pose.mode ?? 0o600); }
   return { base, maison, chemin };
@@ -64,7 +65,8 @@ function lire(pose: Pose, plateforme?: string, uid?: number): { r: ReturnType<ty
 function assertAvertissement(r: ReturnType<typeof listes.lireJetonFichier>, chemin: string, regle: RegExp): void {
   assert.equal(r.etat, "ignore", JSON.stringify(r));
   const a = (r as { avertissement: string }).avertissement;
-  assert.ok(a.includes(chemin), `the warning names the path: ${a}`);
+  assert.ok(a.includes("~/.cascade/eu-token"), `the warning names the file in its tilde form: ${a}`);
+  assert.ok(!a.includes(chemin) && !a.includes(chemin.slice(0, chemin.indexOf(".cascade"))), `the warning never writes the absolute path: ${a}`);
   assert.match(a, regle, a);
   assert.ok(!a.includes(FAUX_JETON), "the warning never carries the value");
   assert.ok(!new RegExp(`\\b${LONGUEUR_LONG}\\b`).test(a), `the warning never carries the length: ${a}`);
@@ -125,6 +127,36 @@ test("the reader: an empty or whitespace-only file gives no token, and says so w
 test("the reader: a file nobody can read is ignored with the error code, not a crash", { skip: SAUT_WIN || (process.getuid?.() === 0 ? "root reads any file" : false) }, () => {
   const { r, chemin } = lire({ contenu: FAUX_JETON_LONG, mode: 0 });
   assertAvertissement(r, chemin, /cannot be read \(EACCES\)/);
+});
+
+test("the reader: a value larger than a token can be is ignored, with no length in the warning; a value exactly at the cap is read", { skip: SAUT_WIN }, () => {
+  const gros = lire({ contenu: "x".repeat(listes.PLAFOND_OCTETS_JETON_FICHIER + 1) });
+  assertAvertissement(gros.r, gros.chemin, /larger than a token/);
+  const enorme = lire({ contenu: "x".repeat(10 * listes.PLAFOND_OCTETS_JETON_FICHIER) });
+  assertAvertissement(enorme.r, enorme.chemin, /larger than a token/);
+  assert.equal(lire({ contenu: "x".repeat(listes.PLAFOND_OCTETS_JETON_FICHIER) }).r.etat, "lu");
+});
+
+test("the reader: a value with a space, a line break, a tab or a control character inside is ignored (the URL parser strips a newline, so it would reach the wire as another string than the one held for redaction)", { skip: SAUT_WIN }, () => {
+  for (const contenu of ["abc def", "abc\ndef", "abc\r\ndef", "abc\tdef", "abc\u0007def", "abc\u0000def", "abc\u2003def"]) {
+    const { r, chemin } = lire({ contenu });
+    assertAvertissement(r, chemin, /single word/);
+  }
+  assert.equal(lire({ contenu: "abc-def_123.XYZ\n" }).r.etat, "lu", "a token with its usual punctuation, and a final newline, is still read");
+});
+
+test("the reader: a FIFO where the file should be is ignored without blocking, and the descriptor the reader opens refuses it too (opened without blocking, never through a link)", { skip: SAUT_WIN }, () => {
+  const { r, chemin } = lire({ fifo: true });
+  assertAvertissement(r, chemin, /not a regular file/);
+  assert.ok((listes.OUVERTURE_JETON_FICHIER & fsConstants.O_NONBLOCK) !== 0 && (listes.OUVERTURE_JETON_FICHIER & fsConstants.O_NOFOLLOW) !== 0, "the file is opened with O_NONBLOCK and O_NOFOLLOW");
+  /* what a FIFO swapped in between the check and the open would meet: the open returns at once, and fstat says it is no regular file */
+  const { base, chemin: fifo } = maisonAvec({ fifo: true });
+  try {
+    const fd = openSync(fifo, listes.OUVERTURE_JETON_FICHIER);
+    try { assert.equal(fstatSync(fd).isFile(), false); } finally { closeSync(fd); }
+  } finally {
+    rmSync(base, { recursive: true, force: true });
+  }
 });
 
 test("the reader: on win32 a file mode means nothing, so the file is never read there, even a perfect one", () => {
@@ -245,7 +277,7 @@ test("EU fetch with the file at 644: ignored with one warning that names the pat
     assert.equal(c.vu, "expected", "the request carries the public generic token, not the value of the refused file");
     const a = avertissementsDe(c);
     assert.equal(a.length, 1, `exactly one warning:\n${c.erreurs}`);
-    assert.ok(a[0]!.includes(c.chemin), `the warning names the path: ${a[0]}`);
+    assert.ok(a[0]!.includes("~/.cascade/eu-token") && !a[0]!.includes(c.maison), `the warning names the file by its tilde form: ${a[0]}`);
     assert.match(a[0]!, /group or others/);
     assert.match(a[0]!, /644/);
     assert.deepEqual(fuitesDe(c, [FAUX_JETON, FAUX_JETON_LONG]), [], "the value reached these places");
@@ -312,6 +344,20 @@ test("EU fetch of another source never reads the token file: a file at 644 draws
   try {
     assert.equal(c.statut, 0, `exit code ${c.statut}:\n${c.erreurs.slice(0, 600)}`);
     assert.deepEqual(avertissementsDe(c), [], `the token is read when the EU request is built, and only then:\n${c.erreurs}`);
+  } finally {
+    nettoyer(c);
+  }
+});
+
+test("no absolute home path reaches the manifest, standard output or standard error of a run with a temporary HOME (a refused file, then a failed download)", { skip: SAUT_WIN }, () => {
+  const c = lancer({ pose: { contenu: FAUX_JETON, mode: 0o644 }, mode: "http500", attendu: GENERIQUE });
+  try {
+    const manifeste = readFileSync(join(c.racine, "listes-manifest.json"), "utf8");
+    for (const [nom, texte] of [["the manifest", manifeste], ["standard output", c.sortie], ["standard error", c.erreurs]] as const) {
+      assert.ok(!texte.includes(c.maison) && !texte.includes(c.base), `${nom} holds the home path:\n${texte.slice(0, 600)}`);
+    }
+    assert.ok(manifeste.includes("~/.cascade/eu-token") && c.sortie.includes("~/.cascade/eu-token"), "the way out names the file by its tilde form, in the manifest and on the screen");
+    assert.ok(c.erreurs.includes("~/.cascade/eu-token"), "and so does the warning");
   } finally {
     nettoyer(c);
   }
