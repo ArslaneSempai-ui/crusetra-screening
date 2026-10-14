@@ -4,37 +4,44 @@
  * publicationDate in it was 23 July, and that is a quiet quarter, not a frozen feed (the gap rule this file used to hold
  * would have refused a client on it). The feed that announces the file settles it, and the clock settles the rest.
  *
- * Two inputs are recorded in the manifest row of the EU list when the file is downloaded (`FraicheurEnregistree`):
+ * Three inputs are recorded in the manifest row of the EU list when the file is downloaded (`FraicheurEnregistree`):
  *   - the file's own two dates: its generationDate and the newest valid publicationDate of any entry;
  *   - the newest file the EU feed (RSS, webgate.ec.europa.eu/fsd/fsf/public/rss) announced for it. The feed's items are
  *     the published FILES, one per format, each with a pubDate that is the moment the file was published (read on 14
  *     October 2026: the item of the XML v1.1 file was published 33 minutes after the generationDate of the file we held,
  *     and carried the SHA-1 of its bytes). It announces no regulation publication, so it is compared with the file's
- *     generationDate, not with its newest publicationDate (which would trip on every download, 81 days apart that day).
+ *     generationDate, not with its newest publicationDate (which would trip on every download, 81 days apart that day);
+ *   - the day of the last download that CONFIRMED the file against the feed (`confirmeLe`): the feed was read and did
+ *     not announce a newer file. A download that could not confirm (feed unreadable, or a newer file announced) does not
+ *     refresh that day: it keeps the one the row before had.
  * A client screening decides from those recorded inputs and the clock at the moment it runs, never from the network.
  *
  * The EU list is STALE, and a client screening refuses, only when:
  *   (a) the feed announces a file published more than TOLERANCE_APRES_GENERATION_UE_JOURS days after the generationDate of
  *       the file we hold (a newer file exists and we do not have it); or
- *   (b) the generationDate is more than SEUIL_RETARD_UE_JOURS days before the day of the run (the daily update failed); or
+ *   (b) the newest evidence that the file is the latest is more than SEUIL_RETARD_UE_JOURS days before the day of the run
+ *       (the daily update failed). That evidence is the later of the file's generationDate (a file cannot be older than the
+ *       day it was made) and the last confirming download; or
  *   (c) a date cannot be trusted: missing, not a day of the calendar, a publicationDate later than the generationDate by
- *       more than the tolerance, a generationDate or an announced date later than the clock allows.
- * A quiet week is none of these: the feed and the file agree, and the file is not old. A feed that could not be read when
- * the file was downloaded is recorded as such and is NOT a reason to refuse by itself.
+ *       more than the tolerance, a generationDate, a download day or an announced date later than the clock allows.
+ * A quiet week is none of these: the feed and the file agree, and the last download that found them in agreement is
+ * recent. A feed that could not be read when the file was downloaded is recorded as such and is NOT a reason to refuse by
+ * itself: it only leaves the last confirming day where it was.
  *
- * THE KNOWN LIMIT OF (b). It reads the file's own generationDate, and the EU appears to rebuild the file when its lists
- * change, not every day: read at 07:29 UTC on Wednesday 14 October 2026, the feed listed the build of Monday 12 October
- * and none of Tuesday 13 (one observation, not a measure of the EU's rhythm). If so, after more than the limit without a
- * change at the EU, (b) refuses although the daily update ran and nothing failed, and downloading again does not help
- * (the same file comes back). What would tell the two apart is already recorded (`rssAnnonceLe` agreeing with the file,
- * and `telechargeLe` in the row); using it is a decision of the rule's owner, not made here.
+ * WHY (b) READS THE DOWNLOAD AND NOT ONLY THE GENERATION DATE. As first written, (b) read the generationDate alone. But
+ * the EU appears to rebuild the file when its lists change, not every day (read at 07:29 UTC on Wednesday 14 October
+ * 2026, the feed listed the build of Monday 12 October and none of Tuesday 13: one observation, not a measure of the EU's
+ * rhythm), and downloading again then returns the same file. With the generationDate alone, a quiet fortnight would have
+ * refused every client although the daily update ran and nothing failed. "The update failed" is a fact about the
+ * downloads, so the downloads are what (b) measures. A row written before the confirmation was recorded has none, and its
+ * file is then judged by its generationDate alone, as before.
  *
  * Three callers share this one rule: `scripts/fraicheur-ue.mjs` (the command line, exit 1 when stale), `src/listes.ts`
  * (`--fetch` records the inputs and a warning, a client screening refuses) and the tests. The limit and the tolerance are
  * typed once, here, and no text and no test retypes them.
  */
 
-/** The file is stale when it was generated more than this many days before the day of the run. Exactly the limit is not stale. */
+/** The file is stale when the newest evidence that it is the latest (its generation, or the last download that confirmed it against the feed) is more than this many days before the day of the run. Exactly the limit is not stale. */
 export const SEUIL_RETARD_UE_JOURS = 7;
 
 /**
@@ -64,6 +71,8 @@ export type FraicheurEnregistree = {
   rssAnnonceLe: string | null;
   /** why the feed could not be read, absent when it was */
   rssIllisible?: string;
+  /** the day of the last download that confirmed the file against the feed (feed read, no newer file announced); null or absent when none did */
+  confirmeLe?: string | null;
 };
 
 /** The feed, read: the day the newest announcement of our file was published, or why that could not be read. */
@@ -133,12 +142,28 @@ export function lireDatesUe(xml: string, tolerance: number = TOLERANCE_APRES_GEN
   return { gen, max };
 }
 
-/** The record of a download: the file's two dates, and what the feed said (read before the file, so that a file published in between is not mistaken for a newer one). */
-export function enregistrerFraicheurUe(xml: string, rss: ResultatRssUe): FraicheurEnregistree {
+/**
+ * The record of a download: the file's two dates, what the feed said (read before the file, so that a file published in
+ * between is not mistaken for a newer one), and the day of the last download that confirmed the file against the feed.
+ * `jourDuTelechargement` is the day of THIS download (its clock, a parameter); `confirmeAvant` is the confirming day the
+ * row before carried, if any. This download confirms when the feed was read, the file's dates can be trusted, and the feed
+ * does not announce a file published more than the tolerance after the generation: then the confirming day is today.
+ * Otherwise it does NOT refresh that day, and the row keeps the one it had.
+ */
+export function enregistrerFraicheurUe(
+  xml: string, rss: ResultatRssUe, jourDuTelechargement: string, confirmeAvant: string | null = null,
+  tolerance: number = TOLERANCE_APRES_GENERATION_UE_JOURS,
+): FraicheurEnregistree {
   const d = lireDatesUe(xml);
+  let confirmeLe = confirmeAvant;
+  if ("jour" in rss && d.defaut === undefined && d.gen !== null) {
+    const ecart = joursEntre(d.gen, rss.jour);
+    if (!Number.isNaN(ecart) && ecart <= tolerance) confirmeLe = jourDuTelechargement;
+  }
   return {
     fichierGenereLe: d.gen, fichierPublieLe: d.max, ...(d.defaut !== undefined ? { fichierDefaut: d.defaut } : {}),
     rssAnnonceLe: "jour" in rss ? rss.jour : null, ...("illisible" in rss ? { rssIllisible: rss.illisible } : {}),
+    confirmeLe,
   };
 }
 
@@ -147,8 +172,10 @@ export type VerdictFraicheurUe = {
   perime: boolean;
   /** why, each reason naming its dates; empty when fresh */
   motifs: string[];
-  /** days from the generationDate to the day of the run; null when it cannot be claimed */
+  /** days from the newest evidence that the file is the latest (`preuveLe`) to the day of the run; null when it cannot be claimed */
   ageJours: number | null;
+  /** that evidence: the later of the generationDate and the last confirming download; null when the generationDate cannot be read */
+  preuveLe: string | null;
 };
 
 const jours = (n: number): string => `${n} day${n === 1 ? "" : "s"}`;
@@ -164,26 +191,40 @@ export function jugerFraicheurUe(
   const motifs: string[] = [];
   const aujourdhui = jourDe(maintenant);
   let ageJours: number | null = null;
+  let preuveLe: string | null = null;
 
   if (e.fichierDefaut !== undefined) motifs.push(`the dates in the file cannot be trusted: ${e.fichierDefaut}`);
   if (e.fichierGenereLe === null || Number.isNaN(jourEnMs(e.fichierGenereLe))) {
     if (e.fichierDefaut === undefined) motifs.push(e.fichierGenereLe === null ? "the file records no generationDate" : `the recorded generationDate ${e.fichierGenereLe} is not a day of the calendar`);
   } else {
-    ageJours = joursEntre(e.fichierGenereLe, aujourdhui);
+    const gen = e.fichierGenereLe;
+    if (joursEntre(gen, aujourdhui) < -tolerance) {
+      motifs.push(`the file says it was generated on ${gen}, after today (${aujourdhui}) by more than ${jours(tolerance)}: the clock or the file is wrong`);
+    }
+    /* the newest evidence that this file is the latest: it was made on `gen`, and the last download that found the feed in
+       agreement with it was on `confirme`; the later of the two. */
+    preuveLe = gen;
+    const confirme = e.confirmeLe ?? null;
+    if (confirme !== null) {
+      if (Number.isNaN(jourEnMs(confirme))) motifs.push(`the recorded download day ${confirme} is not a day of the calendar`);
+      else if (joursEntre(aujourdhui, confirme) > tolerance) motifs.push(`the recorded download day ${confirme} is after today (${aujourdhui}) by more than ${jours(tolerance)}: the clock or the manifest is wrong`);
+      else if (confirme > gen) preuveLe = confirme;
+    }
+    ageJours = joursEntre(preuveLe, aujourdhui);
     if (ageJours > seuilJours) {
-      motifs.push(`the file was generated on ${e.fichierGenereLe}, ${jours(ageJours)} before today (${aujourdhui}); the limit is ${jours(seuilJours)}, so the daily update has not brought a newer one`);
-    } else if (ageJours < -tolerance) {
-      motifs.push(`the file says it was generated on ${e.fichierGenereLe}, after today (${aujourdhui}) by more than ${jours(tolerance)}: the clock or the file is wrong`);
+      motifs.push(preuveLe === gen
+        ? `the file was generated on ${gen}, ${jours(ageJours)} before today (${aujourdhui}), and no download since has confirmed it against the EU feed; the limit is ${jours(seuilJours)}, so the daily update has not run`
+        : `the last download that confirmed the file against the EU feed was on ${preuveLe}, ${jours(ageJours)} before today (${aujourdhui}); the limit is ${jours(seuilJours)}, so the daily update has not run since`);
     }
     if (e.rssAnnonceLe !== null) {
-      const ecart = joursEntre(e.fichierGenereLe, e.rssAnnonceLe);
+      const ecart = joursEntre(gen, e.rssAnnonceLe);
       if (Number.isNaN(ecart)) {
         motifs.push(`the recorded announcement date ${e.rssAnnonceLe} is not a day of the calendar`);
       } else if (ecart > tolerance) {
-        motifs.push(`the EU feed announces a file published on ${e.rssAnnonceLe}, ${jours(ecart)} after the one on disk was generated (${e.fichierGenereLe}); a publication up to ${jours(tolerance)} after the generation is the delay of publishing, more means a newer file exists`);
+        motifs.push(`the EU feed announces a file published on ${e.rssAnnonceLe}, ${jours(ecart)} after the one on disk was generated (${gen}); a publication up to ${jours(tolerance)} after the generation is the delay of publishing, more means a newer file exists`);
       }
     }
   }
   if (e.fichierPublieLe === null && e.fichierDefaut === undefined) motifs.push("the file records no publicationDate");
-  return { perime: motifs.length > 0, motifs, ageJours };
+  return { perime: motifs.length > 0, motifs, ageJours, preuveLe };
 }

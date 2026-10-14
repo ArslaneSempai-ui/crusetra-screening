@@ -961,7 +961,7 @@ export function refusFraicheurUe(m: Manifeste, maintenant: Date, racine: string 
   return urlSansJeton([
     `The EU list is stale, so this screening is refused and no report is produced.`,
     `  List: ${def.titre} (${def.source}), downloaded ${ligne.telechargeLe.slice(0, 10)}.`,
-    `  Dates: file generated ${connu(f.fichierGenereLe)}, newest publication in it ${connu(f.fichierPublieLe)}, newest file the EU feed announced ${flux}, today ${jourDe(maintenant)}.`,
+    `  Dates: file generated ${connu(f.fichierGenereLe)}, newest publication in it ${connu(f.fichierPublieLe)}, newest file the EU feed announced ${flux}, last download that confirmed it against the feed ${connu(f.confirmeLe ?? null)}, today ${jourDe(maintenant)}.`,
     ...v.motifs.map((x) => `  Why: ${x}.`),
     `  → npm run listes -- --fetch   (downloads the lists again and records what the EU feed announces)`,
     `Nothing was screened and nothing was written.`,
@@ -1053,7 +1053,8 @@ async function lireRssUe(urlFichier: string): Promise<ResultatRssUe> {
   }
 }
 
-async function telecharger(s: SourceListe): Promise<LigneManifeste> {
+/** `confirmeAvant`: for the EU list, the confirming day the row before carried (a download that cannot confirm keeps it). */
+async function telecharger(s: SourceListe, confirmeAvant: string | null = null): Promise<LigneManifeste> {
   const maintenant = new Date().toISOString();
   /* What the manifest, the console and the errors say: never the address the request used. */
   const url = urlSansJeton(s.url);
@@ -1088,7 +1089,7 @@ async function telecharger(s: SourceListe): Promise<LigneManifeste> {
   const provisoire = `${chemin}.tmp`;
   writeFileSync(provisoire, brut);
   renameSync(provisoire, chemin);
-  const fraicheur = rss === undefined ? undefined : enregistrerFraicheurUe(brut.toString("utf8"), rss);
+  const fraicheur = rss === undefined ? undefined : enregistrerFraicheurUe(brut.toString("utf8"), rss, jourDe(new Date(maintenant)), confirmeAvant);
   const avertissement = s.format === "ofac-sdn-xml" ? recouperOfac(brut.toString("utf8"), entrees.length)
     : fraicheur ? avertissementFraicheurUe(fraicheur, new Date()) : undefined;
   return { source: s.source, titre: s.titre, url, format: s.format,
@@ -1131,14 +1132,19 @@ async function principal(): Promise<void> {
   if (veutFetch) {
     console.log(`\nFetching ${seules ? `${seules.length} of the ${SOURCES.length}` : `the ${SOURCES.length}`} public lists: they download to your machine, and nothing of yours is sent.\n`);
     const lignes: LigneManifeste[] = [];
-    const avant = seules ? lireManifeste() : null;
+    /* The manifest before this fetch: the rows kept by --only come from it, and so does the day the EU list was last confirmed
+       against the feed, which a download that cannot confirm must not lose. */
+    let avant: Manifeste | null = null;
+    try { avant = lireManifeste(); } catch (e) { if (seules) throw e; }   /* a full fetch rewrites the manifest: an unreadable one is no reason not to fetch */
     for (const s of SOURCES) {
       if (seules && !seules.includes(s.source)) {
         const gardee = avant?.listes.find((x) => x.source === s.source);
         if (gardee) { lignes.push(gardee); console.log(`  ${s.source.padEnd(10)} kept as recorded`); }
         continue;
       }
-      const l = await telecharger(s);
+      const ligneAvant = avant?.listes.find((x) => x.source === s.source);
+      const confirmeAvant = s.source === "EU" && ligneAvant?.disponible ? ligneAvant.fraicheur?.confirmeLe ?? null : null;
+      const l = await telecharger(s, confirmeAvant);
       lignes.push(l);
       if (l.disponible) {
         console.log(`  ${s.source.padEnd(9)} ${l.entrees.toLocaleString("en-GB")} entr(ies) · `

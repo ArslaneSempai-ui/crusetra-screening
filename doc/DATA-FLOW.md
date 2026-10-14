@@ -25,15 +25,19 @@ count, so a report can say which version of each list it was screened against.
 
 Each EU download also reads the EU feed once (RSS, no token, nothing of yours sent) and records, in
 the EU row, what the freshness rule reads: the generationDate and the newest publicationDate of
-the file, and the newest file the feed announces for it. The EU list is stale when the feed
-announces a file published more than 1 day after the downloaded one was generated, when the file
-was generated more than 7 days before the day of the run, or when a date in it is missing,
-impossible or later than it can be (`src/fraicheur-ue.ts`); a quiet week, in which the EU
-published nothing, is not stale. A feed that cannot be read is recorded with its reason, and is
-not stale by itself. A stale list is marked in the field `avertissement`, the one OFAC's record
-count check already uses: the row stays available, the file is written and its hash recorded,
-`npm run listes -- --fetch` prints the warning on a line marked ⚠, and its text passes through
-the same token redaction as every other string of the manifest.
+the file, the newest file the feed announces for it, and the day of the last download that found
+the feed in agreement with the file. The EU list is stale when the feed announces a file
+published more than 1 day after the downloaded one was generated; when the newest evidence that
+the file is the latest (its generation, or that last confirming download) is more than 7 days
+before the day of the run, which is how a failed daily update shows; or when a date in it is
+missing, impossible or later than it can be (`src/fraicheur-ue.ts`). A quiet week, in which the
+EU published nothing, is not stale: the file stays the latest and each download confirms it. A
+download that cannot confirm (feed unreadable, or a newer file announced) does not refresh that
+day, and a feed that cannot be read is recorded with its reason and is not stale by itself. A
+stale list is marked in the field `avertissement`, the one OFAC's record count check already
+uses: the row stays available, the file is written and its hash recorded, `npm run listes --
+--fetch` prints the warning on a line marked ⚠, and its text passes through the same token
+redaction as every other string of the manifest.
 
 `npm run cribler`, which never touches the network, refuses to run when the EU list is stale by
 that rule. It decides from the dates recorded in the manifest and the date of the run: the exit
