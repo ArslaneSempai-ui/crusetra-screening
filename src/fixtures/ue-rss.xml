@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Feed of the EU sanctions files (hand-built fixture)</title>
+    <link>https://webgate.ec.europa.eu/fsd/fsf/public/rss</link>
+    <description>Consolidated list of persons, groups and entities subject to EU financial sanctions</description>
+    <language>en</language>
+    <lastBuildDate>Thu, 06 Aug 2026 07:00:00 GMT</lastBuildDate>
+    <item>
+      <title>PDF - v1.0</title>
+      <link>https://webgate.ec.europa.eu/fsd/fsf/public/files/pdfFullSanctionsList/content?token=[username]</link>
+      <description>Consolidated list (PDF)</description>
+      <pubDate>Wed, 05 Aug 2026 15:31:00 GMT</pubDate>
+      <guid>https://webgate.ec.europa.eu/fsd/fsf/public/files/pdfFullSanctionsList/content?token=[username]&amp;checksum=0000000000000000000000000000000000000001</guid>
+    </item>
+    <item>
+      <title>XML (Based on XSD) - v1.1</title>
+      <link>https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content?token=[username]</link>
+      <description>Consolidated Sanctions List based on the XML Schema Definition (XSD)</description>
+      <pubDate>Wed, 05 Aug 2026 15:30:00 GMT</pubDate>
+      <guid>https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content?token=[username]&amp;checksum=0000000000000000000000000000000000000002</guid>
+    </item>
+    <item>
+      <title>XML (Based on XSD) - v1.0</title>
+      <link>https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList/content?token=[username]</link>
+      <description>Consolidated Sanctions List based on the XML Schema Definition (XSD)</description>
+      <pubDate>Wed, 05 Aug 2026 15:29:00 GMT</pubDate>
+      <guid>https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList/content?token=[username]&amp;checksum=0000000000000000000000000000000000000003</guid>
+    </item>
+  </channel>
+</rss>
