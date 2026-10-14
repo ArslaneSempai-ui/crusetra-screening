@@ -2,7 +2,8 @@
  * Les listes publiques : la SEULE porte réseau de cet outil, et elle ne fait que descendre.
  *
  *   npm run listes              what is on disk: date, content hash, counts; no network
- *   npm run listes -- --fetch   download the public lists into data/listes/
+ *   npm run listes -- --fetch   download the public lists into data/listes/; the EU row carries a stale warning
+ *                               when its own dates show the feed lagging (src/fraicheur-ue.ts)
  *
  * `frontiere.test.ts` nomme ce fichier comme l'unique autorisé à toucher le réseau, et
  * exige qu'il lise CRUSETRA_OFFLINE et CASCADE_OFFLINE, son ancien nom. La liste descend, rien ne monte : aucune donnée du
@@ -57,6 +58,7 @@ import { createHash } from "node:crypto";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { lireTable } from "./csv.ts";
 import { lireClasseur, tableParEntete } from "./xlsx.ts";
+import { fraicheurUE, SEUIL_RETARD_UE_JOURS } from "./fraicheur-ue.ts";
 
 /** LA forme commune : les noms restent TELS QUE LA LISTE LES ÉCRIT — la normalisation est
  *  le travail des matchers, pas du téléchargeur. */
@@ -762,6 +764,24 @@ export function recouperOfac(xml: string, lues: number): string | undefined {
   return undefined;
 }
 
+/**
+ * The EU file is judged by its own dates when it arrives (the rule is `fraicheurUE`, shared with
+ * `scripts/fraicheur-ue.mjs`): a feed that lags by more than SEUIL_RETARD_UE_JOURS days, or whose dates cannot be read
+ * or are out of order, gets a warning in its manifest row. The row stays available (the file is written and its hash recorded), exactly
+ * like the OFAC count mismatch above: said in the manifest, never in silence. Undefined when the file is within the
+ * limit, so a fresh file leaves the row as it was. The text names both dates and goes through `urlSansJeton` like every
+ * other string this module writes.
+ */
+export function avertissementFraicheurUe(xml: string, env: NodeJS.ProcessEnv = process.env): string | undefined {
+  const r = fraicheurUE(xml);
+  if (!r.perime) return undefined;
+  /* No lag can be claimed when a date is missing, invalid or out of order: the reason then names what it found, dates
+     included. Otherwise the two dates and the lag, with any publicationDate value that was not read as a day. */
+  if (r.retard === null) return urlSansJeton(`stale: ${r.raison ?? "the dates cannot be read"}; its freshness cannot be shown`, env);
+  const detail = `${r.retard} days apart, the limit is ${SEUIL_RETARD_UE_JOURS} days; recent listings may be missing${r.raison ? `; ${r.raison}` : ""}`;
+  return urlSansJeton(`stale: newest publicationDate ${r.max}, generationDate ${r.gen} (${detail})`, env);
+}
+
 /* ───────────────────────────── le manifeste, committé ───────────────────────────── */
 
 export type LigneManifeste = {
@@ -864,7 +884,8 @@ async function telecharger(s: SourceListe): Promise<LigneManifeste> {
   const provisoire = `${chemin}.tmp`;
   writeFileSync(provisoire, brut);
   renameSync(provisoire, chemin);
-  const avertissement = s.format === "ofac-sdn-xml" ? recouperOfac(brut.toString("utf8"), entrees.length) : undefined;
+  const avertissement = s.format === "ofac-sdn-xml" ? recouperOfac(brut.toString("utf8"), entrees.length)
+    : s.source === "EU" ? avertissementFraicheurUe(brut.toString("utf8")) : undefined;
   return { source: s.source, titre: s.titre, url, format: s.format,
     disponible: true, telechargeLe: maintenant,
     sha256: createHash("sha256").update(brut).digest("hex"),
