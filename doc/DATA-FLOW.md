@@ -15,6 +15,7 @@ appear unnoticed (`src/frontiere.test.ts`).
 | `npm run listes -- --fetch` | webgate.ec.europa.eu | download | the EU consolidated financial sanctions list (public token, or your own in `CRUSETRA_EU_TOKEN`, in its deprecated name `CASCADE_EU_TOKEN`, or in the file `~/.cascade/eu-token`, read only when it is a regular file you own that no one else can read and that holds a single word no longer than a token, never on Windows, where only the variables count; the token goes in the request only, and every new manifest and every new sealed record writes `token=[username]` in its place; records and manifest lines written before keep what they were written with until the next fetch or seal); each download also reads the EU feed (RSS) of the same host, which takes no token |
 | `npm run listes -- --fetch` | sanctionslist.fcdo.gov.uk | download | the UK Sanctions List |
 | `npm run listes -- --fetch` | publications.europa.eu | download | the consolidated text of Regulation (EU) No 833/2014, for the vessels of its Annex XLII (the Office answers with a redirection to an http address of its store) |
+| `npm run listes -- --actes` | publications.europa.eu | query | the Publications Office catalogue (SPARQL), asked one question per run: which regulations and decisions titled as restrictive measures it dates from a margin before the newest publication in the EU file on disk. The address carries that question and nothing else (a day and fixed words: no name, no client data, no token, no cookie); the answer is read as data (size cap, row limit, strict JSON, a redirect refused) and a failure to ask or to read is exit 2, never "no act is missing" |
 | `npm run listes -- --fetch` | www.dfat.gov.au | download | Australia's DFAT Consolidated List |
 | `npm run listes -- --fetch` | www.international.gc.ca | download | the Consolidated Canadian Autonomous Sanctions List |
 | `npm run listes -- --fetch` | www.mfat.govt.nz | download | New Zealand's Russia Sanctions Register |
@@ -49,6 +50,13 @@ file cannot be read, or when the freshness record is not a record. What it canno
 download day: the manifest is a local, unsigned file, so anyone who can edit it can say that a
 download confirmed the file today. The rule keeps an honest manifest honest; it is not a defense
 against the person who owns it.
+
+`npm run listes -- --actes` is the one command here that sends something, and what it sends is a
+fixed public question about the Official Journal, not a name from your files. It writes, in the
+directory it is run from, `donnees/listes/<date>.json`: the key `actes_absents`, one entry per act
+the EU file does not carry (CELEX, number, title and date of the act, as the Office's catalogue gives
+them). That folder is local data, never part of a report. A day with a file already there keeps its
+other keys.
 
 `CRUSETRA_OFFLINE=1` makes even the downloader refuse, with a message that names the flag.
 `CASCADE_OFFLINE=1`, its deprecated name, still refuses exactly as before.

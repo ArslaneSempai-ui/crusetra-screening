@@ -19,12 +19,13 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { actesDuFlux, manquants, numerosDeLActe, sonderFlux } from "./actes-ue.ts";
+import * as Actes from "./actes-ue.ts";
 
 const CLI = fileURLToPath(new URL("./actes-ue.ts", import.meta.url));
 
@@ -311,4 +312,507 @@ test("actesDuFlux and manquants are pure and agree with the command: no act, no 
   assert.deepEqual(manquants(["2026/2193"], a), []);
   const acte = a.find((x) => x.numberTitle.startsWith("2026/2193"))!;
   assert.deepEqual({ ...acte }, { numberTitle: "2026/2193 (OJ L202602193)", publicationDate: "2026-09-28", invalidDates: 0, programmes: ["RUS"], entites: 3 });
+});
+
+/* ───────────────────────────────────────────────────────────────────────────────────────────────
+ * THE JOURNAL WATCH: `node src/listes.ts --actes`, the one network door that asks which acts exist.
+ *
+ * The EU file we hold can stop before an act (the one of 28 September 2026, absent from the file generated on 12 October)
+ * and nothing in it says so. `--actes` asks the Publications Office catalogue, with ONE public question that carries no name
+ * and nothing of the client, for the acts titled as restrictive measures that it dates from a margin before the newest
+ * publication in the file on disk, and names those whose number no numberTitle of the file carries.
+ *
+ * These cases run the real command in a throwaway copy of the modules it needs, with a `fetch` that never touches the
+ * network (the way src/listes-jeton.test.ts does), in a working directory of its own, and then read everything the run left
+ * behind: standard output and error, the exit code, the request the stub saw, and the files under the working directory. The
+ * catalogue answers below are written by hand in the W3C shape of a SPARQL JSON result with invented acts and numbers; none
+ * is copied from the Office's. The feeds are the hand-built ones above.
+ *
+ * What the command promises, and what the cases hold it to: exit 1 when an act of the answer is named by no numberTitle of
+ * the file; exit 0 when none is AND at least one act of the answer is named by the file (an answer that shares nothing with
+ * the file cannot show that the question works); exit 2 when it could not ask or read (the Office refusing, timing out,
+ * answering a page, a body too large, too many rows, a file it cannot read as a complete EU file), with NOTHING written, so a
+ * failed check never reads as "no act is missing". Each act is named, none is a verdict: a renewal can add no listing.
+ * ─────────────────────────────────────────────────────────────────────────────────────────────── */
+
+const ICI = fileURLToPath(new URL(".", import.meta.url));
+const SPARQL_HOTE = "publications.europa.eu";
+const SPARQL_CHEMIN = "/webapi/rdf/sparql";
+
+/** The `fetch` the child gets: no network. Every request is logged (never a body it did not receive); the catalogue is answered by mode. */
+const FAUSSE_RECUPERATION_GUET = `
+import { appendFileSync, readFileSync } from "node:fs";
+globalThis.fetch = async (url, init = {}) => {
+  const u = String(url);
+  appendFileSync(process.env.STUB_LOG, JSON.stringify({
+    url: u, method: init.method ?? "GET", headers: Object.fromEntries(new Headers(init.headers ?? {})), body: init.body ?? null,
+    signal: init.signal instanceof AbortSignal, redirect: init.redirect ?? null,
+  }) + "\\n");
+  if (u.endsWith("/public/rss")) return new Response(readFileSync(process.env.STUB_RSS));
+  if (!u.startsWith("https://publications.europa.eu/webapi/rdf/sparql")) return new Response(readFileSync(process.env.STUB_EU));
+  const mode = process.env.STUB_MODE;
+  const corps = readFileSync(process.env.STUB_REPONSE);
+  if (mode === "http403") return new Response("forbidden", { status: 403 });
+  if (mode === "http500") return new Response("server error", { status: 500 });
+  if (mode === "throws") throw new TypeError("fetch failed (connect ECONNRESET)");
+  if (mode === "timeout") { const e = new Error("The operation was aborted due to timeout"); e.name = "TimeoutError"; throw e; }
+  if (mode === "html") return new Response("<html><body>Please verify you are human</body></html>", { status: 200, headers: { "content-type": "text/html" } });
+  if (mode === "garbage") return new Response(new Uint8Array([0, 1, 2, 255, 254, 123, 34]), { status: 200 });
+  if (mode === "oversize") {
+    /* a VALID answer followed by blanks past the cap: only the cap can refuse it, JSON would parse */
+    const bloc = new Uint8Array(1024 * 1024).fill(32);
+    let envoyes = 0;
+    return new Response(new ReadableStream({
+      start(c) { c.enqueue(new Uint8Array(corps)); envoyes += corps.length; },
+      pull(c) { if (envoyes > Number(process.env.STUB_OCTETS)) { c.close(); return; } c.enqueue(bloc); envoyes += bloc.length; },
+    }), { status: 200 });
+  }
+  if (mode === "oversize-header") return new Response(corps, { status: 200, headers: { "content-length": process.env.STUB_OCTETS } });
+  return new Response(corps, { status: 200, headers: { "content-type": "application/sparql-results+json" } });
+};
+`;
+
+/** listes.ts and every module it imports, found by reading the imports, so a new import cannot silently break the copy. */
+function fermetureDe(depart: string): string[] {
+  const vus = new Set<string>();
+  const pile = [depart];
+  while (pile.length > 0) {
+    const f = pile.pop()!;
+    if (vus.has(f)) continue;
+    vus.add(f);
+    for (const m of readFileSync(join(ICI, f), "utf8").matchAll(/from "\.\/([^"]+)"/g)) pile.push(m[1]!);
+  }
+  return [...vus];
+}
+
+type Requete = { url: string; method: string; headers: Record<string, string>; body: unknown; signal: boolean; redirect: string | null };
+type Lancement = {
+  /** the EU file written to data/listes/eu.xml of the throwaway root; null: none */
+  eu?: string | null;
+  /** the catalogue answer the stub gives */
+  reponse?: string;
+  mode?: string;
+  args?: string[];
+  env?: Record<string, string>;
+  /** files that exist in the working directory before the run: relative path to content */
+  avant?: Record<string, string>;
+  /** run in the root of the copy (as `--fetch` is) instead of in a working directory of its own */
+  dansLaRacine?: boolean;
+};
+type Resultat = {
+  statut: number | null; sortie: string; erreurs: string; requetes: Requete[];
+  /** every file under the working directory, relative, with its content */
+  fichiers: Record<string, string>;
+  racine: string;
+  cwd: string;
+  lire: (chemin: string) => string;
+};
+
+const fichiersSousDossier = (dossier: string, base = dossier): string[] =>
+  readdirSync(dossier, { withFileTypes: true }).flatMap((e) =>
+    e.isDirectory() ? fichiersSousDossier(join(dossier, e.name), base) : [join(dossier, e.name).slice(base.length + 1)]);
+
+/** One run of the real command, then everything it left behind is read; the throwaway root is removed before this returns. */
+function lancerGuet({ eu = fluxGuet(), reponse = reponseCatalogue([CAT_A, CAT_B, CAT_C]), mode = "ok", args = ["--actes"], env = {}, avant = {}, dansLaRacine = false }: Lancement = {}): Resultat {
+  /* realpath: on macOS tmpdir() is a symlink, and `isMain` compares the resolved module URL with argv[1]. */
+  const racine = realpathSync(mkdtempSync(join(tmpdir(), "guet-ue-")));
+  try {
+    mkdirSync(join(racine, "src"));
+    for (const f of fermetureDe("listes.ts")) cpSync(join(ICI, f), join(racine, "src", f));
+    cpSync(join(ICI, "..", "package.json"), join(racine, "package.json"));
+    mkdirSync(join(racine, "data", "listes"), { recursive: true });
+    if (eu !== null) writeFileSync(join(racine, "data", "listes", "eu.xml"), eu);
+    writeFileSync(join(racine, "fausse-recuperation.mjs"), FAUSSE_RECUPERATION_GUET);
+    writeFileSync(join(racine, "reponse.json"), reponse);
+    writeFileSync(join(racine, "requetes.log"), "");
+    const cwd = dansLaRacine ? racine : join(racine, "cwd");
+    mkdirSync(cwd, { recursive: true });
+    mkdirSync(join(racine, "home"));
+    for (const [chemin, contenu] of Object.entries(avant)) {
+      mkdirSync(join(cwd, chemin, ".."), { recursive: true });
+      writeFileSync(join(cwd, chemin), contenu);
+    }
+    const environnement: Record<string, string | undefined> = { ...process.env };
+    for (const n of ["CRUSETRA_EU_TOKEN", "CASCADE_EU_TOKEN", "CRUSETRA_OFFLINE", "CASCADE_OFFLINE"]) delete environnement[n];
+    Object.assign(environnement, {
+      HOME: join(racine, "home"), USERPROFILE: join(racine, "home"),
+      STUB_LOG: join(racine, "requetes.log"), STUB_MODE: mode, STUB_REPONSE: join(racine, "reponse.json"),
+      STUB_OCTETS: String(Actes.PLAFOND_OCTETS_CATALOGUE + 1), STUB_EU: join(racine, "data", "listes", "eu.xml"),
+      STUB_RSS: join(ICI, "fixtures", "ue-rss.xml"),
+    }, env);
+    const r = spawnSync(process.execPath,
+      ["--import", pathToFileURL(join(racine, "fausse-recuperation.mjs")).href, join(racine, "src", "listes.ts"), ...args],
+      { cwd, encoding: "utf8", env: environnement, timeout: 120_000, maxBuffer: 64 * 1024 * 1024 });
+    const requetes = readFileSync(join(racine, "requetes.log"), "utf8").split("\n").filter((l) => l.length > 0).map((l) => JSON.parse(l) as Requete);
+    /* run in the root of the copy, the modules and the stub files are there too: only the manifest is of interest */
+    const sousCwd = dansLaRacine ? ["listes-manifest.json"].filter((f) => existsSync(join(cwd, f))) : fichiersSousDossier(cwd);
+    const fichiers = Object.fromEntries(sousCwd.map((f) => [f, readFileSync(join(cwd, f), "utf8")]));
+    return { statut: r.status, sortie: r.stdout, erreurs: r.stderr, requetes, fichiers, racine, cwd, lire: (c) => readFileSync(join(racine, c), "utf8") };
+  } finally {
+    rmSync(racine, { recursive: true, force: true });
+  }
+}
+
+/* ───────────────────────── the feed and the catalogue answer, by hand ───────────────────────── */
+
+/** Three acts the catalogue knows: the first two are named by the feed, the third is not. */
+type LigneCatalogue = { celex: string; title: string; date: string };
+const CAT_A: LigneCatalogue = { celex: "32026R9001", date: "2026-06-10", title: "Council Implementing Regulation (EU) 2026/9001 of 10 June 2026 implementing Regulation (EU) 2099/1 concerning restrictive measures in view of the situation in Examplia" };
+const CAT_B: LigneCatalogue = { celex: "32026R9002", date: "2026-06-12", title: "Council Regulation (EU) 2026/9002 of 12 June 2026 amending Regulation (EU) 2099/2 concerning restrictive measures against the invented regime of Testland" };
+const CAT_C: LigneCatalogue = { celex: "32026R9003", date: "2026-09-28", title: "Council Implementing Regulation (EU) 2026/9003 of 28 September 2026 implementing Regulation (EU) 2099/1 concerning restrictive measures in view of the situation in Examplia" };
+
+/** A SPARQL JSON result of the shape the W3C defines, one binding per act. A row may carry fewer columns, to build the odd ones. */
+const reponseCatalogue = (lignes: (Partial<LigneCatalogue> & { celex?: string })[]): string => JSON.stringify({
+  head: { link: [], vars: ["celex", "title", "date"] },
+  results: {
+    bindings: lignes.map((l) => ({
+      ...(l.celex === undefined ? {} : { celex: { type: "literal", datatype: "http://www.w3.org/2001/XMLSchema#string", value: l.celex } }),
+      ...(l.title === undefined ? {} : { title: { type: "literal", value: l.title } }),
+      ...(l.date === undefined ? {} : { date: { type: "literal", datatype: "http://www.w3.org/2001/XMLSchema#date", value: l.date } }),
+    })),
+  },
+});
+
+const ACTE_A_FLUX: Acte = { numberTitle: "2026/9001 (OJ L202609001)", publicationDate: "2026-06-10", programme: "RUS" };
+const ACTE_B_FLUX: Acte = { numberTitle: "2026/9002 (OJ L202609002)", publicationDate: "2026-06-12", programme: "BLR" };
+/** The file of the cases: it names 2026/9001 and 2026/9002, its newest publication is 2026-06-12, it was generated on 2026-10-12. */
+const fluxGuet = (): string => flux([entite(1, [ACTE_A_FLUX]), entite(2, [ACTE_B_FLUX])]);
+
+/** The day the question starts at, computed here and not by the code under test. */
+const debutAttendu = (): string => new Date(Date.UTC(2026, 5, 12) - Actes.MARGE_JOURS * 86_400_000).toISOString().slice(0, 10);
+
+const lignesAbsent = (sortie: string): string[] => sortie.split("\n").filter((l) => l.startsWith("ABSENT "));
+const aujourdhui = (): string => new Date().toISOString().slice(0, 10);
+/** The one file the run wrote under donnees/listes/, whichever side of midnight it ran. */
+function fichierEcrit(r: Resultat): { chemin: string; contenu: unknown } {
+  const chemins = Object.keys(r.fichiers);
+  assert.equal(chemins.length, 1, `one file written, got ${JSON.stringify(chemins)}`);
+  assert.match(chemins[0]!, /^donnees\/listes\/\d{4}-\d{2}-\d{2}\.json$/);
+  return { chemin: chemins[0]!, contenu: JSON.parse(r.fichiers[chemins[0]!]!) };
+}
+
+/* ───────────────────────── the witness of the plan ───────────────────────── */
+
+test("--actes on a catalogue answer of three acts, one absent from the feed: the output names exactly that one and exits 1", () => {
+  const r = lancerGuet();
+  assert.equal(r.statut, 1, r.erreurs);
+  const absents = lignesAbsent(r.sortie);
+  assert.equal(absents.length, 1, r.sortie);
+  assert.match(absents[0]!, /^ABSENT 2026\/9003 \(CELEX 32026R9003, 2026-09-28\): Council Implementing Regulation \(EU\) 2026\/9003 of 28 September 2026/);
+  assert.ok(!/ABSENT 2026\/900[12]\b/.test(r.sortie), "the two acts the feed names are not listed");
+  assert.match(r.sortie, /none is a verdict/, "the output says that each act is named and none is a verdict");
+  assert.doesNotMatch(r.erreurs, /could not be done|Nothing was written/, "the check ran: no refusal on stderr");
+});
+
+test("--actes with every act of the answer named by the feed: exit 0, nothing listed as absent, and the empty list is written", () => {
+  const r = lancerGuet({ reponse: reponseCatalogue([CAT_A, CAT_B]) });
+  assert.equal(r.statut, 0, r.erreurs);
+  assert.deepEqual(lignesAbsent(r.sortie), []);
+  assert.match(r.sortie, /Every act of the answer is named in the file/);
+  assert.deepEqual(fichierEcrit(r).contenu, { actes_absents: [] });
+});
+
+test("a number near-miss does not hide the absent act: the feed carries 2026/900, 2026/90030 and 12026/9003, and 2026/9003 is still named", () => {
+  const voisins = flux([
+    entite(1, [ACTE_A_FLUX]), entite(2, [{ numberTitle: "2026/900 (OJ L1)", publicationDate: "2026-06-11" }]),
+    entite(3, [{ numberTitle: "2026/90030 (OJ L2)", publicationDate: "2026-06-11" }]), entite(4, [{ numberTitle: "12026/9003 (OJ L3)", publicationDate: "2026-06-12" }]),
+  ]);
+  const r = lancerGuet({ eu: voisins, reponse: reponseCatalogue([CAT_A, CAT_C]) });
+  assert.equal(r.statut, 1, r.erreurs);
+  assert.equal(lignesAbsent(r.sortie).length, 1, r.sortie);
+  assert.match(lignesAbsent(r.sortie)[0]!, /^ABSENT 2026\/9003 /);
+  /* and the other way: an act the catalogue calls 2026/900 is not carried by a feed that has only 2026/9001 */
+  const court = lancerGuet({ reponse: reponseCatalogue([CAT_A, { celex: "32026R0900", date: "2026-06-11", title: "Council Regulation (EU) 2026/900 concerning restrictive measures against the invented regime of Testland" }]) });
+  assert.equal(court.statut, 1, court.erreurs);
+  assert.match(lignesAbsent(court.sortie)[0]!, /^ABSENT 2026\/900 \(CELEX 32026R0900,/);
+});
+
+/* ───────────────────────── a failure to ask or to read is exit 2, and nothing is written as "no act missing" ───────────────────────── */
+
+const FICHIER_DU_JOUR = `donnees/listes/${aujourdhui()}.json`;
+const FICHIER_AVANT = JSON.stringify({ ue_2193: { note: "hand-written, must stay as it was" } });
+
+test("the Office refusing (HTTP 403, HTTP 500, a timeout, a network error), or answering garbage, is exit 2 with nothing written and nothing claimed", () => {
+  const cas: [string, Lancement, RegExp][] = [
+    ["HTTP 403", { mode: "http403" }, /HTTP 403/],
+    ["HTTP 500", { mode: "http500" }, /HTTP 500/],
+    ["a timeout", { mode: "timeout" }, /did not answer|timed out/i],
+    ["a network error", { mode: "throws" }, /network/i],
+    ["a captcha page with status 200", { mode: "html" }, /not JSON|JSON/],
+    ["bytes that are not text", { mode: "garbage" }, /not JSON|JSON/],
+    ["JSON of the wrong shape", { reponse: JSON.stringify({ error: "quota exceeded" }) }, /results|bindings|shape/i],
+    ["JSON text that is not an object", { reponse: "[1,2,3]" }, /results|bindings|shape/i],
+    ["an empty answer", { reponse: "" }, /JSON/],
+  ];
+  for (const [nom, lancement, motif] of cas) {
+    const r = lancerGuet({ ...lancement, avant: { [FICHIER_DU_JOUR]: FICHIER_AVANT } });
+    assert.equal(r.statut, 2, `${nom}: exit ${r.statut}\n${r.sortie}\n${r.erreurs}`);
+    assert.match(r.erreurs, motif, `${nom}: the reason is said on stderr`);
+    assert.equal(lignesAbsent(r.sortie).length, 0, nom);
+    assert.doesNotMatch(r.sortie, /Every act|no act is missing|none is absent/i, `${nom}: stdout claims nothing`);
+    assert.deepEqual(r.fichiers, { [FICHIER_DU_JOUR]: FICHIER_AVANT }, `${nom}: the file that existed is untouched and nothing else is written`);
+  }
+});
+
+test("a body past the cap is refused whether the Office announces it or streams it: exit 2, nothing written", () => {
+  for (const mode of ["oversize", "oversize-header"]) {
+    const r = lancerGuet({ mode });
+    assert.equal(r.statut, 2, `${mode}: ${r.sortie}${r.erreurs}`);
+    assert.match(r.erreurs, /larger than/, mode);
+    assert.deepEqual(r.fichiers, {}, `${mode}: nothing written`);
+  }
+});
+
+test("more rows than the limit (the answer may be cut short), or none at all, or none readable: exit 2, never 'nothing missing'", () => {
+  const actes = (n: number): LigneCatalogue[] => Array.from({ length: n }, (_, i) => ({ celex: `3${2000 + (i % 10)}R${String(1000 + i).padStart(4, "0")}`, date: "2026-07-01", title: `Council Regulation concerning restrictive measures in view of the invented regime number ${i}` }));
+  const trop = lancerGuet({ reponse: reponseCatalogue([CAT_A, ...actes(Actes.LIMITE_LIGNES_CATALOGUE)]) });
+  assert.equal(trop.statut, 2, trop.sortie + trop.erreurs);
+  assert.match(trop.erreurs, /more than/i);
+  assert.deepEqual(trop.fichiers, {});
+  const juste = lancerGuet({ reponse: reponseCatalogue([CAT_A, ...actes(Actes.LIMITE_LIGNES_CATALOGUE - 1)]) });
+  assert.equal(juste.statut, 1, "exactly the limit is read: the acts the feed does not name are absent");
+  assert.equal(lignesAbsent(juste.sortie).length, Actes.LIMITE_LIGNES_CATALOGUE - 1);
+  const aucune = lancerGuet({ reponse: reponseCatalogue([]) });
+  assert.equal(aucune.statut, 2, "an answer with no act cannot show that the question works: it does not read as 'nothing missing'");
+  assert.match(aucune.erreurs, /no act of the answer is named/i);
+  assert.deepEqual(aucune.fichiers, {});
+  const illisibles = lancerGuet({ reponse: reponseCatalogue([{ celex: "32026R9001R(01)", date: "2026-06-10", title: "Corrigendum concerning restrictive measures" }, { date: "2026-06-10", title: "no celex at all" }]) });
+  assert.equal(illisibles.statut, 2, "rows that cannot be read and no act proven absent: not 'nothing missing'");
+  assert.match(illisibles.erreurs, /could not be read/i);
+  assert.deepEqual(illisibles.fichiers, {});
+});
+
+test("an EU file it cannot read as a complete, dated EU file is exit 2 before any request: missing, cut short, or dates that cannot be trusted", () => {
+  const complet = fluxGuet();
+  const cas: Record<string, string | null> = {
+    "no file": null,
+    "an empty file": "",
+    "a file cut before its end": complet.slice(0, complet.indexOf("</export>")),
+    "a publication later than the generation": flux([entite(1, [{ numberTitle: "2026/9001 (OJ L1)", publicationDate: "2026-12-31" }])]),
+    "no valid publication date": flux([entite(1, [{ numberTitle: "2026/9001 (OJ L1)" }])]),
+  };
+  /* the control: with a good file the same command does ask, so the refusals below are the file's and not a command that never ran */
+  assert.equal(lancerGuet().requetes.length, 1);
+  for (const [nom, eu] of Object.entries(cas)) {
+    const r = lancerGuet({ eu });
+    assert.equal(r.statut, 2, `${nom}: ${r.sortie}${r.erreurs}`);
+    assert.equal(r.requetes.length, 0, `${nom}: nothing is asked of the Office about a file that cannot be read`);
+    assert.deepEqual(r.fichiers, {}, nom);
+    assert.match(r.erreurs, /The EU file data\/listes\/eu\.xml cannot be used/, nom);
+  }
+});
+
+/* ───────────────────────── the door: one question, nothing else, and only when asked ───────────────────────── */
+
+test("the one request: a single GET of the catalogue endpoint whose only parameter is the question, with no cookie, no credential, no name, a timeout armed, and the window read from the file", () => {
+  const r = lancerGuet({ env: { CRUSETRA_EU_TOKEN: "FAKE-TOKEN-0000" } });
+  assert.equal(r.statut, 1, r.erreurs);
+  assert.equal(r.requetes.length, 1, "exactly one request leaves");
+  assert.ok(!JSON.stringify(r.requetes).includes("FAKE-TOKEN-0000"), "a personal token set in the environment never rides in this request: the catalogue is public and takes none");
+  assert.ok(!r.sortie.includes("FAKE-TOKEN-0000") && !r.erreurs.includes("FAKE-TOKEN-0000"));
+  const q = r.requetes[0]!;
+  const u = new URL(q.url);
+  assert.equal(q.method, "GET");
+  assert.equal(q.body, null);
+  assert.equal(u.protocol, "https:");
+  assert.equal(u.host, SPARQL_HOTE);
+  assert.equal(u.pathname, SPARQL_CHEMIN);
+  assert.deepEqual([...u.searchParams.keys()], ["query"], "the question is the only thing in the address");
+  assert.deepEqual(Object.keys(q.headers).filter((h) => /cookie|authorization|token|key/i.test(h)), [], "no cookie and no credential");
+  assert.match(q.headers["accept"] ?? "", /sparql-results\+json/);
+  assert.equal(q.signal, true, "a timeout is armed");
+  assert.equal(q.redirect, "error", "an answer that redirects somewhere else is not followed");
+  const question = u.searchParams.get("query")!;
+  assert.ok(question.includes(`"${debutAttendu()}"^^xsd:date`), `the window starts the margin before the newest publication of the file: ${debutAttendu()}`);
+  assert.match(question, /restrictive measure/);
+  for (const nom of ["Alpha Example1", "Alpha Example2", "Example1", "2026/9001", "9001", "OJ L2026"]) assert.ok(!question.includes(nom), `the question carries nothing of the file but a day: ${nom}`);
+  assert.equal(question, Actes.requeteCatalogue(debutAttendu()), "the code asks the question the module builds");
+});
+
+test("--actes obeys the offline flags under both names, and refuses to be combined with another mode or given a value: exit 2, no request", () => {
+  for (const env of [{ CRUSETRA_OFFLINE: "1" }, { CASCADE_OFFLINE: "1" }, { CRUSETRA_OFFLINE: "0", CASCADE_OFFLINE: "1" }] as Record<string, string>[]) {
+    const r = lancerGuet({ env });
+    assert.equal(r.statut, 2, JSON.stringify(env));
+    assert.equal(r.requetes.length, 0, JSON.stringify(env));
+    assert.match(r.erreurs, /forbids? the network/, JSON.stringify(env));
+    assert.deepEqual(r.fichiers, {});
+  }
+  for (const args of [["--actes", "--fetch"], ["--actes", "--only=EU"], ["--actes=1"], ["--actes=EU", "--fetch"], ["--actes", "--nimportequoi"]]) {
+    const r = lancerGuet({ args });
+    assert.equal(r.statut, 2, `${args.join(" ")}: ${r.sortie}${r.erreurs}`);
+    assert.equal(r.requetes.length, 0, args.join(" "));
+    assert.deepEqual(r.fichiers, {}, args.join(" "));
+  }
+  const sansDrapeau = lancerGuet({ args: [] });
+  assert.equal(sansDrapeau.requetes.length, 0, "no flag, no request: the listing of what is on disk stays offline");
+});
+
+/* ───────────────────────── odd rows: counted, said, never hidden ───────────────────────── */
+
+test("a row the code cannot read as an act is reported with the others, and an act whose date does not parse is still compared and reported", () => {
+  const r = lancerGuet({ reponse: reponseCatalogue([
+    CAT_A,
+    CAT_C,
+    { celex: "32026R9003R(01)", date: "2026-09-29", title: "Corrigendum to Council Implementing Regulation concerning restrictive measures" },
+    { celex: "32026L9004", date: "2026-09-29", title: "Directive (EU) 2026/9004 on the invented matter of restrictive measures" },
+    { date: "2026-09-29", title: "a row with no CELEX" },
+    { celex: "32026R9005", date: "soon", title: "Council Regulation (EU) 2026/9005 concerning restrictive measures against the invented regime of Testland" },
+    { celex: "32026R9006", date: "2026-02-30", title: "Council Regulation (EU) 2026/9006 concerning restrictive measures against the invented regime of Testland" },
+  ]) });
+  assert.equal(r.statut, 1, r.erreurs);
+  assert.deepEqual(lignesAbsent(r.sortie).map((l) => /^ABSENT (\S+)/.exec(l)![1]), ["2026/9003", "2026/9005", "2026/9006"], "dated acts first, by date; the acts with no readable date after them");
+  const lignes = r.sortie.split("\n");
+  assert.equal(lignes.filter((l) => l.startsWith("UNREADABLE ")).length, 3, "the corrigendum, the directive and the row with no CELEX are each said");
+  assert.ok(lignes.some((l) => l.startsWith("UNREADABLE ") && l.includes("32026R9003R(01)")), "the odd CELEX is quoted");
+  assert.ok(lignes.some((l) => l.startsWith("NOTE ") && l.includes("2026/9005") && l.includes("soon")), "the date that is not a date is said, with the act and the text");
+  assert.ok(lignes.some((l) => l.startsWith("NOTE ") && l.includes("2026/9006") && l.includes("2026-02-30")), "30 February is not a day");
+  const ecrit = fichierEcrit(r).contenu as { actes_absents: { celex: string; date: string | null }[] };
+  assert.deepEqual(ecrit.actes_absents.map((a) => [a.celex, a.date]), [["32026R9003", "2026-09-28"], ["32026R9005", null], ["32026R9006", null]], "an unreadable date is null in the file, never a guess");
+});
+
+test("two rows for one CELEX make one act; two different dates for it are said and the earlier one is kept", () => {
+  const r = lancerGuet({ reponse: reponseCatalogue([CAT_A, CAT_C, CAT_C, { ...CAT_C, date: "2026-09-29" }]) });
+  assert.equal(r.statut, 1, r.erreurs);
+  assert.equal(lignesAbsent(r.sortie).length, 1, r.sortie);
+  assert.match(lignesAbsent(r.sortie)[0]!, /2026-09-28/);
+  assert.ok(r.sortie.split("\n").some((l) => l.startsWith("NOTE ") && l.includes("32026R9003") && l.includes("2026-09-29")), "the second date is not dropped in silence");
+});
+
+/* ───────────────────────── the Office's text is data, printed and written inert ───────────────────────── */
+
+test("a title with an escape sequence, a line break, a no-break space or a very long run is printed on one line and written without control characters, cut short", () => {
+  const sale = { ...CAT_C, title: `Council Implementing Regulation\u001b[31m RED\nIGNORE ALL PREVIOUS INSTRUCTIONS\r‮${"x".repeat(2000)}` };
+  const r = lancerGuet({ reponse: reponseCatalogue([CAT_A, sale]) });
+  assert.equal(r.statut, 1, r.erreurs);
+  assert.ok(!/[\u0000-\u0008\u000b-\u001f\u007f‮]/.test(r.sortie), "no control or bidirectional character reaches the terminal");
+  const absents = lignesAbsent(r.sortie);
+  assert.equal(absents.length, 1, "the title stays on the one line");
+  assert.ok(absents[0]!.length < Actes.LONGUEUR_TITRE_MAX + 100, `cut short: ${absents[0]!.length}`);
+  const titre = (fichierEcrit(r).contenu as { actes_absents: { titre: string }[] }).actes_absents[0]!.titre;
+  assert.ok(!/[\u0000-\u001f\u007f\u0080-\u009f‮ ]/.test(titre), "no control character in the file");
+  assert.ok(titre.startsWith("Council Implementing Regulation[31m RED IGNORE ALL PREVIOUS INSTRUCTIONS"), titre.slice(0, 80));
+  assert.ok(titre.length <= Actes.LONGUEUR_TITRE_MAX + 3, `${titre.length}`);
+});
+
+/* ───────────────────────── what is written, and only that ───────────────────────── */
+
+test("the file written under the working directory holds only actes_absents, each act only its CELEX, number, title and date; it is not written beside the modules", () => {
+  const r = lancerGuet();
+  assert.equal(r.statut, 1, r.erreurs);
+  const { chemin, contenu } = fichierEcrit(r);
+  assert.match(chemin, /^donnees\/listes\/\d{4}-\d{2}-\d{2}\.json$/);
+  assert.deepEqual(contenu, { actes_absents: [{ celex: "32026R9003", numero: "2026/9003", titre: CAT_C.title, date: "2026-09-28" }] });
+  assert.deepEqual(Object.keys(contenu as object), ["actes_absents"]);
+  assert.match(r.sortie, new RegExp(`Written: ${chemin.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&")}`), "the output names the file, relative to where it was run");
+  assert.ok(!r.sortie.includes(r.cwd) && !r.sortie.includes(r.racine), "no absolute path of the machine in the output");
+});
+
+test("a file of that day that already holds other keys keeps them: only actes_absents is replaced; a file that is not a JSON object is refused and left as it was", () => {
+  const jour = aujourdhui();
+  const chemin = `donnees/listes/${jour}.json`;
+  const existant = JSON.stringify({ hash: "abc", ue_2193: { note: "by hand" }, actes_absents: [{ celex: "32000R0001", numero: "2000/1", titre: "old", date: "2000-01-01" }] });
+  const r = lancerGuet({ avant: { [chemin]: existant } });
+  if (aujourdhui() !== jour) return;   /* the run crossed midnight: the file of the new day is another file */
+  assert.equal(r.statut, 1, r.erreurs);
+  const lu = JSON.parse(r.fichiers[chemin]!) as Record<string, unknown>;
+  assert.deepEqual(Object.keys(lu), ["hash", "ue_2193", "actes_absents"], "the other keys stay, in their place");
+  assert.deepEqual(lu["ue_2193"], { note: "by hand" });
+  assert.deepEqual((lu["actes_absents"] as { celex: string }[]).map((a) => a.celex), ["32026R9003"], "the list is replaced, not appended to");
+  for (const [nom, contenu] of Object.entries({ "a list": "[1,2]", "text": "not json at all", "a number": "7" })) {
+    const m = lancerGuet({ avant: { [chemin]: contenu } });
+    if (aujourdhui() !== jour) return;
+    assert.equal(m.statut, 2, `${nom}: ${m.sortie}${m.erreurs}`);
+    assert.equal(m.fichiers[chemin], contenu, `${nom}: left as it was`);
+    assert.match(m.erreurs, /not a JSON object/i, nom);
+  }
+});
+
+/* ───────────────────────── the manifest row of the EU list carries the act numbers of the file's year ───────────────────────── */
+
+test("--fetch --only=EU records in the EU row the distinct act numbers of the file's year (public, short), and none of another year", () => {
+  const eu = flux([
+    entite(1, [ACTE_RUSSIE, ], [RESUME_ANCIEN]), entite(2, [ACTE_ANCIEN], [{ numberTitle: "2026/87 (OJ L202600087)", publicationDate: "2026-01-09" }]),
+    entite(3, [ACTE_A_FLUX, ACTE_B_FLUX]), entite(4, [{ numberTitle: "2026/9001 (OJ L202609001)", publicationDate: "2026-06-10" }]),
+  ]);
+  const r = lancerGuet({ eu, args: ["--fetch", "--only=EU"], dansLaRacine: true });
+  assert.equal(r.statut, 0, r.sortie + r.erreurs);
+  const manifeste = JSON.parse(r.fichiers["listes-manifest.json"]!) as { listes: { source: string; actes?: string[] }[] };
+  const ligne = manifeste.listes.find((l) => l.source === "EU")!;
+  assert.deepEqual(ligne.actes, ["2026/87", "2026/431", "2026/9001", "2026/9002"], "numeric order, each once, the year of the generationDate only");
+  assert.equal(r.requetes.filter((q) => new URL(q.url).host === SPARQL_HOTE).length, 0, "a fetch does not ask the catalogue");
+});
+
+test("actesDeLAnnee: the year is the file's generation year, read not typed; no generationDate gives none, a year with no act gives an empty list", () => {
+  assert.deepEqual(Actes.actesDeLAnnee(fluxAvecActe()), ["2026/431", "2026/2193"]);
+  assert.deepEqual(Actes.actesDeLAnnee(flux([entite(1, [ACTE_ANCIEN])])), [], "a file generated in 2026 that names no 2026 act");
+  assert.equal(Actes.actesDeLAnnee(flux([entite(1, [ACTE_RUSSIE])], null)), null, "no generationDate: no year to take");
+  assert.deepEqual(Actes.actesDeLAnnee(flux([entite(1, [ACTE_RUSSIE])], "2027-01-05T10:00:00")), [], "in 2027 the 2026 acts are not this year's");
+  assert.equal(Actes.actesDeLAnnee("not xml"), null);
+});
+
+/* ───────────────────────── the pure parts, offline ───────────────────────── */
+
+test("numeroDeCelex reads the CELEX of a regulation or a decision as year/number and refuses every other shape; debutDeFenetre steps back by the margin and across a month", () => {
+  assert.equal(Actes.numeroDeCelex("32026R2193"), "2026/2193");
+  assert.equal(Actes.numeroDeCelex("32026R0431"), "2026/431");
+  assert.equal(Actes.numeroDeCelex("32026R0007"), "2026/7");
+  assert.equal(Actes.numeroDeCelex("32026D0431"), "2026/431", "a decision is asked too: the file names some by their number");
+  for (const mauvais of ["", "32026R2193R(01)", "32026L0431", "02014R0833-20260724", "32026R", "3202R2193", "32026r2193", "32026R2193 ", "x32026R2193", "32026R21a3"]) {
+    assert.equal(Actes.numeroDeCelex(mauvais), null, JSON.stringify(mauvais));
+  }
+  assert.equal(Actes.debutDeFenetre("2026-06-12"), debutAttendu());
+  assert.equal(Actes.debutDeFenetre("2026-03-03", 5), "2026-02-26");
+  assert.equal(Actes.debutDeFenetre("2026-01-02", 7), "2025-12-26", "across a year");
+  assert.throws(() => Actes.debutDeFenetre("2026-02-30"), /day/, "an impossible day is refused, not rolled into March");
+  assert.throws(() => Actes.requeteCatalogue('2026-01-01"^^xsd:date) } # injected'), /day/, "the question takes a day and nothing else");
+});
+
+test("lireReponseCatalogue: strict JSON, a row cap, rows read one by one; what it cannot read is returned, not hidden", () => {
+  const ok = Actes.lireReponseCatalogue(reponseCatalogue([CAT_A, CAT_C]));
+  assert.ok(!("refus" in ok));
+  if ("refus" in ok) return;
+  assert.deepEqual(ok.actes.map((a) => a.numero), ["2026/9001", "2026/9003"]);
+  assert.deepEqual(ok.illisibles, []);
+  for (const mauvais of ["", "x", "{", "null", "[]", "{}", '{"results":{}}', '{"results":{"bindings":"no"}}', `{"results":{"bindings":[]}}x`]) {
+    assert.ok("refus" in Actes.lireReponseCatalogue(mauvais), JSON.stringify(mauvais));
+  }
+  const vide = Actes.lireReponseCatalogue(reponseCatalogue([]));
+  assert.ok(!("refus" in vide) && vide.actes.length === 0, "an empty list is read as empty; whether that proves anything is for the comparison");
+  const rangs = Array.from({ length: Actes.LIMITE_LIGNES_CATALOGUE + 1 }, (_, i) => ({ celex: `32026R${String(1000 + i).padStart(4, "0")}`, date: "2026-07-01", title: "restrictive measures" }));
+  assert.ok("refus" in Actes.lireReponseCatalogue(reponseCatalogue(rangs)), "one row over the limit may mean a cut answer");
+  assert.ok(!("refus" in Actes.lireReponseCatalogue(reponseCatalogue(rangs.slice(1)))), "the limit itself is read");
+  const gros = " ".repeat(Actes.PLAFOND_OCTETS_CATALOGUE + 1);
+  assert.ok("refus" in Actes.lireReponseCatalogue(reponseCatalogue([CAT_A]) + gros), "a text past the cap is refused even when it would parse");
+  /* the values are data: a binding whose value is not text, or a row that is not an object, is a row that cannot be read */
+  const etrange = Actes.lireReponseCatalogue(JSON.stringify({ results: { bindings: [{ celex: { value: 32026 }, title: { value: "t" }, date: { value: "2026-01-01" } }, "oops", null, { celex: { value: "32026R9001" }, title: { value: "restrictive measures" }, date: { value: "2026-06-10" } }] } }));
+  assert.ok(!("refus" in etrange));
+  if ("refus" in etrange) return;
+  assert.equal(etrange.actes.length, 1);
+  assert.equal(etrange.illisibles.length, 3);
+});
+
+test("controler: it can say 'nothing missing' only when an act of the answer is proven named by the file; the exit code follows", () => {
+  const q = Actes.preparerQuestion(fluxGuet());
+  assert.ok(!("refus" in q));
+  if ("refus" in q) return;
+  assert.equal(q.debut, debutAttendu());
+  assert.equal(q.newestPublicationDate, "2026-06-12");
+  assert.equal(q.generationDate, "2026-10-12");
+  const cas: [string, string, number][] = [
+    ["one absent", reponseCatalogue([CAT_A, CAT_B, CAT_C]), 1],
+    ["all named", reponseCatalogue([CAT_A, CAT_B]), 0],
+    ["no row", reponseCatalogue([]), 2],
+    ["only unreadable rows", reponseCatalogue([{ celex: "bad", date: "2026-01-01", title: "t" }]), 2],
+    ["one named, one unreadable", reponseCatalogue([CAT_A, { celex: "bad", date: "2026-01-01", title: "t" }]), 2],
+    ["one absent and one unreadable", reponseCatalogue([CAT_C, { celex: "bad", date: "2026-01-01", title: "t" }]), 1],
+  ];
+  for (const [nom, reponse, code] of cas) {
+    const c = Actes.controler(q, reponse);
+    assert.ok(!("refus" in c), nom);
+    if ("refus" in c) continue;
+    assert.equal(Actes.codeDeSortie(c), code, nom);
+  }
+  assert.ok("refus" in Actes.controler(q, "not json"));
+  assert.ok("refus" in Actes.preparerQuestion(""), "a text that is not a complete EU file gives no question");
+  assert.ok("refus" in Actes.preparerQuestion(flux([entite(1, [{ numberTitle: "2026/1 (OJ L1)", publicationDate: "2026-12-31" }])])), "dates that cannot be trusted give no question");
 });
