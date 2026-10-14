@@ -16,7 +16,7 @@
  * tested at the day with no flag in the production code. The cases that run the command line do it in a throwaway copy
  * of the sources, with a manifest whose EU row is years old, so that they hold on any day.
  */
-import { test } from "node:test";
+import { after, test } from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
@@ -87,15 +87,43 @@ const cote = (r: Racine): string[] => readdirSync(join(r.dossier, "run"));
 
 /* ───────────────────────── the decision, on the manifest and a clock ───────────────────────── */
 
-/** A manifest with one EU row carrying `f`, and an old OFAC row (another source: never judged this way). */
-function manifeste(f: FraicheurEnregistree | undefined, plus: Record<string, unknown> = {}): Manifeste {
+/* The gate does not take the file's dates from the manifest: it reads the generationDate again from data/listes/eu.xml. So a
+   case that judges a manifest needs the file beside it; one throwaway root per pair of dates, made on first use and removed
+   at the end. */
+const racinesDeFichiers = new Map<string, string>();
+function racineDuFichier(texte: string): string {
+  let dossier = racinesDeFichiers.get(texte);
+  if (dossier === undefined) {
+    dossier = realpathSync(mkdtempSync(join(tmpdir(), "cribler-fichier-ue-")));
+    mkdirSync(join(dossier, "data", "listes"), { recursive: true });
+    writeFileSync(join(dossier, "data", "listes", "eu.xml"), texte);
+    racinesDeFichiers.set(texte, dossier);
+  }
+  return dossier;
+}
+after(() => { for (const d of racinesDeFichiers.values()) rmSync(d, { recursive: true, force: true }); });
+
+/** A manifest with one EU row (for the file `texte`) carrying `f`, and an old OFAC row (another source: never judged this way). */
+function manifeste(f: FraicheurEnregistree | undefined, texte: string, plus: Record<string, unknown> = {}): Manifeste {
   return {
     version: 1, genereLe: "2026-10-01T00:00:00.000Z",
     listes: [
       ligneDe("OFAC", OFAC, "2020-01-01"),
-      { ...ligneDe("EU", xmlUe("2026-10-12", "2026-07-23"), "2026-10-12"), ...(f ? { fraicheur: f } : {}), ...plus } as LigneManifeste,
+      { ...ligneDe("EU", texte, "2026-10-12"), ...(f ? { fraicheur: f } : {}), ...plus } as LigneManifeste,
     ],
   };
+}
+type Options = {
+  /** the file on disk, when it is not the one the record describes (default: the record's own dates) */
+  fichier?: { gen: string; pub: string };
+  /** raw fields written over the EU row, as a hand edit would */
+  plus?: Record<string, unknown>;
+  env?: NodeJS.ProcessEnv;
+};
+/** The refusal for a record, on a clock, with the file of the record's own dates on disk (or the one given). */
+function refus(f: FraicheurEnregistree | undefined, jour: string, o: Options = {}): string | null {
+  const texte = xmlUe(o.fichier?.gen ?? f?.fichierGenereLe ?? "2026-10-12", o.fichier?.pub ?? f?.fichierPublieLe ?? "2026-07-23");
+  return refusFraicheurUe(manifeste(f, texte, o.plus), horloge(jour), racineDuFichier(texte), o.env);
 }
 const ligne = (gen: string | null, pub: string | null, rss: string | null, plus: Partial<FraicheurEnregistree> = {}): FraicheurEnregistree =>
   ({ fichierGenereLe: gen, fichierPublieLe: pub, rssAnnonceLe: rss, ...plus });
@@ -103,50 +131,50 @@ const ligne = (gen: string | null, pub: string | null, rss: string | null, plus:
 test("a quiet week is no reason to refuse: the feed and the file agree, nothing new for ten days, generated yesterday", () => {
   const aujourdhui = "2026-10-14";
   const gen = avant(1, aujourdhui);
-  assert.equal(refusFraicheurUe(manifeste(ligne(gen, avant(10, gen), gen)), horloge(aujourdhui)), null);
+  assert.equal(refus(ligne(gen, avant(10, gen), gen), aujourdhui), null);
 });
 
 test("the real shape of 14 October 2026 (generated 12 October, newest publication 23 July, the feed on 12 October) is not refused", () => {
-  assert.equal(refusFraicheurUe(manifeste(ligne("2026-10-12", "2026-07-23", "2026-10-12")), horloge("2026-10-14")), null);
+  assert.equal(refus(ligne("2026-10-12", "2026-07-23", "2026-10-12"), "2026-10-14"), null);
 });
 
 test("the feed announces a newer file than the one on disk: refused, the message names the list and both dates", () => {
-  const m = refusFraicheurUe(manifeste(ligne("2026-10-08", "2026-07-23", "2026-10-12")), horloge("2026-10-14"));
+  const m = refus(ligne("2026-10-08", "2026-07-23", "2026-10-12"), "2026-10-14");
   assert.ok(m !== null);
   assert.ok(m.includes(TITRE_UE), `the message names the list: ${m}`);
   for (const jour of ["2026-10-08", "2026-10-12", "2026-07-23", "2026-10-14"]) assert.ok(m.includes(jour), `the message names ${jour}:\n${m}`);
   assert.match(m, /no report is produced/);
 });
 
-test("the update failed (the file was generated eight days before the day of the run): refused; exactly seven days is not", () => {
+test("a file no download has confirmed, generated one day past the limit before the day of the run, is refused; exactly the limit is not", () => {
   const aujourdhui = "2026-10-20";
-  const huit = avant(SEUIL_RETARD_UE_JOURS + 1, aujourdhui);
-  const refus = refusFraicheurUe(manifeste(ligne(huit, avant(30, huit), huit)), horloge(aujourdhui));
-  assert.ok(refus !== null && refus.includes(huit) && refus.includes(aujourdhui) && refus.includes(`${SEUIL_RETARD_UE_JOURS} days`), String(refus));
-  const sept = avant(SEUIL_RETARD_UE_JOURS, aujourdhui);
-  assert.equal(refusFraicheurUe(manifeste(ligne(sept, avant(30, sept), sept)), horloge(aujourdhui)), null, "exactly the limit is not a refusal");
+  const passee = avant(SEUIL_RETARD_UE_JOURS + 1, aujourdhui);
+  const m = refus(ligne(passee, avant(30, passee), passee), aujourdhui);
+  assert.ok(m !== null && m.includes(passee) && m.includes(aujourdhui) && m.includes(`${SEUIL_RETARD_UE_JOURS} days`), String(m));
+  const limite = avant(SEUIL_RETARD_UE_JOURS, aujourdhui);
+  assert.equal(refus(ligne(limite, avant(30, limite), limite), aujourdhui), null, "exactly the limit is not a refusal");
 });
 
-test("an unchanged file nine days old, downloaded yesterday with the feed agreeing, is not refused (the EU had nothing new; the update did not fail)", () => {
+test("an unchanged file well past the limit, downloaded yesterday with the feed agreeing, is not refused (the EU had nothing new; the update did not fail)", () => {
   const aujourdhui = "2026-10-21";
   const gen = avant(SEUIL_RETARD_UE_JOURS + 2, aujourdhui);
-  assert.equal(refusFraicheurUe(manifeste(ligne(gen, avant(40, gen), gen, { confirmeLe: avant(1, aujourdhui) })), horloge(aujourdhui)), null);
+  assert.equal(refus(ligne(gen, avant(40, gen), gen, { confirmeLe: avant(1, aujourdhui) }), aujourdhui), null);
 });
 
-test("the same file whose last good download was eight days ago is refused, and the message names the download day", () => {
+test("the same file whose last good download was one day past the limit is refused, and the message names the download day", () => {
   const aujourdhui = "2026-10-21";
   const gen = avant(SEUIL_RETARD_UE_JOURS + 2, aujourdhui);
   const dernier = avant(SEUIL_RETARD_UE_JOURS + 1, aujourdhui);
-  const m = refusFraicheurUe(manifeste(ligne(gen, avant(40, gen), gen, { confirmeLe: dernier })), horloge(aujourdhui));
+  const m = refus(ligne(gen, avant(40, gen), gen, { confirmeLe: dernier }), aujourdhui);
   assert.ok(m !== null && m.includes(dernier) && m.includes(aujourdhui) && m.includes(`${SEUIL_RETARD_UE_JOURS} days`) && m.includes(TITRE_UE), String(m));
   assert.match(m, /last download that confirmed it against the feed/);
 });
 
-test("exactly seven days since the last good download is not a refusal; the real shape of 14 October 2026 (generated 12th, downloaded 14th, feed 12th) is not either", () => {
+test("exactly the limit since the last good download is not a refusal; the real shape of 14 October 2026 (generated 12th, downloaded 14th, feed 12th) is not either", () => {
   const aujourdhui = "2026-10-21";
   const gen = avant(SEUIL_RETARD_UE_JOURS + 2, aujourdhui);
-  assert.equal(refusFraicheurUe(manifeste(ligne(gen, avant(40, gen), gen, { confirmeLe: avant(SEUIL_RETARD_UE_JOURS, aujourdhui) })), horloge(aujourdhui)), null);
-  assert.equal(refusFraicheurUe(manifeste(ligne("2026-10-12", "2026-07-23", "2026-10-12", { confirmeLe: "2026-10-14" })), horloge("2026-10-14")), null);
+  assert.equal(refus(ligne(gen, avant(40, gen), gen, { confirmeLe: avant(SEUIL_RETARD_UE_JOURS, aujourdhui) }), aujourdhui), null);
+  assert.equal(refus(ligne("2026-10-12", "2026-07-23", "2026-10-12", { confirmeLe: "2026-10-14" }), "2026-10-14"), null);
 });
 
 test("a download made while the feed day is newer than the file does not count as fresh: the old confirmation stands and the refusal names both", () => {
@@ -154,7 +182,7 @@ test("a download made while the feed day is newer than the file does not count a
   const gen = avant(SEUIL_RETARD_UE_JOURS + 2, aujourdhui);
   const dernier = avant(SEUIL_RETARD_UE_JOURS + 1, aujourdhui);
   const jourFlux = avant(2, aujourdhui);
-  const m = refusFraicheurUe(manifeste(ligne(gen, avant(40, gen), jourFlux, { confirmeLe: dernier })), horloge(aujourdhui));
+  const m = refus(ligne(gen, avant(40, gen), jourFlux, { confirmeLe: dernier }), aujourdhui);
   assert.ok(m !== null && m.includes(dernier) && m.includes(jourFlux), String(m));
 });
 
@@ -162,14 +190,15 @@ test("a feed that could not be read when the list was downloaded is not a refusa
   const aujourdhui = "2026-10-14";
   const gen = avant(1, aujourdhui);
   const f = ligne(gen, avant(10, gen), null, { rssIllisible: "HTTP 503" });
-  assert.equal(refusFraicheurUe(manifeste(f), horloge(aujourdhui)), null);
-  const vieux = refusFraicheurUe(manifeste({ ...f, fichierGenereLe: avant(SEUIL_RETARD_UE_JOURS + 2, aujourdhui) }), horloge(aujourdhui));
+  assert.equal(refus(f, aujourdhui), null);
+  const passee = avant(SEUIL_RETARD_UE_JOURS + 2, aujourdhui);
+  const vieux = refus({ ...f, fichierGenereLe: passee }, aujourdhui);
   assert.ok(vieux !== null && vieux.includes("HTTP 503"), String(vieux));
 });
 
 test("the refusal concerns the EU list only: an ancient list of another source, an EU row marked unavailable and a manifest with no EU row are not refused here", () => {
   const frais = ligne("2026-10-13", "2026-10-01", "2026-10-13");
-  assert.equal(refusFraicheurUe(manifeste(frais), horloge("2026-10-14")), null, "the OFAC row of the manifest is from 2020");
+  assert.equal(refus(frais, "2026-10-14"), null, "the OFAC row of the manifest is from 2020");
   const indisponible: Manifeste = { version: 1, genereLe: "2026-10-01T00:00:00.000Z", listes: [{ source: "EU", titre: TITRE_UE, url: "u", format: "eu-fsf-xml-1.1", disponible: false, verifieLe: "2020-01-01T00:00:00.000Z", erreur: "HTTP 500", issue: "x" }] };
   assert.equal(refusFraicheurUe(indisponible, horloge("2026-10-14")), null, "an unavailable list is reported as not screened, as before");
   assert.equal(refusFraicheurUe({ version: 1, genereLe: "2026-10-01T00:00:00.000Z", listes: [ligneDe("OFAC", OFAC, "2020-01-01")] }, horloge("2026-10-14")), null);
@@ -177,12 +206,12 @@ test("the refusal concerns the EU list only: an ancient list of another source, 
 
 test("the message carries no token, even when a row of an old manifest quoted one in the reason the feed could not be read", () => {
   const f = ligne("2026-09-01", "2026-08-01", null, { rssIllisible: `network: connect ECONNRESET while fetching https://h/rss?token=${FAUX_JETON}; the key ${FAUX_JETON} was refused` });
-  const m = refusFraicheurUe(manifeste(f), horloge("2026-10-14"), undefined, { CRUSETRA_EU_TOKEN: FAUX_JETON });
+  const m = refus(f, "2026-10-14", { env: { CRUSETRA_EU_TOKEN: FAUX_JETON } });
   assert.ok(m !== null && m.includes("ECONNRESET"), String(m));
   assert.ok(!m.includes(FAUX_JETON), `no token in the message:\n${m}`);
 });
 
-test("a row written before the inputs were recorded is judged on the dates of the file on disk (the feed unknown): old is refused, recent is not, a missing file is left to the loader", () => {
+test("a row written before the inputs were recorded is judged on the dates of the file on disk (the feed unknown): old is refused, recent is not", () => {
   const recent = racineAvec({ gen: "2026-10-12", publication: "2026-07-23", fraicheur: "absente" });
   const ancien = racineAvec({ gen: "2026-09-01", publication: "2026-07-23", fraicheur: "absente" });
   try {
@@ -190,11 +219,51 @@ test("a row written before the inputs were recorded is judged on the dates of th
     assert.equal(refusFraicheurUe(lire(recent), horloge("2026-10-14"), recent.dossier), null);
     const m = refusFraicheurUe(lire(ancien), horloge("2026-10-14"), ancien.dossier);
     assert.ok(m !== null && m.includes("2026-09-01"), String(m));
-    rmSync(join(ancien.dossier, "data", "listes", "eu.xml"));
-    assert.equal(refusFraicheurUe(lire(ancien), horloge("2026-10-14"), ancien.dossier), null, "lireListe names the missing file in its own refusal");
   } finally {
     sansTrace(recent);
     sansTrace(ancien);
+  }
+});
+
+/* A manifest is a local file that anyone may have edited. The gate reads the generationDate from the file, not from the row. */
+
+test("a hand-edited generation day does not dodge the refusal: the row says today, the file on disk says August", () => {
+  const aujourdhui = "2026-10-21";
+  const m = refus(ligne(aujourdhui, "2026-07-23", aujourdhui, { confirmeLe: aujourdhui }), aujourdhui, { fichier: { gen: "2026-08-01", pub: "2026-07-23" } });
+  assert.ok(m !== null && m.includes("2026-08-01") && m.includes(aujourdhui) && /recorded in the manifest/.test(m), String(m));
+  assert.match(m, /cannot be shown to be fresh/);
+});
+
+test("a file that cannot be read, or that is not the one the manifest recorded, is a refusal with its own sentence, not a pass", () => {
+  const aujourdhui = "2026-10-14";
+  const f = ligne("2026-10-13", "2026-10-01", "2026-10-13", { confirmeLe: aujourdhui });
+  const texte = xmlUe("2026-10-13", "2026-10-01");
+  const vide = realpathSync(mkdtempSync(join(tmpdir(), "cribler-sans-fichier-")));
+  try {
+    const absent = refusFraicheurUe(manifeste(f, texte), horloge(aujourdhui), vide);
+    assert.ok(absent !== null && /cannot be read/.test(absent) && absent.includes("data/listes/eu.xml") && !absent.includes(vide), String(absent));
+    mkdirSync(join(vide, "data", "listes"), { recursive: true });
+    writeFileSync(join(vide, "data", "listes", "eu.xml"), xmlUe("2026-10-14", "2026-10-01"));
+    const autre = refusFraicheurUe(manifeste(f, texte), horloge(aujourdhui), vide);
+    assert.ok(autre !== null && /not the one the manifest recorded/.test(autre), String(autre));
+  } finally {
+    rmSync(vide, { recursive: true, force: true });
+  }
+});
+
+test("a freshness record that is not a record (null, text, a number, a list, a wrong field) is a clear refusal, never a crash", () => {
+  const texte = xmlUe("2026-10-13", "2026-10-01");
+  for (const brut of [null, "fresh", 5, [], { rssAnnonceLe: 7 }, { rssAnnonceLe: null, confirmeLe: { jour: "2026-10-14" } }]) {
+    const m = refusFraicheurUe(manifeste(undefined, texte, { fraicheur: brut }), horloge("2026-10-14"), racineDuFichier(texte));
+    assert.ok(m !== null && /freshness record/.test(m) && /cannot be shown to be fresh/.test(m), `${JSON.stringify(brut)}: ${m}`);
+  }
+});
+
+test("THE DOCUMENTED LIMIT: a forged download day on an honest file is not detected (the manifest is a local, unsigned file), and the limit is said in the rule and in DATA-FLOW", () => {
+  const aujourdhui = "2026-10-21";
+  assert.equal(refus(ligne("2026-08-01", "2026-07-23", "2026-08-01", { confirmeLe: aujourdhui }), aujourdhui), null, "a forged confirmeLe is not caught");
+  for (const f of [join(ICI, "fraicheur-ue.ts"), join(ICI, "..", "doc", "DATA-FLOW.md")]) {
+    assert.match(readFileSync(f, "utf8").replace(/\s+/g, " "), /forged/i, `${relative(ICI, f)} states the limit`);
   }
 });
 
@@ -212,8 +281,8 @@ test("executer refuses a stale EU list: the error names the list and its dates, 
   }
 });
 
-test("executer refuses on the feed too: the file is two days old, the feed announces a newer one", () => {
-  const r = racineAvec({ gen: "2026-10-12", publication: "2026-07-23", fraicheur: { fichierGenereLe: "2026-10-06", fichierPublieLe: "2026-07-23", rssAnnonceLe: "2026-10-12" } });
+test("executer refuses on the feed too: the file is well within the limit, the feed announces a newer one", () => {
+  const r = racineAvec({ gen: "2026-10-10", publication: "2026-07-23", fraicheur: { fichierGenereLe: "2026-10-10", fichierPublieLe: "2026-07-23", rssAnnonceLe: "2026-10-12" } });
   try {
     assert.throws(() => executer(r.fichier, undefined, horloge("2026-10-14"), undefined, { racine: r.dossier }), RefusListePerimee);
   } finally {

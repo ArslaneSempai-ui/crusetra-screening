@@ -29,10 +29,11 @@ import assert from "node:assert/strict";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
+import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import {
-  enregistrerFraicheurUe, jourDe, jugerFraicheurUe, lireDatesUe, SEUIL_RETARD_UE_JOURS, TOLERANCE_APRES_GENERATION_UE_JOURS, type FraicheurEnregistree,
+  confirmationReportable, enregistrerFraicheurUe, jourDe, jugerFraicheurUe, lireDatesUe, SEUIL_RETARD_UE_JOURS, TOLERANCE_APRES_GENERATION_UE_JOURS, type FraicheurEnregistree,
 } from "./fraicheur-ue.ts";
 import { analyserRssUe, refusFraicheurUe, URL_RSS_UE, type LigneManifeste, type Manifeste } from "./listes.ts";
 
@@ -219,7 +220,7 @@ test("(b) the clock is read in UTC days: the same file is fresh at the end of th
   assert.equal(jugerFraicheurUe(f, new Date("2026-10-09T00:00:00Z")).perime, true);
 });
 
-test("(b) an unchanged file nine days old, downloaded yesterday with the feed agreeing: not stale (a quiet fortnight is not a failed update)", () => {
+test("(b) an unchanged file well past the limit, downloaded yesterday with the feed agreeing: not stale (a quiet fortnight is not a failed update)", () => {
   const aujourdhui = "2026-10-21";
   const gen = avant(SEUIL_RETARD_UE_JOURS + 2, aujourdhui);
   const hier = avant(1, aujourdhui);
@@ -228,7 +229,7 @@ test("(b) an unchanged file nine days old, downloaded yesterday with the feed ag
   assert.deepEqual(jugerFraicheurUe(f, horloge(aujourdhui)), { perime: false, motifs: [], ageJours: 1, preuveLe: hier });
 });
 
-test("(b) the same file whose last good download was eight days ago (the update failed): stale, the reason names the download day and the limit", () => {
+test("(b) the same file whose last good download was one day past the limit ago (the update failed): stale, the reason names the download day and the limit", () => {
   const aujourdhui = "2026-10-21";
   const gen = avant(SEUIL_RETARD_UE_JOURS + 2, aujourdhui);
   const dernier = avant(SEUIL_RETARD_UE_JOURS + 1, aujourdhui);
@@ -239,7 +240,7 @@ test("(b) the same file whose last good download was eight days ago (the update 
   assert.ok(v.motifs[0]!.includes(dernier) && v.motifs[0]!.includes(aujourdhui) && v.motifs[0]!.includes(`${SEUIL_RETARD_UE_JOURS} days`) && /confirmed/.test(v.motifs[0]!), `the reason names the download day, the day of the run and the limit: ${v.motifs[0]}`);
 });
 
-test("(b) exactly the limit: a last good download seven days ago is not stale, and the day of the run still reads in UTC days", () => {
+test("(b) exactly the limit: a last good download exactly at the limit is not stale, and the day of the run still reads in UTC days", () => {
   const gen = "2026-10-01";
   const f = ligne(gen, "2026-08-01", gen, { confirmeLe: "2026-10-10" });
   assert.equal(jugerFraicheurUe(f, new Date("2026-10-17T23:59:59Z")).perime, false);
@@ -271,11 +272,36 @@ test("(b) a download made while the feed day is newer than the file does not cou
   assert.ok(v.motifs.some((m) => m.includes(dernier)) && v.motifs.some((m) => m.includes(jourFlux)), v.motifs.join(" | "));
 });
 
+test("(b) the confirming day is carried onto a download that cannot confirm only when the file is the same or no older: never onto an older file, nor with nothing to compare", () => {
+  const avantRangee = { confirmeLe: "2026-10-18", fichierGenereLe: "2026-10-10", sha256: "a".repeat(64) };
+  assert.equal(confirmationReportable(avantRangee, "2026-10-10", "b".repeat(64)), "2026-10-18", "same generation day");
+  assert.equal(confirmationReportable(avantRangee, "2026-10-15", "b".repeat(64)), "2026-10-18", "a newer file");
+  assert.equal(confirmationReportable(avantRangee, "2026-10-09", "b".repeat(64)), null, "an older file (a rollback) inherits nothing");
+  assert.equal(confirmationReportable(avantRangee, "2026-10-09", "a".repeat(64)), "2026-10-18", "the very same file, whatever its date says");
+  assert.equal(confirmationReportable(avantRangee, null, "b".repeat(64)), null, "a new file whose generation day cannot be read");
+  assert.equal(confirmationReportable({ ...avantRangee, fichierGenereLe: null }, "2026-10-15", "b".repeat(64)), null, "a previous generation day that was never recorded");
+  assert.equal(confirmationReportable({ ...avantRangee, confirmeLe: null }, "2026-10-15", "b".repeat(64)), null, "nothing to carry");
+  assert.equal(confirmationReportable(null, "2026-10-15", "b".repeat(64)), null);
+});
+
 test("(b) the evidence is the later of the generation day and the last confirming download: a file made yesterday is fresh whatever an old confirmation says", () => {
   const aujourdhui = "2026-10-21";
   const gen = avant(1, aujourdhui);
   const v = jugerFraicheurUe(ligne(gen, avant(10, gen), gen, { confirmeLe: avant(30, aujourdhui) }), horloge(aujourdhui));
   assert.deepEqual(v, { perime: false, motifs: [], ageJours: 1, preuveLe: gen });
+});
+
+test("(b) a feed item dated long before the file confirms nothing: 2020, 1970 or a day past the tolerance on the early side leave the confirming day where it was", () => {
+  const aujourdhui = "2026-10-21";
+  const gen = avant(SEUIL_RETARD_UE_JOURS + 60, aujourdhui);
+  const xml = xmlUe(gen, avant(40, gen));
+  for (const jour of ["2020-01-01", "1970-01-01", avant(TOLERANCE_APRES_GENERATION_UE_JOURS + 1, gen)]) {
+    const f = enregistrerFraicheurUe(xml, { jour }, aujourdhui, null);
+    assert.equal(f.confirmeLe, null, `a feed day of ${jour} does not agree with a file of ${gen}`);
+    assert.equal(jugerFraicheurUe(f, horloge(aujourdhui)).perime, true, `${jour}: the old file is not made fresh by it`);
+  }
+  assert.equal(enregistrerFraicheurUe(xml, { jour: avant(TOLERANCE_APRES_GENERATION_UE_JOURS, gen) }, aujourdhui, null).confirmeLe, aujourdhui, "exactly the tolerance before still agrees");
+  assert.equal(enregistrerFraicheurUe(xml, { jour: gen }, aujourdhui, null).confirmeLe, aujourdhui);
 });
 
 test("both reasons are listed at once when both hold", () => {
@@ -334,6 +360,19 @@ test("the feed: a pubDate keeps its UTC day, in whatever zone it is written in",
     "  </channel>",
   ].join("\n"));
   assert.deepEqual(analyserRssUe(xml, CHEMIN_FICHIER_UE), { jour: "2026-10-12" }, "01:30 at +0200 on the 13th is the 12th in UTC");
+});
+
+test("the feed: a pubDate is read as RFC 822 or ISO 8601 and as nothing else (\"12\" is not the 30th of November 2001, and 31 February is not March)", () => {
+  const avecDate = (d: string): string => rssUe(null).replace("</channel>", `<item><title>x</title><link>${URL_UE_ECRITE}</link><pubDate>${d}</pubDate></item></channel>`);
+  const jours: [string, string][] = [
+    ["Mon, 12 Oct 2026 11:00:23 GMT", "2026-10-12"], ["12 Oct 2026 11:00 +0200", "2026-10-12"], ["Tue, 13 Oct 2026 01:30:00 +0200", "2026-10-12"],
+    ["2026-10-12T11:00:23Z", "2026-10-12"], ["2026-10-12T01:30:00+02:00", "2026-10-11"], ["2026-10-12", "2026-10-12"], ["2026-10-12 11:00:23", "2026-10-12"],
+  ];
+  for (const [texte, jour] of jours) assert.deepEqual(analyserRssUe(avecDate(texte), CHEMIN_FICHIER_UE), { jour }, texte);
+  for (const texte of ["12", "1", "soon", "Oct 12 2026", "12/10/2026", "31 Feb 2026 10:00 GMT", "Mon, 12 Oct 26 11:00 GMT", "12 Foo 2026 10:00 GMT", "2026-13-45", "2026-02-30", "12 Oct 2026 25:00 GMT", "12 Oct 2026 11:00 EST", ""]) {
+    const r = analyserRssUe(avecDate(texte), CHEMIN_FICHIER_UE);
+    assert.ok("illisible" in r && /RFC 822 or ISO 8601/.test(r.illisible), `${JSON.stringify(texte)} is not a date: ${JSON.stringify(r)}`);
+  }
 });
 
 test("the feed: two items for our file give the newest; no item for it, no item at all, a text that is not a feed and an unreadable pubDate are each said, not guessed", () => {
@@ -522,7 +561,7 @@ function lancerEtVerifier(age: number, ecart: number, rssAge: number | null, ver
 test("EU fetch in a quiet week (generated yesterday, nothing published for ten days, the feed agrees): the inputs are recorded, no warning, nothing said about staleness", () => {
   lancerEtVerifier(1, 10, 1, (ue, r, gen, rss) => {
     assert.deepEqual(ue.fraicheur, { fichierGenereLe: gen, fichierPublieLe: avant(10, gen), rssAnnonceLe: rss, confirmeLe: jourDe(new Date()) });
-    assert.equal(refusFraicheurUe(leManifesteEcrit(ue), new Date()), null, "the screening reads the row the command wrote: a quiet week is not refused");
+    assert.equal(refusFraicheurUe(leManifesteEcrit(ue), new Date(), r.racine), null, "the screening reads the row the command wrote: a quiet week is not refused");
     assert.equal(ue.avertissement, undefined, "a quiet week no longer warns");
     assert.ok(!/stale|⚠/i.test(r.sortie), `nothing is said about staleness:\n${r.sortie}`);
   });
@@ -534,17 +573,17 @@ test("EU fetch when the feed announces a newer file than the one downloaded: the
     assert.ok(ue.avertissement!.includes(gen) && ue.avertissement!.includes(rss!), `the warning names both dates: ${ue.avertissement}`);
     assert.ok(r.sortie.includes(`⚠ ${ue.avertissement}`), `the fetch prints the line:\n${r.sortie}`);
     assert.equal(ue.fraicheur?.rssAnnonceLe, rss);
-    const refus = refusFraicheurUe(leManifesteEcrit(ue), new Date());
+    const refus = refusFraicheurUe(leManifesteEcrit(ue), new Date(), r.racine);
     assert.ok(refus !== null && refus.includes(gen) && refus.includes(rss!), `the screening refuses on the row the command wrote, naming both dates: ${refus}`);
   });
 });
 
-test("EU fetch of an unchanged file nine days old with the feed agreeing: the download confirms it today, no warning, and the screening reads the row as fresh", () => {
+test("EU fetch of an unchanged file well past the limit with the feed agreeing: the download confirms it today, no warning, and the screening reads the row as fresh", () => {
   lancerEtVerifier(SEUIL_RETARD_UE_JOURS + 2, 40, SEUIL_RETARD_UE_JOURS + 2, (ue, r) => {
     assert.equal(ue.fraicheur?.confirmeLe, jourDe(new Date()));
     assert.equal(ue.avertissement, undefined, "the EU had nothing new: that is not an update that failed");
     assert.ok(!/stale|⚠/i.test(r.sortie), `nothing is said about staleness:\n${r.sortie}`);
-    assert.equal(refusFraicheurUe(leManifesteEcrit(ue), new Date()), null);
+    assert.equal(refusFraicheurUe(leManifesteEcrit(ue), new Date(), r.racine), null);
   });
 });
 
@@ -658,7 +697,7 @@ test("a download made while the feed cannot be read keeps the confirming day of 
   try {
     const ue = verifierLeTrajet(r);
     assert.equal(ue.fraicheur?.confirmeLe, dernier);
-    assert.equal(refusFraicheurUe(leManifesteEcrit(ue), new Date()), null, "confirmed three days ago, the feed down today: not a failed update");
+    assert.equal(refusFraicheurUe(leManifesteEcrit(ue), new Date(), r.racine), null, "confirmed three days ago, the feed down today: not a failed update");
     assert.match(ue.avertissement ?? "", /^the EU feed could not be read/, "said, but not stale");
   } finally {
     rmSync(r.racine, { recursive: true, force: true });
@@ -676,6 +715,37 @@ test("a download that confirms refreshes the day to today over the one the row b
   } finally {
     rmSync(r.racine, { recursive: true, force: true });
   }
+});
+
+test("EU fetch: a feed whose item for the file is dated long before it, or is not a date, confirms nothing, and an old file stays stale", () => {
+  const aujourdhui = jourDe(new Date());
+  const gen = avant(SEUIL_RETARD_UE_JOURS + 60, aujourdhui);
+  for (const rss of [rssUe("2020-01-01"), rssUe(gen).replace(/<pubDate>[^<]*<\/pubDate>/g, "<pubDate>12</pubDate>")]) {
+    const r = lancer({ corps: xmlUe(gen, avant(40, gen)), rss });
+    try {
+      const ue = verifierLeTrajet(r);
+      assert.equal(ue.fraicheur?.confirmeLe, null, "nothing confirmed the file");
+      assert.match(ue.avertissement ?? "", /^stale: /, "an old file stays stale");
+      assert.ok(refusFraicheurUe(leManifesteEcrit(ue), new Date(), r.racine) !== null);
+    } finally {
+      rmSync(r.racine, { recursive: true, force: true });
+    }
+  }
+});
+
+test("EU fetch of an OLDER file than the row before (a rollback) does not inherit its confirming day; a newer file, or the very same one, does", () => {
+  const aujourdhui = jourDe(new Date());
+  const dernier = avant(3, aujourdhui);
+  const generePrecedente = avant(5, aujourdhui);
+  const rangee = (sha256: string): Ligne => ({ ...LIGNE_UE_AVANT, sha256, fraicheur: { fichierGenereLe: generePrecedente, fichierPublieLe: avant(30, aujourdhui), rssAnnonceLe: generePrecedente, confirmeLe: dernier } });
+  const confirmeApres = (gen: string, sha256: string): string | null | undefined => {
+    const corps = xmlUe(gen, avant(30, gen));
+    const r = lancer({ corps, modeRss: "http503", manifesteAvant: manifesteAvec(rangee(sha256 === "meme" ? createHash("sha256").update(corps).digest("hex") : sha256)) });
+    try { return verifierLeTrajet(r).fraicheur?.confirmeLe; } finally { rmSync(r.racine, { recursive: true, force: true }); }
+  };
+  assert.equal(confirmeApres(avant(9, aujourdhui), "0".repeat(64)), null, "an older file inherits nothing");
+  assert.equal(confirmeApres(avant(1, aujourdhui), "0".repeat(64)), dernier, "a newer file keeps the day");
+  assert.equal(confirmeApres(avant(9, aujourdhui), "meme"), dernier, "the very same file keeps it, whatever its date says");
 });
 
 test("a row marked stale and kept as recorded by --only=UN comes out of the next manifest still marked, inputs included", () => {

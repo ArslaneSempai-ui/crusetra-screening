@@ -12,7 +12,7 @@ appear unnoticed (`src/frontiere.test.ts`).
 | `npm run listes -- --fetch` | sanctionslistservice.ofac.treas.gov | download | OFAC SDN and OFAC consolidated (non-SDN) lists |
 | `npm run listes -- --fetch` | data.trade.gov | download | the US Consolidated Screening List (Commerce and State lists) |
 | `npm run listes -- --fetch` | scsanctions.un.org | download | the UN consolidated list |
-| `npm run listes -- --fetch` | webgate.ec.europa.eu | download | the EU consolidated financial sanctions list (public token, or your own in `CRUSETRA_EU_TOKEN`, in its deprecated name `CASCADE_EU_TOKEN`, or in the file `~/.cascade/eu-token`, read only when it is a regular file you own that no one else can read, never on Windows, where only the variables count; the token goes in the request only, and every new manifest and every new sealed record writes `token=[username]` in its place; records and manifest lines written before keep what they were written with until the next fetch or seal); each download also reads the EU feed (RSS) of the same host, which takes no token |
+| `npm run listes -- --fetch` | webgate.ec.europa.eu | download | the EU consolidated financial sanctions list (public token, or your own in `CRUSETRA_EU_TOKEN`, in its deprecated name `CASCADE_EU_TOKEN`, or in the file `~/.cascade/eu-token`, read only when it is a regular file you own that no one else can read and that holds a single word no longer than a token, never on Windows, where only the variables count; the token goes in the request only, and every new manifest and every new sealed record writes `token=[username]` in its place; records and manifest lines written before keep what they were written with until the next fetch or seal); each download also reads the EU feed (RSS) of the same host, which takes no token |
 | `npm run listes -- --fetch` | sanctionslist.fcdo.gov.uk | download | the UK Sanctions List |
 | `npm run listes -- --fetch` | publications.europa.eu | download | the consolidated text of Regulation (EU) No 833/2014, for the vessels of its Annex XLII (the Office answers with a redirection to an http address of its store) |
 | `npm run listes -- --fetch` | www.dfat.gov.au | download | Australia's DFAT Consolidated List |
@@ -42,7 +42,13 @@ redaction as every other string of the manifest.
 `npm run cribler`, which never touches the network, refuses to run when the EU list is stale by
 that rule. It decides from the dates recorded in the manifest and the date of the run: the exit
 is non-zero, the message names the list and its dates, and no report, spreadsheet or sealed
-record is written. The other lists are not judged this way.
+record is written. The other lists are not judged this way. It does not trust the file dates written in
+the manifest: it reads the generationDate again from the EU file on disk (after checking the
+file's hash against the manifest), and refuses when that differs from the recorded one, when the
+file cannot be read, or when the freshness record is not a record. What it cannot see is a forged
+download day: the manifest is a local, unsigned file, so anyone who can edit it can say that a
+download confirmed the file today. The rule keeps an honest manifest honest; it is not a defense
+against the person who owns it.
 
 `CRUSETRA_OFFLINE=1` makes even the downloader refuse, with a message that names the flag.
 `CASCADE_OFFLINE=1`, its deprecated name, still refuses exactly as before.
