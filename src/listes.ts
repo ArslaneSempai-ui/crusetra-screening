@@ -66,7 +66,7 @@ import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { lireTable } from "./csv.ts";
 import { lireClasseur, tableParEntete } from "./xlsx.ts";
 import { confirmationReportable, enregistrerFraicheurUe, jourDe, jugerFraicheurUe, lireDatesUe, type FraicheurEnregistree, type ResultatRssUe } from "./fraicheur-ue.ts";
-import { PLAFOND_OCTETS_CATALOGUE, actesDeLAnnee, codeDeSortie, controler, ecrireActesAbsents, lignesDuRapport, preparerQuestion, refusDuControle } from "./actes-ue.ts";
+import { PLAFOND_OCTETS_CATALOGUE, actesDeLAnnee, codeDeSortie, controler, ecrireActesAbsents, enteteDePartiel, lignesDuRapport, preparerQuestion, refusDuControle } from "./actes-ue.ts";
 
 /** LA forme commune : les noms restent TELS QUE LA LISTE LES ÉCRIT — la normalisation est
  *  le travail des matchers, pas du téléchargeur. */
@@ -1271,9 +1271,18 @@ async function interrogerCatalogue(requete: string): Promise<{ texte: string } |
       headers: { "user-agent": "crusetra-screening (EU Journal watch, public catalogue)", accept: "application/sparql-results+json" },
       redirect: "error", signal: AbortSignal.timeout(DELAI_CATALOGUE_MS),
     });
-    if (!r.ok) {
+    /* Only a whole answer is read: status 200 (a 206 is a part of one)... */
+    if (!r.ok || r.status !== 200) {
       await r.body?.cancel();
       return { echec: `The Office answered HTTP ${r.status}` };
+    }
+    /* ...and not one the endpoint flags as cut short in its headers (Virtuoso: X-SQL-State, X-SQL-Message; any name saying partial or truncated). */
+    const noms: string[] = [];
+    r.headers.forEach((_valeur, nom) => noms.push(nom));
+    const partiel = enteteDePartiel(noms);
+    if (partiel !== null) {
+      await r.body?.cancel();
+      return { echec: `The Office flagged the answer as partial (header ${partiel})` };
     }
     const annonce = Number(r.headers.get("content-length") ?? "0");
     if (annonce > PLAFOND_OCTETS_CATALOGUE) {

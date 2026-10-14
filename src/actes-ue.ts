@@ -254,6 +254,21 @@ export function sonderFlux(xml: string, attendus: readonly string[]): SondeUe | 
  * The same for rows that could not be read when no act is proven absent. An absent act found beside unreadable rows is still
  * reported (exit 1): something is certainly missing, and the unreadable rows are said.
  *
+ * A PARTIAL ANSWER MUST NOT READ AS A COMPLETE ONE. A SPARQL endpoint can answer 200 with the rows it had when its time ran out
+ * and say so only in its headers (Virtuoso: X-SQL-State and X-SQL-Message), and a body that is valid JSON, under the caps, with one
+ * act the file carries in it would otherwise read as "nothing missing". Two defenses, both fail closed. (1) The headers are read:
+ * a status other than 200, X-SQL-State, X-SQL-Message, or any header whose name says partial or truncated refuses the answer
+ * (`enteteDePartiel`). (2) A CANARY: every act the file carries that is dated on the file's newest publication day lies in the
+ * window by construction (the window starts a margin before that day), so the answer must hold every one of them; if it does not,
+ * the answer is incomplete and the command exits 2 naming the acts that are missing, even when it also found an absent act. A
+ * canary the question cannot return (a title that does not say restrictive measures, a corrigendum, an act adopted long before
+ * its publication) also stops the command: that is a failed check, said, and the narrowest sound canary is then a decision.
+ *
+ * ONE NUMBER PER ACT IS RELIED ON. The match is on the act number (year/number), and a CELEX of a regulation and a CELEX of a
+ * decision that carried the same number would both read as carried when the file names the number once. The Journal gives each
+ * act one number in its year, so this should not happen (read on the answer of 14 October 2026: no number was held by two
+ * CELEX); `lireReponseCatalogue` says so in a NOTE the day an answer holds two, which is the tripwire for the assumption.
+ *
  * WHY A MARGIN. The catalogue dates an act by the day it bears (`work_date_document`); the file dates it by its publication in the
  * Official Journal, which can come a few days later. A window that started at the newest publication would miss an act adopted
  * just before it and published just after. The date printed and written is the day the act bears, the one the catalogue gives.
@@ -261,6 +276,15 @@ export function sonderFlux(xml: string, attendus: readonly string[]): SondeUe | 
  * asked for one through the link to the Journal got none back on 14 October 2026), and a date labelled "Journal" that is the
  * adoption day would be a false label.
  */
+
+/** A header whose presence says the answer is not the whole one: the SQL state and message a Virtuoso endpoint adds to a result cut short, and any name that says partial or truncated. */
+const ENTETE_DE_PARTIEL = /^x-sql-(?:state|message)$|partial|truncat/i;
+
+/** The first of these header names that flags a partial answer, or null. Pure. */
+export function enteteDePartiel(noms: Iterable<string>): string | null {
+  for (const nom of noms) if (ENTETE_DE_PARTIEL.test(nom)) return nom;
+  return null;
+}
 
 /** Days before the newest publicationDate of the file at which the question starts. */
 export const MARGE_JOURS = 7;
@@ -393,6 +417,11 @@ export function lireReponseCatalogue(texte: string): LectureCatalogue | { refus:
     actes.push({ celex: a.celex, numero: a.numero, titre: a.titre, date: jours[0] ?? null });
   }
   actes.sort((x, y) => (x.date ?? "9999-99-99").localeCompare(y.date ?? "9999-99-99") || x.celex.localeCompare(y.celex));
+  const parNumero = new Map<string, string[]>();
+  for (const a of actes) parNumero.set(a.numero, [...(parNumero.get(a.numero) ?? []), a.celex]);
+  for (const [numero, celex] of parNumero) {
+    if (celex.length > 1) notes.push(`${numero} is held by ${celex.length} CELEX in the answer (${celex.join(", ")}): the match is on the number, so one carried number would hide both`);
+  }
   return { actes, illisibles, notes };
 }
 
@@ -429,6 +458,8 @@ export type Controle = {
   absents: ActeCatalogue[];
   illisibles: string[];
   notes: string[];
+  /** the acts the file carries that are dated on its newest publication day (those with an act number): the answer must hold them all. `manquants` are the numbers it does not hold. */
+  canari: { jour: string; total: number; manquants: string[] };
 };
 
 /** Sets the text of the catalogue's answer against the file of `q`. Pure. */
@@ -437,11 +468,22 @@ export function controler(q: Question, reponse: string): Controle | { refus: str
   if ("refus" in lecture) return lecture;
   const manquent = new Set(manquants(lecture.actes.map((a) => a.numero), q.fichier));
   const absents = lecture.actes.filter((a) => manquent.has(a.numero));
-  return { catalogue: lecture.actes.length, portes: lecture.actes.length - absents.length, absents, illisibles: lecture.illisibles, notes: lecture.notes };
+  const dansLaReponse = new Set(lecture.actes.map((a) => a.numero));
+  const canaris = q.fichier.filter((a) => a.publicationDate === q.newestPublicationDate).map((a) => numerosDeLActe(a.numberTitle)).filter((n) => n.length > 0);
+  const manquantsDuCanari = [...new Set(canaris.filter((n) => !n.some((x) => dansLaReponse.has(x))).map((n) => n[0]!))];
+  return {
+    catalogue: lecture.actes.length, portes: lecture.actes.length - absents.length, absents, illisibles: lecture.illisibles, notes: lecture.notes,
+    canari: { jour: q.newestPublicationDate, total: canaris.length, manquants: manquantsDuCanari },
+  };
 }
 
-/** Why the check cannot say "nothing is missing", or null when it can (or when something is certainly missing). */
+/** Why the check cannot stand, or null when it can: an answer that does not hold the acts the file carries on its newest day is incomplete (whatever else it found); then rows that could not be read, or no act at all in common with the file, forbid "nothing is missing". */
 export function refusDuControle(c: Controle): string | null {
+  if (c.canari.manquants.length > 0) {
+    const vus = c.canari.manquants.slice(0, 10).join(", ");
+    const reste = c.canari.manquants.length > 10 ? ` and ${c.canari.manquants.length - 10} more` : "";
+    return `Answer incomplete: the file carries ${c.canari.total} act(s) dated ${c.canari.jour}, its newest publication day, which lie in the window of the question, and the answer does not hold ${c.canari.manquants.length} of them (${vus}${reste}). It may be a partial answer, so nothing it says can show that no act is missing`;
+  }
   if (c.absents.length > 0) return null;
   if (c.illisibles.length > 0) {
     return `${c.illisibles.length} row(s) of the answer could not be read as an act (${c.illisibles.slice(0, 3).join("; ")}), so the check cannot say that no act is missing`;
@@ -452,8 +494,8 @@ export function refusDuControle(c: Controle): string | null {
   return null;
 }
 
-/** The exit code: 1 when an act is absent, 2 when the check cannot say, 0 otherwise. */
-export const codeDeSortie = (c: Controle): 0 | 1 | 2 => (c.absents.length > 0 ? 1 : refusDuControle(c) !== null ? 2 : 0);
+/** The exit code: 2 when the check cannot stand (an incomplete answer, rows not read, nothing in common with the file), 1 when an act is absent, 0 otherwise. */
+export const codeDeSortie = (c: Controle): 0 | 1 | 2 => (refusDuControle(c) !== null ? 2 : c.absents.length > 0 ? 1 : 0);
 
 /** What the command prints on standard output, line by line. `ecrit` is the file written (relative to where the command ran), null when none was. */
 export function lignesDuRapport(q: Question, c: Controle, ecrit: string | null): string[] {
@@ -473,27 +515,91 @@ export function lignesDuRapport(q: Question, c: Controle, ecrit: string | null):
   return lignes;
 }
 
+/** Where the members of the top level object of a JSON text sit. The text has been parsed already, so its syntax is valid: this only finds positions, it validates nothing. `fin` is the position of the closing brace of the object. */
+function membresDuNiveauHaut(t: string): { membres: { cle: string; debutCle: number; debutValeur: number; finValeur: number }[]; ouverture: number; fin: number } {
+  const membres: { cle: string; debutCle: number; debutValeur: number; finValeur: number }[] = [];
+  const ouverture = t.indexOf("{");
+  let i = ouverture + 1;
+  const blancs = (): void => { while (i < t.length && /\s/.test(t[i]!)) i++; };
+  const chaine = (): void => { i++; while (t[i] !== '"') i += t[i] === "\\" ? 2 : 1; i++; };
+  const valeur = (): void => {
+    if (t[i] === '"') { chaine(); return; }
+    if (t[i] === "{" || t[i] === "[") {
+      let profondeur = 0;
+      for (;;) {
+        const c = t[i]!;
+        if (c === '"') { chaine(); continue; }
+        if (c === "{" || c === "[") profondeur++;
+        else if (c === "}" || c === "]") profondeur--;
+        i++;
+        if (profondeur === 0) return;
+      }
+    }
+    while (i < t.length && !/[\s,}\]]/.test(t[i]!)) i++;
+  };
+  for (;;) {
+    blancs();
+    if (t[i] === "}") break;
+    if (t[i] === ",") { i++; continue; }
+    const debutCle = i;
+    chaine();
+    const cle = JSON.parse(t.slice(debutCle, i)) as string;
+    blancs(); i++; blancs();
+    const debutValeur = i;
+    valeur();
+    membres.push({ cle, debutCle, debutValeur, finValeur: i });
+  }
+  return { membres, ouverture, fin: i };
+}
+
+/** The text of a day file with `actes_absents` set to `liste` and every other byte as it was: the value is replaced in place (the last one, if the key is given twice, as JSON.parse reads it) or added after the last member, in the file's own indentation. */
+function avecActesAbsents(texte: string, liste: unknown[]): string {
+  const { membres, ouverture, fin } = membresDuNiveauHaut(texte);
+  const retraitAvant = (debut: number): string | undefined => /\n([ \t]*)$/.exec(texte.slice(0, debut))?.[1];
+  const valeur = (retrait: string | undefined): string => (retrait === undefined ? JSON.stringify(liste) : JSON.stringify(liste, null, 2).replace(/\n/g, `\n${retrait}`));
+  const present = membres.filter((m) => m.cle === "actes_absents").at(-1);
+  if (present !== undefined) return texte.slice(0, present.debutValeur) + valeur(retraitAvant(present.debutCle)) + texte.slice(present.finValeur);
+  if (membres.length === 0) return `${texte.slice(0, ouverture + 1)}\n  "actes_absents": ${valeur("  ")}\n${texte.slice(fin)}`;
+  const dernier = membres.at(-1)!;
+  const retrait = retraitAvant(membres[0]!.debutCle);
+  const ajout = retrait === undefined ? `, "actes_absents": ${valeur(undefined)}` : `,\n${retrait}"actes_absents": ${valeur(retrait)}`;
+  return texte.slice(0, dernier.finValeur) + ajout + texte.slice(dernier.finValeur);
+}
+
 /**
  * Writes the absent acts to donnees/listes/<jour>.json under `racine` (where the command was run): the key `actes_absents`, a list
- * of { celex, numero, titre, date }, and nothing else of its own. A file of that day that already holds other keys keeps them,
- * the list is replaced; a file that is not a JSON object is left as it was and refused. Returns the path relative to `racine`.
+ * of { celex, numero, titre, date }, and nothing else of its own. `jour` must be a day of the calendar, checked before any path is
+ * built (a "../" in it would write outside the folder). A file of that day that already exists is NOT re-serialized: its text is
+ * kept byte for byte, indentation, large numbers and escapes included, and only the value of `actes_absents` is replaced or
+ * added, so a block written by hand (the listes role's `ue_2193`) is never touched. A file that is not a JSON object is left as it
+ * was and refused. Returns the path relative to `racine`.
  */
 export function ecrireActesAbsents(racine: string, jour: string, absents: readonly ActeCatalogue[]): { chemin: string } | { refus: string } {
+  if (!estUnJour(jour)) return { refus: `${citer(jour)} is not a day of the calendar, so no file is written` };
   const relatif = `donnees/listes/${jour}.json`;
   const dossier = join(racine, "donnees", "listes");
   const chemin = join(dossier, `${jour}.json`);
+  const liste = absents.map((a) => ({ celex: a.celex, numero: a.numero, titre: a.titre, date: a.date }));
   try {
-    let existant: Record<string, unknown> = {};
+    let texte: string;
     if (existsSync(chemin)) {
+      const original = readFileSync(chemin, "utf8");
       let lu: unknown;
-      try { lu = JSON.parse(readFileSync(chemin, "utf8")); } catch { lu = undefined; }
+      try { lu = JSON.parse(original); } catch { lu = undefined; }
       if (typeof lu !== "object" || lu === null || Array.isArray(lu)) return { refus: `${relatif} is not a JSON object, so actes_absents cannot be added to it` };
-      existant = lu as Record<string, unknown>;
+      texte = avecActesAbsents(original, liste);
+      /* the new text must say what was meant and must leave every other key as it was read */
+      const apres = JSON.parse(texte) as Record<string, unknown>;
+      const avant = lu as Record<string, unknown>;
+      if (JSON.stringify(apres["actes_absents"]) !== JSON.stringify(liste) || Object.keys(avant).some((k) => k !== "actes_absents" && JSON.stringify(apres[k]) !== JSON.stringify(avant[k]))) {
+        return { refus: `${relatif} cannot be added to without changing another key, so it is left as it was` };
+      }
+    } else {
+      texte = JSON.stringify({ actes_absents: liste }, null, 2) + "\n";
     }
     mkdirSync(dossier, { recursive: true });
     const provisoire = `${chemin}.tmp`;
-    const liste = absents.map((a) => ({ celex: a.celex, numero: a.numero, titre: a.titre, date: a.date }));
-    writeFileSync(provisoire, JSON.stringify({ ...existant, actes_absents: liste }, null, 2) + "\n");
+    writeFileSync(provisoire, texte);
     renameSync(provisoire, chemin);
     return { chemin: relatif };
   } catch (e) {
