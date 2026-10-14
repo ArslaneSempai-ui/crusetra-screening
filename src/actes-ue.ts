@@ -499,6 +499,19 @@ export function refusDuControle(c: Controle): string | null {
 /** The exit code: 2 when the check cannot stand (an incomplete answer, rows not read, nothing in common with the file), 1 when an act is absent, 0 otherwise. */
 export const codeDeSortie = (c: Controle): 0 | 1 | 2 => (refusDuControle(c) !== null ? 2 : c.absents.length > 0 ? 1 : 0);
 
+/** Whether an act is an implementing regulation by its title (Council or Commission): the acts the screen lists one by one. Decisions and amending regulations are counted, not listed; the day file keeps them all. */
+export const estRegulationDExecution = (a: ActeCatalogue): boolean => /\bImplementing Regulation\b/i.test(a.titre);
+
+/** The screen's view of the absent acts: one ABSENT line per implementing regulation, then one OTHER line counting the rest (none when there is no other). */
+function lignesDesAbsents(absents: readonly ActeCatalogue[]): string[] {
+  const listes = absents.filter(estRegulationDExecution);
+  const autres = absents.length - listes.length;
+  return [
+    ...listes.map((a) => `ABSENT ${a.numero} (CELEX ${a.celex}, ${a.date ?? "date unknown"}): ${a.titre}`),
+    ...(autres > 0 ? [`OTHER ${autres} act(s) (decisions, amending regulations) are named by no numberTitle of the file and not listed; they are in the day file.`] : []),
+  ];
+}
+
 /** What the command prints on standard output, line by line. `ecrit` is the file written (relative to where the command ran), null when none was. */
 export function lignesDuRapport(q: Question, c: Controle, ecrit: string | null): string[] {
   const lignes = [
@@ -506,7 +519,7 @@ export function lignesDuRapport(q: Question, c: Controle, ecrit: string | null):
     `  File data/listes/eu.xml: generated ${q.generationDate}, newest publication ${q.newestPublicationDate}, ${q.fichier.length} act(s) named.`,
     `  Asked: acts titled as restrictive measures, dated ${q.debut} or later.`,
     `  Answer: ${c.catalogue} act(s), ${c.portes} of them named by the file.`,
-    ...c.absents.map((a) => `ABSENT ${a.numero} (CELEX ${a.celex}, ${a.date ?? "date unknown"}): ${a.titre}`),
+    ...lignesDesAbsents(c.absents),
     ...c.illisibles.map((x) => `UNREADABLE ${x}`),
     ...c.notes.map((x) => `NOTE ${x}`),
   ];
@@ -573,7 +586,7 @@ export function lignesDeReponseIncomplete(c: Controle): string[] {
   if (c.absents.length === 0) return [];
   return [
     "INCOMPLETE ANSWER: the acts below are real findings (an answer that lost rows cannot invent an act), but the list may be missing others; nothing was written.",
-    ...c.absents.map((a) => `ABSENT ${a.numero} (CELEX ${a.celex}, ${a.date ?? "date unknown"}): ${a.titre}`),
+    ...lignesDesAbsents(c.absents),
   ];
 }
 
