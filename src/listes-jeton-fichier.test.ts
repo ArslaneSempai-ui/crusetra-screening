@@ -164,6 +164,7 @@ const fichiersSous = (dossier: string): string[] =>
 const FAUSSE_RECUPERATION = `
 import { readFileSync, writeFileSync } from "node:fs";
 globalThis.fetch = async (url) => {
+  if (String(url).endsWith("/public/rss")) return new Response(readFileSync(process.env.STUB_RSS));
   const envoye = new URL(String(url)).searchParams.get("token");
   writeFileSync(process.env.STUB_SEEN, envoye === process.env.STUB_EXPECT ? "expected" : "other");
   if (process.env.STUB_MODE === "throws") throw new Error("connect ECONNRESET while fetching " + url);
@@ -196,6 +197,7 @@ function lancer({ pose = null, mode = "ok", args = ["--fetch", "--only=EU"], cor
   Object.assign(env, {
     HOME: maison, USERPROFILE: maison,
     STUB_MODE: mode, STUB_EXPECT: attendu, STUB_BODY: join(ICI, "fixtures", corps), STUB_SEEN: join(racine, "seen.txt"),
+    STUB_RSS: join(ICI, "fixtures", "ue-rss.xml"),
   }, sup);
   const r = spawnSync(process.execPath,
     ["--import", pathToFileURL(join(racine, "fausse-recuperation.mjs")).href, join(racine, "src", "listes.ts"), ...args],

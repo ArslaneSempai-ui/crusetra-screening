@@ -41,6 +41,7 @@ const URL_UE_ECRITE = "https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFull
 const FAUSSE_RECUPERATION = `
 import { readFileSync, writeFileSync } from "node:fs";
 globalThis.fetch = async (url) => {
+  if (String(url).endsWith("/public/rss")) return new Response(readFileSync(process.env.STUB_RSS));
   const porte = String(url).includes(process.env.STUB_TOKEN);
   writeFileSync(process.env.STUB_SEEN, porte ? "carried" : "did not carry");
   if (process.env.STUB_MODE === "throws") throw new Error("connect ECONNRESET while fetching " + url);
@@ -82,6 +83,7 @@ function lancer({ mode = "ok", args = ["--fetch", "--only=EU"], manifesteAvant, 
   Object.assign(env, {
     CRUSETRA_EU_TOKEN: FAUX_JETON, HOME: join(racine, "home"), USERPROFILE: join(racine, "home"),
     STUB_MODE: mode, STUB_TOKEN: FAUX_JETON, STUB_BODY: join(ICI, "fixtures", corps), STUB_SEEN: join(racine, "seen.txt"),
+    STUB_RSS: join(ICI, "fixtures", "ue-rss.xml"),
   });
   const r = spawnSync(process.execPath,
     ["--import", pathToFileURL(join(racine, "fausse-recuperation.mjs")).href, join(racine, "src", "listes.ts"), ...args],
