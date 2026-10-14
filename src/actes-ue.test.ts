@@ -512,6 +512,26 @@ test("--actes on a catalogue answer of three acts, one absent from the feed: the
   assert.doesNotMatch(r.erreurs, /could not be done|Nothing was written/, "the check ran: no refusal on stderr");
 });
 
+test("--actes lists only the implementing regulations; decisions and amending regulations are counted in one line, not listed, and the exit is still 1", () => {
+  const DECISION: LigneCatalogue = { celex: "32026D9010", date: "2026-09-29", title: "Council Decision (CFSP) 2026/9010 of 29 September 2026 amending Decision 2099/3/CFSP concerning restrictive measures in view of the situation in Examplia" };
+  const MODIFICATIF: LigneCatalogue = { celex: "32026R9011", date: "2026-09-30", title: "Council Regulation (EU) 2026/9011 of 30 September 2026 amending Regulation (EU) 2099/1 concerning restrictive measures in view of the situation in Examplia" };
+  const DECISION_EXEC: LigneCatalogue = { celex: "32026D9012", date: "2026-10-01", title: "Council Implementing Decision (CFSP) 2026/9012 of 1 October 2026 implementing Decision 2099/3/CFSP concerning restrictive measures in view of the situation in Examplia" };
+  const r = lancerGuet({ reponse: reponseCatalogue([CAT_A, CAT_C, DECISION, MODIFICATIF, DECISION_EXEC]) });
+  assert.equal(r.statut, 1, r.erreurs);
+  assert.deepEqual(lignesAbsent(r.sortie).map((l) => /^ABSENT (\S+)/.exec(l)![1]), ["2026/9003"], r.sortie);
+  const autres = r.sortie.split("\n").filter((l) => l.startsWith("OTHER "));
+  assert.equal(autres.length, 1, r.sortie);
+  assert.match(autres[0]!, /^OTHER 3 act\(s\) \(decisions, amending regulations\) are named by no numberTitle of the file and not listed/);
+  assert.match(r.sortie, /4 act\(s\) of the answer are named by no numberTitle/, "the closing line still counts every absent act");
+  /* the day file keeps every absent act: only the screen is short */
+  assert.equal((fichierEcrit(r).contenu as { actes_absents: unknown[] }).actes_absents.length, 4);
+  /* no implementing regulation absent: no ABSENT line, the summary alone, and the exit is still 1 */
+  const seuls = lancerGuet({ reponse: reponseCatalogue([CAT_A, DECISION]) });
+  assert.equal(seuls.statut, 1, seuls.erreurs);
+  assert.deepEqual(lignesAbsent(seuls.sortie), []);
+  assert.equal(seuls.sortie.split("\n").filter((l) => l.startsWith("OTHER 1 act(s)")).length, 1, seuls.sortie);
+});
+
 test("--actes with every act of the answer named by the feed: exit 0, nothing listed as absent, and the empty list is written", () => {
   const r = lancerGuet({ reponse: reponseCatalogue([CAT_A, CAT_B]) });
   assert.equal(r.statut, 0, r.erreurs);
@@ -530,7 +550,7 @@ test("a number near-miss does not hide the absent act: the feed carries 2026/900
   assert.equal(lignesAbsent(r.sortie).length, 1, r.sortie);
   assert.match(lignesAbsent(r.sortie)[0]!, /^ABSENT 2026\/9003 /);
   /* and the other way: an act the catalogue calls 2026/900 is not carried by a feed that has only 2026/9001 */
-  const court = lancerGuet({ reponse: reponseCatalogue([CAT_A, { celex: "32026R0900", date: "2026-06-11", title: "Council Regulation (EU) 2026/900 concerning restrictive measures against the invented regime of Testland" }]) });
+  const court = lancerGuet({ reponse: reponseCatalogue([CAT_A, { celex: "32026R0900", date: "2026-06-11", title: "Council Implementing Regulation (EU) 2026/900 concerning restrictive measures against the invented regime of Testland" }]) });
   assert.equal(court.statut, 1, court.erreurs);
   assert.match(lignesAbsent(court.sortie)[0]!, /^ABSENT 2026\/900 \(CELEX 32026R0900,/);
 });
@@ -577,7 +597,7 @@ test("a body past the cap is refused whether the Office announces it or streams 
 });
 
 test("more rows than the limit (the answer may be cut short), or none at all, or none readable: exit 2, never 'nothing missing'", () => {
-  const actes = (n: number): LigneCatalogue[] => Array.from({ length: n }, (_, i) => ({ celex: `3${2000 + (i % 10)}R${String(1000 + i).padStart(4, "0")}`, date: "2026-07-01", title: `Council Regulation concerning restrictive measures in view of the invented regime number ${i}` }));
+  const actes = (n: number): LigneCatalogue[] => Array.from({ length: n }, (_, i) => ({ celex: `3${2000 + (i % 10)}R${String(1000 + i).padStart(4, "0")}`, date: "2026-07-01", title: `Council Implementing Regulation concerning restrictive measures in view of the invented regime number ${i}` }));
   const trop = lancerGuet({ reponse: reponseCatalogue([CAT_A, ...actes(Actes.LIMITE_LIGNES_CATALOGUE)]) });
   assert.equal(trop.statut, 2, trop.sortie + trop.erreurs);
   assert.match(trop.erreurs, /more than/i);
@@ -669,8 +689,8 @@ test("a row the code cannot read as an act is reported with the others, and an a
     { celex: "32026R9003R(01)", date: "2026-09-29", title: "Corrigendum to Council Implementing Regulation concerning restrictive measures" },
     { celex: "32026L9004", date: "2026-09-29", title: "Directive (EU) 2026/9004 on the invented matter of restrictive measures" },
     { date: "2026-09-29", title: "a row with no CELEX" },
-    { celex: "32026R9005", date: "soon", title: "Council Regulation (EU) 2026/9005 concerning restrictive measures against the invented regime of Testland" },
-    { celex: "32026R9006", date: "2026-02-30", title: "Council Regulation (EU) 2026/9006 concerning restrictive measures against the invented regime of Testland" },
+    { celex: "32026R9005", date: "soon", title: "Council Implementing Regulation (EU) 2026/9005 concerning restrictive measures against the invented regime of Testland" },
+    { celex: "32026R9006", date: "2026-02-30", title: "Council Implementing Regulation (EU) 2026/9006 concerning restrictive measures against the invented regime of Testland" },
   ]) });
   assert.equal(r.statut, 1, r.erreurs);
   assert.deepEqual(lignesAbsent(r.sortie).map((l) => /^ABSENT (\S+)/.exec(l)![1]), ["2026/9003", "2026/9005", "2026/9006"], "dated acts first, by date; the acts with no readable date after them");
@@ -910,7 +930,8 @@ test("two CELEX with one act number (a regulation and a decision numbered alike)
   /* both absent: both listed, and the shared number said */
   const absents = lancerGuet({ reponse: reponseCatalogue([CAT_A, CAT_C, DECISION]) });
   assert.equal(absents.statut, 1, absents.erreurs);
-  assert.equal(lignesAbsent(absents.sortie).length, 2);
+  assert.equal(lignesAbsent(absents.sortie).length, 1, "only the implementing regulation is listed; the decision is counted");
+  assert.ok(absents.sortie.split("\n").some((l) => l.startsWith("OTHER 1 act(s)")), absents.sortie);
   const notes = absents.sortie.split("\n").filter((l) => l.startsWith("NOTE "));
   assert.equal(notes.length, 1, absents.sortie);
   assert.match(notes[0]!, /2026\/9003/);
@@ -1062,6 +1083,12 @@ test("README and DATA-FLOW name the EU row's actes field (one line per act numbe
   assert.match(dataFlow, /canary[^.]*brittle|brittle[^.]*canary/i, "DATA-FLOW says the canary is brittle");
   assert.match(dataFlow, /1210\/2003/, "and names the act whose title it cannot return");
   assert.match(dataFlow, /Warning/, "and the Warning and Content-Range headers");
+});
+
+test("donnees/ is ignored by git, so the output of --actes cannot be added by a careless `git add`", (t) => {
+  const r = spawnSync("git", ["check-ignore", "-q", "--", "donnees/listes/2026-10-14.json"], { cwd: join(ICI, ".."), encoding: "utf8", timeout: 30_000 });
+  if (r.error !== undefined || r.status === 128) return t.skip("git cannot check ignore rules here");
+  assert.equal(r.status, 0, "donnees/ is not in .gitignore");
 });
 
 test("no file under donnees/ is tracked: the output of --actes is local data, and a commit that adds it turns the suite red", (t) => {
