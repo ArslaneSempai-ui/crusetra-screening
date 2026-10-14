@@ -370,6 +370,8 @@ globalThis.fetch = async (url, init = {}) => {
   }
   if (mode === "partial-sql") return new Response(corps, { status: 200, headers: { "content-type": "application/sparql-results+json", "X-SQL-State": "S1TAT", "X-SQL-Message": "Anytime query: partial result" } });
   if (mode === "partial-name") return new Response(corps, { status: 200, headers: { "content-type": "application/sparql-results+json", "X-Result-Partial": "true" } });
+  if (mode === "warning") return new Response(corps, { status: 200, headers: { "content-type": "application/sparql-results+json", "Warning": '110 - "Response is Stale"' } });
+  if (mode === "content-range") return new Response(corps, { status: 200, headers: { "content-type": "application/sparql-results+json", "Content-Range": "bytes 0-99/100" } });
   if (mode === "truncated-name") return new Response(corps, { status: 200, headers: { "content-type": "application/sparql-results+json", "X-Results-Truncated": "1" } });
   if (mode === "oversize-header") return new Response(corps, { status: 200, headers: { "content-length": process.env.STUB_OCTETS } });
   return new Response(corps, { status: 200, headers: { "content-type": "application/sparql-results+json" } });
@@ -838,7 +840,7 @@ test("an answer the Office flags as partial is refused whatever its body says: X
   const complete = reponseCatalogue([CAT_A, CAT_B]);
   const controle = lancerGuet({ reponse: complete });
   assert.equal(controle.statut, 0, `the same body without a flag is exit 0, so a refusal below is the header's: ${controle.erreurs}`);
-  for (const [mode, entete] of [["partial-sql", "x-sql-"], ["partial-name", "x-result-partial"], ["truncated-name", "x-results-truncated"]] as const) {
+  for (const [mode, entete] of [["partial-sql", "x-sql-"], ["partial-name", "x-result-partial"], ["truncated-name", "x-results-truncated"], ["warning", "warning"], ["content-range", "content-range"]] as const) {
     const r = lancerGuet({ reponse: complete, mode });
     assert.equal(r.statut, 2, `${mode}: exit ${r.statut}\n${r.sortie}${r.erreurs}`);
     assert.match(r.erreurs, /partial/i, mode);
@@ -850,6 +852,8 @@ test("an answer the Office flags as partial is refused whatever its body says: X
   assert.equal(Actes.enteteDePartiel(["content-type", "X-SQL-Message"]), "X-SQL-Message");
   assert.equal(Actes.enteteDePartiel(["x-Is-Partial-Content"]), "x-Is-Partial-Content");
   assert.equal(Actes.enteteDePartiel(["x-truncated"]), "x-truncated");
+  assert.equal(Actes.enteteDePartiel(["Warning"]), "Warning", "a Warning header says the answer is not the plain one");
+  assert.equal(Actes.enteteDePartiel(["date", "Content-Range"]), "Content-Range", "a Content-Range header says it is a part");
   assert.equal(Actes.enteteDePartiel(["accept-ranges", "content-disposition"]), null, "the headers the Office sends on a whole answer are not flags");
 });
 
@@ -859,14 +863,26 @@ test("the canary: every act the file carries that is dated on its newest publica
   const CAT_D: LigneCatalogue = { celex: "32026D9004", date: "2026-06-12", title: "Council Decision (CFSP) 2026/9004 concerning restrictive measures in view of the situation in Examplia" };
   const entiere = lancerGuet({ eu: deuxCanaris, reponse: reponseCatalogue([CAT_A, CAT_B, CAT_D]) });
   assert.equal(entiere.statut, 0, `the control: both canary acts present, nothing absent: ${entiere.erreurs}`);
-  for (const reponse of [reponseCatalogue([CAT_A, CAT_B]), reponseCatalogue([CAT_A, CAT_B, CAT_C])]) {
+  for (const [reponse, absentsVus] of [[reponseCatalogue([CAT_A, CAT_B]), 0], [reponseCatalogue([CAT_A, CAT_B, CAT_C]), 1]] as const) {
     const r = lancerGuet({ eu: deuxCanaris, reponse });
     assert.equal(r.statut, 2, `exit ${r.statut}\n${r.sortie}${r.erreurs}`);
     assert.match(r.erreurs, /answer incomplete/i);
     assert.match(r.erreurs, /2026\/9004/, "the missing canary act is named");
     assert.doesNotMatch(r.erreurs, /2026\/9001\b/, "the canary act the answer does hold is not named as missing");
     assert.match(r.erreurs, /2026-06-12/, "the day it is judged on is said");
-    assert.deepEqual(r.fichiers, {}, "nothing written");
+    assert.deepEqual(r.fichiers, {}, "the day file is not written on an incomplete answer");
+    /* an absent act is a true finding even from an answer that lost rows (it can lose rows, it cannot invent an act): shown, and labelled */
+    assert.equal(lignesAbsent(r.sortie).length, absentsVus, `the absent acts of an incomplete answer are shown: ${r.sortie}`);
+    assert.doesNotMatch(r.sortie, /Every act|no act is missing/i);
+    if (absentsVus > 0) {
+      const lignes = r.sortie.split("\n");
+      const etiquette = lignes.findIndex((l) => l.startsWith("INCOMPLETE ANSWER"));
+      assert.ok(etiquette >= 0, `the report says it comes from an incomplete answer: ${r.sortie}`);
+      assert.ok(etiquette < lignes.findIndex((l) => l.startsWith("ABSENT ")), "the label comes before the acts");
+      assert.match(lignesAbsent(r.sortie)[0]!, /^ABSENT 2026\/9003 \(CELEX 32026R9003, 2026-09-28\)/);
+    } else {
+      assert.ok(!r.sortie.includes("INCOMPLETE ANSWER"), "nothing to label when nothing is absent");
+    }
   }
   /* the pure functions agree */
   const q = Actes.preparerQuestion(deuxCanaris);
@@ -1002,6 +1018,35 @@ test("a day that is not a day writes nothing: '../escape', a bad date and an emp
   });
 });
 
+test("a day file that begins with a byte order mark is refused with that reason and left byte for byte as it was", () => {
+  avecDossier((racine) => {
+    mkdirSync(join(racine, "donnees", "listes"), { recursive: true });
+    const chemin = join(racine, "donnees", "listes", "2026-10-14.json");
+    const octets = Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), Buffer.from('{"a":1}')]);
+    writeFileSync(chemin, octets);
+    const r = Actes.ecrireActesAbsents(racine, "2026-10-14", [ABSENT_A]);
+    assert.ok("refus" in r, JSON.stringify(r));
+    if (!("refus" in r)) return;
+    assert.match(r.refus, /byte order mark/i, "the reason is the mark, not 'not a JSON object'");
+    assert.doesNotMatch(r.refus, /not a JSON object/);
+    assert.ok(readFileSync(chemin).equals(octets), "the file is as it was");
+  });
+});
+
+test("a day file that is not valid UTF-8 is refused and left byte for byte as it was: no other key's bytes are replaced by U+FFFD", () => {
+  avecDossier((racine) => {
+    mkdirSync(join(racine, "donnees", "listes"), { recursive: true });
+    const chemin = join(racine, "donnees", "listes", "2026-10-14.json");
+    const octets = Buffer.concat([Buffer.from('{"a": "'), Buffer.from([0xff, 0xfe, 0xe9]), Buffer.from('", "b": 1}\n')]);
+    writeFileSync(chemin, octets);
+    const r = Actes.ecrireActesAbsents(racine, "2026-10-14", [ABSENT_A]);
+    assert.ok("refus" in r, JSON.stringify(r));
+    if (!("refus" in r)) return;
+    assert.match(r.refus, /UTF-8/);
+    assert.ok(readFileSync(chemin).equals(octets), "the file is as it was, its odd bytes included");
+  });
+});
+
 /* ───────────────────────── the documents name what the command records, and the local data stays out of git ───────────────────────── */
 
 test("README and DATA-FLOW name the EU row's actes field (one line per act number of the file's year, not bounded), the partial-answer refusal and the canary", () => {
@@ -1013,6 +1058,10 @@ test("README and DATA-FLOW name the EU row's actes field (one line per act numbe
     assert.match(texte, /answer incomplete|incomplete answer|newest publication day/i, `${nom} says the canary`);
   }
   assert.match(lire("doc", "DATA-FLOW.md"), /single (?:Journal )?numbering|one number per act|numbers? acts? in one sequence/i, "DATA-FLOW states the reliance on one number per act");
+  const dataFlow = lire("doc", "DATA-FLOW.md");
+  assert.match(dataFlow, /canary[^.]*brittle|brittle[^.]*canary/i, "DATA-FLOW says the canary is brittle");
+  assert.match(dataFlow, /1210\/2003/, "and names the act whose title it cannot return");
+  assert.match(dataFlow, /Warning/, "and the Warning and Content-Range headers");
 });
 
 test("no file under donnees/ is tracked: the output of --actes is local data, and a commit that adds it turns the suite red", (t) => {

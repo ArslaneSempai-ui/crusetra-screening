@@ -257,12 +257,14 @@ export function sonderFlux(xml: string, attendus: readonly string[]): SondeUe | 
  * A PARTIAL ANSWER MUST NOT READ AS A COMPLETE ONE. A SPARQL endpoint can answer 200 with the rows it had when its time ran out
  * and say so only in its headers (Virtuoso: X-SQL-State and X-SQL-Message), and a body that is valid JSON, under the caps, with one
  * act the file carries in it would otherwise read as "nothing missing". Two defenses, both fail closed. (1) The headers are read:
- * a status other than 200, X-SQL-State, X-SQL-Message, or any header whose name says partial or truncated refuses the answer
- * (`enteteDePartiel`). (2) A CANARY: every act the file carries that is dated on the file's newest publication day lies in the
+ * a status other than 200, X-SQL-State, X-SQL-Message, Warning, Content-Range, or any header whose name says partial or
+ * truncated refuses the answer (`enteteDePartiel`). (2) A CANARY: every act the file carries that is dated on the file's newest publication day lies in the
  * window by construction (the window starts a margin before that day), so the answer must hold every one of them; if it does not,
  * the answer is incomplete and the command exits 2 naming the acts that are missing, even when it also found an absent act. A
  * canary the question cannot return (a title that does not say restrictive measures, a corrigendum, an act adopted long before
  * its publication) also stops the command: that is a failed check, said, and the narrowest sound canary is then a decision.
+ * What an incomplete answer DID find is still shown (`lignesDeReponseIncomplete`), labelled: a partial answer can lose rows but
+ * cannot invent an act, so an act it names that the file does not carry is a true finding, though the list may be short.
  *
  * ONE NUMBER PER ACT IS RELIED ON. The match is on the act number (year/number), and a CELEX of a regulation and a CELEX of a
  * decision that carried the same number would both read as carried when the file names the number once. The Journal gives each
@@ -277,8 +279,8 @@ export function sonderFlux(xml: string, attendus: readonly string[]): SondeUe | 
  * adoption day would be a false label.
  */
 
-/** A header whose presence says the answer is not the whole one: the SQL state and message a Virtuoso endpoint adds to a result cut short, and any name that says partial or truncated. */
-const ENTETE_DE_PARTIEL = /^x-sql-(?:state|message)$|partial|truncat/i;
+/** A header whose presence says the answer is not the whole, plain one: the SQL state and message a Virtuoso endpoint adds to a result cut short, any name that says partial or truncated, and the two standard headers that qualify a body (`Warning`, `Content-Range`), none of which a whole answer to this question carries. */
+const ENTETE_DE_PARTIEL = /^x-sql-(?:state|message)$|^(?:warning|content-range)$|partial|truncat/i;
 
 /** The first of these header names that flags a partial answer, or null. Pure. */
 export function enteteDePartiel(noms: Iterable<string>): string | null {
@@ -566,6 +568,15 @@ function avecActesAbsents(texte: string, liste: unknown[]): string {
   return texte.slice(0, dernier.finValeur) + ajout + texte.slice(dernier.finValeur);
 }
 
+/** What the command prints on standard output when the answer is incomplete (the canary): the acts it did find that the file does not carry, under a label that says the list may be short. No lines at all when it found none. */
+export function lignesDeReponseIncomplete(c: Controle): string[] {
+  if (c.absents.length === 0) return [];
+  return [
+    "INCOMPLETE ANSWER: the acts below are real findings (an answer that lost rows cannot invent an act), but the list may be missing others; nothing was written.",
+    ...c.absents.map((a) => `ABSENT ${a.numero} (CELEX ${a.celex}, ${a.date ?? "date unknown"}): ${a.titre}`),
+  ];
+}
+
 /**
  * Writes the absent acts to donnees/listes/<jour>.json under `racine` (where the command was run): the key `actes_absents`, a list
  * of { celex, numero, titre, date }, and nothing else of its own. `jour` must be a day of the calendar, checked before any path is
@@ -583,7 +594,15 @@ export function ecrireActesAbsents(racine: string, jour: string, absents: readon
   try {
     let texte: string;
     if (existsSync(chemin)) {
-      const original = readFileSync(chemin, "utf8");
+      let original: string;
+      try {
+        /* strict, and keeping a byte order mark in the text so that it can be said: a lenient read would turn bytes that are not UTF-8 into U+FFFD and write them back */
+        original = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(readFileSync(chemin));
+      } catch (e) {
+        if (e instanceof TypeError) return { refus: `${relatif} is not valid UTF-8 text, so it is left as it was and actes_absents is not added to it` };
+        throw e;
+      }
+      if (original.startsWith("\ufeff")) return { refus: `${relatif} begins with a byte order mark, which JSON does not allow, so it is left as it was and actes_absents is not added to it` };
       let lu: unknown;
       try { lu = JSON.parse(original); } catch { lu = undefined; }
       if (typeof lu !== "object" || lu === null || Array.isArray(lu)) return { refus: `${relatif} is not a JSON object, so actes_absents cannot be added to it` };
