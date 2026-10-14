@@ -51,7 +51,8 @@
  *   ces 6 269 : les listes du Trésor viennent de ses deux fichiers primaires ci-dessus, et une
  *   entrée comptée deux fois ferait deux alertes pour un seul nom.
  */
-import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync, readdirSync, lstatSync, fstatSync, openSync, closeSync, constants as fsConstants, type Stats } from "node:fs";
+import { homedir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
@@ -162,10 +163,113 @@ export const MANIFESTE = join(DOSSIER, "listes-manifest.json");
  * (https://webgate.ec.europa.eu/fsd/fsf/public/rss) l'écrit dans chaque lien de fichier.
  * Un scanner de secrets — ou un acheteur qui lit — verra une chaîne en dur ; cette ligne
  * existe pour qu'il lise aussi d'où elle vient. Un jeton personnel EU Login la remplace
- * par CRUSETRA_EU_TOKEN, ou par CASCADE_EU_TOKEN, son ancien nom, lu en alias déprécié.
+ * par CRUSETRA_EU_TOKEN, ou par CASCADE_EU_TOKEN, son ancien nom, lu en alias déprécié, ou par le fichier
+ * ~/.cascade/eu-token (voir plus bas).
  */
 const JETON_UE_GENERIQUE_PUBLIC = "dG9rZW4tMjAxNw";
-export const jetonUe = (env: NodeJS.ProcessEnv = process.env): string => env.CRUSETRA_EU_TOKEN ?? env.CASCADE_EU_TOKEN ?? JETON_UE_GENERIQUE_PUBLIC;
+
+/*
+ * THE PERSONAL TOKEN MAY LIVE IN A FILE: ~/.cascade/eu-token, so that it does not have to ride in a shell profile.
+ * The order is CRUSETRA_EU_TOKEN, CASCADE_EU_TOKEN (its deprecated name), the file, then the public generic token.
+ *
+ * A file that holds a secret is trusted only when it looks like one. It is read when it exists, is a REGULAR file (lstat:
+ * a symbolic link is ignored, never followed), belongs to the current user, and has no permission bit for the group or
+ * others (mode MODE_FICHIER_JETON_MAX or stricter). The value is trimmed; empty after that, there is no token. A file that
+ * exists and fails one of those rules is ignored, with ONE warning per process on stderr that names the rule and the path,
+ * never the value and never its length. The rules are checked on the path and again on the opened descriptor (a swap
+ * between the two is refused), and the file is opened without following a link.
+ *
+ * On win32 a file mode means nothing (the platform reports a fixed value for any file), so the file is never read there:
+ * the variables only.
+ *
+ * The file is read once per process, when the token is first asked for (the request being built), not before: the
+ * redaction of a text never triggers the read. From that read on its value is a HELD token (`jetonsEnMain`): a text that
+ * quotes it, with or without `token=` in front, goes through `urlSansJeton` without it.
+ */
+export const MODE_FICHIER_JETON_MAX = 0o600;
+const BITS_GROUPE_ET_AUTRES = 0o077;
+
+export type JetonFichier =
+  | { etat: "absent" }
+  | { etat: "lu"; valeur: string }
+  | { etat: "ignore"; avertissement: string };
+
+/** Which rule a token file breaks, in words, or null. `uid` is the current user's, undefined where the platform has none. */
+function regleViolee(st: Stats, uid: number | undefined): string | null {
+  if (!st.isFile()) return "it is not a regular file (a symbolic link is never followed)";
+  if (uid !== undefined && st.uid !== uid) return "it is not owned by the current user";
+  if ((st.mode & BITS_GROUPE_ET_AUTRES) !== 0) {
+    return `its mode is ${(st.mode & 0o777).toString(8)}, so the group or others can read it; it must be ${MODE_FICHIER_JETON_MAX.toString(8)} or stricter`;
+  }
+  return null;
+}
+
+/**
+ * The token file of a home, judged by the rules above. Not memoized (see `jetonDuFichier`) and printing nothing: the
+ * warning comes back as text. `plateforme` and `uid` are parameters so that the win32 branch and the owner rule have a
+ * witness on any machine.
+ */
+export function lireJetonFichier(
+  maison: string, plateforme: string = process.platform,
+  uid: number | undefined = (process as { getuid?: () => number }).getuid?.(),
+): JetonFichier {
+  if (plateforme === "win32") return { etat: "absent" };
+  const chemin = join(maison, ".cascade", "eu-token");
+  const ignore = (regle: string): JetonFichier => ({
+    etat: "ignore", avertissement: `the EU token file ${chemin} was not used: ${regle}. The public generic token is used instead.`,
+  });
+  const code = (e: unknown): string => (e as NodeJS.ErrnoException).code ?? "unknown error";
+  let st: Stats;
+  try {
+    st = lstatSync(chemin);
+  } catch (e) {
+    return code(e) === "ENOENT" || code(e) === "ENOTDIR" ? { etat: "absent" } : ignore(`it cannot be inspected (${code(e)})`);
+  }
+  const avant = regleViolee(st, uid);
+  if (avant !== null) return ignore(avant);
+  let fd: number;
+  try {
+    fd = openSync(chemin, fsConstants.O_RDONLY | (fsConstants.O_NOFOLLOW ?? 0));
+  } catch (e) {
+    return ignore(`it cannot be read (${code(e)})`);
+  }
+  try {
+    const apres = regleViolee(fstatSync(fd), uid);
+    if (apres !== null) return ignore(apres);
+    const valeur = readFileSync(fd, "utf8").trim();
+    return valeur.length === 0 ? ignore("it is empty, or holds only whitespace") : { etat: "lu", valeur };
+  } catch (e) {
+    return ignore(`it cannot be read (${code(e)})`);
+  } finally {
+    closeSync(fd);
+  }
+}
+
+/** What each home's token file said, kept for the life of the process: read once, warned about once. */
+const jetonsLusDesFichiers = new Map<string, string | null>();
+
+/** The token in `maison`/.cascade/eu-token, or undefined; reads the file the first time, prints its warning (if any) the first time. */
+export function jetonDuFichier(maison: string): string | undefined {
+  if (!jetonsLusDesFichiers.has(maison)) {
+    const r = lireJetonFichier(maison);
+    if (r.etat === "ignore") console.error(`⚠ ${r.avertissement}`);
+    jetonsLusDesFichiers.set(maison, r.etat === "lu" ? r.valeur : null);
+  }
+  return jetonsLusDesFichiers.get(maison) ?? undefined;
+}
+
+/** The home of the person who runs the command, or null where the platform cannot say (no file is looked for then). */
+function maisonCourante(): string | null {
+  try { return homedir() || null; } catch { return null; }
+}
+
+/**
+ * The token for the EU request. `maison` is where the file is looked for: the home of the person who runs the command
+ * when `env` is the process's own environment, nowhere when a caller passes an explicit environment (a test, say): such
+ * a call reads no file, so its answer cannot depend on the home of whoever runs it.
+ */
+export const jetonUe = (env: NodeJS.ProcessEnv = process.env, maison: string | null = env === process.env ? maisonCourante() : null): string =>
+  env.CRUSETRA_EU_TOKEN ?? env.CASCADE_EU_TOKEN ?? (maison === null ? undefined : jetonDuFichier(maison)) ?? JETON_UE_GENERIQUE_PUBLIC;
 
 /*
  * THE TOKEN LIVES IN ONE PLACE: THE REQUEST. A personal token is a secret, and a URL is copied everywhere: the manifest,
@@ -178,9 +282,10 @@ export const JETON_MASQUE = "[username]";
 
 /** The tokens this process holds, as they could appear in a text: raw, and percent-encoded, the longest first (one
  *  token may contain another). Too short a value is not searched for as a bare string (it would eat ordinary words);
- *  it is still caught by the `token=` rule in `urlSansJeton`. */
+ *  it is still caught by the `token=` rule in `urlSansJeton`. The variables, and the value of a token file ONCE IT HAS
+ *  BEEN READ: asking what is held never reads a file, so redacting a text before any request touches no credential. */
 function jetonsEnMain(env: NodeJS.ProcessEnv): string[] {
-  const valeurs = [env.CRUSETRA_EU_TOKEN, env.CASCADE_EU_TOKEN].filter((v): v is string => typeof v === "string" && v.length >= 6 && v !== JETON_MASQUE);
+  const valeurs = [env.CRUSETRA_EU_TOKEN, env.CASCADE_EU_TOKEN, ...jetonsLusDesFichiers.values()].filter((v): v is string => typeof v === "string" && v.length >= 6 && v !== JETON_MASQUE);
   return [...new Set(valeurs.flatMap((v) => [v, encodeURIComponent(v)]))].sort((a, b) => b.length - a.length);
 }
 
@@ -198,9 +303,12 @@ export function urlSansJeton(texte: string, env: NodeJS.ProcessEnv = process.env
   return sortie.replace(/([\w-]*token=)(?:\[username\]|[^&\s"'<>)]*?(?=[.,;:!?]*(?:[&\s"'<>)]|$)))/gi, (_tout, debut: string) => `${debut}${JETON_MASQUE}`);
 }
 
-/** The address the request goes to: the only place a token enters a URL. Never write or print what this returns. */
+/** The address the request goes to: the only place a token enters a URL. Never write or print what this returns.
+ *  The token is asked for (and so a token file read) only when the address has a place for it: the download of another
+ *  source never touches the credential. */
 export function urlDeTelechargement(url: string, env: NodeJS.ProcessEnv = process.env): string {
-  return url.split(`token=${JETON_MASQUE}`).join(`token=${jetonUe(env)}`);
+  const marque = `token=${JETON_MASQUE}`;
+  return url.includes(marque) ? url.split(marque).join(`token=${jetonUe(env)}`) : url;
 }
 
 /** La version consolidée du règlement (UE) 833/2014 dont l'annexe XLII est lue : son numéro CELEX, daté. */
@@ -864,7 +972,7 @@ async function telecharger(s: SourceListe): Promise<LigneManifeste> {
       /* L'UE avec le jeton générique rend 500 : le manifeste porte le fait ET l'issue. */
       const issue = s.source === "EU"
         ? "the programmatic download needs a personal EU Login token (token=[username]); "
-          + "set CRUSETRA_EU_TOKEN and run --fetch again. The generic public token returned "
+          + "set CRUSETRA_EU_TOKEN, or put the token alone in the file ~/.cascade/eu-token (readable by you only), and run --fetch again. The generic public token returned "
           + "this error on every file endpoint while the RSS still answered."
         : "check the URL against the official page, then run --fetch again.";
       return { source: s.source, titre: s.titre, url, format: s.format,
