@@ -29,7 +29,7 @@ import { createHash } from "node:crypto";
 import { basename } from "node:path";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { lireTable } from "./csv.ts";
-import { lireManifeste, lireListe, SOURCES, lireImo, type EntreeListe, type Licence } from "./listes.ts";
+import { lireManifeste, lireListe, SOURCES, lireImo, urlSansJeton, type EntreeListe, type Licence } from "./listes.ts";
 import { frequencesDesListes, TABLE_GELEE } from "./frequences.ts";
 import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
 import { commitCourant } from "./your-alerts.ts";
@@ -1063,6 +1063,12 @@ const citer = (t: Record<string, { rappel: Cellule; fauxPositifs: Cellule }>, se
   return { rappel: c.rappel, fauxPositifs: c.fauxPositifs };
 };
 
+/** What a sealed record says about a list it did not screen: the manifest's error and its way out, both passed through
+ *  `urlSansJeton` here too (they are read through `lireManifeste`, which redacts, but a sealed text is not left to that). */
+export function raisonNonCriblee(l: { erreur: string; issue: string }, env: NodeJS.ProcessEnv = process.env): string {
+  return urlSansJeton(`${l.erreur}. ${l.issue}`, env);
+}
+
 export function executer(
   fichier: string, client: string | undefined, maintenant: Date = new Date(), precedent?: string,
 ): { criblage: Criblage; cheminJson: string; avertissements: string[] } {
@@ -1077,11 +1083,11 @@ export function executer(
   for (const s of SOURCES) {
     const l = m.listes.find((x) => x.source === s.source);
     if (!l) { nonCriblees.push({ source: s.source, titre: s.titre, raison: "absent from the manifest; run `npm run listes -- --fetch`." }); continue; }
-    if (!l.disponible) { nonCriblees.push({ source: s.source, titre: s.titre, raison: `${l.erreur}. ${l.issue}` }); continue; }
+    if (!l.disponible) { nonCriblees.push({ source: s.source, titre: s.titre, raison: raisonNonCriblee(l) }); continue; }
     /* lireListe refuse un fichier qui ne correspond plus à son empreinte : on ne crible
        pas contre une liste qui n'est pas celle que le relevé va nommer. */
     entrees.push(...lireListe(s.source));
-    listes.push({ source: s.source, titre: s.titre, url: s.url, telechargeLe: l.telechargeLe, sha256: l.sha256, entrees: l.entrees, licence: s.licence });
+    listes.push({ source: s.source, titre: s.titre, url: urlSansJeton(s.url), telechargeLe: l.telechargeLe, sha256: l.sha256, entrees: l.entrees, licence: s.licence });
   }
   if (listes.length === 0) throw new Error(`no list is available on this machine. Nothing was screened.\n  → npm run listes -- --fetch`);
 

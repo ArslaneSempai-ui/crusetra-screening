@@ -164,7 +164,43 @@ export const MANIFESTE = join(DOSSIER, "listes-manifest.json");
  */
 const JETON_UE_GENERIQUE_PUBLIC = "dG9rZW4tMjAxNw";
 export const jetonUe = (env: NodeJS.ProcessEnv = process.env): string => env.CRUSETRA_EU_TOKEN ?? env.CASCADE_EU_TOKEN ?? JETON_UE_GENERIQUE_PUBLIC;
-const JETON_UE = jetonUe();
+
+/*
+ * THE TOKEN LIVES IN ONE PLACE: THE REQUEST. A personal token is a secret, and a URL is copied everywhere: the manifest,
+ * the sealed records, the console, an error text. So the address SOURCES keeps carries a placeholder, never a token;
+ * `urlDeTelechargement` puts the token in for the one `fetch`; and `urlSansJeton` is the single function every writer
+ * and every message passes a URL (or a text that may hold one) through. On 13 October 2026 the address was built WITH
+ * the token and copied as it was: a personal token went into the committed manifest.
+ */
+export const JETON_MASQUE = "[username]";
+
+/** The tokens this process holds, as they could appear in a text: raw, and percent-encoded, the longest first (one
+ *  token may contain another). Too short a value is not searched for as a bare string (it would eat ordinary words);
+ *  it is still caught by the `token=` rule in `urlSansJeton`. */
+function jetonsEnMain(env: NodeJS.ProcessEnv): string[] {
+  const valeurs = [env.CRUSETRA_EU_TOKEN, env.CASCADE_EU_TOKEN].filter((v): v is string => typeof v === "string" && v.length >= 6 && v !== JETON_MASQUE);
+  return [...new Set(valeurs.flatMap((v) => [v, encodeURIComponent(v)]))].sort((a, b) => b.length - a.length);
+}
+
+/**
+ * THE one redaction. First, any token this process holds is replaced wherever it stands, whole: a held token may itself
+ * contain `)`, `&`, a quote or a space, which the `token=` rule below would take for the end of the value and leave the
+ * tail; it also covers a proxy or a library that prints the address in another shape. Then any `token=<value>` (also
+ * `access_token=`, `CRUSETRA_EU_TOKEN=`) becomes `token=[username]`: the value runs to the next `&`, whitespace, quote,
+ * `<`, `>` or `)`, less the punctuation that ends a sentence (`.,;:!?`). Idempotent: the placeholder maps to itself. Apply it to a string, never to serialized JSON (an escaped
+ * quote or backslash would be cut); `texteDuManifeste` applies it to each string value before serializing.
+ */
+export function urlSansJeton(texte: string, env: NodeJS.ProcessEnv = process.env): string {
+  let sortie = texte;
+  for (const jeton of jetonsEnMain(env)) sortie = sortie.split(jeton).join(JETON_MASQUE);
+  return sortie.replace(/([\w-]*token=)(?:\[username\]|[^&\s"'<>)]*?(?=[.,;:!?]*(?:[&\s"'<>)]|$)))/gi, (_tout, debut: string) => `${debut}${JETON_MASQUE}`);
+}
+
+/** The address the request goes to: the only place a token enters a URL. Never write or print what this returns. */
+export function urlDeTelechargement(url: string, env: NodeJS.ProcessEnv = process.env): string {
+  return url.split(`token=${JETON_MASQUE}`).join(`token=${jetonUe(env)}`);
+}
+
 /** La version consolidée du règlement (UE) 833/2014 dont l'annexe XLII est lue : son numéro CELEX, daté. */
 export const CELEX_833 = "02014R0833-20260724";
 
@@ -244,7 +280,7 @@ export const SOURCES: SourceListe[] = [
   },
   {
     source: "EU", titre: "EU consolidated financial sanctions list (FSF, XML v1.1)",
-    url: `https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content?token=${JETON_UE}`,
+    url: `https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content?token=${JETON_MASQUE}`,
     format: "eu-fsf-xml-1.1", licence: LICENCE_COMMISSION,
   },
   /*
@@ -741,15 +777,24 @@ export type Manifeste = { version: 1; genereLe: string; listes: LigneManifeste[]
 
 /* La racine est un PARAMÈTRE parce qu'une garde qu'aucun cas ne peut viser sans toucher au
    vrai dépôt n'est pas une garde — le motif exact de `readProfiles` chez cascade-routing. */
-export function lireManifeste(racine: string = DOSSIER): Manifeste | null {
+export function lireManifeste(racine: string = DOSSIER, env: NodeJS.ProcessEnv = process.env): Manifeste | null {
   const chemin = join(racine, "listes-manifest.json");
   if (!existsSync(chemin)) return null;
-  return JSON.parse(readFileSync(chemin, "utf8")) as Manifeste;
+  /* Redacted where it is READ, once: a manifest written by the code before 13 October 2026 may hold a token in any string
+     (url, erreur, issue), and everything downstream (the listing, the errors, the reasons a sealed record gives) reads
+     rows from here. */
+  return JSON.parse(readFileSync(chemin, "utf8"), (_cle, v) => typeof v === "string" ? urlSansJeton(v, env) : v) as Manifeste;
+}
+
+/** The manifest as it is committed. Every string passes through `urlSansJeton` before it is serialized, whatever field
+ *  it sits in: a second net under the rows `telecharger` already redacts, so a field added later cannot leak a token. */
+export function texteDuManifeste(m: Manifeste, env: NodeJS.ProcessEnv = process.env): string {
+  return JSON.stringify(m, (_cle, v) => typeof v === "string" ? urlSansJeton(v, env) : v, 2) + "\n";
 }
 
 function ecrireManifeste(m: Manifeste): void {
   const provisoire = `${MANIFESTE}.tmp`;
-  writeFileSync(provisoire, JSON.stringify(m, null, 2) + "\n");
+  writeFileSync(provisoire, texteDuManifeste(m));
   renameSync(provisoire, MANIFESTE);
 }
 
@@ -790,9 +835,11 @@ const ENTETES = { "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)
 
 async function telecharger(s: SourceListe): Promise<LigneManifeste> {
   const maintenant = new Date().toISOString();
+  /* What the manifest, the console and the errors say: never the address the request used. */
+  const url = urlSansJeton(s.url);
   let brut: Buffer;
   try {
-    const r = await fetch(s.url, { headers: { ...ENTETES, ...s.entetes }, redirect: "follow" });
+    const r = await fetch(urlDeTelechargement(s.url), { headers: { ...ENTETES, ...s.entetes }, redirect: "follow" });
     if (!r.ok) {
       /* L'UE avec le jeton générique rend 500 : le manifeste porte le fait ET l'issue. */
       const issue = s.source === "EU"
@@ -800,14 +847,15 @@ async function telecharger(s: SourceListe): Promise<LigneManifeste> {
           + "set CRUSETRA_EU_TOKEN and run --fetch again. The generic public token returned "
           + "this error on every file endpoint while the RSS still answered."
         : "check the URL against the official page, then run --fetch again.";
-      return { source: s.source, titre: s.titre, url: s.url, format: s.format,
+      return { source: s.source, titre: s.titre, url, format: s.format,
         disponible: false, verifieLe: maintenant, erreur: `HTTP ${r.status}`, issue };
     }
     brut = Buffer.from(await r.arrayBuffer());
   } catch (e) {
-    return { source: s.source, titre: s.titre, url: s.url, format: s.format,
+    /* A library or a proxy may put the address, token included, in its message. */
+    return { source: s.source, titre: s.titre, url, format: s.format,
       disponible: false, verifieLe: maintenant,
-      erreur: `network: ${(e as Error).message}`,
+      erreur: urlSansJeton(`network: ${(e as Error).message}`),
       issue: "no bytes were written; check the connection and run --fetch again." };
   }
   const entrees = analyser(s.format, brut, s.source);
@@ -817,7 +865,7 @@ async function telecharger(s: SourceListe): Promise<LigneManifeste> {
   writeFileSync(provisoire, brut);
   renameSync(provisoire, chemin);
   const avertissement = s.format === "ofac-sdn-xml" ? recouperOfac(brut.toString("utf8"), entrees.length) : undefined;
-  return { source: s.source, titre: s.titre, url: s.url, format: s.format,
+  return { source: s.source, titre: s.titre, url, format: s.format,
     disponible: true, telechargeLe: maintenant,
     sha256: createHash("sha256").update(brut).digest("hex"),
     octets: brut.length, entrees: entrees.length, ...(avertissement ? { avertissement } : {}) };
@@ -905,7 +953,7 @@ if (isMain(import.meta)) {
   try {
     await principal();
   } catch (e) {
-    console.error(`\n${e instanceof Error ? e.message : String(e)}\n`);
+    console.error(`\n${urlSansJeton(e instanceof Error ? e.message : String(e))}\n`);
     process.exit(1);
   }
 }
