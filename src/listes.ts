@@ -2,8 +2,9 @@
  * Les listes publiques : la SEULE porte réseau de cet outil, et elle ne fait que descendre.
  *
  *   npm run listes              what is on disk: date, content hash, counts; no network
- *   npm run listes -- --fetch   download the public lists into data/listes/; the EU row carries a stale warning
- *                               when its own dates show the feed lagging (src/fraicheur-ue.ts)
+ *   npm run listes -- --fetch   download the public lists into data/listes/; the EU row records what its freshness is
+ *                               judged on (its own dates and what the EU feed announces) and carries a stale warning
+ *                               when the rule of src/fraicheur-ue.ts holds
  *
  * `frontiere.test.ts` nomme ce fichier comme l'unique autorisé à toucher le réseau, et
  * exige qu'il lise CRUSETRA_OFFLINE et CASCADE_OFFLINE, son ancien nom. La liste descend, rien ne monte : aucune donnée du
@@ -59,7 +60,7 @@ import { createHash } from "node:crypto";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { lireTable } from "./csv.ts";
 import { lireClasseur, tableParEntete } from "./xlsx.ts";
-import { fraicheurUE, SEUIL_RETARD_UE_JOURS } from "./fraicheur-ue.ts";
+import { enregistrerFraicheurUe, jourDe, jugerFraicheurUe, lireDatesUe, type FraicheurEnregistree, type ResultatRssUe } from "./fraicheur-ue.ts";
 
 /** LA forme commune : les noms restent TELS QUE LA LISTE LES ÉCRIT — la normalisation est
  *  le travail des matchers, pas du téléchargeur. */
@@ -873,21 +874,98 @@ export function recouperOfac(xml: string, lues: number): string | undefined {
 }
 
 /**
- * The EU file is judged by its own dates when it arrives (the rule is `fraicheurUE`, shared with
- * `scripts/fraicheur-ue.mjs`): a feed that lags by more than SEUIL_RETARD_UE_JOURS days, or whose dates cannot be read
- * or are out of order, gets a warning in its manifest row. The row stays available (the file is written and its hash recorded), exactly
- * like the OFAC count mismatch above: said in the manifest, never in silence. Undefined when the file is within the
- * limit, so a fresh file leaves the row as it was. The text names both dates and goes through `urlSansJeton` like every
- * other string this module writes.
+ * THE EU FEED, READ: the address that announces the EU files (public, no token). Its items are the published FILES, one
+ * per format (PDF, CSV, XML), each with a `pubDate`, the moment the file was published, and a `link` whose path names the
+ * file. Shape read on 14 October 2026; it announces no regulation publication, only files.
  */
-export function avertissementFraicheurUe(xml: string, env: NodeJS.ProcessEnv = process.env): string | undefined {
-  const r = fraicheurUE(xml);
-  if (!r.perime) return undefined;
-  /* No lag can be claimed when a date is missing, invalid or out of order: the reason then names what it found, dates
-     included. Otherwise the two dates and the lag, with any publicationDate value that was not read as a day. */
-  if (r.retard === null) return urlSansJeton(`stale: ${r.raison ?? "the dates cannot be read"}; its freshness cannot be shown`, env);
-  const detail = `${r.retard} days apart, the limit is ${SEUIL_RETARD_UE_JOURS} days; recent listings may be missing${r.raison ? `; ${r.raison}` : ""}`;
-  return urlSansJeton(`stale: newest publicationDate ${r.max}, generationDate ${r.gen} (${detail})`, env);
+export const URL_RSS_UE = "https://webgate.ec.europa.eu/fsd/fsf/public/rss";
+
+/** How long the feed is waited for. It is a courtesy read: a feed that does not answer is recorded, never waited on. */
+const DELAI_RSS_MS = 30_000;
+
+/**
+ * The newest announcement of OUR file in the feed's text: among the items whose link has the path of the address we
+ * download (`urlFichier`), the newest `pubDate`, as its UTC day. Anything else is said, never guessed: no item at all, no
+ * item for our file (another format's item is NOT taken in its place), an item with no date that reads as one.
+ */
+export function analyserRssUe(xml: string, urlFichier: string): ResultatRssUe {
+  let chemin: string;
+  try { chemin = new URL(urlFichier).pathname; } catch { return { illisible: "the address of the file is not a URL" }; }
+  const items = blocs(xml, "item");
+  if (items.length === 0) return { illisible: "the feed has no item" };
+  let trouves = 0;
+  const jours: string[] = [];
+  for (const item of items) {
+    const lien = champ(item, "link");
+    let cheminItem: string | undefined;
+    try { cheminItem = lien === undefined ? undefined : new URL(lien.trim()).pathname; } catch { cheminItem = undefined; }
+    if (cheminItem !== chemin) continue;
+    trouves++;
+    const t = Date.parse((champ(item, "pubDate") ?? "").trim());
+    if (!Number.isNaN(t)) jours.push(new Date(t).toISOString().slice(0, 10));
+  }
+  if (trouves === 0) return { illisible: `no item of the feed points at ${chemin}` };
+  if (jours.length === 0) return { illisible: `the item of the feed for ${chemin} has no pubDate that reads as a date` };
+  return { jour: jours.sort().at(-1)! };
+}
+
+/**
+ * The warning in the manifest row of the EU list (the `avertissement` field, the one OFAC's record count check uses). When
+ * the rule of `src/fraicheur-ue.ts` holds, "stale: " and every reason, each with its dates. When it does not hold but the
+ * feed could not be read, that fact and its reason (the file was then judged by its own dates and the clock only, which is
+ * not a refusal). Undefined otherwise: a quiet week leaves the row as it was. The text goes through `urlSansJeton` like
+ * every other string this module writes.
+ */
+export function avertissementFraicheurUe(f: FraicheurEnregistree, maintenant: Date, env: NodeJS.ProcessEnv = process.env): string | undefined {
+  const v = jugerFraicheurUe(f, maintenant);
+  const flux = f.rssIllisible === undefined ? undefined
+    : `the EU feed could not be read (${f.rssIllisible}), so the file was judged by its own dates and the clock only`;
+  if (v.perime) return urlSansJeton(`stale: ${v.motifs.join("; ")}${flux ? `; ${flux}` : ""}`, env);
+  return flux === undefined ? undefined : urlSansJeton(flux, env);
+}
+
+/** The refusal of a client screening: thrown when the EU list is stale, so that a caller can tell it from any other failure. */
+export class RefusListePerimee extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "RefusListePerimee";
+  }
+}
+
+/**
+ * WHETHER A CLIENT SCREENING MAY RUN AGAINST THE EU LIST: null when it may, the refusal's text when it may not. The decision
+ * is made from the manifest (the inputs recorded when the file arrived: its two dates and what the feed announced) and the
+ * clock given, never from the network: screening is offline on the client's file. A row written before the inputs were
+ * recorded is judged on the dates of the file on disk (read here, hash-checked by `lireListe` right after), the feed
+ * unknown. The EU list only: an unavailable or absent EU row is reported as not screened, as before, and no other source is
+ * judged by this rule. The text names the list and its dates, and goes through `urlSansJeton` like every message here.
+ */
+export function refusFraicheurUe(m: Manifeste, maintenant: Date, racine: string = DOSSIER, env: NodeJS.ProcessEnv = process.env): string | null {
+  const def = SOURCES.find((s) => s.source === "EU")!;
+  const ligne = m.listes.find((l) => l.source === "EU");
+  if (!ligne || !ligne.disponible) return null;
+  let f = ligne.fraicheur;
+  if (f === undefined) {
+    const chemin = join(racine, "data", "listes", fichierDe(def));
+    if (!existsSync(chemin)) return null;
+    const d = lireDatesUe(readFileSync(chemin, "utf8"));
+    f = {
+      fichierGenereLe: d.gen, fichierPublieLe: d.max, ...(d.defaut !== undefined ? { fichierDefaut: d.defaut } : {}),
+      rssAnnonceLe: null, rssIllisible: "this manifest row was written before the feed was recorded",
+    };
+  }
+  const v = jugerFraicheurUe(f, maintenant);
+  if (!v.perime) return null;
+  const connu = (j: string | null): string => j ?? "none";
+  const flux = f.rssAnnonceLe !== null ? f.rssAnnonceLe : `unknown (${f.rssIllisible ?? "not recorded"})`;
+  return urlSansJeton([
+    `The EU list is stale, so this screening is refused and no report is produced.`,
+    `  List: ${def.titre} (${def.source}), downloaded ${ligne.telechargeLe.slice(0, 10)}.`,
+    `  Dates: file generated ${connu(f.fichierGenereLe)}, newest publication in it ${connu(f.fichierPublieLe)}, newest file the EU feed announced ${flux}, today ${jourDe(maintenant)}.`,
+    ...v.motifs.map((x) => `  Why: ${x}.`),
+    `  → npm run listes -- --fetch   (downloads the lists again and records what the EU feed announces)`,
+    `Nothing was screened and nothing was written.`,
+  ].join("\n"), env);
 }
 
 /* ───────────────────────────── le manifeste, committé ───────────────────────────── */
@@ -896,6 +974,8 @@ export type LigneManifeste = {
   source: string; titre: string; url: string; format: string;
 } & ({
   disponible: true; telechargeLe: string; sha256: string; octets: number; entrees: number;
+  /** EU only: what the freshness rule reads, recorded when the file arrived (src/fraicheur-ue.ts) */
+  fraicheur?: FraicheurEnregistree;
   avertissement?: string;
 } | {
   disponible: false; verifieLe: string; erreur: string; issue: string;
@@ -961,10 +1041,26 @@ export function lireListe(source: EntreeListe["source"], racine: string = DOSSIE
  */
 const ENTETES = { "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)" };
 
+/** The EU feed, read once per EU download. A feed that cannot be read is a fact to record, never a failure of the download. */
+async function lireRssUe(urlFichier: string): Promise<ResultatRssUe> {
+  try {
+    const r = await fetch(URL_RSS_UE, { headers: ENTETES, redirect: "follow", signal: AbortSignal.timeout(DELAI_RSS_MS) });
+    if (!r.ok) return { illisible: `HTTP ${r.status}` };
+    return analyserRssUe(await r.text(), urlFichier);
+  } catch (e) {
+    /* A library or a proxy may put an address in its message. */
+    return { illisible: urlSansJeton(`network: ${(e as Error).message}`) };
+  }
+}
+
 async function telecharger(s: SourceListe): Promise<LigneManifeste> {
   const maintenant = new Date().toISOString();
   /* What the manifest, the console and the errors say: never the address the request used. */
   const url = urlSansJeton(s.url);
+  /* The EU feed is read BEFORE the file, and only recorded here: whether the list is stale is decided from what is
+     recorded (src/fraicheur-ue.ts). The order matters: a file published between the two reads is then newer than the
+     feed's answer, which is no lag; read after, it would look like a newer file we do not hold. */
+  const rss: ResultatRssUe | undefined = s.source === "EU" ? await lireRssUe(url) : undefined;
   let brut: Buffer;
   try {
     const r = await fetch(urlDeTelechargement(s.url), { headers: { ...ENTETES, ...s.entetes }, redirect: "follow" });
@@ -992,12 +1088,13 @@ async function telecharger(s: SourceListe): Promise<LigneManifeste> {
   const provisoire = `${chemin}.tmp`;
   writeFileSync(provisoire, brut);
   renameSync(provisoire, chemin);
+  const fraicheur = rss === undefined ? undefined : enregistrerFraicheurUe(brut.toString("utf8"), rss);
   const avertissement = s.format === "ofac-sdn-xml" ? recouperOfac(brut.toString("utf8"), entrees.length)
-    : s.source === "EU" ? avertissementFraicheurUe(brut.toString("utf8")) : undefined;
+    : fraicheur ? avertissementFraicheurUe(fraicheur, new Date()) : undefined;
   return { source: s.source, titre: s.titre, url, format: s.format,
     disponible: true, telechargeLe: maintenant,
     sha256: createHash("sha256").update(brut).digest("hex"),
-    octets: brut.length, entrees: entrees.length, ...(avertissement ? { avertissement } : {}) };
+    octets: brut.length, entrees: entrees.length, ...(fraicheur ? { fraicheur } : {}), ...(avertissement ? { avertissement } : {}) };
 }
 
 /* ─────────────────────────────────── la commande ─────────────────────────────────── */

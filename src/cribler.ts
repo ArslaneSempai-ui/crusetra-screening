@@ -29,7 +29,7 @@ import { createHash } from "node:crypto";
 import { basename } from "node:path";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { lireTable } from "./csv.ts";
-import { lireManifeste, lireListe, SOURCES, lireImo, urlSansJeton, type EntreeListe, type Licence } from "./listes.ts";
+import { lireManifeste, lireListe, SOURCES, lireImo, urlSansJeton, refusFraicheurUe, RefusListePerimee, type EntreeListe, type Licence } from "./listes.ts";
 import { frequencesDesListes, TABLE_GELEE } from "./frequences.ts";
 import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
 import { commitCourant } from "./your-alerts.ts";
@@ -139,6 +139,8 @@ export type Criblage = {
   changements?: Changements;
   resultats: Resultat[];
   reserves: string[];
+  /** present ONLY on a TEST RUN (see `OptionsExecution`): such a record has no seal and is never written as a client record */
+  essai?: string;
   empreinte?: string;
 };
 
@@ -1069,14 +1071,59 @@ export function raisonNonCriblee(l: { erreur: string; issue: string }, env: Node
   return urlSansJeton(`${l.erreur}. ${l.issue}`, env);
 }
 
+/** What a run can be told besides the file: for tests, never from the command line (`principal` passes nothing). */
+export type OptionsExecution = {
+  /** the folder that holds listes-manifest.json and data/listes/ (default: this repository), so that a case can aim at a throwaway folder */
+  racine?: string;
+  /**
+   * FOR TESTS ONLY. It is not a flag of the command, it is named in no usage text and no document, and it is never the
+   * default. A client screening REFUSES when the EU list is stale (`refusFraicheurUe`); with this option the stale list is
+   * let through so that a test can run the rest of the machinery on an old fixture. What comes back is a TEST RUN: it
+   * carries the mark `essai`, it is NOT sealed, and neither the sealing path (`scellerLeReleve`) nor the writer of the
+   * report (`exigerReleveScelle`) will take it. So a sealed client record cannot be produced with it.
+   */
+  essaiListeUePerimee?: boolean;
+};
+
+const MARQUE_ESSAI = "TEST RUN, NOT A CLIENT RECORD: the EU list was stale and a test override let this screening run; this record carries no seal and is never written as a client record.";
+
+/**
+ * THE SEALING PATH of a client record. A record carrying the test mark is refused here, whatever else it holds: the seal
+ * is what makes a record one a client may receive, and a run that got past the freshness refusal by the test override is
+ * not one.
+ */
+export function scellerLeReleve(sansSceau: Omit<Criblage, "empreinte">): Criblage {
+  if (sansSceau.essai !== undefined) {
+    throw new Error("a test run cannot be sealed: the EU list was stale and only a test override let the screening run. No sealed client record comes out of it.");
+  }
+  return { ...sansSceau, empreinte: empreinteDuReleve(sansSceau) };
+}
+
+/** What the command asks before it writes anything: the record is sealed, intact, and not a test run. */
+export function exigerReleveScelle(c: Criblage): void {
+  if (c.essai !== undefined) {
+    throw new Error("a test run is not written as a client record: the EU list was stale and only a test override let the screening run.");
+  }
+  if (!scelleIntact(c as unknown as Record<string, unknown>)) {
+    throw new Error("the record is not sealed, or its seal no longer matches its content: it is not written.");
+  }
+}
+
 export function executer(
-  fichier: string, client: string | undefined, maintenant: Date = new Date(), precedent?: string,
+  fichier: string, client: string | undefined, maintenant: Date = new Date(), precedent?: string, options: OptionsExecution = {},
 ): { criblage: Criblage; cheminJson: string; avertissements: string[] } {
   const texte = readFileSync(fichier, "utf8");
   const { lignes, avertissements } = lireContreparties(texte);
 
-  const m = lireManifeste();
+  const m = lireManifeste(options.racine);
   if (!m) throw new Error(`no listes-manifest.json: run \`npm run listes -- --fetch\` first. Nothing was screened.`);
+  /* THE EU LIST MUST NOT BE STALE (decided on 14 October 2026). The decision is made from the manifest (the inputs
+     recorded when the file arrived) and `maintenant`, the clock of this run: a screening is offline on the client's file,
+     so nothing here asks the network. It is made before anything is measured, so that a refusal costs nothing and writes
+     nothing. The other lists are not judged by it. */
+  const refus = refusFraicheurUe(m, maintenant, options.racine);
+  if (refus !== null && options.essaiListeUePerimee !== true) throw new RefusListePerimee(refus);
+  const essai = refus !== null ? MARQUE_ESSAI : undefined;
   const listes: Criblage["listes"] = [];
   const nonCriblees: Criblage["nonCriblees"] = [];
   const entrees: EntreeListe[] = [];
@@ -1086,7 +1133,7 @@ export function executer(
     if (!l.disponible) { nonCriblees.push({ source: s.source, titre: s.titre, raison: raisonNonCriblee(l) }); continue; }
     /* lireListe refuse un fichier qui ne correspond plus à son empreinte : on ne crible
        pas contre une liste qui n'est pas celle que le relevé va nommer. */
-    entrees.push(...lireListe(s.source));
+    entrees.push(...lireListe(s.source, options.racine));
     listes.push({ source: s.source, titre: s.titre, url: urlSansJeton(s.url), telechargeLe: l.telechargeLe, sha256: l.sha256, entrees: l.entrees, licence: s.licence });
   }
   if (listes.length === 0) throw new Error(`no list is available on this machine. Nothing was screened.\n  → npm run listes -- --fetch`);
@@ -1120,7 +1167,7 @@ export function executer(
 
   const base: Omit<Criblage, "reserves" | "empreinte"> = {
     version: 1, genre: GENRE_CRIBLAGE,
-    emisLe: maintenant.toISOString(), ...(client ? { client } : {}), ...(commit ? commit : {}),
+    emisLe: maintenant.toISOString(), ...(client ? { client } : {}), ...(commit ? commit : {}), ...(essai !== undefined ? { essai } : {}),
     fichier: { nom: basename(fichier), sha256: createHash("sha256").update(texte).digest("hex"), lignes: lignes.length },
     listes, attributions: [...new Set(listes.map((l) => l.licence.mention).filter((x): x is string => x !== null))], nonCriblees,
     methode: {
@@ -1136,8 +1183,8 @@ export function executer(
     resultats,
   };
   if (precedent) base.changements = comparer(JSON.parse(readFileSync(precedent, "utf8")) as Criblage, base);
-  const criblage: Criblage = { ...base, reserves: reserves(base) };
-  criblage.empreinte = empreinteDuReleve(criblage);
+  const sansSceau: Omit<Criblage, "empreinte"> = { ...base, reserves: reserves(base) };
+  const criblage: Criblage = essai === undefined ? scellerLeReleve(sansSceau) : sansSceau;
   const cheminJson = fichier.replace(/\.csv$/i, "") + ".screening.json";
   return { criblage, cheminJson, avertissements };
 }
@@ -1162,6 +1209,7 @@ function principal(): void {
   /* le relevé précédent est lu AVANT que le nouveau ne soit écrit : relancer sur le même
      fichier écrase l'ancien relevé, et c'est souvent lui qu'on passe en --previous */
   const { criblage: c, cheminJson, avertissements } = executer(fichier, arg("client"), new Date(), precedent);
+  exigerReleveScelle(c);
   writeFileSync(cheminJson, JSON.stringify(c, null, 2) + "\n");
   const cheminCsv = cheminJson.replace(/\.json$/, ".csv");
   writeFileSync(cheminCsv, versCsv(c));
