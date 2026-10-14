@@ -5,6 +5,11 @@
  *   npm run listes -- --fetch   download the public lists into data/listes/; the EU row records what its freshness is
  *                               judged on (its own dates and what the EU feed announces) and carries a stale warning
  *                               when the rule of src/fraicheur-ue.ts holds
+ *   npm run listes -- --actes   the Journal watch: ask the Publications Office catalogue, with one public question that
+ *                               carries no name and nothing of the client, which acts titled as restrictive measures it
+ *                               dates from a margin before the newest publication in the EU file on disk, and name those
+ *                               whose number the file does not carry (src/actes-ue.ts). Exit 1: some are absent, 0: none,
+ *                               2: it could not ask or read, and nothing is then written as "no act is missing".
  *
  * `frontiere.test.ts` nomme ce fichier comme l'unique autorisé à toucher le réseau, et
  * exige qu'il lise CRUSETRA_OFFLINE et CASCADE_OFFLINE, son ancien nom. La liste descend, rien ne monte : aucune donnée du
@@ -61,6 +66,7 @@ import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { lireTable } from "./csv.ts";
 import { lireClasseur, tableParEntete } from "./xlsx.ts";
 import { confirmationReportable, enregistrerFraicheurUe, jourDe, jugerFraicheurUe, lireDatesUe, type FraicheurEnregistree, type ResultatRssUe } from "./fraicheur-ue.ts";
+import { PLAFOND_OCTETS_CATALOGUE, actesDeLAnnee, codeDeSortie, controler, ecrireActesAbsents, lignesDuRapport, preparerQuestion, refusDuControle } from "./actes-ue.ts";
 
 /** LA forme commune : les noms restent TELS QUE LA LISTE LES ÉCRIT — la normalisation est
  *  le travail des matchers, pas du téléchargeur. */
@@ -1090,6 +1096,8 @@ export type LigneManifeste = {
   disponible: true; telechargeLe: string; sha256: string; octets: number; entrees: number;
   /** EU only: what the freshness rule reads, recorded when the file arrived (src/fraicheur-ue.ts) */
   fraicheur?: FraicheurEnregistree;
+  /** EU only: the distinct act numbers of the file's own year (the year of its generationDate), in numeric order; public and short */
+  actes?: string[];
   avertissement?: string;
 } | {
   disponible: false; verifieLe: string; erreur: string; issue: string;
@@ -1210,17 +1218,127 @@ async function telecharger(s: SourceListe, rangeeAvant: RangeeAvant | null = nul
     : enregistrerFraicheurUe(brut.toString("utf8"), rss, jourDe(new Date(maintenant)), confirmationReportable(rangeeAvant, lireDatesUe(brut.toString("utf8")).gen, sha256));
   const avertissement = s.format === "ofac-sdn-xml" ? recouperOfac(brut.toString("utf8"), entrees.length)
     : fraicheur ? avertissementFraicheurUe(fraicheur, new Date()) : undefined;
+  /* The act numbers of the EU file's own year: what S4's guard and the Journal watch's reader can read without the file. */
+  const actes = s.source === "EU" ? actesDeLAnnee(brut.toString("utf8")) : null;
   return { source: s.source, titre: s.titre, url, format: s.format,
     disponible: true, telechargeLe: maintenant,
     sha256,
-    octets: brut.length, entrees: entrees.length, ...(fraicheur ? { fraicheur } : {}), ...(avertissement ? { avertissement } : {}) };
+    octets: brut.length, entrees: entrees.length, ...(fraicheur ? { fraicheur } : {}), ...(actes ? { actes } : {}), ...(avertissement ? { avertissement } : {}) };
+}
+
+/* ─────────────────────────────── le guet du Journal officiel ─────────────────────────────── */
+
+/**
+ * THE JOURNAL WATCH (`--actes`): the one place that asks the Publications Office which acts exist. The catalogue is public and
+ * takes no token and no cookie; the question (src/actes-ue.ts `requeteCatalogue`) holds one day and fixed words, so nothing of
+ * the EU file and nothing of a client goes up. Measured on 14 October 2026: a plain GET answers 200 in under a minute with a
+ * SPARQL JSON result of some twenty kilobytes for a window of eleven weeks. The answer is data: read with a size cap, as strict
+ * JSON, and never followed anywhere (a redirect is refused).
+ */
+export const URL_CATALOGUE_OFFICE = "https://publications.europa.eu/webapi/rdf/sparql";
+
+/** How long the catalogue is waited for: it was measured at some twenty seconds, so this leaves a wide margin and still ends. */
+const DELAI_CATALOGUE_MS = 120_000;
+
+/** The body of an answer as text, read at most up to the cap and decoded strictly; null when it is past the cap. */
+async function lireCorpsPlafonne(r: Response): Promise<{ texte: string } | { echec: string }> {
+  const lecteur = r.body?.getReader();
+  if (lecteur === undefined) return { texte: "" };
+  const morceaux: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await lecteur.read();
+    if (done) break;
+    total += value.length;
+    if (total > PLAFOND_OCTETS_CATALOGUE) {
+      await lecteur.cancel();
+      return { echec: "The answer is larger than the size this check reads" };
+    }
+    morceaux.push(value);
+  }
+  try {
+    return { texte: new TextDecoder("utf-8", { fatal: true }).decode(Buffer.concat(morceaux)) };
+  } catch {
+    return { echec: "The answer is not valid UTF-8 text, so it is not JSON" };
+  }
+}
+
+/** Asks the catalogue one question. The text of its answer, or why there is none: a status that is not a success, a timeout, a network error, a body past the cap. */
+async function interrogerCatalogue(requete: string): Promise<{ texte: string } | { echec: string }> {
+  const adresse = `${URL_CATALOGUE_OFFICE}?${new URLSearchParams({ query: requete })}`;
+  try {
+    const r = await fetch(adresse, {
+      headers: { "user-agent": "crusetra-screening (EU Journal watch, public catalogue)", accept: "application/sparql-results+json" },
+      redirect: "error", signal: AbortSignal.timeout(DELAI_CATALOGUE_MS),
+    });
+    if (!r.ok) {
+      await r.body?.cancel();
+      return { echec: `The Office answered HTTP ${r.status}` };
+    }
+    const annonce = Number(r.headers.get("content-length") ?? "0");
+    if (annonce > PLAFOND_OCTETS_CATALOGUE) {
+      await r.body?.cancel();
+      return { echec: "The answer is larger than the size this check reads" };
+    }
+    return await lireCorpsPlafonne(r);
+  } catch (e) {
+    if ((e as Error).name === "TimeoutError") return { echec: `The Office did not answer within ${DELAI_CATALOGUE_MS / 1000} s` };
+    /* A library or a proxy may put an address in its message. */
+    return { echec: urlSansJeton(`network: ${(e as Error).message}`) };
+  }
+}
+
+/**
+ * The Journal watch, end to end: reads the EU file on disk, asks the catalogue, sets the answer against the file, prints the acts
+ * the file does not carry, writes them under the working directory, and returns the exit code (1: some are absent, 0: none and the
+ * question was shown to work, 2: it could not ask or read, and nothing is written then). A failure is always 2, never "nothing missing".
+ */
+async function veillerLesActes(): Promise<number> {
+  const def = SOURCES.find((s) => s.source === "EU")!;
+  const nom = `data/listes/${fichierDe(def)}`;
+  const refuser = (raison: string): number => {
+    console.error(`The Journal watch could not be done. ${urlSansJeton(raison)}.\nNothing was written as "no act is missing": a check that could not ask or read says nothing about the Journal.`);
+    return 2;
+  };
+  let xml: string;
+  try {
+    xml = readFileSync(join(DONNEES, fichierDe(def)), "utf8");
+  } catch (e) {
+    return refuser(`The EU file ${nom} cannot be used: it cannot be read (${(e as NodeJS.ErrnoException).code ?? "unreadable"}); run \`npm run listes -- --fetch --only=EU\``);
+  }
+  const q = preparerQuestion(xml);
+  if ("refus" in q) return refuser(`The EU file ${nom} cannot be used: ${q.refus}`);
+  const reponse = await interrogerCatalogue(q.requete);
+  if ("echec" in reponse) return refuser(reponse.echec);
+  const c = controler(q, reponse.texte);
+  if ("refus" in c) return refuser(c.refus);
+  const motif = refusDuControle(c);
+  if (motif !== null) return refuser(motif);
+  const ecrit = ecrireActesAbsents(process.cwd(), jourDe(new Date()), c.absents);
+  if ("refus" in ecrit) {
+    if (c.absents.length > 0) console.log(lignesDuRapport(q, c, null).join("\n"));
+    return refuser(ecrit.refus);
+  }
+  console.log(lignesDuRapport(q, c, ecrit.chemin).join("\n"));
+  return codeDeSortie(c);
 }
 
 /* ─────────────────────────────────── la commande ─────────────────────────────────── */
 
 async function principal(): Promise<void> {
-  refuserDrapeauxInconnus(["--fetch", "--only"]);
+  refuserDrapeauxInconnus(["--fetch", "--only", "--actes"]);
   const veutFetch = process.argv.includes("--fetch");
+  const veutActes = process.argv.includes("--actes");
+  /* `--actes` is a switch, alone: `--actes=EU` would otherwise be read as no flag at all and list what is on disk, and a mode
+     mixed with `--fetch` or `--only` would do two things at once. */
+  if (process.argv.slice(2).some((a) => a.startsWith("--actes="))) {
+    console.error("--actes takes no value: it asks the catalogue one fixed question about the EU file on disk.");
+    process.exit(2);
+  }
+  if (veutActes && (veutFetch || process.argv.slice(2).some((a) => a === "--only" || a.startsWith("--only=")))) {
+    console.error("--actes goes alone: it reads the EU file on disk and downloads no list; run --fetch separately.");
+    process.exit(2);
+  }
   /* `--only=UK,EU-VESSELS` : ne retélécharger que ces sources ; les autres gardent leur ligne du manifeste et leur
      fichier, donc leur date. Sans cela, ajouter une liste rajeunirait toutes les autres et déplacerait d'un coup
      chaque chiffre mesuré sur elles. */
@@ -1233,18 +1351,23 @@ async function principal(): Promise<void> {
     }
   }
 
-  if (veutFetch && (process.env.CRUSETRA_OFFLINE === "1" || process.env.CASCADE_OFFLINE === "1")) {
+  if ((veutFetch || veutActes) && (process.env.CRUSETRA_OFFLINE === "1" || process.env.CASCADE_OFFLINE === "1")) {
     /* Le refus nomme le drapeau ET l'issue : un refus sans issue se fait commenter. Il nomme celui que le poste a posé.
        L'ancien nom refuse exactement comme avant, même quand CRUSETRA_OFFLINE vaut autre chose que 1 : un poste isolé
        configuré avant le changement de nom ne perd jamais son refus. */
     const poses = ["CRUSETRA_OFFLINE", "CASCADE_OFFLINE"].filter((n) => process.env[n] === "1");
     const ancien = poses.includes("CASCADE_OFFLINE") ? " (CASCADE_OFFLINE is the deprecated name of CRUSETRA_OFFLINE)" : "";
     console.error(`\n${poses.map((n) => `${n}=1`).join(" and ")} ${poses.length > 1 ? "forbid" : "forbids"} the network, `
-      + `and --fetch exists to use it${ancien}.`);
-    console.error(`Nothing was downloaded and nothing was written.`);
+      + `and ${veutActes ? "--actes" : "--fetch"} exists to use it${ancien}.`);
+    console.error(veutActes ? `Nothing was asked and nothing was written.` : `Nothing was downloaded and nothing was written.`);
     console.error(`  → run \`npm run listes\` (no flag) to see what is already on disk, or`);
     console.error(`  → unset ${poses.join(" and ")} to fetch the public lists.\n`);
     process.exit(2);
+  }
+
+  if (veutActes) {
+    process.exitCode = await veillerLesActes();
+    return;
   }
 
   if (veutFetch) {
