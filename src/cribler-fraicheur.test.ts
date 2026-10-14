@@ -127,6 +127,37 @@ test("the update failed (the file was generated eight days before the day of the
   assert.equal(refusFraicheurUe(manifeste(ligne(sept, avant(30, sept), sept)), horloge(aujourdhui)), null, "exactly the limit is not a refusal");
 });
 
+test("an unchanged file nine days old, downloaded yesterday with the feed agreeing, is not refused (the EU had nothing new; the update did not fail)", () => {
+  const aujourdhui = "2026-10-21";
+  const gen = avant(SEUIL_RETARD_UE_JOURS + 2, aujourdhui);
+  assert.equal(refusFraicheurUe(manifeste(ligne(gen, avant(40, gen), gen, { confirmeLe: avant(1, aujourdhui) })), horloge(aujourdhui)), null);
+});
+
+test("the same file whose last good download was eight days ago is refused, and the message names the download day", () => {
+  const aujourdhui = "2026-10-21";
+  const gen = avant(SEUIL_RETARD_UE_JOURS + 2, aujourdhui);
+  const dernier = avant(SEUIL_RETARD_UE_JOURS + 1, aujourdhui);
+  const m = refusFraicheurUe(manifeste(ligne(gen, avant(40, gen), gen, { confirmeLe: dernier })), horloge(aujourdhui));
+  assert.ok(m !== null && m.includes(dernier) && m.includes(aujourdhui) && m.includes(`${SEUIL_RETARD_UE_JOURS} days`) && m.includes(TITRE_UE), String(m));
+  assert.match(m, /last download that confirmed it against the feed/);
+});
+
+test("exactly seven days since the last good download is not a refusal; the real shape of 14 October 2026 (generated 12th, downloaded 14th, feed 12th) is not either", () => {
+  const aujourdhui = "2026-10-21";
+  const gen = avant(SEUIL_RETARD_UE_JOURS + 2, aujourdhui);
+  assert.equal(refusFraicheurUe(manifeste(ligne(gen, avant(40, gen), gen, { confirmeLe: avant(SEUIL_RETARD_UE_JOURS, aujourdhui) })), horloge(aujourdhui)), null);
+  assert.equal(refusFraicheurUe(manifeste(ligne("2026-10-12", "2026-07-23", "2026-10-12", { confirmeLe: "2026-10-14" })), horloge("2026-10-14")), null);
+});
+
+test("a download made while the feed day is newer than the file does not count as fresh: the old confirmation stands and the refusal names both", () => {
+  const aujourdhui = "2026-10-21";
+  const gen = avant(SEUIL_RETARD_UE_JOURS + 2, aujourdhui);
+  const dernier = avant(SEUIL_RETARD_UE_JOURS + 1, aujourdhui);
+  const jourFlux = avant(2, aujourdhui);
+  const m = refusFraicheurUe(manifeste(ligne(gen, avant(40, gen), jourFlux, { confirmeLe: dernier })), horloge(aujourdhui));
+  assert.ok(m !== null && m.includes(dernier) && m.includes(jourFlux), String(m));
+});
+
 test("a feed that could not be read when the list was downloaded is not a refusal by itself, and the message of a refusal says it", () => {
   const aujourdhui = "2026-10-14";
   const gen = avant(1, aujourdhui);
