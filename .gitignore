@@ -4,6 +4,8 @@ node_modules
 # frozen figure depends on, so the measure replays on a fresh clone without the lists
 data/*
 !data/frequences.*.json
+# donnees/ holds the local output of `npm run listes -- --actes` (the acts the EU file does not carry): never committed
+donnees/
 .DS_Store
 # the desktop app's worktrees for agent lanes
 .claude/worktrees
