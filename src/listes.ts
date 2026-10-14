@@ -66,7 +66,7 @@ import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { lireTable } from "./csv.ts";
 import { lireClasseur, tableParEntete } from "./xlsx.ts";
 import { confirmationReportable, enregistrerFraicheurUe, jourDe, jugerFraicheurUe, lireDatesUe, type FraicheurEnregistree, type ResultatRssUe } from "./fraicheur-ue.ts";
-import { PLAFOND_OCTETS_CATALOGUE, actesDeLAnnee, codeDeSortie, controler, ecrireActesAbsents, enteteDePartiel, lignesDuRapport, preparerQuestion, refusDuControle } from "./actes-ue.ts";
+import { PLAFOND_OCTETS_CATALOGUE, actesDeLAnnee, codeDeSortie, controler, ecrireActesAbsents, enteteDePartiel, lignesDeReponseIncomplete, lignesDuRapport, preparerQuestion, refusDuControle } from "./actes-ue.ts";
 
 /** LA forme commune : les noms restent TELS QUE LA LISTE LES ÉCRIT — la normalisation est
  *  le travail des matchers, pas du téléchargeur. */
@@ -1276,7 +1276,7 @@ async function interrogerCatalogue(requete: string): Promise<{ texte: string } |
       await r.body?.cancel();
       return { echec: `The Office answered HTTP ${r.status}` };
     }
-    /* ...and not one the endpoint flags as cut short in its headers (Virtuoso: X-SQL-State, X-SQL-Message; any name saying partial or truncated). */
+    /* ...and not one the endpoint flags as cut short in its headers (Virtuoso: X-SQL-State, X-SQL-Message; Warning; Content-Range; any name saying partial or truncated). */
     const noms: string[] = [];
     r.headers.forEach((_valeur, nom) => noms.push(nom));
     const partiel = enteteDePartiel(noms);
@@ -1322,7 +1322,12 @@ async function veillerLesActes(): Promise<number> {
   const c = controler(q, reponse.texte);
   if ("refus" in c) return refuser(c.refus);
   const motif = refusDuControle(c);
-  if (motif !== null) return refuser(motif);
+  if (motif !== null) {
+    /* An incomplete answer can lose rows, never invent an act: what it found is shown, labelled, and the day file is not written. */
+    const trouves = lignesDeReponseIncomplete(c);
+    if (trouves.length > 0) console.log(trouves.join("\n"));
+    return refuser(motif);
+  }
   const ecrit = ecrireActesAbsents(process.cwd(), jourDe(new Date()), c.absents);
   if ("refus" in ecrit) {
     if (c.absents.length > 0) console.log(lignesDuRapport(q, c, null).join("\n"));
