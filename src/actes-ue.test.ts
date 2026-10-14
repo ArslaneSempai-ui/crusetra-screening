@@ -21,7 +21,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, sep } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { actesDuFlux, manquants, numerosDeLActe, sonderFlux } from "./actes-ue.ts";
@@ -418,7 +418,7 @@ type Resultat = {
 
 const fichiersSousDossier = (dossier: string, base = dossier): string[] =>
   readdirSync(dossier, { withFileTypes: true }).flatMap((e) =>
-    e.isDirectory() ? fichiersSousDossier(join(dossier, e.name), base) : [join(dossier, e.name).slice(base.length + 1)]);
+    e.isDirectory() ? fichiersSousDossier(join(dossier, e.name), base) : [join(dossier, e.name).slice(base.length + 1).split(sep).join("/")]);
 
 /** One run of the real command, then everything it left behind is read; the throwaway root is removed before this returns. */
 function lancerGuet({ eu = fluxGuet(), reponse = reponseCatalogue([CAT_A, CAT_B, CAT_C]), mode = "ok", args = ["--actes"], env = {}, avant = {}, dansLaRacine = false, delai = 120_000 }: Lancement = {}): Resultat {
