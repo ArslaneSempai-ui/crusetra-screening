@@ -354,19 +354,23 @@ globalThis.fetch = async (url, init = {}) => {
   const corps = readFileSync(process.env.STUB_REPONSE);
   if (mode === "http403") return new Response("forbidden", { status: 403 });
   if (mode === "http500") return new Response("server error", { status: 500 });
+  if (mode === "http206") return new Response(corps, { status: 206 });
   if (mode === "throws") throw new TypeError("fetch failed (connect ECONNRESET)");
   if (mode === "timeout") { const e = new Error("The operation was aborted due to timeout"); e.name = "TimeoutError"; throw e; }
   if (mode === "html") return new Response("<html><body>Please verify you are human</body></html>", { status: 200, headers: { "content-type": "text/html" } });
   if (mode === "garbage") return new Response(new Uint8Array([0, 1, 2, 255, 254, 123, 34]), { status: 200 });
   if (mode === "oversize") {
-    /* a VALID answer followed by blanks past the cap: only the cap can refuse it, JSON would parse */
-    const bloc = new Uint8Array(1024 * 1024).fill(32);
-    let envoyes = 0;
+    /* ENDLESS: a valid answer, then blanks for ever, paced so that a reader with no cap grows slowly and is stopped by the
+       test's timeout, not by the machine. Only the cap, applied while the body is read, can end this one in time. */
+    const bloc = new Uint8Array(64 * 1024).fill(32);
     return new Response(new ReadableStream({
-      start(c) { c.enqueue(new Uint8Array(corps)); envoyes += corps.length; },
-      pull(c) { if (envoyes > Number(process.env.STUB_OCTETS)) { c.close(); return; } c.enqueue(bloc); envoyes += bloc.length; },
+      start(c) { c.enqueue(new Uint8Array(corps)); },
+      async pull(c) { await new Promise((r) => setTimeout(r, 5)); c.enqueue(bloc); },
     }), { status: 200 });
   }
+  if (mode === "partial-sql") return new Response(corps, { status: 200, headers: { "content-type": "application/sparql-results+json", "X-SQL-State": "S1TAT", "X-SQL-Message": "Anytime query: partial result" } });
+  if (mode === "partial-name") return new Response(corps, { status: 200, headers: { "content-type": "application/sparql-results+json", "X-Result-Partial": "true" } });
+  if (mode === "truncated-name") return new Response(corps, { status: 200, headers: { "content-type": "application/sparql-results+json", "X-Results-Truncated": "1" } });
   if (mode === "oversize-header") return new Response(corps, { status: 200, headers: { "content-length": process.env.STUB_OCTETS } });
   return new Response(corps, { status: 200, headers: { "content-type": "application/sparql-results+json" } });
 };
@@ -398,6 +402,8 @@ type Lancement = {
   avant?: Record<string, string>;
   /** run in the root of the copy (as `--fetch` is) instead of in a working directory of its own */
   dansLaRacine?: boolean;
+  /** how long the child may run before the test kills it (ms) */
+  delai?: number;
 };
 type Resultat = {
   statut: number | null; sortie: string; erreurs: string; requetes: Requete[];
@@ -413,7 +419,7 @@ const fichiersSousDossier = (dossier: string, base = dossier): string[] =>
     e.isDirectory() ? fichiersSousDossier(join(dossier, e.name), base) : [join(dossier, e.name).slice(base.length + 1)]);
 
 /** One run of the real command, then everything it left behind is read; the throwaway root is removed before this returns. */
-function lancerGuet({ eu = fluxGuet(), reponse = reponseCatalogue([CAT_A, CAT_B, CAT_C]), mode = "ok", args = ["--actes"], env = {}, avant = {}, dansLaRacine = false }: Lancement = {}): Resultat {
+function lancerGuet({ eu = fluxGuet(), reponse = reponseCatalogue([CAT_A, CAT_B, CAT_C]), mode = "ok", args = ["--actes"], env = {}, avant = {}, dansLaRacine = false, delai = 120_000 }: Lancement = {}): Resultat {
   /* realpath: on macOS tmpdir() is a symlink, and `isMain` compares the resolved module URL with argv[1]. */
   const racine = realpathSync(mkdtempSync(join(tmpdir(), "guet-ue-")));
   try {
@@ -442,7 +448,7 @@ function lancerGuet({ eu = fluxGuet(), reponse = reponseCatalogue([CAT_A, CAT_B,
     }, env);
     const r = spawnSync(process.execPath,
       ["--import", pathToFileURL(join(racine, "fausse-recuperation.mjs")).href, join(racine, "src", "listes.ts"), ...args],
-      { cwd, encoding: "utf8", env: environnement, timeout: 120_000, maxBuffer: 64 * 1024 * 1024 });
+      { cwd, encoding: "utf8", env: environnement, timeout: delai, maxBuffer: 64 * 1024 * 1024 });
     const requetes = readFileSync(join(racine, "requetes.log"), "utf8").split("\n").filter((l) => l.length > 0).map((l) => JSON.parse(l) as Requete);
     /* run in the root of the copy, the modules and the stub files are there too: only the manifest is of interest */
     const sousCwd = dansLaRacine ? ["listes-manifest.json"].filter((f) => existsSync(join(cwd, f))) : fichiersSousDossier(cwd);
@@ -457,8 +463,8 @@ function lancerGuet({ eu = fluxGuet(), reponse = reponseCatalogue([CAT_A, CAT_B,
 
 /** Three acts the catalogue knows: the first two are named by the feed, the third is not. */
 type LigneCatalogue = { celex: string; title: string; date: string };
-const CAT_A: LigneCatalogue = { celex: "32026R9001", date: "2026-06-10", title: "Council Implementing Regulation (EU) 2026/9001 of 10 June 2026 implementing Regulation (EU) 2099/1 concerning restrictive measures in view of the situation in Examplia" };
-const CAT_B: LigneCatalogue = { celex: "32026R9002", date: "2026-06-12", title: "Council Regulation (EU) 2026/9002 of 12 June 2026 amending Regulation (EU) 2099/2 concerning restrictive measures against the invented regime of Testland" };
+const CAT_A: LigneCatalogue = { celex: "32026R9001", date: "2026-06-12", title: "Council Implementing Regulation (EU) 2026/9001 of 12 June 2026 implementing Regulation (EU) 2099/1 concerning restrictive measures in view of the situation in Examplia" };
+const CAT_B: LigneCatalogue = { celex: "32026R9002", date: "2026-06-10", title: "Council Regulation (EU) 2026/9002 of 10 June 2026 amending Regulation (EU) 2099/2 concerning restrictive measures against the invented regime of Testland" };
 const CAT_C: LigneCatalogue = { celex: "32026R9003", date: "2026-09-28", title: "Council Implementing Regulation (EU) 2026/9003 of 28 September 2026 implementing Regulation (EU) 2099/1 concerning restrictive measures in view of the situation in Examplia" };
 
 /** A SPARQL JSON result of the shape the W3C defines, one binding per act. A row may carry fewer columns, to build the odd ones. */
@@ -473,9 +479,9 @@ const reponseCatalogue = (lignes: (Partial<LigneCatalogue> & { celex?: string })
   },
 });
 
-const ACTE_A_FLUX: Acte = { numberTitle: "2026/9001 (OJ L202609001)", publicationDate: "2026-06-10", programme: "RUS" };
-const ACTE_B_FLUX: Acte = { numberTitle: "2026/9002 (OJ L202609002)", publicationDate: "2026-06-12", programme: "BLR" };
-/** The file of the cases: it names 2026/9001 and 2026/9002, its newest publication is 2026-06-12, it was generated on 2026-10-12. */
+const ACTE_A_FLUX: Acte = { numberTitle: "2026/9001 (OJ L202609001)", publicationDate: "2026-06-12", programme: "RUS" };
+const ACTE_B_FLUX: Acte = { numberTitle: "2026/9002 (OJ L202609002)", publicationDate: "2026-06-10", programme: "BLR" };
+/** The file of the cases: it names 2026/9001 (published 2026-06-12, the file's newest day: the one act of that day) and 2026/9002, and it was generated on 2026-10-12. */
 const fluxGuet = (): string => flux([entite(1, [ACTE_A_FLUX]), entite(2, [ACTE_B_FLUX])]);
 
 /** The day the question starts at, computed here and not by the code under test. */
@@ -515,7 +521,7 @@ test("--actes with every act of the answer named by the feed: exit 0, nothing li
 test("a number near-miss does not hide the absent act: the feed carries 2026/900, 2026/90030 and 12026/9003, and 2026/9003 is still named", () => {
   const voisins = flux([
     entite(1, [ACTE_A_FLUX]), entite(2, [{ numberTitle: "2026/900 (OJ L1)", publicationDate: "2026-06-11" }]),
-    entite(3, [{ numberTitle: "2026/90030 (OJ L2)", publicationDate: "2026-06-11" }]), entite(4, [{ numberTitle: "12026/9003 (OJ L3)", publicationDate: "2026-06-12" }]),
+    entite(3, [{ numberTitle: "2026/90030 (OJ L2)", publicationDate: "2026-06-11" }]), entite(4, [{ numberTitle: "12026/9003 (OJ L3)", publicationDate: "2026-06-11" }]),
   ]);
   const r = lancerGuet({ eu: voisins, reponse: reponseCatalogue([CAT_A, CAT_C]) });
   assert.equal(r.statut, 1, r.erreurs);
@@ -536,6 +542,7 @@ test("the Office refusing (HTTP 403, HTTP 500, a timeout, a network error), or a
   const cas: [string, Lancement, RegExp][] = [
     ["HTTP 403", { mode: "http403" }, /HTTP 403/],
     ["HTTP 500", { mode: "http500" }, /HTTP 500/],
+    ["HTTP 206, a part of an answer", { mode: "http206" }, /HTTP 206/],
     ["a timeout", { mode: "timeout" }, /did not answer|timed out/i],
     ["a network error", { mode: "throws" }, /network/i],
     ["a captcha page with status 200", { mode: "html" }, /not JSON|JSON/],
@@ -554,13 +561,17 @@ test("the Office refusing (HTTP 403, HTTP 500, a timeout, a network error), or a
   }
 });
 
-test("a body past the cap is refused whether the Office announces it or streams it: exit 2, nothing written", () => {
-  for (const mode of ["oversize", "oversize-header"]) {
-    const r = lancerGuet({ mode });
-    assert.equal(r.statut, 2, `${mode}: ${r.sortie}${r.erreurs}`);
-    assert.match(r.erreurs, /larger than/, mode);
-    assert.deepEqual(r.fichiers, {}, `${mode}: nothing written`);
-  }
+test("a body past the cap is refused whether the Office announces it or streams it, even a stream that never ends: exit 2, nothing written", () => {
+  /* the streamed body NEVER ends: only the cap applied while it is read can stop the command, so a check that reads the
+     whole body before comparing its size would hang until the timeout below kills it, and the exit code would not be 2 */
+  const infini = lancerGuet({ mode: "oversize", delai: 20_000 });
+  assert.equal(infini.statut, 2, `an endless body: exit ${infini.statut}\n${infini.sortie}${infini.erreurs}`);
+  assert.match(infini.erreurs, /larger than/);
+  assert.deepEqual(infini.fichiers, {});
+  const annonce = lancerGuet({ mode: "oversize-header" });
+  assert.equal(annonce.statut, 2, `${annonce.sortie}${annonce.erreurs}`);
+  assert.match(annonce.erreurs, /larger than/);
+  assert.deepEqual(annonce.fichiers, {});
 });
 
 test("more rows than the limit (the answer may be cut short), or none at all, or none readable: exit 2, never 'nothing missing'", () => {
@@ -574,9 +585,9 @@ test("more rows than the limit (the answer may be cut short), or none at all, or
   assert.equal(lignesAbsent(juste.sortie).length, Actes.LIMITE_LIGNES_CATALOGUE - 1);
   const aucune = lancerGuet({ reponse: reponseCatalogue([]) });
   assert.equal(aucune.statut, 2, "an answer with no act cannot show that the question works: it does not read as 'nothing missing'");
-  assert.match(aucune.erreurs, /no act of the answer is named/i);
+  assert.match(aucune.erreurs, /answer incomplete/i, "the file's own newest act is not in an empty answer");
   assert.deepEqual(aucune.fichiers, {});
-  const illisibles = lancerGuet({ reponse: reponseCatalogue([{ celex: "32026R9001R(01)", date: "2026-06-10", title: "Corrigendum concerning restrictive measures" }, { date: "2026-06-10", title: "no celex at all" }]) });
+  const illisibles = lancerGuet({ reponse: reponseCatalogue([CAT_A, { celex: "32026R9001R(01)", date: "2026-06-10", title: "Corrigendum concerning restrictive measures" }, { date: "2026-06-10", title: "no celex at all" }]) });
   assert.equal(illisibles.statut, 2, "rows that cannot be read and no act proven absent: not 'nothing missing'");
   assert.match(illisibles.erreurs, /could not be read/i);
   assert.deepEqual(illisibles.fichiers, {});
@@ -804,7 +815,7 @@ test("controler: it can say 'nothing missing' only when an act of the answer is 
     ["no row", reponseCatalogue([]), 2],
     ["only unreadable rows", reponseCatalogue([{ celex: "bad", date: "2026-01-01", title: "t" }]), 2],
     ["one named, one unreadable", reponseCatalogue([CAT_A, { celex: "bad", date: "2026-01-01", title: "t" }]), 2],
-    ["one absent and one unreadable", reponseCatalogue([CAT_C, { celex: "bad", date: "2026-01-01", title: "t" }]), 1],
+    ["one absent and one unreadable", reponseCatalogue([CAT_A, CAT_C, { celex: "bad", date: "2026-01-01", title: "t" }]), 1],
   ];
   for (const [nom, reponse, code] of cas) {
     const c = Actes.controler(q, reponse);
@@ -815,4 +826,197 @@ test("controler: it can say 'nothing missing' only when an act of the answer is 
   assert.ok("refus" in Actes.controler(q, "not json"));
   assert.ok("refus" in Actes.preparerQuestion(""), "a text that is not a complete EU file gives no question");
   assert.ok("refus" in Actes.preparerQuestion(flux([entite(1, [{ numberTitle: "2026/1 (OJ L1)", publicationDate: "2026-12-31" }])])), "dates that cannot be trusted give no question");
+});
+
+/* ───────────────────────────────────────────────────────────────────────────────────────────────
+ * AFTER THE REVIEW OF 1f12f6b: a partial answer must not read as a complete one, a duplicate number must be said, the day file's
+ * other keys must keep their bytes, and the documents must name what the command records.
+ * ─────────────────────────────────────────────────────────────────────────────────────────────── */
+
+test("an answer the Office flags as partial is refused whatever its body says: X-SQL-State, X-SQL-Message, or any header named partial or truncated is exit 2, nothing written", () => {
+  /* the body is a COMPLETE-LOOKING answer that would read as 'all present, exit 0': only the headers can refuse it */
+  const complete = reponseCatalogue([CAT_A, CAT_B]);
+  const controle = lancerGuet({ reponse: complete });
+  assert.equal(controle.statut, 0, `the same body without a flag is exit 0, so a refusal below is the header's: ${controle.erreurs}`);
+  for (const [mode, entete] of [["partial-sql", "x-sql-"], ["partial-name", "x-result-partial"], ["truncated-name", "x-results-truncated"]] as const) {
+    const r = lancerGuet({ reponse: complete, mode });
+    assert.equal(r.statut, 2, `${mode}: exit ${r.statut}\n${r.sortie}${r.erreurs}`);
+    assert.match(r.erreurs, /partial/i, mode);
+    assert.ok(r.erreurs.toLowerCase().includes(entete), `${mode}: the header is named (${entete})`);
+    assert.doesNotMatch(r.sortie, /Every act|no act is missing/i, mode);
+    assert.deepEqual(r.fichiers, {}, `${mode}: nothing written`);
+  }
+  assert.equal(Actes.enteteDePartiel(["content-type", "date"]), null);
+  assert.equal(Actes.enteteDePartiel(["content-type", "X-SQL-Message"]), "X-SQL-Message");
+  assert.equal(Actes.enteteDePartiel(["x-Is-Partial-Content"]), "x-Is-Partial-Content");
+  assert.equal(Actes.enteteDePartiel(["x-truncated"]), "x-truncated");
+  assert.equal(Actes.enteteDePartiel(["accept-ranges", "content-disposition"]), null, "the headers the Office sends on a whole answer are not flags");
+});
+
+test("the canary: every act the file carries that is dated on its newest publication day must be in the answer, else exit 2 'answer incomplete' naming them, even when an act is absent", () => {
+  /* the feed carries two acts on its newest day, 2026/9001 and 2026/9004; the answer holds only the first */
+  const deuxCanaris = flux([entite(1, [ACTE_A_FLUX]), entite(2, [ACTE_B_FLUX]), entite(3, [{ numberTitle: "2026/9004 (OJ L202609004)", publicationDate: "2026-06-12", programme: "RUS" }])]);
+  const CAT_D: LigneCatalogue = { celex: "32026D9004", date: "2026-06-12", title: "Council Decision (CFSP) 2026/9004 concerning restrictive measures in view of the situation in Examplia" };
+  const entiere = lancerGuet({ eu: deuxCanaris, reponse: reponseCatalogue([CAT_A, CAT_B, CAT_D]) });
+  assert.equal(entiere.statut, 0, `the control: both canary acts present, nothing absent: ${entiere.erreurs}`);
+  for (const reponse of [reponseCatalogue([CAT_A, CAT_B]), reponseCatalogue([CAT_A, CAT_B, CAT_C])]) {
+    const r = lancerGuet({ eu: deuxCanaris, reponse });
+    assert.equal(r.statut, 2, `exit ${r.statut}\n${r.sortie}${r.erreurs}`);
+    assert.match(r.erreurs, /answer incomplete/i);
+    assert.match(r.erreurs, /2026\/9004/, "the missing canary act is named");
+    assert.doesNotMatch(r.erreurs, /2026\/9001\b/, "the canary act the answer does hold is not named as missing");
+    assert.match(r.erreurs, /2026-06-12/, "the day it is judged on is said");
+    assert.deepEqual(r.fichiers, {}, "nothing written");
+  }
+  /* the pure functions agree */
+  const q = Actes.preparerQuestion(deuxCanaris);
+  assert.ok(!("refus" in q));
+  if ("refus" in q) return;
+  const c = Actes.controler(q, reponseCatalogue([CAT_A, CAT_B]));
+  assert.ok(!("refus" in c));
+  if ("refus" in c) return;
+  assert.deepEqual(c.canari, { jour: "2026-06-12", total: 2, manquants: ["2026/9004"] });
+  assert.equal(Actes.codeDeSortie(c), 2);
+  assert.match(Actes.refusDuControle(c) ?? "", /answer incomplete/i);
+  /* a file whose newest-day act has no act number in its title has nothing to check: no canary, no refusal on that account */
+  const sansNumero = flux([entite(1, [{ numberTitle: "UNLI 26.03.2026 - 2", publicationDate: "2026-06-12" }]), entite(2, [ACTE_B_FLUX])]);
+  const q2 = Actes.preparerQuestion(sansNumero);
+  assert.ok(!("refus" in q2));
+  if ("refus" in q2) return;
+  const c2 = Actes.controler(q2, reponseCatalogue([CAT_B]));
+  assert.ok(!("refus" in c2));
+  if ("refus" in c2) return;
+  assert.deepEqual(c2.canari, { jour: "2026-06-12", total: 0, manquants: [] });
+});
+
+test("two CELEX with one act number (a regulation and a decision numbered alike) are said in a NOTE: the match is on the number, so one carried number would hide both", () => {
+  const DECISION: LigneCatalogue = { celex: "32026D9003", date: "2026-09-28", title: "Council Decision (CFSP) 2026/9003 concerning restrictive measures in view of the situation in Examplia" };
+  /* both absent: both listed, and the shared number said */
+  const absents = lancerGuet({ reponse: reponseCatalogue([CAT_A, CAT_C, DECISION]) });
+  assert.equal(absents.statut, 1, absents.erreurs);
+  assert.equal(lignesAbsent(absents.sortie).length, 2);
+  const notes = absents.sortie.split("\n").filter((l) => l.startsWith("NOTE "));
+  assert.equal(notes.length, 1, absents.sortie);
+  assert.match(notes[0]!, /2026\/9003/);
+  assert.match(notes[0]!, /32026D9003/);
+  assert.match(notes[0]!, /32026R9003/);
+  assert.match(notes[0]!, /one carried number would hide both|hide both/i);
+  /* the feed carries the number: neither is reported, and the NOTE is still printed, which is the tripwire */
+  const portes = lancerGuet({ reponse: reponseCatalogue([CAT_A, { ...CAT_A, celex: "32026D9001", title: "Council Decision (CFSP) 2026/9001 concerning restrictive measures" }]) });
+  assert.equal(portes.statut, 0, portes.erreurs);
+  assert.ok(portes.sortie.split("\n").some((l) => l.startsWith("NOTE ") && l.includes("32026D9001") && l.includes("32026R9001")), portes.sortie);
+  /* no number shared, no note */
+  assert.ok(!lancerGuet().sortie.split("\n").some((l) => l.startsWith("NOTE ")));
+});
+
+/* ───────────────────────── the day file keeps the bytes of every key but its own ───────────────────────── */
+
+const ABSENT_A: Actes.ActeCatalogue = { celex: "32026R9003", numero: "2026/9003", titre: "An invented act", date: "2026-09-28" };
+
+/** A day file as the listes role writes it by hand: four-space indent, a number past what a double holds, escapes, an odd block. */
+const A_LA_MAIN = [
+  "{",
+  '    "hash": "abc",',
+  '    "octets": 12345678901234567890,',
+  '    "ue_2193": {',
+  '        "note":   "d\\u00e9j\\u00e0 vu",',
+  '        "figures": [1.0, 2.50, 1e3, 12345678901234567890],',
+  '        "vide": {}',
+  "    },",
+  '    "fin": null',
+  "}",
+  "",
+].join("\n");
+
+function avecDossier<T>(f: (racine: string) => T): T {
+  const racine = realpathSync(mkdtempSync(join(tmpdir(), "jour-ue-")));
+  try { return f(racine); } finally { rmSync(racine, { recursive: true, force: true }); }
+}
+const poser = (racine: string, jour: string, contenu: string): string => {
+  mkdirSync(join(racine, "donnees", "listes"), { recursive: true });
+  writeFileSync(join(racine, "donnees", "listes", `${jour}.json`), contenu);
+  return join(racine, "donnees", "listes", `${jour}.json`);
+};
+
+test("a day file written by hand keeps every byte of its other keys: indent, a number past a double, escapes and the whole ue_2193 block; only actes_absents is added or replaced", () => {
+  avecDossier((racine) => {
+    /* added: the original text is a prefix of the new one up to its last member, and its closing is untouched */
+    const chemin = poser(racine, "2026-10-14", A_LA_MAIN);
+    const r = Actes.ecrireActesAbsents(racine, "2026-10-14", [ABSENT_A]);
+    assert.ok(!("refus" in r), JSON.stringify(r));
+    const apres = readFileSync(chemin, "utf8");
+    const coupe = A_LA_MAIN.indexOf('"fin": null') + '"fin": null'.length;
+    assert.ok(apres.startsWith(A_LA_MAIN.slice(0, coupe)), "every byte up to the last member is the original's");
+    assert.ok(apres.endsWith("\n}\n"), "the closing is the original's");
+    assert.ok(apres.includes('"octets": 12345678901234567890,'), "the large number is not rounded");
+    assert.ok(apres.includes(A_LA_MAIN.slice(A_LA_MAIN.indexOf('    "ue_2193"'), A_LA_MAIN.indexOf('    "fin"'))), "the ue_2193 block is byte-identical");
+    const lu = JSON.parse(apres) as Record<string, unknown>;
+    assert.deepEqual(lu["actes_absents"], [{ celex: "32026R9003", numero: "2026/9003", titre: "An invented act", date: "2026-09-28" }]);
+    assert.deepEqual(Object.keys(lu), ["hash", "octets", "ue_2193", "fin", "actes_absents"]);
+    /* replaced: only the value changes, the bytes before and after it are the previous text's */
+    const r2 = Actes.ecrireActesAbsents(racine, "2026-10-14", []);
+    assert.ok(!("refus" in r2));
+    const encore = readFileSync(chemin, "utf8");
+    const i = apres.indexOf('"actes_absents": ') + '"actes_absents": '.length;
+    assert.equal(encore.slice(0, i), apres.slice(0, i), "everything before the value is the previous text's");
+    assert.equal(encore.slice(i), "[]\n}\n", "the value is replaced and the closing is untouched");
+    /* replaced in the middle of the object: the keys after it are untouched too */
+    const milieu = '{\n  "a": 1,\n  "actes_absents": [ "old",\n    "list" ],\n  "z":   99999999999999999999\n}';
+    const chemin2 = poser(racine, "2026-10-15", milieu);
+    assert.ok(!("refus" in Actes.ecrireActesAbsents(racine, "2026-10-15", [ABSENT_A])));
+    const t = readFileSync(chemin2, "utf8");
+    assert.ok(t.startsWith('{\n  "a": 1,\n  "actes_absents": ['), t);
+    assert.ok(t.endsWith(',\n  "z":   99999999999999999999\n}'), "the key after it keeps its spaces and its large number");
+  });
+});
+
+test("the day file in other shapes: a one-line object, an empty object, a file with no final newline, a duplicated key; a file that cannot be merged without a rewrite is left alone", () => {
+  avecDossier((racine) => {
+    for (const [nom, original] of Object.entries({ "inline": '{"a":1,"b":[1,2]}', "empty": "{}", "empty and spaced": "{\n}\n", "no final newline": '{\n  "a": 1\n}', "trailing spaces": '{ "a" : 1 }  \n\n' })) {
+      const chemin = poser(racine, "2026-10-14", original);
+      const r = Actes.ecrireActesAbsents(racine, "2026-10-14", [ABSENT_A]);
+      assert.ok(!("refus" in r), `${nom}: ${JSON.stringify(r)}`);
+      const apres = readFileSync(chemin, "utf8");
+      const lu = JSON.parse(apres) as Record<string, unknown>;
+      assert.equal((lu["actes_absents"] as unknown[]).length, 1, nom);
+      const avant = JSON.parse(original) as Record<string, unknown>;
+      for (const [k, v] of Object.entries(avant)) assert.deepEqual(lu[k], v, `${nom}: ${k}`);
+      if (nom === "inline") assert.ok(apres.startsWith('{"a":1,"b":[1,2], "actes_absents": '), apres);
+    }
+    /* a key given twice: the one JSON.parse reads is the one replaced */
+    const chemin = poser(racine, "2026-10-16", '{\n  "actes_absents": [1],\n  "x": 2,\n  "actes_absents": [2]\n}\n');
+    assert.ok(!("refus" in Actes.ecrireActesAbsents(racine, "2026-10-16", [])));
+    const t = readFileSync(chemin, "utf8");
+    assert.equal(t, '{\n  "actes_absents": [1],\n  "x": 2,\n  "actes_absents": []\n}\n');
+  });
+});
+
+test("a day that is not a day writes nothing: '../escape', a bad date and an empty string are refused before any path is built", () => {
+  avecDossier((racine) => {
+    for (const mauvais of ["../escape", "../../escape", "2026-13-45", "2026-02-30", "", "2026-10-14/../x", "2026-10-1", "2026-10-14 "]) {
+      const r = Actes.ecrireActesAbsents(racine, mauvais, [ABSENT_A]);
+      assert.ok("refus" in r, JSON.stringify(mauvais));
+      assert.deepEqual(readdirSync(racine), [], `${JSON.stringify(mauvais)}: nothing was created under the root`);
+      assert.ok(!existsSync(join(racine, "..", "escape.json")), "nothing outside the root either");
+    }
+  });
+});
+
+/* ───────────────────────── the documents name what the command records, and the local data stays out of git ───────────────────────── */
+
+test("README and DATA-FLOW name the EU row's actes field (one line per act number of the file's year, not bounded), the partial-answer refusal and the canary", () => {
+  const lire = (...p: string[]) => readFileSync(join(ICI, "..", ...p), "utf8");
+  for (const [nom, texte] of [["README.md", lire("README.md")], ["doc/DATA-FLOW.md", lire("doc", "DATA-FLOW.md")]] as const) {
+    assert.match(texte, /`actes`/, `${nom} names the field`);
+    assert.match(texte, /one line per/i, `${nom} says how long the field is`);
+    assert.match(texte, /partial/i, `${nom} says that a partial answer is refused`);
+    assert.match(texte, /answer incomplete|incomplete answer|newest publication day/i, `${nom} says the canary`);
+  }
+  assert.match(lire("doc", "DATA-FLOW.md"), /single (?:Journal )?numbering|one number per act|numbers? acts? in one sequence/i, "DATA-FLOW states the reliance on one number per act");
+});
+
+test("no file under donnees/ is tracked: the output of --actes is local data, and a commit that adds it turns the suite red", (t) => {
+  const r = spawnSync("git", ["ls-files", "--", "donnees"], { cwd: join(ICI, ".."), encoding: "utf8", timeout: 30_000 });
+  if (r.error !== undefined || r.status !== 0) return t.skip("git cannot list the files here");
+  assert.equal(r.stdout.trim(), "", "tracked files under donnees/: remove them from the index (git rm --cached) or keep the folder out of the commit");
 });
