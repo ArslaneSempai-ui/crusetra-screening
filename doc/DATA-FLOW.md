@@ -23,6 +23,17 @@ appear unnoticed (`src/frontiere.test.ts`).
 Each download is recorded in `listes-manifest.json` with its source, date, sha256 and entry
 count, so a report can say which version of each list it was screened against.
 
+The EU row can also carry a stale warning, in the field `avertissement`, the one OFAC's
+record count check already uses. It is set when the newest publicationDate in the file
+is more than 7 days behind its generationDate, when a date is missing or impossible, or when
+a publication is dated more than 1 day after the generationDate (`src/fraicheur-ue.ts`). The
+row stays available: the file is written and its hash recorded. `npm run listes -- --fetch`
+prints the warning on a line marked ⚠, and its text passes through the same token redaction
+as every other string of the manifest. The report `npm run listes` prints without the flag
+does not show it. A client screening does not read this field, so a stale EU file is still
+screened against and the sealed report does not carry the warning. That is the limit of the
+mark today.
+
 `CRUSETRA_OFFLINE=1` makes even the downloader refuse, with a message that names the flag.
 `CASCADE_OFFLINE=1`, its deprecated name, still refuses exactly as before.
 `npm run test` runs with the network cut.
