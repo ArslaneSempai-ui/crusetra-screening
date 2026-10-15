@@ -187,13 +187,32 @@ function jetonsEnMain(env: NodeJS.ProcessEnv): string[] {
  * contain `)`, `&`, a quote or a space, which the `token=` rule below would take for the end of the value and leave the
  * tail; it also covers a proxy or a library that prints the address in another shape. Then any `token=<value>` (also
  * `access_token=`, `CRUSETRA_EU_TOKEN=`) becomes `token=[username]`: the value runs to the next `&`, whitespace, quote,
- * `<`, `>` or `)`, less the punctuation that ends a sentence (`.,;:!?`). Idempotent: the placeholder maps to itself. Apply it to a string, never to serialized JSON (an escaped
+ * `<`, `>` or `)`, less the punctuation that ends a sentence (`.,;:!?`). Whatever that value holds, an existing
+ * placeholder followed by a leftover included, is replaced whole, so the leftover after the placeholder is dropped.
+ * The scan is linear: one search for `token=`, one for the end of the value, one step back over the punctuation, and
+ * the next search starts after the value (no lazy quantifier with a lookahead, no open-ended prefix in a pattern).
+ * Idempotent: the placeholder maps to itself. Apply it to a string, never to serialized JSON (an escaped
  * quote or backslash would be cut); `texteDuManifeste` applies it to each string value before serializing.
  */
 export function urlSansJeton(texte: string, env: NodeJS.ProcessEnv = process.env): string {
   let sortie = texte;
   for (const jeton of jetonsEnMain(env)) sortie = sortie.split(jeton).join(JETON_MASQUE);
-  return sortie.replace(/([\w-]*token=)(?:\[username\]|[^&\s"'<>)]*?(?=[.,;:!?]*(?:[&\s"'<>)]|$)))/gi, (_tout, debut: string) => `${debut}${JETON_MASQUE}`);
+  const cherche = /token=/gi;
+  const fin = /[&\s"'<>)]/g;
+  let resultat = "";
+  let reprise = 0;
+  for (let m = cherche.exec(sortie); m !== null; m = cherche.exec(sortie)) {
+    const debutValeur = m.index + m[0].length;
+    fin.lastIndex = debutValeur;
+    const t = fin.exec(sortie);
+    const finChunk = t === null ? sortie.length : t.index;
+    let finValeur = finChunk;
+    while (finValeur > debutValeur && ".,;:!?".includes(sortie[finValeur - 1]!)) finValeur--;
+    resultat += sortie.slice(reprise, debutValeur) + JETON_MASQUE;
+    reprise = finValeur;
+    cherche.lastIndex = finChunk;
+  }
+  return resultat + sortie.slice(reprise);
 }
 
 /** The address the request goes to: the only place a token enters a URL. Never write or print what this returns. */
