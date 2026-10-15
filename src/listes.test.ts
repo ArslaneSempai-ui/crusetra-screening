@@ -250,6 +250,30 @@ test("urlSansJeton: a held token that itself holds ), &, a quote or a space is r
   }
 });
 
+test("urlSansJeton: what follows an existing placeholder inside the value is dropped, and the placeholder alone maps to itself", () => {
+  const env = {};
+  assert.equal(urlSansJeton("token=[username]xyz", env), "token=[username]");
+  assert.equal(urlSansJeton("https://h/p?token=[username]xyz&a=1", env), "https://h/p?token=[username]&a=1");
+  for (const s of ["token=[username]", "token=[username].", "token=[username]&x=1"]) assert.equal(urlSansJeton(s, env), s, s);
+});
+
+test("urlSansJeton: time is linear, a long run of punctuation after token= or a long run of word characters costs milliseconds", () => {
+  const env = {};
+  const bornes: [string, string][] = [
+    ["token= then 50000 marks then x", "token=" + "!".repeat(50000) + "x"],
+    ["200000 letters", "a".repeat(200000)],
+    ["200000 hyphens", "-".repeat(200000)],
+    ["200000 underscores", "_".repeat(200000)],
+    ["200000 repeats of token", "token".repeat(40000)],
+  ];
+  for (const [nom, texte] of bornes) {
+    const debut = performance.now();
+    urlSansJeton(texte, env);
+    const ms = performance.now() - debut;
+    assert.ok(ms < 500, `${nom}: ${Math.round(ms)} ms`);
+  }
+});
+
 test("lireManifeste redacts what it reads: an old-style manifest with a token in url, erreur or issue gives none of it back, and neither does lireListe", () => {
   const racine = mkdtempSync(join(tmpdir(), "manifeste-ancien-"));
   const jeton = "FAKE)tail-0000";
