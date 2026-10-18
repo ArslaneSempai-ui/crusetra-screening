@@ -88,6 +88,12 @@ export type EntreeListe = {
    *  « Linked To: »), mot pour mot, avec le rôle que la liste leur donne. Jamais déduites, jamais prises à une autre
    *  entrée : seuls les champs structurés des listes entrent ici, pas leur texte libre. */
   parties?: { role: string; nom: string }[];
+  /** EU feed only: the `numberTitle` of every regulation the entity records (« 2026/2193 (OJ L…) »), as written. Read to tell
+   *  a feed entry from the supplement entry of the same act (src/complement-ue.ts). */
+  reglements?: string[];
+  /** SET ONLY ON AN ENTRY OF THE EU SUPPLEMENT (src/complement-ue.ts): it comes from the Official Journal, not from the feed.
+   *  The act (CELEX), the annex, the entry number, the day the text was read and the address it was read at. */
+  complement?: { celex: string; annexe: string; entree: number; luLe: string; url: string };
 };
 
 /**
@@ -658,8 +664,9 @@ export function analyserUe(xml: string): EntreeListe[] {
     /* la date : celle d'entrée en vigueur du règlement que l'entrée porte, avec le numéro du règlement dans le nom du champ */
     const vigueur = attribut(reglement, "entryIntoForceDate");
     const numero = attribut(reglement, "numberTitle");
+    const reglements = [...corps!.matchAll(/<regulation\b[^>]*>/g)].map((r) => attribut(r[0], "numberTitle") ?? "").filter((t) => t.length > 0);
     entites.push({ source: "EU", id: attribut(entete!, "logicalId") ?? "", nom: noms[0]!,
-      alias: noms.slice(1), type, ...(programme ? { programme } : {}),
+      alias: noms.slice(1), type, ...(programme ? { programme } : {}), ...(reglements.length > 0 ? { reglements } : {}),
       ...(vigueur ? { designation: { date: vigueur, champ: `regulation entryIntoForceDate${numero ? ` (${numero})` : ""}` } } : {}) });
   }
   return entites.filter((e) => e.id.length > 0);
