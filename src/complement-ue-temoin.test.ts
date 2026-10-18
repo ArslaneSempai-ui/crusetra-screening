@@ -85,11 +85,11 @@ test("a hit from the supplement says so in the record and in the spreadsheet, an
   const c = criblageDe([]);
   const k = c.resultats[0]!.candidats.find((x) => /ganotuna/i.test(x.nomListe))!;
   assert.deepEqual(k.complement, { celex: "32026R2193", annexe: "IV", entree: 99, luLe: "2026-10-18", url: "https://publications.europa.eu/resource/celex/32026R2193" });
-  assert.match(k.designation!.champ!, /Official Journal \(CELEX 32026R2193, Annex IV, entry 99, read 2026-10-18\), not from the EU feed/);
-  assert.match(versCsv(c), /Official Journal \(CELEX 32026R2193, Annex IV, entry 99, read 2026-10-18\), not from the EU feed/);
+  assert.match(k.designation!.champ!, /Official Journal \(Annex IV to Regulation \(EU\) 2024\/1485, as added by CELEX 32026R2193, entry 99, read 2026-10-18\), not from the EU feed/);
+  assert.match(versCsv(c), /Official Journal \(Annex IV to Regulation \(EU\) 2024\/1485, as added by CELEX 32026R2193, entry 99, read 2026-10-18\), not from the EU feed/);
   const lignes = c.reserves.filter((r) => /Official Journal/.test(r));
   assert.equal(lignes.length, 1);
-  assert.match(lignes[0]!, /^10 EU entries \(Council Implementing Regulation \(EU\) 2026\/2193, CELEX 32026R2193, Annex IV, entries 99 to 108\) come from the Official Journal, read on 2026-10-18, and not from the EU feed/);
+  assert.match(lignes[0]!, /^10 EU entries \(added to Annex IV to Regulation \(EU\) 2024\/1485 by Council Implementing Regulation \(EU\) 2026\/2193 \(CELEX 32026R2193\), entries 99 to 108\) come from the Official Journal, read on 2026-10-18, and not from the EU feed/);
 });
 
 test("a hit from the feed itself carries no supplement mark, and the coverage line counts only the entries still read from the Official Journal", () => {

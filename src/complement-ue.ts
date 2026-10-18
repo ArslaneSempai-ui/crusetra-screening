@@ -55,7 +55,7 @@ export function entreesComplementUe(): EntreeListe[] {
     programme: "2024/1485 Annex IV",
     designation: {
       date: DATE_INSCRIPTION_2193,
-      champ: `Date of listing; entry from the Official Journal (CELEX ${CELEX_2193}, Annex ${ANNEXE_2193}, entry ${l.entree}, read ${LU_LE_2193}), not from the EU feed`,
+      champ: `Date of listing; entry from the Official Journal (Annex ${ANNEXE_2193} to Regulation (EU) 2024/1485, as added by CELEX ${CELEX_2193}, entry ${l.entree}, read ${LU_LE_2193}), not from the EU feed`,
     },
     complement: { celex: CELEX_2193, annexe: ANNEXE_2193, entree: l.entree, luLe: LU_LE_2193, url: URL_2193 },
   }));
@@ -97,7 +97,7 @@ export function numerosEnTexte(entrees: readonly number[]): string {
 export type CouvertureComplement = { celex: string; annexe: string; url: string; luLe: string; entrees: number[]; dejaDansLeFlux: number[] };
 
 export function phraseCouverture(c: CouvertureComplement): string {
-  const reste = `${c.entrees.length} EU ${c.entrees.length > 1 ? "entries" : "entry"} (Council Implementing Regulation (EU) ${REGLEMENT_2193}, CELEX ${c.celex}, Annex ${c.annexe}, `
+  const reste = `${c.entrees.length} EU ${c.entrees.length > 1 ? "entries" : "entry"} (added to Annex ${c.annexe} to Regulation (EU) 2024/1485 by Council Implementing Regulation (EU) ${REGLEMENT_2193} (CELEX ${c.celex}), `
     + `${c.entrees.length > 1 ? "entries" : "entry"} ${numerosEnTexte(c.entrees)}) come from the Official Journal, read on ${c.luLe}, and not from the EU feed, which does not carry ${c.entrees.length > 1 ? "them" : "it"} yet; `
     + `each hit on one says so.`;
   return c.dejaDansLeFlux.length > 0
