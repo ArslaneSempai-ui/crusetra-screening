@@ -34,7 +34,7 @@ import { TRADUCTIONS_SWAHILIES } from "./swahili.ts";
 import { estVietnamien, LOCUTIONS_VIETNAMIENNES } from "./vietnamien.ts";
 import { lireGreeklish } from "./greeklish.ts";
 import { lireArabizi, lireVolapuk } from "./arabizi.ts";
-import { plierCyrilliqueTurcique, lireMelangeCyrillique, lireLatinKazakh, MARQUEURS_TURCIQUES, TRADUCTIONS_TURCIQUES } from "./asie-centrale.ts";
+import { plierCyrilliqueTurcique, lireMelangeCyrillique, lireMelangeLatin, lireLatinKazakh, MARQUEURS_TURCIQUES, TRADUCTIONS_TURCIQUES } from "./asie-centrale.ts";
 import { lemme } from "./mots.ts";
 import { porteUnJalon } from "./score.ts";
 import { lettrePerdue } from "./score.ts";
@@ -994,7 +994,7 @@ function plierLatin(nom: string): string {
   /* l'Asie centrale d'abord (tour 13, voir asie-centrale.ts) : les lettres latines qu'une lecture optique glisse dans un mot cyrillique
      (« ATБACAP »), les lettres kazakhes, ouzbèkes et kirghizes ramenées au clavier russe (Ақжайық, Акжайык), et les alphabets latins
      kazakhs de 2017, 2018 et 2021 lus dans le latin ancien des documents (Ko'ks'etau, Şyğys : Kokshetau, Shygys) */
-  nom = lireLatinKazakh(plierCyrilliqueTurcique(lireMelangeCyrillique(nom)));
+  nom = lireLatinKazakh(plierCyrilliqueTurcique(lireMelangeLatin(lireMelangeCyrillique(nom))));
   /* un sigle latin épelé en cyrillique (« ТИ ДИ КЪМПАНИ » : TD Company ; « ЭсЭфАй » : SFI), lu comme le sigle (voir `siglesEpeles`) */
   if (/[\u0400-\u04ff]/.test(nom)) nom = siglesEpeles(nom.replace(/[\u0400-\u04ff]+/g, lettresCollees), LETTRES_EPELEES_CYRILLIQUES, /^[\u0400-\u04ff]+$/u, (m) => m.toLowerCase());
   /* les lettres serbes et macédoniennes (ј, љ, њ, џ, ђ, ћ, ѓ, ќ, ѕ) que la table russe ne connaît pas, lues ici comme leurs registres
