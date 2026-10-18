@@ -63,7 +63,7 @@ test("UE (v1.1, attributs) : premier wholeName = nom, les suivants = alias, prog
   assert.equal(e.length, 2);
   const [personne, societe] = e;
   assert.deepEqual(personne, { source: "EU", id: "13", nom: "Mohamed Hosni Elsayed Mubarak",
-    alias: ["Mohammed Hosny Mubarak"], type: "person", programme: "EGY",
+    alias: ["Mohammed Hosny Mubarak"], type: "person", programme: "EGY", reglements: ["270/2011 (OJ L58)"],
     designation: { date: "2011-03-03", champ: "regulation entryIntoForceDate (270/2011 (OJ L58))" } });
   assert.equal(societe!.type, "entity");
   assert.equal(societe!.nom, "JSC Concern & Partners", "l'entité &amp; en attribut se décode aussi");
