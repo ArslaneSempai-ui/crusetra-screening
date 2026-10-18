@@ -988,6 +988,9 @@ export function plier(nom: string): string {
  *  `romaniser` (ecritures.ts), qui rend des jetons latins et traduit leurs mots du commerce. */
 const LETTRES_SUD_SLAVES: Readonly<Record<string, string>> = { "ј": "j", "љ": "lj", "њ": "nj", "џ": "dzh", "ђ": "dj", "ћ": "c", "ѓ": "gj", "ќ": "kj", "ѕ": "dz" };
 function plierLatin(nom: string): string {
+  /* les demi-anneaux de l'ALA-LC (U+02BF aïn, U+02BE hamza) sont des marques, pas des lettres : Unicode les classe Lm, `normaliser` les garde
+     et « ʿAbd » restait un mot orphelin face à « ABDUL » lu `abd, al`. Ni U+02BB ni U+02BC : le kazakh 2017 et le Wade-Giles les lisent en digraphes */
+  nom = nom.replace(/[\u02BE\u02BF]/g, "");
   /* l'Asie centrale d'abord (tour 13, voir asie-centrale.ts) : les lettres latines qu'une lecture optique glisse dans un mot cyrillique
      (« ATБACAP »), les lettres kazakhes, ouzbèkes et kirghizes ramenées au clavier russe (Ақжайық, Акжайык), et les alphabets latins
      kazakhs de 2017, 2018 et 2021 lus dans le latin ancien des documents (Ko'ks'etau, Şyğys : Kokshetau, Shygys) */
