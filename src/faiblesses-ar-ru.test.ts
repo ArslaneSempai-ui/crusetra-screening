@@ -24,3 +24,23 @@ test("faiblesses ar-ru, half rings: a half ring inside or before a word leaves t
 test("faiblesses ar-ru, half rings: the digraph marks of other registers are kept", () => {
   assert.notDeepEqual(mots("Koʻks Etau"), mots("Koks Etau"));
 });
+
+// S3: Cyrillic look-alike letters typed inside a Latin name (U+0443 u, U+043E o, U+0423 U, U+0435 e, U+0441 c, U+0440 p, U+0445 x)
+const CY = { u: "у", o: "о", U: "У", e: "е", c: "с", p: "р", x: "х" };
+
+test("faiblesses ar-ru, look-alikes: a Latin name with Cyrillic twins reads as the Latin name", () => {
+  const sali = `K${CY.u}lv${CY.o}r M${CY.o}stra${CY.c}h${CY.u}${CY.e}v Dul${CY.e}${CY.p}an${CY.o}va`;
+  assert.deepEqual(mots(sali), mots("Kylvor Mostrachyev Dulepanova"));
+  assert.deepEqual(mots(`M${CY.o}rvan${CY.e}sh K${CY.e}l${CY.p}${CY.o}r`), mots("Morvanesh Kelpor"));
+});
+
+test("faiblesses ar-ru, look-alikes: the tour 13 mixed words read as before", () => {
+  assert.deepEqual(mots("ATБACAP ACTЫK TPEЙД"), mots("Атбасар Астык Трейд"));
+  assert.deepEqual(mots("DigitalСервис"), ["digitalservis"]);
+});
+
+test("faiblesses ar-ru, look-alikes: one Cyrillic letter with no Latin twin leaves the word read by sound", () => {
+  /* the final U+0431 (b) has no twin: the word keeps its sound reading, kh for U+0445 */
+  assert.deepEqual(mots("Ale\u0445andr\u0431"), ["alekhandrb"]);
+  assert.deepEqual(mots("Ale\u0445andr"), ["alexandr"]);
+});

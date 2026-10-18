@@ -52,6 +52,22 @@ export function lireMelangeCyrillique(nom: string): string {
   });
 }
 
+/** LES LETTRES CYRILLIQUES GLISSÉES DANS UN MOT LATIN par un clavier mêlé (« Кылвор Мострачыев Дулепанова » : Kylvor Mostrachyev
+ *  Dulepanova) : le miroir de `lireMelangeCyrillique`. La table de sons lirait р comme r, с comme s, у comme u, х comme kh, Н comme n ;
+ *  la lettre est ici lue comme sa jumelle latine. Seulement dans un mot qui mêle les deux écritures, et que la première règle a laissé
+ *  mêlé, dont chaque lettre cyrillique est un homoglyphe ; une lettre cyrillique sans jumelle (« DigitalСервис ») le laisse tel quel. */
+const JUMELLES_LATINES: ReadonlyMap<string, string> = new Map(
+  [...HOMOGLYPHES].map(([latin, cyrillique]) => [cyrillique, latin] as const),
+);
+export function lireMelangeLatin(nom: string): string {
+  if (!/[Ѐ-ӿ]/.test(nom) || !/[A-Za-z]/.test(nom)) return nom;
+  return nom.replace(/\p{L}+/gu, (m) => {
+    if (!/[Ѐ-ӿ]/.test(m) || !/[A-Za-z]/.test(m)) return m;
+    if ([...m].some((c) => /[Ѐ-ӿ]/.test(c) && !JUMELLES_LATINES.has(c))) return m;
+    return [...m].map((c) => JUMELLES_LATINES.get(c) ?? c).join("");
+  });
+}
+
 /**
  * LES TROIS ALPHABETS LATINS DU KAZAKH, lus dans le latin ancien des documents. La normalisation ramène déjà à la lettre
  * de base ce qui porte un accent (ä ö ü ū ñ ğ ı, ń ǵ ó ú á : Öñdeu devient ondeu, comme Ondeu) ; restent ce qu'elle
