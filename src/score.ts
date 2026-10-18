@@ -130,8 +130,8 @@ export function depuisJetons(f: Frequences, J: readonly string[], marques: Marqu
     traduits: mots.map((m) => traduits.has(m)),
     sources: mots.map((m) => sources.get(m) ?? ""),
     decor: mots.map((m, i) => regionDeRegistre(m) || (POINTS_CARDINAUX.has(m) && regionDeRegistre(mots[i + 1] ?? ""))
-      /* et le patronyme d'une personne de la CEI derrière son nom et son prénom, sous la marque slave (tour 13, voir `patronymeSlave`) */
-      || (marques.slave && i >= 2 && patronymeSlave(m))),
+      /* et le patronyme d'une personne de la CEI en deuxième place ou plus loin (jamais le premier mot, jamais dans un nom de deux mots), sous la marque slave (tour 13, voir `patronymeSlave`) */
+      || (marques.slave && i >= 1 && mots.length >= 3 && patronymeSlave(m))),
     numeros: J.map(num).filter(Boolean).sort().join(" "),
     bloc: mots.join(""), blocSq: mots.map(squelette).join(""),
     civilites: [...civilites],

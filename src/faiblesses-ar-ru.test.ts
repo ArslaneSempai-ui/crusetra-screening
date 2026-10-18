@@ -44,3 +44,16 @@ test("faiblesses ar-ru, look-alikes: one Cyrillic letter with no Latin twin leav
   assert.deepEqual(mots("Ale\u0445andr\u0431"), ["alekhandrb"]);
   assert.deepEqual(mots("Ale\u0445andr"), ["alexandr"]);
 });
+
+// S4: the patronymic in second position of a listed "Given Patronymic FAMILY"
+test("faiblesses ar-ru, patronymic: a given plus family query reaches strong against a listed patronymic name", () => {
+  const s = scoreNoms(f, "Liliia Arkhipova", "Liliya Valeryevna ARKHIPOVA");
+  assert.ok(s >= 0.81, `patronymic dropped: ${s.toFixed(3)} (strong expected)`);
+});
+
+test("faiblesses ar-ru, patronymic: a two-word listed name ending in -ovich is not a patronymic", () => {
+  const a = scoreNoms(f, "Ivan Abramovich", "Ivan Petrovich Abramovich");
+  const b = scoreNoms(f, "Ivan Petrovich Abramovich", "Ivan Abramovich");
+  assert.ok(a >= 0.81 && b >= 0.81, `${a.toFixed(3)} ${b.toFixed(3)}`);
+  assert.ok(scoreNoms(f, "Boris Abramovich", "Ivan Abramovich") < 0.81);
+});
