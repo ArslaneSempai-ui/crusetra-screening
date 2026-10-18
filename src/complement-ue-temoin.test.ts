@@ -11,7 +11,7 @@ import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSy
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { executer } from "./cribler.ts";
+import { executer, versCsv } from "./cribler.ts";
 import { analyser, fichierDe, SOURCES, type LigneManifeste, type Manifeste } from "./listes.ts";
 
 const ICI = fileURLToPath(new URL(".", import.meta.url));
@@ -50,7 +50,7 @@ function ligne(source: "OFAC" | "EU", texte: string, plus: Record<string, unknow
 }
 
 /** Screen "[name removed]" against a throwaway root whose EU file holds `entites`; the candidates found. */
-function candidats(entites: [string, string][]) {
+function criblageDe(entites: [string, string][]) {
   const dossier = realpathSync(mkdtempSync(join(tmpdir(), "complement-ue-")));
   racines.push(dossier);
   mkdirSync(join(dossier, "data", "listes"), { recursive: true });
@@ -65,9 +65,9 @@ function candidats(entites: [string, string][]) {
   mkdirSync(join(dossier, "run"));
   const fichier = join(dossier, "run", "contreparties.csv");
   writeFileSync(fichier, "name\nVyacheslav Mipemilili Ganotuna\n");
-  const { criblage } = executer(fichier, undefined, MAINTENANT, undefined, { racine: dossier });
-  return criblage.resultats[0]!.candidats.filter((c) => /ganotuna/i.test(c.nomListe));
+  return executer(fichier, undefined, MAINTENANT, undefined, { racine: dossier }).criblage;
 }
+const candidats = (entites: [string, string][]) => criblageDe(entites).resultats[0]!.candidats.filter((c) => /ganotuna/i.test(c.nomListe));
 
 test("witness: a name from entry 99 of Regulation 2026/2193 is found while the EU feed does not carry it", () => {
   const trouves = candidats([]);
@@ -79,4 +79,24 @@ test("witness: a feed that carries the same entry yields one hit, not two", () =
   const trouves = candidats([["2026/2193 (OJ L, 2026/2193, 28.9.2026)", "[name removed]"]]);
   assert.equal(trouves.length, 1, `expected one hit for Ganotuna, got ${trouves.length}`);
   assert.deepEqual(trouves[0]!.ids, ["9000"], "the hit that remains is the feed's own entry");
+});
+
+test("a hit from the supplement says so in the record and in the spreadsheet, and the coverage line says it once", () => {
+  const c = criblageDe([]);
+  const k = c.resultats[0]!.candidats.find((x) => /ganotuna/i.test(x.nomListe))!;
+  assert.deepEqual(k.complement, { celex: "32026R2193", annexe: "IV", entree: 99, luLe: "2026-10-18", url: "https://publications.europa.eu/resource/celex/32026R2193" });
+  assert.match(k.designation!.champ!, /Official Journal \(CELEX 32026R2193, Annex IV, entry 99, read 2026-10-18\), not from the EU feed/);
+  assert.match(versCsv(c), /Official Journal \(CELEX 32026R2193, Annex IV, entry 99, read 2026-10-18\), not from the EU feed/);
+  const lignes = c.reserves.filter((r) => /Official Journal/.test(r));
+  assert.equal(lignes.length, 1);
+  assert.match(lignes[0]!, /^10 EU entries \(Council Implementing Regulation \(EU\) 2026\/2193, CELEX 32026R2193, Annex IV, entries 99 to 108\) come from the Official Journal, read on 2026-10-18, and not from the EU feed/);
+});
+
+test("a hit from the feed itself carries no supplement mark, and the coverage line counts only the entries still read from the Official Journal", () => {
+  const c = criblageDe([["2026/2193 (OJ L, 2026/2193, 28.9.2026)", "[name removed]"]]);
+  const k = c.resultats[0]!.candidats.find((x) => /ganotuna/i.test(x.nomListe))!;
+  assert.equal(k.complement, undefined);
+  assert.deepEqual(c.complementUe?.entrees, [100, 101, 102, 103, 104, 105, 106, 107, 108]);
+  assert.deepEqual(c.complementUe?.dejaDansLeFlux, [99]);
+  assert.match(c.reserves.find((r) => /Official Journal/.test(r))!, /^9 EU entries .*entries 100 to 108\).* Of the same act, entry 99 is already in the feed and read from it\.$/);
 });

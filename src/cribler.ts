@@ -43,6 +43,7 @@ import {
   BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare, type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme, pliEnye,
   clesEmprunt, CREDIT_EMPRUNT, CHEMIN_APPRENTISSAGE_REEL, mesurerReel, SEUIL_POSSIBLE,
 } from "./entites.ts";
+import { entreesComplementUe, sansCeuxDuFlux, phraseCouverture, CELEX_2193, ANNEXE_2193, URL_2193, LU_LE_2193, type CouvertureComplement } from "./complement-ue.ts";
 import { cleAbjad, cleAbjadSansTa, cleAbjadVLuF, cleAbjadVoyelles, type Abjad } from "./ecritures.ts";
 import { pliBirman, CREDIT_BIRMAN } from "./birman.ts";
 import { pliKhmer, CREDIT_KHMER } from "./khmer.ts";
@@ -80,6 +81,9 @@ export type Candidat = {
   /** UN NAVIRE RENOMMÉ : trouvé par le numéro OMI, et le nom envoyé reste sous le seuil possible face à chacun des noms
    *  que la liste donne à cette coque ; les voici */
   renomme?: { nomsListes: string[] };
+  /** SET ONLY ON A HIT FROM THE EU SUPPLEMENT: the entry comes from the Official Journal (act, annex, entry number, day read,
+   *  address), not from the EU feed (src/complement-ue.ts) */
+  complement?: NonNullable<EntreeListe["complement"]>;
 };
 
 export type Statut = "strong" | "possible" | "no-match";
@@ -121,6 +125,8 @@ export type Criblage = {
   /** les mentions d'attribution exigées par les licences des listes criblées, chacune une fois : à imprimer avec tout extrait de ce relevé */
   attributions: string[];
   nonCriblees: { source: string; titre: string; raison: string }[];
+  /** Present when entries of the EU supplement were screened: what they are and where they come from (src/complement-ue.ts) */
+  complementUe?: CouvertureComplement;
   methode: {
     palier: string; description: string;
     poids: string;
@@ -938,7 +944,8 @@ function candidat(n: NomIndexe, score: number, par: Candidat["par"]): Candidat {
     ...(n.alias && par === "name" ? { alias: n.alias } : {}),
     ...(n.faible && par === "name" ? { aliasFaible: true } : {}),
     type: e.type, ...(e.imo ? { imo: e.imo } : {}), ...(e.autresImo?.length ? { autresImo: e.autresImo } : {}), score, par,
-    designation, ...(e.parties?.length ? { parties: e.parties.map((p) => ({ ...p, source: e.source })) } : {}),
+    designation, ...(e.complement ? { complement: e.complement } : {}),
+    ...(e.parties?.length ? { parties: e.parties.map((p) => ({ ...p, source: e.source })) } : {}),
   };
 }
 
@@ -1050,6 +1057,7 @@ export function reserves(c: Omit<Criblage, "reserves" | "empreinte">): string[] 
       : "No held-out verdict set was available on this machine: the only rates quoted are those of the training sets, on which the thresholds were chosen, and they flatter the method.",
   ];
   for (const n of c.nonCriblees) r.push(`${n.titre} was NOT screened: ${n.raison}`);
+  if (c.complementUe) r.push(phraseCouverture(c.complementUe));
   if (!m.tientLePlancher) r.push(`Even the possible level does not hold a recall lower bound of ${pct(m.rappelMin)} on the training sets.`);
   if (m.seuils.fort === m.seuils.possible) r.push(`On the training sets the two levels meet at ${m.seuils.fort.toFixed(2)}: every candidate is a strong one.`);
   if (c.resultats.some((x) => x.imoInvalide)) r.push("Some IMO numbers you supplied fail their check digit; they were used as given, and are marked.");
@@ -1136,6 +1144,17 @@ export function executer(
     entrees.push(...lireListe(s.source, options.racine));
     listes.push({ source: s.source, titre: s.titre, url: urlSansJeton(s.url), telechargeLe: l.telechargeLe, sha256: l.sha256, entrees: l.entrees, licence: s.licence });
   }
+  /* THE EU SUPPLEMENT is screened with the EU list, and an entry the feed carries by now is left to the feed
+     (src/complement-ue.ts says what "the same entry" is). */
+  let complementUe: CouvertureComplement | undefined;
+  if (listes.some((l) => l.source === "EU")) {
+    const { gardees, dansLeFlux } = sansCeuxDuFlux(entreesComplementUe(), entrees);
+    entrees.push(...gardees);
+    if (gardees.length > 0) {
+      complementUe = { celex: CELEX_2193, annexe: ANNEXE_2193, url: URL_2193, luLe: LU_LE_2193,
+        entrees: gardees.map((e) => e.complement!.entree), dejaDansLeFlux: dansLeFlux.map((e) => e.complement!.entree) };
+    }
+  }
   if (listes.length === 0) throw new Error(`no list is available on this machine. Nothing was screened.\n  → npm run listes -- --fetch`);
 
   /* LES POIDS SONT CEUX DE LA TABLE ÉPINGLÉE (src/frequences.ts), pas un compte des listes criblées : les listes
@@ -1170,6 +1189,7 @@ export function executer(
     emisLe: maintenant.toISOString(), ...(client ? { client } : {}), ...(commit ? commit : {}), ...(essai !== undefined ? { essai } : {}),
     fichier: { nom: basename(fichier), sha256: createHash("sha256").update(texte).digest("hex"), lignes: lignes.length },
     listes, attributions: [...new Set(listes.map((l) => l.licence.mention).filter((x): x is string => x !== null))], nonCriblees,
+    ...(complementUe ? { complementUe } : {}),
     methode: {
       palier: p.id, description: p.description,
       poids: `word weights are the smoothed inverse document frequency of the pinned table data/${TABLE_GELEE.fichier}: the ${f.entrees.toLocaleString("en-GB")} entries of ${TABLE_GELEE.listes.length} sources as recorded on ${TABLE_GELEE.compteeLe}, the table every published rate was measured on; a list screened here that was not counted in it is weighed with the same weights, a word absent from the table weighing as a word seen in no entry`,
@@ -1215,6 +1235,7 @@ function principal(): void {
   writeFileSync(cheminCsv, versCsv(c));
   for (const a of avertissements) console.log(`  ⚠ ${a}`);
   console.log(`\n${c.totaux.lignes} name(s) screened against ${c.listes.map((l) => `${l.source} (${l.entrees.toLocaleString("en-GB")})`).join(", ")}`);
+  if (c.complementUe) console.log(`  EU also: ${c.complementUe.entrees.length} entries from the Official Journal (CELEX ${c.complementUe.celex}, Annex ${c.complementUe.annexe}, read ${c.complementUe.luLe}), not from the EU feed`);
   for (const n of c.nonCriblees) console.log(`  NOT screened: ${n.source}: ${n.raison}`);
   const m = c.methode;
   console.log(`Thresholds: strong ${m.seuils.fort.toFixed(2)}, possible ${m.seuils.possible.toFixed(2)} (chosen on the training sets)`);
