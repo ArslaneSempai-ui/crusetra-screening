@@ -147,7 +147,7 @@ reports are verified against the same public key, [`cle-publique.pem`](cle-publi
 with `npm run verify`.
 
 <!-- figures:tests -->
-**624 tests** across 71 files, counted from the sources rather than typed here.
+**628 tests** across 72 files, counted from the sources rather than typed here.
 <!-- /figures:tests -->
 
 ## What is public, what is private
@@ -158,7 +158,7 @@ The full labelled sets are private since this change. The person-pair set is rec
 
 A holder of the private folder runs the full tests with `CRUSETRA_JEUX=/path/to/crusetra-jeux/crusetra-screening npm test` (default: the sibling folder `../crusetra-jeux/crusetra-screening`). Without it the tests that need a set are skipped with a named reason, and the record checks say "set private, hash recorded".
 
-Screening a list chooses its two thresholds on the training sets at run time. A clone without the private folder can read the code, the figures and the samples, but it cannot screen a list: the command refuses by name and says nothing was screened. The thresholds are not published.
+A clone without the private folder screens with the frozen, sealed thresholds of `src/seuils-figes.json` (made by `npm run figer-seuils`); a holder of the folder still chooses them on the sets, and the screening refuses, naming the difference, if its choice is not the frozen one, or if the frozen file no longer matches its seal.
 
 ## License
 

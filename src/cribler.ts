@@ -37,18 +37,18 @@ import type { Cellule } from "./measure.ts";
 import {
   preparerNom, scoreBrut, variantes, simMot, abrege, abregeAllemand, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD, sembleCoupe,
   compose, membres, gerondif, PARTICULES,
-  variationVocalique, voyelleEpenthetique, squeletteLongue, pliAi, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
-  CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pliJaponais, pliCoreen, CREDIT_KANA, pluriel, CHEMIN_VERDICT, RAPPEL_MIN,
+  variationVocalique, voyelleEpenthetique, squeletteLongue, pliAi, tousDeuxAnglais, lettrePerdue, PERDU,
+  lecturesDe, plafondDesLectures, pliCantonais, pliJaponais, pliCoreen, CREDIT_KANA, pluriel, RAPPEL_MIN,
   pliSlave, CREDIT_CYRILLIQUE, clesGrecques, CREDIT_GREC, clePhonetique, homophoneCorrige, squeletteArabe, ARTICLES_ARABES, clesSlaves, pliThai, CREDIT_THAI,
-  BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare, type Reglage, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme, pliEnye,
-  clesEmprunt, CREDIT_EMPRUNT, CHEMIN_APPRENTISSAGE_REEL, mesurerReel, SEUIL_POSSIBLE,
+  BLOC_MIN, LONGUEUR_CHAMP, type Frequences, type NomPrepare, type JeuMesure, LU_UN, porteUnJalon, CIVILITES, lemme, pliEnye,
+  clesEmprunt, CREDIT_EMPRUNT, SEUIL_POSSIBLE,
 } from "./entites.ts";
 import { entreesComplementUe, sansCeuxDuFlux, phraseCouverture, CELEX_2193, ANNEXE_2193, URL_2193, LU_LE_2193, type CouvertureComplement } from "./complement-ue.ts";
 import { cleAbjad, cleAbjadSansTa, cleAbjadVLuF, cleAbjadVoyelles, type Abjad } from "./ecritures.ts";
 import { pliBirman, CREDIT_BIRMAN } from "./birman.ts";
 import { pliKhmer, CREDIT_KHMER } from "./khmer.ts";
 import { distanceOsa } from "./matchers/damerau.ts";
-import { relatif } from "./jeux.ts";
+import { seuilsDuCriblage } from "./seuils-figes.ts";
 
 /** Au plus autant de candidats montrés par nom ; le compte des autres est donné. */
 export const CANDIDATS_MONTRES = 5;
@@ -1069,11 +1069,6 @@ export function reserves(c: Omit<Criblage, "reserves" | "empreinte">): string[] 
   return r;
 }
 
-const citer = (t: Record<string, { rappel: Cellule; fauxPositifs: Cellule }>, seuil: number): MesureCitee => {
-  const c = t[seuil.toFixed(2)]!;
-  return { rappel: c.rappel, fauxPositifs: c.fauxPositifs };
-};
-
 /** What a sealed record says about a list it did not screen: the manifest's error and its way out, both passed through
  *  `urlSansJeton` here too (they are read through `lireManifeste`, which redacts, but a sealed text is not left to that). */
 export function raisonNonCriblee(l: { erreur: string; issue: string }, env: NodeJS.ProcessEnv = process.env): string {
@@ -1092,6 +1087,8 @@ export type OptionsExecution = {
    * report (`exigerReleveScelle`) will take it. So a sealed client record cannot be produced with it.
    */
   essaiListeUePerimee?: boolean;
+  /** FOR TESTS ONLY: another frozen-thresholds file than src/seuils-figes.json (a tampered or a drifted copy). */
+  seuilsFiges?: URL;
 };
 
 const MARQUE_ESSAI = "TEST RUN, NOT A CLIENT RECORD: the EU list was stale and a test override let this screening run; this record carries no seal and is never written as a client record.";
@@ -1164,19 +1161,8 @@ export function executer(
      05/10/2026 le criblage comptait les poids sur les listes qu'il criblait : ajouter une liste déplaçait tous les
      scores, et les verdicts publiés ne décrivaient plus le matcher livré. */
   const f = frequencesDesListes();
-  const bruts = CHEMINS_APPRENTISSAGE.map((u) => {
-    const b = lireJeu(u);
-    if (b === null) throw new Error(`the training set ${relatif(u)} is missing from the private sets (CRUSETRA_JEUX, src/jeux.ts): the thresholds cannot be measured. Nothing was screened.`);
-    return b;
-  });
-  const apprentissage = mesurerJeux(f, bruts);
-  const brutReel = lireJeu(CHEMIN_APPRENTISSAGE_REEL);
-  if (brutReel === null) throw new Error(`the real training sample ${relatif(CHEMIN_APPRENTISSAGE_REEL)} is missing from the private sets (CRUSETRA_JEUX, src/jeux.ts): the thresholds cannot be measured. Nothing was screened.`);
-  const reel = mesurerReel(f, brutReel);
-  const reglage: Reglage = choisirSeuils(apprentissage.table, reel.table);
-  const seuils = { fort: reglage.fort.seuil, possible: reglage.possible.seuil };
-  const brutVerdict = lireJeu(CHEMIN_VERDICT);
-  const verdict = brutVerdict === null ? null : mesurerJeux(f, [brutVerdict]);
+  const mesure = seuilsDuCriblage(f, options.seuilsFiges);
+  const { seuils, tientLePlancher, apprentissage, apprentissageReel, verdict } = mesure;
 
   const index = new Index(f, entrees, seuils.possible);
   const resultats = lignes.map((c) => cribler(c, index, seuils));
@@ -1195,10 +1181,8 @@ export function executer(
       palier: p.id, description: p.description,
       poids: `word weights are the smoothed inverse document frequency of the pinned table data/${TABLE_GELEE.fichier}: the ${f.entrees.toLocaleString("en-GB")} entries of ${TABLE_GELEE.listes.length} sources as recorded on ${TABLE_GELEE.compteeLe}, the table every published rate was measured on; a list screened here that was not counted in it is weighed with the same weights, a word absent from the table weighing as a word seen in no entry`,
       tablePoids: { fichier: TABLE_GELEE.fichier, sha256: TABLE_GELEE.sha256, entrees: TABLE_GELEE.entrees, compteeLe: TABLE_GELEE.compteeLe, sources: TABLE_GELEE.listes.map((l) => l.source) },
-      seuils, rappelMin: RAPPEL_MIN, tientLePlancher: reglage.tientLePlancher,
-      apprentissage: { jeux: apprentissage.jeux, fort: citer(apprentissage.table, seuils.fort), possible: citer(apprentissage.table, seuils.possible) },
-      apprentissageReel: { jeu: reel.jeux[0]!, fort: citer(reel.table, seuils.fort), possible: citer(reel.table, seuils.possible) },
-      verdict: verdict ? { jeu: verdict.jeux[0]!, fort: citer(verdict.table, seuils.fort), possible: citer(verdict.table, seuils.possible) } : null,
+      seuils, rappelMin: RAPPEL_MIN, tientLePlancher,
+      apprentissage, apprentissageReel, verdict,
     },
     totaux: { lignes: lignes.length, forts, possibles, sansCorrespondance: lignes.length - forts - possibles },
     resultats,
