@@ -6,6 +6,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { scoreNoms, preparerNom, lecturesDe } from "./entites.ts";
 import { frequencesDesListes } from "./frequences.ts";
+import { Index, cribler } from "./cribler.ts";
+import type { EntreeListe } from "./listes.ts";
 
 const f = frequencesDesListes();
 const mots = (n: string) => { const l = lecturesDe(n)[0]!; return preparerNom(f, l.texte, l.lecture).mots; };
@@ -56,4 +58,38 @@ test("faiblesses ar-ru, patronymic: a two-word listed name ending in -ovich is n
   const b = scoreNoms(f, "Ivan Petrovich Abramovich", "Ivan Abramovich");
   assert.ok(a >= 0.81 && b >= 0.81, `${a.toFixed(3)} ${b.toFixed(3)}`);
   assert.ok(scoreNoms(f, "Boris Abramovich", "Ivan Abramovich") < 0.81);
+});
+
+// W4: a short person-shaped query meeting a listed ENTITY whose other words are only name particles stays at possible
+const seuilsW4 = { fort: 0.81, possible: 0.74 };
+const listeW4 = (type: "entity" | "person", nom = "AL SAMIR AND AL NADIR LLC"): EntreeListe[] => [{ source: "OFAC", id: "w4", nom, alias: [], type }];
+const niveauW4 = (nom: string, e: EntreeListe[]) => {
+  const ix = new Index(f, e, seuilsW4.possible);
+  const r = cribler({ ligne: 2, nom }, ix, seuilsW4);
+  return { statut: r.statut, score: r.candidats[0]?.score ?? 0 };
+};
+
+test("faiblesses ar-ru, entity cap: two person-name words against an entity of the same names stay possible, never strong", () => {
+  const r = niveauW4("Samir Al Nadyr", listeW4("entity"));
+  assert.equal(r.statut, "possible", `${r.statut} ${r.score}`);
+});
+
+test("faiblesses ar-ru, entity cap: the same names listed as a PERSON stay strong", () => {
+  const r = niveauW4("Samir Al Nadyr", listeW4("person", "AL SAMIR AL NADIR"));
+  assert.equal(r.statut, "strong", `${r.statut} ${r.score}`);
+});
+
+test("faiblesses ar-ru, entity cap: a legal form in the query, or three name words, leaves the entity match as it was", () => {
+  assert.equal(niveauW4("Samir Al Nadyr LLC", listeW4("entity")).statut, "strong");
+  assert.equal(niveauW4("Samir Al Nadyr Hamza", listeW4("entity", "AL SAMIR AND AL NADIR AND AL HAMZA LLC")).statut, "strong");
+});
+
+test("faiblesses ar-ru, entity cap: an entity with a business word left over is not capped by this rule", () => {
+  assert.equal(niveauW4("Samir Al Nadir", listeW4("entity", "SAMIR AL NADIR TRADING LLC")).statut, "strong");
+});
+
+test("faiblesses ar-ru, entity cap: an exact entity match, a business word in the query, or a form in a later reading are untouched", () => {
+  assert.equal(niveauW4("Rosneft Trading", listeW4("entity", "ROSNEFT TRADING")).statut, "strong");
+  assert.equal(niveauW4("Hamza Trading", listeW4("entity", "AL HAMZA TRADING LLC")).statut, "strong");
+  assert.equal(niveauW4("Ali Hamza Trading LLC (formerly Ali Hamza)", listeW4("entity", "ALI HAMZA LLC")).statut, "strong");
 });
