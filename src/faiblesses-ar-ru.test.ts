@@ -13,12 +13,12 @@ const f = frequencesDesListes();
 const mots = (n: string) => { const l = lecturesDe(n)[0]!; return preparerNom(f, l.texte, l.lecture).mots; };
 
 test("faiblesses ar-ru, half rings: an ALA-LC name scores like its plain spelling", () => {
-  const s = scoreNoms(f, "ʿAbd al-Ḥabīb Alizai", "[name removed]");
+  const s = scoreNoms(f, "ʿAbd al-Ḥabīb Teravzai", "ABDUL HABIB TERAVZAI");
   assert.ok(s >= 0.81, `half ring query: ${s.toFixed(3)} (strong expected)`);
 });
 
 test("faiblesses ar-ru, half rings: a half ring inside or before a word leaves the same words", () => {
-  assert.deepEqual(mots("Saʿīd Jalili"), mots("Said Jalili"));
+  assert.deepEqual(mots("Saʿīd Torvani"), mots("Said Torvani"));
   assert.deepEqual(mots("ʿAli Hamdan"), mots("Ali Hamdan"));
   assert.deepEqual(mots("Muʾmin Karim"), mots("Mumin Karim"));
 });
@@ -31,8 +31,8 @@ test("faiblesses ar-ru, half rings: the digraph marks of other registers are kep
 const CY = { u: "у", o: "о", U: "У", e: "е", c: "с", p: "р", x: "х" };
 
 test("faiblesses ar-ru, look-alikes: a Latin name with Cyrillic twins reads as the Latin name", () => {
-  const sali = `Dm${CY.u}tr${CY.o} ${CY.U}${CY.e}vh${CY.e}n${CY.o}v${CY.u}${CY.c}h Sh${CY.e}v${CY.c}h${CY.e}nk${CY.o}`;
-  assert.deepEqual(mots(sali), mots("Dmytro Yevhenovych Shevchenko"));
+  const sali = `Osta${CY.p} Ih${CY.o}r${CY.o}vy${CY.c}h ${CY.p}lav${CY.u}n${CY.e}ts`;
+  assert.deepEqual(mots(sali), mots("Ostap Ihorovych Plavynets"));
   assert.deepEqual(mots(`Ale${CY.x}ander ${CY.p}etrov`), mots("Alexander Petrov"));
 });
 
@@ -49,7 +49,7 @@ test("faiblesses ar-ru, look-alikes: one Cyrillic letter with no Latin twin leav
 
 // S4: the patronymic in second position of a listed "Given Patronymic FAMILY"
 test("faiblesses ar-ru, patronymic: a given plus family query reaches strong against a listed patronymic name", () => {
-  const s = scoreNoms(f, "Liliia Shvetsova", "Liliya Valeryevna SHVETSOVA");
+  const s = scoreNoms(f, "Olesia Tovbenko", "Olesya Valeryevna TOVBENKO");
   assert.ok(s >= 0.81, `patronymic dropped: ${s.toFixed(3)} (strong expected)`);
 });
 
