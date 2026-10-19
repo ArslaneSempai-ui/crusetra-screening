@@ -20,6 +20,7 @@
     "verify": "node src/verifier-rapport.mjs",
     "licences": "node src/licences.ts",
     "cribler": "node src/cribler.ts",
+    "figer-seuils": "node src/figer-seuils.ts",
     "mesure-entites": "node src/mesure-entites.ts",
     "temoin-index": "node src/temoin-index.ts",
     "verdict": "node src/verdict.ts",
