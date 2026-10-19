@@ -8,12 +8,15 @@ import {
 import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
 import { frequencesDe, preparerNom, CHEMINS_APPRENTISSAGE } from "./entites.ts";
 import { SOURCES, type EntreeListe, type Licence } from "./listes.ts";
+import { raisonDAbsence, lireUrlPrive, JEUX_DU_CRIBLAGE } from "./jeux.ts";
 
 const LICENCE_ESSAI: Licence = { nom: "Essai", url: "https://example.org/licence", mention: null, note: "none required: a test", lue: "2026-10-05" };
 
 /* Une « liste » fabriquée avec les noms des jeux d'apprentissage : le témoin tourne sur
    toute machine, sans data/ (les vraies listes ne sont pas committées). */
-const paires = CHEMINS_APPRENTISSAGE.flatMap((u) => JSON.parse(readFileSync(u, "utf8")).paires as { a: string; b: string }[]);
+/* Les jeux d'apprentissage sont PRIVÉS (src/jeux.ts) : sans eux le criblage lui-même refuse, et les épreuves qui en ont besoin sont sautées. */
+const SANS_JEUX = raisonDAbsence(...JEUX_DU_CRIBLAGE);
+const paires = SANS_JEUX ? [] : CHEMINS_APPRENTISSAGE.flatMap((u) => JSON.parse(lireUrlPrive(u)).paires as { a: string; b: string }[]);
 const entrees: EntreeListe[] = paires.map((x, i) => ({ source: "OFAC", id: String(1000 + i), nom: x.b, alias: [], type: "entity" }));
 const f = frequencesDe(entrees.map((e) => [e.nom, ...e.alias]));
 const seuils = { fort: 0.81, possible: 0.74 };
@@ -37,7 +40,7 @@ function perturbations(n: number): Contrepartie[] {
   });
 }
 
-test("l'index ne perd rien : mêmes candidats, mêmes scores que la comparaison exhaustive", () => {
+test("l'index ne perd rien : mêmes candidats, mêmes scores que la comparaison exhaustive", { skip: SANS_JEUX }, () => {
   const index = new Index(f, entrees, seuils.possible);
   /* toutes les paires font dix minutes (3 720 requêtes contre 3 540 noms, mesuré le 28/09) : la suite prend une
      paire sur douze, déterministe ; TEMOIN_COMPLET=1 les prend toutes (le chef, une fois par tour, à la fusion) */

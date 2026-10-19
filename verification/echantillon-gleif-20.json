@@ -1,0 +1,137 @@
+{
+ "quoi": "A 20-row sample of the private labelled set \"paires-gleif\": 10 match and 10 different, drawn by a fixed rule, never picked by hand. It is the only labelled data of this family that is public.",
+ "provenance": "sample of verification/paires-gleif.json",
+ "avertissement": "Verdicts are our labels and debatable by construction. 20 rows prove the format and the kind of difficulty; they do not reproduce the figures.",
+ "echantillon": {
+  "graine": "paires-gleif-2026-10-19",
+  "regle": "key = SHA-256 of seed|a|b (UTF-8); per verdict, sort by key ascending and keep the first 10; match rows first, then different rows. src/echantillonner.ts redoes the draw.",
+  "sourceSha256": "d75bd4433451c81e46c19f40fd7661a41d8f8de9106d9fce5a30a1e1d89c526e",
+  "sourceFichiers": 1,
+  "sourcePaires": 2250,
+  "sourceMatch": 1000,
+  "sourceDifferent": 1250,
+  "provenanceDuJeu": "GLEIF golden copy published 2026-09-30 08:00:00 UTC, listed by https://goldencopy.gleif.org/api/v2/golden-copies/publishes/latest. Level 1 (LEI-CDF 3.1, full file, CSV): https://goldencopy.gleif.org/storage/golden-copy-files/2026/09/30/1282700/20260930-0800-gleif-goldencopy-lei2-golden-copy.csv.zip, 506285686 bytes, sha256 62b7307663b412cd8d4b7226e4c6ccccb7b22066efea98a500ad2b205db2ce99. Level 2 relationships (RR 2.1, full file, CSV): https://goldencopy.gleif.org/storage/golden-copy-files/2026/09/30/1282745/20260930-0800-gleif-goldencopy-rr-golden-copy.csv.zip, 24413344 bytes, sha256 b348cdef56834609bbf98b1e37545ab90b2be55d8cc5b436dca7980846157110. GLEIF data is released under CC0 1.0 (no rights reserved, commercial use allowed). Built by node src/gleif-paires.ts, which checks both hashes and rewrites this file byte for byte; seed 20260930 (every draw is a cyrb53 hash of the seed, the stratum and the LEI). The labels come from the registry records, not from anyone judging whether two names match: a match pair is the legal name of one LEI record and another name recorded on that same record; a different pair is the legal names of two distinct LEIs. MATCH (1000): records with registration status ISSUED or LAPSED only (never DUPLICATE, ANNULLED, RETIRED, MERGED, TRANSFERRED, PENDING_*); one pair per LEI per stratum; at most 250 per stratum; no country (legal jurisdiction, else legal address) above 15 % of a stratum. Strata: previous-legal-name (OtherEntityName PREVIOUS_LEGAL_NAME), trading-name (TRADING_OR_OPERATING_NAME), alternative-language-name (ALTERNATIVE_LANGUAGE_LEGAL_NAME), transliteration (TransliteratedOtherEntityName PREFERRED_ or AUTO_ASCII_TRANSLITERATED_LEGAL_NAME, kept only where most letters of the legal name are outside the Latin script). Dropped before the draw: other names that are empty, a placeholder, carry no letter or repeat the LEI; pairs identical after NFKC, case, whitespace and punctuation folding; pairs with a name that, folded the same way, is in a training set (src/paires-entites*.json) or in verification/paires-entites-verdict.json. Counts: previous-legal-name 250 (from 203537 eligible LEIs; of 248946 name slots, dropped 5931 identical, 19 not a name, 0 overlapping); trading-name 250 (from 141418 eligible LEIs; of 151688 name slots, dropped 2724 identical, 237 not a name, 6 overlapping); alternative-language-name 250 (from 44177 eligible LEIs; of 47938 name slots, dropped 16 identical, 4 not a name, 1 overlapping); transliteration 250 (from 20034 eligible LEIs; of 20227 name slots, dropped 0 identical, 0 not a name, 0 overlapping). DIFFERENT (1000, plus the contained stratum): two distinct ISSUED, non-branch LEIs from a seeded 25 % sample of the 1979107 ISSUED records, whose legal names share a distinctive word: at least 3 characters, a letter, not a stopword, not a legal-form word (in at least 25 % of the sampled names of one ISO 20275 ELF code with at least 10 of them: 603 words, mostly legal forms and their fragments, plus generic entity words such as bank, fund, trust or holding and a few place names; the rebuild writes them to data/gleif/legal-form-words.tsv), in at most 0.5 % of the ISSUED legal names. Each drawn LEI appears once per stratum, and no country above 15 % of a stratum. Strata: same shared word and same country; same shared word, different country; same legal-address city, same country and same ELF legal form code (not 8888 or 9999), with a shared word. Set aside: pairs linked in the Level 2 file (any relationship, or a common direct or ultimate parent, head office or umbrella fund) or through the Level 1 associated or successor entity; pairs identical after folding (1 of 1187 drawn: different entities with the same name cannot be separated by a name matcher); pairs where every word of one name, legal-form words and stopwords set aside, is in the other (186 of 1187 drawn). Counts: different-same-word-same-country 334 (of 378 drawn: 1 identical after folding, 43 contained, 0 overlapping, 0 duplicates); different-same-word-other-country 333 (of 436 drawn: 0 identical after folding, 103 contained, 0 overlapping, 0 duplicates); different-same-city-same-form 333 (of 373 drawn: 0 identical after folding, 40 contained, 0 overlapping, 0 duplicates). CONTAINED (250, nature different-contained): the contained pairs, drawn on their own from the same sample: two distinct ISSUED LEIs, any country, sharing a distinctive word, not identical after folding, not related, and every word of one name (legal-form words and stopwords set aside) in the other. Screening practice may want them to alert: they are reported as their own stratum and never counted in the false-alert rate of the other negatives. No one looked at the matcher's result on any pair before the single measurement (node src/verdict-gleif.ts)."
+ },
+ "paires": [
+  {
+   "a": "ПиДи Капитал",
+   "b": "PD CAPITAL",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "佛山卡瑞诺五金制品有限公司",
+   "b": "FOSHAN CARINO HARDWARE CO.,LIMITED",
+   "verdict": "match",
+   "nature": "alternative-language-name"
+  },
+  {
+   "a": "株式会社AAM",
+   "b": "K.K.AAM",
+   "verdict": "match",
+   "nature": "alternative-language-name"
+  },
+  {
+   "a": "كوانتابل أيه آي م.د.م.س",
+   "b": "QUANTABLE AI DMCC",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "BIX-P Építőipari, Kölcsönző és Szolgáltató Kft.",
+   "b": "BIX-P Kft.",
+   "verdict": "match",
+   "nature": "trading-name"
+  },
+  {
+   "a": "久瑞投資控股有限公司",
+   "b": "EVERWIN INVESTMENT HOLDING CO., LIMITED",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "EMERGING MARKETS DEBT FUND",
+   "b": "SEI INSTITUTIONAL INTERNATIONAL TRUST -SIT EMERGING MARKETS DEBT FUND",
+   "verdict": "match",
+   "nature": "previous-legal-name"
+  },
+  {
+   "a": "ΑΝΩΝΥΜΟΣ ΚΤΗΜΑΤΙΚΗ ΕΤΑΙΡΕΙΑ Δ. ΦΩΤΙΑΔΗΣ",
+   "b": "D. FOTIADIS SA REAL ESTATE COMPANY",
+   "verdict": "match",
+   "nature": "transliteration"
+  },
+  {
+   "a": "슈프림제삼십일차유동화전문유한회사",
+   "b": "Supreme Thirty-First Securitization Specialty Co., Ltd.",
+   "verdict": "match",
+   "nature": "alternative-language-name"
+  },
+  {
+   "a": "NT World PAB Plus Equity Index Fund",
+   "b": "Northern Trust World Natural Capital Paris-Aligned Equity Index Fund",
+   "verdict": "match",
+   "nature": "previous-legal-name"
+  },
+  {
+   "a": "BESTATTUNG WIEN GmbH",
+   "b": "Bestattung Helmut Lechner GmbH",
+   "verdict": "different",
+   "nature": "different-same-word-same-country"
+  },
+  {
+   "a": "AHL Economic Trend Master Limited",
+   "b": "Grain Communications Opportunity Fund III Master, L.P.",
+   "verdict": "different",
+   "nature": "different-same-word-other-country"
+  },
+  {
+   "a": "KTT TIMBER TRADERS",
+   "b": "S. P. TRADERS",
+   "verdict": "different",
+   "nature": "different-contained"
+  },
+  {
+   "a": "Blackstone Directional Managed Account Platform Master Fund",
+   "b": "General Equity Partners Master Fund LP",
+   "verdict": "different",
+   "nature": "different-contained"
+  },
+  {
+   "a": "BEREN KAPLAMA BOYA İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ",
+   "b": "AKCOAT İLERİ KİMYASAL KAPLAMA MALZEMELERİ SANAYİ VE TİCARET ANONİM ŞİRKETİ",
+   "verdict": "different",
+   "nature": "different-same-word-same-country"
+  },
+  {
+   "a": "Navya Solutions AB",
+   "b": "NAVYA SREE DEVELOPERS",
+   "verdict": "different",
+   "nature": "different-same-word-other-country"
+  },
+  {
+   "a": "DESRI HIGHLAND SOLAR FINANCING HOLDINGS, L.L.C.",
+   "b": "LG FILM LIBRARY FINANCING LLC",
+   "verdict": "different",
+   "nature": "different-same-city-same-form"
+  },
+  {
+   "a": "State Street® SPDR® Bloomberg 3‑12 Month T‑Bill ETF",
+   "b": "Roundhill Weekly T-Bill ETF",
+   "verdict": "different",
+   "nature": "different-same-word-same-country"
+  },
+  {
+   "a": "FUNDACIO PRIVADA FRANCESC CARBO I COTAL",
+   "b": "FUNDACIÓ PRIVADA LAIES",
+   "verdict": "different",
+   "nature": "different-same-city-same-form"
+  },
+  {
+   "a": "Vectra SAL Holding",
+   "b": "VECTRA CAPITAL LLC",
+   "verdict": "different",
+   "nature": "different-contained"
+  }
+ ]
+}

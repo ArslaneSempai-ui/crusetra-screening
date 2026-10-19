@@ -15,15 +15,16 @@
  * into a training set.
  */
 import { createHash } from "node:crypto";
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { CHEMINS_APPRENTISSAGE, CHEMIN_APPRENTISSAGE_REEL, CHEMIN_VERDICT, choisirSeuils } from "./entites.ts";
 import { frequencesDesListes } from "./frequences.ts";
 import { rate } from "./interval.ts";
 import { validerPaires, type JeuDePaires } from "./measure.ts";
 import { mesurerJeuxParallele, mesurerReelParallele } from "./mesure-parallele.ts";
+import { urlPrive, lireUrlPrive, listerPrive } from "./jeux.ts";
 
-const SET = new URL("../verification/paires-gleif.json", import.meta.url);
+const SET = urlPrive("verification/paires-gleif.json");
 /** At most four scoring threads: the machine is shared. */
 const THREADS = 4;
 const CONTAINED = "different-contained";
@@ -36,7 +37,7 @@ const cell = (k: number, n: number): string => {
 async function main(): Promise<void> {
   refuserDrapeauxInconnus([]);
   const here = new URL(".", import.meta.url);
-  const brut = readFileSync(SET, "utf8");
+  const brut = lireUrlPrive(SET);
   const set = JSON.parse(brut) as JeuDePaires;
   const pairs = validerPaires(set);
 
@@ -44,9 +45,9 @@ async function main(): Promise<void> {
   const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
   const key = (p: { a: string; b: string }) => [norm(p.a), norm(p.b)].sort().join(" | ");
   const keys = new Set<string>(), names = new Set<string>();
-  const others = readdirSync(here).filter((f) => /^paires-entites.*\.json$/.test(f)).map((f) => new URL(f, here));
+  const others = listerPrive("src", /^paires-entites.*\.json$/);
   for (const f of [...others, CHEMIN_VERDICT]) {
-    for (const p of (JSON.parse(readFileSync(f, "utf8")) as JeuDePaires).paires) { keys.add(key(p)); names.add(norm(p.a)); names.add(norm(p.b)); }
+    for (const p of (JSON.parse(lireUrlPrive(f)) as JeuDePaires).paires) { keys.add(key(p)); names.add(norm(p.a)); names.add(norm(p.b)); }
   }
   let overlapPairs = 0, overlapNames = 0;
   for (const p of pairs) { if (keys.has(key(p))) overlapPairs++; if (names.has(norm(p.a)) || names.has(norm(p.b))) overlapNames++; }
@@ -56,8 +57,8 @@ async function main(): Promise<void> {
 
   /* the thresholds, chosen on the training sets by the repository's own rule */
   const f = frequencesDesListes();
-  const training = await mesurerJeuxParallele(f, CHEMINS_APPRENTISSAGE.map((u) => readFileSync(u, "utf8")), { cache: true, fils: THREADS });
-  const real = await mesurerReelParallele(f, readFileSync(CHEMIN_APPRENTISSAGE_REEL, "utf8"), { cache: true, fils: THREADS });
+  const training = await mesurerJeuxParallele(f, CHEMINS_APPRENTISSAGE.map((u) => lireUrlPrive(u)), { cache: true, fils: THREADS });
+  const real = await mesurerReelParallele(f, lireUrlPrive(CHEMIN_APPRENTISSAGE_REEL), { cache: true, fils: THREADS });
   const r = choisirSeuils(training.table, real.table);
   const strong = r.fort.seuil, possible = r.possible.seuil;
   const M = training.jeux.reduce((s, j) => s + j.match, 0), D = training.jeux.reduce((s, j) => s + j.different, 0);

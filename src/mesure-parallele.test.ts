@@ -16,6 +16,7 @@ import { scoreNoms, palierEntite, mesurerJeux, frequencesDe, FREQUENCES_UNIFORME
 import { mesurerPaires, type PaireEtiquetee } from "./measure.ts";
 import { Index, cribler, type Contrepartie } from "./cribler.ts";
 import type { EntreeListe } from "./listes.ts";
+import { raisonDAbsence, lireUrlPrive } from "./jeux.ts";
 
 const FIXTURE = JSON.parse(readFileSync(new URL("./fixtures/paires-parallele.json", import.meta.url), "utf8")) as { paires: PaireEtiquetee[] };
 const PAIRES = FIXTURE.paires;
@@ -64,8 +65,8 @@ test("mesure-parallele : la table assemblée des scores est celle de mesurerPair
   assert.throws(() => tableDepuisScores(PAIRES, scores.slice(1)), /did not answer for every pair/);
 });
 
-test("mesure-parallele : mesurerJeuxParallele rend la mesure de mesurerJeux sur le premier jeu d'apprentissage", async () => {
-  const brut = readFileSync(CHEMINS_APPRENTISSAGE[0]!, "utf8");
+test("mesure-parallele : mesurerJeuxParallele rend la mesure de mesurerJeux sur le premier jeu d'apprentissage", { skip: raisonDAbsence("src/paires-entites.json") }, async () => {
+  const brut = lireUrlPrive(CHEMINS_APPRENTISSAGE[0]!);
   const attendue = mesurerJeux(FREQUENCES_UNIFORMES, [brut]);
   const m = await mesurerJeuxParallele(FREQUENCES_UNIFORMES, [brut], { fils: 3 });
   assert.deepEqual({ jeux: m.jeux, table: m.table }, attendue);

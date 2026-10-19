@@ -16,12 +16,15 @@ import { fileURLToPath } from "node:url";
 import { validerPaires, mesurerPaires, mesurePublique, rapportMd, exigerDroitDEcraser, mesurerSynthetique,
   ASSEZ_PAR_VERDICT, SEUILS_MONTRES, type JeuDePaires, type PaireEtiquetee, type ModuleSynthetique } from "./measure.ts";
 import { SEUILS, PALIERS, type Matcher, type PalierId, type Registre } from "./matcher.ts";
+import { raisonDAbsence, lireUrlPrive, urlPrive } from "./jeux.ts";
 import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
 
 const CMD = realpathSync(fileURLToPath(new URL("./measure.ts", import.meta.url)));
 const RACINE = fileURLToPath(new URL("..", import.meta.url));
 
-const JEU = JSON.parse(readFileSync(fileURLToPath(new URL("./paires-etiquetees.json", import.meta.url)), "utf8")) as JeuDePaires;
+/* Le jeu complet est PRIVÉ (src/jeux.ts) : sans lui les épreuves qui le lisent sont sautées, avec la raison dite. */
+const SANS_JEU = raisonDAbsence("src/paires-etiquetees.json");
+const jeu = (): JeuDePaires => JSON.parse(lireUrlPrive(urlPrive("src/paires-etiquetees.json"))) as JeuDePaires;
 
 function paireDe(sur: Partial<PaireEtiquetee>[]): JeuDePaires {
   const base = (i: number, v: "match" | "different"): PaireEtiquetee =>
@@ -34,8 +37,8 @@ function paireDe(sur: Partial<PaireEtiquetee>[]): JeuDePaires {
   return { quoi: "essai", provenance: "authored", avertissement: "", paires };
 }
 
-test("le jeu livré est valide : comptes, vocabulaire, natures, aucun doublon dans les deux sens", () => {
-  const paires = validerPaires(JEU);
+test("le jeu livré est valide : comptes, vocabulaire, natures, aucun doublon dans les deux sens", { skip: SANS_JEU }, () => {
+  const paires = validerPaires(jeu());
   const nMatch = paires.filter((x) => x.verdict === "match").length;
   assert.ok(nMatch >= ASSEZ_PAR_VERDICT && paires.length - nMatch >= ASSEZ_PAR_VERDICT,
     `${nMatch} match / ${paires.length - nMatch} different : le jeu ne borne rien sous ${ASSEZ_PAR_VERDICT} de chaque`);
@@ -92,7 +95,7 @@ test("l'arithmétique, recomptée à la main sur un matcher scripté", () => {
   assert.equal(Object.keys(t).length, SEUILS.length);
 });
 
-test("le relevé réel : scellé qui se vérifie, cellules complètes, grille entière", async () => {
+test("le relevé réel : scellé qui se vérifie, cellules complètes, grille entière", { skip: SANS_JEU }, async () => {
   const m = await mesurePublique("2026-09-05", "0000000");
   m.empreinte = empreinteDuReleve(m);
   assert.ok(scelleIntact(m as unknown as Record<string, unknown>));
@@ -114,14 +117,14 @@ test("le relevé réel : scellé qui se vérifie, cellules complètes, grille en
     "des cellules manquent : la grille n'est pas entière");
 });
 
-test("deux mesures, même relevé : rien d'aléatoire n'est entré", async () => {
+test("deux mesures, même relevé : rien d'aléatoire n'est entré", { skip: SANS_JEU }, async () => {
   const a = await mesurePublique("2026-09-05", "0000000");
   const b = await mesurePublique("2026-09-05", "0000000");
   assert.equal(empreinteDuReleve(a), empreinteDuReleve(b),
     "deux exécutions divergent : quelque chose tire au sort, et le relevé publié n'est plus reproductible");
 });
 
-test("le palier absent est NOMMÉ — dans le relevé et dans la page — au lieu de planter", async () => {
+test("le palier absent est NOMMÉ — dans le relevé et dans la page — au lieu de planter", { skip: SANS_JEU }, async () => {
   const m = await mesurePublique("2026-09-05", "0000000");
   /*
    * LES ABSENTS SE DÉRIVENT, ILS NE SE RÉCITENT PAS. La première version de ce cas écrivait

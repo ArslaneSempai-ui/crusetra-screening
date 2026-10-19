@@ -23,6 +23,8 @@ import type { Cellule } from "./measure.ts";
 import { frequencesDesListes } from "./frequences.ts";
 import { mesurerJeuxParallele, mesurerReelParallele } from "./mesure-parallele.ts";
 import { ligneDuJuge, aujourdhui, CHEMIN_VERDICTS, type Juge } from "./promouvoir.ts";
+import { lireUrlPrive, raisonDAbsence, APPRENTISSAGE } from "./jeux.ts";
+import { scelleIntact } from "./empreinte.ts";
 
 export const CHEMIN_RELEVE = new URL("../releve-entites.json", import.meta.url);
 /** Les jeux aveugles jugés à l'aveugle, dans l'ordre des versions v14 à v24 ; le 20 est le jeu réaliste. */
@@ -92,9 +94,9 @@ export function lireLivre(racine: string, l: (typeof LIVRES)[number]): Livre {
 /** Les cellules d'apprentissage, mesurées ici même sur tous les jeux listés. */
 export async function mesurerApprentissage(): Promise<Apprentissage> {
   const f = frequencesDesListes();
-  const bruts = CHEMINS_APPRENTISSAGE.map((u) => readFileSync(u, "utf8"));
+  const bruts = CHEMINS_APPRENTISSAGE.map((u) => lireUrlPrive(u));
   const m = await mesurerJeuxParallele(f, bruts, { cache: true });
-  const reel = await mesurerReelParallele(f, readFileSync(CHEMIN_APPRENTISSAGE_REEL, "utf8"), { cache: true });
+  const reel = await mesurerReelParallele(f, lireUrlPrive(CHEMIN_APPRENTISSAGE_REEL), { cache: true });
   const r = choisirSeuils(m.table, reel.table);
   const paires = m.paires.filter((x) => x.verdict === "match").length;
   const niveau = (n: { seuil: number; rappel: Cellule; fauxPositifs: Cellule; fauxPositifsReels: Cellule }): Niveau => ({ seuil: n.seuil, trouves: n.rappel, fausses: n.fauxPositifs, faussesReelles: n.fauxPositifsReels });
@@ -123,6 +125,16 @@ export async function releveRelu(racine: string): Promise<ReleveEntites> {
 async function principal(): Promise<void> {
   refuserDrapeauxInconnus(["--check"]);
   const racine = fileURLToPath(new URL("..", import.meta.url));
+  /* THE TRAINING SETS ARE PRIVATE (src/jeux.ts). Without them the record cannot be re-measured: --check then verifies what it
+     can, that the record on disk is sealed and the seal is intact, and says so; it never reports a match it did not compute. */
+  const absence = raisonDAbsence(...APPRENTISSAGE, "src/paires-gleif-apprentissage.json");
+  if (process.argv.includes("--check") && absence) {
+    if (!existsSync(CHEMIN_RELEVE)) { console.error("releve-entites.json is missing: run npm run releve-entites, then npm run sceller -- releve-entites.json"); process.exit(1); }
+    const disque = JSON.parse(readFileSync(CHEMIN_RELEVE, "utf8")) as ReleveEntites;
+    if (typeof disque.empreinte !== "string" || !scelleIntact(disque)) { console.error("releve-entites.json is not sealed, or its seal is broken."); process.exit(1); }
+    console.log(`releve-entites.json: set private, hash recorded (sealed ${disque.empreinte}, ${disque.date}, commit ${disque.commit}); seal intact, not re-measured (${absence}).`);
+    return;
+  }
   const relu = await releveRelu(racine);
   if (process.argv.includes("--check")) {
     if (!existsSync(CHEMIN_RELEVE)) { console.error("releve-entites.json is missing: run npm run releve-entites, then npm run sceller -- releve-entites.json"); process.exit(1); }

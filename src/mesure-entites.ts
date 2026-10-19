@@ -17,6 +17,7 @@ import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { frequencesDesListes } from "./frequences.ts";
 import { validerPaires, type PaireEtiquetee, type TableDUnPalier } from "./measure.ts";
 import { mesurerJeuxParallele, mesurerReelParallele, sequentielDemande } from "./mesure-parallele.ts";
+import { lireUrlPrive } from "./jeux.ts";
 import {
   frequencesDe, palierEntite, mesurerJeux, choisirSeuils, CHEMINS_APPRENTISSAGE, FREQUENCES_UNIFORMES, CHEMIN_APPRENTISSAGE_REEL, mesurerReel, type Frequences,
 } from "./entites.ts";
@@ -28,7 +29,7 @@ async function principal(): Promise<void> {
   const sansListes = process.argv.includes("--sans-listes");
   /* le cache des fréquences se construit ici s'il manque, AVANT tout fil : un fil le lit, jamais ne le refait */
   const f = sansListes ? FREQUENCES_UNIFORMES : frequencesDesListes();
-  const bruts = CHEMINS_APPRENTISSAGE.map((u) => readFileSync(u, "utf8"));
+  const bruts = CHEMINS_APPRENTISSAGE.map((u) => lireUrlPrive(u));
   const jeux = bruts.map((brut): PaireEtiquetee[] => validerPaires(JSON.parse(brut)));
   const toutes = jeux.flat();
   let table: TableDUnPalier, scores: number[], fils = "";
@@ -43,7 +44,7 @@ async function principal(): Promise<void> {
     fils = ` · ${m.fils} fils prêts en ${m.demarrage} ms`;
   }
   /* l'échantillon réel, que la règle des seuils lit à côté des jeux écrits (voir `choisirSeuils`) */
-  const brutReel = readFileSync(CHEMIN_APPRENTISSAGE_REEL, "utf8");
+  const brutReel = lireUrlPrive(CHEMIN_APPRENTISSAGE_REEL);
   const reel = sequentielDemande() ? mesurerReel(f, brutReel) : await mesurerReelParallele(f, brutReel, { cache: !sansListes });
   const r = choisirSeuils(table, reel.table);
   const M = toutes.filter((x) => x.verdict === "match").length, D = toutes.length - M;

@@ -13,6 +13,9 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { executer, versCsv } from "./cribler.ts";
 import { analyser, fichierDe, SOURCES, type LigneManifeste, type Manifeste } from "./listes.ts";
+import { raisonDAbsence, JEUX_DU_CRIBLAGE } from "./jeux.ts";
+/* Le criblage choisit ses seuils sur les jeux d'apprentissage, qui sont PRIVÉS (src/jeux.ts) : sans eux il refuse, et ces épreuves sont sautées. */
+const SANS_JEUX = raisonDAbsence(...JEUX_DU_CRIBLAGE);
 
 const ICI = fileURLToPath(new URL(".", import.meta.url));
 const OFAC = readFileSync(join(ICI, "fixtures", "ofac.xml"), "utf8");
@@ -69,19 +72,19 @@ function criblageDe(entites: [string, string][]) {
 }
 const candidats = (entites: [string, string][]) => criblageDe(entites).resultats[0]!.candidats.filter((c) => /ganotuna/i.test(c.nomListe));
 
-test("witness: a name from entry 99 of Regulation 2026/2193 is found while the EU feed does not carry it", () => {
+test("witness: a name from entry 99 of Regulation 2026/2193 is found while the EU feed does not carry it", { skip: SANS_JEUX }, () => {
   const trouves = candidats([]);
   assert.equal(trouves.length, 1, `expected one hit for Ganotuna, got ${trouves.length}`);
   assert.equal(trouves[0]!.source, "EU");
 });
 
-test("witness: a feed that carries the same entry yields one hit, not two", () => {
+test("witness: a feed that carries the same entry yields one hit, not two", { skip: SANS_JEUX }, () => {
   const trouves = candidats([["2026/2193 (OJ L, 2026/2193, 28.9.2026)", "[name removed]"]]);
   assert.equal(trouves.length, 1, `expected one hit for Ganotuna, got ${trouves.length}`);
   assert.deepEqual(trouves[0]!.ids, ["9000"], "the hit that remains is the feed's own entry");
 });
 
-test("a hit from the supplement says so in the record and in the spreadsheet, and the coverage line says it once", () => {
+test("a hit from the supplement says so in the record and in the spreadsheet, and the coverage line says it once", { skip: SANS_JEUX }, () => {
   const c = criblageDe([]);
   const k = c.resultats[0]!.candidats.find((x) => /ganotuna/i.test(x.nomListe))!;
   assert.deepEqual(k.complement, { celex: "32026R2193", annexe: "IV", entree: 99, luLe: "2026-10-18", url: "https://publications.europa.eu/resource/celex/32026R2193" });
@@ -92,7 +95,7 @@ test("a hit from the supplement says so in the record and in the spreadsheet, an
   assert.match(lignes[0]!, /^10 EU entries \(added to Annex IV to Regulation \(EU\) 2024\/1485 by Council Implementing Regulation \(EU\) 2026\/2193 \(CELEX 32026R2193\), entries 99 to 108\) come from the Official Journal, read on 2026-10-18, and not from the EU feed/);
 });
 
-test("a hit from the feed itself carries no supplement mark, and the coverage line counts only the entries still read from the Official Journal", () => {
+test("a hit from the feed itself carries no supplement mark, and the coverage line counts only the entries still read from the Official Journal", { skip: SANS_JEUX }, () => {
   const c = criblageDe([["2026/2193 (OJ L, 2026/2193, 28.9.2026)", "[name removed]"]]);
   const k = c.resultats[0]!.candidats.find((x) => /ganotuna/i.test(x.nomListe))!;
   assert.equal(k.complement, undefined);

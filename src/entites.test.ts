@@ -15,6 +15,8 @@ import {
 import { validerPaires, type TableDUnPalier } from "./measure.ts";
 import { rate } from "./interval.ts";
 import { hangulEnLatin, pinyinDe, cleAbjad, cleAbjadSansTa, romaniser, CHEMIN_PINYIN, CHEMIN_JYUTPING, jyutpingDe, hongkong, thaiEnLatin, tamoulEnLatin } from "./ecritures.ts";
+import { raisonDAbsence, lireUrlPrive, APPRENTISSAGE } from "./jeux.ts";
+const SANS_APPRENTISSAGE = raisonDAbsence(...APPRENTISSAGE);
 
 const f = FREQUENCES_UNIFORMES;
 const score = (a: string, b: string) => scoreNoms(f, a, b);
@@ -144,21 +146,21 @@ test("les seuils : la règle écrite lit les pièges écrits ET les vraies soci�
   assert.ok(Math.abs(choisirSeuils(ecrits, saturees).possible.seuil - SEUIL_POSSIBLE) < 1e-9);
 });
 
-test("les jeux d'apprentissage : valides, et leur provenance dit leur rôle", () => {
+test("les jeux d'apprentissage : valides, et leur provenance dit leur rôle", { skip: SANS_APPRENTISSAGE }, () => {
   for (const u of CHEMINS_APPRENTISSAGE) {
-    const jeu = JSON.parse(readFileSync(u, "utf8"));
+    const jeu = JSON.parse(lireUrlPrive(u));
     assert.ok(validerPaires(jeu).length >= 80, u.pathname);
     assert.match(jeu.provenance, /invented/);
   }
-  assert.match(JSON.parse(readFileSync(CHEMINS_APPRENTISSAGE[2]!, "utf8")).provenance, /TRAINING set/,
+  assert.match(JSON.parse(lireUrlPrive(CHEMINS_APPRENTISSAGE[2]!)).provenance, /TRAINING set/,
     "un jeu témoin étudié devient un jeu d'apprentissage, et le dit");
 });
 
-test("le score : dans [0, 1] et symétrique sur tous les jeux d'apprentissage", () => {
-  const m = mesurerJeux(f, CHEMINS_APPRENTISSAGE.map((u) => readFileSync(u, "utf8")));
+test("le score : dans [0, 1] et symétrique sur tous les jeux d'apprentissage", { skip: SANS_APPRENTISSAGE }, () => {
+  const m = mesurerJeux(f, CHEMINS_APPRENTISSAGE.map((u) => lireUrlPrive(u)));
   assert.equal(m.jeux.length, CHEMINS_APPRENTISSAGE.length);
   for (const u of CHEMINS_APPRENTISSAGE) {
-    for (const x of JSON.parse(readFileSync(u, "utf8")).paires as { a: string; b: string }[]) {
+    for (const x of JSON.parse(lireUrlPrive(u)).paires as { a: string; b: string }[]) {
       const ab = score(x.a, x.b), ba = score(x.b, x.a);
       assert.ok(ab >= 0 && ab <= 1, `${x.a} / ${x.b}`);
       assert.ok(Math.abs(ab - ba) < 1e-12, `asymétrique : ${x.a} / ${x.b}`);

@@ -14,6 +14,7 @@ import { Index, cribler, type Contrepartie } from "./cribler.ts";
 import { frequencesDe } from "./entites.ts";
 import { frequencesDesListes } from "./frequences.ts";
 import type { EntreeListe } from "./listes.ts";
+import { raisonDAbsence, lireUrlPrive } from "./jeux.ts";
 
 const f = frequencesDesListes();
 const score = (a: string, b: string) => scoreNoms(f, a, b);
@@ -75,8 +76,8 @@ test("tour 19 : les formes par juridiction, le qualificatif d'associé unique, e
   assert.ok(score("Zardini Agricola Soc. Coop.", "Zardini Agricola Srl") < FORT);
 });
 
-test("tour 19 : l'index ne perd rien au seuil possible de la règle, sur les noms réels de l'échantillon d'apprentissage", () => {
-  const paires = (JSON.parse(readFileSync(CHEMIN_APPRENTISSAGE_REEL, "utf8")).paires as { a: string; b: string; nature: string }[])
+test("tour 19 : l'index ne perd rien au seuil possible de la règle, sur les noms réels de l'échantillon d'apprentissage", { skip: raisonDAbsence("src/paires-gleif-apprentissage.json") }, () => {
+  const paires = (JSON.parse(lireUrlPrive(CHEMIN_APPRENTISSAGE_REEL)).paires as { a: string; b: string; nature: string }[])
     .filter((x) => x.nature !== STRATE_CONTENUE);
   const entrees: EntreeListe[] = paires.map((x, i) => ({ source: "OFAC", id: String(1000 + i), nom: x.b, alias: [], type: "entity" }));
   const fl = frequencesDe(entrees.map((e) => [e.nom, ...e.alias]));

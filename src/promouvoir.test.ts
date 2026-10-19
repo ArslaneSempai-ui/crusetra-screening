@@ -8,6 +8,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { aujourdhui, fichierDuJeu, insererChemin, ligneDuJuge, nombreEnLettres, phraseDuJuge, prochainNumero, provenancePromue, type Juge } from "./promouvoir.ts";
 import { CHEMINS_APPRENTISSAGE } from "./entites.ts";
+import { raisonDAbsence, lireUrlPrive, urlPrive } from "./jeux.ts";
 
 const REGISTRE = [
   "| date | method (entites / cribler) | held-out set (sha256) | pairs | strong level | found | false alerts |",
@@ -33,10 +34,10 @@ test("promouvoir : la ligne du juge, ses trois empreintes, ses deux niveaux", ()
   assert.equal(ligneDuJuge(REGISTRE.replace("| | | | | possible 0.80 | 188", "| | | | | possibl 0.80 | 188"), 15), null, "sans sa ligne possible, la ligne forte ne suffit pas");
 });
 
-test("promouvoir : la phrase du juge est, mot pour mot, celle de la provenance du jeu 16", () => {
+test("promouvoir : la phrase du juge est, mot pour mot, celle de la provenance du jeu 16", { skip: raisonDAbsence("src/paires-entites-16.json") }, () => {
   const j = ligneDuJuge(REGISTRE, 15) as Juge;
   const phrase = phraseDuJuge(15, j, "2026-09-29");
-  const seize = JSON.parse(readFileSync(new URL("./paires-entites-16.json", import.meta.url), "utf8")) as { provenance: string };
+  const seize = JSON.parse(lireUrlPrive(urlPrive("src/paires-entites-16.json"))) as { provenance: string };
   /* le jeu 16, écrit à la main, range le recouvrement au milieu de la phrase de l'auteur ; l'outil le met en
      tête de la sienne. Le mot à mot se compare donc à partir du jugement, et le recouvrement à part. */
   const [recouvrement, jugement] = phrase.split(/(?<=names\.) (?=Judged once)/);
@@ -63,15 +64,15 @@ test("promouvoir : la provenance promue ferme celle de l'auteur d'un point, jama
 test("promouvoir : la ligne s'insère après celle du jeu N, une seule fois, et l'ancre doit exister", () => {
   const source = [
     "export const CHEMINS_APPRENTISSAGE = [",
-    '  new URL("./paires-entites.json", import.meta.url),',
-    '  new URL("./paires-entites-2.json", import.meta.url),',
+    '  urlPrive("src/paires-entites.json"),',
+    '  urlPrive("src/paires-entites-2.json"),',
     "];",
   ].join("\n");
   const apres2 = insererChemin(source, 2).split("\n");
-  assert.equal(apres2[3], '  new URL("./paires-entites-3.json", import.meta.url),');
+  assert.equal(apres2[3], '  urlPrive("src/paires-entites-3.json"),');
   assert.equal(apres2.length, 5);
   const apres1 = insererChemin(source.split("\n").filter((l) => !l.includes("-2.json")).join("\n"), 1).split("\n");
-  assert.equal(apres1[2], '  new URL("./paires-entites-2.json", import.meta.url),', "le premier jeu s'appelle paires-entites.json");
+  assert.equal(apres1[2], '  urlPrive("src/paires-entites-2.json"),', "le premier jeu s'appelle paires-entites.json");
   assert.throws(() => insererChemin(source, 1), /already lists paires-entites-2.json/);
   assert.throws(() => insererChemin(source, 7), /no line for paires-entites-7.json/);
   assert.deepEqual([fichierDuJeu(1), fichierDuJeu(16)], ["paires-entites.json", "paires-entites-16.json"]);
