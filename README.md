@@ -150,6 +150,16 @@ with `npm run verify`.
 **624 tests** across 71 files, counted from the sources rather than typed here.
 <!-- /figures:tests -->
 
+## What is public, what is private
+
+The figures stay public: `releve-public.json` with its signature, `RELEVE-PUBLIC.md`, `releve-entites.json` and `verification/VERDICTS.md`. The method is written in each sample file and in `verification/`. The only labelled rows left public are three samples of 20 rows (10 match, 10 different): `src/echantillons/paires-etiquetees-20.json`, `src/echantillons/paires-entites-20.json` and `verification/echantillon-gleif-20.json`. Each is drawn by a fixed rule written in the file (key is the SHA-256 of seed, a and b; per verdict the smallest keys are kept), never by hand, and `node src/echantillonner.ts --check` redoes the draw.
+
+The full labelled sets are private since this change. The person-pair set is recorded in its sample as SHA-256 `2e4b1bc0d168ea0c8af4313fd22d7ed906b46e0869b88f4290c89657aa7aeec6`; the other sets carry their recorded hashes in their sealed records and in the private folder's `MANIFEST.txt`. Earlier versions of the sets remain in the git history of this repository.
+
+A holder of the private folder runs the full tests with `CRUSETRA_JEUX=/path/to/crusetra-jeux/crusetra-screening npm test` (default: the sibling folder `../crusetra-jeux/crusetra-screening`). Without it the tests that need a set are skipped with a named reason, and the record checks say "set private, hash recorded".
+
+Screening a list chooses its two thresholds on the training sets at run time. A clone without the private folder can read the code, the figures and the samples, but it cannot screen a list: the command refuses by name and says nothing was screened. The thresholds are not published.
+
 ## License
 
 The same public license as Crusetra Routing: non-commercial use without limit of time, a
