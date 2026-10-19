@@ -48,6 +48,7 @@ import { cleAbjad, cleAbjadSansTa, cleAbjadVLuF, cleAbjadVoyelles, type Abjad } 
 import { pliBirman, CREDIT_BIRMAN } from "./birman.ts";
 import { pliKhmer, CREDIT_KHMER } from "./khmer.ts";
 import { distanceOsa } from "./matchers/damerau.ts";
+import { relatif } from "./jeux.ts";
 
 /** Au plus autant de candidats montrés par nom ; le compte des autres est donné. */
 export const CANDIDATS_MONTRES = 5;
@@ -1165,12 +1166,12 @@ export function executer(
   const f = frequencesDesListes();
   const bruts = CHEMINS_APPRENTISSAGE.map((u) => {
     const b = lireJeu(u);
-    if (b === null) throw new Error(`the training set ${u.pathname} is missing: the thresholds cannot be measured. Nothing was screened.`);
+    if (b === null) throw new Error(`the training set ${relatif(u)} is missing from the private sets (CRUSETRA_JEUX, src/jeux.ts): the thresholds cannot be measured. Nothing was screened.`);
     return b;
   });
   const apprentissage = mesurerJeux(f, bruts);
   const brutReel = lireJeu(CHEMIN_APPRENTISSAGE_REEL);
-  if (brutReel === null) throw new Error(`the real training sample ${CHEMIN_APPRENTISSAGE_REEL.pathname} is missing: the thresholds cannot be measured. Nothing was screened.`);
+  if (brutReel === null) throw new Error(`the real training sample ${relatif(CHEMIN_APPRENTISSAGE_REEL)} is missing from the private sets (CRUSETRA_JEUX, src/jeux.ts): the thresholds cannot be measured. Nothing was screened.`);
   const reel = mesurerReel(f, brutReel);
   const reglage: Reglage = choisirSeuils(apprentissage.table, reel.table);
   const seuils = { fort: reglage.fort.seuil, possible: reglage.possible.seuil };

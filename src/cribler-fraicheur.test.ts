@@ -28,6 +28,9 @@ import { executer, exigerReleveScelle, scellerLeReleve, type Criblage } from "./
 import { scelleIntact } from "./empreinte.ts";
 import { analyser, fichierDe, refusFraicheurUe, RefusListePerimee, SOURCES, type LigneManifeste, type Manifeste } from "./listes.ts";
 import { SEUIL_RETARD_UE_JOURS, type FraicheurEnregistree } from "./fraicheur-ue.ts";
+import { raisonDAbsence, JEUX_DU_CRIBLAGE } from "./jeux.ts";
+/* Le criblage choisit ses seuils sur les jeux d'apprentissage, qui sont PRIVÉS (src/jeux.ts) : sans eux il refuse, et ces épreuves sont sautées. */
+const SANS_JEUX = raisonDAbsence(...JEUX_DU_CRIBLAGE);
 
 const FAUX_JETON = "FAKE-TOKEN-0000";
 const ICI = fileURLToPath(new URL(".", import.meta.url));
@@ -323,7 +326,7 @@ function unRunEssai(): { criblage: Criblage; ecritsAuCote: string[] } {
   return essai;
 }
 
-test("a fresh manifest is screened as before: the record is produced, sealed, with no trace of the test mark", () => {
+test("a fresh manifest is screened as before: the record is produced, sealed, with no trace of the test mark", { skip: SANS_JEUX }, () => {
   const criblage = unRunFrais();
   assert.equal(criblage.essai, undefined);
   assert.equal(scelleIntact(criblage as unknown as Record<string, unknown>), true);
@@ -333,7 +336,7 @@ test("a fresh manifest is screened as before: the record is produced, sealed, wi
   assert.doesNotThrow(() => exigerReleveScelle(criblage));
 });
 
-test("the override is accepted for a test run on a stale list: what comes back carries the test mark and no seal, and nothing is written", () => {
+test("the override is accepted for a test run on a stale list: what comes back carries the test mark and no seal, and nothing is written", { skip: SANS_JEUX }, () => {
   const { criblage, ecritsAuCote } = unRunEssai();
   assert.match(criblage.essai ?? "", /TEST RUN/);
   assert.equal(criblage.empreinte, undefined, "no seal");
@@ -342,7 +345,7 @@ test("the override is accepted for a test run on a stale list: what comes back c
   assert.deepEqual(ecritsAuCote, ["contreparties.csv"]);
 });
 
-test("a sealed client record can never come out of the override: the sealing path and the writer of the report both refuse a test run", () => {
+test("a sealed client record can never come out of the override: the sealing path and the writer of the report both refuse a test run", { skip: SANS_JEUX }, () => {
   const { criblage } = unRunEssai();
   const { empreinte: _sans, ...sansSceau } = criblage;
   assert.throws(() => scellerLeReleve(sansSceau), /test run/i, "the sealing path refuses a record carrying the test mark");
@@ -355,7 +358,7 @@ test("a sealed client record can never come out of the override: the sealing pat
   assert.equal(scelleIntact(scellerLeReleve(sansMarque) as unknown as Record<string, unknown>), true, "the sealing path itself is not broken: a record WITHOUT the mark seals");
 });
 
-test("the override on a FRESH list changes nothing: the record is the same as without it, sealed", () => {
+test("the override on a FRESH list changes nothing: the record is the same as without it, sealed", { skip: SANS_JEUX }, () => {
   const r = racineAvec({ gen: "2026-10-12", publication: "2026-07-23" });
   try {
     const { criblage } = executer(r.fichier, CLIENT, horloge("2026-10-14"), undefined, { racine: r.dossier, essaiListeUePerimee: true });

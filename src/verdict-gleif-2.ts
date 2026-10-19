@@ -27,10 +27,11 @@ import { frequencesDesListes } from "./frequences.ts";
 import { rate } from "./interval.ts";
 import { validerPaires, type JeuDePaires } from "./measure.ts";
 import { mesurerJeuxParallele, mesurerReelParallele } from "./mesure-parallele.ts";
+import { urlPrive, urlDuDepot, lireUrlPrive, relatif, estPrive, listerPrive } from "./jeux.ts";
 
 const RACINE = new URL("../", import.meta.url);
-const SET = new URL("verification/paires-gleif-2.json", RACINE);
-const LABELS = new URL("verification/paires-gleif-2-juges.json", RACINE);
+const SET = urlPrive("verification/paires-gleif-2.json");
+const LABELS = urlPrive("verification/paires-gleif-2-juges.json");
 export const CHEMIN_GEL = new URL("verification/methode-gelee-gleif-2.json", RACINE);
 const RESULTAT = new URL("verification/verdict-gleif-2.txt", RACINE);
 const KINDS = ["same-name", "partial", "other-name"] as const;
@@ -57,12 +58,12 @@ export function fichiersDeLaMethode(): string[] {
   suivre("src/cribler.ts");
   suivre("src/verdict-gleif-2.ts");
   const donnees = ["src/pinyin.txt", "src/jyutping.txt", "src/mots-anglais.txt.gz", "listes-manifest.json",
-    CHEMIN_APPRENTISSAGE_REEL.pathname.slice(new URL(RACINE).pathname.length),
-    ...CHEMINS_APPRENTISSAGE.map((u) => u.pathname.slice(new URL(RACINE).pathname.length))];
+    relatif(CHEMIN_APPRENTISSAGE_REEL),
+    ...CHEMINS_APPRENTISSAGE.map((u) => relatif(u))];
   return [...[...vus].sort(), ...donnees];
 }
 
-const empreinte = (rel: string) => createHash("sha256").update(readFileSync(new URL(rel, RACINE))).digest("hex");
+const empreinte = (rel: string) => createHash("sha256").update(readFileSync(urlDuDepot(rel))).digest("hex");
 
 function geler(): void {
   if (existsSync(RESULTAT)) throw new Error("verification/verdict-gleif-2.txt exists: the sample has been judged, the method it judged cannot be frozen again.");
@@ -85,7 +86,11 @@ async function mesurer(): Promise<void> {
   if (existsSync(RESULTAT)) throw new Error("verification/verdict-gleif-2.txt exists: this sample has been judged once, and is spent. Nothing is measured.");
   if (!existsSync(CHEMIN_GEL)) throw new Error("verification/methode-gelee-gleif-2.json is missing: the method was never frozen. Nothing is measured.");
   const gel = JSON.parse(readFileSync(CHEMIN_GEL, "utf8")) as { fichiers: Record<string, string> };
-  const bouges = Object.entries(gel.fichiers).filter(([rel, h]) => !existsSync(new URL(rel, RACINE)) || empreinte(rel) !== h).map(([rel]) => rel);
+  /* a private set that is absent cannot be re-hashed: its hash stays recorded in the frozen file, and the measure below
+     refuses by name when it needs the set */
+  const hors = Object.keys(gel.fichiers).filter((rel) => estPrive(rel) && !existsSync(urlPrive(rel)));
+  if (hors.length) console.log(`set private, hash recorded: ${hors.length} of the ${Object.keys(gel.fichiers).length} frozen files are in crusetra-jeux and were not re-hashed`);
+  const bouges = Object.entries(gel.fichiers).filter(([rel, h]) => !hors.includes(rel) && (!existsSync(urlDuDepot(rel)) || empreinte(rel) !== h)).map(([rel]) => rel);
   const ajoutes = fichiersDeLaMethode().filter((rel) => !(rel in gel.fichiers));
   if (bouges.length || ajoutes.length) {
     throw new Error(`the method is not the frozen one (changed: ${bouges.join(", ") || "none"}; not frozen: ${ajoutes.join(", ") || "none"}). Nothing is measured.`);
@@ -93,10 +98,10 @@ async function mesurer(): Promise<void> {
 
   const out: string[] = [];
   const say = (l: string) => { out.push(l); console.log(l); };
-  const brut = readFileSync(SET, "utf8");
+  const brut = lireUrlPrive(SET);
   const set = JSON.parse(brut) as JeuDePaires;
   validerPaires(set);
-  const labelsFile = JSON.parse(readFileSync(LABELS, "utf8")) as { labels?: Record<string, string> };
+  const labelsFile = JSON.parse(lireUrlPrive(LABELS)) as { labels?: Record<string, string> };
   if (!labelsFile.labels || typeof labelsFile.labels !== "object") throw new Error("verification/paires-gleif-2-juges.json has no \"labels\" object: nothing is measured.");
   const labels = labelsFile.labels;
   const positives = set.paires.filter((p) => p.verdict === "match");
@@ -107,11 +112,10 @@ async function mesurer(): Promise<void> {
   const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
   const key = (p: { a: string; b: string }) => [norm(p.a), norm(p.b)].sort().join(" | ");
   const keys = new Set<string>(), names = new Set<string>();
-  const src = new URL("src/", RACINE);
-  const autres = [...readdirSync(src).filter((f) => /^paires-(?:entites|gleif-apprentissage)[\w-]*\.json$/.test(f) && !f.endsWith("-juges.json")).map((f) => new URL(f, src)),
-    CHEMIN_VERDICT, new URL("verification/paires-gleif.json", RACINE)];
+  const autres = [...listerPrive("src", /^paires-(?:entites|gleif-apprentissage)[\w-]*\.json$/).filter((u) => !u.pathname.endsWith("-juges.json")),
+    CHEMIN_VERDICT, urlPrive("verification/paires-gleif.json")];
   for (const f of autres) {
-    for (const p of (JSON.parse(readFileSync(f, "utf8")) as JeuDePaires).paires) { keys.add(key(p)); names.add(norm(p.a)); names.add(norm(p.b)); }
+    for (const p of (JSON.parse(lireUrlPrive(f)) as JeuDePaires).paires) { keys.add(key(p)); names.add(norm(p.a)); names.add(norm(p.b)); }
   }
   let overlapPairs = 0, overlapNames = 0;
   for (const p of set.paires) { if (keys.has(key(p))) overlapPairs++; if (names.has(norm(p.a)) || names.has(norm(p.b))) overlapNames++; }
@@ -120,8 +124,8 @@ async function mesurer(): Promise<void> {
 
   /* the thresholds, chosen on the training material by the repository's own written rule */
   const f = frequencesDesListes();
-  const training = await mesurerJeuxParallele(f, CHEMINS_APPRENTISSAGE.map((u) => readFileSync(u, "utf8")), { cache: true, fils: THREADS });
-  const real = await mesurerReelParallele(f, readFileSync(CHEMIN_APPRENTISSAGE_REEL, "utf8"), { cache: true, fils: THREADS });
+  const training = await mesurerJeuxParallele(f, CHEMINS_APPRENTISSAGE.map((u) => lireUrlPrive(u)), { cache: true, fils: THREADS });
+  const real = await mesurerReelParallele(f, lireUrlPrive(CHEMIN_APPRENTISSAGE_REEL), { cache: true, fils: THREADS });
   const r = choisirSeuils(training.table, real.table);
   const strong = r.fort.seuil, possible = r.possible.seuil;
   say(`weights: ${f.entrees ? `${f.entrees} listed entries` : "uniform (no lists on disk)"} · thresholds chosen on ${training.jeux.length} written training sets and the real training sample: strong ${strong.toFixed(2)}, possible ${possible.toFixed(2)}`);

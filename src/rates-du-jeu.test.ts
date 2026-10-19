@@ -8,6 +8,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { cleImprimee, lignesDuJeu, rendre, lignesLimites, limitesDepuis, CHEMIN_LIMITES, type Paire } from "./rates-du-jeu.ts";
 import { fichierDuJeu } from "./promouvoir.ts";
+import { raisonDAbsence, lireUrlPrive, urlPrive, APPRENTISSAGE } from "./jeux.ts";
 
 const MESURE = [
   "16 jeux d'apprentissage, 2770 paires vraies, 2770 pièges · poids des 33393 entrées listées",
@@ -98,7 +99,7 @@ test("rates-du-jeu : une paire du registre sort avec sa raison, dans les deux or
   assert.equal(rendre(lignesDuJeu(MESURE, JEU)).at(-1), "total: 2 RATÉ, 1 FAUSSE-F, 1 possible", "without a register, the total is as before");
 });
 
-test("doc/LIMITES.md : chaque ligne est une paire de son jeu, un score à trois décimales, une raison ; aucune en double, aucun cadratin", () => {
+test("doc/LIMITES.md : chaque ligne est une paire de son jeu, un score à trois décimales, une raison ; aucune en double, aucun cadratin", { skip: raisonDAbsence(...APPRENTISSAGE) }, () => {
   const texte = readFileSync(CHEMIN_LIMITES, "utf8");
   assert.ok(!texte.includes(String.fromCharCode(0x2014)), "an em dash in the register");
   const lignes = lignesLimites(texte);
@@ -112,7 +113,7 @@ test("doc/LIMITES.md : chaque ligne est une paire de son jeu, un score à trois 
     assert.ok(Number.isInteger(l.jeu) && l.jeu >= 1, `${cle}: set "${l.jeu}"`);
     let paires = jeux.get(l.jeu);
     if (paires === undefined) {
-      const jeu = JSON.parse(readFileSync(new URL(`./${fichierDuJeu(l.jeu)}`, import.meta.url), "utf8")) as { paires: Paire[] };
+      const jeu = JSON.parse(lireUrlPrive(urlPrive(`src/${fichierDuJeu(l.jeu)}`))) as { paires: Paire[] };
       paires = new Set(jeu.paires.flatMap((p) => [cleImprimee(p), cleImprimee({ a: p.b, b: p.a })]));
       jeux.set(l.jeu, paires);
     }
