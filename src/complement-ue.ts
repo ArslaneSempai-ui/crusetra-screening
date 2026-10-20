@@ -5,6 +5,9 @@
  * 32026R2193), which adds ten natural persons to Annex IV (entries 99 to 108) of Regulation (EU) 2024/1485. The feed's
  * last entry publication was 23 July 2026 when this was written (18 October 2026).
  *
+ * THE TEN ROWS ARE PRIVATE (they name natural persons): src/complement-ue-lignes.json and the verbatim text sit in crusetra-jeux; without
+ * them the supplement is empty and the screening reads the feed alone (the tests that need them skip, with the reason).
+ *
  * TRANSCRIBED, NOT GUESSED. Every name, alias and date of birth below is copied from the English text of the act as the
  * Publications Office served it on 18 October 2026; src/fixtures/ue-2026-2193-annex-iv.txt holds the verbatim text of
  * entries 99 to 108, src/fixtures/ue-2026-2193-source.json the address and the sha256 of the whole document, and
@@ -17,6 +20,7 @@
  */
 import type { EntreeListe } from "./listes.ts";
 import { jetonsEntite } from "./preparation.ts";
+import { jeuPresent, lirePrive } from "./jeux.ts";
 
 export const CELEX_2193 = "32026R2193";
 export const ANNEXE_2193 = "IV";
@@ -33,24 +37,16 @@ export type Complement = { celex: string; annexe: string; entree: number; luLe: 
 /** One row of the annex, as printed: the name, the Cyrillic form beside it, the date of birth (day.month.year, no zero padding). */
 export type LigneComplement = { entree: number; nom: string; alias: string[]; naissance: string };
 
-export const LIGNES_2193: readonly LigneComplement[] = [
-  { entree: 99, nom: "[name removed]", alias: ["[name removed]"], naissance: "22.6.1966" },
-  { entree: 100, nom: "[name removed]", alias: ["[name removed]"], naissance: "25.3.1971" },
-  { entree: 101, nom: "[name removed]", alias: ["[name removed]"], naissance: "25.4.1971" },
-  { entree: 102, nom: "[name removed]", alias: ["[name removed]"], naissance: "15.11.1987" },
-  { entree: 103, nom: "[name removed]", alias: ["[name removed]"], naissance: "15.8.1986" },
-  { entree: 104, nom: "[name removed]", alias: ["[name removed]"], naissance: "1.3.1973" },
-  { entree: 105, nom: "[name removed]", alias: ["[name removed]"], naissance: "9.4.1998" },
-  { entree: 106, nom: "[name removed]", alias: ["[name removed]"], naissance: "30.5.1996" },
-  { entree: 107, nom: "[name removed]", alias: ["[name removed]"], naissance: "25.7.1995" },
-  { entree: 108, nom: "[name removed]", alias: ["[name removed]"], naissance: "18.10.1984" },
-];
+/** The ten rows are natural persons: they live in the private repository (src/jeux.ts) and this is empty when it is absent. */
+export const CHEMIN_LIGNES_2193 = "src/complement-ue-lignes.json";
+export const lignes2193 = (): LigneComplement[] => (jeuPresent(CHEMIN_LIGNES_2193) ? JSON.parse(lirePrive(CHEMIN_LIGNES_2193)) as LigneComplement[] : []);
+export const LIGNES_2193: readonly LigneComplement[] = lignes2193();
 
 export const idComplement = (entree: number): string => `OJ-${CELEX_2193}-${ANNEXE_2193}-${entree}`;
 
 /** The supplement as list entries, ready to be screened with the EU list. */
-export function entreesComplementUe(): EntreeListe[] {
-  return LIGNES_2193.map((l) => ({
+export function entreesComplementUe(lignes: readonly LigneComplement[] = LIGNES_2193): EntreeListe[] {
+  return lignes.map((l) => ({
     source: "EU" as const, id: idComplement(l.entree), nom: l.nom, alias: [...l.alias], type: "person" as const,
     programme: "2024/1485 Annex IV",
     designation: {
@@ -61,7 +57,7 @@ export function entreesComplementUe(): EntreeListe[] {
   }));
 }
 
-/** A name as the engine reads it (its own preparation and tokens), word order ignored: « KIRILLOV Vyacheslav » = « [name removed] ». */
+/** A name as the engine reads it (its own preparation and tokens), word order ignored: « FAMILY Given » = « Given FAMILY ». */
 const cleDuNom = (nom: string): string => jetonsEntite(nom).sort().join(" ");
 
 /** The act's number at the head of a `numberTitle` of the feed, e.g. « 2026/2193 (OJ L, 2026/2193, 28.9.2026) ». */

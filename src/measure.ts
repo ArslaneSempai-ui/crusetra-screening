@@ -30,6 +30,7 @@ import { registreComplet } from "./matchers/index.ts";
 import { SEUILS, PALIERS, type Registre } from "./matcher.ts";
 import { rate, type Rate } from "./interval.ts";
 import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
+import { urlPrive, lireUrlPrive } from "./jeux.ts";
 
 export type PaireEtiquetee = { a: string; b: string; verdict: "match" | "different"; nature: string };
 export type JeuDePaires = { quoi: string; provenance: string; avertissement: string; paires: PaireEtiquetee[] };
@@ -186,7 +187,7 @@ export async function mesurerSynthetique(
 }
 
 export async function mesurePublique(date: string, commit: string): Promise<MesurePublique> {
-  const jeu = JSON.parse(readFileSync(fileURLToPath(new URL("./paires-etiquetees.json", import.meta.url)), "utf8")) as JeuDePaires;
+  const jeu = JSON.parse(lireUrlPrive(urlPrive("src/paires-etiquetees.json"))) as JeuDePaires;
   const paires = validerPaires(jeu);
   /* Le registre COMPLET : embed y figure quand ses poids sont sur le disque, et il se
      réchauffe ici, avec tous les noms d'un coup — un score neuronal ne s'improvise pas

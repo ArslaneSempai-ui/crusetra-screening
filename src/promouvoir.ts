@@ -11,9 +11,10 @@ import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { analyserJeu, lireApprentissage, DOSSIER_JEUX_AVEUGLES, CADRATIN, type JeuBrut } from "./valider-jeu.ts";
+import { urlPrive } from "./jeux.ts";
 
 export type Taux = { n: number; sur: number; bas: number; haut: number };
 export type NiveauJuge = { seuil: string; trouves: Taux; fausses: Taux };
@@ -99,7 +100,7 @@ export function provenancePromue(auteur: string, n: number, juge: Juge, date: st
  *  aveugles et ceux des jeux d'apprentissage ont divergé au jeu réaliste 20, qui ne s'apprend jamais : le jeu aveugle 21
  *  devient le jeu d'apprentissage 21, pas 22. */
 export function prochainNumero(source: string): number {
-  const listes = [...source.matchAll(/new URL\("\.\/paires-entites(?:-(\d+))?\.json", import\.meta\.url\)/g)].map((m) => (m[1] ? Number(m[1]) : 1));
+  const listes = [...source.matchAll(/urlPrive\("src\/paires-entites(?:-(\d+))?\.json"\)/g)].map((m) => (m[1] ? Number(m[1]) : 1));
   if (listes.length === 0) throw new Error("src/entites.ts lists no training set in CHEMINS_APPRENTISSAGE");
   return Math.max(...listes) + 1;
 }
@@ -107,7 +108,7 @@ export function prochainNumero(source: string): number {
 /** La ligne de CHEMINS_APPRENTISSAGE, insérée après celle du jeu N. Refuse si l'ancre manque ou
  *  si la ligne y est déjà : deux fois le même jeu pèserait deux fois dans la mesure. */
 export function insererChemin(source: string, n: number): string {
-  const ligne = (f: string) => `  new URL("./${f}", import.meta.url),`;
+  const ligne = (f: string) => `  urlPrive("src/${f}"),`;
   const ancre = ligne(fichierDuJeu(n)), nouvelle = ligne(fichierDuJeu(n + 1));
   if (source.includes(nouvelle)) throw new Error(`src/entites.ts already lists ${fichierDuJeu(n + 1)} in CHEMINS_APPRENTISSAGE`);
   const lignes = source.split("\n");
@@ -134,7 +135,8 @@ function principal(): void {
   const cheminAveugle = join(DOSSIER_JEUX_AVEUGLES, `jeu${n}-aveugle.json`);
   const sourceEntites0 = readFileSync(CHEMIN_ENTITES, "utf8");
   const numeroCible = prochainNumero(sourceEntites0);
-  const cible = join(RACINE, "src", fichierDuJeu(numeroCible));
+  const cible = fileURLToPath(urlPrive(`src/${fichierDuJeu(numeroCible)}`));
+  if (!existsSync(dirname(cible))) refuser(`the private folder ${dirname(cible)} does not exist: clone crusetra-jeux or set CRUSETRA_JEUX (the promoted set is written there, never in this repository)`);
   if (!existsSync(cheminAveugle)) refuser(`${cheminAveugle}: no such file`);
   if (existsSync(cible)) refuser(`${cible} exists already: set ${n} was promoted, or the number is wrong`);
 
@@ -163,7 +165,7 @@ function principal(): void {
 
   const figures = spawnSync("npm", ["run", "figures"], { cwd: RACINE, encoding: "utf8" });
   const etatFigures = figures.status === 0 ? "figures refreshed" : `npm run figures failed (${(figures.stderr || figures.stdout).trim().split("\n").pop()})`;
-  console.log(`promoted: blind set ${n} (${prefixe}, ${compte.paires} pairs, judged as ${juge.version}) -> src/${fichierDuJeu(numeroCible)}; CHEMINS_APPRENTISSAGE now lists ${apprentissage.length + 1} sets; ${etatFigures}`);
+  console.log(`promoted: blind set ${n} (${prefixe}, ${compte.paires} pairs, judged as ${juge.version}) -> ${cible}; CHEMINS_APPRENTISSAGE now lists ${apprentissage.length + 1} sets; ${etatFigures}`);
   if (figures.status !== 0) process.exit(1);
 }
 

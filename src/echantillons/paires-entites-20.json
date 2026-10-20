@@ -1,0 +1,137 @@
+{
+ "quoi": "A 20-row sample of the private labelled set \"paires-entites\": 10 match and 10 different, drawn by a fixed rule, never picked by hand. It is the only labelled data of this family that is public.",
+ "provenance": "sample of src/paires-entites.json, src/paires-entites-2.json, src/paires-entites-3.json, src/paires-entites-4.json, src/paires-entites-5.json, src/paires-entites-6.json, src/paires-entites-7.json, src/paires-entites-8.json, src/paires-entites-9.json, src/paires-entites-10.json, src/paires-entites-11.json, src/paires-entites-12.json, src/paires-entites-13.json, src/paires-entites-14.json, src/paires-entites-15.json, src/paires-entites-16.json, src/paires-entites-17.json, src/paires-entites-18.json, src/paires-entites-19.json, src/paires-entites-20.json, src/paires-entites-21.json, src/paires-entites-22.json, src/paires-entites-23.json",
+ "avertissement": "Verdicts are our labels and debatable by construction. 20 rows prove the format and the kind of difficulty; they do not reproduce the figures.",
+ "echantillon": {
+  "graine": "paires-entites-2026-10-19",
+  "regle": "key = SHA-256 of seed|a|b (UTF-8); per verdict, sort by key ascending and keep the first 10; match rows first, then different rows. src/echantillonner.ts redoes the draw.",
+  "sourceSha256": "ef4755f25402f0ae4f9de1bb8db7371f1f1d6078f5bea93aa2a357f87f631b7a",
+  "sourceFichiers": 23,
+  "sourcePaires": 8340,
+  "sourceMatch": 4170,
+  "sourceDifferent": 4170,
+  "provenanceDuJeu": "authored by this repository on 2026-09-27, every name invented; no client data, no list data. Written before any tier was scored on it."
+ },
+ "paires": [
+  {
+   "a": "Bounmy Agriculture Co., Ltd.",
+   "b": "Bunmee Agriculture Co., Ltd., Vientiane Capital",
+   "verdict": "match",
+   "nature": "lao-french-vs-english-spelling"
+  },
+  {
+   "a": "Deshpande Textiles Pvt. Ltd.",
+   "b": "DESHPANDE TEXTILES PVT LTD",
+   "verdict": "match",
+   "nature": "uppercase-export"
+  },
+  {
+   "a": "mv haci sukru reis",
+   "b": "Hacı Şükrü Reis",
+   "verdict": "match",
+   "nature": "vessel-chat-no-diacritics"
+  },
+  {
+   "a": "KRENZHOF VOYAGER IN LAYUP",
+   "b": "Krenzhof Voyager (in lay-up)",
+   "verdict": "match",
+   "nature": "lay-up-annotation"
+  },
+  {
+   "a": "Hiltje Geertruida",
+   "b": "HILTJE GEERTRUIDA ENI 02316642",
+   "verdict": "match",
+   "nature": "hull-eni-residue"
+  },
+  {
+   "a": "Yorke Peninsula Grain Traders Pty Ltd (SA)",
+   "b": "Yorke Peninsula Grain Traders Pty Ltd",
+   "verdict": "match",
+   "nature": "state-descriptor-drop"
+  },
+  {
+   "a": "ATLAS TEXTILE MILLS PLC",
+   "b": "Atlas Textile Mills Public Limited Company",
+   "verdict": "match",
+   "nature": "abbreviation-expanded"
+  },
+  {
+   "a": "Tarvisa Trader III",
+   "b": "Tarvisa Trader 3",
+   "verdict": "match",
+   "nature": "vessel-numbering"
+  },
+  {
+   "a": "GOLFO DULCE SHlPPING CORP.",
+   "b": "Golfo Dulce Shipping Corporation",
+   "verdict": "match",
+   "nature": "ocr-l-for-i-corp-expanded"
+  },
+  {
+   "a": "Rachid Bennani Transports",
+   "b": "Rashid Bennani Transports",
+   "verdict": "match",
+   "nature": "roman-french-ch-versus-sh"
+  },
+  {
+   "a": "Vostrakom Telecom",
+   "b": "Vostrakom Stroy",
+   "verdict": "different",
+   "nature": "same-distinctive-word"
+  },
+  {
+   "a": "D. Ashgrove & Co.",
+   "b": "M. Ashgrove & Co.",
+   "verdict": "different",
+   "nature": "family-name-shared"
+  },
+  {
+   "a": "Société Sénégalaise de Commerce Général SARL",
+   "b": "Société Sénégalaise de Commerce Général SA",
+   "verdict": "different",
+   "nature": "sarl-vs-sa-different-entity"
+  },
+  {
+   "a": "Veltrano Logistics (Singapore) Pte. Ltd.",
+   "b": "Veltrano Logistics (Malaysia) Sdn. Bhd.",
+   "verdict": "different",
+   "nature": "group-subsidiary-country"
+  },
+  {
+   "a": "Rupshikha Knit Composite Ltd.",
+   "b": "Rupshikha Denim Ltd.",
+   "verdict": "different",
+   "nature": "subsidiary-by-activity"
+  },
+  {
+   "a": "Athabasca Peat Products Ltd.",
+   "b": "Athabasca Peat Moss Ltd.",
+   "verdict": "different",
+   "nature": "one-word-sibling"
+  },
+  {
+   "a": "Mizunoe Mfg. Co., Ltd.",
+   "b": "Mizunoe Mktg. Co., Ltd.",
+   "verdict": "different",
+   "nature": "abbreviation-other-word"
+  },
+  {
+   "a": "SLAVONIJA FOODS DD",
+   "b": "SLAVONIJA FOODS DOO",
+   "verdict": "different",
+   "nature": "different-legal-form-distinct-entity"
+  },
+  {
+   "a": "Obalna Špedicija d.o.o.",
+   "b": "Soška Špedicija d.o.o.",
+   "verdict": "different",
+   "nature": "different-place-same-business-word"
+  },
+  {
+   "a": "Ekinova Makina A.Ş.",
+   "b": "Ekinova Makina GmbH",
+   "verdict": "different",
+   "nature": "same-name-other-jurisdiction"
+  }
+ ]
+}

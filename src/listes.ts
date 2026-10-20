@@ -356,7 +356,7 @@ export const CELEX_833 = "02014R0833-20260724";
  *   visit the Site and to download and copy the information, documents and materials [...] for the User's personal,
  *   non-commercial use, without any right to resell or redistribute them » ; la page de la liste consolidée dit que la
  *   liste existe « to facilitate the implementation of the measures ». Aucune mention n'est prescrite ; l'usage
- *   commercial est confirmé par écrit le 6/10/2026 (« free to use for all legal purposes »), courriel gardé hors dépôt.
+ *   commercial est confirmé par écrit le 6/10/2026, courriel gardé hors dépôt.
  *   UE (FSF) : l'avis juridique de la Commission (commission.europa.eu/legal-notice_en) : « content owned by the EU on
  *   this website is licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) licence. This means
  *   that reuse is allowed, provided appropriate credit is given and changes are indicated », en application de la
@@ -415,7 +415,7 @@ export const SOURCES: SourceListe[] = [
       nom: "United Nations website Terms of Use (no open license)",
       url: "https://www.un.org/en/about-us/terms-of-use",
       mention: null,
-      note: "the Terms grant Users permission to download and copy the Materials for the User's personal, non-commercial use, without any right to resell or redistribute them; the Consolidated List page says the list exists to facilitate the implementation of the measures. No attribution wording is prescribed. Commercial reuse is confirmed in writing: on 6 October 2026 the United Nations Security Council Sanctions Lists Team (sc-sanctionslists@un.org) answered that the Consolidated List \"is free to use for all legal purposes\".",
+      note: "the Terms grant Users permission to download and copy the Materials for the User's personal, non-commercial use, without any right to resell or redistribute them; the Consolidated List page says the list exists to facilitate the implementation of the measures. No attribution wording is prescribed. Commercial reuse is confirmed in writing by the United Nations Security Council Sanctions Lists Team on 6 October 2026; the message is kept outside the repository.",
       lue: LUE,
     },
   },
@@ -774,7 +774,7 @@ export function analyserDfat(classeur: Buffer): EntreeListe[] {
 
 /**
  * CANADA (Consolidated Canadian Autonomous Sanctions List, XML bilingue d'Affaires mondiales Canada) : un `<record>`
- * par entrée, une personne par LastName/GivenName (certaines n'ont qu'un GivenName : « Than Shwe »), une entité ou
+ * par entrée, une personne par LastName/GivenName (certaines n'ont qu'un GivenName, un nom seul), une entité ou
  * un navire par EntityOrShip, le navire reconnu à un numéro OMI LISIBLE (`lireImo`) : mesuré le 05/10/2026, cinq
  * enregistrements de personnes portent un nom en écriture arabe dans le champ OMI, une colonne décalée chez
  * l'éditeur ; ils restent des personnes sans numéro. L'identifiant est règlement + annexe + numéro d'article (le

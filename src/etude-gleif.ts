@@ -17,8 +17,9 @@ import { CHEMINS_APPRENTISSAGE, CHEMIN_APPRENTISSAGE_REEL, STRATE_CONTENUE, choi
 import { frequencesDesListes } from "./frequences.ts";
 import { rate } from "./interval.ts";
 import { mesurerJeuxParallele, mesurerReelParallele } from "./mesure-parallele.ts";
+import { urlPrive, lireUrlPrive } from "./jeux.ts";
 
-export const CHEMIN_JUGES_APPRENTISSAGE = new URL("./paires-gleif-apprentissage-juges.json", import.meta.url);
+export const CHEMIN_JUGES_APPRENTISSAGE = urlPrive("src/paires-gleif-apprentissage-juges.json");
 export const KINDS = ["same-name", "partial", "other-name"] as const;
 const THREADS = 2;
 
@@ -33,8 +34,8 @@ async function main(): Promise<void> {
   const donnes = process.argv.find((a) => a.startsWith("--seuils="))?.slice(9).split(",").map(Number);
   if (donnes && (donnes.length !== 2 || donnes.some((x) => !Number.isFinite(x)))) throw new Error("--seuils=<strong>,<possible>, two numbers");
   const f = frequencesDesListes();
-  const ecrits = await mesurerJeuxParallele(f, CHEMINS_APPRENTISSAGE.map((u) => readFileSync(u, "utf8")), { cache: true, fils: THREADS });
-  const brut = readFileSync(CHEMIN_APPRENTISSAGE_REEL, "utf8");
+  const ecrits = await mesurerJeuxParallele(f, CHEMINS_APPRENTISSAGE.map((u) => lireUrlPrive(u)), { cache: true, fils: THREADS });
+  const brut = lireUrlPrive(CHEMIN_APPRENTISSAGE_REEL);
   const reel = await mesurerReelParallele(f, brut, { cache: true, fils: THREADS });
   const r = choisirSeuils(ecrits.table, reel.table);
   const [strong, possible] = donnes ?? [r.fort.seuil, r.possible.seuil];
@@ -43,7 +44,7 @@ async function main(): Promise<void> {
 
   /* the whole sample, contained stratum included, with its labels: measured apart from the rule's table, on the same scores */
   const tout = await mesurerJeuxParallele(f, [brut], { cache: true, fils: THREADS });
-  const labels = (JSON.parse(readFileSync(CHEMIN_JUGES_APPRENTISSAGE, "utf8")) as { labels: Record<string, string> }).labels;
+  const labels = (JSON.parse(lireUrlPrive(CHEMIN_JUGES_APPRENTISSAGE)) as { labels: Record<string, string> }).labels;
   type Tally = { n: number; strong: number; possible: number };
   const empty = (): Tally => ({ n: 0, strong: 0, possible: 0 });
   const add = (t: Tally, s: number) => { t.n++; if (s >= strong!) t.strong++; if (s >= possible!) t.possible++; };

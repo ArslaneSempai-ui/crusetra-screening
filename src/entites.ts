@@ -33,6 +33,7 @@ import { preparerNom } from "./score.ts";
 import { plafondDesLectures } from "./variantes.ts";
 import { scoreBrut } from "./score.ts";
 import { FACTEUR_CONTENANCE } from "./score.ts";
+import { urlPrive } from "./jeux.ts";
 export * from "./preparation.ts";
 export * from "./mots.ts";
 export * from "./score.ts";
@@ -67,34 +68,34 @@ export function palierEntite(f: Frequences): Matcher {
  *  point. Le second a d'abord été un jeu témoin ; étudié, il a changé de rôle (sa provenance
  *  le dit). */
 export const CHEMINS_APPRENTISSAGE = [
-  new URL("./paires-entites.json", import.meta.url),
-  new URL("./paires-entites-2.json", import.meta.url),
-  new URL("./paires-entites-3.json", import.meta.url),
-  new URL("./paires-entites-4.json", import.meta.url),
-  new URL("./paires-entites-5.json", import.meta.url),
-  new URL("./paires-entites-6.json", import.meta.url),
-  new URL("./paires-entites-7.json", import.meta.url),
-  new URL("./paires-entites-8.json", import.meta.url),
-  new URL("./paires-entites-9.json", import.meta.url),
-  new URL("./paires-entites-10.json", import.meta.url),
-  new URL("./paires-entites-11.json", import.meta.url),
-  new URL("./paires-entites-12.json", import.meta.url),
-  new URL("./paires-entites-13.json", import.meta.url),
-  new URL("./paires-entites-14.json", import.meta.url),
-  new URL("./paires-entites-15.json", import.meta.url),
-  new URL("./paires-entites-16.json", import.meta.url),
-  new URL("./paires-entites-17.json", import.meta.url),
-  new URL("./paires-entites-18.json", import.meta.url),
-  new URL("./paires-entites-19.json", import.meta.url),
-  new URL("./paires-entites-20.json", import.meta.url),
-  new URL("./paires-entites-21.json", import.meta.url),
-  new URL("./paires-entites-22.json", import.meta.url),
-  new URL("./paires-entites-23.json", import.meta.url),
+  urlPrive("src/paires-entites.json"),
+  urlPrive("src/paires-entites-2.json"),
+  urlPrive("src/paires-entites-3.json"),
+  urlPrive("src/paires-entites-4.json"),
+  urlPrive("src/paires-entites-5.json"),
+  urlPrive("src/paires-entites-6.json"),
+  urlPrive("src/paires-entites-7.json"),
+  urlPrive("src/paires-entites-8.json"),
+  urlPrive("src/paires-entites-9.json"),
+  urlPrive("src/paires-entites-10.json"),
+  urlPrive("src/paires-entites-11.json"),
+  urlPrive("src/paires-entites-12.json"),
+  urlPrive("src/paires-entites-13.json"),
+  urlPrive("src/paires-entites-14.json"),
+  urlPrive("src/paires-entites-15.json"),
+  urlPrive("src/paires-entites-16.json"),
+  urlPrive("src/paires-entites-17.json"),
+  urlPrive("src/paires-entites-18.json"),
+  urlPrive("src/paires-entites-19.json"),
+  urlPrive("src/paires-entites-20.json"),
+  urlPrive("src/paires-entites-21.json"),
+  urlPrive("src/paires-entites-22.json"),
+  urlPrive("src/paires-entites-23.json"),
 ];
 /** Le jeu de VERDICT : écrit par une autre main qui n'a vu ni ce fichier ni les autres jeux,
  *  lu une seule fois la méthode figée, JAMAIS utilisé pour choisir un seuil. Ses taux sont
  *  ceux qu'un lecteur doit croire. */
-export const CHEMIN_VERDICT = new URL("../verification/paires-entites-verdict.json", import.meta.url);
+export const CHEMIN_VERDICT = urlPrive("verification/paires-entites-verdict.json");
 
 export type JeuMesure = { quoi: string; provenance: string; sha256: string; match: number; different: number };
 export type MesureEntites = { jeux: JeuMesure[]; table: TableDUnPalier };
@@ -135,7 +136,7 @@ export const RAPPEL_MIN = 0.90;
  * dans le choix des seuils à côté des 23 jeux d'apprentissage écrits ; sa strate CONTENUE (un nom retrouvé dans l'autre) est à
  * part : une équipe peut vouloir qu'elle alerte, elle ne compte jamais comme fausse alerte.
  */
-export const CHEMIN_APPRENTISSAGE_REEL = new URL("./paires-gleif-apprentissage.json", import.meta.url);
+export const CHEMIN_APPRENTISSAGE_REEL = urlPrive("src/paires-gleif-apprentissage.json");
 export const STRATE_CONTENUE = "different-contained";
 
 /** L'échantillon réel mesuré : ses paires « match » et ses vraies paires « different », la strate contenue retirée ; le jeu

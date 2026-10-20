@@ -41,6 +41,7 @@ import { isAbsolute, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createInflateRaw } from "node:zlib";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
+import { urlPrive, lireUrlPrive, listerPrive } from "./jeux.ts";
 
 /* ─────────────────────────── the pinned source ─────────────────────────── */
 
@@ -308,11 +309,10 @@ const countryOf = (jurisdiction: string, address: string) => (/^[A-Z]{2}(-|$)/.t
 /** Names already used by the training sets and the verdict set, folded. */
 function namesAlreadySeen(): Set<string> {
   const seen = new Set<string>();
-  const src = new URL("./", import.meta.url);
-  const files = readdirSync(src).filter((f) => /^paires-entites.*\.json$/.test(f)).map((f) => new URL(f, src));
-  files.push(new URL("../verification/paires-entites-verdict.json", import.meta.url));
+  const files = listerPrive("src", /^paires-entites.*\.json$/);
+  files.push(urlPrive("verification/paires-entites-verdict.json"));
   for (const f of files) {
-    for (const p of (JSON.parse(readFileSync(f, "utf8")) as { paires: { a: string; b: string }[] }).paires) { seen.add(fold(p.a)); seen.add(fold(p.b)); }
+    for (const p of (JSON.parse(lireUrlPrive(f)) as { paires: { a: string; b: string }[] }).paires) { seen.add(fold(p.a)); seen.add(fold(p.b)); }
   }
   return seen;
 }

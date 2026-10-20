@@ -147,8 +147,18 @@ reports are verified against the same public key, [`cle-publique.pem`](cle-publi
 with `npm run verify`.
 
 <!-- figures:tests -->
-**615 tests** across 70 files, counted from the sources rather than typed here.
+**629 tests** across 72 files, counted from the sources rather than typed here.
 <!-- /figures:tests -->
+
+## What is public, what is private
+
+The figures stay public: `releve-public.json` with its signature, `RELEVE-PUBLIC.md`, `releve-entites.json` and `verification/VERDICTS.md`. The method is written in each sample file and in `verification/`. The only labelled rows left public are two samples of 20 rows (10 match, 10 different), both of company, vessel and other entity names and none of a natural person: `src/echantillons/paires-entites-20.json` and `verification/echantillon-gleif-20.json`. Each is drawn by a fixed rule written in the file (key is the SHA-256 of seed, a and b; per verdict the smallest keys are kept), never by hand, and `node src/echantillonner.ts --check` redoes the draw.
+
+The full labelled sets are private since this change. The person-pair set is recorded in its sample as SHA-256 `2e4b1bc0d168ea0c8af4313fd22d7ed906b46e0869b88f4290c89657aa7aeec6`; the other sets carry their recorded hashes in their sealed records and in the private folder's `MANIFEST.txt`. Earlier versions of the sets remain in the git history of this repository.
+
+A holder of the private folder runs the full tests with `CRUSETRA_JEUX=/path/to/crusetra-jeux/crusetra-screening npm test` (default: the sibling folder `../crusetra-jeux/crusetra-screening`). Without it the tests that need a set are skipped with a named reason, and the record checks say "set private, hash recorded".
+
+A clone without the private folder screens with the frozen, sealed thresholds of `src/seuils-figes.json` (made by `npm run figer-seuils`); a holder of the folder still chooses them on the sets, and the screening refuses, naming the difference, if its choice is not the frozen one, or if the frozen file no longer matches its seal.
 
 ## License
 

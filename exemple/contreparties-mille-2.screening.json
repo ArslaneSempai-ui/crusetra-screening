@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "genre": "cascade-screening/counterparty-screening",
-  "emisLe": "2026-10-04T17:53:26.234Z",
+  "genre": "crusetra-screening/counterparty-screening",
+  "emisLe": "2026-10-20T16:14:08.992Z",
   "client": "Example forwarder, Hamburg",
-  "commit": "3b611c5",
+  "commit": "e089cac",
   "fichier": {
     "nom": "contreparties-mille-2.csv",
-    "sha256": "523054e1772d8016a7dc4ff0d17d0b4376ed363c20b5948da4fdd4032ce5bb75",
+    "sha256": "bda207ebf36ca40699d1a2c19e99244dac3e4432119c35acc08f91d8967b6d00",
     "lignes": 1000
   },
   "listes": [
@@ -14,64 +14,200 @@
       "source": "OFAC",
       "titre": "OFAC Specially Designated Nationals (SDN) list",
       "url": "https://sanctionslistservice.ofac.treas.gov/api/publicationpreview/exports/sdn.xml",
-      "telechargeLe": "2026-09-26T22:24:12.777Z",
-      "sha256": "d533a38ee0a8dc1dca61574cda864d1740ec6785f1ae93f00e678fdf01654227",
-      "entrees": 19391
+      "telechargeLe": "2026-10-20T15:56:02.584Z",
+      "sha256": "b0e58fccceb7580e7b1a80d01594a62a8897f01114f7cb1e8b662b7e6bdd42ef",
+      "entrees": 19457,
+      "licence": {
+        "nom": "United States Government work: not subject to copyright (17 U.S.C. § 105)",
+        "url": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title17-section105&num=0&edition=prelim",
+        "mention": null,
+        "note": "a work of the United States Government is not protected by copyright; no attribution is required. USA.gov (usa.gov/government-copyright) asks that reuse not imply endorsement by the agency.",
+        "lue": "2026-10-05"
+      }
     },
     {
       "source": "OFAC-CONS",
       "titre": "OFAC Consolidated Sanctions List (the non-SDN lists)",
       "url": "https://sanctionslistservice.ofac.treas.gov/api/publicationpreview/exports/consolidated.xml",
-      "telechargeLe": "2026-09-26T22:24:20.128Z",
-      "sha256": "a9a394cfa9457ed166728cc89c7b3aa373ad457bc908b1cef71ae2e10b147c4f",
-      "entrees": 481
+      "telechargeLe": "2026-10-20T15:56:09.789Z",
+      "sha256": "c8a6b609403520dfced0d21325e7851aaffe73fd93b1581a0d6fddce5216d04f",
+      "entrees": 486,
+      "licence": {
+        "nom": "United States Government work: not subject to copyright (17 U.S.C. § 105)",
+        "url": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title17-section105&num=0&edition=prelim",
+        "mention": null,
+        "note": "a work of the United States Government is not protected by copyright; no attribution is required. USA.gov (usa.gov/government-copyright) asks that reuse not imply endorsement by the agency.",
+        "lue": "2026-10-05"
+      }
     },
     {
       "source": "CSL",
       "titre": "US Consolidated Screening List: its Commerce and State lists (trade.gov)",
       "url": "https://data.trade.gov/downloadable_consolidated_screening_list/v1/consolidated.csv",
-      "telechargeLe": "2026-09-26T22:24:21.178Z",
-      "sha256": "3bcdfb738dccf96a55a9fd1c0c205f0c212284ca031f81c115747fae510996ea",
-      "entrees": 6269
+      "telechargeLe": "2026-10-20T15:56:11.025Z",
+      "sha256": "1f6ef877945bfdf0982a41da8c7f0954af6d68fc794fe5cfe109cc8981d55680",
+      "entrees": 6213,
+      "licence": {
+        "nom": "United States Government work: not subject to copyright (17 U.S.C. § 105)",
+        "url": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title17-section105&num=0&edition=prelim",
+        "mention": null,
+        "note": "a work of the United States Government is not protected by copyright; no attribution is required. USA.gov (usa.gov/government-copyright) asks that reuse not imply endorsement by the agency. The Consolidated Screening List page (trade.gov/consolidated-screening-list) states no condition of use.",
+        "lue": "2026-10-05"
+      }
     },
     {
       "source": "UN",
       "titre": "UN Security Council Consolidated List",
       "url": "https://scsanctions.un.org/resources/xml/en/consolidated.xml",
-      "telechargeLe": "2026-09-26T22:24:27.115Z",
-      "sha256": "8bd12c56c7acc2b7a3736d916b592c5382f7fe75191450e06aad799095fb2f68",
-      "entrees": 1011
+      "telechargeLe": "2026-10-20T15:56:17.084Z",
+      "sha256": "d7df15ecfbf09d96028e45ba171dc798af29f2ba4cf19b06e8404415eb40f268",
+      "entrees": 1010,
+      "licence": {
+        "nom": "United Nations website Terms of Use (no open license)",
+        "url": "https://www.un.org/en/about-us/terms-of-use",
+        "mention": null,
+        "note": "the Terms grant Users permission to download and copy the Materials for the User's personal, non-commercial use, without any right to resell or redistribute them; the Consolidated List page says the list exists to facilitate the implementation of the measures. No attribution wording is prescribed. Commercial reuse is confirmed in writing by the United Nations Security Council Sanctions Lists Team on 6 October 2026; the message is kept outside the repository.",
+        "lue": "2026-10-05"
+      }
     },
     {
       "source": "EU",
       "titre": "EU consolidated financial sanctions list (FSF, XML v1.1)",
-      "url": "https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content?token=dG9rZW4tMjAxNw",
-      "telechargeLe": "2026-09-26T22:24:31.044Z",
-      "sha256": "cd59eccb0278d33181c1d87814236109287c9ea5925502f00acfd2e0fd7fe440",
-      "entrees": 6241
+      "url": "https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content?token=[username]",
+      "telechargeLe": "2026-10-20T15:56:20.260Z",
+      "sha256": "7d21a5c7574eae8192ce15dcd02f53b7e81b05d01d4d3f2b2eb903f3aec8f400",
+      "entrees": 6234,
+      "licence": {
+        "nom": "Commission Decision 2011/833/EU on the reuse of Commission documents; Creative Commons Attribution 4.0 International (CC BY 4.0)",
+        "url": "https://commission.europa.eu/legal-notice_en",
+        "mention": "Source: European Commission, Financial Sanctions Files (FSF), © European Union, reused under Commission Decision 2011/833/EU (CC BY 4.0)",
+        "note": "the legal notice requires appropriate credit and that changes be indicated, and prescribes no wording; this is the wording used. data.europa.eu lists the dataset under the European Commission reuse notice (Decision 2011/833/EU).",
+        "lue": "2026-10-05"
+      }
     },
     {
       "source": "UK",
       "titre": "UK Sanctions List (FCDO): individuals, entities and ships",
       "url": "https://sanctionslist.fcdo.gov.uk/docs/UK-Sanctions-List.xml",
-      "telechargeLe": "2026-10-04T14:43:51.092Z",
-      "sha256": "8e23b2d050ea2cc07319a19a7e71060f71ab560c979646c43f6efcec9e03250b",
-      "entrees": 6370
+      "telechargeLe": "2026-10-20T15:56:22.851Z",
+      "sha256": "8e71e2237d0dee3191d433f94ba6cec65ec76b5f0f3e9d2e42b4f3f992682281",
+      "entrees": 6408,
+      "licence": {
+        "nom": "Open Government Licence v3.0",
+        "url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+        "mention": "Contains public sector information licensed under the Open Government Licence v3.0.",
+        "note": "the UK Sanctions List page (gov.uk/government/publications/the-uk-sanctions-list) says: All content is available under the Open Government Licence v3.0, except where otherwise stated; the licence requires the attribution statement above when the provider gives none of its own.",
+        "lue": "2026-10-05"
+      }
     },
     {
       "source": "EU-VESSELS",
       "titre": "EU designated vessels: Annex XLII of Regulation (EU) No 833/2014, consolidated text 2026-07-24",
       "url": "https://publications.europa.eu/resource/celex/02014R0833-20260724",
-      "telechargeLe": "2026-10-04T14:44:09.186Z",
+      "telechargeLe": "2026-10-20T15:56:24.464Z",
       "sha256": "2682ecf3442d2f16a3b36ef4d9bbb6fde43fd4d6743bcd991bd4a8e14857770b",
-      "entrees": 672
+      "entrees": 672,
+      "licence": {
+        "nom": "Commission Decision 2011/833/EU on the reuse of Commission documents; consolidated texts under Creative Commons Attribution 4.0 International (CC BY 4.0), Publications Office (EUR-Lex)",
+        "url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+        "mention": "© European Union, 1998-2026. Source: EUR-Lex, consolidated text of Regulation (EU) No 833/2014 (Annex XLII), reused under Commission Decision 2011/833/EU (CC BY 4.0)",
+        "note": "the EUR-Lex legal notice: you can re-use the legal documents published in EUR-Lex for commercial or non-commercial purposes; the consolidated texts, owned by the EU, are licensed under CC BY 4.0 provided you acknowledge the source and indicate any changes. No wording is prescribed beyond the copyright line; this is the wording used.",
+        "lue": "2026-10-05"
+      }
+    },
+    {
+      "source": "AU",
+      "titre": "Australia: DFAT Consolidated List (Australian Sanctions Office)",
+      "url": "https://www.dfat.gov.au/sites/default/files/Australian_Sanctions_Consolidated_List.xlsx",
+      "telechargeLe": "2026-10-20T15:56:25.667Z",
+      "sha256": "bd8b34d51dfea823d122b437a9840daf0e08f5f5d6ee668d97cd108643fc6b77",
+      "entrees": 4009,
+      "licence": {
+        "nom": "Creative Commons Attribution 4.0 International (CC BY 4.0), Commonwealth of Australia (DFAT)",
+        "url": "https://www.dfat.gov.au/about-us/about-this-website/copyright",
+        "mention": "Department of Foreign Affairs and Trade website – www.dfat.gov.au",
+        "note": "the copyright page: all material presented on this website is provided under a Creative Commons Attribution 4.0 International licence, and content should be attributed with the statement above.",
+        "lue": "2026-10-05"
+      }
+    },
+    {
+      "source": "CA",
+      "titre": "Canada: Consolidated Canadian Autonomous Sanctions List (Global Affairs Canada)",
+      "url": "https://www.international.gc.ca/world-monde/assets/office_docs/international_relations-relations_internationales/sanctions/sema-lmes.xml",
+      "telechargeLe": "2026-10-20T15:56:35.744Z",
+      "sha256": "61a9064720d9f35884ead9387158b708882d63c615981034cb9557d038d55bcf",
+      "entrees": 5708,
+      "licence": {
+        "nom": "Open Government Licence - Canada",
+        "url": "https://open.canada.ca/en/open-government-licence-canada",
+        "mention": "Contains information licensed under the Open Government Licence – Canada.",
+        "note": "the list is dataset ab076f2e-94b1-4039-bb3d-58002deb826d on open.canada.ca, published by Global Affairs Canada under this licence, whose default attribution statement is the one above; the general terms of canada.ca would otherwise require written permission for commercial redistribution.",
+        "lue": "2026-10-05"
+      }
+    },
+    {
+      "source": "NZ",
+      "titre": "New Zealand: Russia Sanctions Register (MFAT): individuals, entities and ships",
+      "url": "https://www.mfat.govt.nz/assets/Countries-and-Regions/Europe/Ukraine/Russia-Sanctions-Register.xlsx",
+      "telechargeLe": "2026-10-20T15:56:37.768Z",
+      "sha256": "d5ae6f2c18163c8045689338fb961977c61e12a64dd97f60ae9c31d6b89057f0",
+      "entrees": 2135,
+      "licence": {
+        "nom": "Creative Commons Attribution 4.0 International (CC BY 4.0), Crown copyright (Ministry of Foreign Affairs and Trade)",
+        "url": "https://www.mfat.govt.nz/en/copyright",
+        "mention": "Source: New Zealand Ministry of Foreign Affairs and Trade, Russia Sanctions Register, Crown copyright, licensed under CC BY 4.0",
+        "note": "the copyright page asks that the work be attributed to the Crown under CC BY 4.0 and prescribes no wording; this is the wording used.",
+        "lue": "2026-10-05"
+      }
     }
   ],
+  "attributions": [
+    "Source: European Commission, Financial Sanctions Files (FSF), © European Union, reused under Commission Decision 2011/833/EU (CC BY 4.0)",
+    "Contains public sector information licensed under the Open Government Licence v3.0.",
+    "© European Union, 1998-2026. Source: EUR-Lex, consolidated text of Regulation (EU) No 833/2014 (Annex XLII), reused under Commission Decision 2011/833/EU (CC BY 4.0)",
+    "Department of Foreign Affairs and Trade website – www.dfat.gov.au",
+    "Contains information licensed under the Open Government Licence – Canada.",
+    "Source: New Zealand Ministry of Foreign Affairs and Trade, Russia Sanctions Register, Crown copyright, licensed under CC BY 4.0"
+  ],
   "nonCriblees": [],
+  "complementUe": {
+    "celex": "32026R2193",
+    "annexe": "IV",
+    "url": "https://publications.europa.eu/resource/celex/32026R2193",
+    "luLe": "2026-10-18",
+    "entrees": [
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108
+    ],
+    "dejaDansLeFlux": []
+  },
   "methode": {
     "palier": "entite",
     "description": "company and vessel names: words aligned in any order and weighted by their rarity on the lists, typos, OCR slips and romanisation variants tolerated, vessel numbers must agree, a listed name found inside a longer one is a possible match, and former names, trading names and document annotations are read as such",
-    "poids": "word weights are the smoothed inverse document frequency over the 40,435 entries of the screened lists",
+    "poids": "word weights are the smoothed inverse document frequency of the pinned table data/frequences.885b92c25ddf5d30.json: the 40,435 entries of 7 sources as recorded on 2026-10-04, the table every published rate was measured on; a list screened here that was not counted in it is weighed with the same weights, a word absent from the table weighing as a word seen in no entry",
+    "tablePoids": {
+      "fichier": "frequences.885b92c25ddf5d30.json",
+      "sha256": "31351eec053292b01e7f435bd971f2d2349422d00c5081c8d5b0c6e8e582e2c7",
+      "entrees": 40435,
+      "compteeLe": "2026-10-04",
+      "sources": [
+        "OFAC",
+        "OFAC-CONS",
+        "CSL",
+        "UN",
+        "EU",
+        "UK",
+        "EU-VESSELS"
+      ]
+    },
     "seuils": {
       "fort": 0.81,
       "possible": 0.8
@@ -195,7 +331,7 @@
         {
           "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
           "provenance": "authored on 2026-09-29 by a separate agent (a Piraeus ship agent and Almaty grain-trading bank brief, organised by document: Greek and Cypriot registries and invoices, Central Asian registry and bank documents, Black Sea and Mediterranean shipping, letters of credit and SWIFT, chat and OCR and greeklish; explicit verdict conventions, one letter changed in a company name being the same name misspelt except in a vessel name; Opus, written in five parts) that never saw the matcher nor any other pair set, as blind test set #16 (sha256 482552a9…); every name invented; no client data, no list data; overlap with the sixteen earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v18 (entites.ts 8dd86269…, cribler.ts a91bf0c8…, ecritures.ts bdd60326…): strong 0.81 found 93/200 [40-53 %] with 12/200 false alerts [3-10 %]; possible 0.80 found 132/200 [59-72 %] with 38/200 [14-25 %]. Studied afterwards and promoted to training set 17 on 2026-09-29, so it no longer measures anything held out.",
-          "sha256": "bc68957b36ed997f1ca209c14b52dce5ed8b4e53d19c59702e8b4eab45e42cdf",
+          "sha256": "18ab77cd646768ad337af9155547f894ae1d95828641d72effcfa3165519327f",
           "match": 200,
           "different": 200
         },
@@ -360,8 +496,8 @@
   },
   "totaux": {
     "lignes": 1000,
-    "forts": 0,
-    "possibles": 24,
+    "forts": 1,
+    "possibles": 23,
     "sansCorrespondance": 976
   },
   "resultats": [
@@ -394,7 +530,12 @@
           "alias": "B&H",
           "type": "entity",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "08/01/2025",
+            "champ": "DateDesignated",
+            "source": "UK"
+          }
         }
       ],
       "autres": 0,
@@ -418,7 +559,12 @@
           "alias": "e. K.-Company GmbH & Co. KG",
           "type": "entity",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "24/02/2025",
+            "champ": "DateDesignated",
+            "source": "UK"
+          }
         }
       ],
       "autres": 0,
@@ -470,9 +616,9 @@
     },
     {
       "ligne": 9,
-      "nom": "Henning Wolters",
+      "nom": "Wolters Logistics GmbH",
       "ref": "N-0008",
-      "type": "person",
+      "type": "entity",
       "pays": "DE",
       "statut": "no-match",
       "candidats": [],
@@ -488,7 +634,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 11,
@@ -532,7 +679,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 15,
@@ -569,9 +717,9 @@
     },
     {
       "ligne": 18,
-      "nom": "Maëlle Duvernay",
+      "nom": "Duvernay Trading SARL",
       "ref": "N-0017",
-      "type": "person",
+      "type": "entity",
       "pays": "FR",
       "statut": "no-match",
       "candidats": [],
@@ -613,9 +761,9 @@
     },
     {
       "ligne": 22,
-      "nom": "Giulia Scarabelli",
+      "nom": "Scarabelli Foods S.r.l.",
       "ref": "N-0021",
-      "type": "person",
+      "type": "entity",
       "pays": "IT",
       "statut": "no-match",
       "candidats": [],
@@ -664,7 +812,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 27,
@@ -763,7 +912,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 36,
@@ -774,7 +924,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 37,
@@ -800,9 +951,9 @@
     },
     {
       "ligne": 39,
-      "nom": "Katarzyna Wierzbicka",
+      "nom": "Wierzbicka Textiles Sp. z o.o.",
       "ref": "N-0038",
-      "type": "person",
+      "type": "entity",
       "pays": "PL",
       "statut": "no-match",
       "candidats": [],
@@ -818,7 +969,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 41,
@@ -983,7 +1135,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 56,
@@ -1009,9 +1162,9 @@
     },
     {
       "ligne": 58,
-      "nom": "Keiko Hasegawa",
+      "nom": "Hasegawa Machinery Co., Ltd",
       "ref": "N-0057",
-      "type": "person",
+      "type": "entity",
       "pays": "JP",
       "statut": "no-match",
       "candidats": [],
@@ -1075,9 +1228,9 @@
     },
     {
       "ligne": 64,
-      "nom": "Pradeep Venkataraman",
+      "nom": "Venkataraman Packaging Pvt Ltd",
       "ref": "N-0063",
-      "type": "person",
+      "type": "entity",
       "pays": "IN",
       "statut": "no-match",
       "candidats": [],
@@ -1137,7 +1290,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 70,
@@ -1313,7 +1467,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 86,
@@ -1324,7 +1479,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 87,
@@ -1383,9 +1539,9 @@
     },
     {
       "ligne": 92,
-      "nom": "Colleen Ashworth",
+      "nom": "Ashworth Chemicals LLC",
       "ref": "N-0091",
-      "type": "person",
+      "type": "entity",
       "pays": "US",
       "statut": "no-match",
       "candidats": [],
@@ -1427,9 +1583,9 @@
     },
     {
       "ligne": 96,
-      "nom": "Rodrigo Tavares Lacerda",
+      "nom": "Lacerda Timber Ltda",
       "ref": "N-0095",
-      "type": "person",
+      "type": "entity",
       "pays": "BR",
       "statut": "no-match",
       "candidats": [],
@@ -1478,7 +1634,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 101,
@@ -1489,7 +1646,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 102,
@@ -1512,14 +1670,19 @@
       "candidats": [
         {
           "source": "CSL",
-          "liste": "Nonproliferation Sanctions (ISN): Chemical and Biological Weapons Act",
+          "liste": "Nonproliferation Sanctions (ACN): Chemical and Biological Weapons Act",
           "ids": [
             "6b1afd880f0aa5d6de2b8ca262fb4ab3b424bb830751bfe128cb0e03"
           ],
           "nomListe": "W & M Limited Partnership",
           "type": "other",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "1994-02-08",
+            "champ": "start_date",
+            "source": "CSL"
+          }
         }
       ],
       "autres": 0,
@@ -1593,9 +1756,9 @@
     },
     {
       "ligne": 110,
-      "nom": "Jan-Hendrik Petersen",
+      "nom": "Petersen Metals GmbH",
       "ref": "N-0109",
-      "type": "person",
+      "type": "entity",
       "pays": "DE",
       "statut": "no-match",
       "candidats": [],
@@ -1611,7 +1774,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 112,
@@ -1659,9 +1823,9 @@
     },
     {
       "ligne": 116,
-      "nom": "Sieke van Oudheusden",
+      "nom": "Oudheusden Marine B.V.",
       "ref": "N-0115",
-      "type": "person",
+      "type": "entity",
       "pays": "NL",
       "statut": "no-match",
       "candidats": [],
@@ -1677,7 +1841,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 118,
@@ -1769,9 +1934,9 @@
     },
     {
       "ligne": 126,
-      "nom": "Alvaro Iriondo Beitia",
+      "nom": "Beitia Components S.L.",
       "ref": "N-0125",
-      "type": "person",
+      "type": "entity",
       "pays": "ES",
       "statut": "no-match",
       "candidats": [],
@@ -1864,7 +2029,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 135,
@@ -1875,7 +2041,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 136,
@@ -1886,7 +2053,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 137,
@@ -1945,9 +2113,9 @@
     },
     {
       "ligne": 142,
-      "nom": "Tomáš Kubíček",
+      "nom": "Kubíček Distribution s.r.o.",
       "ref": "N-0141",
-      "type": "person",
+      "type": "entity",
       "pays": "CZ",
       "statut": "no-match",
       "candidats": [],
@@ -2070,7 +2238,11 @@
           "nomListe": "Li Li",
           "type": "other",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "not stated by CSL for this entry",
+            "source": "CSL"
+          }
         }
       ],
       "autres": 0,
@@ -2085,7 +2257,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 154,
@@ -2144,12 +2317,44 @@
     },
     {
       "ligne": 159,
-      "nom": "Seo Min-jae",
+      "nom": "Min-jae Logistics Co., Ltd",
       "ref": "N-0158",
-      "type": "person",
+      "type": "entity",
       "pays": "KR",
-      "statut": "no-match",
-      "candidats": [],
+      "statut": "strong",
+      "candidats": [
+        {
+          "source": "CSL",
+          "liste": "Entity List (EL)",
+          "ids": [
+            "43983acf283979bccdc8c461fa3740659faad85e54dc45062452ad43"
+          ],
+          "nomListe": "Minhoo Logistics Limited",
+          "type": "other",
+          "score": 0.857,
+          "par": "name",
+          "designation": {
+            "date": "2024-08-27",
+            "champ": "start_date",
+            "source": "CSL"
+          }
+        },
+        {
+          "source": "OFAC",
+          "liste": "RUSSIA-EO14024",
+          "ids": [
+            "50940"
+          ],
+          "nomListe": "MINHOO LOGISTICS LIMITED",
+          "type": "entity",
+          "score": 0.857,
+          "par": "name",
+          "designation": {
+            "date": "not published by OFAC",
+            "source": "OFAC"
+          }
+        }
+      ],
       "autres": 0,
       "ecartesParImo": []
     },
@@ -2232,9 +2437,9 @@
     },
     {
       "ligne": 167,
-      "nom": "Trương Minh Khoa",
+      "nom": "Khoa Trading Co., Ltd",
       "ref": "N-0166",
-      "type": "person",
+      "type": "entity",
       "pays": "VN",
       "statut": "no-match",
       "candidats": [],
@@ -2272,7 +2477,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 171,
@@ -2309,9 +2515,9 @@
     },
     {
       "ligne": 174,
-      "nom": "Selin Özyurt",
+      "nom": "Özyurt Foods A.S.",
       "ref": "N-0173",
-      "type": "person",
+      "type": "entity",
       "pays": "TR",
       "statut": "no-match",
       "candidats": [],
@@ -2327,7 +2533,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 176,
@@ -2437,7 +2644,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 186,
@@ -2448,7 +2656,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 187,
@@ -2529,9 +2738,9 @@
     },
     {
       "ligne": 194,
-      "nom": "Derek Lachance",
+      "nom": "Lachance Textiles Inc.",
       "ref": "N-0193",
-      "type": "person",
+      "type": "entity",
       "pays": "CA",
       "statut": "no-match",
       "candidats": [],
@@ -2602,7 +2811,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 201,
@@ -2613,7 +2823,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 202,
@@ -2705,9 +2916,9 @@
     },
     {
       "ligne": 210,
-      "nom": "Friederike Ahlgrimm",
+      "nom": "Ahlgrimm Machinery GmbH",
       "ref": "N-0209",
-      "type": "person",
+      "type": "entity",
       "pays": "DE",
       "statut": "no-match",
       "candidats": [],
@@ -2716,51 +2927,15 @@
     },
     {
       "ligne": 211,
-      "nom": "Stör",
+      "nom": "Havelland Spirit",
       "ref": "N-0210",
       "type": "vessel",
       "pays": "DE",
-      "statut": "possible",
-      "candidats": [
-        {
-          "source": "EU",
-          "liste": "IRN",
-          "ids": [
-            "180587"
-          ],
-          "nomListe": "SATRA",
-          "alias": "ساترا",
-          "type": "entity",
-          "score": 0.8,
-          "par": "name"
-        },
-        {
-          "source": "OFAC",
-          "liste": "ILLICIT-DRUGS-EO14059+SDGT",
-          "ids": [
-            "54604"
-          ],
-          "nomListe": "STORELAB, S.A. DE C.V.",
-          "type": "entity",
-          "score": 0.8,
-          "par": "name"
-        },
-        {
-          "source": "EU-VESSELS",
-          "liste": "833/2014 Annex XLII",
-          "ids": [
-            "IMO9290397"
-          ],
-          "nomListe": "STORMBRINGER (ex KRITI VIGOR)",
-          "alias": "STORMBRINGER",
-          "type": "vessel",
-          "imo": "9290397",
-          "score": 0.8,
-          "par": "name"
-        }
-      ],
+      "statut": "no-match",
+      "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 212,
@@ -2786,9 +2961,9 @@
     },
     {
       "ligne": 214,
-      "nom": "Pieter-Jan Verstraete",
+      "nom": "Verstraete Packaging NV",
       "ref": "N-0213",
-      "type": "person",
+      "type": "entity",
       "pays": "BE",
       "statut": "no-match",
       "candidats": [],
@@ -2826,7 +3001,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 218,
@@ -2995,9 +3171,9 @@
     },
     {
       "ligne": 233,
-      "nom": "Ingrid Solberg",
+      "nom": "Solberg Chemicals AS",
       "ref": "N-0232",
-      "type": "person",
+      "type": "entity",
       "pays": "NO",
       "statut": "no-match",
       "candidats": [],
@@ -3013,7 +3189,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 235,
@@ -3024,7 +3201,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 236,
@@ -3035,7 +3213,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 237,
@@ -3105,9 +3284,9 @@
     },
     {
       "ligne": 243,
-      "nom": "Márton Szalai",
+      "nom": "Szalai Timber Kft.",
       "ref": "N-0242",
-      "type": "person",
+      "type": "entity",
       "pays": "HU",
       "statut": "no-match",
       "candidats": [],
@@ -3145,7 +3324,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 247,
@@ -3266,7 +3446,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 258,
@@ -3292,9 +3473,9 @@
     },
     {
       "ligne": 260,
-      "nom": "Hsu Wei-lin",
+      "nom": "Wei-lin Metals Co., Ltd",
       "ref": "N-0259",
-      "type": "person",
+      "type": "entity",
       "pays": "TW",
       "statut": "possible",
       "candidats": [
@@ -3308,7 +3489,11 @@
           "alias": "Wei Wei",
           "type": "other",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "not stated by CSL for this entry",
+            "source": "CSL"
+          }
         }
       ],
       "autres": 0,
@@ -3400,7 +3585,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 269,
@@ -3415,9 +3601,9 @@
     },
     {
       "ligne": 270,
-      "nom": "Dewi Kartikasari",
+      "nom": "PT Kartikasari Marine",
       "ref": "N-0269",
-      "type": "person",
+      "type": "entity",
       "pays": "ID",
       "statut": "no-match",
       "candidats": [],
@@ -3536,9 +3722,9 @@
     },
     {
       "ligne": 281,
-      "nom": "Thandiwe Mokoena",
+      "nom": "Mokoena Components (Pty) Ltd",
       "ref": "N-0280",
-      "type": "person",
+      "type": "entity",
       "pays": "ZA",
       "statut": "no-match",
       "candidats": [],
@@ -3587,7 +3773,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 286,
@@ -3598,7 +3785,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 287,
@@ -3657,9 +3845,9 @@
     },
     {
       "ligne": 292,
-      "nom": "Brandon Mercier",
+      "nom": "Mercier Distribution LLC",
       "ref": "N-0291",
-      "type": "person",
+      "type": "entity",
       "pays": "US",
       "statut": "no-match",
       "candidats": [],
@@ -3740,7 +3928,19 @@
           "type": "vessel",
           "imo": "8126070",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "30/03/2018",
+            "champ": "DateDesignated",
+            "source": "UK"
+          },
+          "parties": [
+            {
+              "role": "CurrentOwnerOperator",
+              "nom": "Fortune Maker International",
+              "source": "UK"
+            }
+          ]
         }
       ],
       "autres": 0,
@@ -3766,7 +3966,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 301,
@@ -3777,7 +3978,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 302,
@@ -3869,9 +4071,9 @@
     },
     {
       "ligne": 310,
-      "nom": "Lukas Hinrichsen",
+      "nom": "Hinrichsen Logistics GmbH",
       "ref": "N-0309",
-      "type": "person",
+      "type": "entity",
       "pays": "DE",
       "statut": "no-match",
       "candidats": [],
@@ -3887,7 +4089,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 312,
@@ -3913,9 +4116,9 @@
     },
     {
       "ligne": 314,
-      "nom": "Sofie Vandenhende",
+      "nom": "Vandenhende Trading NV",
       "ref": "N-0313",
-      "type": "person",
+      "type": "entity",
       "pays": "BE",
       "statut": "no-match",
       "candidats": [],
@@ -3953,7 +4156,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 318,
@@ -4045,9 +4249,9 @@
     },
     {
       "ligne": 326,
-      "nom": "Paolo Tresoldi",
+      "nom": "Tresoldi Foods S.r.l.",
       "ref": "N-0325",
-      "type": "person",
+      "type": "entity",
       "pays": "IT",
       "statut": "no-match",
       "candidats": [],
@@ -4140,7 +4344,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 335,
@@ -4151,7 +4356,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 336,
@@ -4171,7 +4377,18 @@
           "type": "vessel",
           "imo": "9418999",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "not published by OFAC",
+            "source": "OFAC"
+          },
+          "parties": [
+            {
+              "role": "Linked To",
+              "nom": "NUVETRRO SHIPPING INC",
+              "source": "OFAC"
+            }
+          ]
         },
         {
           "source": "OFAC",
@@ -4184,11 +4401,16 @@
           "aliasFaible": true,
           "type": "entity",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "not published by OFAC",
+            "source": "OFAC"
+          }
         }
       ],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 337,
@@ -4291,9 +4513,9 @@
     },
     {
       "ligne": 346,
-      "nom": "Aigars Kalniņš",
+      "nom": "Kalniņš Textiles SIA",
       "ref": "N-0345",
-      "type": "person",
+      "type": "entity",
       "pays": "LV",
       "statut": "no-match",
       "candidats": [],
@@ -4379,9 +4601,9 @@
     },
     {
       "ligne": 354,
-      "nom": "Tang Xiaoyu",
+      "nom": "Xiaoyu Machinery Co., Ltd",
       "ref": "N-0353",
-      "type": "person",
+      "type": "entity",
       "pays": "CN",
       "statut": "no-match",
       "candidats": [],
@@ -4452,7 +4674,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 361,
@@ -4522,12 +4745,38 @@
     },
     {
       "ligne": 367,
-      "nom": "Supaporn Chaiyasit",
+      "nom": "Chaiyasit Packaging Co., Ltd",
       "ref": "N-0366",
-      "type": "person",
+      "type": "entity",
       "pays": "TH",
-      "statut": "no-match",
-      "candidats": [],
+      "statut": "possible",
+      "candidats": [
+        {
+          "source": "UK",
+          "liste": "The Democratic People's Republic of Korea (Sanctions) (EU Exit) Regulations 2019",
+          "ids": [
+            "DPR0121"
+          ],
+          "nomListe": "Shang Yuan Bao",
+          "alias": "C.P. 33",
+          "type": "vessel",
+          "imo": "8126070",
+          "score": 0.8,
+          "par": "name",
+          "designation": {
+            "date": "30/03/2018",
+            "champ": "DateDesignated",
+            "source": "UK"
+          },
+          "parties": [
+            {
+              "role": "CurrentOwnerOperator",
+              "nom": "Fortune Maker International",
+              "source": "UK"
+            }
+          ]
+        }
+      ],
       "autres": 0,
       "ecartesParImo": []
     },
@@ -4562,7 +4811,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 371,
@@ -4636,7 +4886,11 @@
           "nomListe": "Papa Faal",
           "type": "other",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "not stated by CSL for this entry",
+            "source": "CSL"
+          }
         },
         {
           "source": "CSL",
@@ -4647,11 +4901,17 @@
           "nomListe": "PAPA FAAL",
           "type": "other",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "2017-12-19",
+            "champ": "start_date",
+            "source": "CSL"
+          }
         }
       ],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 377,
@@ -4750,7 +5010,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 386,
@@ -4761,7 +5022,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 387,
@@ -4842,9 +5104,9 @@
     },
     {
       "ligne": 394,
-      "nom": "Tamara Kowalczyk",
+      "nom": "Kowalczyk Chemicals Inc.",
       "ref": "N-0393",
-      "type": "person",
+      "type": "entity",
       "pays": "CA",
       "statut": "no-match",
       "candidats": [],
@@ -4897,9 +5159,9 @@
     },
     {
       "ligne": 399,
-      "nom": "Valentina Irazoqui",
+      "nom": "Irazoqui Timber S.A.",
       "ref": "N-0398",
-      "type": "person",
+      "type": "entity",
       "pays": "UY",
       "statut": "no-match",
       "candidats": [],
@@ -4915,7 +5177,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 401,
@@ -4926,7 +5189,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 402,
@@ -5018,9 +5282,9 @@
     },
     {
       "ligne": 410,
-      "nom": "Rainer Tiedemann",
+      "nom": "Tiedemann Metals GmbH",
       "ref": "N-0409",
-      "type": "person",
+      "type": "entity",
       "pays": "DE",
       "statut": "no-match",
       "candidats": [],
@@ -5045,11 +5309,17 @@
           "alias": "SCH",
           "type": "other",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "2024-08-27",
+            "champ": "start_date",
+            "source": "CSL"
+          }
         }
       ],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 412,
@@ -5097,9 +5367,9 @@
     },
     {
       "ligne": 416,
-      "nom": "Marieke Groeneveld",
+      "nom": "Groeneveld Marine B.V.",
       "ref": "N-0415",
-      "type": "person",
+      "type": "entity",
       "pays": "NL",
       "statut": "no-match",
       "candidats": [],
@@ -5115,7 +5385,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 418,
@@ -5196,9 +5467,9 @@
     },
     {
       "ligne": 425,
-      "nom": "Chiara Montagnoli",
+      "nom": "Montagnoli Components S.r.l.",
       "ref": "N-0424",
-      "type": "person",
+      "type": "entity",
       "pays": "IT",
       "statut": "no-match",
       "candidats": [],
@@ -5302,7 +5573,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 435,
@@ -5313,7 +5585,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 436,
@@ -5324,7 +5597,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 437,
@@ -5366,11 +5640,17 @@
           "alias": "AO НИКИЭТ",
           "type": "entity",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "04/05/2022",
+            "champ": "DateDesignated",
+            "source": "UK"
+          }
         }
       ],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 440,
@@ -5390,7 +5670,12 @@
           "alias": "B&H",
           "type": "entity",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "08/01/2025",
+            "champ": "DateDesignated",
+            "source": "UK"
+          }
         }
       ],
       "autres": 0,
@@ -5409,9 +5694,9 @@
     },
     {
       "ligne": 442,
-      "nom": "Veronika Havlíčková",
+      "nom": "Havlíčková Distribution s.r.o.",
       "ref": "N-0441",
-      "type": "person",
+      "type": "entity",
       "pays": "CZ",
       "statut": "no-match",
       "candidats": [],
@@ -5548,7 +5833,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 455,
@@ -5585,9 +5871,9 @@
     },
     {
       "ligne": 458,
-      "nom": "Yuki Morishita",
+      "nom": "Morishita Logistics Co., Ltd",
       "ref": "N-0457",
-      "type": "person",
+      "type": "entity",
       "pays": "JP",
       "statut": "no-match",
       "candidats": [],
@@ -5702,7 +5988,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 469,
@@ -5728,9 +6015,9 @@
     },
     {
       "ligne": 471,
-      "nom": "Mariel Dimaculangan",
+      "nom": "Dimaculangan Trading Inc.",
       "ref": "N-0470",
-      "type": "person",
+      "type": "entity",
       "pays": "PH",
       "statut": "no-match",
       "candidats": [],
@@ -5772,25 +6059,12 @@
     },
     {
       "ligne": 475,
-      "nom": "Emre Kalaycıoğlu",
+      "nom": "Kalaycıoğlu Foods A.S.",
       "ref": "N-0474",
-      "type": "person",
+      "type": "entity",
       "pays": "TR",
-      "statut": "possible",
-      "candidats": [
-        {
-          "source": "UK",
-          "liste": "The Russia (Sanctions) (EU Exit) Regulations 2019",
-          "ids": [
-            "RUS2441"
-          ],
-          "nomListe": "EKC.AG",
-          "alias": "e. K.-Company GmbH & Co. KG",
-          "type": "entity",
-          "score": 0.8,
-          "par": "name"
-        }
-      ],
+      "statut": "no-match",
+      "candidats": [],
       "autres": 0,
       "ecartesParImo": []
     },
@@ -5902,7 +6176,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 486,
@@ -5913,7 +6188,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 487,
@@ -5972,9 +6248,9 @@
     },
     {
       "ligne": 492,
-      "nom": "Travis Engelhardt",
+      "nom": "Engelhardt Textiles LLC",
       "ref": "N-0491",
-      "type": "person",
+      "type": "entity",
       "pays": "US",
       "statut": "no-match",
       "candidats": [],
@@ -6060,26 +6336,15 @@
     },
     {
       "ligne": 500,
-      "nom": "Portobelo Sun",
+      "nom": "Caboverde Aurora",
       "ref": "N-0499",
       "type": "vessel",
       "pays": "PA",
-      "statut": "possible",
-      "candidats": [
-        {
-          "source": "OFAC",
-          "liste": "TCO",
-          "ids": [
-            "55959"
-          ],
-          "nomListe": "SUN AND SUN LIMITED",
-          "type": "entity",
-          "score": 0.8,
-          "par": "name"
-        }
-      ],
+      "statut": "no-match",
+      "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 501,
@@ -6090,7 +6355,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 502,
@@ -6182,9 +6448,9 @@
     },
     {
       "ligne": 510,
-      "nom": "Klaus-Dieter Heitmann",
+      "nom": "Heitmann Machinery GmbH",
       "ref": "N-0509",
-      "type": "person",
+      "type": "entity",
       "pays": "DE",
       "statut": "no-match",
       "candidats": [],
@@ -6193,48 +6459,15 @@
     },
     {
       "ligne": 511,
-      "nom": "Pinnau",
+      "nom": "Elbe Pioneer",
       "ref": "N-0510",
       "type": "vessel",
       "pays": "DE",
-      "statut": "possible",
-      "candidats": [
-        {
-          "source": "CSL",
-          "liste": "ITAR Debarred (DTC)",
-          "ids": [
-            "9781a82425eb4598af7d4460ac2299ef"
-          ],
-          "nomListe": "Bin Wu",
-          "type": "other",
-          "score": 0.8,
-          "par": "name"
-        },
-        {
-          "source": "CSL",
-          "liste": "Denied Persons List (DPL)",
-          "ids": [
-            "e5f7bee06851c60eb19c9f33bdb34ed7ebf4dcc26167f78d6c03f5fd"
-          ],
-          "nomListe": "BIN WU",
-          "type": "other",
-          "score": 0.8,
-          "par": "name"
-        },
-        {
-          "source": "OFAC",
-          "liste": "IRAN-EO13846",
-          "ids": [
-            "27471"
-          ],
-          "nomListe": "Bin XU",
-          "type": "person",
-          "score": 0.8,
-          "par": "name"
-        }
-      ],
+      "statut": "no-match",
+      "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 512,
@@ -6289,7 +6522,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 517,
@@ -6326,9 +6560,9 @@
     },
     {
       "ligne": 520,
-      "nom": "Étienne Rabasse",
+      "nom": "Rabasse Packaging SARL",
       "ref": "N-0519",
-      "type": "person",
+      "type": "entity",
       "pays": "FR",
       "statut": "no-match",
       "candidats": [],
@@ -6469,9 +6703,9 @@
     },
     {
       "ligne": 533,
-      "nom": "Johanna Lindqvist",
+      "nom": "Lindqvist Chemicals AB",
       "ref": "N-0532",
-      "type": "person",
+      "type": "entity",
       "pays": "SE",
       "statut": "no-match",
       "candidats": [],
@@ -6487,7 +6721,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 535,
@@ -6498,6 +6733,23 @@
       "statut": "possible",
       "candidats": [
         {
+          "source": "CA",
+          "liste": "Russia",
+          "ids": [
+            "Russia|1.1|459"
+          ],
+          "nomListe": "Mars 6",
+          "type": "vessel",
+          "imo": "9384992",
+          "score": 0.8,
+          "par": "name",
+          "designation": {
+            "date": "2026-02-19",
+            "champ": "DateOfListing",
+            "source": "CA"
+          }
+        },
+        {
           "source": "EU-VESSELS",
           "liste": "833/2014 Annex XLII",
           "ids": [
@@ -6507,7 +6759,12 @@
           "type": "vessel",
           "imo": "9384992",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "20.7.2025",
+            "champ": "Date of application",
+            "source": "EU-VESSELS"
+          }
         },
         {
           "source": "UK",
@@ -6519,7 +6776,19 @@
           "type": "vessel",
           "imo": "9384992",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "15/10/2025",
+            "champ": "DateDesignated",
+            "source": "UK"
+          },
+          "parties": [
+            {
+              "role": "CurrentOwnerOperator",
+              "nom": "Yuva Shipping Ltd",
+              "source": "UK"
+            }
+          ]
         },
         {
           "source": "CSL",
@@ -6531,11 +6800,17 @@
           "alias": "NPO Mars",
           "type": "other",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "2022-04-07",
+            "champ": "start_date",
+            "source": "CSL"
+          }
         }
       ],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 536,
@@ -6546,7 +6821,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 537,
@@ -6554,8 +6830,26 @@
       "ref": "N-0536",
       "type": "entity",
       "pays": "PL",
-      "statut": "no-match",
-      "candidats": [],
+      "statut": "possible",
+      "candidats": [
+        {
+          "source": "CA",
+          "liste": "Iran",
+          "ids": [
+            "Iran|1, Part 1|81"
+          ],
+          "nomListe": "Three Star Services Co. (T.S.S. Co.)",
+          "alias": "T.S.S. Co.",
+          "type": "entity",
+          "score": 0.8,
+          "par": "name",
+          "designation": {
+            "date": "2016-02-05",
+            "champ": "DateOfListing",
+            "source": "CA"
+          }
+        }
+      ],
       "autres": 0,
       "ecartesParImo": []
     },
@@ -6572,9 +6866,9 @@
     },
     {
       "ligne": 539,
-      "nom": "Andrzej Pawlikowski",
+      "nom": "Pawlikowski Timber Sp. z o.o.",
       "ref": "N-0538",
-      "type": "person",
+      "type": "entity",
       "pays": "PL",
       "statut": "no-match",
       "candidats": [],
@@ -6788,7 +7082,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 559,
@@ -6803,9 +7098,9 @@
     },
     {
       "ligne": 560,
-      "nom": "Hwang Ji-woo",
+      "nom": "Ji-woo Metals Co., Ltd",
       "ref": "N-0559",
-      "type": "person",
+      "type": "entity",
       "pays": "KR",
       "statut": "no-match",
       "candidats": [],
@@ -6858,12 +7153,29 @@
     },
     {
       "ligne": 565,
-      "nom": "Chamari Wickramasinghe",
+      "nom": "Wickramasinghe Marine (Pvt) Ltd",
       "ref": "N-0564",
-      "type": "person",
+      "type": "entity",
       "pays": "LK",
-      "statut": "no-match",
-      "candidats": [],
+      "statut": "possible",
+      "candidats": [
+        {
+          "source": "CSL",
+          "liste": "Nonproliferation Sanctions (ACN): Chemical and Biological Weapons Act",
+          "ids": [
+            "6b1afd880f0aa5d6de2b8ca262fb4ab3b424bb830751bfe128cb0e03"
+          ],
+          "nomListe": "W & M Limited Partnership",
+          "type": "other",
+          "score": 0.8,
+          "par": "name",
+          "designation": {
+            "date": "1994-02-08",
+            "champ": "start_date",
+            "source": "CSL"
+          }
+        }
+      ],
       "autres": 0,
       "ecartesParImo": []
     },
@@ -6920,7 +7232,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 571,
@@ -6975,7 +7288,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 576,
@@ -7067,9 +7381,9 @@
     },
     {
       "ligne": 584,
-      "nom": "Kofi Boateng Mensah",
+      "nom": "Mensah Components Ltd",
       "ref": "N-0583",
-      "type": "person",
+      "type": "entity",
       "pays": "GH",
       "statut": "no-match",
       "candidats": [],
@@ -7085,7 +7399,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 586,
@@ -7096,7 +7411,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 587,
@@ -7155,9 +7471,9 @@
     },
     {
       "ligne": 592,
-      "nom": "Rebecca Thorsen",
+      "nom": "Thorsen Distribution LLC",
       "ref": "N-0591",
-      "type": "person",
+      "type": "entity",
       "pays": "US",
       "statut": "no-match",
       "candidats": [],
@@ -7250,7 +7566,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 601,
@@ -7261,7 +7578,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 602,
@@ -7353,9 +7671,9 @@
     },
     {
       "ligne": 610,
-      "nom": "Oskar Wendeborn",
+      "nom": "Wendeborn Logistics GmbH",
       "ref": "N-0609",
-      "type": "person",
+      "type": "entity",
       "pays": "DE",
       "statut": "no-match",
       "candidats": [],
@@ -7371,7 +7689,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 612,
@@ -7419,9 +7738,9 @@
     },
     {
       "ligne": 616,
-      "nom": "Thijs Bakhuizen",
+      "nom": "Bakhuizen Trading B.V.",
       "ref": "N-0615",
-      "type": "person",
+      "type": "entity",
       "pays": "NL",
       "statut": "no-match",
       "candidats": [],
@@ -7437,7 +7756,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 618,
@@ -7529,9 +7849,9 @@
     },
     {
       "ligne": 626,
-      "nom": "Carmen Ibarrola Sáez",
+      "nom": "Sáez Foods S.L.",
       "ref": "N-0625",
-      "type": "person",
+      "type": "entity",
       "pays": "ES",
       "statut": "no-match",
       "candidats": [],
@@ -7624,7 +7944,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 635,
@@ -7635,7 +7956,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 636,
@@ -7646,7 +7968,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 637,
@@ -7679,7 +8002,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 640,
@@ -7749,9 +8073,9 @@
     },
     {
       "ligne": 646,
-      "nom": "Liina Tammsaar",
+      "nom": "Tammsaar Textiles OU",
       "ref": "N-0645",
-      "type": "person",
+      "type": "entity",
       "pays": "EE",
       "statut": "no-match",
       "candidats": [],
@@ -7837,9 +8161,9 @@
     },
     {
       "ligne": 654,
-      "nom": "Fang Ruiqi",
+      "nom": "Ruiqi Machinery Co., Ltd",
       "ref": "N-0653",
-      "type": "person",
+      "type": "entity",
       "pays": "CN",
       "statut": "no-match",
       "candidats": [],
@@ -7855,7 +8179,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 656,
@@ -7947,9 +8272,9 @@
     },
     {
       "ligne": 664,
-      "nom": "Arjun Nambiar",
+      "nom": "Nambiar Packaging Pvt Ltd",
       "ref": "N-0663",
-      "type": "person",
+      "type": "entity",
       "pays": "IN",
       "statut": "no-match",
       "candidats": [],
@@ -8018,11 +8343,23 @@
           "type": "vessel",
           "imo": "9404508",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "not published by OFAC",
+            "source": "OFAC"
+          },
+          "parties": [
+            {
+              "role": "Linked To",
+              "nom": "SEA LEAD SHIPPING PTE. LTD.",
+              "source": "OFAC"
+            }
+          ]
         }
       ],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 670,
@@ -8158,35 +8495,12 @@
     },
     {
       "ligne": 682,
-      "nom": "Port Said Marine Agencies SAE",
+      "nom": "Port Ismailia Marine Agencies SAE",
       "ref": "N-0681",
       "type": "entity",
       "pays": "EG",
-      "statut": "possible",
-      "candidats": [
-        {
-          "source": "UK",
-          "liste": "The Chemical Weapons (Sanctions) (EU Exit) Regulations 2019",
-          "ids": [
-            "CHW0004"
-          ],
-          "nomListe": "Said Said",
-          "type": "person",
-          "score": 0.8,
-          "par": "name"
-        },
-        {
-          "source": "EU",
-          "liste": "CHEM",
-          "ids": [
-            "119195"
-          ],
-          "nomListe": "Said SAID",
-          "type": "person",
-          "score": 0.8,
-          "par": "name"
-        }
-      ],
+      "statut": "no-match",
+      "candidats": [],
       "autres": 0,
       "ecartesParImo": []
     },
@@ -8221,7 +8535,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 686,
@@ -8232,7 +8547,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 687,
@@ -8313,9 +8629,9 @@
     },
     {
       "ligne": 694,
-      "nom": "Gregory Pelletier",
+      "nom": "Pelletier Chemicals Inc.",
       "ref": "N-0693",
-      "type": "person",
+      "type": "entity",
       "pays": "CA",
       "statut": "no-match",
       "candidats": [],
@@ -8346,9 +8662,9 @@
     },
     {
       "ligne": 697,
-      "nom": "Camila Etchegoyen",
+      "nom": "Etchegoyen Timber S.A.",
       "ref": "N-0696",
-      "type": "person",
+      "type": "entity",
       "pays": "AR",
       "statut": "no-match",
       "candidats": [],
@@ -8386,7 +8702,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 701,
@@ -8397,7 +8714,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 702,
@@ -8489,9 +8807,9 @@
     },
     {
       "ligne": 710,
-      "nom": "Annika Brodersen",
+      "nom": "Brodersen Metals GmbH",
       "ref": "N-0709",
-      "type": "person",
+      "type": "entity",
       "pays": "DE",
       "statut": "no-match",
       "candidats": [],
@@ -8516,11 +8834,17 @@
           "alias": "CEV",
           "type": "other",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "2022-12-16",
+            "champ": "start_date",
+            "source": "CSL"
+          }
         }
       ],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 712,
@@ -8568,9 +8892,9 @@
     },
     {
       "ligne": 716,
-      "nom": "Joost Terpstra",
+      "nom": "Terpstra Marine B.V.",
       "ref": "N-0715",
-      "type": "person",
+      "type": "entity",
       "pays": "NL",
       "statut": "no-match",
       "candidats": [],
@@ -8586,7 +8910,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 718,
@@ -8689,9 +9014,9 @@
     },
     {
       "ligne": 727,
-      "nom": "Lucía Garmendia Arrieta",
+      "nom": "Arrieta Components S.L.",
       "ref": "N-0726",
-      "type": "person",
+      "type": "entity",
       "pays": "ES",
       "statut": "no-match",
       "candidats": [],
@@ -8773,7 +9098,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 735,
@@ -8784,7 +9110,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 736,
@@ -8795,7 +9122,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 737,
@@ -8898,9 +9226,9 @@
     },
     {
       "ligne": 746,
-      "nom": "Rūta Jankauskienė",
+      "nom": "Jankauskienė Distribution UAB",
       "ref": "N-0745",
-      "type": "person",
+      "type": "entity",
       "pays": "LT",
       "statut": "no-match",
       "candidats": [],
@@ -9004,7 +9332,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 756,
@@ -9030,9 +9359,9 @@
     },
     {
       "ligne": 758,
-      "nom": "Kazuhiro Ishizuka",
+      "nom": "Ishizuka Logistics Co., Ltd",
       "ref": "N-0757",
-      "type": "person",
+      "type": "entity",
       "pays": "JP",
       "statut": "no-match",
       "candidats": [],
@@ -9118,12 +9447,45 @@
     },
     {
       "ligne": 766,
-      "nom": "Pham Quoc Bao",
+      "nom": "Bao Trading Co., Ltd",
       "ref": "N-0765",
-      "type": "person",
+      "type": "entity",
       "pays": "VN",
-      "statut": "no-match",
-      "candidats": [],
+      "statut": "possible",
+      "candidats": [
+        {
+          "source": "CSL",
+          "liste": "Entity List (EL)",
+          "ids": [
+            "111e7188d36902863692ca4f8c728bd41e1d8340015480f225cfa3e0"
+          ],
+          "nomListe": "Feng Bao Trading Hong Kong Ltd",
+          "type": "other",
+          "score": 0.8,
+          "par": "name",
+          "designation": {
+            "date": "2025-10-08",
+            "champ": "start_date",
+            "source": "CSL"
+          }
+        },
+        {
+          "source": "OFAC",
+          "liste": "DPRK3",
+          "ids": [
+            "21724"
+          ],
+          "nomListe": "PAEKSOL TRADING CORPORATION",
+          "alias": "PAEKSO'L TRADING CORPORATION",
+          "type": "entity",
+          "score": 0.8,
+          "par": "name",
+          "designation": {
+            "date": "not published by OFAC",
+            "source": "OFAC"
+          }
+        }
+      ],
       "autres": 0,
       "ecartesParImo": []
     },
@@ -9158,7 +9520,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 770,
@@ -9206,9 +9569,9 @@
     },
     {
       "ligne": 774,
-      "nom": "Burcu Tanrıverdi",
+      "nom": "Tanrıverdi Foods A.S.",
       "ref": "N-0773",
-      "type": "person",
+      "type": "entity",
       "pays": "TR",
       "statut": "no-match",
       "candidats": [],
@@ -9224,7 +9587,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 776,
@@ -9323,6 +9687,37 @@
       "statut": "possible",
       "candidats": [
         {
+          "source": "NZ",
+          "liste": "Russia Sanctions Regulations 2022",
+          "ids": [
+            "ENT-358"
+          ],
+          "nomListe": "Oboronlogistics LLC",
+          "type": "entity",
+          "score": 0.8,
+          "par": "name",
+          "designation": {
+            "date": "2023-05-05",
+            "champ": "Date of Sanction",
+            "source": "NZ"
+          }
+        },
+        {
+          "source": "AU",
+          "liste": "Autonomous (Russia)",
+          "ids": [
+            "7470"
+          ],
+          "nomListe": "OBORONLOGISTICS LLC",
+          "type": "entity",
+          "score": 0.8,
+          "par": "name",
+          "designation": {
+            "date": "not stated by AU for this entry",
+            "source": "AU"
+          }
+        },
+        {
           "source": "UK",
           "liste": "The Russia (Sanctions) (EU Exit) Regulations 2019",
           "ids": [
@@ -9331,7 +9726,12 @@
           "nomListe": "OBORONLOGISTICS LLC",
           "type": "entity",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "08/02/2023",
+            "champ": "DateDesignated",
+            "source": "UK"
+          }
         },
         {
           "source": "OFAC",
@@ -9343,7 +9743,11 @@
           "alias": "OBORON LOGISTIKA LLC",
           "type": "entity",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "not published by OFAC",
+            "source": "OFAC"
+          }
         },
         {
           "source": "CSL",
@@ -9355,22 +9759,15 @@
           "alias": "Oboronlogistics LLC",
           "type": "other",
           "score": 0.8,
-          "par": "name"
-        },
-        {
-          "source": "EU",
-          "liste": "UKR",
-          "ids": [
-            "160013"
-          ],
-          "nomListe": "SARL Oboronlogistika",
-          "alias": "LLC OBORONLOGISTICS",
-          "type": "entity",
-          "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "2017-06-22",
+            "champ": "start_date",
+            "source": "CSL"
+          }
         }
       ],
-      "autres": 0,
+      "autres": 1,
       "ecartesParImo": []
     },
     {
@@ -9382,7 +9779,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 786,
@@ -9393,7 +9791,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 787,
@@ -9452,9 +9851,9 @@
     },
     {
       "ligne": 792,
-      "nom": "Lindsay Hargreaves",
+      "nom": "Hargreaves Textiles LLC",
       "ref": "N-0791",
-      "type": "person",
+      "type": "entity",
       "pays": "US",
       "statut": "no-match",
       "candidats": [],
@@ -9547,7 +9946,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 801,
@@ -9558,7 +9958,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 802,
@@ -9650,9 +10051,9 @@
     },
     {
       "ligne": 810,
-      "nom": "Hannelore Kuhlmann",
+      "nom": "Kuhlmann Machinery GmbH",
       "ref": "N-0809",
-      "type": "person",
+      "type": "entity",
       "pays": "DE",
       "statut": "no-match",
       "candidats": [],
@@ -9668,7 +10069,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 812,
@@ -9723,7 +10125,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 817,
@@ -9760,9 +10163,9 @@
     },
     {
       "ligne": 820,
-      "nom": "Mathilde Lefebvre-Aubry",
+      "nom": "Lefebvre-Aubry Packaging SARL",
       "ref": "N-0819",
-      "type": "person",
+      "type": "entity",
       "pays": "FR",
       "statut": "no-match",
       "candidats": [],
@@ -9903,9 +10306,9 @@
     },
     {
       "ligne": 833,
-      "nom": "Nils Brandvold",
+      "nom": "Brandvold Chemicals AS",
       "ref": "N-0832",
-      "type": "person",
+      "type": "entity",
       "pays": "NO",
       "statut": "no-match",
       "candidats": [],
@@ -9921,7 +10324,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 835,
@@ -9932,7 +10336,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 836,
@@ -9943,7 +10348,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 837,
@@ -9969,9 +10375,9 @@
     },
     {
       "ligne": 839,
-      "nom": "Bartosz Grabowiecki",
+      "nom": "Grabowiecki Timber Sp. z o.o.",
       "ref": "N-0838",
-      "type": "person",
+      "type": "entity",
       "pays": "PL",
       "statut": "no-match",
       "candidats": [],
@@ -10053,7 +10459,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 847,
@@ -10141,7 +10548,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 855,
@@ -10200,9 +10608,9 @@
     },
     {
       "ligne": 860,
-      "nom": "Yeh Shu-fen",
+      "nom": "Shu-fen Metals Co., Ltd",
       "ref": "N-0859",
-      "type": "person",
+      "type": "entity",
       "pays": "TW",
       "statut": "no-match",
       "candidats": [],
@@ -10288,9 +10696,9 @@
     },
     {
       "ligne": 868,
-      "nom": "Kavitha Subramaniam",
+      "nom": "Subramaniam Marine Sdn. Bhd.",
       "ref": "N-0867",
-      "type": "person",
+      "type": "entity",
       "pays": "MY",
       "statut": "no-match",
       "candidats": [],
@@ -10306,7 +10714,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 870,
@@ -10464,9 +10873,9 @@
     },
     {
       "ligne": 884,
-      "nom": "Wanjiru Kariuki",
+      "nom": "Kariuki Components Ltd",
       "ref": "N-0883",
-      "type": "person",
+      "type": "entity",
       "pays": "KE",
       "statut": "no-match",
       "candidats": [],
@@ -10482,7 +10891,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 886,
@@ -10493,7 +10903,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 887,
@@ -10552,9 +10963,9 @@
     },
     {
       "ligne": 892,
-      "nom": "Jared Whitcombe",
+      "nom": "Whitcombe Distribution LLC",
       "ref": "N-0891",
-      "type": "person",
+      "type": "entity",
       "pays": "US",
       "statut": "no-match",
       "candidats": [],
@@ -10647,7 +11058,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 901,
@@ -10658,7 +11070,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 902,
@@ -10750,9 +11163,9 @@
     },
     {
       "ligne": 910,
-      "nom": "Sven Oldoerp",
+      "nom": "Oldoerp Logistics GmbH",
       "ref": "N-0909",
-      "type": "person",
+      "type": "entity",
       "pays": "DE",
       "statut": "no-match",
       "candidats": [],
@@ -10768,7 +11181,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 912,
@@ -10823,7 +11237,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 917,
@@ -10844,7 +11259,19 @@
           "type": "vessel",
           "imo": "8126070",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "30/03/2018",
+            "champ": "DateDesignated",
+            "source": "UK"
+          },
+          "parties": [
+            {
+              "role": "CurrentOwnerOperator",
+              "nom": "Fortune Maker International",
+              "source": "UK"
+            }
+          ]
         }
       ],
       "autres": 0,
@@ -10918,9 +11345,9 @@
     },
     {
       "ligne": 924,
-      "nom": "Beatrice Galvani",
+      "nom": "Galvani Trading S.r.l.",
       "ref": "N-0923",
-      "type": "person",
+      "type": "entity",
       "pays": "IT",
       "statut": "no-match",
       "candidats": [],
@@ -10995,9 +11422,9 @@
     },
     {
       "ligne": 931,
-      "nom": "Aoife Tierney",
+      "nom": "Tierney Foods Ltd",
       "ref": "N-0930",
-      "type": "person",
+      "type": "entity",
       "pays": "IE",
       "statut": "no-match",
       "candidats": [],
@@ -11035,7 +11462,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 935,
@@ -11046,6 +11474,23 @@
       "statut": "possible",
       "candidats": [
         {
+          "source": "CA",
+          "liste": "Russia",
+          "ids": [
+            "Russia|1.1|459"
+          ],
+          "nomListe": "Mars 6",
+          "type": "vessel",
+          "imo": "9384992",
+          "score": 0.8,
+          "par": "name",
+          "designation": {
+            "date": "2026-02-19",
+            "champ": "DateOfListing",
+            "source": "CA"
+          }
+        },
+        {
           "source": "EU-VESSELS",
           "liste": "833/2014 Annex XLII",
           "ids": [
@@ -11055,7 +11500,12 @@
           "type": "vessel",
           "imo": "9384992",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "20.7.2025",
+            "champ": "Date of application",
+            "source": "EU-VESSELS"
+          }
         },
         {
           "source": "UK",
@@ -11067,7 +11517,19 @@
           "type": "vessel",
           "imo": "9384992",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "15/10/2025",
+            "champ": "DateDesignated",
+            "source": "UK"
+          },
+          "parties": [
+            {
+              "role": "CurrentOwnerOperator",
+              "nom": "Yuva Shipping Ltd",
+              "source": "UK"
+            }
+          ]
         },
         {
           "source": "CSL",
@@ -11079,11 +11541,17 @@
           "alias": "NPO Mars",
           "type": "other",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "2022-04-07",
+            "champ": "start_date",
+            "source": "CSL"
+          }
         }
       ],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 936,
@@ -11103,11 +11571,17 @@
           "alias": "M.A.C.",
           "type": "entity",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "29/09/2025",
+            "champ": "DateDesignated",
+            "source": "UK"
+          }
         }
       ],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 937,
@@ -11172,7 +11646,19 @@
           "type": "vessel",
           "imo": "8126070",
           "score": 0.8,
-          "par": "name"
+          "par": "name",
+          "designation": {
+            "date": "30/03/2018",
+            "champ": "DateDesignated",
+            "source": "UK"
+          },
+          "parties": [
+            {
+              "role": "CurrentOwnerOperator",
+              "nom": "Fortune Maker International",
+              "source": "UK"
+            }
+          ]
         }
       ],
       "autres": 0,
@@ -11202,9 +11688,9 @@
     },
     {
       "ligne": 944,
-      "nom": "Zsófia Lengyel",
+      "nom": "Lengyel Textiles Kft.",
       "ref": "N-0943",
-      "type": "person",
+      "type": "entity",
       "pays": "HU",
       "statut": "no-match",
       "candidats": [],
@@ -11345,9 +11831,9 @@
     },
     {
       "ligne": 957,
-      "nom": "Nakagawa Rina",
+      "nom": "Rina Machinery Co., Ltd",
       "ref": "N-0956",
-      "type": "person",
+      "type": "entity",
       "pays": "JP",
       "statut": "no-match",
       "candidats": [],
@@ -11363,7 +11849,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 959,
@@ -11422,9 +11909,9 @@
     },
     {
       "ligne": 964,
-      "nom": "Anjali Deshpande",
+      "nom": "Deshpande Packaging Pvt Ltd",
       "ref": "N-0963",
-      "type": "person",
+      "type": "entity",
       "pays": "IN",
       "statut": "no-match",
       "candidats": [],
@@ -11484,7 +11971,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 970,
@@ -11550,7 +12038,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 976,
@@ -11660,7 +12149,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 986,
@@ -11671,7 +12161,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 987,
@@ -11752,9 +12243,9 @@
     },
     {
       "ligne": 994,
-      "nom": "Owen Fairbairn",
+      "nom": "Fairbairn Chemicals Inc.",
       "ref": "N-0993",
-      "type": "person",
+      "type": "entity",
       "pays": "CA",
       "statut": "no-match",
       "candidats": [],
@@ -11807,9 +12298,9 @@
     },
     {
       "ligne": 999,
-      "nom": "Joaquín Salaberry Olmos",
+      "nom": "Olmos Timber S.A.",
       "ref": "N-0998",
-      "type": "person",
+      "type": "entity",
       "pays": "UY",
       "statut": "no-match",
       "candidats": [],
@@ -11825,7 +12316,8 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     },
     {
       "ligne": 1001,
@@ -11836,17 +12328,21 @@
       "statut": "no-match",
       "candidats": [],
       "autres": 0,
-      "ecartesParImo": []
+      "ecartesParImo": [],
+      "navireSansImo": true
     }
   ],
   "reserves": [
     "A candidate is not a finding. Each one is for your compliance officer to confirm or clear; this report does not decide, and it is not legal advice.",
-    "The lists are those downloaded on 2026-09-26, 2026-10-04. A name added to a list after that date is not in this report.",
+    "The lists are those downloaded on 2026-10-20. A name added to a list after that date is not in this report.",
     "Names and IMO numbers only are compared. Dates of birth, addresses and other identifiers on the lists are not.",
     "Ownership is not screened. Under OFAC's 50 Percent Rule, an entity owned 50 % or more, directly or indirectly, by one or more blocked persons is itself blocked even when it appears on no list; no name screening can see that.",
     "The type and country columns are carried into the report, not used to filter: a counterparty listed under another type or country is still shown.",
     "At most 5 candidates are shown per name, highest score first; the count of the others is given.",
-    "The rates quoted first come from 400 matching pairs and 200 hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties."
+    "The rates quoted first come from 400 matching pairs and 200 hard negatives written by a separate author who never saw the method, and never used to set a threshold. They are rates on authored names, not on your counterparties.",
+    "10 EU entries (added to Annex IV to Regulation (EU) 2024/1485 by Council Implementing Regulation (EU) 2026/2193 (CELEX 32026R2193), entries 99 to 108) come from the Official Journal, read on 2026-10-18, and not from the EU feed, which does not carry them yet; each hit on one says so.",
+    "120 counterparties are a vessel by your type column or by an explicit marker in the name, with no readable IMO number: the IMO rule, which decides, could not apply; they are marked.",
+    "Word weights are those of the pinned table counted on 2026-10-04 over OFAC, OFAC-CONS, CSL, UN, EU, UK, EU-VESSELS, the table every published rate was measured on; AU, CA, NZ were screened with the same weights, a word absent from the table weighing as a word seen in no listed entry."
   ],
-  "empreinte": "83b78d5b131ea06b"
+  "empreinte": "f1a6aa3c48408b19"
 }

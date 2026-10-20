@@ -19,9 +19,10 @@ import { frequencesDesListes } from "./frequences.ts";
 import { rate } from "./interval.ts";
 import { validerPaires, type JeuDePaires } from "./measure.ts";
 import { mesurerJeuxParallele, mesurerReelParallele } from "./mesure-parallele.ts";
+import { urlPrive, lireUrlPrive } from "./jeux.ts";
 
-const SET = new URL("../verification/paires-gleif.json", import.meta.url);
-const LABELS = new URL("../verification/paires-gleif-juges.json", import.meta.url);
+const SET = urlPrive("verification/paires-gleif.json");
+const LABELS = urlPrive("verification/paires-gleif-juges.json");
 const KINDS = ["same-name", "partial", "other-name"] as const;
 const THREADS = 4;
 
@@ -33,17 +34,17 @@ const cell = (k: number, n: number): string => {
 
 async function main(): Promise<void> {
   refuserDrapeauxInconnus([]);
-  const brut = readFileSync(SET, "utf8");
+  const brut = lireUrlPrive(SET);
   const set = JSON.parse(brut) as JeuDePaires;
   validerPaires(set);
-  const labels = (JSON.parse(readFileSync(LABELS, "utf8")) as { labels: Record<string, string> }).labels;
+  const labels = (JSON.parse(lireUrlPrive(LABELS)) as { labels: Record<string, string> }).labels;
   const positives = set.paires.filter((p) => p.verdict === "match");
   const missing = positives.map((_, i) => i).filter((i) => !KINDS.includes(labels[String(i)] as (typeof KINDS)[number]));
   if (missing.length) throw new Error(`${missing.length} same-entity pairs have no label: nothing is reported.`);
 
   const f = frequencesDesListes();
-  const training = await mesurerJeuxParallele(f, CHEMINS_APPRENTISSAGE.map((u) => readFileSync(u, "utf8")), { cache: true, fils: THREADS });
-  const real = await mesurerReelParallele(f, readFileSync(CHEMIN_APPRENTISSAGE_REEL, "utf8"), { cache: true, fils: THREADS });
+  const training = await mesurerJeuxParallele(f, CHEMINS_APPRENTISSAGE.map((u) => lireUrlPrive(u)), { cache: true, fils: THREADS });
+  const real = await mesurerReelParallele(f, lireUrlPrive(CHEMIN_APPRENTISSAGE_REEL), { cache: true, fils: THREADS });
   const r = choisirSeuils(training.table, real.table);
   const strong = r.fort.seuil, possible = r.possible.seuil;
   console.log(`thresholds chosen on ${training.jeux.length} written training sets and the real training sample: strong ${strong.toFixed(2)}, possible ${possible.toFixed(2)}`);

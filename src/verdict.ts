@@ -8,23 +8,24 @@
  *   npm run verdict [-- --version=v12]
  */
 import { createHash } from "node:crypto";
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { mesurerJeux, frequencesDe, CHEMIN_VERDICT, FREQUENCES_UNIFORMES } from "./entites.ts";
 import { frequencesDesListes } from "./frequences.ts";
 import { lireManifeste } from "./listes.ts";
+import { lireUrlPrive, listerPrive } from "./jeux.ts";
 
 const version = (process.argv.find((a) => a.startsWith("--version=")) ?? "--version=?").slice("--version=".length);
 const ici = new URL(".", import.meta.url);
 const empreinte = (f: string) => createHash("sha256").update(readFileSync(new URL(f, ici))).digest("hex").slice(0, 8);
-const brut = readFileSync(CHEMIN_VERDICT, "utf8");
+const brut = lireUrlPrive(CHEMIN_VERDICT);
 const verdict = JSON.parse(brut) as { paires: { a: string; b: string; verdict: string }[] };
 
 /* le recouvrement AVANT le jugement : un jeu qui recopie l'apprentissage ne mesure rien */
 const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
 const cle = (p: { a: string; b: string }) => [norm(p.a), norm(p.b)].sort().join(" | ");
 const cles = new Set<string>(), noms = new Set<string>();
-for (const f of readdirSync(ici).filter((f) => /^paires-entites.*\.json$/.test(f))) {
-  for (const p of JSON.parse(readFileSync(new URL(f, ici), "utf8")).paires) { cles.add(cle(p)); noms.add(norm(p.a)); noms.add(norm(p.b)); }
+for (const f of listerPrive("src", /^paires-entites.*\.json$/)) {
+  for (const p of JSON.parse(lireUrlPrive(f)).paires) { cles.add(cle(p)); noms.add(norm(p.a)); noms.add(norm(p.b)); }
 }
 let rp = 0, rn = 0, egaux = 0;
 for (const p of verdict.paires) { if (cles.has(cle(p))) rp++; if (noms.has(norm(p.a)) || noms.has(norm(p.b))) rn++; if (norm(p.a) === norm(p.b)) egaux++; }

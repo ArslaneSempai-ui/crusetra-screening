@@ -18,6 +18,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isMain, refuserDrapeauxInconnus } from "./cli.ts";
 import { CHEMINS_APPRENTISSAGE } from "./entites.ts";
+import { lireUrlPrive } from "./jeux.ts";
 
 export type PaireBrute = { a: string; b: string; verdict: string; nature: string };
 export type JeuBrut = { quoi: string; provenance: string; avertissement: string; paires: PaireBrute[] };
@@ -86,7 +87,7 @@ export function refusDeStructure(jeu: unknown): string | null {
 
 /** Les jeux d'apprentissage, réduits aux noms : c'est tout ce que le recouvrement regarde. */
 export function lireApprentissage(chemins: readonly URL[] = CHEMINS_APPRENTISSAGE): Nom[][] {
-  return chemins.map((u) => (JSON.parse(readFileSync(u, "utf8")) as { paires: Nom[] }).paires.map((p) => ({ a: p.a, b: p.b })));
+  return chemins.map((u) => (JSON.parse(lireUrlPrive(u)) as { paires: Nom[] }).paires.map((p) => ({ a: p.a, b: p.b })));
 }
 
 /** Le numéro du jeu, lu dans sa provenance (« blind test set #15 »). */

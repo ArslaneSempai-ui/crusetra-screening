@@ -1,0 +1,396 @@
+{
+  "version": 1,
+  "genre": "crusetra-screening-frozen-thresholds",
+  "regle": "possible: the first grid threshold at or above 0.80. strong: the lowest grid threshold above the possible one whose false-alert upper Wilson bound is at most 0.05 on the written training sets and at most 0.01 on the real training sample (src/entites.ts, choisirSeuils); recall floor 0.9 on the lower bound.",
+  "commitDesJeux": "91942fae1b0be0662a9b1f1ff62a4548952faeb9",
+  "commitDuMoteur": "51ae73071f4f938f9b4e3f2aababe022274e5bc7",
+  "figeLe": "2026-10-19",
+  "jeux": [
+    {
+      "chemin": "src/paires-entites.json",
+      "sha256": "719033f72a740074b0a21a2489118f2aa902423bf0c760eeb9f936cd3302971e"
+    },
+    {
+      "chemin": "src/paires-entites-2.json",
+      "sha256": "def5948158b6068c4a75cd8c6c064997b13b68959a47ee4ff30e391b16c96b4c"
+    },
+    {
+      "chemin": "src/paires-entites-3.json",
+      "sha256": "4148f1efb8429364137ba0e16347ef137bd6d7fa3865b369deddf4a6b7a91c54"
+    },
+    {
+      "chemin": "src/paires-entites-4.json",
+      "sha256": "135eff3f73436612cd629505c9d5107dab168804345cb64d51ef60699d52bdcc"
+    },
+    {
+      "chemin": "src/paires-entites-5.json",
+      "sha256": "acc52065767316686b0c001c7d2ce5c9192a3d34e9ba07a6c3778d19b8545f87"
+    },
+    {
+      "chemin": "src/paires-entites-6.json",
+      "sha256": "8db8e0046d964b0fa015e0fa8739e0a116c8c9d3e4fb71b4cd8c3f52dca2b3be"
+    },
+    {
+      "chemin": "src/paires-entites-7.json",
+      "sha256": "8af46f85daa9d42a9511bf14e513c758a0015949359b95df1fe935116f4b646c"
+    },
+    {
+      "chemin": "src/paires-entites-8.json",
+      "sha256": "ee08cbaac4a388712f1e5e5962ff0ac149313f370f133a081f4a4d6063e0fe3a"
+    },
+    {
+      "chemin": "src/paires-entites-9.json",
+      "sha256": "6138af41a7d670cb9528818bc8def3e2c39ff2cd4042af0a8495f1f644291562"
+    },
+    {
+      "chemin": "src/paires-entites-10.json",
+      "sha256": "e56ebcabbb3b628bdde221684420bf945529603c5850f25e091fb78c95282b90"
+    },
+    {
+      "chemin": "src/paires-entites-11.json",
+      "sha256": "440458df192d1bdd9222e98c84de41e952fb64475325b4ad675f9b0aa6fe20e6"
+    },
+    {
+      "chemin": "src/paires-entites-12.json",
+      "sha256": "a0611992e45d61d1719fe8468bce68026471c9c10010171f197488c60db6468a"
+    },
+    {
+      "chemin": "src/paires-entites-13.json",
+      "sha256": "66468ee8d5867aa099bc9cabc66bf2cc59169d0c8ff4e3f19c19fdb396a28c29"
+    },
+    {
+      "chemin": "src/paires-entites-14.json",
+      "sha256": "4b1fa10dab87aa217757428d4dd0bae6078af26b36f4fdccfffdc769935dd3c3"
+    },
+    {
+      "chemin": "src/paires-entites-15.json",
+      "sha256": "715eeb73edfca96169a12fb59f598f0d4e7b0906df1b26a2cb96b915d9993021"
+    },
+    {
+      "chemin": "src/paires-entites-16.json",
+      "sha256": "ca8a8cd074509bb8f579b8eaa10d27d483216413d85d56b9b00dc1177a874001"
+    },
+    {
+      "chemin": "src/paires-entites-17.json",
+      "sha256": "18ab77cd646768ad337af9155547f894ae1d95828641d72effcfa3165519327f",
+      "noteDuManifeste": "(MODIFIED, see below)"
+    },
+    {
+      "chemin": "src/paires-entites-18.json",
+      "sha256": "38342ea22b90750508419e4b4e93a034b2fc1bfb355d7afcfa4e851edf3924c4"
+    },
+    {
+      "chemin": "src/paires-entites-19.json",
+      "sha256": "695ca14ed378b378c6c2e82135dc901e47be327e8dc3b56b31690a6bdbb9fc48"
+    },
+    {
+      "chemin": "src/paires-entites-20.json",
+      "sha256": "8e0e8515e9722e388304a068284bb3e745166618aa3dc9ec1aa0b8127db6fdaa"
+    },
+    {
+      "chemin": "src/paires-entites-21.json",
+      "sha256": "995accda2472fbb5090bae4292e460f002cc9badc6bc9bb651266518366f2d5f"
+    },
+    {
+      "chemin": "src/paires-entites-22.json",
+      "sha256": "62305d7c944353a39cc5e4f8ca96879423378b4b6bfeb0c4a206cb8ff1dc4873"
+    },
+    {
+      "chemin": "src/paires-entites-23.json",
+      "sha256": "41bf7d64dc0a31c3ae5c743abdb99dbe166e7294e361afafc63c7dd5122fad7c"
+    },
+    {
+      "chemin": "src/paires-gleif-apprentissage.json",
+      "sha256": "356fca407dd75273a2198f545722b0afc28a8427677b8297547555437f988b9b"
+    },
+    {
+      "chemin": "verification/paires-entites-verdict.json",
+      "sha256": "2054c1248c3977a3146c91a727f887b0aa2154e3e991c937891923890b8b526b"
+    }
+  ],
+  "seuils": {
+    "fort": 0.81,
+    "possible": 0.8
+  },
+  "tientLePlancher": true,
+  "apprentissage": {
+    "jeux": [
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored by this repository on 2026-09-27, every name invented; no client data, no list data. Written before any tier was scored on it.",
+        "sha256": "719033f72a740074b0a21a2489118f2aa902423bf0c760eeb9f936cd3302971e",
+        "match": 60,
+        "different": 60
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-27 by a separate agent that never saw the matcher, as a held-out set; every name invented; no client data, no list data. It judged method v2 once, its misses were then studied, and from that moment it is a TRAINING set: its rates are not quoted as held-out.",
+        "sha256": "def5948158b6068c4a75cd8c6c064997b13b68959a47ee4ff30e391b16c96b4c",
+        "match": 60,
+        "different": 60
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-27 by a separate agent that never saw the matcher nor any other pair set, as the FINAL held-out set; every name invented; no client data, no list data. It judged method v3 once (entites.ts sha256 70f91e07e5a2552f…: recall 72/100 [63-80], false alerts 12/100 [7-20] at 0.82; method v1: 68/100 and 40/100). Its misses were then studied, and from that moment it is a TRAINING set: its rates are not quoted as held-out.",
+        "sha256": "4148f1efb8429364137ba0e16347ef137bd6d7fa3865b369deddf4a6b7a91c54",
+        "match": 100,
+        "different": 100
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-27 by a separate agent that never saw the matcher nor any other pair set, as final held-out set #2; every name invented; no client data, no list data. It judged method v4.1 once (entites.ts sha256 5f963c22…): strong 0.81 found 99/150 [58-73 %] with 7/150 false alerts [2-9 %]; possible 0.74 found 109/150 [65-79 %] with 22/150 [10-21 %]; v1 found 103/150 with 35/150. Its misses were then studied, and from that moment it is a TRAINING set: its rates are not quoted as held-out.",
+        "sha256": "135eff3f73436612cd629505c9d5107dab168804345cb64d51ef60699d52bdcc",
+        "match": 150,
+        "different": 150
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-27 by a separate agent that never saw the matcher nor any other pair set, as final held-out set #3 (sha256 c53a55c5…); every name invented; no client data, no list data. It judged method v6 once (entites.ts 4ce80263…, cribler.ts f23ecac0…): at 0.81 found 167/200 [78-88 %], false alerts 25/200 [9-18 %]. Its misses were then studied, and from that moment it is a TRAINING set: its rates are not quoted as held-out.",
+        "sha256": "acc52065767316686b0c001c7d2ce5c9192a3d34e9ba07a6c3778d19b8545f87",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-27 by a separate agent (a Houston brokerage brief, another model) that never saw the matcher nor any other pair set, as blind test set #5 (sha256 d90aba45…); every name invented; no client data, no list data. It judged method v7 once (entites.ts 9f8722eb…, cribler.ts f23ecac0…): strong 0.81 found 164/200 [76-87 %] with 6/200 [1-6 %] false alerts; possible 0.80 found 183/200 [87-95 %] with 40/200 [15-26 %]. Its misses were then studied, and from that moment it is a TRAINING set: its rates are not quoted as held-out.",
+        "sha256": "8db8e0046d964b0fa015e0fa8739e0a116c8c9d3e4fb71b4cd8c3f52dca2b3be",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-27 by a separate agent (a New Jersey distributor and Los Angeles NVOCC brief, organised by document type, a third model) that never saw the matcher nor any other pair set, as blind test set #6 (sha256 639915d6…); every name invented; no client data, no list data. It judged method v8 once (entites.ts 90098118…, cribler.ts f23ecac0…): strong 0.81 found 119/200 [53-66 %] with 1/200 [0-3 %] false alerts; possible 0.80 found 175/200 [82-91 %] with 35/200 [13-23 %]. Its misses were then studied, and from that moment it is a TRAINING set: its rates are not quoted as held-out.",
+        "sha256": "8af46f85daa9d42a9511bf14e513c758a0015949359b95df1fe935116f4b646c",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-27 by a separate agent (a Rotterdam trade-finance desk brief, organised by the source of the error, a fourth model) that never saw the matcher nor any other pair set, as blind test set #7 (sha256 ca2fad4c…); every name invented; no client data, no list data; overlap with the seven earlier training sets: 0 pairs, 0 names. It judged method v9 once (entites.ts a4488270…, cribler.ts f23ecac0…): strong 0.81 found 139/200 [63-75 %] with 9/200 false alerts [2-8 %]; possible 0.80 found 179/200 [84-93 %] with 71/200 [29-42 %]. Studied afterwards and promoted to training set 8 on 2026-09-27, so it no longer measures anything held out.",
+        "sha256": "ee08cbaac4a388712f1e5e5962ff0ac149313f370f133a081f4a4d6063e0fe3a",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-27 by a separate agent (a Singapore trade-finance KYC desk brief, organised by counterparty type: ASEAN SMEs, Gulf and South Asian houses, regional vessels, commodity traders, group structures; a fifth model) that never saw the matcher nor any other pair set, as blind test set #8 (sha256 197c7ead…); every name invented; no client data, no list data; overlap with the eight earlier training sets: 0 pairs, 1 name. It judged method v10 once (entites.ts b05e1be0…, cribler.ts 7f564556…): strong 0.81 found 110/200 [48-62 %] with 3/200 false alerts [1-4 %]; possible 0.80 found 129/200 [58-71 %] with 48/200 [19-30 %]. Studied afterwards and promoted to training set 9 on 2026-09-27, so it no longer measures anything held out.",
+        "sha256": "6138af41a7d670cb9528818bc8def3e2c39ff2cd4042af0a8495f1f644291562",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-27 by a separate agent (a Hamburg customs broker and Lagos trade-finance desk brief, organised by document: customs declarations, letters of credit, African and European registry extracts, bills of lading, invoices and chat; a sixth model) that never saw the matcher nor any other pair set, as blind test set #9 (sha256 47ec8944…); every name invented; no client data, no list data; overlap with the nine earlier training sets: 0 pairs, 0 names; 11 pairs identical but for case (6 match, 5 different). It judged method v11 once (entites.ts 77bac960…, cribler.ts ccee90bc…, ecritures.ts 4348bc88…): strong 0.81 found 104/200 [45-59 %] with 39/200 false alerts [15-26 %]; possible 0.80 found 163/200 [76-86 %] with 78/200 [33-46 %]. Studied afterwards and promoted to training set 10 on 2026-09-27, so it no longer measures anything held out.",
+        "sha256": "e56ebcabbb3b628bdde221684420bf945529603c5850f25e091fb78c95282b90",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-27 by a separate agent (a Tokyo trading house, Panama ship registry and Mexico customs brief, organised by error source, with explicit verdict conventions; a seventh model) that never saw the matcher nor any other pair set, as blind test set #10 (sha256 985eb7c1…); every name invented; no client data, no list data; overlap with the ten earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v12 (entites.ts dc363c55…, cribler.ts 949b2356…, ecritures.ts 4348bc88…): strong 0.81 found 128/200 [57-70 %] with 6/200 false alerts [1-6 %]; possible 0.80 found 179/200 [84-93 %] with 45/200 [17-29 %]. Studied afterwards and promoted to training set 11 on 2026-09-28, so it no longer measures anything held out.",
+        "sha256": "440458df192d1bdd9222e98c84de41e952fb64475325b4ad675f9b0aa6fe20e6",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-28 by a separate agent (a Helsinki sanctions desk and Black Sea forwarder brief, organised by trap family, with explicit verdict conventions; an eighth model) that never saw the matcher nor any other pair set, as blind test set #11 (sha256 a963a80c…); every name invented; no client data, no list data; overlap with the eleven earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v13 (entites.ts 3702a136…, cribler.ts 83ac2577…, ecritures.ts aec60a13…): strong 0.81 found 135/200 [61-74 %] with 14/200 false alerts [4-11 %]; possible 0.80 found 165/200 [77-87 %] with 44/200 [17-28 %]. Studied afterwards and promoted to training set 12 on 2026-09-28, so it no longer measures anything held out.",
+        "sha256": "a0611992e45d61d1719fe8468bce68026471c9c10010171f197488c60db6468a",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-28 by a separate agent (a Mumbai trade-finance desk and Australian exporter brief, organised by document: Indian registry invoices, AU/NZ documents, bulk vessels, SWIFT MT700 fields, chat; explicit verdict conventions; Sonnet) that never saw the matcher nor any other pair set, as blind test set #12 (sha256 3bc2d0f0…); every name invented; no client data, no list data; overlap with the twelve earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v14 (entites.ts 3b94f68d…, cribler.ts a85e7c3c…, ecritures.ts aec60a13…): strong 0.81 found 149/200 [68-80 %] with 34/200 false alerts [12-23 %]; possible 0.80 found 187/200 [89-96 %] with 72/200 [30-43 %]. Studied afterwards and promoted to training set 13 on 2026-09-28, so it no longer measures anything held out.",
+        "sha256": "66468ee8d5867aa099bc9cabc66bf2cc59169d0c8ff4e3f19c19fdb396a28c29",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-28 by a separate agent (a Rotterdam customs broker and Dubai free-zone bank brief, organised by trap family: Benelux and Gulf forms, Arabic and Persian romanisations, Rhine barges and Gulf tankers, EDI and SWIFT residues, chat and OCR; explicit verdict conventions, corrected so that one letter changed in a company name is the same name misspelt except in a vessel name; Opus) that never saw the matcher nor any other pair set, as blind test set #13 (sha256 79a6a291…); every name invented; no client data, no list data; overlap with the thirteen earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v15 (entites.ts ea838aa2…, cribler.ts 292e9ddb…, ecritures.ts bdd60326…): strong 0.81 found 120/200 [53-67 %] with 16/200 false alerts [5-13 %]; possible 0.80 found 155/200 [71-83 %] with 59/200 [24-36 %]. Studied afterwards and promoted to training set 14 on 2026-09-28, so it no longer measures anything held out.",
+        "sha256": "4b1fa10dab87aa217757428d4dd0bae6078af26b36f4fdccfffdc769935dd3c3",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-28 by a separate agent (a Mombasa clearing and forwarding agent and Karachi trade-finance brief, organised by document: East African registries and invoices, Pakistani registry and bank documents, Indian Ocean shipping, letters of credit and SWIFT, chat and OCR; explicit verdict conventions, one letter changed in a company name being the same name misspelt except in a vessel name) that never saw the matcher nor any other pair set, as blind test set #14 (sha256 ee673be7…); every name invented; no client data, no list data; overlap with the fourteen earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v16 (entites.ts ebbd2990…, cribler.ts 6ad910de…, ecritures.ts bdd60326…): strong 0.81 found 141/200 [64-76 %] with 2/200 false alerts [0-4 %]; possible 0.80 found 173/200 [81-91 %] with 23/200 [8-17 %]. Studied afterwards and promoted to training set 15 on 2026-09-28, so it no longer measures anything held out.",
+        "sha256": "715eeb73edfca96169a12fb59f598f0d4e7b0906df1b26a2cb96b915d9993021",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-29 by a separate agent (an Abidjan customs broker and São Paulo trading bank brief, organised by document: francophone West African registries and invoices, Brazilian and Argentine registry and bank documents, Atlantic shipping, letters of credit and SWIFT in French and Portuguese, chat and OCR; explicit verdict conventions, one letter changed in a company name being the same name misspelt except in a vessel name; Sonnet, written in five parts) that never saw the matcher nor any other pair set, as blind test set #15 (sha256 f44d2a17…, after fifteen em dashes inside names were replaced by hyphens blind); every name invented; no client data, no list data; overlap with the fifteen earlier training sets: 0 pairs, 0 names; 22 pairs are accent variants of one pair with concordant verdicts. Judged once by the judge session on method v17 (entites.ts fa808a1c…, cribler.ts a91bf0c8…, ecritures.ts bdd60326…): strong 0.81 found 171/200 [80-90 %] with 8/200 false alerts [2-8 %]; possible 0.80 found 188/200 [90-97 %] with 35/200 [13-23 %]. Studied afterwards and promoted to training set 16 on 2026-09-29, so it no longer measures anything held out.",
+        "sha256": "ca8a8cd074509bb8f579b8eaa10d27d483216413d85d56b9b00dc1177a874001",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "authored on 2026-09-29 by a separate agent (a Piraeus ship agent and Almaty grain-trading bank brief, organised by document: Greek and Cypriot registries and invoices, Central Asian registry and bank documents, Black Sea and Mediterranean shipping, letters of credit and SWIFT, chat and OCR and greeklish; explicit verdict conventions, one letter changed in a company name being the same name misspelt except in a vessel name; Opus, written in five parts) that never saw the matcher nor any other pair set, as blind test set #16 (sha256 482552a9…); every name invented; no client data, no list data; overlap with the sixteen earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v18 (entites.ts 8dd86269…, cribler.ts a91bf0c8…, ecritures.ts bdd60326…): strong 0.81 found 93/200 [40-53 %] with 12/200 false alerts [3-10 %]; possible 0.80 found 132/200 [59-72 %] with 38/200 [14-25 %]. Studied afterwards and promoted to training set 17 on 2026-09-29, so it no longer measures anything held out.",
+        "sha256": "18ab77cd646768ad337af9155547f894ae1d95828641d72effcfa3165519327f",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "blind test set #17, authored on 2026-09-29 by a separate agent (a Trieste freight forwarder and Belgrade bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the seventeen earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v19 (entites.ts 42bd47ca…, cribler.ts 66aac8b8…, ecritures.ts bdd60326…): strong 0.81 found 169/200 [79-89 %] with 28/200 false alerts [10-19 %]; possible 0.80 found 181/200 [86-94 %] with 48/200 [19-30 %]. Studied afterwards and promoted to training set 18 on 2026-09-28, so it no longer measures anything held out.",
+        "sha256": "38342ea22b90750508419e4b4e93a034b2fc1bfb355d7afcfa4e851edf3924c4",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "blind test set #18, authored on 2026-09-29 by a separate agent (an Osaka trading house and Busan bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the eighteen earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v20 (entites.ts 7e7a32c7…, cribler.ts 0f773c96…, ecritures.ts bdd60326…): strong 0.81 found 95/200 [41-54 %] with 9/200 false alerts [2-8 %]; possible 0.80 found 125/200 [56-69 %] with 45/200 [17-29 %]. Studied afterwards and promoted to training set 19 on 2026-09-28, so it no longer measures anything held out.",
+        "sha256": "695ca14ed378b378c6c2e82135dc901e47be327e8dc3b56b31690a6bdbb9fc48",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "blind test set #19, authored on 2026-09-29 by a separate agent (a Houston freight forwarder and Toronto bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the nineteen earlier training sets: 1 pair, 1 name. Judged once by the judge session on method v21 (entites.ts ffa68382…, cribler.ts 0f773c96…, ecritures.ts 11eb0dba…): strong 0.81 found 160/200 [74-85 %] with 10/200 false alerts [3-9 %]; possible 0.80 found 186/200 [89-96 %] with 34/200 [12-23 %]. Studied afterwards and promoted to training set 20 on 2026-09-28, so it no longer measures anything held out.",
+        "sha256": "8e0e8515e9722e388304a068284bb3e745166618aa3dc9ec1aa0b8127db6fdaa",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "blind test set #21, authored on 2026-09-28 by a separate agent (a Haifa freight forwarder and Tbilisi bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the 21 earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v22 (entites.ts 201d5159…, cribler.ts 0f773c96…, ecritures.ts 11eb0dba…): strong 0.81 found 94/200 [40-54 %] with 5/200 false alerts [1-6 %]; possible 0.80 found 117/200 [52-65 %] with 26/200 [9-18 %]. Studied afterwards and promoted to training set 21 on 2026-09-28, so it no longer measures anything held out.",
+        "sha256": "995accda2472fbb5090bae4292e460f002cc9badc6bc9bb651266518366f2d5f",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "blind test set #22, authored on 2026-09-28 by a separate agent (a Bangkok freight forwarder and Yangon bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the 22 earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v23 (entites.ts 29f57a26…, cribler.ts 8a0d336c…, ecritures.ts 26b17532…): strong 0.81 found 87/200 [37-50 %] with 7/200 false alerts [2-7 %]; possible 0.80 found 109/200 [48-61 %] with 31/200 [11-21 %]. Studied afterwards and promoted to training set 22 on 2026-09-28, so it no longer measures anything held out.",
+        "sha256": "62305d7c944353a39cc5e4f8ca96879423378b4b6bfeb0c4a206cb8ff1dc4873",
+        "match": 200,
+        "different": 200
+      },
+      {
+        "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+        "provenance": "blind test set #23, authored on 2026-09-28 by a separate agent (a Gdansk freight forwarder and Riga bank brief, organised by document, with explicit verdict conventions) that never saw the matcher nor any other pair set; every name invented; no client data, no list data. Overlap with the 23 earlier training sets: 0 pairs, 0 names. Judged once by the judge session on method v24 (entites.ts 1e8cbea2…, cribler.ts ac3c1b11…, ecritures.ts 9496c409…): strong 0.81 found 102/200 [44-58 %] with 6/200 false alerts [1-6 %]; possible 0.80 found 149/200 [68-80 %] with 25/200 [9-18 %]. Studied afterwards and promoted to training set 23 on 2026-09-28, so it no longer measures anything held out.",
+        "sha256": "41bf7d64dc0a31c3ae5c743abdb99dbe166e7294e361afafc63c7dd5122fad7c",
+        "match": 200,
+        "different": 200
+      }
+    ],
+    "fort": {
+      "rappel": {
+        "succes": 3815,
+        "n": 4170,
+        "taux": 0.9148681055155875,
+        "bas": 0.9060109685899473,
+        "haut": 0.9229615539897309
+      },
+      "fauxPositifs": {
+        "succes": 126,
+        "n": 4170,
+        "taux": 0.030215827338129497,
+        "bas": 0.02543695353570954,
+        "haut": 0.03585947898822717
+      }
+    },
+    "possible": {
+      "rappel": {
+        "succes": 4060,
+        "n": 4170,
+        "taux": 0.973621103117506,
+        "bas": 0.9683037194801323,
+        "haut": 0.9780666458926219
+      },
+      "fauxPositifs": {
+        "succes": 885,
+        "n": 4170,
+        "taux": 0.21223021582733814,
+        "bas": 0.20008740614687306,
+        "haut": 0.22490275160132714
+      }
+    }
+  },
+  "apprentissageReel": {
+    "jeu": {
+      "quoi": "TRAINING sample (seed 20261001), drawn to calibrate the method and free to study: company name pairs from the GLEIF register: two names recorded for the same LEI (match), or the legal names of two distinct LEIs sharing a distinctive word (different)",
+      "provenance": "GLEIF golden copy published 2026-09-30 08:00:00 UTC, listed by https://goldencopy.gleif.org/api/v2/golden-copies/publishes/latest. Level 1 (LEI-CDF 3.1, full file, CSV): https://goldencopy.gleif.org/storage/golden-copy-files/2026/09/30/1282700/20260930-0800-gleif-goldencopy-lei2-golden-copy.csv.zip, 506285686 bytes, sha256 62b7307663b412cd8d4b7226e4c6ccccb7b22066efea98a500ad2b205db2ce99. Level 2 relationships (RR 2.1, full file, CSV): https://goldencopy.gleif.org/storage/golden-copy-files/2026/09/30/1282745/20260930-0800-gleif-goldencopy-rr-golden-copy.csv.zip, 24413344 bytes, sha256 b348cdef56834609bbf98b1e37545ab90b2be55d8cc5b436dca7980846157110. GLEIF data is released under CC0 1.0 (no rights reserved, commercial use allowed). Built by node src/gleif-paires.ts --graine 20261001 --sortie src/paires-gleif-apprentissage.json --exclure verification/paires-gleif.json, which checks both hashes and rewrites this file byte for byte; seed 20261001 (every draw is a cyrb53 hash of the seed, the stratum and the LEI). The labels come from the registry records, not from anyone judging whether two names match: a match pair is the legal name of one LEI record and another name recorded on that same record; a different pair is the legal names of two distinct LEIs. MATCH (1000): records with registration status ISSUED or LAPSED only (never DUPLICATE, ANNULLED, RETIRED, MERGED, TRANSFERRED, PENDING_*); one pair per LEI per stratum; at most 250 per stratum; no country (legal jurisdiction, else legal address) above 15 % of a stratum. Strata: previous-legal-name (OtherEntityName PREVIOUS_LEGAL_NAME), trading-name (TRADING_OR_OPERATING_NAME), alternative-language-name (ALTERNATIVE_LANGUAGE_LEGAL_NAME), transliteration (TransliteratedOtherEntityName PREFERRED_ or AUTO_ASCII_TRANSLITERATED_LEGAL_NAME, kept only where most letters of the legal name are outside the Latin script). Dropped before the draw: other names that are empty, a placeholder, carry no letter or repeat the LEI; pairs identical after NFKC, case, whitespace and punctuation folding; pairs with a name that, folded the same way, is in a training set (src/paires-entites*.json) or in verification/paires-entites-verdict.json. Excluded, in the match and the different pairs alike: pairs with a name that, folded the same way, is a name of verification/paires-gleif.json (4494 distinct folded names), so that no name of that set reappears here. Counts: previous-legal-name 250 (from 202989 eligible LEIs; of 248946 name slots, dropped 5931 identical, 19 not a name, 0 overlapping, 640 excluded); trading-name 250 (from 140823 eligible LEIs; of 151688 name slots, dropped 2724 identical, 237 not a name, 6 overlapping, 612 excluded); alternative-language-name 250 (from 43863 eligible LEIs; of 47938 name slots, dropped 16 identical, 4 not a name, 1 overlapping, 366 excluded); transliteration 250 (from 19752 eligible LEIs; of 20227 name slots, dropped 0 identical, 0 not a name, 0 overlapping, 287 excluded). DIFFERENT (1000, plus the contained stratum): two distinct ISSUED, non-branch LEIs from a seeded 25 % sample of the 1979107 ISSUED records, whose legal names share a distinctive word: at least 3 characters, a letter, not a stopword, not a legal-form word (in at least 25 % of the sampled names of one ISO 20275 ELF code with at least 10 of them: 586 words, mostly legal forms and their fragments, plus generic entity words such as bank, fund, trust or holding and a few place names; the rebuild writes them to data/gleif/legal-form-words-20261001.tsv), in at most 0.5 % of the ISSUED legal names. Each drawn LEI appears once per stratum, and no country above 15 % of a stratum. Strata: same shared word and same country; same shared word, different country; same legal-address city, same country and same ELF legal form code (not 8888 or 9999), with a shared word. Set aside: pairs linked in the Level 2 file (any relationship, or a common direct or ultimate parent, head office or umbrella fund) or through the Level 1 associated or successor entity; pairs identical after folding (3 of 1162 drawn: different entities with the same name cannot be separated by a name matcher); pairs where every word of one name, legal-form words and stopwords set aside, is in the other (152 of 1162 drawn); pairs with an excluded name (7 of 1162 drawn). Counts: different-same-word-same-country 334 (of 380 drawn: 2 identical after folding, 43 contained, 0 overlapping, 1 excluded, 0 duplicates); different-same-word-other-country 333 (of 415 drawn: 0 identical after folding, 78 contained, 0 overlapping, 4 excluded, 0 duplicates); different-same-city-same-form 333 (of 367 drawn: 1 identical after folding, 31 contained, 0 overlapping, 2 excluded, 0 duplicates). CONTAINED (250, nature different-contained): the contained pairs, drawn on their own from the same sample: two distinct ISSUED LEIs, any country, sharing a distinctive word, not identical after folding, not related, and every word of one name (legal-form words and stopwords set aside) in the other. Screening practice may want them to alert: they are reported as their own stratum and never counted in the false-alert rate of the other negatives. Of 252 contained pairs drawn, 2 had an excluded name. TRAINING: drawn to calibrate the method. Its pairs and the matcher's scores on them may be studied freely; a figure measured on it is a training figure, never a verdict.",
+      "sha256": "356fca407dd75273a2198f545722b0afc28a8427677b8297547555437f988b9b",
+      "match": 1000,
+      "different": 1000
+    },
+    "fort": {
+      "rappel": {
+        "succes": 271,
+        "n": 1000,
+        "taux": 0.271,
+        "bas": 0.24436624773932128,
+        "haut": 0.2993864718132457
+      },
+      "fauxPositifs": {
+        "succes": 0,
+        "n": 1000,
+        "taux": 0,
+        "bas": 0,
+        "haut": 0.003826898586390522
+      }
+    },
+    "possible": {
+      "rappel": {
+        "succes": 410,
+        "n": 1000,
+        "taux": 0.41,
+        "bas": 0.37991671320713805,
+        "haut": 0.4407721285384123
+      },
+      "fauxPositifs": {
+        "succes": 0,
+        "n": 1000,
+        "taux": 0,
+        "bas": 0,
+        "haut": 0.003826898586390522
+      }
+    }
+  },
+  "verdict": {
+    "jeu": {
+      "quoi": "company and vessel name pairs: same legal entity or same vessel (match), or not (different)",
+      "provenance": "realistic set #20, authored on 2026-09-29 by a separate agent (an Antwerp forwarder's quarter of counterparties, at the natural difficulty of ordinary documents, with 200 realistic distinct-counterparty negatives) that never saw the matcher nor any other pair set; every name invented; no client data, no list data",
+      "sha256": "2054c1248c3977a3146c91a727f887b0aa2154e3e991c937891923890b8b526b",
+      "match": 400,
+      "different": 200
+    },
+    "fort": {
+      "rappel": {
+        "succes": 334,
+        "n": 400,
+        "taux": 0.835,
+        "bas": 0.7954710126340742,
+        "haut": 0.8681555181641397
+      },
+      "fauxPositifs": {
+        "succes": 0,
+        "n": 200,
+        "taux": 0,
+        "bas": 0,
+        "haut": 0.018846005918320894
+      }
+    },
+    "possible": {
+      "rappel": {
+        "succes": 355,
+        "n": 400,
+        "taux": 0.8875,
+        "bas": 0.8527757236239129,
+        "haut": 0.9148519799113346
+      },
+      "fauxPositifs": {
+        "succes": 0,
+        "n": 200,
+        "taux": 0,
+        "bas": 0,
+        "haut": 0.018846005918320894
+      }
+    }
+  },
+  "empreinte": "3f3d061b86ac738c"
+}
