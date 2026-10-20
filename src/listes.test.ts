@@ -45,14 +45,14 @@ test("OFAC : trois entrées, trois types, les alias joints prénom+nom, le progr
 test("ONU : le nom se joint sur tous ses morceaux, l'alias VIDE s'écarte, l'entité a les siens", () => {
   const e = analyserOnu(fixture("onu.xml"));
   assert.equal(e.length, 3);
-  const [eric, mohamed, adf] = e;
-  assert.equal(eric!.nom, "[name removed]");
-  assert.deepEqual(eric!.alias, ["[name removed]"],
+  const [personneOnu, personneOnu2, adf] = e;
+  assert.equal(personneOnu!.nom, "ALPHA FIXTUREONE");
+  assert.deepEqual(personneOnu!.alias, ["BRAVO FIXTUREONE"],
     "le vrai fichier porte des <ALIAS_NAME/> vides : ils s'écartent, ils ne deviennent pas \"\"");
-  assert.equal(eric!.programme, "DRC");
-  assert.deepEqual(eric!.designation, { date: "2012-12-31", champ: "LISTED_ON" }, "la date telle que la liste l'écrit, et le champ qui la porte");
-  assert.equal(mohamed!.designation, undefined, "pas de LISTED_ON : pas de date");
-  assert.equal(mohamed!.nom, "MOHAMED [name removed]",
+  assert.equal(personneOnu!.programme, "DRC");
+  assert.deepEqual(personneOnu!.designation, { date: "2012-12-31", champ: "LISTED_ON" }, "la date telle que la liste l'écrit, et le champ qui la porte");
+  assert.equal(personneOnu2!.designation, undefined, "pas de LISTED_ON : pas de date");
+  assert.equal(personneOnu2!.nom, "CHARLIE DELTA ECHO FIXTURETWO",
     "FIRST_NAME à FOURTH_NAME, joints dans l'ordre — la chaîne épinglée impose le compte");
   assert.equal(adf!.type, "entity");
   assert.deepEqual(adf!.alias, ["Allied Democratic Forces"]);
@@ -319,8 +319,8 @@ test("lireImo : la lecture du criblage, partagée avec les listes qui écrivent 
 test("Australie (DFAT) : les lignes d'une référence font une entrée, le nom principal, les alias forts et faibles, l'écriture d'origine, le numéro OMI et la date écrite", () => {
   const e = analyserDfat(octets("dfat.xlsx"));
   assert.equal(e.length, 3, "trois références (2, 8227, 155) pour seize lignes");
-  const [personneAu, navire, alqaida] = e;
-  assert.deepEqual(personneAu, { source: "AU", id: "2", nom: "[name removed]", alias: ["اختبار ثابت"], type: "person", programme: "1988 (Taliban)",
+  const [personneDfat, navire, alqaida] = e;
+  assert.deepEqual(personneDfat, { source: "AU", id: "2", nom: "KILO FIXTURESEVEN", alias: ["اختبار ثابت"], type: "person", programme: "1988 (Taliban)",
     designation: { date: "25 January 2001", champ: "Listing Information" } }, "la date de « Listed on 25 January 2001 », pas le Control Date (dernière mise à jour)");
   assert.deepEqual(navire, { source: "AU", id: "8227", nom: "ANDAMAN SKIES", alias: [], type: "vessel", programme: "Autonomous (Vessels)", imo: "9288693" },
     "un navire autonome : son numéro OMI lu par lireImo, et pas de date puisque la liste n'en écrit pas en toutes lettres");
@@ -336,10 +336,10 @@ test("Canada : une personne et ses alias nettoyés, une entité, un navire à so
   const e = analyserCanada(fixture("canada.xml"));
   assert.equal(e.length, 5);
   const [personne, entite, navire, decale, prenomSeul] = e;
-  assert.equal(personne!.nom, "[name removed]", "GivenName puis LastName");
+  assert.equal(personne!.nom, "Foxtrot Fixturovich FIXTURETHREE", "GivenName puis LastName");
   assert.equal(personne!.type, "person");
-  assert.ok(personne!.alias.includes("PERSON-0038"), "l'étiquette « Belarusian: » est retirée");
-  assert.ok(personne!.alias.includes("[name removed]"));
+  assert.ok(personne!.alias.includes("Фокстрот Фiкстуравiч ФIКСТУРА"), "l'étiquette « Belarusian: » est retirée");
+  assert.ok(personne!.alias.includes("Foxtrot Fixturovich FIXTURETHREO"));
   assert.deepEqual(personne!.designation, { date: "2024-04-12", champ: "DateOfListing" });
   assert.equal(personne!.programme, "Belarus", "la partie anglaise du champ bilingue");
   assert.equal(personne!.id, "Belarus|1, Part 1|99");
@@ -348,7 +348,7 @@ test("Canada : une personne et ses alias nettoyés, une entité, un navire à so
   assert.deepEqual(navire, { source: "CA", id: "Russia|1.1|1", nom: "Balitiyskiy III", alias: [], type: "vessel", programme: "Russia", imo: "7612448", designation: { date: "2025-02-21", champ: "DateOfListing" } });
   assert.equal(decale!.type, "person");
   assert.equal(decale!.imo, undefined, "un nom en écriture arabe dans le champ OMI n'est pas un numéro : la personne reste une personne sans numéro");
-  assert.equal(prenomSeul!.nom, "Kyaw Fixtureten");
+  assert.equal(prenomSeul!.nom, "Golf Fixturefive");
   assert.equal(prenomSeul!.type, "person");
 });
 
@@ -356,13 +356,13 @@ test("Nouvelle-Zélande (MFAT) : le registre sous sa légende, les personnes, en
   const e = analyserMfat(octets("mfat.xlsx"));
   const registre = e.filter((x) => x.type !== "vessel"), navires = e.filter((x) => x.type === "vessel");
   assert.deepEqual(registre.map((x) => x.id), ["IND-9017", "ENT-1", "IND-9214", "AST-1", "BAN-1"], "la ligne « Total » n'est pas une entrée");
-  const [personneNz, entite, apparente, actif, banque] = registre;
-  assert.equal(personneNz!.nom, "[name removed]");
-  assert.deepEqual(personneNz!.designation, { date: "2022-03-18", champ: "Date of Sanction" }, "un numéro de série Excel rendu en date");
+  const [personneMfat, entite, filsMfat, actif, banque] = registre;
+  assert.equal(personneMfat!.nom, "Lima Fixturovich Fixtureeight");
+  assert.deepEqual(personneMfat!.designation, { date: "2022-03-18", champ: "Date of Sanction" }, "un numéro de série Excel rendu en date");
   assert.equal(entite!.nom, "JSC 558 Aircraft Repair Plant");
   assert.deepEqual(entite!.alias, ["JSC 558 ARP"]);
   assert.equal(entite!.type, "entity");
-  assert.deepEqual(apparente!.parties, [{ role: "Associates/Relatives", nom: "Son of November FIXTURENINE" }], "la partie que le registre nomme, mot pour mot");
+  assert.deepEqual(filsMfat!.parties, [{ role: "Associates/Relatives", nom: "Son of November FIXTURENINE" }], "la partie que le registre nomme, mot pour mot");
   assert.equal(actif!.type, "other");
   assert.equal(banque!.type, "entity");
   assert.deepEqual(navires.map((x) => [x.id, x.nom, x.imo, x.alias, x.designation?.date]), [["SHP-1", "Andaman Skies", "9288693", ["Mirador"], "2025-06-19"], ["SHP-2", "Udaya", "9288746", ["Pluton"], "2025-06-19"]],
@@ -376,8 +376,8 @@ test("CSL : les lignes du Trésor écartées, les alias coupés au point-virgule
      déjà), une Entity List à deux alias, une Denied Persons, une ITAR Debarred. */
   assert.equal(e.length, 3, "la ligne SDN doit être écartée : comptée deux fois, elle ferait deux alertes");
   assert.ok(e.every((x) => x.source === "CSL" && x.id.length > 0));
-  const el = e.find((x) => x.nom === "Varnesk Holdrin")!;
-  assert.deepEqual(el.alias, ["Pelor Vasku", "Orvalen Tesk Varnesk Holdrin"]);
+  const el = e.find((x) => x.nom === "Indigo Fixturesix")!;
+  assert.deepEqual(el.alias, ["Juliet Alias", "Maulawi Haji Indigo Fixturesix"]);
   assert.equal(el.programme, "Entity List (EL)");
   assert.equal(el.type, "other", "le Commerce ne dit pas le type : « other », pas une supposition");
   assert.deepEqual(el.designation, { date: "2012-04-27", champ: "start_date" }, "la colonne start_date, telle quelle");

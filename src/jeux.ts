@@ -73,7 +73,6 @@ export function raisonDAbsence(...rels: string[]): string | false {
 
 /** Where the public 20-row sample of each family is (drawn by src/echantillonner.ts). */
 export const ECHANTILLONS = {
-  "paires-etiquetees": "src/echantillons/paires-etiquetees-20.json",
   "paires-entites": "src/echantillons/paires-entites-20.json",
   "paires-gleif": "verification/echantillon-gleif-20.json",
 } as const;

@@ -774,7 +774,7 @@ export function analyserDfat(classeur: Buffer): EntreeListe[] {
 
 /**
  * CANADA (Consolidated Canadian Autonomous Sanctions List, XML bilingue d'Affaires mondiales Canada) : un `<record>`
- * par entrée, une personne par LastName/GivenName (certaines n'ont qu'un GivenName : « Kyaw Fixtureten »), une entité ou
+ * par entrée, une personne par LastName/GivenName (certaines n'ont qu'un GivenName, un nom seul), une entité ou
  * un navire par EntityOrShip, le navire reconnu à un numéro OMI LISIBLE (`lireImo`) : mesuré le 05/10/2026, cinq
  * enregistrements de personnes portent un nom en écriture arabe dans le champ OMI, une colonne décalée chez
  * l'éditeur ; ils restent des personnes sans numéro. L'identifiant est règlement + annexe + numéro d'article (le

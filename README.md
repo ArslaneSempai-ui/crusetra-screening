@@ -152,7 +152,7 @@ with `npm run verify`.
 
 ## What is public, what is private
 
-The figures stay public: `releve-public.json` with its signature, `RELEVE-PUBLIC.md`, `releve-entites.json` and `verification/VERDICTS.md`. The method is written in each sample file and in `verification/`. The only labelled rows left public are three samples of 20 rows (10 match, 10 different): `src/echantillons/paires-etiquetees-20.json`, `src/echantillons/paires-entites-20.json` and `verification/echantillon-gleif-20.json`. Each is drawn by a fixed rule written in the file (key is the SHA-256 of seed, a and b; per verdict the smallest keys are kept), never by hand, and `node src/echantillonner.ts --check` redoes the draw.
+The figures stay public: `releve-public.json` with its signature, `RELEVE-PUBLIC.md`, `releve-entites.json` and `verification/VERDICTS.md`. The method is written in each sample file and in `verification/`. The only labelled rows left public are two samples of 20 rows (10 match, 10 different), both of company, vessel and other entity names and none of a natural person: `src/echantillons/paires-entites-20.json` and `verification/echantillon-gleif-20.json`. Each is drawn by a fixed rule written in the file (key is the SHA-256 of seed, a and b; per verdict the smallest keys are kept), never by hand, and `node src/echantillonner.ts --check` redoes the draw.
 
 The full labelled sets are private since this change. The person-pair set is recorded in its sample as SHA-256 `2e4b1bc0d168ea0c8af4313fd22d7ed906b46e0869b88f4290c89657aa7aeec6`; the other sets carry their recorded hashes in their sealed records and in the private folder's `MANIFEST.txt`. Earlier versions of the sets remain in the git history of this repository.
 

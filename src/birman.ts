@@ -10,7 +10,7 @@
  * modifient (ျ ြ y, ွ w, ှ h). La lecture suit L'USAGE LATIN des registres et des passeports, pas la MLCTS : ကျော် Kyaw,
  * အောင် PERSON-0042, နိုင် PERSON-0042, ထွန်း Htun, သိန်း Thein, ဖြိုး Phyo. Les tons (့ း) tombent, sauf qu'un ton grinçant sur une
  * finale nasale s'écrit d'ordinaire par un t (မြင့် Myint, ခန့် Khant, ညွန့် Nyunt). Les syllabes sortent SÉPARÉES
- * par des espaces, comme le latin les écrit ([name removed]) ; les mots pâlis, que le latin soude (Yadana, Mingala,
+ * par des espaces, comme le latin les écrit (Mya Thazin) ; les mots pâlis, que le latin soude (Yadana, Mingala,
  * Thiri, Zeyar), se lisent par la table. La sonorisation entre voyelles (ရတနာ yadana, pas yatana) ne se règle pas :
  * les mots où elle s'entend sont dans la table.
  */
@@ -102,7 +102,7 @@ function rimeBirmane(voy: string, fin: string, grincant: boolean, w: boolean): {
   return { rime: r, sansW };
 }
 
-/** Un mot birman, syllabe par syllabe, chaque syllabe un jeton ([name removed]). Une consonne nue éteinte (် ou ္) est la finale
+/** Un mot birman, syllabe par syllabe, chaque syllabe un jeton (Mya Thazin). Une consonne nue éteinte (် ou ္) est la finale
  *  de la syllabe qui précède ; l'asat porté par la consonne d'une voyelle écrite devant (ော် aw) n'éteint rien. */
 export function birmanEnLatin(mot: string): string {
   const u = unitesBirmanes(mot);
@@ -186,16 +186,16 @@ export function birman(nom: string): string {
  *  nom latin sans son écriture. Une table du monde. « lin », « min », « san », « ma », « ko », « u », « shan » n'y comptent pas :
  *  ce sont aussi des syllabes chinoises, japonaises ou des civilités (voir `presomptionBirmane`). */
 export const SYLLABES_BIRMANES: ReadonlySet<string> = new Set([
-  "pathein", "mergui", "phone", "aye", "ayeyar", "hnin", "bago", "tanintharyi", "maung", "kyawt", "irrawaddy", "daw", "dawei", "hein", "linn", "myo",
-  "hlaing", "moulmein", "kyun", "hpone", "soe", "htay", "htet", "htoe", "htoo", "htun", "htway", "kachin", "yangon", "mya", "pyay", "thura", "kayah", "kayin",
-  "myin", "khin", "kyae", "kyal", "kyat", "kyaukphyu", "thein", "kye", "thanlyin", "[name removed]", "hla", "hlain", "thiha", "nila", "rangoon",
-  "yadanar", "nai", "sayar", "mingaladon", "mingalar", "mmk", "moe", "myatt", "hlaingthaya", "phyo", "myaing", "myanma", "myanmar", "myat", "monywa", "myay", "ngway",
-  "myeik", "sone", "myint", "myitta", "thu", "tavoy", "lwin", "nadi", "sein", "naing", "thazin", "thanlwin", "ngwe", "zeyar", "burma", "pegu",
-  "nwe", "nyein", "htat", "oo", "paing", "nilar", "nway", "arakan", "wunna", "yin", "magway", "thaw", "rakhine", "taunggyi", "sagaing", "sanda", "saya",
-  "mingala", "akyab", "yaza", "sittwe", "soan", "nyunt", "win", "bassein", "mye", "kyi", "mandalay", "than", "chit",
-  "myoe", "pyae", "pyo", "shwe", "tenasserim", "thet", "naypyidaw", "thilawa", "thiri", "thu", "myittar", "kaung", "tin",
-  "toe", "thuza", "tun", "ayeyarwady", "kabar", "yadana", "mawlamyine", "zayar", "htwe", "thant", "khant", "zeya",
-  "burmese", "zin",
+  "kyawt", "mawlamyine", "htoo", "aye", "soe", "tavoy", "bago", "hnin", "thant", "kachin", "thiri", "nai", "zeyar", "hein", "kyun", "myittar", "hlaing", "nwe",
+  "linn", "hpone", "soan", "mingaladon", "htet", "htoe", "saya", "hlaingthaya", "htway", "tun", "yadanar", "moulmein", "kye", "myatt", "kayah", "kayin", "htun", "zeya",
+  "toe", "kyal", "daw", "kyaukphyu", "myoe", "win", "paing", "akyab", "hla", "hlain", "thet", "nadi", "sanda", "myanma", "kyi",
+  "thazin", "myo", "dawei", "mingalar", "naing", "khant", "yadana", "phone", "mya", "nila", "zin", "myanmar", "myat", "thu", "naypyidaw", "thilawa", "kabar",
+  "myin", "myint", "sagaing", "taunggyi", "ngway", "mye", "sone", "ayeyarwady", "moe", "myaing", "than", "zayar", "burma", "kyat", "monywa", "kaung",
+  "htat", "pyae", "bassein", "myitta", "myay", "pegu", "sayar", "yaza", "tin", "pyay", "pyo", "tanintharyi", "rangoon", "thura", "mandalay", "zaw", "thu",
+  "yangon", "shwe", "thanlyin", "pathein", "burmese", "irrawaddy", "kyae", "oo", "ngwe", "tenasserim", "chit", "lwin", "phyo",
+  "thanlwin", "thaw", "kyaw", "thein", "sein", "nway", "mingala", "mergui", "magway", "sittwe", "thuza", "nyein", "nyunt",
+  "nilar", "aung", "yin", "wunna", "arakan", "rakhine", "htwe", "thiha", "ayeyar", "myeik", "mmk", "khin",
+  "htay", "maung",
 ]);
 /** Les syllabes de la table qui, seules ou à deux, ne suffisent pas : trop courtes ou trop communes ailleurs (PERSON-0053, Tin, PERSON-0053 sont
  *  des mots anglais). Une syllabe FORTE (quatre lettres au moins, hors du dictionnaire) suffit seule : Kyaw, PERSON-0049, PERSON-0049, PERSON-0051. */

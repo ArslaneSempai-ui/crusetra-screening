@@ -823,7 +823,7 @@ function devanagari(nom: string): string {
 
 /** Arabe et persan : translittération consonantique (ALA-LC simplifiée, sans diacritiques
  *  latins), la hamza tombe. Le ʿayn se lit « a » : la romanisation l'écrit par une voyelle ou
- *  une apostrophe, jamais par une consonne (« سعيد » [name removed] ; « علي » Ali ; « سعد » Saad),
+ *  une apostrophe, jamais par une consonne (« سعيد » PERSON-0027 or PERSON-0027 ; « علي » Ali ; « سعد » Saad),
  *  et la clé consonantique (`cleAbjad`) retire ce « a » comme elle retire les voyelles (jeu 9,
  *  27/09 : lu vide, « سعيد » rendait « sid », que « Saeed » ne rencontrait pas : « مؤسسة سعيد بن حمد
  *  للتجارة » à 0,472 face à « Saeed Bin Hamad Trading Est. »). Les lettres persanes
