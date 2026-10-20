@@ -36,6 +36,7 @@ import { readdirSync, readFileSync, writeFileSync, statSync, existsSync } from "
 import { isMain } from "./cli.ts";
 import { join } from "node:path";
 import { SOURCES, manquesDeLicence, type SourceListe } from "./listes.ts";
+import { manquesDesFixtures, phraseDesFixtures } from "./fixtures-licences.ts";
 
 /** Copyleft fort : contamine l'œuvre qui l'incorpore. Bloque une livraison propriétaire. */
 const BLOQUANTES = /\b(GPL-2|GPL-3|GPLv2|GPLv3|AGPL|SSPL|CC-BY-NC|BUSL|Business Source|Commons Clause|OSL-3|PolyForm|Noncommercial|Non-Commercial|Elastic-2|Elastic License)\b/i;
@@ -287,13 +288,16 @@ export function sectionDesListes(sources: readonly SourceListe[]): string {
 ${sources.length} public sanctions sources are downloaded by \`npm run listes -- --fetch\` and screened against by \`npm run cribler\`.
 Each licence below was read on the publisher's own page on the date given, never on a third party's; the attribution
 statement is the one the licence requires, word for word, and the screener's record (\`.screening.json\`, field
-\`licence\` of each list, and \`attributions\`) and spreadsheet (column \`list_licence\`) carry it with every candidate.
+\`licence\` of each list, and \`attributions\`) and spreadsheet (column \`list_licence\`) carry it with every candidate,
+followed by the changes the tool made (parsed, names normalized for matching, only matching entries shown).
 
 | Source | Licence | Attribution required | Publisher's page | Read on |
 | --- | --- | --- | --- | --- |
 ${sources.map((s) => `| ${s.source} | ${cellule(s.licence.nom)} | ${s.licence.mention === null ? "none required" : cellule(s.licence.mention)} | ${s.licence.url} | ${s.licence.lue} |`).join("\n")}
 
 ${sources.map((s) => `- **${s.source}**: ${cellule(s.licence.note)}`).join("\n")}
+
+${phraseDesFixtures()}
 `;
 }
 
@@ -402,6 +406,13 @@ function principal() {
     console.error("A public list is screened against without its licence being recorded (src/listes.ts, SOURCES):");
     for (const m of manques) console.error(`  - ${m}`);
     console.error("\nThe attribution the list's licence requires could not be printed. Nothing was written.");
+    process.exit(1);
+  }
+  const fixturesSansEditeur = manquesDesFixtures();
+  if (fixturesSansEditeur.length > 0) {
+    console.error("A test fixture is not named with its publisher, so LICENCES.md cannot say which licence it keeps:");
+    for (const m of fixturesSansEditeur) console.error(`  - ${m}`);
+    console.error("\nNothing was written.");
     process.exit(1);
   }
   if (!existsSync("node_modules")) {

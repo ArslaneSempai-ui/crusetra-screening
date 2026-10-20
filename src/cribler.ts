@@ -1007,7 +1007,18 @@ export function comparer(avant: Criblage, apres: Omit<Criblage, "reserves" | "em
  *  avec « no attribution required ». */
 export function mentionDe(l: { licence?: Licence } | undefined): string {
   if (!l?.licence) return "";
-  return l.licence.mention ?? `${l.licence.nom} (no attribution required)`;
+  return l.licence.mention === null ? `${l.licence.nom} (no attribution required)` : `${l.licence.mention} ${CHANGEMENTS_INDIQUES}`;
+}
+
+/** CC BY 4.0 (s. 3(a)(1)(B)) and the EUR-Lex notice ask that changes be indicated: every printed attribution says
+ *  what the tool did to the list. No comma, so the spreadsheet cell stays one CSV field. */
+export const CHANGEMENTS_INDIQUES = "Changes made: each list was parsed from its publisher's file and its names normalized for matching; only the entries that match are shown.";
+
+/** The record's attributions, which the report prints: each required mention word for word, then the changes line;
+ *  nothing at all when no list asks for an attribution. */
+export function attributionsDe(listes: readonly { licence: Licence }[]): string[] {
+  const mentions = [...new Set(listes.map((l) => l.licence.mention).filter((x): x is string => x !== null))];
+  return mentions.length > 0 ? [...mentions, CHANGEMENTS_INDIQUES] : [];
 }
 
 /** Une ligne par candidat (une seule pour un nom sans candidat), pour le système du client.
@@ -1188,7 +1199,7 @@ export function executer(
     version: 1, genre: GENRE_CRIBLAGE,
     emisLe: maintenant.toISOString(), ...(client ? { client } : {}), ...(commit ? commit : {}), ...(essai !== undefined ? { essai } : {}),
     fichier: { nom: basename(fichier), sha256: createHash("sha256").update(texte).digest("hex"), lignes: lignes.length },
-    listes, attributions: [...new Set(listes.map((l) => l.licence.mention).filter((x): x is string => x !== null))], nonCriblees,
+    listes, attributions: attributionsDe(listes), nonCriblees,
     ...(complementUe ? { complementUe } : {}),
     methode: {
       palier: p.id, description: p.description,

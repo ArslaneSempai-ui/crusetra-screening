@@ -46,16 +46,16 @@ test("ONU : le nom se joint sur tous ses morceaux, l'alias VIDE s'écarte, l'ent
   const e = analyserOnu(fixture("onu.xml"));
   assert.equal(e.length, 3);
   const [eric, mohamed, adf] = e;
-  assert.equal(eric!.nom, "[name removed]");
-  assert.deepEqual(eric!.alias, ["[name removed]"],
+  assert.equal(eric!.nom, "TESTPERSON ALPHA");
+  assert.deepEqual(eric!.alias, ["ALPHA TESTPERSON"],
     "le vrai fichier porte des <ALIAS_NAME/> vides : ils s'écartent, ils ne deviennent pas \"\"");
   assert.equal(eric!.programme, "DRC");
   assert.deepEqual(eric!.designation, { date: "2012-12-31", champ: "LISTED_ON" }, "la date telle que la liste l'écrit, et le champ qui la porte");
   assert.equal(mohamed!.designation, undefined, "pas de LISTED_ON : pas de date");
-  assert.equal(mohamed!.nom, "MOHAMED [name removed]",
+  assert.equal(mohamed!.nom, "SAMPLE BRAVO CHARLIE DELTA",
     "FIRST_NAME à FOURTH_NAME, joints dans l'ordre — la chaîne épinglée impose le compte");
   assert.equal(adf!.type, "entity");
-  assert.deepEqual(adf!.alias, ["Allied Democratic Forces"]);
+  assert.deepEqual(adf!.alias, ["Example Fictional Front"]);
 });
 
 test("UE (v1.1, attributs) : premier wholeName = nom, les suivants = alias, programme lu", () => {
@@ -320,7 +320,7 @@ test("Australie (DFAT) : les lignes d'une référence font une entrée, le nom p
   const e = analyserDfat(octets("dfat.xlsx"));
   assert.equal(e.length, 3, "trois références (2, 8227, 155) pour seize lignes");
   const [personneAu, navire, alqaida] = e;
-  assert.deepEqual(personneAu, { source: "AU", id: "2", nom: "[name removed]", alias: ["اختبار ثابت"], type: "person", programme: "1988 (Taliban)",
+  assert.deepEqual(personneAu, { source: "AU", id: "2", nom: "KILO FIXTURESEVEN", alias: ["اختبار ثابت"], type: "person", programme: "1988 (Taliban)",
     designation: { date: "25 January 2001", champ: "Listing Information" } }, "la date de « Listed on 25 January 2001 », pas le Control Date (dernière mise à jour)");
   assert.deepEqual(navire, { source: "AU", id: "8227", nom: "ANDAMAN SKIES", alias: [], type: "vessel", programme: "Autonomous (Vessels)", imo: "9288693" },
     "un navire autonome : son numéro OMI lu par lireImo, et pas de date puisque la liste n'en écrit pas en toutes lettres");
@@ -336,9 +336,9 @@ test("Canada : une personne et ses alias nettoyés, une entité, un navire à so
   const e = analyserCanada(fixture("canada.xml"));
   assert.equal(e.length, 5);
   const [personne, entite, navire, decale, prenomSeul] = e;
-  assert.equal(personne!.nom, "[name removed]", "GivenName puis LastName");
+  assert.equal(personne!.nom, "Mike Testovich FIXTURENINE", "GivenName puis LastName");
   assert.equal(personne!.type, "person");
-  assert.ok(personne!.alias.includes("PERSON-0038"), "l'étiquette « Belarusian: » est retirée");
+  assert.ok(personne!.alias.includes("Майк Тэставiч ФIКСТУР"), "l'étiquette « Belarusian: » est retirée");
   assert.ok(personne!.alias.includes("[name removed]"));
   assert.deepEqual(personne!.designation, { date: "2024-04-12", champ: "DateOfListing" });
   assert.equal(personne!.programme, "Belarus", "la partie anglaise du champ bilingue");
@@ -357,7 +357,7 @@ test("Nouvelle-Zélande (MFAT) : le registre sous sa légende, les personnes, en
   const registre = e.filter((x) => x.type !== "vessel"), navires = e.filter((x) => x.type === "vessel");
   assert.deepEqual(registre.map((x) => x.id), ["IND-9017", "ENT-1", "IND-9214", "AST-1", "BAN-1"], "la ligne « Total » n'est pas une entrée");
   const [personneNz, entite, apparente, actif, banque] = registre;
-  assert.equal(personneNz!.nom, "[name removed]");
+  assert.equal(personneNz!.nom, "Lima Fixturovich Fixtureeight");
   assert.deepEqual(personneNz!.designation, { date: "2022-03-18", champ: "Date of Sanction" }, "un numéro de série Excel rendu en date");
   assert.equal(entite!.nom, "JSC 558 Aircraft Repair Plant");
   assert.deepEqual(entite!.alias, ["JSC 558 ARP"]);

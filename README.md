@@ -44,7 +44,8 @@ Ten public lists, each read in the format its publisher offers. The license of e
 publisher's own page on the date shown, never on a third party's; where a license requires an
 attribution statement, the statement below is the one it requires, word for word, and the screener
 carries it in its record (`.screening.json`: the `licence` of each list, and `attributions`) and in
-its spreadsheet (column `list_licence`, on every candidate row). Reproduce it with any extract of a
+its spreadsheet (column `list_licence`, on every candidate row), each time followed by the changes
+the tool made, as CC BY 4.0 and the EUR-Lex notice ask. Reproduce both with any extract of a
 report. `npm run licences -- --check` fails when a source lacks its license, its page or its
 statement, and `LICENCES.md` repeats this table for a procurement review.
 
@@ -63,13 +64,23 @@ statement, and `LICENCES.md` repeats this table for a procurement review.
 | NZ | New Zealand: Russia Sanctions Register (MFAT): individuals, entities and ships | Creative Commons Attribution 4.0 International (CC BY 4.0), Crown copyright (Ministry of Foreign Affairs and Trade) | Source: New Zealand Ministry of Foreign Affairs and Trade, Russia Sanctions Register, Crown copyright, licensed under CC BY 4.0 | https://www.mfat.govt.nz/en/copyright (2026-10-05) |
 <!-- /figures:sources -->
 
-Three things the table does not say:
+<!-- figures:fixtures -->
+The test fixtures in `src/fixtures` are small samples in each publisher's own format, read only by the tests. They are not covered by this repository's licence: whatever publisher content they keep stays under that publisher's licence and attribution, given in the table of sources above. `canada.xml` (CA); `csl.csv` (CSL); `dfat.xlsx` (AU); `mfat.xlsx` (NZ); `navires-ue.xhtml` (EU-VESSELS); `ofac.xml` (OFAC); `onu.xml` (UN); `royaume-uni.xml` (UK); `ue-2026-2193-annex-iv.txt` (the Official Journal of the European Union (EUR-Lex), reused under Commission Decision 2011/833/EU); `ue-2026-2193-source.json` (the Official Journal of the European Union (EUR-Lex), reused under Commission Decision 2011/833/EU); `ue-rss.xml` (EU); `ue.xml` (EU). `paires-parallele.json`: drawn from this repository's own pair sets, under its licence. `onu.xml` is invented in the UN list's format and names no real person.
+<!-- /figures:fixtures -->
+
+What the table does not say:
 
 - **The UN consolidated list has no open license.** The UN website's Terms of Use grant Users
   permission to download and copy the Materials for personal, non-commercial use, without any right
   to resell or redistribute them; the list's own page says the list exists to facilitate the
-  implementation of the measures. Commercial reuse is not settled by the publisher's page and is to
-  be confirmed with the United Nations before a sale; no attribution wording is prescribed.
+  implementation of the measures. No attribution wording is prescribed. We asked the UN Security
+  Council Sanctions Lists Team in writing whether a paid screening may download the list on the
+  customer's machine, compare the customer's names against it and show the matching entries in the
+  customer's report, without ever reselling, republishing or redistributing the list itself; on
+  6 October 2026 the team answered that the Consolidated List "is free to use for all legal
+  purposes". This repository does not republish the list: each user downloads it from the United
+  Nations, and the test fixture `src/fixtures/onu.xml` is an invented file in the list's format
+  that names no real person.
 - **Not ingested.** Switzerland's SECO list (SESAM): the federal administration's terms state that
   reproduction requires the prior written consent of the copyright holder; a request for that consent
   is drafted and not sent, and the list is not read until it is answered. Ukraine's NSDC list: its
@@ -147,7 +158,7 @@ reports are verified against the same public key, [`cle-publique.pem`](cle-publi
 with `npm run verify`.
 
 <!-- figures:tests -->
-**615 tests** across 70 files, counted from the sources rather than typed here.
+**618 tests** across 71 files, counted from the sources rather than typed here.
 <!-- /figures:tests -->
 
 ## License

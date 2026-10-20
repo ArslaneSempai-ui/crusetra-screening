@@ -16,6 +16,7 @@ import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { run, table } from "./figures.ts";
 import { SOURCES, MODE_FICHIER_JETON_MAX } from "./listes.ts";
+import { phraseDesFixtures } from "./fixtures-licences.ts";
 import { SEUIL_RETARD_UE_JOURS, TOLERANCE_APRES_GENERATION_UE_JOURS } from "./fraicheur-ue.ts";
 
 /** "7 days", "1 day": the two EU freshness limits are printed from the constants the rule uses, never typed here. */
@@ -81,6 +82,7 @@ const blocs = {
     COMMANDES.map(([c, quoi]) => [`\`${c}\``, quoi])),
   sources: table(["Source", "What it is", "License", "Attribution required", "Publisher's page, read on"],
     SOURCES.map((s) => [s.source, cellule(s.titre), cellule(s.licence.nom), s.licence.mention === null ? "none required" : cellule(s.licence.mention), `${s.licence.url} (${s.licence.lue})`])),
+  fixtures: phraseDesFixtures(),
   tests: `**${n} tests** across ${fichiers.length} files, counted from the sources rather than typed here.`,
 };
 

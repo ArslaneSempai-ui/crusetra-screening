@@ -415,7 +415,7 @@ export const SOURCES: SourceListe[] = [
       nom: "United Nations website Terms of Use (no open license)",
       url: "https://www.un.org/en/about-us/terms-of-use",
       mention: null,
-      note: "the Terms grant Users permission to download and copy the Materials for the User's personal, non-commercial use, without any right to resell or redistribute them; the Consolidated List page says the list exists to facilitate the implementation of the measures. No attribution wording is prescribed. Commercial reuse is confirmed in writing: on 6 October 2026 the United Nations Security Council Sanctions Lists Team (sc-sanctionslists@un.org) answered that the Consolidated List \"is free to use for all legal purposes\".",
+      note: "the Terms grant Users permission to download and copy the Materials for the User's personal, non-commercial use, without any right to resell or redistribute them; the Consolidated List page says the list exists to facilitate the implementation of the measures. No attribution wording is prescribed. We asked the United Nations Security Council Sanctions Lists Team (sc-sanctionslists@un.org) in writing whether a paid screening may download the list on the customer's machine, compare the customer's names against it and show the matching entries in the customer's report, without ever reselling, republishing or redistributing the list itself; on 6 October 2026 the team answered that the Consolidated List \"is free to use for all legal purposes\". This repository does not republish the list: each user downloads it from the United Nations, and the test fixture src/fixtures/onu.xml is an invented file in the list's format that names no real person.",
       lue: LUE,
     },
   },

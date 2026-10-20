@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   Index, cribler, lireContreparties, imoValide, lireImo, comparer, versCsv, navireDeclare, mentionDe, GENRE_CRIBLAGE, GENRE_CRIBLAGE_ANCIEN, GENRES_CRIBLAGE_LUS,
-  type Contrepartie, type Criblage, type Candidat,
+  attributionsDe, CHANGEMENTS_INDIQUES, type Contrepartie, type Criblage, type Candidat,
 } from "./cribler.ts";
 import { empreinteDuReleve, scelleIntact } from "./empreinte.ts";
 import { frequencesDe, preparerNom, CHEMINS_APPRENTISSAGE } from "./entites.ts";
@@ -267,7 +267,7 @@ test("l'export tableur porte les quatre champs et la mention de licence de chaqu
   assert.equal(cellule(lignes[1]!, "designation_field"), "DateDesignated");
   assert.equal(cellule(lignes[1]!, "named_parties"), "CurrentOwnerOperator: Global United Shipping India");
   assert.equal(cellule(lignes[1]!, "renamed_ship_listed_names"), "OCEAN PEARL | PEARL OF THE OCEAN");
-  assert.equal(cellule(lignes[1]!, "list_licence"), "Contains public sector information licensed under the Open Government Licence v3.0.", "la mention de l'OGL, sur la ligne du candidat");
+  assert.equal(cellule(lignes[1]!, "list_licence"), `Contains public sector information licensed under the Open Government Licence v3.0. ${CHANGEMENTS_INDIQUES}`, "la mention de l'OGL, sur la ligne du candidat, puis les changements");
   assert.equal(cellule(lignes[1]!, "vessel_without_imo"), "");
   assert.equal(cellule(lignes[2]!, "vessel_without_imo"), "yes", "le drapeau est sur la ligne de la contrepartie, candidat ou pas");
   assert.equal(lignes.length, 3, "aucune ligne de pied : le système du client la lirait comme une contrepartie");
@@ -388,4 +388,17 @@ test("tour 7, hispanique : l'index retrouve à lui seul la ñ écrite ny, dans l
     assert.deepEqual(rapide, exhaustif, nom);
     assert.equal(rapide.statut, "strong", nom);
   }
+});
+
+test("the printed attribution indicates the changes, as CC BY 4.0 and the EUR-Lex notice require, after the mention word for word", () => {
+  const liste = (source: string): Criblage["listes"][number] => ({ source, titre: source, url: "u", telechargeLe: "2026-10-04T00:00:00Z", sha256: "s", entrees: 1,
+    licence: SOURCES.find((s) => s.source === source)!.licence });
+  const listes = ["UK", "EU", "OFAC"].map(liste);
+  const imprimees = attributionsDe(listes);
+  assert.ok(imprimees.includes(SOURCES.find((s) => s.source === "UK")!.licence.mention!), "the OGL mention stays word for word");
+  assert.ok(imprimees.includes(SOURCES.find((s) => s.source === "EU")!.licence.mention!), "the EU mention stays word for word");
+  assert.ok(imprimees.some((x) => /changes made/i.test(x)), "the record's attributions, which the report prints, say that changes were made");
+  assert.deepEqual(attributionsDe([liste("OFAC")]), [], "no list asks for an attribution: nothing is printed, not even the changes line");
+  assert.match(mentionDe(listes[0]), /^Contains public sector information licensed under the Open Government Licence v3\.0\. Changes made/, "the spreadsheet cell: the mention, then the changes");
+  assert.ok(!/,/.test(CHANGEMENTS_INDIQUES), "no comma: the cell stays one CSV field without quoting");
 });
