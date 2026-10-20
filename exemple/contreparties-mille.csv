@@ -10,7 +10,7 @@ M-0008,Maasoever Tankopslag B.V.,entity,NL
 M-0009,Hoekstra Houthandel BV,entity,NL
 M-0010,Willemijn Bosch,vessel,NL
 M-0011,Gerdina Kooistra,vessel,NL
-M-0012,Maarten van der Linde,person,NL
+M-0012,Linde Logistics B.V.,entity,NL
 M-0013,Antwerpse Staalhandel Verbruggen NV,entity,BE
 M-0014,Brasserie Artisanale des Deux Collines SPRL,entity,BE
 M-0015,Vandersmissen Chemicals NV,entity,BE
@@ -20,11 +20,11 @@ M-0018,Holzkontor Wesermarsch GmbH,entity,DE
 M-0019,Rheinische Kunststoffwerke Talberg AG,entity,DE
 M-0020,Nordhafen Privatbank AG,entity,DE
 M-0021,Katja Rehberg,vessel,DE
-M-0022,Sabine Oberhuber,person,AT
+M-0022,Oberhuber Trading GmbH,entity,AT
 M-0023,Transports Frigorifiques Lemarchand SAS,entity,FR
 M-0024,Tissages de la Vallee de l'Ance SARL,entity,FR
 M-0025,Fromagerie Coutelier et Fils,entity,FR
-M-0026,Jean-Baptiste Morvillier,person,FR
+M-0026,Morvillier Foods SARL,entity,FR
 M-0027,Castlereagh Precision Engineering Ltd,entity,GB
 M-0028,Pennington Cargo Underwriting Limited,entity,GB
 M-0029,MOLINOS DEL TAJO BAJO SL,entity,ES
@@ -37,7 +37,7 @@ M-0035,Frida Kvalvik,vessel,NO
 M-0036,PRZEDSIEBIORSTWO HANDLOWE LIPOWIEC SP Z O O,entity,PL
 M-0037,Meble Zagajnik Sp. z o.o.,entity,PL
 M-0038,Kujawska Walcownia Profili S.A.,entity,PL
-M-0039,Tomasz Wierzbicki,person,PL
+M-0039,Wierzbicki Textiles Sp. z o.o.,entity,PL
 M-0040,Strojírny Vlčkov a.s.,entity,CZ
 M-0041,Sklarna Horni Lipa s.r.o.,entity,CZ
 M-0042,Tatranská Drevovýroba s.r.o.,entity,SK
@@ -58,11 +58,11 @@ M-0056,Hokuriku Textile Machinery K.K.,entity,JP
 M-0057,"Hangyeol Precision Co., Ltd.",entity,KR
 M-0058,Tian Yu Shan,vessel,HK
 M-0059,Lan Xiu Hu,vessel,CN
-M-0060,Fang Wenjie,person,CN
+M-0060,"Wenjie Machinery Co., Ltd",entity,CN
 M-0061,Coimbatore Pumpsets and Motors Pvt. Ltd.,entity,IN
 M-0062,Kavinila Knit Exports Pvt Ltd,entity,IN
 M-0063,Sutlej Forgings Pvt. Ltd.,entity,IN
-M-0064,Priya Raghunathan,person,IN
+M-0064,Raghunathan Packaging Pvt Ltd,entity,IN
 M-0065,Mekong Rattan Crafts JSC,entity,VN
 M-0066,"Phu Hoa Wood Furniture Co., Ltd.",entity,VN
 M-0067,"Nakhon Pathom Kaset Rice Mill Co., Ltd.",entity,TH
@@ -73,14 +73,14 @@ M-0071,Buldan Dokuma Tekstil San. ve Tic. A.Ş.,entity,TR
 M-0072,Konya Tarım Makinaları San. Tic. Ltd. Şti.,entity,TR
 M-0073,Nilüfer Oto Yan Sanayi A.S.,entity,TR
 M-0074,Gebze Kimya Boya San. A.Ş.,entity,TR
-M-0075,Elif Karaosmanoğlu,person,TR
+M-0075,Karaosmanoğlu Chemicals A.S.,entity,TR
 M-0076,PALM CREST FOOD DISTRIBUTION LLC,entity,AE
 M-0077,Tabuk Fresh Produce Co.,entity,SA
 M-0078,Sohar Harbour Stevedoring LLC,entity,OM
 M-0079,Conserverie Atlantique d'Agadir SARL,entity,MA
 M-0080,Huilerie Ben Ammar et Fils,entity,TN
 M-0081,Tema Harbour Cocoa Warehousing Ltd,entity,GH
-M-0082,Kofi Asamoah Boateng,person,GH
+M-0082,Boateng Timber Ltd,entity,GH
 M-0083,Mombasa Road Tea Packers Limited,entity,KE
 M-0084,Eleni Karvouni,vessel,LR
 M-0085,Bonita Harvest,vessel,LR
@@ -104,7 +104,7 @@ M-0102,Ter Horst Voedingsmiddelen B.V.,entity,NL
 M-0103,De Wilde Hydrauliek BV,entity,NL
 M-0104,Veenstra Aardappelexport B.V.,entity,NL
 M-0105,Rozendaal Textielgroothandel B.V.,entity,NL
-M-0106,Hendrik-Jan Brouwers,person,NL
+M-0106,Brouwers Metals B.V.,entity,NL
 M-0107,Kempische Metaalwerken NV,entity,BE
 M-0108,Gebroeders Declercq Houtimport BVBA,entity,BE
 M-0109,Courtage d'Assurances Van Belle-Moreau SA,entity,BE
@@ -119,7 +119,7 @@ M-0117,Etablissements Garnier-Duclos SA,entity,FR
 M-0118,Laiterie Cooperative du Haut-Bocage,entity,FR
 M-0119,Aciéries de la Sambre Rousseau SAS,entity,FR
 M-0120,Dunmore Quay Freight Services Ltd ref DQ-7730,entity,IE
-M-0121,Siobhán Kearney,person,IE
+M-0121,Kearney Marine Ltd,entity,IE
 M-0122,Ashcombe Agricultural Machinery Limited,entity,GB
 M-0123,Wrenfield Textiles Ltd,entity,GB
 M-0124,Holmfirth Worsted Spinners Limited,entity,GB
@@ -131,7 +131,7 @@ M-0129,Bergslagens Gjuteri AB,entity,SE
 M-0130,Björkö Express,vessel,SE
 M-0131,Pohjanmaan Sahatavara Oy,entity,FI
 M-0132,Torrefazione Caffè Ceccarelli S.r.l.,entity,IT
-M-0133,Luca Baldassini,person,IT
+M-0133,Baldassini Components S.r.l.,entity,IT
 M-0134,Theodora Kyriakou,vessel,CY
 M-0135,Agios Nikandros,vessel,GR
 M-0136,Fabryka Okuć Budowlanych Mielnik Sp. z o.o.,entity,PL
@@ -143,7 +143,7 @@ M-0141,Kovovýroba Liptov s.r.o.,entity,SK
 M-0142,Bakonyi Faipari Zrt,entity,HU
 M-0143,Mobila Somes SRL,entity,RO
 M-0144,Тракийско Лозе ЕООД,entity,BG
-M-0145,Ivana Horvatić,person,HR
+M-0145,Horvatić Distribution d.o.o.,entity,HR
 M-0146,"Changzhou Huaxin Gear Box Co., Ltd.",entity,CN
 M-0147,"Zhangjiagang Yuntong Stainless Pipe Co., Ltd.",entity,CN
 M-0148,"Wenzhou Oulian Valve Co., Ltd.",entity,CN
@@ -158,7 +158,7 @@ M-0156,ENSHU KASEI KOGYO CO LTD,entity,JP
 M-0157,"Daegu Hanbit Textile Co., Ltd.",entity,KR
 M-0158,Xin Rui Feng,vessel,CN
 M-0159,Hua Ning Yuan,vessel,HK
-M-0160,Yoon Seo-yeon,person,KR
+M-0160,"Seo-yeon Logistics Co., Ltd",entity,KR
 M-0161,Ramganga Brass Handicrafts Pvt. Ltd.,entity,IN
 M-0162,Godavari Valley Grape Exports Pvt. Ltd.,entity,IN
 M-0163,Rajkot Diesel Engine Components Pvt Ltd,entity,IN
@@ -168,7 +168,7 @@ M-0166,Công ty TNHH Dệt May Sông Thao,entity,VN
 M-0167,PT Rotan Cirebon Makmur,entity,ID
 M-0168,Laguna Desiccated Coconut Corp.,entity,PH
 M-0169,Pasir Ris Endeavour,vessel,SG
-M-0170,Trần Thị Mai Anh,person,VN
+M-0170,"Anh Trading Co., Ltd",entity,VN
 M-0171,Alaşehir Kuru Üzüm İhracat Ltd. Şti.,entity,TR
 M-0172,Kayseri Mobilya Aksesuar San. A.Ş.,entity,TR
 M-0173,Uşak Battaniye ve Halı San. A.Ş.,entity,TR
@@ -176,7 +176,7 @@ M-0174,Corlu Ambalaj Sanayi AS,entity,TR
 M-0175,Sandbar Cold Stores L.L.C. PO Box 26114,entity,AE
 M-0176,Lusail Building Supplies W.L.L.,entity,QA
 M-0177,Wadi Rum Stone Exporters Co.,entity,JO
-M-0178,Yael Barzilai,person,IL
+M-0178,Barzilai Foods Ltd,entity,IL
 M-0179,Cacao Lagunes Conditionnement SA,entity,CI
 M-0180,DAKAR ARACHIDES DECORTICAGE SARL,entity,SN
 M-0181,Lagos Mainland Packaging Industries Ltd,entity,NG
@@ -189,7 +189,7 @@ M-0187,Naches Heights Fruit Packers LLC,entity,US
 M-0188,Carolina Piedmont Hosiery Inc.,entity,US
 M-0189,Galveston Bay Chemical Logistics LLC,entity,US
 M-0190,Mid-Atlantic Freight Underwriters Inc.,entity,US
-M-0191,Dana Whitcomb,person,US
+M-0191,Whitcomb Textiles LLC,entity,US
 M-0192,Lower Mainland Seafood Exporters Ltd.,entity,CA
 M-0193,Beauharnois Aluminium Extrusions Inc.,entity,CA
 M-0194,Curtume Vale do Sinos Ltda.,entity,BR
@@ -210,7 +210,7 @@ M-0208,Assurantiekantoor Hofstede N.V.,entity,NL
 M-0209,Limburgse Kunststof Extrusie B.V.,entity,NL
 M-0210,Bernardina,vessel,NL
 M-0211,Tessa Marijke,vessel,NL
-M-0212,Pieter-Bas Hoogendijk,person,NL
+M-0212,Hoogendijk Machinery B.V.,entity,NL
 M-0213,Houtimport Callewaert NV,entity,BE
 M-0214,Gentse Mouterij Deprez N.V.,entity,BE
 M-0215,Transports Lambotte & Fils SA,entity,BE
@@ -220,12 +220,12 @@ M-0218,Spedition Hollweg & Söhne GmbH,entity,DE
 M-0219,Kartoffelveredelung Hasetal GmbH,entity,DE
 M-0220,Saarlandische Giesserei Merzig GmbH,entity,DE
 M-0221,Lahnstein,vessel,DE
-M-0222,Ulrike Brandauer,person,DE
+M-0222,Brandauer Packaging GmbH,entity,DE
 M-0223,COOPERATIVE AGRICOLE DES PLAINES DE BEAUCE,entity,FR
 M-0224,Robinetterie Industrielle Vautrin SAS,entity,FR
 M-0225,Soieries Chabert-Mourgues,entity,FR
 M-0226,Bréhat Transit et Douane SARL,entity,FR
-M-0227,Margaux Delaunay-Riviere,person,FR
+M-0227,Delaunay-Riviere Chemicals SARL,entity,FR
 M-0228,Thistledown Woollens Ltd,entity,GB
 M-0229,Garston Quay Warehousing Limited ref GQ/5521,entity,GB
 M-0230,Harrowgate Bearing Supplies Ltd,entity,GB
@@ -239,7 +239,7 @@ M-0237,Tartak Bieszczadzki sp.j.,entity,PL
 M-0238,Opakowania Wislok SA,entity,PL
 M-0239,Slevarna Loucna s.r.o.,entity,CZ
 M-0240,Přádelna Jizerka a.s.,entity,CZ
-M-0241,Jana Procházková,person,CZ
+M-0241,Procházková Timber s.r.o.,entity,CZ
 M-0242,Nábytok Orava s.r.o.,entity,SK
 M-0243,Mátraaljai Acélszerkezet Kft.,entity,HU
 M-0244,LEMN PRELUCRAT BISTRITA SRL,entity,RO
@@ -247,7 +247,7 @@ M-0245,SIA Kurzemes Paletes,entity,LV
 M-0246,株式会社浜名湖精機,entity,JP
 M-0247,"Tsubame Cutlery Works Co., Ltd.",entity,JP
 M-0248,"Kitakyushu Steel Wire Rope Co., Ltd.",entity,JP
-M-0249,Masako Uehara,person,JP
+M-0249,"Uehara Metals Co., Ltd",entity,JP
 M-0250,"Jinhua Baifeng Hardware Tools Co., Ltd.",entity,CN
 M-0251,"Linyi Senhai Plywood Co., Ltd.",entity,CN
 M-0252,Nantong Jiahe Home Textile Co Ltd,entity,CN
@@ -262,7 +262,7 @@ M-0260,Hong Chang Da,vessel,HK
 M-0261,SANGANER HANDBLOCK PRINTS PVT LTD,entity,IN
 M-0262,Pune Auto Stampings Pvt Ltd,entity,IN
 M-0263,Kochi Coir Mats & Matting Exports,entity,IN
-M-0264,Arjun Mehrotra,person,IN
+M-0264,Mehrotra Marine Pvt Ltd,entity,IN
 M-0265,Faisalabad Terry Towel Mills (Pvt) Ltd,entity,PK
 M-0266,Dong Nai Cashew Processing JSC,entity,VN
 M-0267,"Chon Buri Canned Pineapple Co., Ltd.",entity,TH
@@ -273,7 +273,7 @@ M-0271,Denizli Havlu Tekstil San. Tic. A.Ş.,entity,TR
 M-0272,Eskişehir Seramik Karo San. A.Ş.,entity,TR
 M-0273,Mersin Narenciye Ihracat Ltd Sti,entity,TR
 M-0274,Kocaeli Rulman Otomotiv A.Ş.,entity,TR
-M-0275,Cem Altınbaşak,person,TR
+M-0275,Altınbaşak Components A.S.,entity,TR
 M-0276,Silver Palm Packaging Industries L.L.C.,entity,AE
 M-0277,Nizwa Date Packing Co. SAOC,entity,OM
 M-0278,Haifa Bay Freight Agencies Ltd POB 3317,entity,IL
@@ -296,7 +296,7 @@ M-0294,Tecelagem Serra Gaucha Ltda,entity,BR
 M-0295,Cooperativa Cafeicultora Vale do Sapucaí,entity,BR
 M-0296,HARINERA DEL LITORAL PAMPEANO SA,entity,AR
 M-0297,Agroindustrial Valle de Ica S.A.C.,entity,PE
-M-0298,Rodrigo Salcedo Ibarra,person,MX
+M-0298,Ibarra Distribution S.A. de C.V.,entity,MX
 M-0299,Veraguas Dawn,vessel,PA
 M-0300,Barbuda Lark,vessel,AG
 M-0301,SNIJDERS GROENTENEXPORT BV,entity,NL
@@ -308,7 +308,7 @@ M-0306,Koelhuis Zevenbergen B.V.,entity,NL
 M-0307,Scheepsagentuur Van Hemert B.V.,entity,NL
 M-0308,Delftse Assurantiemakelaars Opmeer N.V.,entity,NL
 M-0309,Anna-Liesbeth,vessel,NL
-M-0310,Femke Scheepstra,person,NL
+M-0310,Scheepstra Logistics B.V.,entity,NL
 M-0311,Ieper Vlasverwerking NV,entity,BE
 M-0312,Trefilerie Moreau-Lambert SA,entity,BE
 M-0313,Oostkust Koelterminal NV,entity,BE
@@ -318,7 +318,7 @@ M-0316,Winzergenossenschaft Mettenheim eG,entity,DE
 M-0317,Chemische Werke Neckarau GmbH,entity,DE
 M-0318,Lagerhaus Hochfeld GmbH Rheinstr. 118,entity,DE
 M-0319,Hanseatisches Transportversicherungskontor AG,entity,DE
-M-0320,Jürgen Waldschütz,person,DE
+M-0320,Waldschütz Trading GmbH,entity,DE
 M-0321,Filature Delcourt-Plancke SA,entity,FR
 M-0322,Scieries Reunies du Morvan,entity,FR
 M-0323,Chaudronnerie Bretonne Le Goff et Cie,entity,FR
@@ -329,7 +329,7 @@ M-0327,Wearside Fastener Distribution Ltd,entity,GB
 M-0328,Ringaskiddy Grain Handling Ltd,entity,IE
 M-0329,Industrias Carnicas Vallehermoso SA,entity,ES
 M-0330,Calzados Villena Hermanos S.L.,entity,ES
-M-0331,Isabel Carvajal Mendieta,person,ES
+M-0331,Mendieta Foods S.L.,entity,ES
 M-0332,FONDERIA VAL TROMPIA SPA,entity,IT
 M-0333,Ceramica Aveirense Rocha & Irmao Lda,entity,PT
 M-0334,Akamas Glory,vessel,CY
@@ -343,7 +343,7 @@ M-0341,Mliekareň Spišská Stráň s.r.o.,entity,SK
 M-0342,Homokháti Fűszerőrlő Kft.,entity,HU
 M-0343,Mecanica Făgăraș SRL,entity,RO
 M-0344,Lesna Galanterija Kočevje d.o.o.,entity,SI
-M-0345,Rūta Kazlauskienė,person,LT
+M-0345,Kazlauskienė Textiles UAB,entity,LT
 M-0346,세한섬유 주식회사,entity,KR
 M-0347,"Changwon Hydraulic Cylinder Co., Ltd.",entity,KR
 M-0348,"Mizushima Resin Compounds Co., Ltd.",entity,JP
@@ -356,7 +356,7 @@ M-0354,"Jiangmen Kaiping Sanitary Ware Co., Ltd.",entity,CN
 M-0355,"Chaozhou Fengxi Porcelain Co., Ltd.",entity,CN
 M-0356,Min Hua Hai,vessel,CN
 M-0357,"Tainan Yonghe Bicycle Parts Co., Ltd.",entity,TW
-M-0358,Lai Pei-ling,person,TW
+M-0358,"Pei-ling Machinery Co., Ltd",entity,TW
 M-0359,Tsing Yi Consolidation Services Limited ref TY-883021,entity,HK
 M-0360,Tong Sheng Feng,vessel,HK
 M-0361,Ichalkaranji Cotton Yarn Mills Pvt. Ltd.,entity,IN
@@ -366,14 +366,14 @@ M-0364,NARAYANGANJ DENIM MILLS LTD,entity,BD
 M-0365,Hai Phong Steel Structure JSC,entity,VN
 M-0366,"Rayong Polymer Compounds Co., Ltd.",entity,TH
 M-0367,Ipoh Ceramic Tiles Sdn. Bhd.,entity,MY
-M-0368,Siti Hajar Kamaruddin,person,MY
+M-0368,Kamaruddin Packaging Sdn. Bhd.,entity,MY
 M-0369,PT Mebel Jepara Jati Utama,entity,ID
 M-0370,Seletar Crest,vessel,SG
 M-0371,AFYON MERMER BLOK SAN AS,entity,TR
 M-0372,Adana Pamuk Çırçır Ltd. Şti.,entity,TR
 M-0373,Tekirdag Sut Urunleri A.S.,entity,TR
 M-0374,Balıkesir Kağıt Ambalaj San. A.Ş.,entity,TR
-M-0375,Özge Tunalı,person,TR
+M-0375,Tunalı Chemicals A.S.,entity,TR
 M-0376,Datça Rüzgarı,vessel,TR
 M-0377,Eastern Province Pipe Supports Co.,entity,SA
 M-0378,Manama Cold Stores W.L.L.,entity,BH
@@ -381,7 +381,7 @@ M-0379,Casablanca Emballages Carton SA,entity,MA
 M-0380,Sfax Conserverie de Sardines SARL,entity,TN
 M-0381,Onitsha Rubber Processing Company Ltd,entity,NG
 M-0382,Moshi Highlands Coffee Estates Ltd,entity,TZ
-M-0383,Amina Diallo Sow,person,SN
+M-0383,Sow Timber SARL,entity,SN
 M-0384,Kallisti Voyager,vessel,LR
 M-0385,Nordvik Heron,vessel,LR
 M-0386,Wabash Valley Grain Terminal LLC 2200 River Rd,entity,US
@@ -410,7 +410,7 @@ M-0408,Terneuzen Kanaalzone Overslag B.V. ref TKO/2024/118,entity,NL
 M-0409,Visscher & Zonen Koffiebranders B.V.,entity,NL
 M-0410,Everdina Jacoba,vessel,NL
 M-0411,Roerstreek,vessel,NL
-M-0412,Wouter Brinkhuis,person,NL
+M-0412,Brinkhuis Metals B.V.,entity,NL
 M-0413,Waaslandse Betonwaren NV,entity,BE
 M-0414,Chocolaterie Van Acker-Dumont SA,entity,BE
 M-0415,Mosel Rückversicherung S.A.,entity,LU
@@ -423,7 +423,7 @@ M-0421,Wiebke Tamsen,vessel,DE
 M-0422,Tuileries du Pays d'Auge SA,entity,FR
 M-0423,Vergers de la Durance SCA,entity,FR
 M-0424,Mecanique de Precision Arvier SAS,entity,FR
-M-0425,Clemence Aubertin,person,FR
+M-0425,Aubertin Marine SARL,entity,FR
 M-0426,Linthwaite Carpet Yarns Ltd,entity,GB
 M-0427,SOLWAY FIRTH TIMBER MERCHANTS LTD,entity,GB
 M-0428,Fraserburgh Pelagic Processors Ltd,entity,GB
@@ -432,12 +432,12 @@ M-0430,Maderas Aserradas del Bierzo SL,entity,ES
 M-0431,Cartiera Val di Serchio SpA,entity,IT
 M-0432,Salumificio Fratelli Borghini Srl,entity,IT
 M-0433,Aegean Marble Quarries Tsakiris S.A.,entity,GR
-M-0434,Henrik Aagaard Lund,person,DK
+M-0434,Lund Components ApS,entity,DK
 M-0435,Sigrun Hovde,vessel,NO
 M-0436,Zakład Przetwórstwa Owoców Grójec sp. z o.o.,entity,PL
 M-0437,Fabryka Mebli Dunajec Sp. z o.o.,entity,PL
 M-0438,Autotrans Lubelski Sp. z o.o.,entity,PL
-M-0439,Marek Gołębiowski,person,PL
+M-0439,Gołębiowski Distribution Sp. z o.o.,entity,PL
 M-0440,Kovoobrabeni Svitavy s.r.o.,entity,CZ
 M-0441,Sladovna Pomoraví a.s.,entity,CZ
 M-0442,Drevarska Vyroba Kysuce s.r.o.,entity,SK
@@ -452,7 +452,7 @@ M-0450,Zhongshan Guzhen Lighting Fixtures Co Ltd,entity,CN
 M-0451,"Handan Yongnian Fasteners Co., Ltd.",entity,CN
 M-0452,"Luoyang Jianxi Gear Reducer Co., Ltd.",entity,CN
 M-0453,"Liuyang Chuxiang Fireworks Co., Ltd.",entity,CN
-M-0454,Tang Mingxuan,person,CN
+M-0454,"Mingxuan Logistics Co., Ltd",entity,CN
 M-0455,Yu Jia Xiang,vessel,CN
 M-0456,"Chita Seisakusho Co., Ltd.",entity,JP
 M-0457,"Kosai Plastic Molding Co., Ltd.",entity,JP
@@ -462,7 +462,7 @@ M-0460,Kang Tai Hua,vessel,HK
 M-0461,Panipat Handloom Rugs Pvt. Ltd.,entity,IN
 M-0462,Hosur Automotive Castings Pvt Ltd,entity,IN
 M-0463,Veraval Frozen Seafood Exports Pvt. Ltd.,entity,IN
-M-0464,Rohan Deshpande,person,IN
+M-0464,Deshpande Trading Pvt Ltd,entity,IN
 M-0465,Sialkot Sporting Goods Stitchers (Pvt) Ltd,entity,PK
 M-0466,TANGAIL JUTE TWINE LTD,entity,BD
 M-0467,Quang Nam Granite JSC,entity,VN
@@ -474,7 +474,7 @@ M-0472,Bilecik Seramik Sağlık Gereçleri A.Ş.,entity,TR
 M-0473,Rize Çay Paketleme Ltd. Şti.,entity,TR
 M-0474,IZMIR KEMALPASA KALIP SAN AS,entity,TR
 M-0475,Canakkale Salca ve Konserve AS,entity,TR
-M-0476,Levent Özdamar,person,TR
+M-0476,Özdamar Foods A.S.,entity,TR
 M-0477,Coastline Aluminium Profiles L.L.C.,entity,AE
 M-0478,Sur Fish Processing Co. LLC,entity,OM
 M-0479,Câblerie de Tanger-Assilah SARL,entity,MA
@@ -489,7 +489,7 @@ M-0487,SNAKE RIVER POTATO PROCESSORS LLC,entity,US
 M-0488,Brazos Bend Resin Distributors Inc.,entity,US
 M-0489,Piedmont Triad Upholstery Supply Co.,entity,US
 M-0490,Housatonic Precision Springs Inc.,entity,US
-M-0491,Megan Kowalczyk,person,US
+M-0491,Kowalczyk Textiles LLC,entity,US
 M-0492,Okanagan Orchard Exporters Ltd.,entity,CA
 M-0493,Rimouski Seafood Processors Inc.,entity,CA
 M-0494,Calcados Vale do Paranhana Ltda,entity,BR
@@ -509,7 +509,7 @@ M-0507,Kroes Machinebouw Emmen B.V.,entity,NL
 M-0508,Kwekerij De Hoge Akker B.V.,entity,NL
 M-0509,Gebr. Ooms Kunstmesthandel B.V.,entity,NL
 M-0510,Driekus,vessel,NL
-M-0511,Joost Wagenvoort,person,NL
+M-0511,Wagenvoort Machinery B.V.,entity,NL
 M-0512,Kempense Zandgroeve NV,entity,BE
 M-0513,Galvanisation Hoyoux SA,entity,BE
 M-0514,Möbelwerkstätten Ostwestfalen Tenge GmbH,entity,DE
@@ -518,7 +518,7 @@ M-0516,ROSTOCKER GETREIDELAGER GMBH,entity,DE
 M-0517,Speditionskontor Altenwerder GmbH,entity,DE
 M-0518,Beschlage Hohenlohe GmbH & Co KG,entity,DE
 M-0519,Kaub,vessel,DE
-M-0520,Frauke Heidbrink,person,DE
+M-0520,Heidbrink Packaging GmbH,entity,DE
 M-0521,Faiencerie du Bas-Berry,entity,FR
 M-0522,Semences Plaine du Lauragais S.A.,entity,FR
 M-0523,Transitaire Portuaire Mazargues SARL,entity,FR
@@ -526,7 +526,7 @@ M-0524,Boulonnerie de la Haute-Marne SAS,entity,FR
 M-0525,Carrick Linen Weavers Ltd,entity,GB
 M-0526,Deeside Pipe Supports Ltd,entity,GB
 M-0527,Achill Sound Seafood Processors Ltd,entity,IE
-M-0528,Sinéad Ní Bhriain,person,IE
+M-0528,Bhriain Chemicals Ltd,entity,IE
 M-0529,Aislamientos Termicos Navarra SA,entity,ES
 M-0530,Azulejos Castellón Vilafamés S.L.,entity,ES
 M-0531,Mobilificio Brianza Cantu Srl,entity,IT
@@ -541,7 +541,7 @@ M-0539,Kotlarna Frydlant s.r.o.,entity,CZ
 M-0540,Tkáčovna Vrchlabí a.s.,entity,CZ
 M-0541,Poľnohospodárske družstvo Záhorie,entity,SK
 M-0542,Gyori Csomagolastechnika Kft,entity,HU
-M-0543,Eszter Bárdossy,person,HU
+M-0543,Bárdossy Timber Kft.,entity,HU
 M-0544,Fabrica de Mobila Suceava SRL,entity,RO
 M-0545,Zagorje Tekstil d.o.o.,entity,HR
 M-0546,"Yixing Zisha Ceramic Crafts Co., Ltd.",entity,CN
@@ -558,13 +558,13 @@ M-0556,"Senshu Towel Weaving Co., Ltd.",entity,JP
 M-0557,"Gumi Display Components Co., Ltd.",entity,KR
 M-0558,Kwun Tong Garment Sourcing Limited Flat C 9/F,entity,HK
 M-0559,Fu Hui Lin,vessel,HK
-M-0560,Kuo Chia-hao,person,TW
+M-0560,"Chia-hao Metals Co., Ltd",entity,TW
 M-0561,Bhiwandi Logistics Parks Pvt. Ltd.,entity,IN
 M-0562,Surat Viscose Weavers Pvt Ltd,entity,IN
 M-0563,Thoothukudi Salt Works Pvt. Ltd.,entity,IN
 M-0564,GAZIPUR SWEATER INDUSTRIES LTD,entity,BD
 M-0565,Nuwara Eliya Highland Tea (Pvt) Ltd,entity,LK
-M-0566,Tharindu Senevirathna,person,LK
+M-0566,Senevirathna Marine (Pvt) Ltd,entity,LK
 M-0567,Binh Duong Paper Packaging JSC,entity,VN
 M-0568,Songkhla Rubber Wood Co. Ltd,entity,TH
 M-0569,Cebu Rattan Furniture Makers Inc.,entity,PH
@@ -573,7 +573,7 @@ M-0571,Karaman Bisküvi Gıda San. A.Ş.,entity,TR
 M-0572,KAHRAMANMARAS IPLIK TEKSTIL AS,entity,TR
 M-0573,Muğla Mermer Ocakları A.Ş.,entity,TR
 M-0574,Sakarya Oto Koltuk San. A.Ş.,entity,TR
-M-0575,Selin Akyürek,person,TR
+M-0575,Akyürek Components A.S.,entity,TR
 M-0576,Pearl Coast Joinery W.L.L.,entity,QA
 M-0577,Salalah Freight Agency LLC PO Box 1180 PC 211,entity,OM
 M-0578,Shuwaikh Port Clearing Co. W.L.L.,entity,KW
@@ -596,7 +596,7 @@ M-0594,Fiação Itajaí Ltda.,entity,BR
 M-0595,Marmores e Granitos Cachoeiro Ltda,entity,BR
 M-0596,Arrocera del Norte Santafesino S.A.,entity,AR
 M-0597,Fruticola Valle de Aconcagua SA,entity,CL
-M-0598,Valentina Echeverry Ossa,person,CO
+M-0598,Ossa Distribution S.A.S.,entity,CO
 M-0599,Pedasí Horizon,vessel,PA
 M-0600,Abaco Breeze,vessel,BS
 M-0601,Oudewater Touwslagerij B.V.,entity,NL
@@ -608,7 +608,7 @@ M-0606,Scheepsbevrachtingskantoor Ruygrok B.V.,entity,NL
 M-0607,Friese Vlasserij Makkinga B.V.,entity,NL
 M-0608,Nijmeegse Handelsbank N.V.,entity,NL
 M-0609,Maasheuvel,vessel,NL
-M-0610,Annelies Veldkamp,person,NL
+M-0610,Veldkamp Logistics B.V.,entity,NL
 M-0611,Mechelse Meubelmakerij Janssens-Wouters BV,entity,BE
 M-0612,Verreries Reunies de Jumet SA,entity,BE
 M-0613,Durme,vessel,BE
@@ -618,7 +618,7 @@ M-0616,Obstkelterei Bodenseekreis GmbH,entity,DE
 M-0617,Holzhandel Schwarzwald-Baar GmbH,entity,DE
 M-0618,Logistikzentrum Hamm-Uentrop GmbH Lagerstr. 9,entity,DE
 M-0619,Elbufer Handelsbank AG,entity,DE
-M-0620,Florian Weissenborn,person,DE
+M-0620,Weissenborn Trading GmbH,entity,DE
 M-0621,Papeteries de la Vologne SA,entity,FR
 M-0622,Salaisons du Haut-Doubs Sarl,entity,FR
 M-0623,Estampage Thiernois SAS,entity,FR
@@ -629,7 +629,7 @@ M-0627,Galway Bay Medical Plastics Ltd,entity,IE
 M-0628,Hilaturas del Ter SA,entity,ES
 M-0629,Quesos Artesanos Picos de Urbión S.L.,entity,ES
 M-0630,Conserve Vegetali Piana del Sele S.p.A.,entity,IT
-M-0631,Giorgia Ferracuti,person,IT
+M-0631,Ferracuti Foods S.r.l.,entity,IT
 M-0632,Porcelanas Vista do Vouga Lda,entity,PT
 M-0633,Basilea Nova,vessel,CH
 M-0634,Mellieha Bay,vessel,MT
@@ -639,7 +639,7 @@ M-0637,Odlewnia Żeliwa Nysa Kłodzka Sp. z o.o.,entity,PL
 M-0638,Opakowania Tekturowe Bystrzyca Sp. z o.o.,entity,PL
 M-0639,Vinne sklepy Palava s.r.o.,entity,CZ
 M-0640,Strojárne Hornád s.r.o.,entity,SK
-M-0641,Katarína Hudecová,person,SK
+M-0641,Hudecová Textiles s.r.o.,entity,SK
 M-0642,Zalai Hutohaz Kft,entity,HU
 M-0643,AGENTIA DE NAVLOSIRE TOMIS SRL,entity,RO
 M-0644,UAB Kuršių Krova,entity,LT
@@ -652,7 +652,7 @@ M-0650,"Dezhou Ruiyang Solar Heaters Co., Ltd.",entity,CN
 M-0651,"Fuqing Honglu Food Co., Ltd.",entity,CN
 M-0652,"Lishui Songyang Tea Co., Ltd.",entity,CN
 M-0653,"Baoding Mancheng Paper Co., Ltd.",entity,CN
-M-0654,Qiu Haoran,person,CN
+M-0654,"Haoran Machinery Co., Ltd",entity,CN
 M-0655,"Sakai Hamono Kobo Co., Ltd.",entity,JP
 M-0656,"Kojima Indigo Weaving Co., Ltd.",entity,JP
 M-0657,"Ulsan Hwaseong Valve Co., Ltd.",entity,KR
@@ -666,14 +666,14 @@ M-0664,SAVAR KNITWEAR LTD,entity,BD
 M-0665,Công ty Cổ phần Gạo Trà Ôn,entity,VN
 M-0666,"Ayutthaya Canned Fruit Co., Ltd.",entity,TH
 M-0667,Muar Furniture Components Sdn. Bhd.,entity,MY
-M-0668,Kavitha Subramaniam,person,MY
+M-0668,Subramaniam Packaging Sdn. Bhd.,entity,MY
 M-0669,PT Tekstil Bandung Raya Sentosa,entity,ID
 M-0670,Toa Payoh Voyager,vessel,SG
 M-0671,Ordu Findik Ihracat AS,entity,TR
 M-0672,Bartın Orman Ürünleri Ltd. Şti.,entity,TR
 M-0673,Aksaray Tarım Ekipmanları A.Ş.,entity,TR
 M-0674,DUZCE AMBALAJ KAGIT SAN AS,entity,TR
-M-0675,Mert Kılıçaslan,person,TR
+M-0675,Kılıçaslan Chemicals A.S.,entity,TR
 M-0676,Coral Reef Steel Fabrication L.L.C.,entity,AE
 M-0677,Hofuf Dates Packing Co.,entity,SA
 M-0678,Ashdod Coast Customs Brokers Ltd file 7741-B,entity,IL
@@ -681,7 +681,7 @@ M-0679,Olives de Table du Saïss SARL,entity,MA
 M-0680,Sidama Highland Coffee Exporters PLC,entity,ET
 M-0681,Takoradi Timber Mouldings Ltd,entity,GH
 M-0682,Nacala Cashew Processors Lda,entity,MZ
-M-0683,Wanjiru Muthoni,person,KE
+M-0683,Muthoni Timber Ltd,entity,KE
 M-0684,Ithaki Dawn,vessel,LR
 M-0685,Samothraki,vessel,LR
 M-0686,Susquehanna Millwork Supply Inc.,entity,US
@@ -708,10 +708,10 @@ M-0706,Noordkaap Visverwerking Urk B.V.,entity,NL
 M-0707,Hofman Rozenkwekerij Aalsmeer B.V.,entity,NL
 M-0708,Kanaal Zuid Tankterminal B.V.,entity,NL
 M-0709,Schokland,vessel,NL
-M-0710,Thijs Oudshoorn,person,NL
+M-0710,Oudshoorn Metals B.V.,entity,NL
 M-0711,Verzekeringskantoor Dewaele-Pauwels NV,entity,BE
 M-0712,Carrières du Condroz SA,entity,BE
-M-0713,Anneke Brugmans,person,BE
+M-0713,Brugmans Marine NV,entity,BE
 M-0714,Ardennes Logistique Wiltz Sarl,entity,LU
 M-0715,Schraubenwerk Ennepetal GmbH,entity,DE
 M-0716,Zuckerwarenfabrik Luneburger Heide GmbH,entity,DE
@@ -719,7 +719,7 @@ M-0717,PUMPENBAU SIEGERLAND GMBH,entity,DE
 M-0718,Frachtkontor Nord-Ostsee GmbH,entity,DE
 M-0719,Spinnerei Frankenwald GmbH,entity,DE
 M-0720,Hiddensee,vessel,DE
-M-0721,Rainer Kohlhepp,person,DE
+M-0721,Kohlhepp Components GmbH,entity,DE
 M-0722,Conserverie de la Presqu'île de Rhuys SAS,entity,FR
 M-0723,Plasturgie Jurassienne SA,entity,FR
 M-0724,Menuiseries Industrielles du Poitou SAS,entity,FR
@@ -739,7 +739,7 @@ M-0737,Zaklad Srub i Wkretow Wadowice Sp z oo,entity,PL
 M-0738,Galanteria Drzewna Mazury S.A.,entity,PL
 M-0739,Porcelán Slavkovský les s.r.o.,entity,CZ
 M-0740,Upravna Textilu Tanvald s.r.o.,entity,CZ
-M-0741,Lukáš Dvořáček,person,CZ
+M-0741,Dvořáček Distribution s.r.o.,entity,CZ
 M-0742,Obalová technika Žilina s.r.o.,entity,SK
 M-0743,Nyirsegi Almafeldolgozo Kft,entity,HU
 M-0744,Zlatna Dobrudzha Grain AD,entity,BG
@@ -757,14 +757,14 @@ M-0755,Ning Xiang Yun,vessel,CN
 M-0756,"Sanjo Forged Tools Co., Ltd.",entity,JP
 M-0757,"Kanuma Joinery Works Co., Ltd.",entity,JP
 M-0758,"Pohang Coil Center Co., Ltd.",entity,KR
-M-0759,Seo Min-jae,person,KR
+M-0759,"Min-jae Logistics Co., Ltd",entity,KR
 M-0760,Heng An Da,vessel,HK
 M-0761,Karnal Basmati Millers Pvt. Ltd.,entity,IN
 M-0762,Morbi Vitrified Tiles Pvt Ltd,entity,IN
 M-0763,Aligarh Hardware and Locks Pvt. Ltd.,entity,IN
 M-0764,Hooghly Riverside Jute Mills Ltd.,entity,IN
 M-0765,ASHULIA WOVEN GARMENTS LTD,entity,BD
-M-0766,Farhana Chowdhury,person,BD
+M-0766,Chowdhury Trading Ltd,entity,BD
 M-0767,Da Nang Seafood Processing JSC,entity,VN
 M-0768,"Trang Rubber Sheet Co., Ltd.",entity,TH
 M-0769,PT Furnitur Klaten Abadi,entity,ID
@@ -773,7 +773,7 @@ M-0771,Isparta Halı Kilim A.Ş.,entity,TR
 M-0772,Artvin Bal ve Arıcılık Ltd. Şti.,entity,TR
 M-0773,BOLU KANATLI YEM SAN AS,entity,TR
 M-0774,Edirne Pirinc Fabrikasi AS,entity,TR
-M-0775,Tuğba Erkoçlar,person,TR
+M-0775,Erkoçlar Foods A.S.,entity,TR
 M-0776,Creekside Cargo Services L.L.C. PO Box 48821,entity,AE
 M-0777,Sitra Aluminium Rolling W.L.L.,entity,BH
 M-0778,Irbid Pharmaceutical Packaging Co.,entity,JO
@@ -788,7 +788,7 @@ M-0786,ALLEGHENY PLATE ROLLING INC,entity,US
 M-0787,Monterey Bay Produce Exporters LLC,entity,US
 M-0788,Great Smoky Hardwood Kilns Inc.,entity,US
 M-0789,Merrimack Specialty Fibers Inc.,entity,US
-M-0790,Travis Hollingsworth,person,US
+M-0790,Hollingsworth Textiles LLC,entity,US
 M-0791,Chesapeake Pathfinder,vessel,US
 M-0792,Saint-Hyacinthe Pork Processors Inc.,entity,CA
 M-0793,Chilliwack Blueberry Growers Ltd.,entity,CA
@@ -808,12 +808,12 @@ M-0806,Beneluxhaven Containerdepot B.V. Moezelweg 150,entity,NL
 M-0807,Diervoeders De Peel B.V.,entity,NL
 M-0808,Expeditiekantoor Kempenaar B.V.,entity,NL
 M-0809,Veluwezoom,vessel,NL
-M-0810,Bram Doornbos,person,NL
+M-0810,Doornbos Machinery B.V.,entity,NL
 M-0811,Leiesteden Vlasspinnerij NV,entity,BE
 M-0812,Mouterij Haspengouw NV,entity,BE
 M-0813,Hainaut Charpentes Metalliques SA,entity,BE
 M-0814,Rupelmonde,vessel,BE
-M-0815,Nathalie Vanhecke,person,BE
+M-0815,Vanhecke Packaging NV,entity,BE
 M-0816,Kaltetechnik Vorpommern GmbH,entity,DE
 M-0817,Spielwaren Neufang GmbH,entity,DE
 M-0818,Stahlhandel Ruhrort GmbH,entity,DE
@@ -831,7 +831,7 @@ M-0829,Tejidos Tecnicos Alcoy SL,entity,ES
 M-0830,Conceria Valdinievole S.r.l.,entity,IT
 M-0831,Vetreria Artigiana Altamura S.r.l.,entity,IT
 M-0832,Sägerei Emmental AG,entity,CH
-M-0833,Ines Wolfsteiner,person,AT
+M-0833,Wolfsteiner Chemicals GmbH,entity,AT
 M-0834,Xlendi Bay,vessel,MT
 M-0835,Ingrid Tveit,vessel,NO
 M-0836,Tartak Borowiec Sp. z o.o.,entity,PL
@@ -840,7 +840,7 @@ M-0838,Chladírny Olomouc a.s.,entity,CZ
 M-0839,Pila Sumava s.r.o.,entity,CZ
 M-0840,MLYNY GEMER SRO,entity,SK
 M-0841,Bacskai Takarmany Kft,entity,HU
-M-0842,Dragoș Munteanu,person,RO
+M-0842,Munteanu Timber S.R.L.,entity,RO
 M-0843,Melnik Valley Wines AD,entity,BG
 M-0844,Istarski Kamen d.o.o.,entity,HR
 M-0845,Pelješac,vessel,HR
@@ -855,15 +855,15 @@ M-0853,"Heze Tongmu Paulownia Products Co., Ltd.",entity,CN
 M-0854,Xiang Tai Feng,vessel,CN
 M-0855,"Mino Seki Hamono Co., Ltd.",entity,JP
 M-0856,"Tajimi Tile Works Co., Ltd.",entity,JP
-M-0857,Hiroko Nishimaki,person,JP
+M-0857,"Nishimaki Metals Co., Ltd",entity,JP
 M-0858,"Jinju Bidan Silk Co., Ltd.",entity,KR
 M-0859,Chai Wan Cargo Handling Limited ref CW-2024-5519,entity,HK
-M-0860,Chang Yuan Bao,vessel,HK
+M-0860,Dong Hai Star,vessel,HK
 M-0861,Bhadohi Carpet Weavers Pvt. Ltd.,entity,IN
 M-0862,Ludhiana Woollen Knitwear Pvt Ltd,entity,IN
 M-0863,Guntur Red Chilli Traders Pvt. Ltd.,entity,IN
 M-0864,Alappuzha Coir Mattings Pvt. Ltd.,entity,IN
-M-0865,Anjali Kulkarni,person,IN
+M-0865,Kulkarni Marine Pvt Ltd,entity,IN
 M-0866,MYMENSINGH JUTE SPINNERS LTD,entity,BD
 M-0867,Can Tho Frozen Pangasius JSC,entity,VN
 M-0868,PT Kerajinan Rotan Tasikmalaya,entity,ID
@@ -874,7 +874,7 @@ M-0872,Tokat Bakır İşleme Ltd. Şti.,entity,TR
 M-0873,SIVAS KAGIT TORBA SAN AS,entity,TR
 M-0874,Aydin Incir Ihracat Ltd Sti,entity,TR
 M-0875,Kırklareli Cam Şişe San. A.Ş.,entity,TR
-M-0876,Eren Başaran,person,TR
+M-0876,Başaran Components A.S.,entity,TR
 M-0877,Jazan Mango Growers Co.,entity,SA
 M-0878,Rehovot Citrus Growers Ltd,entity,IL
 M-0879,Conserves de Sardines de Safi SA,entity,MA
@@ -896,7 +896,7 @@ M-0894,Curtiembre Rio Negro Oriental SA,entity,UY
 M-0895,Cooperativa Agroindustrial Norte Paranaense,entity,BR
 M-0896,Vina Loma del Cachapoal SA,entity,CL
 M-0897,Flores de Cayambe S.A.,entity,EC
-M-0898,Joaquín Arrieta Solís,person,AR
+M-0898,Solís Distribution S.A.,entity,AR
 M-0899,Coiba Egret,vessel,PA
 M-0900,Bimini Gannet,vessel,BS
 M-0901,Verheul & Roozendaal Bouwmaterialen B.V.,entity,NL
@@ -907,7 +907,7 @@ M-0905,Delfzijl Zoutopslag B.V. Oosterhorn 12,entity,NL
 M-0906,Sassenheim Bloembollen Handelmaatschappij B.V.,entity,NL
 M-0907,Stichtse Verzekeringsmaatschappij N.V.,entity,NL
 M-0908,Lingestroom,vessel,NL
-M-0909,Merel Kooijmans,person,NL
+M-0909,Kooijmans Logistics B.V.,entity,NL
 M-0910,Brugse Chocolade Ateliers Vermeersch BV,entity,BE
 M-0911,Fonderie Mosane Dethier SA,entity,BE
 M-0912,Keramikwerk Westerwald Ransbach GmbH,entity,DE
@@ -916,12 +916,12 @@ M-0914,Rohkaffee Kontor Wandsbek GmbH,entity,DE
 M-0915,LANDTECHNIK EMSBUREN GMBH,entity,DE
 M-0916,Befrachtungskontor Weener GmbH,entity,DE
 M-0917,Marbach,vessel,DE
-M-0918,Birgit Lohrmann,person,DE
+M-0918,Lohrmann Trading GmbH,entity,DE
 M-0919,Cidrerie du Pays de Caux SAS,entity,FR
 M-0920,Ateliers de Chaudronnerie Vendéens,entity,FR
 M-0921,Textiles Techniques du Cambresis SA,entity,FR
 M-0922,Transports Routiers Arnaud-Vidalenc Sarl,entity,FR
-M-0923,Gilles Fontanarosa,person,FR
+M-0923,Fontanarosa Foods SARL,entity,FR
 M-0924,Cotswold Grain Merchants Ltd,entity,GB
 M-0925,LANARKSHIRE STEEL STOCKHOLDERS LTD,entity,GB
 M-0926,Avonmouth Timber Wharf Ltd,entity,GB
@@ -937,7 +937,7 @@ M-0935,Tinos Ermis,vessel,GR
 M-0936,Przetwórnia Rybna Ustka Sp. z o.o.,entity,PL
 M-0937,Meble Kaszubskie Sp. z o.o.,entity,PL
 M-0938,Opakowania Blaszane Sandomierz S.A.,entity,PL
-M-0939,Agnieszka Szczepaniak-Wróbel,person,PL
+M-0939,Szczepaniak-Wróbel Textiles Sp. z o.o.,entity,PL
 M-0940,Brusirna skla Kamenicky Senov s.r.o.,entity,CZ
 M-0941,Zamecnictvi Prostejov s.r.o.,entity,CZ
 M-0942,Lesy Podpoľanie s.r.o.,entity,SK
@@ -954,7 +954,7 @@ M-0952,"Anxi Xiping Oolong Tea Co., Ltd.",entity,CN
 M-0953,"Nanjing Liuhe Conveyor Belt Co., Ltd.",entity,CN
 M-0954,"Fuyang Chunjiang Paperboard Co., Ltd.",entity,CN
 M-0955,"Zhuanghe Blueberry Processing Co., Ltd.",entity,CN
-M-0956,Luo Xiaohui,person,CN
+M-0956,"Xiaohui Machinery Co., Ltd",entity,CN
 M-0957,Da Xin Hua,vessel,CN
 M-0958,"Keelung Harbor Forwarding Co., Ltd. 5F No. 17 Gangxi St",entity,TW
 M-0959,Yuen Long Food Packaging Limited,entity,HK
@@ -963,7 +963,7 @@ M-0961,Erode Handloom Towels Pvt. Ltd.,entity,IN
 M-0962,Kakinada Shrimp Exporters Pvt Ltd,entity,IN
 M-0963,Jodhpur Sheesham Furniture Pvt. Ltd.,entity,IN
 M-0964,Vaniyambadi Tannery Pvt. Ltd.,entity,IN
-M-0965,Meera Iyengar,person,IN
+M-0965,Iyengar Packaging Pvt Ltd,entity,IN
 M-0966,NARSINGDI TEXTILE DYEING LTD,entity,BD
 M-0967,Bat Trang Pottery Export JSC,entity,VN
 M-0968,"Chiang Mai Celadon Ware Co., Ltd.",entity,TH
@@ -973,7 +973,7 @@ M-0971,NAZILLI PAMUK IPLIK SAN AS,entity,TR
 M-0972,Malatya Kayısı İhracat Ltd. Şti.,entity,TR
 M-0973,İnegöl Mobilya Kapı A.Ş.,entity,TR
 M-0974,Dilovasi Boya Kimya San AS,entity,TR
-M-0975,Hande Gürsoy,person,TR
+M-0975,Gürsoy Chemicals A.S.,entity,TR
 M-0976,Mussafah Steel Stockists L.L.C. Plot M-26,entity,AE
 M-0977,Khobar Seaside Furniture Co.,entity,SA
 M-0978,Sabhan Cold Storage Co. W.L.L.,entity,KW
@@ -989,7 +989,7 @@ M-0987,Yamhill Hazelnut Packers LLC,entity,US
 M-0988,Hibbing Industrial Fasteners Inc.,entity,US
 M-0989,Altamaha Pine Products LLC,entity,US
 M-0990,Miami Valley Tool & Gauge Inc.,entity,US
-M-0991,Derek Lindqvist,person,US
+M-0991,Lindqvist Timber LLC,entity,US
 M-0992,Grand River Food Ingredients Ltd.,entity,CA
 M-0993,Petitcodiac Seafood Exporters Ltd.,entity,CA
 M-0994,Cerealista Vale do Taquari Ltda.,entity,BR

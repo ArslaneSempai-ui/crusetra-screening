@@ -10,13 +10,18 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import "./cribler.ts"; // loads the engine modules in their working order before src/complement-ue.ts reads the preparation
+import { raisonDAbsence, lirePrive, jeuPresent } from "./jeux.ts";
 import {
-  LIGNES_2193, entreesComplementUe, sansCeuxDuFlux, numerosEnTexte, URL_2193, CELEX_2193, LU_LE_2193, DATE_INSCRIPTION_2193, idComplement,
+  LIGNES_2193, CHEMIN_LIGNES_2193, entreesComplementUe, sansCeuxDuFlux, numerosEnTexte, URL_2193, CELEX_2193, LU_LE_2193, DATE_INSCRIPTION_2193, idComplement,
 } from "./complement-ue.ts";
 import type { EntreeListe } from "./listes.ts";
+import type { LigneComplement } from "./complement-ue.ts";
 
 const ICI = fileURLToPath(new URL(".", import.meta.url));
-const texte = readFileSync(join(ICI, "fixtures", "ue-2026-2193-annex-iv.txt"), "utf8");
+const CHEMIN_TEXTE = "src/fixtures/ue-2026-2193-annex-iv.txt";
+/* The ten rows and the verbatim text name natural persons: they are in the private repository (src/jeux.ts), and the tests that read them skip without it. */
+const SANS: string | false = raisonDAbsence(CHEMIN_LIGNES_2193, CHEMIN_TEXTE);
+const texte = jeuPresent(CHEMIN_TEXTE) ? lirePrive(CHEMIN_TEXTE) : "";
 const source = JSON.parse(readFileSync(join(ICI, "fixtures", "ue-2026-2193-source.json"), "utf8")) as Record<string, string | number>;
 const lignesDuTexte = texte.split("\n");
 
@@ -35,12 +40,12 @@ test("the fixture names the document it was cut from: address, sha256 of the who
   assert.match(String(source.sha256), /^[0-9a-f]{64}$/);
 });
 
-test("the supplement holds exactly entries 99 to 108, ten natural persons", () => {
+test("the supplement holds exactly entries 99 to 108, ten natural persons", { skip: SANS }, () => {
   assert.deepEqual(LIGNES_2193.map((l) => l.entree), [99, 100, 101, 102, 103, 104, 105, 106, 107, 108]);
   assert.match(texte, /^In\sAnnex\sIV\sto\sRegulation\s\(EU\)\s2024\/1485,\sthe\sfollowing\sentries\sare\sadded\sunder\sthe\sheading\s‘A\.\sNatural\spersons’:/);
 });
 
-test("every transcribed name, alias and date of birth occurs verbatim in the fixture, inside its own entry", () => {
+test("every transcribed name, alias and date of birth occurs verbatim in the fixture, inside its own entry", { skip: SANS }, () => {
   for (const l of LIGNES_2193) {
     const b = bloc(l.entree);
     assert.ok(b.includes(l.nom), `entry ${l.entree}: name "${l.nom}" is a line of its entry`);
@@ -51,7 +56,7 @@ test("every transcribed name, alias and date of birth occurs verbatim in the fix
   }
 });
 
-test("nothing is carried that the text does not print: no entry has more aliases than the one printed form, and the entries are the ten of the text", () => {
+test("nothing is carried that the text does not print: no entry has more aliases than the one printed form, and the entries are the ten of the text", { skip: SANS }, () => {
   const nomsImprimes = lignesDuTexte.filter((l) => /^[A-Z][A-Za-z]+ [A-Z][A-Za-z]+ [A-Z]{3,}$/.test(l));
   assert.deepEqual(LIGNES_2193.map((l) => l.nom), nomsImprimes);
   for (const l of LIGNES_2193) assert.equal(l.alias.length, 1);
@@ -59,7 +64,7 @@ test("nothing is carried that the text does not print: no entry has more aliases
   assert.equal(bracketed.length, LIGNES_2193.length);
 });
 
-test("each entry carries its source (CELEX, annex, entry number, day read) and a stable id", () => {
+test("each entry carries its source (CELEX, annex, entry number, day read) and a stable id", { skip: SANS }, () => {
   for (const e of entreesComplementUe()) {
     assert.equal(e.source, "EU");
     assert.equal(e.type, "person");
@@ -72,32 +77,38 @@ test("each entry carries its source (CELEX, annex, entry number, day read) and a
 });
 
 /* ───────────── "the same entry": the act's number in the feed AND the same name under the engine's preparation ───────────── */
-
+/* The mechanism is tested on invented entries that are on no list. */
+const SYNTH: LigneComplement[] = [
+  { entree: 99, nom: "Qwerty Zxcvbn Fixtureone", alias: [], naissance: "1.1.1970" },
+  { entree: 100, nom: "Asdfgh Jklpoi Fixturetwo", alias: [], naissance: "2.2.1971" },
+];
 const deFlux = (id: string, nom: string, reglements: string[] | undefined, alias: string[] = []): EntreeListe =>
   ({ source: "EU", id, nom, alias, type: "person", ...(reglements ? { reglements } : {}) });
-const entree99 = () => entreesComplementUe().filter((e) => e.complement!.entree === 99);
-const reste = (flux: EntreeListe[]) => sansCeuxDuFlux(entreesComplementUe(), flux).dansLeFlux.map((e) => e.complement!.entree);
+const reste = (flux: EntreeListe[]) => sansCeuxDuFlux(entreesComplementUe(SYNTH), flux).dansLeFlux.map((e) => e.complement!.entree);
+
+test("the supplement is empty, not broken, when the private rows are absent", { skip: jeuPresent(CHEMIN_LIGNES_2193) ? "the private rows are present" : false }, () => {
+  assert.deepEqual(entreesComplementUe(), []);
+});
 
 test("same entry: the act's number and the same name, whatever the case, the word order or the alias it sits in", () => {
-  assert.deepEqual(reste([deFlux("1", "[name removed]", ["2026/2193 (OJ L, 2026/2193, 28.9.2026)"])]), [99]);
-  assert.deepEqual(reste([deFlux("1", "Ganotuna Tunakagamu Mipemilili", ["2026/2193 (OJ L)"])]), [99]);
-  assert.deepEqual(reste([deFlux("1", "Someone Else", ["833/2014 (OJ L229)", "2026/2193 (OJ L)"], ["[name removed]"])]), [99]);
+  assert.deepEqual(reste([deFlux("1", "Qwerty Zxcvbn FIXTUREONE", ["2026/2193 (OJ L, 2026/2193, 28.9.2026)"])]), [99]);
+  assert.deepEqual(reste([deFlux("1", "Fixtureone Qwerty Zxcvbn", ["2026/2193 (OJ L)"])]), [99]);
+  assert.deepEqual(reste([deFlux("1", "Someone Else", ["833/2014 (OJ L229)", "2026/2193 (OJ L)"], ["qwerty zxcvbn fixtureone"])]), [99]);
 });
 
 test("not the same entry: the name under another act, the act with another name, an act number that only starts alike, a feed without regulations", () => {
-  assert.deepEqual(reste([deFlux("1", "[name removed]", ["833/2014 (OJ L229)"])]), []);
-  assert.deepEqual(reste([deFlux("1", "[name removed]", undefined)]), []);
+  assert.deepEqual(reste([deFlux("1", "Qwerty Zxcvbn FIXTUREONE", ["833/2014 (OJ L229)"])]), []);
+  assert.deepEqual(reste([deFlux("1", "Qwerty Zxcvbn FIXTUREONE", undefined)]), []);
   assert.deepEqual(reste([deFlux("1", "Somebody Unrelated Person", ["2026/2193 (OJ L)"])]), []);
-  assert.deepEqual(reste([deFlux("1", "[name removed]", ["2026/21930 (OJ L)"])]), []);
-  assert.deepEqual(reste([deFlux("1", "[name removed]", ["2025/2193 (OJ L)"])]), []);
+  assert.deepEqual(reste([deFlux("1", "Qwerty Zxcvbn FIXTUREONE", ["2026/21930 (OJ L)"])]), []);
+  assert.deepEqual(reste([deFlux("1", "Qwerty Zxcvbn FIXTUREONE", ["2025/2193 (OJ L)"])]), []);
 });
 
 test("a supplement entry is never dropped because of another supplement entry", () => {
-  const supp = entreesComplementUe();
+  const supp = entreesComplementUe(SYNTH);
   const { gardees, dansLeFlux } = sansCeuxDuFlux(supp, supp);
-  assert.equal(gardees.length, 10);
+  assert.equal(gardees.length, 2);
   assert.equal(dansLeFlux.length, 0);
-  assert.equal(entree99().length, 1);
 });
 
 test("numerosEnTexte", () => {

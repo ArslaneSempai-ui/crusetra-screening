@@ -23,7 +23,7 @@ export const JEUX_DU_CRIBLAGE: readonly string[] = [...APPRENTISSAGE, "src/paire
 
 /** The paths (relative to the repository root) that moved to the private repository. */
 export const CHEMIN_PRIVE =
-  /^(?:src\/paires-(?:etiquetees|entites(?:-\d+)?|gleif-apprentissage(?:-juges)?)\.json|verification\/(?:paires-gleif(?:-\d+)?(?:-juges)?|paires-entites-verdict)\.json)$/;
+  /^(?:src\/complement-ue-lignes\.json|src\/fixtures\/ue-2026-2193-annex-iv\.txt|src\/paires-(?:etiquetees|entites(?:-\d+)?|gleif-apprentissage(?:-juges)?)\.json|verification\/(?:paires-gleif(?:-\d+)?(?:-juges)?|paires-entites-verdict)\.json)$/;
 
 export const estPrive = (rel: string): boolean => CHEMIN_PRIVE.test(rel);
 

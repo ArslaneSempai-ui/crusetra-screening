@@ -14,8 +14,14 @@ import { fileURLToPath } from "node:url";
 import { executer, versCsv } from "./cribler.ts";
 import { analyser, fichierDe, SOURCES, type LigneManifeste, type Manifeste } from "./listes.ts";
 import { raisonDAbsence, JEUX_DU_CRIBLAGE } from "./jeux.ts";
+import { LIGNES_2193, CHEMIN_LIGNES_2193 } from "./complement-ue.ts";
 /* Le criblage choisit ses seuils sur les jeux d'apprentissage, qui sont PRIVÉS (src/jeux.ts) : sans eux il refuse, et ces épreuves sont sautées. */
-const SANS_JEUX = raisonDAbsence(...JEUX_DU_CRIBLAGE);
+const SANS_JEUX = raisonDAbsence(...JEUX_DU_CRIBLAGE, CHEMIN_LIGNES_2193);
+/* Entry 99 of the act names a natural person: its name comes from the private rows, never from this file. */
+const NOM99 = LIGNES_2193[0]?.nom ?? "";
+const FAMILLE99 = NOM99.split(" ").pop() ?? "";
+const EN_MAJ = NOM99.split(" ").slice(0, -1).join(" ") + " " + FAMILLE99.toUpperCase();
+const EN_MIN = NOM99.split(" ").map((m) => m[0] + m.slice(1).toLowerCase()).join(" ");
 
 const ICI = fileURLToPath(new URL(".", import.meta.url));
 const OFAC = readFileSync(join(ICI, "fixtures", "ofac.xml"), "utf8");
@@ -52,7 +58,7 @@ function ligne(source: "OFAC" | "EU", texte: string, plus: Record<string, unknow
   } as LigneManifeste;
 }
 
-/** Screen "[name removed]" against a throwaway root whose EU file holds `entites`; the candidates found. */
+/** Screen the name of entry 99 against a throwaway root whose EU file holds `entites`; the candidates found. */
 function criblageDe(entites: [string, string][]) {
   const dossier = realpathSync(mkdtempSync(join(tmpdir(), "complement-ue-")));
   racines.push(dossier);
@@ -67,26 +73,26 @@ function criblageDe(entites: [string, string][]) {
   writeFileSync(join(dossier, "listes-manifest.json"), JSON.stringify(m, null, 2) + "\n");
   mkdirSync(join(dossier, "run"));
   const fichier = join(dossier, "run", "contreparties.csv");
-  writeFileSync(fichier, "name\nVyacheslav Mipemilili Ganotuna\n");
+  writeFileSync(fichier, `name\n${EN_MIN}\n`);
   return executer(fichier, undefined, MAINTENANT, undefined, { racine: dossier }).criblage;
 }
-const candidats = (entites: [string, string][]) => criblageDe(entites).resultats[0]!.candidats.filter((c) => /ganotuna/i.test(c.nomListe));
+const candidats = (entites: [string, string][]) => criblageDe(entites).resultats[0]!.candidats.filter((c) => new RegExp(FAMILLE99, "i").test(c.nomListe));
 
 test("witness: a name from entry 99 of Regulation 2026/2193 is found while the EU feed does not carry it", { skip: SANS_JEUX }, () => {
   const trouves = candidats([]);
-  assert.equal(trouves.length, 1, `expected one hit for Ganotuna, got ${trouves.length}`);
+  assert.equal(trouves.length, 1, `expected one hit for entry 99, got ${trouves.length}`);
   assert.equal(trouves[0]!.source, "EU");
 });
 
 test("witness: a feed that carries the same entry yields one hit, not two", { skip: SANS_JEUX }, () => {
-  const trouves = candidats([["2026/2193 (OJ L, 2026/2193, 28.9.2026)", "[name removed]"]]);
-  assert.equal(trouves.length, 1, `expected one hit for Ganotuna, got ${trouves.length}`);
+  const trouves = candidats([["2026/2193 (OJ L, 2026/2193, 28.9.2026)", EN_MAJ]]);
+  assert.equal(trouves.length, 1, `expected one hit for entry 99, got ${trouves.length}`);
   assert.deepEqual(trouves[0]!.ids, ["9000"], "the hit that remains is the feed's own entry");
 });
 
 test("a hit from the supplement says so in the record and in the spreadsheet, and the coverage line says it once", { skip: SANS_JEUX }, () => {
   const c = criblageDe([]);
-  const k = c.resultats[0]!.candidats.find((x) => /ganotuna/i.test(x.nomListe))!;
+  const k = c.resultats[0]!.candidats.find((x) => new RegExp(FAMILLE99, "i").test(x.nomListe))!;
   assert.deepEqual(k.complement, { celex: "32026R2193", annexe: "IV", entree: 99, luLe: "2026-10-18", url: "https://publications.europa.eu/resource/celex/32026R2193" });
   assert.match(k.designation!.champ!, /Official Journal \(Annex IV to Regulation \(EU\) 2024\/1485, as added by CELEX 32026R2193, entry 99, read 2026-10-18\), not from the EU feed/);
   assert.match(versCsv(c), /Official Journal \(Annex IV to Regulation \(EU\) 2024\/1485, as added by CELEX 32026R2193, entry 99, read 2026-10-18\), not from the EU feed/);
@@ -96,8 +102,8 @@ test("a hit from the supplement says so in the record and in the spreadsheet, an
 });
 
 test("a hit from the feed itself carries no supplement mark, and the coverage line counts only the entries still read from the Official Journal", { skip: SANS_JEUX }, () => {
-  const c = criblageDe([["2026/2193 (OJ L, 2026/2193, 28.9.2026)", "[name removed]"]]);
-  const k = c.resultats[0]!.candidats.find((x) => /ganotuna/i.test(x.nomListe))!;
+  const c = criblageDe([["2026/2193 (OJ L, 2026/2193, 28.9.2026)", EN_MAJ]]);
+  const k = c.resultats[0]!.candidats.find((x) => new RegExp(FAMILLE99, "i").test(x.nomListe))!;
   assert.equal(k.complement, undefined);
   assert.deepEqual(c.complementUe?.entrees, [100, 101, 102, 103, 104, 105, 106, 107, 108]);
   assert.deepEqual(c.complementUe?.dejaDansLeFlux, [99]);

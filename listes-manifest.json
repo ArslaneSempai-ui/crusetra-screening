@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "genereLe": "2026-10-06T17:54:54.514Z",
+  "genereLe": "2026-10-20T15:57:10.688Z",
   "listes": [
     {
       "source": "OFAC",
@@ -8,10 +8,10 @@
       "url": "https://sanctionslistservice.ofac.treas.gov/api/publicationpreview/exports/sdn.xml",
       "format": "ofac-sdn-xml",
       "disponible": true,
-      "telechargeLe": "2026-10-06T17:41:24.443Z",
-      "sha256": "b61f54eafad72134e49f99bc2b819fed8ac307b6cc71ab3fe52d6a63b4de5e72",
-      "octets": 29108106,
-      "entrees": 19363
+      "telechargeLe": "2026-10-20T15:56:02.584Z",
+      "sha256": "b0e58fccceb7580e7b1a80d01594a62a8897f01114f7cb1e8b662b7e6bdd42ef",
+      "octets": 29231187,
+      "entrees": 19457
     },
     {
       "source": "OFAC-CONS",
@@ -19,10 +19,10 @@
       "url": "https://sanctionslistservice.ofac.treas.gov/api/publicationpreview/exports/consolidated.xml",
       "format": "ofac-sdn-xml",
       "disponible": true,
-      "telechargeLe": "2026-10-06T17:51:04.798Z",
-      "sha256": "69bdc476597a8ebb14eb9b7ca61f763e7755e1f45ebd420dd61591da40ed7842",
-      "octets": 1062957,
-      "entrees": 481
+      "telechargeLe": "2026-10-20T15:56:09.789Z",
+      "sha256": "c8a6b609403520dfced0d21325e7851aaffe73fd93b1581a0d6fddce5216d04f",
+      "octets": 1078267,
+      "entrees": 486
     },
     {
       "source": "CSL",
@@ -30,9 +30,9 @@
       "url": "https://data.trade.gov/downloadable_consolidated_screening_list/v1/consolidated.csv",
       "format": "trade-csl-csv",
       "disponible": true,
-      "telechargeLe": "2026-10-06T17:51:17.568Z",
-      "sha256": "65bd5446fa5930aeb8f0c51668ffc6a7d7b7a0a71ecbc04c2ceb477945f6186d",
-      "octets": 16756892,
+      "telechargeLe": "2026-10-20T15:56:11.025Z",
+      "sha256": "1f6ef877945bfdf0982a41da8c7f0954af6d68fc794fe5cfe109cc8981d55680",
+      "octets": 16825396,
       "entrees": 6213
     },
     {
@@ -41,21 +41,27 @@
       "url": "https://scsanctions.un.org/resources/xml/en/consolidated.xml",
       "format": "un-consolidated-xml",
       "disponible": true,
-      "telechargeLe": "2026-10-06T17:51:29.189Z",
-      "sha256": "300a92157704876a21df5e1ffb60c9eafccaeb90fc0a7729a5f165bf843bd7ea",
-      "octets": 2186496,
+      "telechargeLe": "2026-10-20T15:56:17.084Z",
+      "sha256": "d7df15ecfbf09d96028e45ba171dc798af29f2ba4cf19b06e8404415eb40f268",
+      "octets": 2185376,
       "entrees": 1010
     },
     {
       "source": "EU",
       "titre": "EU consolidated financial sanctions list (FSF, XML v1.1)",
-      "url": "https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content?token=dG9rZW4tMjAxNw",
+      "url": "https://webgate.ec.europa.eu/fsd/fsf/public/files/xmlFullSanctionsList_1_1/content?token=[username]",
       "format": "eu-fsf-xml-1.1",
       "disponible": true,
-      "telechargeLe": "2026-10-06T17:51:54.565Z",
-      "sha256": "cd59eccb0278d33181c1d87814236109287c9ea5925502f00acfd2e0fd7fe440",
-      "octets": 25791425,
-      "entrees": 6241
+      "telechargeLe": "2026-10-20T15:56:20.260Z",
+      "sha256": "7d21a5c7574eae8192ce15dcd02f53b7e81b05d01d4d3f2b2eb903f3aec8f400",
+      "octets": 25767041,
+      "entrees": 6234,
+      "fraicheur": {
+        "fichierGenereLe": "2026-10-15",
+        "fichierPublieLe": "2026-07-23",
+        "rssAnnonceLe": "2026-10-15",
+        "confirmeLe": "2026-10-20"
+      }
     },
     {
       "source": "UK",
@@ -63,10 +69,10 @@
       "url": "https://sanctionslist.fcdo.gov.uk/docs/UK-Sanctions-List.xml",
       "format": "uk-sanctions-xml",
       "disponible": true,
-      "telechargeLe": "2026-10-06T17:52:09.780Z",
-      "sha256": "563c1dda36949afa97fc74cce4208de47badf6ad9ce0710d3cbb8b4356cea4ef",
-      "octets": 21895248,
-      "entrees": 6369
+      "telechargeLe": "2026-10-20T15:56:22.851Z",
+      "sha256": "8e71e2237d0dee3191d433f94ba6cec65ec76b5f0f3e9d2e42b4f3f992682281",
+      "octets": 22051514,
+      "entrees": 6408
     },
     {
       "source": "EU-VESSELS",
@@ -74,7 +80,7 @@
       "url": "https://publications.europa.eu/resource/celex/02014R0833-20260724",
       "format": "eu-833-annex-xlii-xhtml",
       "disponible": true,
-      "telechargeLe": "2026-10-06T17:52:28.160Z",
+      "telechargeLe": "2026-10-20T15:56:24.464Z",
       "sha256": "2682ecf3442d2f16a3b36ef4d9bbb6fde43fd4d6743bcd991bd4a8e14857770b",
       "octets": 10349814,
       "entrees": 672
@@ -85,10 +91,10 @@
       "url": "https://www.dfat.gov.au/sites/default/files/Australian_Sanctions_Consolidated_List.xlsx",
       "format": "dfat-consolidated-xlsx",
       "disponible": true,
-      "telechargeLe": "2026-10-06T17:52:36.241Z",
-      "sha256": "0936243df3269ba127709353bc0f26128f7268cbee4133e64cbbb81311def679",
-      "octets": 1342232,
-      "entrees": 4010
+      "telechargeLe": "2026-10-20T15:56:25.667Z",
+      "sha256": "bd8b34d51dfea823d122b437a9840daf0e08f5f5d6ee668d97cd108643fc6b77",
+      "octets": 1376970,
+      "entrees": 4009
     },
     {
       "source": "CA",
@@ -96,10 +102,10 @@
       "url": "https://www.international.gc.ca/world-monde/assets/office_docs/international_relations-relations_internationales/sanctions/sema-lmes.xml",
       "format": "gac-sema-xml",
       "disponible": true,
-      "telechargeLe": "2026-10-06T17:52:49.303Z",
-      "sha256": "cf413b2dee406c209a010d53faeeb9c0ae6c046670f628132c02d16718bf085b",
-      "octets": 2890679,
-      "entrees": 5707
+      "telechargeLe": "2026-10-20T15:56:35.744Z",
+      "sha256": "61a9064720d9f35884ead9387158b708882d63c615981034cb9557d038d55bcf",
+      "octets": 2891117,
+      "entrees": 5708
     },
     {
       "source": "NZ",
@@ -107,7 +113,7 @@
       "url": "https://www.mfat.govt.nz/assets/Countries-and-Regions/Europe/Ukraine/Russia-Sanctions-Register.xlsx",
       "format": "mfat-russia-register-xlsx",
       "disponible": true,
-      "telechargeLe": "2026-10-06T17:53:56.077Z",
+      "telechargeLe": "2026-10-20T15:56:37.768Z",
       "sha256": "d5ae6f2c18163c8045689338fb961977c61e12a64dd97f60ae9c31d6b89057f0",
       "octets": 21646206,
       "entrees": 2135
