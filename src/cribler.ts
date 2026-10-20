@@ -36,7 +36,7 @@ import { commitCourant } from "./your-alerts.ts";
 import type { Cellule } from "./measure.ts";
 import {
   preparerNom, scoreBrut, variantes, simMot, abrege, abregeAllemand, tronque, simMinimale, palierEntite, estCoupe, CREDIT_ABJAD, sembleCoupe,
-  compose, membres, gerondif, PARTICULES,
+  compose, membres, gerondif, PARTICULES, motsDePersonneContreEntite,
   variationVocalique, voyelleEpenthetique, squeletteLongue, pliAi, tousDeuxAnglais, lettrePerdue, PERDU, mesurerJeux, choisirSeuils, lireJeu,
   CHEMINS_APPRENTISSAGE, lecturesDe, plafondDesLectures, pliCantonais, pliJaponais, pliCoreen, CREDIT_KANA, pluriel, CHEMIN_VERDICT, RAPPEL_MIN,
   pliSlave, CREDIT_CYRILLIQUE, clesGrecques, CREDIT_GREC, clePhonetique, homophoneCorrige, squeletteArabe, ARTICLES_ARABES, clesSlaves, pliThai, CREDIT_THAI,
@@ -849,6 +849,8 @@ export function cribler(c: Contrepartie, index: Index, seuils: { fort: number; p
   const lectures = lecturesDe(c.nom).map((l) => ({ brut: l.texte, nom: preparerNom(index.f, l.texte, l.lecture), lecture: l }));
   if (index.memo.size > 500_000) index.memo.clear();
   const options = { auMoins: seuils.possible, memo: index.memo };
+  /* a legal form in ANY reading of the query: the query itself carries one (see `motsDePersonneContreEntite`) */
+  const requeteAvecForme = lectures.some((l) => l.nom.marques.societe || l.nom.marques.familles.length > 0);
   const meilleurs = new Map<string, Candidat>();
   const garder = (cle: string, cand: Candidat) => {
     const deja = meilleurs.get(cle);
@@ -865,7 +867,10 @@ export function cribler(c: Contrepartie, index: Index, seuils: { fort: number; p
     /* un ancien nom des deux côtés, deux succursales : le possible au plus (voir `plafondDesLectures`) */
     for (const l of lectures) {
       const plafond = plafondDesLectures(l.lecture, { texte: n.brut, lecture: n.nom.marques.lecture, ancien: n.ancien, mention: n.mention, registre: n.registre, partie: n.partie, paysRegistre: n.paysRegistre, associe: n.associe, syllabique: n.syllabique });
-      s = Math.max(s, Math.min(plafond, scoreBrut(index.f, l.brut, l.nom, n.brut, n.nom, options)));
+      let v = Math.min(plafond, scoreBrut(index.f, l.brut, l.nom, n.brut, n.nom, options));
+      /* deux mots de personne face à une ENTITÉ listée dont les autres mots ne sont que des particules : le possible au plus (voir `motsDePersonneContreEntite`) */
+      if (v > SEUIL_POSSIBLE && !requeteAvecForme && n.entree.type === "entity" && motsDePersonneContreEntite(l.nom, n.nom)) v = SEUIL_POSSIBLE;
+      s = Math.max(s, v);
     }
     if (s < seuils.possible) continue;
     const cle = `${n.entree.source}:${n.entree.id}`;

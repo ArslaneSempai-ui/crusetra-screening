@@ -130,8 +130,8 @@ export function depuisJetons(f: Frequences, J: readonly string[], marques: Marqu
     traduits: mots.map((m) => traduits.has(m)),
     sources: mots.map((m) => sources.get(m) ?? ""),
     decor: mots.map((m, i) => regionDeRegistre(m) || (POINTS_CARDINAUX.has(m) && regionDeRegistre(mots[i + 1] ?? ""))
-      /* et le patronyme d'une personne de la CEI derrière son nom et son prénom, sous la marque slave (tour 13, voir `patronymeSlave`) */
-      || (marques.slave && i >= 2 && patronymeSlave(m))),
+      /* et le patronyme d'une personne de la CEI en deuxième place ou plus loin (jamais le premier mot, jamais dans un nom de deux mots), sous la marque slave (tour 13, voir `patronymeSlave`) */
+      || (marques.slave && i >= 1 && mots.length >= 3 && patronymeSlave(m))),
     numeros: J.map(num).filter(Boolean).sort().join(" "),
     bloc: mots.join(""), blocSq: mots.map(squelette).join(""),
     civilites: [...civilites],
@@ -992,6 +992,25 @@ export const FACTEUR_CONTENANCE = 0.8;
  *  « amin » et « ameen » comme deux mots (voir `anglais` dans scorePrepares, et `apresArticleVu` dans l'index). */
 export const ARTICLES_ARABES: ReadonlySet<string> = new Set(["al", "el", "ul", "bin", "bint", "ibn", "abu", "abou", "abd", "abdul", "abdel",
   "abdal", "umm", "dar", "bayt", "beit", "bani"]);
+/** A SHORT PERSON-SHAPED QUERY MEETS A LISTED ENTITY (weakness 4, plan faiblesses-ar-ru, option (a) chosen by Arslane on 18/10/2026).
+ *  The query has no legal form and at most two name words (name particles do not count: PARTICULES and ARTICLES_ARABES, the
+ *  only person-name words the engine keeps), and every listed word it did not match is such a particle: two given names meeting
+ *  the two given names of an entity ("AL ALI AND AL HAMZA LLC") say nothing of a company. The match stays at possible, never
+ *  strong; nothing goes quiet. Applied by the screener to listed ENTITIES only (the list's own type), never to a person. */
+export function motsDePersonneContreEntite(A: NomPrepare, B: NomPrepare): boolean {
+  if (A.marques.societe || A.marques.familles.length > 0) return false;
+  const particule = (m: string) => PARTICULES.has(m) || ARTICLES_ARABES.has(m);
+  const nomsA = A.mots.map((_, i) => i).filter((i) => !particule(A.mots[i]!));
+  if (nomsA.length === 0 || nomsA.length > 2) return false;
+  /* a business word ("Trading") is not a person-name word: the query is not person-shaped */
+  if (nomsA.some((i) => DICTIONNAIRE.has(A.mots[i]!))) return false;
+  /* the listed name must carry words the query does not (all particles, checked below by count): an exact match is no cap */
+  if (B.mots.length <= A.mots.length) return false;
+  /* every listed word that is not a particle is accounted for by a query name word (the score already says they met):
+     what the query left over is then only particles */
+  const nomsB = B.mots.filter((m) => !particule(m)).length;
+  return nomsB > 0 && nomsB <= nomsA.length;
+}
 /** Un mot est RARE quand son poids atteint cette part du poids d'un mot inconnu des listes :
  *  « Shipping » (439 entrées sur 33 393) l'est tout juste, « Trading » (826) ne l'est pas. */
 export const SEUIL_RARE = 0.45;
