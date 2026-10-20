@@ -10,7 +10,7 @@
  * modifient (ျ ြ y, ွ w, ှ h). La lecture suit L'USAGE LATIN des registres et des passeports, pas la MLCTS : ကျော် Kyaw,
  * အောင် Aung, နိုင် Naing, ထွန်း Htun, သိန်း Thein, ဖြိုး Phyo. Les tons (့ း) tombent, sauf qu'un ton grinçant sur une
  * finale nasale s'écrit d'ordinaire par un t (မြင့် Myint, ခန့် Khant, ညွန့် Nyunt). Les syllabes sortent SÉPARÉES
- * par des espaces, comme le latin les écrit ([name removed]) ; les mots pâlis, que le latin soude (Yadana, Mingala,
+ * par des espaces, comme le latin les écrit (Mya Thazin) ; les mots pâlis, que le latin soude (Yadana, Mingala,
  * Thiri, Zeyar), se lisent par la table. La sonorisation entre voyelles (ရတနာ yadana, pas yatana) ne se règle pas :
  * les mots où elle s'entend sont dans la table.
  */
@@ -102,7 +102,7 @@ function rimeBirmane(voy: string, fin: string, grincant: boolean, w: boolean): {
   return { rime: r, sansW };
 }
 
-/** Un mot birman, syllabe par syllabe, chaque syllabe un jeton ([name removed]). Une consonne nue éteinte (် ou ္) est la finale
+/** Un mot birman, syllabe par syllabe, chaque syllabe un jeton (Mya Thazin). Une consonne nue éteinte (် ou ္) est la finale
  *  de la syllabe qui précède ; l'asat porté par la consonne d'une voyelle écrite devant (ော် aw) n'éteint rien. */
 export function birmanEnLatin(mot: string): string {
   const u = unitesBirmanes(mot);
@@ -186,7 +186,7 @@ export function birman(nom: string): string {
  *  nom latin sans son écriture. Une table du monde. « lin », « min », « san », « ma », « ko », « u », « shan » n'y comptent pas :
  *  ce sont aussi des syllabes chinoises, japonaises ou des civilités (voir `presomptionBirmane`). */
 export const SYLLABES_BIRMANES: ReadonlySet<string> = new Set([
-  "[name removed]", "myint", "myin", "hlaing", "hlain", "htun", "tun", "naing", "nai", "soe", "khin", "nwe", "nway", "aye", "win", "thein",
+  "aung", "myint", "kyaw", "zaw", "myin", "hlaing", "hlain", "htun", "tun", "naing", "nai", "soe", "khin", "nwe", "nway", "aye", "win", "thein",
   "maung", "tin", "oo", "nyunt", "htwe", "htway", "myat", "myatt", "kaung", "phyo", "pyo", "pyae", "pyay", "zin", "thu", "htay", "htet", "htat",
   "yadana", "yadanar", "mingala", "mingalar", "thiri", "zeya", "zeyar", "zayar", "myitta", "myittar", "shwe", "myo", "myoe", "ngwe", "ngway",
   "kyi", "hla", "mya", "moe", "hnin", "sein", "linn", "than", "thant", "kyal", "kyae", "kye", "mye", "myay", "ayeyar", "ayeyarwady", "kyun",

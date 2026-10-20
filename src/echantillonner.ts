@@ -10,7 +10,7 @@
  * (for the entity family, of the concatenation of the 23 training sets in numeric order), so the draw can be redone
  * by anyone who holds the private set, and compared byte for byte.
  *
- *   node src/echantillonner.ts           redraw the three samples from the private sets (needs CRUSETRA_JEUX)
+ *   node src/echantillonner.ts           redraw the two samples from the private sets (needs CRUSETRA_JEUX)
  *   node src/echantillonner.ts --check   redraw in memory and compare with the committed files
  */
 import { createHash } from "node:crypto";
@@ -25,7 +25,6 @@ const PAR_VERDICT = 10;
 const sha = (t: string): string => createHash("sha256").update(t).digest("hex");
 
 export const SOURCES: Record<keyof typeof ECHANTILLONS, string[]> = {
-  "paires-etiquetees": ["src/paires-etiquetees.json"],
   "paires-entites": [...APPRENTISSAGE],
   "paires-gleif": ["verification/paires-gleif.json"],
 };

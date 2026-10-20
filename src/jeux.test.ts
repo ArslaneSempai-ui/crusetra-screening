@@ -74,7 +74,7 @@ test("a missing private set is a named refusal that says where to look", () => {
   } finally { if (avant === undefined) delete process.env.CRUSETRA_JEUX; else process.env.CRUSETRA_JEUX = avant; }
 });
 
-test("the three public samples hold 10 match and 10 different, well formed, with the rule written in the file", () => {
+test("the two public samples hold 10 match and 10 different, well formed, with the rule written in the file", () => {
   for (const nom of Object.keys(ECHANTILLONS) as (keyof typeof ECHANTILLONS)[]) {
     const jeu = echantillon(nom) as JeuDePaires & { echantillon: { graine: string; regle: string; sourceSha256: string } };
     const paires = jeu.paires;
