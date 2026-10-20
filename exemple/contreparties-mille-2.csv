@@ -6,7 +6,7 @@ N-0004,KARTONAGENWERK SILBACH GMBH,entity,DE
 N-0005,Moebelwerkstaetten Ruhland GmbH,entity,DE
 N-0006,Vogt & Lindner Transportversicherung AG,entity,DE
 N-0007,Wettering Privatbank AG,entity,DE
-N-0008,Henning Wolters,person,DE
+N-0008,Wolters Logistics GmbH,entity,DE
 N-0009,Elbstrom,vessel,DE
 N-0010,Van Doorselaer Verpakkingen NV,entity,BE
 N-0011,Brouwershaven Diepvries B.V.,entity,NL
@@ -15,11 +15,11 @@ N-0013,Zuiderwaard,vessel,NL
 N-0014,Laboratoires Vermandois SAS,entity,FR
 N-0015,Chateau Lagrave-Serignac SCEA,entity,FR
 N-0016,Distillerie de la Vallée d'Oust SARL,entity,FR
-N-0017,Maëlle Duvernay,person,FR
+N-0017,Duvernay Trading SARL,entity,FR
 N-0018,Cartiera Val Brembilla S.p.A.,entity,IT
 N-0019,Mobilificio Ghedini Arredi Srl,entity,IT
 N-0020,"Cantine Rocca Solana S.r.l., Via Provinciale 22, Canelli",entity,IT
-N-0021,Giulia Scarabelli,person,IT
+N-0021,Scarabelli Foods S.r.l.,entity,IT
 N-0022,Conservas Puerto Arnela S.L.,entity,ES
 N-0023,AZULEJOS TERRASOLA SA,entity,ES
 N-0024,"Quinta do Seixo Alto, Vinhos Lda",entity,PT
@@ -36,7 +36,7 @@ N-0034,AKAMAS REEFER,vessel,CY
 N-0035,MV Kyra Despina,vessel,GR
 N-0036,Papiernia Nadodrze Sp. z o.o.,entity,PL
 N-0037,Meble Lesna Polana Sp z oo,entity,PL
-N-0038,Katarzyna Wierzbicka,person,PL
+N-0038,Wierzbicka Textiles Sp. z o.o.,entity,PL
 N-0039,Bystrzyca,vessel,PL
 N-0040,Autodíly Hrubý Vrch s.r.o.,entity,CZ
 N-0041,Sklarna Nova Ves s.r.o.,entity,CZ
@@ -55,13 +55,13 @@ N-0053,Kowloon Bay Reefer Services Ltd,entity,HK
 N-0054,Hui Feng 9,vessel,HK
 N-0055,"Tomioka Seiko Parts Co., Ltd.",entity,JP
 N-0056,Kitahama Paper Trading Co. Ltd,entity,JP
-N-0057,Keiko Hasegawa,person,JP
+N-0057,"Hasegawa Machinery Co., Ltd",entity,JP
 N-0058,"Seorin Pharmaceutical Co., Ltd.",entity,KR
 N-0059,"Gwangan Marine Logistics Co., Ltd.",entity,KR
 N-0060,Hsinchu Precision Auto Components Corp.,entity,TW
 N-0061,Anantha Pharma Exports Pvt Ltd,entity,IN
 N-0062,KAVERI COASTAL SEAFOODS PVT LTD,entity,IN
-N-0063,Pradeep Venkataraman,person,IN
+N-0063,Venkataraman Packaging Pvt Ltd,entity,IN
 N-0064,Binh Duong Tan Phu Furniture JSC,entity,VN
 N-0065,"Siam Kittiporn Packaging Co., Ltd.",entity,TH
 N-0066,Penang Harbourline Forwarding Sdn Bhd,entity,MY
@@ -89,11 +89,11 @@ N-0087,Harbor Pointe Wine Merchants LLC,entity,US
 N-0088,Cascadia Molded Fiber Corp,entity,US
 N-0089,"Rappahannock Pharmacy Logistics, Inc.",entity,US
 N-0090,Northfield Cabinetry Co.,entity,US
-N-0091,Colleen Ashworth,person,US
+N-0091,Ashworth Chemicals LLC,entity,US
 N-0092,Fundy Shore Seafoods Ltd.,entity,CA
 N-0093,Laurentide Cartons Inc.,entity,CA
 N-0094,Autopeças Serra Gaúcha Ltda.,entity,BR
-N-0095,Rodrigo Tavares Lacerda,person,BR
+N-0095,Lacerda Timber Ltda,entity,BR
 N-0096,Vina Los Tordos SpA,entity,CL
 N-0097,Pesquera Caleta Tumbes S.A.,entity,CL
 N-0098,LABORATORIOS FARMACEUTICOS ALTIPLANO SA DE CV,entity,MX
@@ -107,13 +107,13 @@ N-0105,Baustoffhandel Rehwinkel GmbH & Co. KG,entity,DE
 N-0106,Apotheken-Grosshandel Nordheide GmbH,entity,DE
 N-0107,Speditionskontor Brookdeich GmbH,entity,DE
 N-0108,Assekuranzmakler Tessendorf & Co. KG,entity,DE
-N-0109,Jan-Hendrik Petersen,person,DE
+N-0109,Petersen Metals GmbH,entity,DE
 N-0110,Wümme,vessel,DE
 N-0111,Scheldekaai Reefer Terminal NV,entity,BE
 N-0112,KEMPISCHE KARTONNAGE BV,entity,BE
 N-0113,Vlasbloem Meubelen B.V.,entity,NL
 N-0114,Waddenkust Visverwerking BV,entity,NL
-N-0115,Sieke van Oudheusden,person,NL
+N-0115,Oudheusden Marine B.V.,entity,NL
 N-0116,Hendrika Johanna,vessel,NL
 N-0117,Transports Frigorifiques Kerlouan SARL,entity,FR
 N-0118,Maison Bertaud-Casaubon SAS,entity,FR
@@ -123,7 +123,7 @@ N-0121,Distilleria Fratelli Ongaro snc,entity,IT
 N-0122,Farmaceutici Lambrate S.p.A.,entity,IT
 N-0123,Bodegas Hermanos Urquiola S.A.,entity,ES
 N-0124,Muebles Villarrobledo SL,entity,ES
-N-0125,Alvaro Iriondo Beitia,person,ES
+N-0125,Beitia Components S.L.,entity,ES
 N-0126,Corticas Vale do Sorraia SA,entity,PT
 N-0127,Kuuselan Kartonkitehdas Oy,entity,FI
 N-0128,Lochcarron Salmon Exports Ltd,entity,GB
@@ -139,7 +139,7 @@ N-0137,Okna i Drzwi Szafranek Sp. z o.o.,entity,PL
 N-0138,Mrozonki Rybne Jastarnia Sp. z o.o.,entity,PL
 N-0139,Lisovna Kovů Brandýs s.r.o.,entity,CZ
 N-0140,Vinařství Pod Pálavou s.r.o.,entity,CZ
-N-0141,Tomáš Kubíček,person,CZ
+N-0141,Kubíček Distribution s.r.o.,entity,CZ
 N-0142,Drevárne Oravica s.r.o.,entity,SK
 N-0143,BALATON GYOGYSZER KERESKEDELMI ZRT,entity,HU
 N-0144,Slavonska Ambalaža d.o.o.,entity,HR
@@ -156,7 +156,7 @@ N-0154,Harbourfront Consolidators Ltd,entity,HK
 N-0155,"Enshu Brake Industries Co., Ltd.",entity,JP
 N-0156,"Nagatoro Shuzo Co., Ltd.",entity,JP
 N-0157,株式会社北浦冷凍,entity,JP
-N-0158,Seo Min-jae,person,KR
+N-0158,"Min-jae Logistics Co., Ltd",entity,KR
 N-0159,"Seohae Packaging Co., Ltd.",entity,KR
 N-0160,"Taichung Linfeng Furniture Co., Ltd.",entity,TW
 N-0161,Narmada Valley Pharmaceuticals Ltd,entity,IN
@@ -164,14 +164,14 @@ N-0162,Tuticorin Marine Exports Pvt Ltd,entity,IN
 N-0163,Chattogram Carton Industries Ltd,entity,BD
 N-0164,Negombo Lagoon Seafoods (Pvt) Ltd,entity,LK
 N-0165,Haiphong Auto Components JSC,entity,VN
-N-0166,Trương Minh Khoa,person,VN
+N-0166,"Khoa Trading Co., Ltd",entity,VN
 N-0167,LAEM CHABANG FREIGHT STATION CO LTD,entity,TH
 N-0168,Klang Valley Rubberwood Furniture Sdn Bhd,entity,MY
 N-0169,Seletar Bay,vessel,SG
 N-0170,PT Kertas Mulya Jaya,entity,ID
 N-0171,Gebze Fren Sistemleri A.Ş.,entity,TR
 N-0172,Izmir Korfez Soguk Hava Depoculuk Ltd. Sti.,entity,TR
-N-0173,Selin Özyurt,person,TR
+N-0173,Özyurt Foods A.S.,entity,TR
 N-0174,Ayvalık Yıldızı,vessel,TR
 N-0175,Palm Strand Shipping Agency LLC,entity,AE
 N-0176,Oryx Pharma Distribution W.L.L.,entity,QA
@@ -191,7 +191,7 @@ N-0189,Piedmont Corrugated Box Company,entity,US
 N-0190,Keystone Generic Pharmaceuticals Inc,entity,US
 N-0191,Okanagan Cedar Millwork Ltd.,entity,CA
 N-0192,Bedford Basin Customs Brokers Inc.,entity,CA
-N-0193,Derek Lachance,person,CA
+N-0193,Lachance Textiles Inc.,entity,CA
 N-0194,Frigorifico Pesqueiro Itajai Ltda,entity,BR
 N-0195,Móveis Vale do Taquari Ltda,entity,BR
 N-0196,Bodega Paraje Altamira S.A.,entity,AR
@@ -207,11 +207,11 @@ N-0205,FLIESEN ZENTRUM HARSEFELD GMBH,entity,DE
 N-0206,Arzneimittelvertrieb Kellinghusen GmbH,entity,DE
 N-0207,Zollagentur Waltershof GmbH Am Ballinkai 2,entity,DE
 N-0208,Bankhaus Frerichs & Ohlsen KG,entity,DE
-N-0209,Friederike Ahlgrimm,person,DE
-N-0210,Stör,vessel,DE
+N-0209,Ahlgrimm Machinery GmbH,entity,DE
+N-0210,Havelland Spirit,vessel,DE
 N-0211,Maasland Beglazing NV,entity,BE
 N-0212,Ardeense Houtindustrie BVBA,entity,BE
-N-0213,Pieter-Jan Verstraete,person,BE
+N-0213,Verstraete Packaging NV,entity,BE
 N-0214,Zeeuwse Mosselhandel B.V.,entity,NL
 N-0215,Botlek Koelopslag BV,entity,NL
 N-0216,Gerarda,vessel,NL
@@ -230,7 +230,7 @@ N-0228,Stour Estuary Reefer Services Ltd,entity,GB
 N-0229,Tiroler Holzmöbel Stubai GmbH,entity,AT
 N-0230,Kvarken Fisk Ab,entity,FI
 N-0231,Χαρτοποιία Θερμαϊκού Α.Ε.,entity,GR
-N-0232,Ingrid Solberg,person,NO
+N-0232,Solberg Chemicals AS,entity,NO
 N-0233,Ulvsund,vessel,NO
 N-0234,Andros Horizon,vessel,GR
 N-0235,Comino Frost,vessel,MT
@@ -240,7 +240,7 @@ N-0238,Hliníkové Profily Žďár s.r.o.,entity,CZ
 N-0239,Nábytek Kroměříž s.r.o.,entity,CZ
 N-0240,Kartonáž Poprad s.r.o.,entity,SK
 N-0241,Matra Autoalkatresz Kft,entity,HU
-N-0242,Márton Szalai,person,HU
+N-0242,Szalai Timber Kft.,entity,HU
 N-0243,CHERESTEA VATRA DORNEI SRL,entity,RO
 N-0244,SIA Daugavgrīvas Zivis,entity,LV
 N-0245,NERETVA STAR,vessel,HR
@@ -257,7 +257,7 @@ N-0255,"Echigo Paper Industries Co., Ltd.",entity,JP
 N-0256,Hakuyo Maru No. 3,vessel,JP
 N-0257,주식회사 가람포장,entity,KR
 N-0258,"Ulsan Harbor Stevedoring Co., Ltd.",entity,KR
-N-0259,Hsu Wei-lin,person,TW
+N-0259,"Wei-lin Metals Co., Ltd",entity,TW
 N-0260,"Kaohsiung Chingfeng Cold Storage Co., Ltd.",entity,TW
 N-0261,Vapi Healthcare Formulations Pvt Ltd,entity,IN
 N-0262,Vembanad Marine Foods Pvt Ltd,entity,IN
@@ -267,7 +267,7 @@ N-0265,Johor Strait Timber Mouldings Sdn. Bhd.,entity,MY
 N-0266,Jurong Portside Warehousing Pte Ltd,entity,SG
 N-0267,Changi Tern,vessel,SG
 N-0268,PT Mebel Jepara Lestari,entity,ID
-N-0269,Dewi Kartikasari,person,ID
+N-0269,PT Kartikasari Marine,entity,ID
 N-0270,Cebu Mactan Cargo Brokers Inc.,entity,PH
 N-0271,Manisa Cam Ambalaj A.Ş.,entity,TR
 N-0272,Denizli Mermer ve Traverten A.Ş.,entity,TR
@@ -278,7 +278,7 @@ N-0276,Deira Wharfside Freight Brokers LLC,entity,AE
 N-0277,Doha Harbour Medical Supplies W.L.L.,entity,QA
 N-0278,Haifa Bay Cold Storage Ltd,entity,IL
 N-0279,Paarl Valley Brandy Estates (Pty) Ltd,entity,ZA
-N-0280,Thandiwe Mokoena,person,ZA
+N-0280,Mokoena Components (Pty) Ltd,entity,ZA
 N-0281,Agadir Conserverie du Littoral SA,entity,MA
 N-0282,SFAX EMBALLAGE CARTON SARL,entity,TN
 N-0283,"Port Louis Bonded Warehouse Ltd, Mer Rouge Road",entity,MU
@@ -289,7 +289,7 @@ N-0287,Finger Lakes Cider & Spirits LLC,entity,US
 N-0288,Gloucester Harborfront Fish Co.,entity,US
 N-0289,Ozark Hardwood Furniture Inc,entity,US
 N-0290,SAVANNAH RIVERFRONT TERMINAL SERVICES LLC,entity,US
-N-0291,Brandon Mercier,person,US
+N-0291,Mercier Distribution LLC,entity,US
 N-0292,Mississauga Generic Pharma Inc.,entity,CA
 N-0293,Rimouski Bois Ouvre Inc.,entity,CA
 N-0294,Cooperativa Vinícola Vale dos Vinhedos,entity,BR
@@ -307,11 +307,11 @@ N-0305,Kuechenmoebel Brakelsiek GmbH,entity,DE
 N-0306,Dämmstoffe Wiedenbrück GmbH,entity,DE
 N-0307,Hafenlogistik Steinwerder GmbH,entity,DE
 N-0308,Elbe-Weser Assekuranz AG,entity,DE
-N-0309,Lukas Hinrichsen,person,DE
+N-0309,Hinrichsen Logistics GmbH,entity,DE
 N-0310,Hunte,vessel,DE
 N-0311,Gentse Kaai Stuwadoors NV,entity,BE
 N-0312,Brugse Wijnkelders BV,entity,BE
-N-0313,Sofie Vandenhende,person,BE
+N-0313,Vandenhende Trading NV,entity,BE
 N-0314,Velsen Koelvis B.V.,entity,NL
 N-0315,Twentse Meubelfabriek Oldenzaal BV,entity,NL
 N-0316,Waalstroom,vessel,NL
@@ -323,7 +323,7 @@ N-0321,Cantina Sociale Val Liona Soc. Coop.,entity,IT
 N-0322,Imballaggi Flessibili Lodigiani SpA,entity,IT
 N-0323,Porfidi del Trentino Cembra S.r.l.,entity,IT
 N-0324,Ittica Porto Garibaldi S.r.l.,entity,IT
-N-0325,Paolo Tresoldi,person,IT
+N-0325,Tresoldi Foods S.r.l.,entity,IT
 N-0326,Envases Metalicos del Ebro SA,entity,ES
 N-0327,Pescados Congelados Marin SA,entity,ES
 N-0328,Rolhas e Cápsulas Feira Lda,entity,PT
@@ -343,7 +343,7 @@ N-0341,Alföldi Bútorgyár Kft.,entity,HU
 N-0342,Ambalaje Mures SRL,entity,RO
 N-0343,Opekarna Primorje d.o.o.,entity,SI
 N-0344,UAB Kuršių Šaldymo Terminalas,entity,LT
-N-0345,Aigars Kalniņš,person,LV
+N-0345,Kalniņš Textiles SIA,entity,LV
 N-0346,"Xiangyang Hongtai Bearing Co., Ltd.",entity,CN
 N-0347,"Zhoushan Putuo Frozen Fish Co., Ltd.",entity,CN
 N-0348,"Quanzhou Minnan Paper Co., Ltd.",entity,CN
@@ -351,7 +351,7 @@ N-0349,Anji Zhuxiang Furniture Co Ltd,entity,CN
 N-0350,"Shijiazhuang Kangtai Pharmaceutical Co., Ltd.",entity,CN
 N-0351,LINYI LUBAN PLYWOOD CO LTD,entity,CN
 N-0352,"Ningbo Beilun Container Freight Station Co., Ltd.",entity,CN
-N-0353,Tang Xiaoyu,person,CN
+N-0353,"Xiaoyu Machinery Co., Ltd",entity,CN
 N-0354,Sai Kung Cold Chain Limited,entity,HK
 N-0355,"Nagoya Minato Unso Co., Ltd.",entity,JP
 N-0356,Noto Kaisan Suisan Co. Ltd.,entity,JP
@@ -364,7 +364,7 @@ N-0362,Morbi Vitrified Tiles Pvt Ltd,entity,IN
 N-0363,Khulna Shrimp Processors Ltd,entity,BD
 N-0364,Quy Nhon Timber Products JSC,entity,VN
 N-0365,"Mahachai Frozen Seafood Co., Ltd.",entity,TH
-N-0366,Supaporn Chaiyasit,person,TH
+N-0366,"Chaiyasit Packaging Co., Ltd",entity,TH
 N-0367,Pulau Indah Container Freight Sdn Bhd Lot 12 Jalan Pelabuhan,entity,MY
 N-0368,Tuas Cold Store Pte. Ltd.,entity,SG
 N-0369,Semakau Trader,vessel,SG
@@ -391,12 +391,12 @@ N-0389,Carolina Kraft Packaging Inc.,entity,US
 N-0390,MID-ATLANTIC MARINE UNDERWRITERS INC,entity,US
 N-0391,Fraser River Reefer Terminal Ltd.,entity,CA
 N-0392,Beauce Mobilier Inc.,entity,CA
-N-0393,Tamara Kowalczyk,person,CA
+N-0393,Kowalczyk Chemicals Inc.,entity,CA
 N-0394,Revestimentos Ceramicos Rio Claro Ltda,entity,BR
 N-0395,Bodega Finca Las Tipas S.A.,entity,AR
 N-0396,Maderas Tacuarembo SA,entity,UY
 N-0397,Laboratorio Andino de Genéricos S.A.S.,entity,CO
-N-0398,Valentina Irazoqui,person,UY
+N-0398,Irazoqui Timber S.A.,entity,UY
 N-0399,Cerro Azul,vessel,PA
 N-0400,Nassau Tern,vessel,BS
 N-0401,Bremsscheiben Rotenburg GmbH,entity,DE
@@ -407,13 +407,13 @@ N-0405,Holzwerkstoffe Wittingen GmbH,entity,DE
 N-0406,PHARMAGROSSHANDEL LUENEBURGER HEIDE GMBH,entity,DE
 N-0407,Kaispeicher Reiherstieg GmbH Reiherdamm 44,entity,DE
 N-0408,Bankverein Moorburg eG,entity,DE
-N-0409,Rainer Tiedemann,person,DE
+N-0409,Tiedemann Metals GmbH,entity,DE
 N-0410,Schwinge,vessel,DE
 N-0411,Kortrijkse Meubelindustrie NV,entity,BE
 N-0412,Antwerpse Wijnopslag BV,entity,BE
 N-0413,Noord-Hollandse Garnalen B.V.,entity,NL
 N-0414,Veenkoloniale Kartonfabriek BV,entity,NL
-N-0415,Marieke Groeneveld,person,NL
+N-0415,Groeneveld Marine B.V.,entity,NL
 N-0416,Maasvallei,vessel,NL
 N-0417,Vins et Spiritueux Laborde-Castaing SA,entity,FR
 N-0418,Sanitaires Ceramiques du Limousin SAS,entity,FR
@@ -422,7 +422,7 @@ N-0420,Assicurazioni Marittime Tirreno S.p.A.,entity,IT
 N-0421,Componenti Freno Brianza Srl,entity,IT
 N-0422,Mobili Imbottiti Altamura S.r.l.,entity,IT
 N-0423,"Cartotecnica Val di Susa S.r.l., Corso Torino 118, Avigliana",entity,IT
-N-0424,Chiara Montagnoli,person,IT
+N-0424,Montagnoli Components S.r.l.,entity,IT
 N-0425,Recambios Automocion Vigo SL,entity,ES
 N-0426,Destilerias Hermanos Ybarrola SA,entity,ES
 N-0427,Pedras Naturais de Estremoz Lda,entity,PT
@@ -439,7 +439,7 @@ N-0437,Przetworstwo Rybne Wladyslawowo Sp. z o.o.,entity,PL
 N-0438,Nogat,vessel,PL
 N-0439,Beton Hranice a.s.,entity,CZ
 N-0440,Lekarenska Distribuce Olomouc a.s.,entity,CZ
-N-0441,Veronika Havlíčková,person,CZ
+N-0441,Havlíčková Distribution s.r.o.,entity,CZ
 N-0442,Prešovské Autodiely s.r.o.,entity,SK
 N-0443,Somogyi Borászat Kft.,entity,HU
 N-0444,MOBILA BISTRITA SRL,entity,RO
@@ -455,7 +455,7 @@ N-0453,Rui Ning 6,vessel,CN
 N-0454,Tuen Mun River Trade Consolidators Ltd,entity,HK
 N-0455,"Kobe Rinko Soko Co., Ltd.",entity,JP
 N-0456,Suruga Shiki Co. Ltd,entity,JP
-N-0457,Yuki Morishita,person,JP
+N-0457,"Morishita Logistics Co., Ltd",entity,JP
 N-0458,"Yeonsu Cold Chain Co., Ltd.",entity,KR
 N-0459,"Changwon Brake Components Co., Ltd.",entity,KR
 N-0460,"Keelung Harbour Customs Brokerage Co., Ltd.",entity,TW
@@ -468,11 +468,11 @@ N-0466,Batu Pahat Furniture Industries Sdn Bhd,entity,MY
 N-0467,Tanjung Kupang,vessel,MY
 N-0468,PT Samudra Beku Sentosa,entity,ID
 N-0469,Pasir Gudang Bulk Terminal Sdn Bhd,entity,MY
-N-0470,Mariel Dimaculangan,person,PH
+N-0470,Dimaculangan Trading Inc.,entity,PH
 N-0471,Bolu Kağıt Karton A.Ş.,entity,TR
 N-0472,Inegol Koltuk Mobilya Ltd. Sti.,entity,TR
 N-0473,Aliağa Liman Hizmetleri A.Ş.,entity,TR
-N-0474,Emre Kalaycıoğlu,person,TR
+N-0474,Kalaycıoğlu Foods A.S.,entity,TR
 N-0475,Mussafah Pharma Warehousing LLC,entity,AE
 N-0476,Sohar Cold Stores LLC,entity,OM
 N-0477,Salmiya Furniture Showrooms Co. W.L.L.,entity,KW
@@ -489,7 +489,7 @@ N-0487,Carneros Bench Vintners LLC,entity,US
 N-0488,Point Judith Frozen Seafood Inc.,entity,US
 N-0489,Wisconsin River Paperboard Co.,entity,US
 N-0490,Brunswick Port Customs Brokers LLC,entity,US
-N-0491,Travis Engelhardt,person,US
+N-0491,Engelhardt Textiles LLC,entity,US
 N-0492,NIAGARA ESCARPMENT ESTATE WINERY INC,entity,CA
 N-0493,Moncton Pharma Distribution Ltd.,entity,CA
 N-0494,Frigorífico Pesquero Chimbote S.A.C.,entity,PE
@@ -497,7 +497,7 @@ N-0495,Autopecas Sorocaba Ltda,entity,BR
 N-0496,Cachaçaria Serra da Mantiqueira Ltda,entity,BR
 N-0497,Tableros de Pino Los Angeles SA,entity,CL
 N-0498,Envases de Vidrio Querétaro S.A. de C.V.,entity,MX
-N-0499,Portobelo Sun,vessel,PA
+N-0499,Caboverde Aurora,vessel,PA
 N-0500,Eleuthera Wind,vessel,BS
 N-0501,Stanzteile Ahrensburg GmbH,entity,DE
 N-0502,Likörfabrik Johannsen & Söhne GmbH,entity,DE
@@ -507,8 +507,8 @@ N-0505,Parkettwerk Bad Bentheim GmbH,entity,DE
 N-0506,Klinikversorgung Nord GmbH,entity,DE
 N-0507,Schiffsmakler Dierksen & Partner GmbH,entity,DE
 N-0508,Reederei Brueggemann & Toenjes KG,entity,DE
-N-0509,Klaus-Dieter Heitmann,person,DE
-N-0510,Pinnau,vessel,DE
+N-0509,Heitmann Machinery GmbH,entity,DE
+N-0510,Elbe Pioneer,vessel,DE
 N-0511,Oostendse Visverwerking NV,entity,BE
 N-0512,Limburgse Parketfabriek BV,entity,BE
 N-0513,Delfzijl Stuwadoorsbedrijf B.V.,entity,NL
@@ -517,7 +517,7 @@ N-0515,Jacoba,vessel,NL
 N-0516,Bordelaise de Négoce Vinicole SA,entity,FR
 N-0517,Papeteries de la Haute-Vienne SAS,entity,FR
 N-0518,Isolants Thermiques du Dauphine SAS,entity,FR
-N-0519,Étienne Rabasse,person,FR
+N-0519,Rabasse Packaging SARL,entity,FR
 N-0520,Ricambi Moto e Auto Pontedera S.r.l.,entity,IT
 N-0521,"Liquorificio Fratelli Arnaboldi S.r.l., Via Garibaldi 7",entity,IT
 N-0522,Ceramiche Fiorano Nord SpA,entity,IT
@@ -530,13 +530,13 @@ N-0528,Humber Estuary Timber Ltd,entity,GB
 N-0529,Wexford Harbour Fish Exports Ltd,entity,IE
 N-0530,Zürcher Oberland Möbel AG,entity,CH
 N-0531,KOTKAN SATAMAVARASTO OY,entity,FI
-N-0532,Johanna Lindqvist,person,SE
+N-0532,Lindqvist Chemicals AB,entity,SE
 N-0533,Lefkada Frost,vessel,GR
 N-0534,Marsalforn,vessel,MT
 N-0535,Ribeira Seca,vessel,PT
 N-0536,Tartak i Stolarnia Suwałki Sp. z o.o.,entity,PL
 N-0537,Hurtownia Win Galicja Sp z o.o.,entity,PL
-N-0538,Andrzej Pawlikowski,person,PL
+N-0538,Pawlikowski Timber Sp. z o.o.,entity,PL
 N-0539,Autokomponenty Liberec s.r.o.,entity,CZ
 N-0540,Papírny Hradec s.r.o.,entity,CZ
 N-0541,Drevona Žilina a.s.,entity,SK
@@ -557,12 +557,12 @@ N-0555,"Yamanashi Budoshu Co., Ltd.",entity,JP
 N-0556,株式会社東灘紙器,entity,JP
 N-0557,Seiun Maru No. 11,vessel,JP
 N-0558,"Pyeongtaek Auto Logistics Co., Ltd.",entity,KR
-N-0559,Hwang Ji-woo,person,KR
+N-0559,"Ji-woo Metals Co., Ltd",entity,KR
 N-0560,"Taoyuan Linkou Auto Parts Co., Ltd.",entity,TW
 N-0561,Sanand Auto Stampings Pvt Ltd,entity,IN
 N-0562,KAKINADA SHRIMP EXPORTS PVT LTD,entity,IN
 N-0563,Jodhpur Sheesham Crafts Pvt. Ltd.,entity,IN
-N-0564,Chamari Wickramasinghe,person,LK
+N-0564,Wickramasinghe Marine (Pvt) Ltd,entity,LK
 N-0565,Dong Nai Paperboard JSC,entity,VN
 N-0566,"Songkhla Frozen Seafood Co., Ltd.",entity,TH
 N-0567,Seremban Pharma Distributors Sdn Bhd,entity,MY
@@ -581,7 +581,7 @@ N-0579,Franschhoek Cap Classique Cellars (Pty) Ltd,entity,ZA
 N-0580,"Saldanha Frozen Pilchards (Pty) Ltd, Diazville Industrial",entity,ZA
 N-0581,Safi Conserves Sardinières SA,entity,MA
 N-0582,Monastir Carton Ondule SARL,entity,TN
-N-0583,Kofi Boateng Mensah,person,GH
+N-0583,Mensah Components Ltd,entity,GH
 N-0584,Castellan Bay,vessel,LR
 N-0585,WESTERLEIGH ACE,vessel,LR
 N-0586,Fort Wayne Clutch & Gear Inc.,entity,US
@@ -589,7 +589,7 @@ N-0587,Paso Robles Estate Bottlers LLC,entity,US
 N-0588,Kodiak Harbor Frozen Fish Co.,entity,US
 N-0589,Hickory Upholstered Furniture Inc,entity,US
 N-0590,Patapsco Terminal Services LLC,entity,US
-N-0591,Rebecca Thorsen,person,US
+N-0591,Thorsen Distribution LLC,entity,US
 N-0592,Sherbrooke Pates et Papiers Inc.,entity,CA
 N-0593,Saint John Harbour Agencies Ltd.,entity,CA
 N-0594,Indústria de Papel Guaíba Ltda,entity,BR
@@ -607,13 +607,13 @@ N-0605,Gipswerk Osterode Sued GmbH,entity,DE
 N-0606,Arzneimittel-Logistik Wedel GmbH,entity,DE
 N-0607,Containerdepot Finkenwerder GmbH,entity,DE
 N-0608,Kreditversicherung Alsterblick AG,entity,DE
-N-0609,Oskar Wendeborn,person,DE
+N-0609,Wendeborn Logistics GmbH,entity,DE
 N-0610,ILMENAU,vessel,DE
 N-0611,Kempense Baksteen NV,entity,BE
 N-0612,Grossiste Pharmaceutique Liegeois SA,entity,BE
 N-0613,Visverwerking Schokkerhaven B.V.,entity,NL
 N-0614,Gelderse Vallei Verpakkingen BV,entity,NL
-N-0615,Thijs Bakhuizen,person,NL
+N-0615,Bakhuizen Trading B.V.,entity,NL
 N-0616,Dirkje,vessel,NL
 N-0617,Caves Coopératives du Val d'Orbey SCA,entity,FR
 N-0618,MENUISERIES INDUSTRIELLES DU JURA SAS,entity,FR
@@ -623,7 +623,7 @@ N-0621,Fonderia Val Camonica S.p.A.,entity,IT
 N-0622,Pannelli Truciolari Friulani Srl,entity,IT
 N-0623,Mariscos Congelados Burela S.L.,entity,ES
 N-0624,"Tejas y Ladrillos de La Sagra S.A., Ctra. de Toledo km 34",entity,ES
-N-0625,Carmen Ibarrola Sáez,person,ES
+N-0625,Sáez Foods S.L.,entity,ES
 N-0626,Vinhos Encosta do Dão Lda,entity,PT
 N-0627,TYNESIDE CHILLED FREIGHT LTD,entity,GB
 N-0628,Black Country Gear Cutting Ltd,entity,GB
@@ -643,7 +643,7 @@ N-0641,Autosklo Nitra s.r.o.,entity,SK
 N-0642,Pannon Gyógyszer Nagykereskedés Kft.,entity,HU
 N-0643,Frigotehnica Constanta SRL,entity,RO
 N-0644,Шумадија Амбалажа д.о.о.,entity,RS
-N-0645,Liina Tammsaar,person,EE
+N-0645,Tammsaar Textiles OU,entity,EE
 N-0646,"Taizhou Huangyan Auto Mould Co., Ltd.",entity,CN
 N-0647,"Beihai Yintan Seafood Co., Ltd.",entity,CN
 N-0648,Jiaxing Haiyan Carton Co. Ltd,entity,CN
@@ -651,7 +651,7 @@ N-0649,"Shunde Longjiang Sofa Co., Ltd.",entity,CN
 N-0650,"Chengdu Tianfu Pharmaceutical Distribution Co., Ltd.",entity,CN
 N-0651,"Ningxia Yinchuan Qingshan Winery Co., Ltd.",entity,CN
 N-0652,广州南沙冷链仓储有限公司,entity,CN
-N-0653,Fang Ruiqi,person,CN
+N-0653,"Ruiqi Machinery Co., Ltd",entity,CN
 N-0654,Min Rong 12,vessel,CN
 N-0655,Ap Lei Chau Marine Services Limited,entity,HK
 N-0656,"Onomichi Kaiun Co., Ltd.",entity,JP
@@ -661,7 +661,7 @@ N-0659,주식회사 청해수산,entity,KR
 N-0660,"Changhua Hemei Furniture Co., Ltd.",entity,TW
 N-0661,Pithampur Auto Ancillaries Pvt Ltd,entity,IN
 N-0662,Visakhapatnam Port Stevedores Pvt Ltd,entity,IN
-N-0663,Arjun Nambiar,person,IN
+N-0663,Nambiar Packaging Pvt Ltd,entity,IN
 N-0664,Wattala Packaging (Pvt) Ltd,entity,LK
 N-0665,Can Tho Frozen Fish Processing JSC,entity,VN
 N-0666,AYUTTHAYA AUTO PARTS MANUFACTURING CO LTD,entity,TH
@@ -679,7 +679,7 @@ N-0677,Khobar Pharma Warehousing Co.,entity,SA
 N-0678,Caesarea Packaging Industries Ltd,entity,IL
 N-0679,Wellington Valley Wine Cellars (Pty) Ltd,entity,ZA
 N-0680,Richards Bay Timber Terminal (Pty) Ltd,entity,ZA
-N-0681,Port Said Marine Agencies SAE,entity,EG
+N-0681,Port Ismailia Marine Agencies SAE,entity,EG
 N-0682,"Beira Estiva e Trânsitos Lda, Rua do Porto 9",entity,MZ
 N-0683,Nairobi Pharma Distributors Ltd,entity,KE
 N-0684,Gannet Bay,vessel,LR
@@ -691,10 +691,10 @@ N-0689,Grand Rapids Office Seating Inc.,entity,US
 N-0690,DELAWARE VALLEY MARINE INSURANCE CO,entity,US
 N-0691,Longueuil Emballages Carton Inc.,entity,CA
 N-0692,Nanaimo Harbour Cold Storage Ltd.,entity,CA
-N-0693,Gregory Pelletier,person,CA
+N-0693,Pelletier Chemicals Inc.,entity,CA
 N-0694,Frigorifico Rio Grande Pescados Ltda,entity,BR
 N-0695,Bodega Río Negro Patagonia S.A.,entity,AR
-N-0696,Camila Etchegoyen,person,AR
+N-0696,Etchegoyen Timber S.A.,entity,AR
 N-0697,Cartones del Valle del Cauca S.A.S.,entity,CO
 N-0698,Autopartes Saltillo Norte SA de CV,entity,MX
 N-0699,Veraguas Star,vessel,PA
@@ -707,13 +707,13 @@ N-0705,Treppenbau Huelsmann GmbH,entity,DE
 N-0706,Pharmaversand Pinneberg GmbH,entity,DE
 N-0707,Hafenagentur Köhlbrand GmbH Ellerholzdamm 12,entity,DE
 N-0708,Handelsbank Wesselburen AG,entity,DE
-N-0709,Annika Brodersen,person,DE
+N-0709,Brodersen Metals GmbH,entity,DE
 N-0710,Seeve,vessel,DE
 N-0711,Mechelse Meubelmakerij NV,entity,BE
 N-0712,Waaslandse Koelopslag NV,entity,BE
 N-0713,Friese Golfkarton B.V.,entity,NL
 N-0714,Scheveningen Pelagisch Diepvries BV,entity,NL
-N-0715,Joost Terpstra,person,NL
+N-0715,Terpstra Marine B.V.,entity,NL
 N-0716,Trijntje,vessel,NL
 N-0717,Maison Pereuil-Lachaud SAS,entity,FR
 N-0718,CARRELAGES DE SAINTONGE SA,entity,FR
@@ -724,7 +724,7 @@ N-0722,Carta e Cartoni Lucchesi S.p.A.,entity,IT
 N-0723,Ammortizzatori Val di Sangro S.r.l.,entity,IT
 N-0724,Farmacéutica Levante Alzira S.A.,entity,ES
 N-0725,Maderas Laminadas del Nalon SL,entity,ES
-N-0726,Lucía Garmendia Arrieta,person,ES
+N-0726,Arrieta Components S.L.,entity,ES
 N-0727,Cortiça Aglomerada Ribatejo Lda,entity,PT
 N-0728,Humberside Frozen Foods Ltd,entity,GB
 N-0729,Evenlode Oak Furniture Ltd,entity,GB
@@ -743,7 +743,7 @@ N-0741,Nábytok Spiš s.r.o.,entity,SK
 N-0742,Tokaji Pincészet Hegyalja Kft.,entity,HU
 N-0743,Ambalaje Ondulate Sibiu SRL,entity,RO
 N-0744,Хартия Дунав ЕООД,entity,BG
-N-0745,Rūta Jankauskienė,person,LT
+N-0745,Jankauskienė Distribution UAB,entity,LT
 N-0746,"Guangzhou Huadu Chassis Components Co., Ltd.",entity,CN
 N-0747,"Lianyungang Haizhou Bay Seafood Co., Ltd.",entity,CN
 N-0748,Fuyang Fuchun Paper Co Ltd,entity,CN
@@ -755,7 +755,7 @@ N-0753,Cheung Sha Wan Consolidation Services Limited,entity,HK
 N-0754,Ping Chau Pearl,vessel,HK
 N-0755,"Niigata Rinkai Unso Co., Ltd.",entity,JP
 N-0756,"Hida Takayama Mokko Co., Ltd.",entity,JP
-N-0757,Kazuhiro Ishizuka,person,JP
+N-0757,"Ishizuka Logistics Co., Ltd",entity,JP
 N-0758,"Gwangyang Harbour Logistics Co., Ltd.",entity,KR
 N-0759,"Dalseong Friction Materials Co., Ltd.",entity,KR
 N-0760,台南永康紙器股份有限公司,entity,TW
@@ -763,7 +763,7 @@ N-0761,Waluj Auto Forge Pvt Ltd,entity,IN
 N-0762,Goa Coastal Frozen Foods Pvt Ltd,entity,IN
 N-0763,Mongla Port Agencies Ltd,entity,BD
 N-0764,Bac Ninh Carton Packaging JSC,entity,VN
-N-0765,Pham Quoc Bao,person,VN
+N-0765,"Bao Trading Co., Ltd",entity,VN
 N-0766,"Surat Thani Frozen Squid Co., Ltd.",entity,TH
 N-0767,IPOH PHARMA WHOLESALE SDN BHD,entity,MY
 N-0768,Kusu Venture,vessel,SG
@@ -771,7 +771,7 @@ N-0769,PT Kayu Lapis Samarinda,entity,ID
 N-0770,Batangas Bayfront Terminal Corp.,entity,PH
 N-0771,Görükle Oto Kablo San. A.Ş.,entity,TR
 N-0772,Corlu Oluklu Mukavva AS,entity,TR
-N-0773,Burcu Tanrıverdi,person,TR
+N-0773,Tanrıverdi Foods A.S.,entity,TR
 N-0774,Uğurlu Deniz,vessel,TR
 N-0775,Oud Metha Pharma Logistics LLC,entity,AE
 N-0776,Mesaieed Marine Agencies W.L.L.,entity,QA
@@ -789,7 +789,7 @@ N-0787,Walla Walla Valley Cellars LLC,entity,US
 N-0788,Bristol Bay Salmon Exporters Inc,entity,US
 N-0789,Pacific Northwest Corrugated Inc.,entity,US
 N-0790,Port Everglades Freight Consolidators LLC,entity,US
-N-0791,Lindsay Hargreaves,person,US
+N-0791,Hargreaves Textiles LLC,entity,US
 N-0792,Drummondville Cabinets Inc.,entity,CA
 N-0793,Kingston Formulations Ltd.,entity,CA
 N-0794,Madeireira Chapeco Ltda,entity,BR
@@ -807,7 +807,7 @@ N-0805,Fensterbau Ohlendorf GmbH,entity,DE
 N-0806,Apothekenlogistik Quickborn GmbH Siemensstr. 21,entity,DE
 N-0807,Lagerhaus Veddel GmbH,entity,DE
 N-0808,Seeversicherungskontor Blankenese KG,entity,DE
-N-0809,Hannelore Kuhlmann,person,DE
+N-0809,Kuhlmann Machinery GmbH,entity,DE
 N-0810,Lühe,vessel,DE
 N-0811,Waregemse Houtbewerking NV,entity,BE
 N-0812,Lierse Farma Distributie NV,entity,BE
@@ -817,7 +817,7 @@ N-0815,Aaltje,vessel,NL
 N-0816,Vignobles des Corbières Hautes SCA,entity,FR
 N-0817,Cartonnages de l'Oise SA,entity,FR
 N-0818,JOINTS ET FILTRES AUTOMOBILES VENDOME SAS,entity,FR
-N-0819,Mathilde Lefebvre-Aubry,person,FR
+N-0819,Lefebvre-Aubry Packaging SARL,entity,FR
 N-0820,Amari e Liquori Val d'Ossola S.r.l.,entity,IT
 N-0821,Pavimenti in Legno Valtellina Srl,entity,IT
 N-0822,Surgelati Mazara del Vallo S.r.l.,entity,IT
@@ -830,13 +830,13 @@ N-0828,"Orwell Dockside Warehousing Ltd, Cliff Quay, Ipswich",entity,GB
 N-0829,Donegal Bay Fish Freezers Ltd,entity,IE
 N-0830,GRAZER KARTONAGEN GMBH,entity,AT
 N-0831,Lofoten Tørrfisk Eksport AS,entity,NO
-N-0832,Nils Brandvold,person,NO
+N-0832,Brandvold Chemicals AS,entity,NO
 N-0833,Kalymnos Pride,vessel,GR
 N-0834,Gnejna,vessel,MT
 N-0835,Neuwerk,vessel,DE
 N-0836,Opakowania Tekturowe Radom Sp. z o.o.,entity,PL
 N-0837,Stolarka Okienna Podhale Sp z oo,entity,PL
-N-0838,Bartosz Grabowiecki,person,PL
+N-0838,Grabowiecki Timber Sp. z o.o.,entity,PL
 N-0839,Sklarny Karlovarsko s.r.o.,entity,CZ
 N-0840,Moravskoslezské Autodíly s.r.o.,entity,CZ
 N-0841,Liptovská Drevovýroba s.r.o.,entity,SK
@@ -857,7 +857,7 @@ N-0855,"Yokohama Honmoku Warehouse Co., Ltd.",entity,JP
 N-0856,有限会社越前紙工,entity,JP
 N-0857,Fukuoka Hakata Reito Co. Ltd,entity,JP
 N-0858,"Mokpo Seafood Co., Ltd.",entity,KR
-N-0859,Yeh Shu-fen,person,TW
+N-0859,"Shu-fen Metals Co., Ltd",entity,TW
 N-0860,"Taichung Wuqi Port Logistics Co., Ltd.",entity,TW
 N-0861,Chakan Auto Components Pvt Ltd,entity,IN
 N-0862,Jeedimetla Formulations Pvt Ltd,entity,IN
@@ -865,7 +865,7 @@ N-0863,Bagerhat Frozen Foods Ltd,entity,BD
 N-0864,VUNG TAU PORT SERVICES JSC,entity,VN
 N-0865,"Nakhon Pathom Carton Co., Ltd.",entity,TH
 N-0866,Kuching Timber Mouldings Sdn Bhd,entity,MY
-N-0867,Kavitha Subramaniam,person,MY
+N-0867,Subramaniam Marine Sdn. Bhd.,entity,MY
 N-0868,Lazarus Bay,vessel,SG
 N-0869,PT Ikan Beku Bitung,entity,ID
 N-0870,Clark Freeport Pharma Distribution Inc.,entity,PH
@@ -881,7 +881,7 @@ N-0879,Constantia Hills Wine Traders (Pty) Ltd,entity,ZA
 N-0880,"Mossel Bay Frozen Squid (Pty) Ltd, Voorbaai",entity,ZA
 N-0881,Berrechid Carton Industriel SA,entity,MA
 N-0882,Maputo Port Clearing Lda,entity,MZ
-N-0883,Wanjiru Kariuki,person,KE
+N-0883,Kariuki Components Ltd,entity,KE
 N-0884,Ennerdale Bay,vessel,LR
 N-0885,MT SERRA MORENA,vessel,LR
 N-0886,Stark County Wheel Bearing Inc.,entity,US
@@ -889,7 +889,7 @@ N-0887,Hudson Valley Craft Distillers LLC,entity,US
 N-0888,Cape Ann Seafood Freezers Inc,entity,US
 N-0889,Lehigh Valley Paperboard Corp.,entity,US
 N-0890,Galveston Bayside Terminal LLC,entity,US
-N-0891,Jared Whitcombe,person,US
+N-0891,Whitcombe Distribution LLC,entity,US
 N-0892,Victoriaville Meubles Inc.,entity,CA
 N-0893,Trois-Rivieres Papier Kraft Ltee,entity,CA
 N-0894,Fundicao Caxias do Sul Ltda,entity,BR
@@ -907,7 +907,7 @@ N-0905,Natursteinwerk Weserbergland GmbH,entity,DE
 N-0906,Pharmahandel Harburg GmbH,entity,DE
 N-0907,Zollspedition Wilhelmsburg GmbH Kanalplatz 6,entity,DE
 N-0908,Bankhaus Lindemann-Tetens KG,entity,DE
-N-0909,Sven Oldoerp,person,DE
+N-0909,Oldoerp Logistics GmbH,entity,DE
 N-0910,Bille,vessel,DE
 N-0911,Westvlaamse Diepvriesvis NV,entity,BE
 N-0912,Menuiserie Industrielle Mosane SA,entity,BE
@@ -921,14 +921,14 @@ N-0919,Panneaux Bois des Landes SAS,entity,FR
 N-0920,Vinicola Monte Frascone S.r.l.,entity,IT
 N-0921,Guarnizioni Auto Valsesia Srl,entity,IT
 N-0922,Cartiera Valle del Liri S.p.A.,entity,IT
-N-0923,Beatrice Galvani,person,IT
+N-0923,Galvani Trading S.r.l.,entity,IT
 N-0924,Conservas Ria de Muros SA,entity,ES
 N-0925,"Pinturas y Morteros Castellón S.L., Polígono El Serrallo",entity,ES
 N-0926,Mobiliario Freamunde Lda,entity,PT
 N-0927,Peterhead Pelagic Freezers Ltd,entity,GB
 N-0928,Merseyside Pharma Wholesale Ltd,entity,GB
 N-0929,Clew Bay Seafoods Ltd,entity,IE
-N-0930,Aoife Tierney,person,IE
+N-0930,Tierney Foods Ltd,entity,IE
 N-0931,Luzerner Arzneimittel Vertrieb AG,entity,CH
 N-0932,Esbjerg Havnelager A/S,entity,DK
 N-0933,Naxos Frost,vessel,GR
@@ -941,7 +941,7 @@ N-0939,Dřevostavby Šumava s.r.o.,entity,CZ
 N-0940,Chladirny Pardubice a.s.,entity,CZ
 N-0941,Vinárstvo Malokarpatské s.r.o.,entity,SK
 N-0942,DEBRECENI CSOMAGOLOIPARI ZRT,entity,HU
-N-0943,Zsófia Lengyel,person,HU
+N-0943,Lengyel Textiles Kft.,entity,HU
 N-0944,Mobilier Maramureș SRL,entity,RO
 N-0945,SIA Liepājas Zivju Saldētava,entity,LV
 N-0946,"Wuhu Jiangbei Brake Co., Ltd.",entity,CN
@@ -954,14 +954,14 @@ N-0952,深圳盐田冷链物流有限公司,entity,CN
 N-0953,Kwun Tong Freight Forwarding Limited,entity,HK
 N-0954,"Senshu Brake Kogyo Co., Ltd.",entity,JP
 N-0955,"Tosa Katsuo Shokuhin Co., Ltd.",entity,JP
-N-0956,Nakagawa Rina,person,JP
+N-0956,"Rina Machinery Co., Ltd",entity,JP
 N-0957,Tokuyo Maru No. 5,vessel,JP
 N-0958,주식회사 남도목재,entity,KR
 N-0959,"Gimhae Auto Parts Co., Ltd.",entity,KR
 N-0960,"Kaohsiung Siaogang Logistics Co., Ltd.",entity,TW
 N-0961,Manesar Auto Components Ltd,entity,IN
 N-0962,Porbandar Surimi Exports Pvt Ltd,entity,IN
-N-0963,Anjali Deshpande,person,IN
+N-0963,Deshpande Packaging Pvt Ltd,entity,IN
 N-0964,Galle Harbour Agencies (Pvt) Ltd,entity,LK
 N-0965,Long An Furniture Components JSC,entity,VN
 N-0966,"Chachoengsao Paper Mill Co., Ltd.",entity,TH
@@ -991,11 +991,11 @@ N-0989,Chattanooga Carton & Display Co.,entity,US
 N-0990,TACOMA TIDEFLATS TERMINAL LLC,entity,US
 N-0991,Levis Pharma Distribution Inc.,entity,CA
 N-0992,Prince Rupert Reefer Services Ltd.,entity,CA
-N-0993,Owen Fairbairn,person,CA
+N-0993,Fairbairn Chemicals Inc.,entity,CA
 N-0994,Pisos Laminados Curitiba Ltda,entity,BR
 N-0995,Bodega Cafayate Altura S.A.,entity,AR
 N-0996,Frutos del Mar Manta S.A.,entity,EC
 N-0997,Autopartes Aguascalientes Sur SA de CV,entity,MX
-N-0998,Joaquín Salaberry Olmos,person,UY
+N-0998,Olmos Timber S.A.,entity,UY
 N-0999,Rio Tuira,vessel,PA
 N-1000,ABACO GULL,vessel,BS

@@ -229,7 +229,8 @@ test("le genre : l'écrivain émet le nom Crusetra, le lecteur accepte les deux 
 test("les relevés scellés d'avant le renommage, tels que commis : ancien genre, scellé intact, relus par le re-criblage", () => {
   for (const nom of ["contreparties-exemple", "contreparties-mille", "contreparties-mille-2"]) {
     const c = JSON.parse(readFileSync(new URL(`../exemple/${nom}.screening.json`, import.meta.url), "utf8")) as Criblage;
-    assert.equal(c.genre, GENRE_CRIBLAGE_ANCIEN, `${nom} est HISTOIRE : il garde le genre sous lequel il a été scellé`);
+    /* The two thousand-name books were regenerated on 2026-10-20 (no natural person in them), so they carry the current genre; the small example is still history. */
+    assert.equal(c.genre, nom === "contreparties-exemple" ? GENRE_CRIBLAGE_ANCIEN : GENRE_CRIBLAGE, `${nom} : le genre sous lequel il a été scellé`);
     assert.ok(scelleIntact(c as unknown as Record<string, unknown>), `${nom} : le scellé tient toujours`);
     const { reserves: _r, empreinte: _e, ...corps } = c;
     const ch = comparer(c, { ...corps, genre: GENRE_CRIBLAGE });
